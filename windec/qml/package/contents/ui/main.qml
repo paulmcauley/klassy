@@ -178,7 +178,7 @@ Decoration {
                 gradient: Gradient {
                         GradientStop {
                             position: 0.0
-                            color: decoration.active ? Qt.lighter(options.titleBarColor, 1.3) :
+                            color: decoration.active ? Qt.lighter(options.titleBarColor, 1.2) :
                                                        Qt.lighter(options.titleBarColor, 1.1)
                         }
                         GradientStop {
