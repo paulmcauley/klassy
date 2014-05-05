@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PlastikConfigDialog</class>
+ <widget class="QWidget" name="PlastikConfigDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>541</width>
+    <height>176</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Config Dialog</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="KButtonGroup" name="titleAlign">
+     <property name="title">
+      <string>Title &amp;Alignment</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QRadioButton" name="kcfg_titleAlignLeft">
+        <property name="text">
+         <string>Left</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="kcfg_titleAlignCenter">
+        <property name="text">
+         <string>Center</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="kcfg_titleAlignRight">
+        <property name="text">
+         <string>Right</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="kcfg_coloredBorder">
+     <property name="whatsThis">
+      <string>Check this option if the window border should be painted in the titlebar color. Otherwise it will be painted in the background color.</string>
+     </property>
+     <property name="text">
+      <string>Colored window border</string>
+     </property>
+     <property name="shortcut">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="kcfg_titleShadow">
+     <property name="whatsThis">
+      <string>Check this option if you want the titlebar text to have a 3D look with a shadow behind it.</string>
+     </property>
+     <property name="text">
+      <string>Use shadowed &amp;text</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="kcfg_animateButtons">
+     <property name="whatsThis">
+      <string>Check this option if you want the buttons to fade in when the mouse pointer hovers over them and fade out again when it moves away.</string>
+     </property>
+     <property name="text">
+      <string>Animate buttons</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KButtonGroup</class>
+   <extends>QGroupBox</extends>
+   <header>kbuttongroup.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>kcfg_animateButtons</tabstop>
+  <tabstop>kcfg_titleShadow</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
