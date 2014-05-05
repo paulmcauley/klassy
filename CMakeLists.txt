@@ -14,6 +14,7 @@ include(GenerateExportHeader)
 
 add_subdirectory(cursors)
 add_subdirectory(windec)
+add_subdirectory(widgetstyles)
 
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
