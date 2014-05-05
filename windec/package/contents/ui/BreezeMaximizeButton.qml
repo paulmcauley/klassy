@@ -18,8 +18,10 @@ DecorationButton {
         Behavior on color {
             ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
         }
+
         Rectangle {
             id:downStroke
+            visible: !decoration.maximized
             anchors.verticalCenter: parent.verticalCenter
             anchors.left: parent.horizontalCenter
             height: 2
@@ -40,6 +42,7 @@ DecorationButton {
         }
         Rectangle {
             id:point
+            visible: !decoration.maximized
             anchors.verticalCenter: parent.verticalCenter
             anchors.horizontalCenter: parent.horizontalCenter
             height: 2
@@ -59,6 +62,7 @@ DecorationButton {
         }
         Rectangle {
             id: upStroke
+            visible: !decoration.maximized
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: parent.horizontalCenter
             height: 2
@@ -78,66 +82,22 @@ DecorationButton {
             ]
         }
         Rectangle {
+            id:restore
             visible: decoration.maximized
-            id:downStroke1
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.right: parent.horizontalCenter
-            height: 2
-            width: (parent.width - 5)/2
-            color: button.hovered ? options.titleBarColor : options.fontColor
-            radius:1
+            anchors.fill: parent
+            anchors.margins: 4.5
             smooth: true
-            transform: [
-                Rotation {
-                    origin.x: downStroke1.width
-                    origin.y: 1
+            border {
+                width: 2
+                color: button.hovered ? options.titleBarColor : options.fontColor
+            }
+            radius: 1
+            color: "transparent"
+            transform: Rotation {
+                    origin.x: restore.width/2
+                    origin.y: restore.height/2
                     angle: 45
-                },
-                Translate {
-                    y: (0.707*downStroke1.width)
                 }
-            ]
-        }
-        Rectangle {
-            visible: decoration.maximized
-            id:point1
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            height: 2
-            width: 2
-            color: button.hovered ? options.titleBarColor : options.fontColor
-            smooth: true
-            transform: [
-                Rotation {
-                    origin.x: 1
-                    origin.y: 1
-                    angle: 45
-                },
-                Translate {
-                    y: (0.707*upStroke1.width)
-                }
-            ]
-        }
-        Rectangle {
-            visible: decoration.maximized
-            id: upStroke1
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.left: parent.horizontalCenter
-            height: 2
-            width: (parent.width - 5)/2
-            color: button.hovered ? options.titleBarColor : options.fontColor
-            radius:1
-            smooth: true
-            transform: [
-                Rotation {
-                    origin.x: 0
-                    origin.y: 1
-                    angle: -45
-                },
-                Translate {
-                    y: (0.707*upStroke1.width)
-                }
-            ]
         }
     }
 }
