@@ -22,7 +22,7 @@ DecorationButton {
             id:downStroke
             anchors.centerIn: parent
             height: 2
-            width: parent.width - 6
+            width: parent.width - 8
             color: button.hovered || button.pressed ? options.fontColor : options.titleBarColor
             radius:1
             smooth: true
@@ -36,7 +36,7 @@ DecorationButton {
             id: upStroke
             anchors.centerIn: parent
             height: 2
-            width: parent.width - 6
+            width: parent.width - 8
             color: button.hovered || button.pressed ? options.fontColor : options.titleBarColor
             radius:1
             smooth: true
