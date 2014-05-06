@@ -173,8 +173,12 @@ Decoration {
                     right: parent.right
                     top: parent.top
                 }
-                height: titleRow.height + 12
-                radius: 3
+                height: titleRow.anchors.topMargin +
+                        titleRow.height +
+                        (decoration.maximized ? 2 : 4) +
+                        activeHighlight.height +
+                        titleBarSpacer.height
+                radius: decoration.maximized ? 0 : 3
                 gradient: Gradient {
                         GradientStop {
                             position: 0.0
@@ -208,6 +212,7 @@ Decoration {
                     color: decoration.active ? sysPal.highlight : sysPal.window
                 }
                 Rectangle {
+                    id: titleBarSpacer
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -238,7 +243,7 @@ Decoration {
                         left: parent.left
                         right: parent.right
                         top: parent.top
-                        topMargin: decoration.maximixed ? 0 : 4
+                        topMargin: decoration.maximized ? 0 : 4
                         leftMargin: decoration.maximized ? 0 : 4
                         rightMargin: decoration.maximized ? 0 : 4
                     }
