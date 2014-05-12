@@ -3,7 +3,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     anchors.fill: parent
-    property real shadowRadius: 25
+    property real shadowRadius: 20
     ShadowEdge {
         id: leftShadow
         anchors {

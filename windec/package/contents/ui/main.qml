@@ -106,10 +106,10 @@ Decoration {
         }
         borders.setTitle(top.height);
         maximizedBorders.setTitle(top.height);
-        padding.top = 8;
-        padding.left = 8;
-        padding.right = 18;
-        padding.bottom = 18;
+        padding.top = 10;
+        padding.left = 10;
+        padding.right = 20;
+        padding.bottom = 20;
     }
     ColorHelper {
         id: colorHelper
@@ -135,10 +135,10 @@ Decoration {
     id: root
     alpha: false
     padding: {
-        top: 8
-        left: 8
-        right: 18
-        bottom: 18
+        top: 10
+        left: 10
+        right: 20
+        bottom: 20
     }
 
     Rectangle {
@@ -216,7 +216,11 @@ Decoration {
                         GradientStop {
                             position: 0.0
                             color: decoration.active ? Qt.lighter(options.titleBarColor, 1.2) :
-                                                       Qt.lighter(options.titleBarColor, 1.1)
+                                                       Qt.lighter(options.titleBarColor, 1.0)
+                        }
+                        GradientStop {
+                            position: 0.8
+                            color: options.titleBarColor
                         }
                         GradientStop {
                             position: 1.0

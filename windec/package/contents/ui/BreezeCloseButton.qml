@@ -9,7 +9,7 @@ DecorationButton {
     Rectangle {
         anchors {
             fill: parent
-            margins: 2.5
+            margins: 2
         }
         radius: width/2.0
         smooth: true

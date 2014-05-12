@@ -9,7 +9,7 @@ DecorationButton {
     Rectangle {
         anchors {
             fill: parent
-            margins: 2.5
+            margins: 2
         }
         radius: width/2.0
         color: button.pressed ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.2) :
