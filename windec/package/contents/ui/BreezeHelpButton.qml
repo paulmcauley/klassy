@@ -16,7 +16,8 @@ DecorationButton {
                                 button.hovered ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.5) :
                                                  "transparent"
         Behavior on color {
-            ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
+            enabled: root.animateButtons
+            ColorAnimation { duration: root.animationDuration }
         }
 
         Rectangle {
@@ -29,6 +30,9 @@ DecorationButton {
             radius: 1
             width: parent.width - 12
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: stroke0
@@ -41,6 +45,10 @@ DecorationButton {
             radius: 1
             width: 2
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
 
         Rectangle {
@@ -54,6 +62,10 @@ DecorationButton {
             radius: 1
             width: 2
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: stroke3
@@ -66,6 +78,10 @@ DecorationButton {
             radius: 1
             width: 0.45*stroke1.width
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: stroke4
@@ -78,6 +94,10 @@ DecorationButton {
             radius: 1
             width: 2
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: stroke5
@@ -89,6 +109,10 @@ DecorationButton {
             width: 2
             radius: 0.5
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
     }
     Component.onCompleted: {

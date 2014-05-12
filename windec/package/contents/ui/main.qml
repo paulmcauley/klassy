@@ -60,6 +60,30 @@ Decoration {
             extendedBorders.setAllBorders(0);
             break;
         }
+        switch (decoration.readConfig("ButtonSize", DecorationOptions.BorderNormal)) {
+        case DecorationOptions.BorderTiny:
+            buttonSize = 18;
+            break;
+        case DecorationOptions.BorderLarge:
+            buttonSize = 24;
+            break;
+        case DecorationOptions.BorderVeryLarge:
+            buttonSize = 26;
+            break;
+        case DecorationOptions.BorderHuge:
+            buttonSize = 28;
+            break;
+        case DecorationOptions.BorderVeryHuge:
+            buttonSize = 30;
+            break;
+        case DecorationOptions.BorderOversized:
+            buttonSize = 32;
+            break;
+        case DecorationOptions.BorderNormal: // fall through to default
+        default:
+            buttonSize = 22;
+            break;
+        }
         var titleAlignLeft = decoration.readConfig("titleAlignLeft", true);
         var titleAlignCenter = decoration.readConfig("titleAlignCenter", false);
         var titleAlignRight = decoration.readConfig("titleAlignRight", false);
@@ -73,12 +97,19 @@ Decoration {
             }
             root.titleAlignment = Text.AlignLeft;
         }
-        root.animateButtons = decoration.readConfig("animateButtons", true);
-        root.titleShadow = decoration.readConfig("titleShadow", true);
+        root.showActiveHighlight = decoration.readConfig("showActiveHighlight", true);
+        root.animateButtons = decoration.readConfig("animateButtons", false);
+        root.titleShadow = decoration.readConfig("titleShadow", false);
         if (decoration.animationsSupported) {
             root.animationDuration = 150;
             root.animateButtons = false;
         }
+        borders.setTitle(top.height);
+        maximizedBorders.setTitle(top.height);
+        padding.top = 8;
+        padding.left = 8;
+        padding.right = 18;
+        padding.bottom = 18;
     }
     ColorHelper {
         id: colorHelper
@@ -95,6 +126,7 @@ Decoration {
     property int animationDuration: 200
     property bool animateButtons: true
     property bool titleShadow: true
+    property bool showActiveHighlight: true
     Behavior on titleBarColor {
         ColorAnimation {
             duration: root.animationDuration
@@ -116,8 +148,9 @@ Decoration {
         anchors.fill: parent
 
         ShadowFrame {
-         anchors.rightMargin: decoration.active ? 0 : 6
-         anchors.bottomMargin: decoration.active ? 0 : 6
+            anchors.fill: parent
+            anchors.rightMargin: decoration.active ? 0 : 6
+            anchors.bottomMargin: decoration.active ? 0 : 6
         }
 
         Rectangle {
@@ -130,7 +163,7 @@ Decoration {
                 rightMargin: decoration.maximized ? 0 : root.padding.right
                 bottomMargin: decoration.maximized ? 0 : root.padding.bottom
             }
-            radius: root.borders.left
+            radius: 3
 
             Rectangle {
                 id: borderLeft
@@ -202,6 +235,7 @@ Decoration {
                 }
                 Rectangle {
                     id: activeHighlight
+                    visible: root.showActiveHighlight
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -238,7 +272,7 @@ Decoration {
 
                 Item {
                     id: titleRow
-                    height: caption.implicitHeight + 5
+                    height: Math.max(root.buttonSize, caption.implicitHeight + 5)
                     anchors {
                         left: parent.left
                         right: parent.right
@@ -283,6 +317,8 @@ Decoration {
                             ColorAnimation { duration: root.animationDuration }
                         }
                         text: decoration.caption
+                        style: root.titleShadow ? Text.Raised : Text.Normal
+                        styleColor: colorHelper.shade(color, ColorHelper.ShadowShade)
                         font: options.titleFont
                         elide: Text.ElideMiddle
                     }
@@ -402,17 +438,12 @@ Decoration {
         }
     }
     Component.onCompleted: {
-        borders.setBorders(4);
-        borders.setTitle(top.height);
-        maximizedBorders.setTitle(top.height);
-        padding.top = 8;
-        padding.left = 8;
-        padding.right = 18;
-        padding.bottom = 18;
         readConfig();
     }
     Connections {
         target: decoration
-        onConfigChanged: readConfig()
+        onConfigChanged: {
+            readConfig();
+        }
     }
 }

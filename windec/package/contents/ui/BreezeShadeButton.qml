@@ -16,7 +16,8 @@ DecorationButton {
                                 button.hovered ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.5) :
                                                  "transparent"
         Behavior on color {
-            ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
+            enabled: root.animateButtons
+            ColorAnimation { duration: root.animationDuration }
         }
         Rectangle {
             id: stroke1
@@ -28,6 +29,10 @@ DecorationButton {
             radius: 1
             width: parent.width - 6
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id:downStroke
@@ -49,6 +54,10 @@ DecorationButton {
                     y: -(0.707*downStroke.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id:point
@@ -69,6 +78,10 @@ DecorationButton {
                     y: -(0.707*downStroke.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: upStroke
@@ -90,6 +103,10 @@ DecorationButton {
                     y: -(0.707*upStroke.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: decoration.setShade
@@ -111,6 +128,10 @@ DecorationButton {
                     y: (0.707*downStroke1.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: decoration.setShade
@@ -131,6 +152,10 @@ DecorationButton {
                     y: (0.707*downStroke1.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: decoration.setShade
@@ -152,6 +177,10 @@ DecorationButton {
                     y: (0.707*upStroke1.width)/2 + 2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
     }
 }

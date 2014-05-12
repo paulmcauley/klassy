@@ -17,7 +17,8 @@ DecorationButton {
                                 button.hovered ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.5) :
                                                  "transparent"
         Behavior on color {
-            ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
+            enabled: root.animateButtons
+            ColorAnimation { duration: root.animationDuration }
         }
         Rectangle {
             visible: !decoration.onAllDesktops
@@ -30,6 +31,10 @@ DecorationButton {
             width: parent.width - 12
             color: button.hovered ? options.titleBarColor : options.fontColor
             radius: 1
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: !decoration.onAllDesktops
@@ -41,6 +46,10 @@ DecorationButton {
             radius: 1
             width: parent.width - 8
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: !decoration.onAllDesktops
@@ -53,6 +62,10 @@ DecorationButton {
             width: 2
             radius: 1
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             visible: decoration.onAllDesktops
@@ -66,6 +79,10 @@ DecorationButton {
                 width: 2
                 radius: 0
                 color: button.hovered ? options.fontColor : options.titleBarColor
+            }
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
             }
         }
 

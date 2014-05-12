@@ -16,13 +16,18 @@ DecorationButton {
                                 button.hovered ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.5) :
                                                  "transparent"
         Behavior on color {
-            ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
+            enabled: root.animateButtons
+            ColorAnimation { duration: root.animationDuration }
         }
         Rectangle {
             anchors.fill: parent
             anchors.margins: 4
             radius: 2
             color: button.hovered ? options.titleBarColor : options.fontColor
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
             Rectangle {
                 id: stroke1
                 anchors.verticalCenter: parent.verticalCenter
@@ -30,6 +35,10 @@ DecorationButton {
                 height: 2
                 width: parent.width - 6
                 color: button.hovered ? options.fontColor : options.titleBarColor
+                Behavior on color {
+                    enabled: root.animateButtons
+                    ColorAnimation { duration: root.animationDuration*2 }
+                }
             }
             Rectangle {
                 id: stroke2
@@ -39,6 +48,10 @@ DecorationButton {
                 height: 2
                 width: parent.width - 4
                 color: button.hovered ? options.fontColor : options.titleBarColor
+                Behavior on color {
+                    enabled: root.animateButtons
+                    ColorAnimation { duration: root.animationDuration*2 }
+                }
             }
             Rectangle {
                 id: stroke3
@@ -48,6 +61,10 @@ DecorationButton {
                 height: 2
                 width: parent.width - 4
                 color: button.hovered ? options.fontColor : options.titleBarColor
+                Behavior on color {
+                    enabled: root.animateButtons
+                    ColorAnimation { duration: root.animationDuration*2 }
+                }
             }
         }
     }

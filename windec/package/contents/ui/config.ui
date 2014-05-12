@@ -13,10 +13,7 @@
   <property name="windowTitle">
    <string>Config Dialog</string>
   </property>
-  <layout class="QVBoxLayout">
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="KButtonGroup" name="titleAlign">
      <property name="title">
@@ -48,15 +45,12 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="kcfg_coloredBorder">
+    <widget class="QCheckBox" name="kcfg_showActiveHighlight">
      <property name="whatsThis">
-      <string>Check this option if the window border should be painted in the titlebar color. Otherwise it will be painted in the background color.</string>
+      <string>Check this option if you want show a higlight under the title bar of the active window.</string>
      </property>
      <property name="text">
-      <string>Colored window border</string>
-     </property>
-     <property name="shortcut">
-      <string/>
+      <string>Show active highlight</string>
      </property>
     </widget>
    </item>

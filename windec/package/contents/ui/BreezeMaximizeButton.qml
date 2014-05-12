@@ -16,7 +16,8 @@ DecorationButton {
                                 button.hovered ? Qt.rgba(options.fontColor.r, options.fontColor.g, options.fontColor.b, 0.5) :
                                                  "transparent"
         Behavior on color {
-            ColorAnimation { duration: decoration.active ? root.animationDuration : 0 }
+            enabled: root.animateButtons
+            ColorAnimation { duration: root.animationDuration }
         }
 
         Rectangle {
@@ -39,6 +40,10 @@ DecorationButton {
                     y: decoration.maximized ? -(0.707*downStroke.width) : -(0.707*downStroke.width)/2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id:point
@@ -59,6 +64,10 @@ DecorationButton {
                     y: decoration.maximized ? -(0.707*downStroke.width) : -(0.707*downStroke.width)/2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id: upStroke
@@ -80,6 +89,10 @@ DecorationButton {
                     y: decoration.maximized ? -(0.707*upStroke.width) : -(0.707*upStroke.width)/2
                 }
             ]
+            Behavior on color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
         Rectangle {
             id:restore
@@ -98,6 +111,10 @@ DecorationButton {
                     origin.y: restore.height/2
                     angle: 45
                 }
+            Behavior on border.color {
+                enabled: root.animateButtons
+                ColorAnimation { duration: root.animationDuration*2 }
+            }
         }
     }
 }
