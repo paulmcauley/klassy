@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=kde4breeze
+GenericName=Apply Breeze theme to KDE4 applications
+Exec=kde4breeze %i -caption "%c"
+Type=Application
+X-DocPath=kde4breeze/index.html
+
