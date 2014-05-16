@@ -33,7 +33,7 @@ Application::Application()
     KConfigGroup group(config, "General");
     group.writeEntry("ColorScheme", "Breeze");
 
-    group.writeEntry("widgetStyle", "oxygen");
+    group.writeEntry("widgetStyle", "qtcurve");
 
     //TODO: icons
 
