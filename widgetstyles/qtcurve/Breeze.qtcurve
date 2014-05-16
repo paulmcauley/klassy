@@ -1,6 +1,9 @@
 [ActiveShadows]
-ColorType=3
-VOffset=15
+Color=75,75,75
+ColorType=5
+HOffset=10
+Size=29
+VOffset=20
 
 [KWin]
 BorderSize=3
@@ -146,7 +149,7 @@ thinSbarGroove=false
 titlebarAlignment=left
 titlebarAppearance=flat
 titlebarButtonAppearance=flat
-titlebarButtons=6145
+titlebarButtons=2189
 titlebarEffect=none
 titlebarIcon=menu
 toolbarAppearance=flat
@@ -161,7 +164,7 @@ useHighlightForMenu=true
 useQtFileDialogApps=googleearth-bin
 vArrows=false
 version=1.8.14
-windowBorder=33
+windowBorder=41
 windowDrag=3
 xCheck=false
 xbar=false
