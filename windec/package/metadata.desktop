@@ -1,5 +1,21 @@
 [Desktop Entry]
 Name=Breeze
+Name[ca]=Brisa
+Name[de]=Breeze
+Name[gl]=Breeze
+Name[hu]=Breeze
+Name[nds]=Breeze
+Name[nl]=Breeze
+Name[pl]=Bryza
+Name[pt]=Brisa
+Name[pt_BR]=Breeze
+Name[sr]=Поветарац
+Name[sr@ijekavian]=Поветарац
+Name[sr@ijekavianlatin]=Povetarac
+Name[sr@latin]=Povetarac
+Name[sv]=Breeze
+Name[uk]=Breeze
+Name[x-test]=xxBreezexx
 Comment=KDE theme
 
 X-Plasma-MainScript=ui/main.qml
