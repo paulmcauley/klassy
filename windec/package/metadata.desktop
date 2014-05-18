@@ -2,6 +2,7 @@
 Name=Breeze
 Name[ca]=Brisa
 Name[de]=Breeze
+Name[fi]=Breeze
 Name[gl]=Breeze
 Name[hu]=Breeze
 Name[nds]=Breeze
@@ -17,6 +18,12 @@ Name[sv]=Breeze
 Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Comment=KDE theme
+Comment[ca]=Tema del KDE
+Comment[nl]=KDE-thema
+Comment[pt]=Tema do KDE
+Comment[pt_BR]=Tema do KDE
+Comment[uk]=Тема KDE
+Comment[x-test]=xxKDE themexx
 
 X-Plasma-MainScript=ui/main.qml
 X-KDE-PluginInfo-Author=Andrew Lake
