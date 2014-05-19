@@ -32,7 +32,7 @@ void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
     //Apply Breeze color scheme
-    KConfig config(migration.locateLocal("config", "kdeglobals"));
+    KConfig config(migration.saveLocation("config") + "kdeglobals");
 
     //use QtCurve only if installed
     if (QStyleFactory::keys().contains("QtCurve")) {
@@ -47,7 +47,7 @@ void updateKdeGlobals()
 
 void applyQtCurveConfig()
 {
-    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "apps/QtCurve/Breeze.qtcurve");
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "QtCurve/Breeze.qtcurve");
     QString dest = QDir::homePath() + "/.config/qtcurve/stylerc";
 
     QFile::remove(dest);
