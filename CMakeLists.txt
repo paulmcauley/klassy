@@ -13,6 +13,7 @@ include(KDECompilerSettings)
 include(GenerateExportHeader)
 
 add_subdirectory(cursors)
+add_subdirectory(kde4breeze)
 
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)

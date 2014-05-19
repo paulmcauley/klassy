@@ -17,25 +17,46 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  ***************************************************************************/
 
-// application header
-#include "application.h"
-// KDE headers
-#include <KDE/KAboutData>
-#include <KDE/KCmdLineArgs>
-#include <KDE/KLocale>
+#include <QCoreApplication>
+#include <QStandardPaths>
+#include <QDebug>
+#include <QFile>
+#include <QDir>
+#include <kdelibs4migration.h>
 
-static const char description[] =
-    I18N_NOOP("Apply Breeze as KDE4 default settings");
+#include <KConfigGroup>
+#include <kconfig.h>
 
-static const char version[] = "0.1";
+void updateKdeGlobals()
+{
+    Kdelibs4Migration migration;
+    //Apply Breeze color scheme
+    KConfig config(migration.locateLocal("config", "kdeglobals"));
+    KConfigGroup group(&config, "General");
+
+    group.writeEntry("ColorScheme", "Breeze");
+    group.writeEntry("widgetStyle", "qtcurve");
+    group.sync();
+}
+
+void applyQtCurveConfig()
+{
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "apps/QtCurve/Breeze.qtcurve");
+    QString dest = QDir::homePath() + "/.config/qtcurve/stylerc";
+
+    QFile::remove(dest);
+    QFile::copy(src, dest);
+}
+
 
 int main(int argc, char **argv)
 {
-    KAboutData about("simple", 0, ki18n("kde4breeze"), version, ki18n(description),
-                     KAboutData::License_GPL, ki18n("(C) 2014 Marco Martin"), KLocalizedString(), 0, "mart@kde.org");
-    KCmdLineArgs::init(argc, argv, &about);
 
-    Application app;
+    QCoreApplication app(argc, argv);
 
-    return app.exec();
+
+    updateKdeGlobals();
+    applyQtCurveConfig();
+
+    return 0;
 }

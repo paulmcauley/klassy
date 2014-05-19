@@ -1,8 +1,33 @@
 project(kde4breeze)
 
-find_package(KDE4 REQUIRED)
-include (KDE4Defaults)
+find_package(ECM 0.0.13 REQUIRED NO_MODULE)
 
-include_directories( ${KDE4_INCLUDES} ${QT_INCLUDES} )
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+
+include(KDEInstallDirs)
+include(KDEFrameworkCompilerSettings)
+include(KDECMakeSettings)
+
+find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(ECMPackageConfigHelpers)
+include(ECMMarkNonGuiExecutable)
+include(CMakePackageConfigHelpers)
+include(WriteBasicConfigVersionFile)
+include(CheckIncludeFiles)
+include(FeatureSummary)
+include(KDEFrameworkCompilerSettings)
+
+add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
+
+add_definitions(-DQT_USE_FAST_CONCATENATION -DQT_USE_FAST_OPERATOR_PLUS)
+add_definitions(-DQT_NO_URL_CAST_FROM_STRING)
+
+remove_definitions(-DQT_NO_CAST_FROM_ASCII -DQT_STRICT_ITERATORS -DQT_NO_CAST_FROM_BYTEARRAY -DQT_NO_KEYWORDS)
+
 
 add_subdirectory( src )
+
