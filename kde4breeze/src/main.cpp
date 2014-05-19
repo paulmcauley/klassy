@@ -22,6 +22,7 @@
 #include <QDebug>
 #include <QFile>
 #include <QDir>
+#include <QStyleFactory>
 #include <kdelibs4migration.h>
 
 #include <KConfigGroup>
@@ -32,11 +33,16 @@ void updateKdeGlobals()
     Kdelibs4Migration migration;
     //Apply Breeze color scheme
     KConfig config(migration.locateLocal("config", "kdeglobals"));
-    KConfigGroup group(&config, "General");
 
-    group.writeEntry("ColorScheme", "Breeze");
-    group.writeEntry("widgetStyle", "qtcurve");
-    group.sync();
+    //use QtCurve only if installed
+    if (QStyleFactory::keys().contains("QtCurve")) {
+        KConfigGroup group(&config, "General");
+        group.writeEntry("ColorScheme", "Breeze");
+        group.writeEntry("widgetStyle", "qtcurve");
+        group.sync();
+    }
+
+    //TODO: write icon theme
 }
 
 void applyQtCurveConfig()

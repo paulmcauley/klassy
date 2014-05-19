@@ -8,6 +8,7 @@ include(KDEInstallDirs)
 include(KDEFrameworkCompilerSettings)
 include(KDECMakeSettings)
 
+find_package(Qt5 REQUIRED COMPONENTS Widgets)
 find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
 
 include(KDEInstallDirs)
