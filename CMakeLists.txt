@@ -19,4 +19,9 @@ add_subdirectory(kde4breeze)
 
 INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 
+#KDE4 stuff
+#FIXME: this works only if kde4 is installed in the same prefix
+INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/apps/color-schemes/)
+
+
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
