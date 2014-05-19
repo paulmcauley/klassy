@@ -28,6 +28,17 @@
 #include <KConfigGroup>
 #include <kconfig.h>
 
+
+void cloneColorScheme()
+{
+    Kdelibs4Migration migration;
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/Breeze.colors");
+    QString dest = migration.saveLocation("data", "color-schemes") + "Breeze.colors";
+
+    QFile::remove(dest);
+    QFile::copy(src, dest);
+}
+
 void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
@@ -61,6 +72,7 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
 
 
+    cloneColorScheme();
     updateKdeGlobals();
     applyQtCurveConfig();
 
