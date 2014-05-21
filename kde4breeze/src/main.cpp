@@ -25,6 +25,7 @@
 #include <QStyleFactory>
 #include <kdelibs4migration.h>
 
+#include <KSharedConfig>
 #include <KConfigGroup>
 #include <kconfig.h>
 
@@ -51,6 +52,11 @@ void updateKdeGlobals()
         group.writeEntry("ColorScheme", "Breeze");
         group.writeEntry("widgetStyle", "qtcurve");
         group.sync();
+        
+        KConfigGroup kf5Group(KSharedConfig::openConfig(), "General");
+        kf5Group.writeEntry("ColorScheme", "Breeze");
+        kf5Group.writeEntry("widgetStyle", "qtcurve");
+        kf5Group.sync();
     }
 
     //TODO: write icon theme
