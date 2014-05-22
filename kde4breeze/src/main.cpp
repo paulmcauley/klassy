@@ -57,6 +57,11 @@ void updateKdeGlobals()
         kf5Group.writeEntry("ColorScheme", "Breeze");
         kf5Group.writeEntry("widgetStyle", "qtcurve");
         kf5Group.sync();
+
+        KConfigGroup kf52Group(KSharedConfig::openConfig(), "KDE");
+        kf52Group.writeEntry("ColorScheme", "Breeze");
+        kf52Group.writeEntry("widgetStyle", "qtcurve");
+        kf52Group.sync();
     }
 
     //TODO: write icon theme
