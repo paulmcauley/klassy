@@ -53,12 +53,12 @@ void updateKdeGlobals()
         group.writeEntry("widgetStyle", "qtcurve");
         group.sync();
         
-        KConfigGroup kf5Group(KSharedConfig::openConfig(), "General");
+        KConfigGroup kf5Group(KSharedConfig::openConfig("kdeglobals"), "General");
         kf5Group.writeEntry("ColorScheme", "Breeze");
         kf5Group.writeEntry("widgetStyle", "qtcurve");
         kf5Group.sync();
 
-        KConfigGroup kf52Group(KSharedConfig::openConfig(), "KDE");
+        KConfigGroup kf52Group(KSharedConfig::openConfig("kdeglobals"), "KDE");
         kf52Group.writeEntry("ColorScheme", "Breeze");
         kf52Group.writeEntry("widgetStyle", "qtcurve");
         kf52Group.sync();
