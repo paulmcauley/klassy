@@ -30,6 +30,19 @@
 #include <kconfig.h>
 
 
+void applyColorScheme(KConfig *other)
+{
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/Breeze.colors");
+
+    KSharedConfigPtr config = KSharedConfig::openConfig(src);
+
+    foreach (const QString &grp, config->groupList()) {
+        KConfigGroup cg(config, grp);
+        KConfigGroup cg2(other, grp);
+        cg.copyTo(&cg2);
+    }
+}
+
 void cloneColorScheme()
 {
     Kdelibs4Migration migration;
@@ -51,16 +64,20 @@ void updateKdeGlobals()
         KConfigGroup group(&config, "General");
         group.writeEntry("ColorScheme", "Breeze");
         group.writeEntry("widgetStyle", "qtcurve");
+        applyColorScheme(&config);
         group.sync();
-        
-        KConfigGroup kf5Group(KSharedConfig::openConfig("kdeglobals"), "General");
+
+        KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
+        KConfigGroup kf5Group(kf5Config, "General");
         kf5Group.writeEntry("ColorScheme", "Breeze");
         kf5Group.writeEntry("widgetStyle", "qtcurve");
+        applyColorScheme(kf5Group.config());
         kf5Group.sync();
 
-        KConfigGroup kf52Group(KSharedConfig::openConfig("kdeglobals"), "KDE");
+        KConfigGroup kf52Group(kf5Config, "KDE");
         kf52Group.writeEntry("ColorScheme", "Breeze");
         kf52Group.writeEntry("widgetStyle", "qtcurve");
+        applyColorScheme(kf52Group.config());
         kf52Group.sync();
     }
 
