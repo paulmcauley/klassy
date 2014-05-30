@@ -89,6 +89,10 @@ void applyQtCurveConfig()
     QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "QtCurve/Breeze.qtcurve");
     QString dest = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/qtcurve/stylerc";
 
+    //create target directory otherwise copy fails
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation));
+    dir.mkpath("qtcurve");
+
     QFile::remove(dest);
     QFile::copy(src, dest);
 }
