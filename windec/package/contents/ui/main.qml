@@ -209,7 +209,6 @@ Decoration {
                 height: titleRow.anchors.topMargin +
                         titleRow.height +
                         (decoration.maximized ? 2 : 4) +
-                        activeHighlight.height +
                         titleBarSpacer.height
                 radius: decoration.maximized ? 0 : 3
                 gradient: Gradient {
@@ -232,7 +231,7 @@ Decoration {
                         left: parent.left
                         right: parent.right
                         bottom: parent.bottom
-                        bottomMargin: 4
+                        bottomMargin: titleBarSpacer.height
                     }
                     height:3
                     color: options.titleBarColor
@@ -244,9 +243,9 @@ Decoration {
                         left: parent.left
                         right: parent.right
                         bottom: parent.bottom
-                        bottomMargin: 2
+                        bottomMargin: titleBarSpacer.height
                     }
-                    height: 2
+                    height: 1
                     color: decoration.active ? sysPal.highlight : sysPal.window
                 }
                 Rectangle {
@@ -254,9 +253,9 @@ Decoration {
                     anchors {
                         left: parent.left
                         right: parent.right
-                        top: activeHighlight.bottom
+                        bottom: parent.bottom
                     }
-                    height: 2
+                    height: 3
                     color: sysPal.window
                 }
 
@@ -276,7 +275,7 @@ Decoration {
 
                 Item {
                     id: titleRow
-                    height: Math.max(root.buttonSize, caption.implicitHeight + 5)
+                    height: Math.max(root.buttonSize, caption.implicitHeight)
                     anchors {
                         left: parent.left
                         right: parent.right
