@@ -13,6 +13,7 @@ include(KDECompilerSettings)
 include(GenerateExportHeader)
 
 add_subdirectory(cursors)
+add_subdirectory(icons)
 add_subdirectory(windec)
 add_subdirectory(widgetstyles)
 add_subdirectory(kde4breeze)
