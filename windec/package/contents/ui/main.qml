@@ -110,6 +110,11 @@ Decoration {
         padding.left = 10;
         padding.right = 20;
         padding.bottom = 20;
+        titleRow.height = Math.max(root.buttonSize, caption.implicitHeight);
+        top.height = titleRow.anchors.topMargin +
+                titleRow.height +
+                4 +
+                titleBarSpacer.height;
     }
     ColorHelper {
         id: colorHelper
@@ -205,10 +210,11 @@ Decoration {
                     left: parent.left
                     right: parent.right
                     top: parent.top
+                    topMargin: decoration.maximized ? -1*titleRow.anchors.topMargin : 0
                 }
                 height: titleRow.anchors.topMargin +
                         titleRow.height +
-                        (decoration.maximized ? 2 : 4) +
+                        4 +
                         titleBarSpacer.height
                 radius: decoration.maximized ? 0 : 3
                 gradient: Gradient {
@@ -275,12 +281,12 @@ Decoration {
 
                 Item {
                     id: titleRow
-                    height: Math.max(root.buttonSize, caption.implicitHeight)
+                    height: root.buttonSize
                     anchors {
                         left: parent.left
                         right: parent.right
                         top: parent.top
-                        topMargin: decoration.maximized ? 0 : 4
+                        topMargin: 4
                         leftMargin: decoration.maximized ? 0 : 4
                         rightMargin: decoration.maximized ? 0 : 4
                     }
@@ -308,12 +314,11 @@ Decoration {
                         id: caption
                         textFormat: Text.PlainText
                         anchors {
-                            top: parent.top
+                            verticalCenter: parent.verticalCenter
                             left: leftButtonGroup.right
                             right: rightButtonGroup.left
                             rightMargin: 4
                             leftMargin: 4
-                            topMargin: 3
                         }
                         color: options.fontColor
                         Behavior on color {
@@ -350,19 +355,16 @@ Decoration {
 
             Item {
                 id: innerBorder
-                anchors.fill: parent
+                anchors {
+                    fill: parent
+                    leftMargin: root.borders.left
+                    rightMargin: root.borders.right
+                    top: top.bottom
+                    bottomMargin: root.borders.bottom
+                }
 
                 Rectangle {
-                    anchors {
-                        fill: parent
-                        leftMargin: root.borders.left
-                        rightMargin: root.borders.right
-                        topMargin: root.borders.top + top.height
-                        bottomMargin: root.borders.bottom
-                    }
-                    border {
-                        width: 0
-                    }
+                    anchors.fill: parent
                     visible: !decoration.maximized
                     color: "transparent"
                 }
