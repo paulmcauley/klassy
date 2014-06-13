@@ -17,6 +17,7 @@ add_subdirectory(icons)
 add_subdirectory(windec)
 add_subdirectory(widgetstyles)
 add_subdirectory(kde4breeze)
+add_subdirectory(wallpapers)
 
 INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 
