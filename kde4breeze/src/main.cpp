@@ -89,8 +89,6 @@ void updateKdeGlobals()
         kf5IconGroup.writeEntry("Theme", "breeze");
         kf5IconGroup.sync();
     }
-
-    //TODO: write icon theme
 }
 
 void applyQtCurveConfig()
