@@ -21,6 +21,7 @@ Name[sv]=Breeze
 Name[tr]=Breeze
 Name[uk]=Breeze
 Name[x-test]=xxBreezexx
+Name[zh_CN]=微风
 Comment=KDE theme
 Comment[ca]=Tema del KDE
 Comment[de]=KDE-Design
@@ -42,6 +43,7 @@ Comment[sv]=KDE-tema
 Comment[tr]=KDE Teması
 Comment[uk]=Тема KDE
 Comment[x-test]=xxKDE themexx
+Comment[zh_CN]=KDE 主题
 
 X-Plasma-MainScript=ui/main.qml
 X-KDE-PluginInfo-Author=Andrew Lake
