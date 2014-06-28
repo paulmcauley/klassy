@@ -168,7 +168,19 @@ Decoration {
                 rightMargin: decoration.maximized ? 0 : root.padding.right
                 bottomMargin: decoration.maximized ? 0 : root.padding.bottom
             }
-            radius: 3
+            radius: 6 // larger radius to make sure antialiasing at corners don't leak background color from under titlebar corners
+            
+            Rectangle {
+                // This rect just establishes the bottom corner radii
+                color: root.windowBackgroundColor
+                anchors {
+                    left: parent.left
+                    bottom: parent.bottom
+                    right: parent.right
+                }
+                height: 6
+                radius: 3
+            }
 
             Rectangle {
                 id: borderLeft
