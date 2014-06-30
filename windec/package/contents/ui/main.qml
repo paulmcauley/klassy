@@ -341,6 +341,7 @@ Decoration {
                         styleColor: colorHelper.shade(color, ColorHelper.ShadowShade)
                         font: options.titleFont
                         elide: Text.ElideMiddle
+                        renderType: Text.NativeRendering
                     }
                     ButtonGroup {
                         id: rightButtonGroup
