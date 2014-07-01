@@ -44,7 +44,7 @@ Comment[sv]=Breeze ikontema av KDE:s visuella designgrupp
 Comment[uk]=Свіжа тема піктограм, створена групою дизайнерів KDE
 Comment[x-test]=xxBreeze icon theme by the KDE Visual Design Groupxx
 Comment[zh_CN]=KDE 视觉设计组制作的 Breeze 图标主题
-Inherits=Oxygen
+Inherits=oxygen
 
 Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,mimetypes/scalable,places/scalable,places/small
 
