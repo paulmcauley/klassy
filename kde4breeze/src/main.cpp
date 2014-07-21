@@ -60,35 +60,40 @@ void updateKdeGlobals()
     KConfig config(migration.saveLocation("config") + "kdeglobals");
 
     //use QtCurve only if installed
-    if (QStyleFactory::keys().contains("QtCurve")) {
-        KConfigGroup group(&config, "General");
-        group.writeEntry("ColorScheme", "Breeze");
+    const bool hasQtCurve = QStyleFactory::keys().contains("QtCurve");
+    KConfigGroup group(&config, "General");
+    group.writeEntry("ColorScheme", "Breeze");
+    if (hasQtCurve) {
         group.writeEntry("widgetStyle", "qtcurve");
-        applyColorScheme(&config);
-        group.sync();
-
-        KConfigGroup iconGroup(&config, "Icons");
-        iconGroup.writeEntry("Theme", "breeze");
-        applyColorScheme(&config);
-        iconGroup.sync();
-
-        KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
-        KConfigGroup kf5Group(kf5Config, "General");
-        kf5Group.writeEntry("ColorScheme", "Breeze");
-        kf5Group.writeEntry("widgetStyle", "qtcurve");
-        applyColorScheme(kf5Group.config());
-        kf5Group.sync();
-
-        KConfigGroup kf52Group(kf5Config, "KDE");
-        kf52Group.writeEntry("ColorScheme", "Breeze");
-        kf52Group.writeEntry("widgetStyle", "qtcurve");
-        applyColorScheme(kf52Group.config());
-        kf52Group.sync();
-
-        KConfigGroup kf5IconGroup(kf5Config, "Icons");
-        kf5IconGroup.writeEntry("Theme", "breeze");
-        kf5IconGroup.sync();
     }
+    applyColorScheme(&config);
+    group.sync();
+
+    KConfigGroup iconGroup(&config, "Icons");
+    iconGroup.writeEntry("Theme", "breeze");
+    applyColorScheme(&config);
+    iconGroup.sync();
+
+    KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup kf5Group(kf5Config, "General");
+    kf5Group.writeEntry("ColorScheme", "Breeze");
+    if (hasQtCurve) {
+        kf5Group.writeEntry("widgetStyle", "qtcurve");
+    }
+    applyColorScheme(kf5Group.config());
+    kf5Group.sync();
+
+    KConfigGroup kf52Group(kf5Config, "KDE");
+    kf52Group.writeEntry("ColorScheme", "Breeze");
+    if (hasQtCurve) {
+        kf52Group.writeEntry("widgetStyle", "qtcurve");
+    }
+    applyColorScheme(kf52Group.config());
+    kf52Group.sync();
+
+    KConfigGroup kf5IconGroup(kf5Config, "Icons");
+    kf5IconGroup.writeEntry("Theme", "breeze");
+    kf5IconGroup.sync();
 }
 
 void applyQtCurveConfig()
