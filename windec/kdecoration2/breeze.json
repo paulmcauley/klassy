@@ -5,5 +5,8 @@
     "X-KDE-PluginInfo-Name": "org.kde.breeze",
     "X-KDE-ServiceTypes": [
         "org.kde.kdecoration2"
-    ]
+    ],
+    "org.kde.kdecoration2": {
+        "blur": false
+    }
 }
