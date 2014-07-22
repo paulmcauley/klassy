@@ -83,6 +83,7 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     );
     connect(client(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleRect);
     connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleRect);
+    connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
     connect(client(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonPositions);
     connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonPositions);
