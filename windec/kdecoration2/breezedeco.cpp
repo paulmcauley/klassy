@@ -105,15 +105,10 @@ void Decoration::updateTitleRect()
 
 void Decoration::recalculateBorders()
 {
-    int left   = 4;
-    int right  = 4;
+    int left   = client()->isMaximizedHorizontally() ? 0 : 4;
+    int right  = client()->isMaximizedHorizontally() ? 0 : 4;
     int top    = 25;
-    int bottom = 4;
-    if (client()->isMaximized()) {
-        left = 0;
-        right = 0;
-        bottom = 0;
-    }
+    int bottom = client()->isMaximizedVertically() ? 0 : 4;
     setBorders(left, right, top, bottom);
 }
 
