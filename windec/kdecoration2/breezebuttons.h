@@ -78,9 +78,13 @@ class Button : public KDecoration2::DecorationButton
 {
     Q_OBJECT
 public:
-    explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
+
     virtual ~Button();
     void paint(QPainter *painter) override;
+    static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
+
+private:
+    explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
 };
 
 } // namespace

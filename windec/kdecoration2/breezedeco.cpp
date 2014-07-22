@@ -60,13 +60,14 @@ void ColorSettings::init(const QPalette &pal)
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent)
     , m_colorSettings(client()->palette())
-    , m_leftButtons(new KDecoration2::DecorationButtonGroup(this))
-    , m_rightButtons(new KDecoration2::DecorationButtonGroup(this))
+    , m_leftButtons(nullptr)
+    , m_rightButtons(nullptr)
 {
     Q_UNUSED(args)
     recalculateBorders();
     updateTitleRect();
-    connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::recalculateBorders);
+    connect(client(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
+    connect(client(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::captionChanged, this,
         [this]() {
             // update the caption area
@@ -118,19 +119,10 @@ void Decoration::recalculateBorders()
 
 void Decoration::createButtons()
 {
+    m_leftButtons = new KDecoration2::DecorationButtonGroup(KDecoration2::DecorationButtonGroup::Position::Left, this, &Button::create);
+    m_rightButtons = new KDecoration2::DecorationButtonGroup(KDecoration2::DecorationButtonGroup::Position::Right, this, &Button::create);
     m_rightButtons->setSpacing(2.0);
     m_leftButtons->setSpacing(2.0);
-    m_rightButtons->addButton(new Button(KDecoration2::DecorationButtonType::Close, this, m_rightButtons));
-    m_rightButtons->addButton(new Button(KDecoration2::DecorationButtonType::Maximize, this, m_rightButtons));
-    m_rightButtons->addButton(new Button(KDecoration2::DecorationButtonType::Minimize, this, m_rightButtons));
-    Button *m =  new Button(KDecoration2::DecorationButtonType::Menu, this, m_leftButtons);
-    connect(client(), &KDecoration2::DecoratedClient::iconChanged, this, [m]() { m->update(); });
-    m_leftButtons->addButton(m);
-    // TODO: only if available?
-    m_leftButtons->addButton(new Button(KDecoration2::DecorationButtonType::OnAllDesktops, this, m_leftButtons));
-    m_leftButtons->addButton(new Button(KDecoration2::DecorationButtonType::Shade, this, m_leftButtons));
-    m_leftButtons->addButton(new Button(KDecoration2::DecorationButtonType::KeepAbove, this, m_leftButtons));
-    m_leftButtons->addButton(new Button(KDecoration2::DecorationButtonType::KeepBelow, this, m_leftButtons));
     updateButtonPositions();
 }
 

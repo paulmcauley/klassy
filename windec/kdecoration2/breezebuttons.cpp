@@ -339,6 +339,18 @@ Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, 
     setGeometry(QRect(0, 0, height, height));
 }
 
+Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
+{
+    if (Decoration *d = qobject_cast<Decoration*>(decoration)) {
+        Button *b = new Button(type, d, parent);
+        if (type == KDecoration2::DecorationButtonType::Menu) {
+            QObject::connect(d->client(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
+        }
+        return b;
+    }
+    return nullptr;
+}
+
 Button::~Button() = default;
 
 void Button::paint(QPainter *painter)
