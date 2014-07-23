@@ -21,6 +21,7 @@
 #include "breezebuttons.h"
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
+#include <KDecoration2/DecorationSettings>
 
 #include <KConfigGroup>
 #include <KSharedConfig>
@@ -66,6 +67,7 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     Q_UNUSED(args)
     recalculateBorders();
     updateTitleRect();
+    connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::captionChanged, this,
@@ -104,12 +106,42 @@ void Decoration::updateTitleRect()
     setTitleRect(QRect(x, y, width, height));
 }
 
+static int borderSize(bool bottom) {
+    const int baseSize = 4;
+    switch (KDecoration2::DecorationSettings::self()->borderSize()) {
+    case KDecoration2::BorderSize::None:
+        return 0;
+    case KDecoration2::BorderSize::NoSides:
+        return bottom ? baseSize : 0;
+    case KDecoration2::BorderSize::Tiny:
+        return baseSize / 2;
+    case KDecoration2::BorderSize::Normal:
+        return baseSize;
+    case KDecoration2::BorderSize::Large:
+        return baseSize * 1.5;
+    case KDecoration2::BorderSize::VeryLarge:
+        return baseSize * 2;
+    case KDecoration2::BorderSize::Huge:
+        return baseSize * 2.5;
+    case KDecoration2::BorderSize::VeryHuge:
+        return baseSize * 3;
+    case KDecoration2::BorderSize::Oversized:
+        return baseSize * 5;
+    default:
+        return baseSize;
+    }
+}
+
+static int borderSize() {
+    return borderSize(false);
+}
+
 void Decoration::recalculateBorders()
 {
-    int left   = client()->isMaximizedHorizontally() ? 0 : 4;
-    int right  = client()->isMaximizedHorizontally() ? 0 : 4;
+    int left   = client()->isMaximizedHorizontally() ? 0 : borderSize();
+    int right  = client()->isMaximizedHorizontally() ? 0 : borderSize();
     int top    = 25;
-    int bottom = client()->isMaximizedVertically() ? 0 : 4;
+    int bottom = client()->isMaximizedVertically() ? 0 : borderSize(true);
     setBorders(left, right, top, bottom);
 }
 
