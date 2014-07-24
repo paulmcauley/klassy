@@ -232,7 +232,7 @@ void Decoration::paintTitleBar(QPainter *painter)
     painter->setFont(KDecoration2::DecorationSettings::self()->font());
     const QRect cR = captionRect();
     const QString caption = painter->fontMetrics().elidedText(client()->caption(), Qt::ElideMiddle, cR.width());
-    painter->setPen(m_colorSettings.frame(client()->isActive()));
+    painter->setPen(m_colorSettings.font(client()->isActive()));
     painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
 
     // draw all buttons
