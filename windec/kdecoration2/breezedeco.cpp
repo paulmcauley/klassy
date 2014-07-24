@@ -181,9 +181,13 @@ void Decoration::paint(QPainter *painter)
     painter->fillRect(rect(), Qt::transparent);
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
-    painter->setPen(m_colorSettings.frame(client()->isActive()));
+    painter->setPen(Qt::NoPen);
     painter->setBrush(m_colorSettings.frame(client()->isActive()));
+    // clip away the top part
+    painter->save();
+    painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
     painter->drawRoundedRect(rect(), 5.0, 5.0);
+    painter->restore();
 
     paintTitleBar(painter);
 
@@ -202,7 +206,18 @@ void Decoration::paintTitleBar(QPainter *painter)
     gradient.setColorAt(0.0, titleBarColor.lighter(client()->isActive() ? 120.0 : 100.0));
     gradient.setColorAt(0.8, titleBarColor);
     gradient.setColorAt(1.0, titleBarColor);
-    painter->fillRect(titleRect, gradient);
+    gradient.setFinalStop(0.0, titleRect.height());
+    painter->save();
+    painter->setBrush(gradient);
+    painter->setPen(Qt::NoPen);
+    if (client()->isMaximized()) {
+        painter->drawRect(titleRect);
+    } else {
+        painter->setClipRect(titleRect, Qt::IntersectClip);
+        // we make the rect a little bit larger to be able to clip away the rounded corners on bottom
+        painter->drawRoundedRect(titleRect.adjusted(0, 0, 0, 5), 5.0, 5.0);
+    }
+    painter->restore();
     const int titleBarSpacer = KDecoration2::DecorationSettings::self()->smallSpacing();
     if (true) {
         // TODO: should be config option
@@ -217,6 +232,7 @@ void Decoration::paintTitleBar(QPainter *painter)
     painter->setFont(KDecoration2::DecorationSettings::self()->font());
     const QRect cR = captionRect();
     const QString caption = painter->fontMetrics().elidedText(client()->caption(), Qt::ElideMiddle, cR.width());
+    painter->setPen(m_colorSettings.frame(client()->isActive()));
     painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
 
     // draw all buttons
