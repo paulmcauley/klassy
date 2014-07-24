@@ -106,6 +106,7 @@ private:
     QRect captionRect() const;
     void createButtons();
     void paintTitleBar(QPainter *painter);
+    void createShadow();
     ColorSettings m_colorSettings;
     QList<KDecoration2::DecorationButton*> m_buttons;
     KDecoration2::DecorationButtonGroup *m_leftButtons;

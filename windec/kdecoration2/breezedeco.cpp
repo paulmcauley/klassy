@@ -22,6 +22,7 @@
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
 #include <KDecoration2/DecorationSettings>
+#include <KDecoration2/DecorationShadow>
 
 #include <KConfigGroup>
 #include <KSharedConfig>
@@ -92,6 +93,7 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     connect(client(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::updateButtonPositions);
 
     createButtons();
+    createShadow();
 }
 
 Decoration::~Decoration() = default;
@@ -215,6 +217,83 @@ QRect Decoration::captionRect() const
     const int rightOffset = size().width() - m_rightButtons->geometry().x();
     const int offset = qMax(leftOffset, rightOffset);
     return QRect(offset, 0, size().width() - offset * 2, borderTop());
+}
+
+void Decoration::createShadow()
+{
+    KDecoration2::DecorationShadow *decorationShadow = new KDecoration2::DecorationShadow(this);
+    decorationShadow->setPaddingBottom(20);
+    decorationShadow->setPaddingRight(20);
+    decorationShadow->setPaddingTop(10);
+    decorationShadow->setPaddingLeft(10);
+
+    decorationShadow->setTopLeft(QSize(20, 20));
+    decorationShadow->setTop(QSize(20, 20));
+    decorationShadow->setTopRight(QSize(20, 20));
+    decorationShadow->setRight(QSize(20, 20));
+    decorationShadow->setBottomRight(QSize(20, 20));
+    decorationShadow->setBottom(QSize(20, 20));
+    decorationShadow->setBottomLeft(QSize(20, 20));
+    decorationShadow->setLeft(QSize(20, 20));
+
+    QImage image(60, 60, QImage::Format_ARGB32_Premultiplied);
+    image.fill(Qt::transparent);
+
+    auto gradientStopColor = [](qreal alpha) {
+        QColor color(35, 38, 41);
+        color.setAlphaF(alpha);
+        return color;
+    };
+    QRadialGradient radialGradient(20, 20, 20);
+    radialGradient.setColorAt(0.0,  gradientStopColor(0.35));
+    radialGradient.setColorAt(0.25, gradientStopColor(0.25));
+    radialGradient.setColorAt(0.5,  gradientStopColor(0.13));
+    radialGradient.setColorAt(0.75, gradientStopColor(0.04));
+    radialGradient.setColorAt(1.0,  gradientStopColor(0.0));
+
+    QLinearGradient linearGradient;
+    linearGradient.setColorAt(0.0,  gradientStopColor(0.35));
+    linearGradient.setColorAt(0.25, gradientStopColor(0.25));
+    linearGradient.setColorAt(0.5,  gradientStopColor(0.13));
+    linearGradient.setColorAt(0.75, gradientStopColor(0.04));
+    linearGradient.setColorAt(1.0,  gradientStopColor(0.0));
+
+    QPainter p(&image);
+    p.setCompositionMode(QPainter::CompositionMode_Source);
+    // topLeft
+    p.fillRect(QRect(0, 0, 20, 20), radialGradient);
+    // top
+    linearGradient.setStart(20, 20);
+    linearGradient.setFinalStop(20, 0);
+    p.fillRect(QRect(20, 0, 20, 20), linearGradient);
+    // topRight
+    radialGradient.setCenter(40.0, 20.0);
+    radialGradient.setFocalPoint(40.0, 20.0);
+    p.fillRect(QRect(40, 0, 20, 20), radialGradient);
+    // left
+    linearGradient.setStart(20, 20);
+    linearGradient.setFinalStop(0, 20);
+    p.fillRect(QRect(0, 20, 20, 20), linearGradient);
+    // bottom left
+    radialGradient.setCenter(20.0, 40.0);
+    radialGradient.setFocalPoint(20.0, 40.0);
+    p.fillRect(QRect(0, 40, 20, 20), radialGradient);
+    // bottom
+    linearGradient.setStart(20, 40);
+    linearGradient.setFinalStop(20, 60);
+    p.fillRect(QRect(20, 40, 20, 20), linearGradient);
+    // bottom right
+    radialGradient.setCenter(40.0, 40.0);
+    radialGradient.setFocalPoint(40.0, 40.0);
+    p.fillRect(QRect(40, 40, 20, 20), radialGradient);
+    // right
+    linearGradient.setStart(40, 20);
+    linearGradient.setFinalStop(60, 20);
+    p.fillRect(QRect(40, 20, 20, 20), linearGradient);
+
+    decorationShadow->setShadow(image);
+
+    setShadow(decorationShadow);
 }
 
 } // namespace
