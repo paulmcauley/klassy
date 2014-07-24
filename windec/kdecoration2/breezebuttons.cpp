@@ -119,6 +119,23 @@ const QImage &ImageProvider::button(KDecoration2::DecorationButton *decorationBu
     return it3.value();
 }
 
+void ImageProvider::clearCache(KDecoration2::DecorationButton *decorationButton)
+{
+    auto paletteIt = m_images.begin();
+    if (paletteIt == m_images.end() || paletteIt.key() != decorationButton->decoration()->client()->palette()) {
+        paletteIt = m_images.find(decorationButton->decoration()->client()->palette());
+    }
+    if (paletteIt == m_images.end()) {
+        return;
+    }
+
+    auto it = paletteIt.value().find(decorationButton->type());
+    if (it == paletteIt.value().end()) {
+        return;
+    }
+    paletteIt.value().erase(it);
+}
+
 const ColorSettings &ImageProvider::colorSettings(const QPalette &pal) const
 {
     for (const ColorSettings &colorSettings : m_colorSettings) {
@@ -335,8 +352,16 @@ QColor ImageProvider::foregroundColor(KDecoration2::DecorationButton *decoration
 Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, QObject* parent)
     : DecorationButton(type, decoration, parent)
 {
-    const int height = decoration->borderTop() - 4;
+    const int height = decoration->captionHeight();
     setGeometry(QRect(0, 0, height, height));
+    connect(decoration, &Decoration::bordersChanged, this, [this, decoration] {
+        const int height = decoration->captionHeight();
+        if (height == geometry().height()) {
+            return;
+        }
+        ImageProvider::self()->clearCache(this);
+        setGeometry(QRect(geometry().topLeft(), QSize(height, height)));
+    });
 }
 
 Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)

@@ -97,6 +97,8 @@ public:
         return m_colorSettings;
     }
 
+    int captionHeight() const;
+
 private Q_SLOTS:
     void recalculateBorders();
     void updateButtonPositions();

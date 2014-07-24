@@ -69,6 +69,9 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     recalculateBorders();
     updateTitleRect();
     connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
+    // a change in font might cause the borders to change
+    connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
+    connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::captionChanged, this,
@@ -102,14 +105,14 @@ void Decoration::updateTitleRect()
 {
     const bool maximized = client()->isMaximized();
     const int width = client()->width();
-    const int height = maximized ? borderTop() : borderTop() - 4;
-    const int x = maximized ? 0 : 4;
-    const int y = maximized ? 0 : 2;
+    const int height = maximized ? borderTop() : borderTop() - KDecoration2::DecorationSettings::self()->smallSpacing();
+    const int x = maximized ? 0 : KDecoration2::DecorationSettings::self()->largeSpacing() / 2;
+    const int y = maximized ? 0 : KDecoration2::DecorationSettings::self()->smallSpacing();
     setTitleRect(QRect(x, y, width, height));
 }
 
 static int borderSize(bool bottom) {
-    const int baseSize = 4;
+    const int baseSize = KDecoration2::DecorationSettings::self()->largeSpacing() / 2;
     switch (KDecoration2::DecorationSettings::self()->borderSize()) {
     case KDecoration2::BorderSize::None:
         return 0;
@@ -142,7 +145,16 @@ void Decoration::recalculateBorders()
 {
     int left   = client()->isMaximizedHorizontally() ? 0 : borderSize();
     int right  = client()->isMaximizedHorizontally() ? 0 : borderSize();
-    int top    = 25;
+
+    QFontMetrics fm(KDecoration2::DecorationSettings::self()->font());
+    int top = qMax(fm.boundingRect(client()->caption()).height(), KDecoration2::DecorationSettings::self()->gridUnit() * 2);
+    // padding below
+    top += KDecoration2::DecorationSettings::self()->smallSpacing() * 2 + 1;
+    if (!client()->isMaximized()) {
+        // padding above only on maximized
+        top += KDecoration2::DecorationSettings::self()->smallSpacing();
+    }
+
     int bottom = client()->isMaximizedVertically() ? 0 : borderSize(true);
     setBorders(left, right, top, bottom);
 }
@@ -151,14 +163,14 @@ void Decoration::createButtons()
 {
     m_leftButtons = new KDecoration2::DecorationButtonGroup(KDecoration2::DecorationButtonGroup::Position::Left, this, &Button::create);
     m_rightButtons = new KDecoration2::DecorationButtonGroup(KDecoration2::DecorationButtonGroup::Position::Right, this, &Button::create);
-    m_rightButtons->setSpacing(2.0);
-    m_leftButtons->setSpacing(2.0);
     updateButtonPositions();
 }
 
 void Decoration::updateButtonPositions()
 {
-    const int padding = client()->isMaximized() ? 0 : 2;
+    const int padding = client()->isMaximized() ? 0 : KDecoration2::DecorationSettings::self()->smallSpacing();
+    m_rightButtons->setSpacing(KDecoration2::DecorationSettings::self()->smallSpacing());
+    m_leftButtons->setSpacing(KDecoration2::DecorationSettings::self()->smallSpacing());
     m_leftButtons->setPos(QPointF(padding, padding));
     m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - padding, padding));
 }
@@ -191,17 +203,18 @@ void Decoration::paintTitleBar(QPainter *painter)
     gradient.setColorAt(0.8, titleBarColor);
     gradient.setColorAt(1.0, titleBarColor);
     painter->fillRect(titleRect, gradient);
-    const int titleBarSpacer = 3;
+    const int titleBarSpacer = KDecoration2::DecorationSettings::self()->smallSpacing();
     if (true) {
         // TODO: should be config option
         painter->fillRect(0, borderTop() - titleBarSpacer - 1,
-                          size().width(), titleBarSpacer + 1,
+                          size().width(), 1,
                           client()->palette().color(active ?  QPalette::Highlight: QPalette::Background));
     }
     // draw title bar spacer
     painter->fillRect(0, borderTop() - titleBarSpacer, size().width(), titleBarSpacer, client()->palette().color(QPalette::Background));
 
     // draw caption
+    painter->setFont(KDecoration2::DecorationSettings::self()->font());
     const QRect cR = captionRect();
     const QString caption = painter->fontMetrics().elidedText(client()->caption(), Qt::ElideMiddle, cR.width());
     painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
@@ -211,12 +224,19 @@ void Decoration::paintTitleBar(QPainter *painter)
     m_rightButtons->paint(painter);
 }
 
+int Decoration::captionHeight() const
+{
+    return borderTop() - KDecoration2::DecorationSettings::self()->smallSpacing() * (client()->isMaximized() ? 2 : 3) - 1;
+}
+
 QRect Decoration::captionRect() const
 {
     const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width();
     const int rightOffset = size().width() - m_rightButtons->geometry().x();
     const int offset = qMax(leftOffset, rightOffset);
-    return QRect(offset, 0, size().width() - offset * 2, borderTop());
+    const int yOffset = client()->isMaximized() ? 0 : KDecoration2::DecorationSettings::self()->smallSpacing();
+    // below is the spacer
+    return QRect(offset, yOffset, size().width() - offset * 2, captionHeight());
 }
 
 void Decoration::createShadow()

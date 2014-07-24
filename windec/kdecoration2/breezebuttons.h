@@ -49,6 +49,7 @@ public:
     ~ImageProvider();
     static ImageProvider *self();
     const QImage &button(KDecoration2::DecorationButton *decorationButton);
+    void clearCache(KDecoration2::DecorationButton *decorationButton);
 
     void invalidate();
 
