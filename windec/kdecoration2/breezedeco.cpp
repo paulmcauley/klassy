@@ -72,6 +72,7 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     // a change in font might cause the borders to change
     connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
     connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
+    connect(client(), &KDecoration2::DecoratedClient::borderingScreenEdgesChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(client(), &KDecoration2::DecoratedClient::captionChanged, this,
@@ -143,8 +144,9 @@ static int borderSize() {
 
 void Decoration::recalculateBorders()
 {
-    int left   = client()->isMaximizedHorizontally() ? 0 : borderSize();
-    int right  = client()->isMaximizedHorizontally() ? 0 : borderSize();
+    const Qt::Edges edges = client()->borderingScreenEdges();
+    int left   = client()->isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize();
+    int right  = client()->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize();
 
     QFontMetrics fm(KDecoration2::DecorationSettings::self()->font());
     int top = qMax(fm.boundingRect(client()->caption()).height(), KDecoration2::DecorationSettings::self()->gridUnit() * 2);
@@ -155,7 +157,7 @@ void Decoration::recalculateBorders()
         top += KDecoration2::DecorationSettings::self()->smallSpacing();
     }
 
-    int bottom = client()->isMaximizedVertically() ? 0 : borderSize(true);
+    int bottom = client()->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(true);
     setBorders(left, right, top, bottom);
 
     const int extSize = KDecoration2::DecorationSettings::self()->largeSpacing() / 2;
