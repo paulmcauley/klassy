@@ -157,6 +157,17 @@ void Decoration::recalculateBorders()
 
     int bottom = client()->isMaximizedVertically() ? 0 : borderSize(true);
     setBorders(left, right, top, bottom);
+
+    const int extSize = KDecoration2::DecorationSettings::self()->largeSpacing() / 2;
+    int extSides = 0;
+    int extBottom = 0;
+    if (KDecoration2::DecorationSettings::self()->borderSize() == KDecoration2::BorderSize::None) {
+        extSides = extSize;
+        extBottom = extSize;
+    } else if (KDecoration2::DecorationSettings::self()->borderSize() == KDecoration2::BorderSize::NoSides) {
+        extSides = extSize;
+    }
+    setExtendedBorders(extSides, extSides, 0, extBottom);
 }
 
 void Decoration::createButtons()
