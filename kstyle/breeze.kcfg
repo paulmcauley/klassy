@@ -8,6 +8,23 @@
   <!-- widget style -->
   <group name="Style">
 
+    <!-- animations -->
+    <entry name="AnimationsEnabled" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="AnimationSteps" type = "Int">
+       <default>10</default>
+    </entry>
+
+    <entry name="GenericAnimationsEnabled" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="GenericAnimationsDuration" type="Int">
+      <default>150</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragEnabled" type="Bool">
       <default>true</default>

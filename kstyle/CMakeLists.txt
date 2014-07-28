@@ -44,6 +44,14 @@ include(GenerateExportHeader)
 ########### next target ###############
 
 set(breeze_PART_SRCS
+    animations/breezeanimation.cpp
+    animations/breezeanimations.cpp
+    animations/breezeanimationdata.cpp
+    animations/breezebaseengine.cpp
+    animations/breezegenericdata.cpp
+    animations/breezescrollbardata.cpp
+    animations/breezescrollbarengine.cpp
+    animations/breezesliderdata.cpp
     breezehelper.cpp
     breezepropertynames.cpp
     breezestyle.cpp
