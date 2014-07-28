@@ -535,7 +535,6 @@ namespace Breeze
 
         Q_UNUSED( widget );
 
-
         // cast option and check
         const QStyleOptionSlider *sliderOption = qstyleoption_cast<const QStyleOptionSlider *>( option );
         if( !sliderOption ) return true;
