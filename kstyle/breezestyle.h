@@ -38,6 +38,7 @@ namespace Breeze
 
     class Animations;
     class Helper;
+    class Mnemonics;
     class WindowManager;
 
     class StylePlugin : public QStylePlugin
@@ -430,6 +431,9 @@ namespace Breeze
 
         //! animations
         Animations* _animations;
+
+        //! keyboard accelerators
+        Mnemonics* _mnemonics;
 
         //! window manager
         WindowManager* _windowManager;

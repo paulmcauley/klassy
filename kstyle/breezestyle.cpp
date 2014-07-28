@@ -28,6 +28,7 @@
 #include "breezeanimations.h"
 #include "breezehelper.h"
 #include "breezemetrics.h"
+#include "breezemnemonics.h"
 #include "breezestyleconfigdata.h"
 #include "breezewindowmanager.h"
 
@@ -76,6 +77,7 @@ namespace Breeze
         _subLineButtons( SingleButton ),
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
         _animations( new Animations( this ) ),
+        _mnemonics( new Mnemonics( this ) ),
         _windowManager( new WindowManager( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
         CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
@@ -371,6 +373,13 @@ namespace Breeze
         const QString &text, QPalette::ColorRole textRole ) const
     {
 
+        // hide mnemonics if requested
+        if( !_mnemonics->enabled() && ( flags & Qt::TextShowMnemonic ) && !( flags&Qt::TextHideMnemonic ) )
+        {
+            flags &= ~Qt::TextShowMnemonic;
+            flags |= Qt::TextHideMnemonic;
+        }
+
         // fallback
         return KStyle::drawItemText( painter, r, flags, palette, enabled, text, textRole );
 
@@ -409,6 +418,8 @@ namespace Breeze
         _animations->setupEngines();
         _windowManager->initialize();
 
+        // mnemonics
+        _mnemonics->setMode( StyleConfigData::mnemonicsMode() );
     }
 
     //___________________________________________________________________________________________________________________
