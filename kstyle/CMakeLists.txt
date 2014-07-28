@@ -46,6 +46,8 @@ include(GenerateExportHeader)
 set(breeze_PART_SRCS
     breezehelper.cpp
     breezepropertynames.cpp
+    breezestyle.cpp
+    breezetileset.cpp
     breezewindowmanager.cpp
 )
 
