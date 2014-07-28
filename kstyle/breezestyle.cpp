@@ -25,6 +25,7 @@
 #include "breezestyle.h"
 #include "breezestyle.moc"
 
+#include "breezeanimations.h"
 #include "breezehelper.h"
 #include "breezemetrics.h"
 #include "breezestyleconfigdata.h"
@@ -74,6 +75,7 @@ namespace Breeze
         _addLineButtons( SingleButton ),
         _subLineButtons( SingleButton ),
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
+        _animations( new Animations( this ) ),
         _windowManager( new WindowManager( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
         CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
@@ -106,7 +108,8 @@ namespace Breeze
         if( !widget ) return;
 
         // register widget to animations
-        windowManager().registerWidget( widget );
+        _animations->registerWidget( widget );
+        _windowManager->registerWidget( widget );
 
         // enable hover effects for all necessary widgets
         if(
@@ -173,7 +176,7 @@ namespace Breeze
     {
 
         // register widget to animations
-        windowManager().unregisterWidget( widget );
+        _windowManager->unregisterWidget( widget );
 
         KStyle::unpolish( widget );
 
@@ -398,8 +401,13 @@ namespace Breeze
         // load helper configuration
         _helper->loadConfig();
 
+        // update caches size
+        const int cacheSize( StyleConfigData::cacheEnabled() ? StyleConfigData::maxCacheSize():0 );
+        _helper->setMaxCacheSize( cacheSize );
+
         // reinitialize engines
-        windowManager().initialize();
+        _animations->setupEngines();
+        _windowManager->initialize();
 
     }
 
@@ -548,6 +556,12 @@ namespace Breeze
         if( horizontal ) handleRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
         else handleRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
 
+        const bool enabled( flags&State_Enabled );
+        const bool mouseOver( enabled && ( flags&State_MouseOver ) );
+
+        // enable animation state
+        _animations->scrollBarEngine().updateState( widget, enabled && ( sliderOption->activeSubControls & SC_ScrollBarSlider ) );
+        const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
         if( widget )
         {
             // render background
@@ -573,10 +587,11 @@ namespace Breeze
             // define colors
             QColor color;
             const QPalette& palette( option->palette );
-            const bool enabled( flags&State_Enabled );
-            const bool mouseOver( enabled && ( flags&State_MouseOver ) );
-            const bool focus( enabled && ( flags&State_HasFocus ) );
-            if( focus || mouseOver ) color = palette.color( QPalette::Highlight );
+
+            const QColor base( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
+            const QColor highlight( palette.color( QPalette::Highlight ) );
+            if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
+            else if( mouseOver ) color = palette.color( QPalette::Highlight );
             else {
 
                 color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 );
@@ -918,27 +933,21 @@ namespace Breeze
 
         }
 
-//         const bool hover( animations().scrollBarEngine().isHovered( widget, control ) );
-//         const bool animated( animations().scrollBarEngine().isAnimated( widget, control ) );
-//         const qreal opacity( animations().scrollBarEngine().opacity( widget, control ) );
-
-        const bool hover( false );
-        const bool animated( false );
-        const qreal opacity( 1.0 );
+        const bool hover( _animations->scrollBarEngine().isHovered( widget, control ) );
+        const bool animated( _animations->scrollBarEngine().isAnimated( widget, control ) );
+        const qreal opacity( _animations->scrollBarEngine().opacity( widget, control ) );
 
         // retrieve mouse position from engine
-        // QPoint position( hover ? animations().scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
-        QPoint position;
+        QPoint position( hover ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
         if( hover && r.contains( position ) )
         {
             // need to update the arrow controlRect on fly because there is no
             // way to get it from the styles directly, outside of repaint events
-            // animations().scrollBarEngine().setSubControlRect( widget, control, r );
+            _animations->scrollBarEngine().setSubControlRect( widget, control, r );
         }
 
 
-        // if( r.intersects(  animations().scrollBarEngine().subControlRect( widget, control ) ) )
-        if( false )
+        if( r.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
         {
 
             QColor highlight = _helper->viewHoverBrush().brush( palette ).color();

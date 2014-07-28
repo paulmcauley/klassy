@@ -36,6 +36,7 @@
 namespace Breeze
 {
 
+    class Animations;
     class Helper;
     class WindowManager;
 
@@ -157,10 +158,6 @@ namespace Breeze
         };
 
         //@}
-
-        //! window manager
-        WindowManager& windowManager( void ) const
-        { return *_windowManager; }
 
         //!@name subelementRect specialized functions
         //@{
@@ -430,6 +427,9 @@ namespace Breeze
 
         //! helper
         Helper* _helper;
+
+        //! animations
+        Animations* _animations;
 
         //! window manager
         WindowManager* _windowManager;

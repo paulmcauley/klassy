@@ -41,8 +41,10 @@ include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(GenerateExportHeader)
 
-########### next target ###############
+################# includes #################
+include_directories( animations )
 
+########### next target ###############
 set(breeze_PART_SRCS
     animations/breezeanimation.cpp
     animations/breezeanimations.cpp
