@@ -33,6 +33,16 @@
       <default>100</default>
     </entry>
 
+    <!-- mnemonics -->
+    <entry name="MnemonicsMode" type="Enum">
+      <choices>
+          <choice name="MN_NEVER" />
+          <choice name="MN_AUTO" />
+          <choice name="MN_ALWAYS" />
+      </choices>
+      <default>MN_NEVER</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragEnabled" type="Bool">
       <default>true</default>
