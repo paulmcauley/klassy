@@ -1,0 +1,6 @@
+[Misc]
+Name=Breeze
+ConfigPage=kstyle_breeze_config
+Comment=Widget style for KDE Frameworks
+[KDE]
+WidgetStyle=Breeze
