@@ -187,10 +187,16 @@ namespace Breeze
         //! radio button focus
         QRect radioButtonFocusRect( const QStyleOption* option, const QWidget* widget ) const
         { return checkBoxFocusRect( option, widget ); }
-//
-//         //! progressbar contents
-//         QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
-//
+
+        //! progressbar groove
+        QRect progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const;
+
+        //! progressbar groove
+        QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
+
+        //! progressbar label
+        QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
+
 //         //! tabBar buttons
 //         QRect tabBarTabLeftButtonRect( const QStyleOption* option, const QWidget* widget ) const;
 //
@@ -232,6 +238,7 @@ namespace Breeze
 //         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -303,10 +310,10 @@ namespace Breeze
 //         virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //
@@ -338,7 +345,7 @@ namespace Breeze
 //         bool drawComboBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawDialComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawGroupBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
-//         bool drawSliderComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        bool drawSliderComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawSpinBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawToolButtonComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
@@ -423,6 +430,19 @@ namespace Breeze
         //! radio button
         void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
 
+        //! slider hole
+        void renderSliderHole( QPainter*, const QRect&, const QColor& ) const;
+
+        //! slider hole
+        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+
+        //! progress bar hole
+        void renderProgressBarHole( QPainter*, const QRect&, const QColor& ) const;
+
+        //! progress bar hole
+        void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
+        { return renderProgressBarHole( painter, rect, color ); }
+
         //! scrollbar hole
         void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
         { return renderScrollBarHandle( painter, rect, color, QColor() ); }
@@ -462,6 +482,8 @@ namespace Breeze
                 default: return 0;
             }
         }
+
+        //@}
 
         private:
 

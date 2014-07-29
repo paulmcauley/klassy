@@ -203,10 +203,9 @@ namespace Breeze
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
 
             // sliders
-            case PM_SliderThickness: return Metrics::Slider_Thickness;
+            case PM_SliderThickness: return Metrics::Slider_ControlThickness;
             case PM_SliderControlThickness: return Metrics::Slider_ControlThickness;
             case PM_SliderLength: return Metrics::Slider_ControlThickness;
-
 
             // checkboxes and radio buttons
             case PM_IndicatorWidth: return CheckBox_Size;
@@ -258,6 +257,11 @@ namespace Breeze
             case SE_RadioButtonContents: return radioButtonContentsRect( option, widget );
             case SE_RadioButtonFocusRect: return radioButtonFocusRect( option, widget );
 
+            // progress bars
+            case SE_ProgressBarGroove: return progressBarGrooveRect( option, widget );
+            case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
+            case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
+
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
 
@@ -289,6 +293,9 @@ namespace Breeze
             // checkboxes and radio buttons
             case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
             case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
+
+            // progress bar
+            case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
 
             // fallback
             default: return KStyle::sizeFromContents( element, option, size, widget );
@@ -395,6 +402,12 @@ namespace Breeze
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
 
+            // progress bars
+            case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
+            case CE_ProgressBarContents: fcn = &Style::drawProgressBarContentsControl; break;
+            case CE_ProgressBarGroove: fcn = &Style::drawProgressBarGrooveControl; break;
+            case CE_ProgressBarLabel: fcn = &Style::drawProgressBarLabelControl; break;
+
             // scrollbars
             case CE_ScrollBarSlider: fcn = &Style::drawScrollBarSliderControl; break;
             case CE_ScrollBarAddLine: fcn = &Style::drawScrollBarAddLineControl; break;
@@ -421,13 +434,26 @@ namespace Breeze
     void Style::drawComplexControl( ComplexControl element, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        StyleComplexControl fcn( nullptr );
         switch( element )
         {
 
+            case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
+
             // fallback
-            default: return KStyle::drawComplexControl( element, option, painter, widget );
+            default: break;
 
         }
+
+
+        painter->save();
+
+        // call function if implemented
+        if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
+        { KStyle::drawComplexControl( element, option, painter, widget ); }
+
+        painter->restore();
+
 
     }
 
@@ -520,6 +546,55 @@ namespace Breeze
         const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
         const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextHideMnemonic, buttonOption->text ) );
         return handleRTL( option, boundingRect );
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        // get direction
+        const State& flags( option->state );
+        const bool horizontal( flags&State_Horizontal );
+
+        QRect rect( option->rect );
+        if( horizontal ) rect.setTop( rect.height() - Metrics::ProgressBar_Thickness );
+        else {
+
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+            if( reverseLayout ) rect.setLeft( rect.width() - Metrics::ProgressBar_Thickness );
+            else rect.setWidth( Metrics::ProgressBar_Thickness );
+
+        }
+
+        return rect;
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::progressBarContentsRect( const QStyleOption* option, const QWidget* widget ) const
+    { return progressBarGrooveRect( option, widget ); }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::progressBarLabelRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // get direction
+        const State& flags( option->state );
+        const bool horizontal( flags&State_Horizontal );
+
+        QRect rect( option->rect );
+        if( horizontal ) rect.setHeight( rect.height() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
+        else {
+
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+            if( reverseLayout ) rect.setWidth( rect.width() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
+            else rect.setLeft( Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace );
+
+        }
+
+        return rect;
 
     }
 
@@ -653,16 +728,37 @@ namespace Breeze
     QSize Style::checkBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     {
 
-        //Add size for indicator
-        const int indicator( Metrics::CheckBox_Size );
-
         //Make sure we can fit the indicator
         QSize size( contentsSize );
-        size.setHeight( qMax( size.height(), indicator ) );
+        size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
 
         //Add space for the indicator and the icon
-        const int spacer( Metrics::CheckBox_BoxTextSpace );
-        size.rwidth() += indicator + spacer;
+        size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace;
+
+        return size;
+
+    }
+
+    //______________________________________________________________
+    QSize Style::progressBarSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+        QSize size( contentsSize );
+
+        // get direction
+        const State& flags( option->state );
+        const bool horizontal( flags&State_Horizontal );
+
+        if( horizontal ) {
+
+            size.setWidth( qMax( size.width(), (int) Metrics::ProgressBar_Thickness ) );
+            size.rheight() += Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace;
+
+        } else {
+
+            size.setHeight( qMax( size.height(), (int) Metrics::ProgressBar_Thickness ) );
+            size.rwidth() += Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace;
+
+        }
 
         return size;
 
@@ -872,10 +968,10 @@ namespace Breeze
         if( hasFocus && !mouseOver )
         {
 
-            const QStyleOptionButton* bOpt = qstyleoption_cast<const QStyleOptionButton*>( option );
-            if ( !bOpt ) return false;
+            const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>( option );
+            if ( !buttonOption ) return false;
 
-            QStyleOptionButton copy( *bOpt );
+            QStyleOptionButton copy( *buttonOption );
             copy.palette.setColor( QPalette::ButtonText, copy.palette.color( QPalette::HighlightedText ) );
 
             // call base class, with modified option
@@ -885,6 +981,169 @@ namespace Breeze
         } else return false;
 
     }
+
+
+    //___________________________________________________________________________________
+    bool Style::drawProgressBarControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        if( !progressBarOption ) return true;
+
+        // render groove
+        QStyleOptionProgressBarV2 progressBarOption2 = *progressBarOption;
+        progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
+        drawProgressBarGrooveControl( &progressBarOption2, painter, widget );
+
+        // render contents
+        progressBarOption2.rect = subElementRect( SE_ProgressBarContents, progressBarOption, widget );
+        drawProgressBarContentsControl( &progressBarOption2, painter, widget );
+
+        // render text
+        if( progressBarOption->textVisible )
+        {
+            progressBarOption2.rect = subElementRect( SE_ProgressBarLabel, progressBarOption, widget );
+            drawProgressBarLabelControl( &progressBarOption2, painter, widget );
+        }
+
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        if( !progressBarOption ) return true;
+
+        const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
+
+        const QRect& r( option->rect );
+        const QPalette& palette( option->palette );
+
+        // check if anything is to be drawn
+        qreal progress = progressBarOption->progress - progressBarOption->minimum;
+        if( !progress ) return true;
+
+        const int steps = qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 );
+        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+
+        //Calculate width fraction
+        qreal widthFrac( progress/steps );
+        widthFrac = qMin( (qreal)1.0, widthFrac );
+
+        // convert the pixel width
+        const int indicatorSize( widthFrac*( horizontal ? r.width():r.height() ) );
+
+        // do nothing if indicator size is too small
+        if( indicatorSize < Metrics::ProgressBar_Thickness ) return true;
+
+        QRect indicatorRect;
+        {
+            if ( horizontal ) indicatorRect = QRect( r.x(), r.y(), indicatorSize, r.height() );
+            else indicatorRect = QRect( r.x(), r.bottom()- indicatorSize + 1, r.width(), indicatorSize );
+
+        }
+
+        // handle right to left
+        indicatorRect = handleRTL( option, indicatorRect );
+
+        renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawProgressBarGrooveControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+        const QPalette& palette( option->palette );
+        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+        renderScrollBarHole( painter, option->rect, color );
+        return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+        return false;
+    }
+
+//     //___________________________________________________________________________________
+//     bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+//     {
+//         const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+//         if( !progressBarOption ) return true;
+//
+//         const QRect& r( option->rect );
+//         const QPalette& palette( option->palette );
+//         const State& flags( option->state );
+//         const bool enabled( flags&State_Enabled );
+//
+//         const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
+//         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+//         const bool reverseLayout = ( option->direction == Qt::RightToLeft );
+//
+//         // rotate label for vertical layout
+//         if( ! ( horizontal || reverseLayout ) )
+//         {
+//
+//             painter->translate( r.topRight() );
+//             painter->rotate( 90.0 );
+//
+//         } else if( !horizontal ) {
+//
+//             painter->translate( r.bottomLeft() );
+//             painter->rotate( -90.0 );
+//
+//         }
+//
+//         Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
+//
+//         /*
+//         Figure out the geometry of the indicator.
+//         This is copied from drawProgressBarContentsControl
+//         */
+//         QRect progressRect;
+//         const QRect textRect( horizontal? r : QRect( 0, 0, r.height(), r.width() ) );
+//         const qreal progress = progressBarOption->progress - progressBarOption->minimum;
+//         const int steps = qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 );
+//         const bool busyIndicator = ( steps <= 1 );
+//
+//         int indicatorSize( 0 );
+//         if( !busyIndicator )
+//         {
+//             const qreal widthFrac = qMin( (qreal)1.0, progress / steps );
+//             indicatorSize = widthFrac*( horizontal ? r.width() : r.height() ) - (horizontal ? 2:1);
+//         }
+//
+//         if( indicatorSize > 0 )
+//         {
+//             if ( horizontal ) painter->setClipRect( handleRTL( option, QRect( r.x(), r.y(), indicatorSize, r.height() ) ) );
+//             else if ( !reverseLayout )  painter->setClipRect( QRect( r.height()-indicatorSize, 0, r.height(), r.width() ) );
+//             else painter->setClipRect( QRect( 0, 0, indicatorSize, r.width() ) );
+//
+//             // first pass ( highlighted )
+//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::HighlightedText );
+//
+//             // second pass ( normal )
+//             if( horizontal ) painter->setClipRect( handleRTL( option, QRect( r.x() + indicatorSize, r.y(), r.width() - indicatorSize, r.height() ) ) );
+//             else if( !reverseLayout ) painter->setClipRect( QRect( 0, 0, r.height() - indicatorSize, r.width() ) );
+//             else painter->setClipRect( QRect( indicatorSize, 0, r.height()- indicatorSize, r.width() ) );
+//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
+//
+//         } else {
+//
+//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
+//
+//         }
+//
+//         return true;
+//     }
 
     //___________________________________________________________________________________
     bool Style::drawScrollBarSliderControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
@@ -1186,6 +1445,108 @@ namespace Breeze
 
     }
 
+    //______________________________________________________________
+    bool Style::drawSliderComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider *>( option ) );
+        if( !sliderOption ) return true;
+
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
+
+        // if( sliderOption->subControls & SC_SliderTickmarks ) { renderSliderTickmarks( painter, sliderOption, widget ); }
+
+        // groove
+        if( sliderOption->subControls & SC_SliderGroove )
+        {
+            // retrieve holeRect
+            QRect holeRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+
+            // adjustments
+            if( sliderOption->orientation == Qt::Horizontal )
+            {
+
+                holeRect = centerRect( holeRect, holeRect.width()-Metrics::Slider_Thickness, Metrics::Slider_Thickness );
+
+            } else {
+
+                holeRect = centerRect( holeRect, Metrics::Slider_Thickness, holeRect.height()-Metrics::Slider_Thickness );
+
+            }
+
+            // base color
+            const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+
+            if( !enabled ) renderSliderHole( painter, holeRect, color );
+            else {
+
+                // retrieve slider rect
+                QRect sliderRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+                sliderRect = centerRect( sliderRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+
+                // define highlight color
+                const QColor highlight( palette.color( QPalette::Highlight ) );
+
+                if( sliderOption->orientation == Qt::Horizontal )
+                {
+
+                    const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+                    QRect leftRect( holeRect );
+                    leftRect.setRight( sliderRect.right()-1 );
+                    renderSliderHole( painter, leftRect, reverseLayout ? color:highlight );
+
+                    QRect rightRect( holeRect );
+                    rightRect.setLeft( sliderRect.left()+1 );
+                    renderSliderHole( painter, rightRect, reverseLayout ? highlight:color );
+
+                } else {
+
+                    QRect topRect( holeRect );
+                    topRect.setBottom( sliderRect.bottom()-1 );
+                    renderSliderHole( painter, topRect, highlight );
+
+                    QRect bottomRect( holeRect );
+                    bottomRect.setTop( sliderRect.top()+1 );
+                    renderSliderHole( painter, bottomRect, color );
+
+                }
+
+            }
+
+        }
+
+        // handle
+        if ( sliderOption->subControls & SC_SliderHandle )
+        {
+
+            // get rect and center
+            QRect sliderRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+            sliderRect = centerRect( sliderRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+
+            const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
+
+            // define colors
+            const QColor color( palette.color( QPalette::Button ) );
+            const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+            QColor outline;
+
+            if( handleActive && mouseOver ) outline = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
+            else if( hasFocus ) outline = _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color();
+            else outline = KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 );
+
+            const bool sunken( flags & (State_On|State_Sunken) );
+            renderSliderHandle( painter, sliderRect, color, outline, shadow, hasFocus, sunken );
+
+        }
+
+        return true;
+    }
+
     //______________________________________________________________________________
     void Style::renderButtonSlab(
         QPainter* painter, const QRect& r,
@@ -1237,7 +1598,7 @@ namespace Breeze
 
     //______________________________________________________________________________
     void Style::renderCheckBox(
-        QPainter* painter, const QRect& r,
+        QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& shadow,
         bool sunken, CheckBoxState state ) const
     {
@@ -1246,7 +1607,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         // copy rect
-        QRectF baseRect( r );
+        QRectF baseRect( rect );
 
         // shadow
         if( !sunken )
@@ -1306,7 +1667,7 @@ namespace Breeze
 
     //______________________________________________________________________________
     void Style::renderRadioButton(
-        QPainter* painter, const QRect& r,
+        QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& shadow,
         bool sunken, bool checked ) const
     {
@@ -1314,7 +1675,8 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        QRectF baseRect( r );
+        QRectF baseRect( rect );
+
         // shadow
         if( !sunken )
         {
@@ -1353,6 +1715,112 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Style::renderSliderHole(
+        QPainter* painter, const QRect& rect,
+        const QColor& color ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+        const qreal radius( 0.5*Metrics::Slider_Thickness );
+
+        // content
+        if( color.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawRoundedRect( baseRect, radius, radius );
+        }
+
+        return;
+
+    }
+
+    //______________________________________________________________________________
+    void Style::renderSliderHandle(
+        QPainter* painter, const QRect& rect,
+        const QColor& color,
+        const QColor& outline,
+        const QColor& shadow,
+        bool focus,
+        bool sunken ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        QRectF baseRect( rect );
+
+        // shadow
+        if( !sunken )
+        {
+
+            painter->setPen( QPen( shadow, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+            painter->drawEllipse( shadowRect );
+
+        }
+
+        // content
+        if( color.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+
+            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+            painter->drawEllipse( contentRect );
+
+        }
+
+        // outline
+        if( outline.isValid() )
+        {
+            painter->setBrush( Qt::NoBrush );
+            QRectF outlineRect;
+            if( focus )
+            {
+                painter->setPen( QPen( outline, 2 ) );
+                outlineRect = baseRect.adjusted( 2, 2, -2, -2 );
+            } else {
+                painter->setPen( QPen( outline, 1 ) );
+                outlineRect = baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 );
+            }
+
+            painter->drawEllipse( outlineRect );
+
+        }
+
+    }
+
+    //______________________________________________________________________________
+    void Style::renderProgressBarHole(
+        QPainter* painter, const QRect& rect,
+        const QColor& color ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+        const qreal radius( 0.5*Metrics::ProgressBar_Thickness );
+
+        // content
+        if( color.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawRoundedRect( baseRect, radius, radius );
+        }
+
+        return;
+
+    }
+
+    //______________________________________________________________________________
     void Style::renderScrollBarHandle(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline ) const
@@ -1371,6 +1839,7 @@ namespace Breeze
             painter->setBrush( color );
             painter->drawRoundedRect( baseRect, radius, radius );
         }
+
 
         // border
         if( outline.isValid() )

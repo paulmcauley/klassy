@@ -47,6 +47,10 @@ namespace Breeze
         ScrollBar_SingleButtonHeight = ScrollBar_Extend,
         ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
 
+        // progress bar
+        ProgressBar_Thickness = 6,
+        ProgressBar_BoxTextSpace = 2,
+
         // sliders
         Slider_Thickness = 6,
         Slider_ControlThickness = 20
