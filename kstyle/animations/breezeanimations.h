@@ -28,6 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezescrollbarengine.h"
+#include "breezewidgetstateengine.h"
 
 #include <QObject>
 #include <QList>
@@ -56,6 +57,14 @@ namespace Breeze
         /*! unregister all animations associated to a widget */
         void unregisterWidget( QWidget* widget ) const;
 
+        //! enability engine
+        WidgetStateEngine& widgetEnabilityEngine( void ) const
+        { return *_widgetEnabilityEngine; }
+
+        //! abstractButton engine
+        WidgetStateEngine& widgetStateEngine( void ) const
+        { return *_widgetStateEngine; }
+
         //! scrollbar engine
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
@@ -71,6 +80,12 @@ namespace Breeze
 
         //! register new engine
         void registerEngine( BaseEngine* engine );
+
+        //! widget enability engine
+        WidgetStateEngine* _widgetEnabilityEngine;
+
+        //! abstract button engine
+        WidgetStateEngine* _widgetStateEngine;
 
         //! scrollbar engine
         ScrollBarEngine* _scrollBarEngine;

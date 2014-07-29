@@ -402,8 +402,29 @@ namespace Breeze
         //! return which arrow button is hit by point for scrollbar double buttons
         inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
+        //!@name internal rendering methods
+        /*! here mostly to avoid code duplication */
+        //@{
+
+//         //! generic button slab
+//         void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+
+        //! checkbox state (used for checkboxes _and_ radio buttons)
+        enum CheckBoxState
+        {
+            CheckOff = 0,
+            CheckPartial = 1,
+            CheckOn = 2
+        };
+
+        //! checkbox
+        void renderCheckBox( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state ) const;
+
+        //! radio button
+        void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
+
         //! scrollbar arrow
-        void renderScrollBarArrow( QPainter*, const QRect&, const QColor&, const QColor&, ArrowOrientation ) const;
+        void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
 
         //! returns relevant scrollbar parent
         /*! needed to detect parent focus */

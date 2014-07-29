@@ -648,27 +648,40 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool sunken( flags & State_Sunken );
 
-        Helper::CheckBoxState state( Helper::CheckOff );
-        if( flags & State_NoChange ) state = Helper::CheckPartial;
-        else if( flags & State_On ) state = Helper::CheckOn;
+        CheckBoxState state( CheckOff );
+        if( flags & State_NoChange ) state = CheckPartial;
+        else if( flags & State_On ) state = CheckOn;
 
         // color
         const QPalette& palette( option->palette );
         const QColor base( palette.color( QPalette::Window ) );
+        const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
+        const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
+        const QColor active( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
         QColor color;
 
+        // mouseOver has precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+
         // cannot use transparent colors because of the rendering of the shadow
-        if( !enabled ) color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 );
-        else if( mouseOver ) color = _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color();
-        else if( state != Helper::CheckOff ) color = _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color();
-        else color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 );
+        if( !enabled ) color = disabled;
+        else if( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) )
+        {
+
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+            if( state != CheckOff ) color = KColorUtils::mix( active, hover, opacity );
+            else color = KColorUtils::mix( normal, hover, opacity );
+
+        } else if( mouseOver ) color = hover;
+        else if( state != CheckOff ) color = active;
+        else color = normal;
 
         // shadow color
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
-        // pixmap
-        QPixmap* pixmap( _helper->checkBox( color, shadow, sunken, state ) );
-        painter->drawPixmap( option->rect.topLeft(), *pixmap );
+        // render
+        renderCheckBox( painter, option->rect, color, shadow, sunken, state );
 
         return true;
 
@@ -690,20 +703,33 @@ namespace Breeze
         // color
         const QPalette& palette( option->palette );
         const QColor base( palette.color( QPalette::Window ) );
+        const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
+        const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
+        const QColor active( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
         QColor color;
 
+        // mouseOver has precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+
         // cannot use transparent colors because of the rendering of the shadow
-        if( !enabled ) color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 );
-        else if( mouseOver ) color = _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color();
-        else if( checked ) color = _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color();
-        else color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 );
+        if( !enabled ) color = disabled;
+        else if( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) )
+        {
+
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+            if( checked ) color = KColorUtils::mix( active, hover, opacity );
+            else color = KColorUtils::mix( normal, hover, opacity );
+
+        } else if( mouseOver ) color = hover;
+        else if( checked ) color = active;
+        else color = normal;
 
         // shadow color
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
-        // pixmap
-        QPixmap* pixmap( _helper->radioButton( color, shadow, sunken, checked ) );
-        painter->drawPixmap( option->rect.topLeft(), *pixmap );
+        // render
+        renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
 
         return true;
 
@@ -791,23 +817,9 @@ namespace Breeze
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if ( !sliderOption ) return true;
 
-        if( false )
-        {
-            painter->save();
-            painter->setPen( Qt::red );
-            painter->setBrush( Qt::NoBrush );
-            painter->setRenderHint( QPainter::Antialiasing );
-            painter->drawRect( QRectF( option->rect ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-            painter->restore();
-        }
-
         const State& flags( option->state );
         const bool horizontal( flags & State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        // colors
-        const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::Window ) );
 
         // adjust rect, based on number of buttons to be drawn
         QRect r( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
@@ -827,11 +839,11 @@ namespace Breeze
 
                 localOption.rect = leftSubButton;
                 color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, leftSubButton, color, background, ArrowLeft );
+                renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
 
                 localOption.rect = rightSubButton;
                 color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, rightSubButton, color, background, ArrowRight );
+                renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
 
@@ -841,11 +853,11 @@ namespace Breeze
 
                 localOption.rect = topSubButton;
                 color = scrollBarArrowColor( &localOption, SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, topSubButton, color, background, ArrowUp );
+                renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
 
                 localOption.rect = botSubButton;
                 color = scrollBarArrowColor( &localOption, SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, botSubButton, color, background, ArrowDown );
+                renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
@@ -856,10 +868,10 @@ namespace Breeze
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, r, color, background, ArrowLeft );
-                else renderScrollBarArrow( painter, r.translated( 1, 0 ), color, background, ArrowRight );
+                if( reverseLayout ) renderScrollBarArrow( painter, r, color, ArrowLeft );
+                else renderScrollBarArrow( painter, r.translated( 1, 0 ), color, ArrowRight );
 
-            } else renderScrollBarArrow( painter, r.translated( 0, 1 ), color, background, ArrowDown );
+            } else renderScrollBarArrow( painter, r.translated( 0, 1 ), color, ArrowDown );
 
         }
 
@@ -930,16 +942,6 @@ namespace Breeze
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if ( !sliderOption ) return true;
 
-        if( false )
-        {
-            painter->save();
-            painter->setPen( Qt::red );
-            painter->setBrush( Qt::NoBrush );
-            painter->setRenderHint( QPainter::Antialiasing );
-            painter->drawRect( QRectF( option->rect ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-            painter->restore();
-        }
-
         const State& flags( option->state );
         const bool horizontal( flags & State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
@@ -966,11 +968,11 @@ namespace Breeze
 
                 localOption.rect = leftSubButton;
                 color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, leftSubButton, color, background, ArrowLeft );
+                renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
 
                 localOption.rect = rightSubButton;
                 color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, rightSubButton, color, background, ArrowRight );
+                renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
 
@@ -980,11 +982,11 @@ namespace Breeze
 
                 localOption.rect = topSubButton;
                 color = scrollBarArrowColor( &localOption, SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, topSubButton, color, background, ArrowUp );
+                renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
 
                 localOption.rect = botSubButton;
                 color = scrollBarArrowColor( &localOption, SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, botSubButton, color, background, ArrowDown );
+                renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
@@ -995,10 +997,10 @@ namespace Breeze
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, r.translated( 1, 0 ), color, background, ArrowRight );
-                else renderScrollBarArrow( painter, r, color, background, ArrowLeft );
+                if( reverseLayout ) renderScrollBarArrow( painter, r.translated( 1, 0 ), color, ArrowRight );
+                else renderScrollBarArrow( painter, r, color, ArrowLeft );
 
-            } else renderScrollBarArrow( painter, r, color, background, ArrowUp );
+            } else renderScrollBarArrow( painter, r, color, ArrowUp );
 
         }
 
@@ -1059,12 +1061,129 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Style::renderScrollBarArrow(
-        QPainter* painter, const QRect& r, const QColor& color, const QColor& background,
-        ArrowOrientation orientation ) const
+    void Style::renderCheckBox(
+        QPainter* painter, const QRect& r,
+        const QColor& color, const QColor& shadow,
+        bool sunken, CheckBoxState state ) const
     {
 
-        Q_UNUSED( background );
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // copy rect
+        QRectF baseRect( r );
+
+        // shadow
+        if( !sunken )
+        {
+
+            painter->setPen( QPen( shadow, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+            painter->drawRoundedRect( shadowRect, 2, 2 );
+
+        }
+
+        // content
+        {
+
+            painter->setPen( QPen( color, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+            painter->drawRoundedRect( contentRect, 2, 2 );
+
+        }
+
+        // mark
+        if( state == CheckOn )
+        {
+
+            painter->setBrush( color );
+            painter->setPen( Qt::NoPen );
+
+            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+            painter->drawRect( markerRect );
+
+        } else if( state == CheckPartial ) {
+
+            QPen pen( color, 2 );
+            pen.setJoinStyle( Qt::MiterJoin );
+            painter->setPen( pen );
+
+            const QRectF markerRect( baseRect.adjusted( 6, 6, -6, -6 ) );
+            painter->drawRect( markerRect );
+
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->setRenderHint( QPainter::Antialiasing, false );
+
+            QPainterPath path;
+            path.moveTo( 5, 5 );
+            path.lineTo( qreal( Metrics::CheckBox_Size ) -6, 5 );
+            path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
+            painter->drawPath( path );
+
+        }
+
+    }
+
+    //______________________________________________________________________________
+    void Style::renderRadioButton(
+        QPainter* painter, const QRect& r,
+        const QColor& color, const QColor& shadow,
+        bool sunken, bool checked ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        QRectF baseRect( r );
+        // shadow
+        if( !sunken )
+        {
+
+            painter->setPen( QPen( shadow, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+            painter->drawEllipse( shadowRect );
+
+        }
+
+        // content
+        {
+
+            painter->setPen( QPen( color, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+            painter->drawEllipse( contentRect );
+
+        }
+
+        // mark
+        if( checked )
+        {
+
+            painter->setBrush( color );
+            painter->setPen( Qt::NoPen );
+
+            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+            painter->drawEllipse( markerRect );
+
+        }
+
+    }
+
+    //______________________________________________________________________________
+    void Style::renderScrollBarArrow(
+        QPainter* painter, const QRect& r, const QColor& color,
+        ArrowOrientation orientation ) const
+    {
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
 
         const qreal penThickness( 1.5 );
         QPolygonF a( genericArrow( orientation, ArrowNormal ) );
@@ -1073,7 +1192,6 @@ namespace Breeze
 
         painter->save();
         painter->translate( QRectF(r).center() );
-        painter->setRenderHint( QPainter::Antialiasing );
 
         painter->setPen( QPen( base, penThickness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
         painter->drawPolyline( a );

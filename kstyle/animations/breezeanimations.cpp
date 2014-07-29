@@ -31,7 +31,10 @@
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 
+#include <QDial>
+#include <QGroupBox>
 #include <QScrollBar>
+#include <QToolButton>
 
 namespace Breeze
 {
@@ -40,6 +43,9 @@ namespace Breeze
     Animations::Animations( QObject* parent ):
         QObject( parent )
     {
+        _widgetEnabilityEngine = new WidgetStateEngine( this );
+
+        registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
     }
 
@@ -55,6 +61,8 @@ namespace Breeze
             bool animationsEnabled( StyleConfigData::animationsEnabled() );
 
             // enability
+            _widgetEnabilityEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
         }
@@ -63,6 +71,8 @@ namespace Breeze
         {
 
             // durations
+            _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
         }
@@ -79,8 +89,34 @@ namespace Breeze
         QVariant propertyValue( widget->property( PropertyNames::noAnimations ) );
         if( propertyValue.isValid() && propertyValue.toBool() ) return;
 
+        // all widgets are registered to the enability engine.
+        _widgetEnabilityEngine->registerWidget( widget, AnimationEnable );
+
+        // install animation timers
+        // for optimization, one should put with most used widgets here first
+        if( qobject_cast<QToolButton*>(widget) )
+        {
+
+
+        } else if( qobject_cast<QAbstractButton*>(widget) ) {
+
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+
+        } else if( qobject_cast<QDial*>(widget) ) {
+
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+
+        }
+
+        // groupboxes
+        else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )
+        {
+            if( groupBox->isCheckable() )
+            { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        }
+
         // scrollbar
-        if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
+        else if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
 
         return;
 
@@ -91,6 +127,8 @@ namespace Breeze
     {
 
         if( !widget ) return;
+
+        _widgetEnabilityEngine->unregisterWidget( widget );
 
         // the following allows some optimization of widget unregistration
         // it assumes that a widget can be registered atmost in one of the
