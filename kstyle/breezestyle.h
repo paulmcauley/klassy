@@ -173,9 +173,20 @@ namespace Breeze
 //         //! toolbox tab
 //         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 //
-        //! checkbox and radio button contents
+        //! checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
         { return handleRTL( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
+
+        //! checkbox focus
+        QRect checkBoxFocusRect( const QStyleOption*, const QWidget* ) const;
+
+        //! radio button contents
+        QRect radioButtonContentsRect( const QStyleOption* option, const QWidget* widget ) const
+        { return checkBoxContentsRect( option, widget ); }
+
+        //! radio button focus
+        QRect radioButtonFocusRect( const QStyleOption* option, const QWidget* widget ) const
+        { return checkBoxFocusRect( option, widget ); }
 //
 //         //! progressbar contents
 //         QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
@@ -234,7 +245,7 @@ namespace Breeze
         { return true; }
 
 //         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;

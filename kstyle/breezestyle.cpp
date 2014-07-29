@@ -230,11 +230,13 @@ namespace Breeze
         switch( element )
         {
 
-            // checkboxes and radio buttons
+            // checkboxes
             case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
-            case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
-            case SE_CheckBoxFocusRect: return defaultSubElementRect( option, widget );
-            case SE_RadioButtonFocusRect: return defaultSubElementRect( option, widget );
+            case SE_CheckBoxFocusRect: return checkBoxFocusRect( option, widget );
+
+            // radio buttons
+            case SE_RadioButtonContents: return radioButtonContentsRect( option, widget );
+            case SE_RadioButtonFocusRect: return radioButtonFocusRect( option, widget );
 
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
@@ -335,6 +337,9 @@ namespace Breeze
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
+
+            // focus
+            case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
             // fallback
             default: break;
@@ -449,6 +454,23 @@ namespace Breeze
 
         // mnemonics
         _mnemonics->setMode( StyleConfigData::mnemonicsMode() );
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::checkBoxFocusRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // cast option
+        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
+        if( !buttonOption ) return option->rect;
+
+        // calculate text rect
+        const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
+        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextHideMnemonic, buttonOption->text ) );
+        return handleRTL( option, boundingRect );
+
     }
 
     //___________________________________________________________________________________________________________________
@@ -593,6 +615,24 @@ namespace Breeze
         size.rwidth() += indicator + spacer;
 
         return size;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // checkboxes and radio buttons
+        if(
+            qobject_cast<const QCheckBox*>( widget ) ||
+            qobject_cast<const QRadioButton*>( widget ) )
+        {
+            painter->translate( 0, 2 );
+            painter->setPen( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+            painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
+        }
+
+        return true;
 
     }
 
