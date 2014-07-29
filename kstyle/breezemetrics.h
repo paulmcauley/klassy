@@ -31,6 +31,9 @@ namespace Breeze
     {
 
         // buttons
+        Button_Margin = 12,
+
+        // checkboxes and radio buttons
         CheckBox_Size = 22,
         CheckBox_BoxTextSpace = 4,
         RadioButton_Size = 22,
@@ -43,6 +46,10 @@ namespace Breeze
         ScrollBar_NoButtonHeight = 0,
         ScrollBar_SingleButtonHeight = ScrollBar_Extend,
         ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
+
+        // sliders
+        Slider_Thickness = 6,
+        Slider_ControlThickness = 20
 
     };
 
