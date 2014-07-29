@@ -30,12 +30,18 @@ namespace Breeze
     enum Metrics
     {
 
+        // frames
+        Frame_FrameWidth = 1,
+
+        // groupbox title margin
+        GroupBox_TitleMargin = 4,
+
         // buttons
         Button_Margin = 12,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,
-        CheckBox_BoxTextSpace = 4,
+        CheckBox_BoxTextSpace = 8,
         RadioButton_Size = 22,
 
         // scrollbar

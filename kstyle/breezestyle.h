@@ -219,10 +219,19 @@ namespace Breeze
         //!@name subcontrol Rect specialized functions
         //@{
 
-//         QRect groupBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        //! groupbox
+        QRect groupBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+
+//         //! combobox
 //         QRect comboBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+
+        //! scrollbar (internal)
         QRect scrollBarInternalSubControlRect( const QStyleOptionComplex*, SubControl ) const;
+
+        //! scrollbar
         QRect scrollBarSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+
+        //! spinbox
 //         QRect spinBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
         //@}
@@ -253,7 +262,7 @@ namespace Breeze
 
 //         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;

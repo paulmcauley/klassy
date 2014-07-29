@@ -192,6 +192,9 @@ namespace Breeze
         switch( metric )
         {
 
+            // frame width
+            case PM_DefaultFrameWidth: return Metrics::Frame_FrameWidth;
+
             // buttons
             case PM_ButtonMargin: return Metrics::Button_Margin;
             case PM_ButtonDefaultIndicator: return 0;
@@ -274,6 +277,10 @@ namespace Breeze
         switch( element )
         {
 
+            // groupbox
+            case CC_GroupBox: return groupBoxSubControlRect( option, subControl, widget );
+
+            // scrollbar
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
 
             // fallback
@@ -368,7 +375,8 @@ namespace Breeze
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
 
-            // focus
+            // frames
+            case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
             // fallback
@@ -544,7 +552,7 @@ namespace Breeze
 
         // calculate text rect
         const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
-        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextHideMnemonic, buttonOption->text ) );
+        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextShowMnemonic, buttonOption->text ) );
         return handleRTL( option, boundingRect );
 
     }
@@ -614,6 +622,117 @@ namespace Breeze
         }
 
         return rect;
+
+    }
+
+    //______________________________________________________________
+    QRect Style::groupBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
+
+        QRect rect = option->rect;
+        switch( subControl )
+        {
+
+            case SC_GroupBoxFrame: return rect;
+
+            case SC_GroupBoxContents:
+            {
+
+                // cast option and check
+                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>( option );
+                if( !groupBoxOption ) break;
+
+                // take out frame width
+                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+                rect.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth );
+
+                // get flags
+                const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
+                const bool emptyText( groupBoxOption->text.isEmpty() );
+
+                // calculate title height
+                int titleHeight( 0 );
+                if( !emptyText ) titleHeight = groupBoxOption->fontMetrics.height();
+                if( checkable ) titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
+
+                // add margin
+                if( titleHeight > 0 ) titleHeight += 2*Metrics::GroupBox_TitleMargin;
+
+                rect.adjust( 0, titleHeight, 0, 0 );
+                return rect;
+
+            }
+
+            case SC_GroupBoxCheckBox:
+            case SC_GroupBoxLabel:
+            {
+
+                // cast option and check
+                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>( option );
+                if( !groupBoxOption ) break;
+
+                // take out frame width
+                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+                rect.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth );
+
+                const bool emptyText( groupBoxOption->text.isEmpty() );
+                const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
+
+                // calculate title height
+                int titleHeight( 0 );
+                int titleWidth( 0 );
+                if( !emptyText )
+                {
+                    const QFontMetrics fontMetrics = option->fontMetrics;
+                    titleHeight = qMax( titleHeight, fontMetrics.height() );
+                    titleWidth += fontMetrics.size( Qt::TextShowMnemonic, groupBoxOption->text ).width();
+                }
+
+                if( checkable )
+                {
+                    titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
+                    titleWidth += Metrics::CheckBox_Size;
+                    if( !emptyText ) titleWidth += Metrics::CheckBox_BoxTextSpace;
+                }
+
+                // adjust height
+                QRect titleRect( rect );
+                titleRect.setHeight( titleHeight );
+                titleRect.translate( 0, Metrics::GroupBox_TitleMargin );
+
+                // center
+                titleRect = centerRect( titleRect, titleWidth, titleHeight );
+
+                if( subControl == SC_GroupBoxCheckBox )
+                {
+
+                    // vertical centering
+                    titleRect = centerRect( titleRect, titleWidth, Metrics::CheckBox_Size );
+
+                    // horizontal positioning
+                    const QRect subRect( titleRect.topLeft(), QSize( Metrics::CheckBox_Size, titleRect.height() ) );
+                    return visualRect( option->direction, titleRect, subRect );
+
+                } else {
+
+                    // vertical centering
+                    QFontMetrics fontMetrics = option->fontMetrics;
+                    titleRect = centerRect( titleRect, titleWidth, fontMetrics.height() );
+
+                    // horizontal positioning
+                    QRect subRect( titleRect );
+                    if( checkable ) subRect.adjust( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 );
+                    return visualRect( option->direction, titleRect, subRect );
+
+                }
+
+            }
+
+            default: break;
+
+        }
+
+        return KStyle::subControlRect( CC_GroupBox, option, subControl, widget );
 
     }
 
@@ -805,6 +924,48 @@ namespace Breeze
             painter->translate( 0, 2 );
             painter->setPen( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
             painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
+        }
+
+        return true;
+
+    }
+
+    //______________________________________________________________
+    bool Style::drawFrameGroupBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // cast option and check
+        const QStyleOptionFrame *frameOption = qstyleoption_cast<const QStyleOptionFrame *>( option );
+        if( !frameOption ) return true;
+
+        // no frame for flat groupboxes
+        QStyleOptionFrameV2 frameOption2( *frameOption );
+        if( frameOption2.features & QStyleOptionFrameV2::Flat ) return true;
+
+        // normal frame
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+        const QColor base( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const QRectF baseRect( rect );
+
+        {
+            // content
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( base );
+            painter->drawRoundedRect( baseRect, 2.5, 2.5 );
+        }
+
+        {
+            // outline
+            painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+            painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
         }
 
         return true;
