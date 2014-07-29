@@ -33,6 +33,9 @@ namespace Breeze
         // frames
         Frame_FrameWidth = 1,
 
+        // line edit margins
+        LineEdit_MarginWidth = 4,
+
         // groupbox title margin
         GroupBox_TitleMargin = 4,
 

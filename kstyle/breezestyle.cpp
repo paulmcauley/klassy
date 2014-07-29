@@ -260,6 +260,9 @@ namespace Breeze
             case SE_RadioButtonContents: return radioButtonContentsRect( option, widget );
             case SE_RadioButtonFocusRect: return radioButtonFocusRect( option, widget );
 
+            // line edit content
+            case SE_LineEditContents: return lineEditContentsRect( option, widget );
+
             // progress bars
             case SE_ProgressBarGroove: return progressBarGrooveRect( option, widget );
             case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
@@ -563,6 +566,15 @@ namespace Breeze
         const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
         const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextShowMnemonic, buttonOption->text ) );
         return handleRTL( option, boundingRect );
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+        return insideMargin( option->rect, Metrics::LineEdit_MarginWidth );
 
     }
 
@@ -889,7 +901,7 @@ namespace Breeze
     QSize Style::lineEditSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     {
         QSize size( contentsSize );
-        return size + QSize( 8, 8 );
+        return size + QSize( 2*Metrics::LineEdit_MarginWidth, 2*Metrics::LineEdit_MarginWidth );
     }
 
     //______________________________________________________________
@@ -958,7 +970,7 @@ namespace Breeze
         else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
 
         // render
-        renderFrame( painter, option->rect, QColor(), outline );
+        renderFrame( painter, option->rect, QColor(), outline, hasFocus );
 
         return true;
 
@@ -1810,7 +1822,7 @@ namespace Breeze
     //______________________________________________________________________________
     void Style::renderFrame(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline ) const
+        const QColor& color, const QColor& outline, bool focus ) const
     {
 
         painter->setRenderHint( QPainter::Antialiasing );
@@ -1827,10 +1839,22 @@ namespace Breeze
 
         if( outline.isValid() )
         {
+
             // outline
-            painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
+            if( focus )
+            {
+
+                painter->setPen( QPen( outline, 2 ) );
+                painter->setBrush( Qt::NoBrush );
+                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 1.5, 1.5 );
+
+            } else {
+
+                painter->setPen( QPen( outline, 1 ) );
+                painter->setBrush( Qt::NoBrush );
+                painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
+
+            }
         }
 
     }

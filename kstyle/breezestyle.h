@@ -188,6 +188,9 @@ namespace Breeze
         QRect radioButtonFocusRect( const QStyleOption* option, const QWidget* widget ) const
         { return checkBoxFocusRect( option, widget ); }
 
+        //! line edit contents
+        QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
+
         //! progressbar groove
         QRect progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const;
 
@@ -424,7 +427,7 @@ namespace Breeze
         //@{
 
         //! generic frame
-        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
 
         //! generic button slab
         void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
