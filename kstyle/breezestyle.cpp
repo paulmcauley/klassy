@@ -839,7 +839,7 @@ namespace Breeze
         QColor outline;
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
-        const QColor normal( palette.color( QPalette::Window ) );
+        const QColor normal( palette.color( QPalette::Button ) );
         const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
         const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
         const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
@@ -1039,7 +1039,7 @@ namespace Breeze
 
         // check if animated and pass to option
         if( _animations->busyIndicatorEngine().isAnimated( widget ? widget : progressBarOption->styleObject ) )
-        { progressBarOption2.progress = _animations->busyIndicatorEngine().value( widget ? widget : progressBarOption->styleObject ); }
+        { progressBarOption2.progress = _animations->busyIndicatorEngine().value(); }
 
         // render contents
         progressBarOption2.rect = subElementRect( SE_ProgressBarContents, progressBarOption, widget );
@@ -1073,8 +1073,7 @@ namespace Breeze
         // check if anything is to be drawn
         qreal progress = progressBarOption->progress - progressBarOption->minimum;
         const bool busyIndicator = ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        if( busyIndicator )
-        { progress = _animations->busyIndicatorEngine().value( widget ? widget : progressBarOption->styleObject ); }
+        if( busyIndicator ) progress = _animations->busyIndicatorEngine().value();
 
         if( busyIndicator )
         {

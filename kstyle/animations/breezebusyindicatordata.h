@@ -27,8 +27,6 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "../breezemetrics.h"
-
 #include <QObject>
 
 namespace Breeze
@@ -42,8 +40,7 @@ namespace Breeze
         //! constructor
         BusyIndicatorData( QObject* parent ):
             QObject( parent ),
-            _animated( false ),
-            _value( 0 )
+            _animated( false )
         {}
 
         //! destructor
@@ -56,10 +53,6 @@ namespace Breeze
         //! animated
         bool isAnimated( void ) const
         { return _animated; }
-
-        //! value
-        int value( void ) const
-        { return _value; }
 
         //@}
 
@@ -78,26 +71,12 @@ namespace Breeze
         void setAnimated( bool value )
         { _animated = value; }
 
-        //! value
-        void setValue( bool value )
-        { _value = value; }
-
-        //! increment
-        void increment( void )
-        {
-            _value++;
-            _value%=2*Metrics::ProgressBar_BusyIndicatorSize;
-        }
-
         //@}
 
         private:
 
         //! animated
         bool _animated;
-
-        //! value
-        int _value;
 
     };
 

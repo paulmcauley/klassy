@@ -40,7 +40,7 @@
 
     <!-- progress bar animation durations -->
     <entry name="ProgressBarBusyStepDuration" type="Int">
-      <default>50</default>
+      <default>800</default>
     </entry>
 
     <!-- mnemonics -->

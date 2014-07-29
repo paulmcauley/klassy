@@ -27,6 +27,7 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breezeanimation.h"
 #include "breezebaseengine.h"
 #include "breezebusyindicatordata.h"
 #include "breezedatamap.h"
@@ -45,12 +46,13 @@ namespace Breeze
 
         Q_OBJECT
 
+        //! declare opacity property
+        Q_PROPERTY( int value READ value WRITE setValue )
+
         public:
 
         //! constructor
-        explicit BusyIndicatorEngine( QObject* object ):
-            BaseEngine( object )
-        {}
+        explicit BusyIndicatorEngine( QObject* );
 
         //! destructor
         virtual ~BusyIndicatorEngine( void )
@@ -62,9 +64,9 @@ namespace Breeze
         //! true if widget is animated
         virtual bool isAnimated( const QObject* );
 
-        //! animation opacity
-        virtual int value( const QObject* object )
-        { return isAnimated( object ) ? data( object ).data()->value():0; }
+        //! value
+        virtual int value( void ) const
+        { return _value; }
 
         //@}
 
@@ -80,6 +82,9 @@ namespace Breeze
         //! set object as animated
         virtual void setAnimated( const QObject*, bool );
 
+        //! opacity
+        virtual void setValue( int value );
+
         //@}
 
         public Q_SLOTS:
@@ -90,9 +95,6 @@ namespace Breeze
 
         protected:
 
-        //! timer event
-        virtual void timerEvent( QTimerEvent* );
-
         //! returns data associated to widget
         DataMap<BusyIndicatorData>::Value data( const QObject* );
 
@@ -101,8 +103,11 @@ namespace Breeze
         //! map widgets to progressbar data
         DataMap<BusyIndicatorData> _data;
 
-        //! timer
-        QBasicTimer _timer;
+        //! animation
+        Animation::Pointer _animation;
+
+        //! value
+        int _value;
 
     };
 
