@@ -126,6 +126,9 @@ namespace Breeze
         //! add alpha channel multiplier to color
         static QColor alphaColor( QColor color, qreal alpha );
 
+        //! merge active and inactive palettes based on ratio, for smooth enable state change transition
+        QPalette mergePalettes( const QPalette&, qreal ratio ) const;
+
         //!@name brushes
         //@{
 
@@ -140,17 +143,6 @@ namespace Breeze
         //! negative text brush ( used for close button hover )
         const KStatefulBrush& viewNegativeTextBrush( void ) const
         { return _viewNegativeTextBrush; }
-
-        //@}
-
-        //!@name tilesets
-        //@{
-
-        //! scrollbar hole
-        TileSet* scrollBarHole( const QColor& );
-
-        //! scrollbar handle
-        TileSet* scrollBarHandle( const QColor&, const QColor& );
 
         //@}
 
@@ -172,14 +164,7 @@ namespace Breeze
         KStatefulBrush _viewNegativeTextBrush;
         //@}
 
-        //!@name tileset caches
-        //@{
-
-        typedef BaseCache<TileSet> TileSetCache;
-        TileSetCache _scrollBarHandleCache;
-
-        //@}
-    };
+      };
 
 }
 

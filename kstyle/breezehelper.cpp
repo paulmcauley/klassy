@@ -24,6 +24,7 @@
 
 #include "breezemetrics.h"
 
+#include <KColorUtils>
 #include <QPainter>
 
 namespace Breeze
@@ -47,14 +48,24 @@ namespace Breeze
 
     //______________________________________________________________________________
     void Helper::invalidateCaches( void )
-    {
-        _scrollBarHandleCache.clear();
-    }
+    {}
 
     //____________________________________________________________________
-    void Helper::setMaxCacheSize( int value )
+    void Helper::setMaxCacheSize( int )
+    {}
+
+    //______________________________________________________________________________
+    QPalette Helper::mergePalettes( const QPalette& source, qreal ratio ) const
     {
-        _scrollBarHandleCache.setMaxCost( value );
+
+        QPalette out( source );
+        out.setColor( QPalette::Background, KColorUtils::mix( source.color( QPalette::Active, QPalette::Background ), source.color( QPalette::Disabled, QPalette::Background ), 1.0-ratio ) );
+        out.setColor( QPalette::Highlight, KColorUtils::mix( source.color( QPalette::Active, QPalette::Highlight ), source.color( QPalette::Disabled, QPalette::Highlight ), 1.0-ratio ) );
+        out.setColor( QPalette::WindowText, KColorUtils::mix( source.color( QPalette::Active, QPalette::WindowText ), source.color( QPalette::Disabled, QPalette::WindowText ), 1.0-ratio ) );
+        out.setColor( QPalette::ButtonText, KColorUtils::mix( source.color( QPalette::Active, QPalette::ButtonText ), source.color( QPalette::Disabled, QPalette::ButtonText ), 1.0-ratio ) );
+        out.setColor( QPalette::Text, KColorUtils::mix( source.color( QPalette::Active, QPalette::Text ), source.color( QPalette::Disabled, QPalette::Text ), 1.0-ratio ) );
+        out.setColor( QPalette::Button, KColorUtils::mix( source.color( QPalette::Active, QPalette::Button ), source.color( QPalette::Disabled, QPalette::Button ), 1.0-ratio ) );
+        return out;
     }
 
     //____________________________________________________________________
@@ -63,56 +74,6 @@ namespace Breeze
         if( alpha >= 0 && alpha < 1.0 )
         { color.setAlphaF( alpha*color.alphaF() ); }
         return color;
-    }
-
-    //________________________________________________________________________________________________________
-    TileSet* Helper::scrollBarHandle( const QColor& color, const QColor& glow)
-    {
-
-        const quint64 key( ( colorKey(color) << 32 ) | colorKey(glow) );
-        TileSet* tileSet( _scrollBarHandleCache.object( key ) );
-
-        if( !tileSet )
-        {
-
-            QPixmap pixmap( Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth );
-            pixmap.fill( Qt::transparent );
-
-            QPainter painter( &pixmap );
-            painter.setRenderHints( QPainter::Antialiasing );
-
-            // content
-            if( color.isValid() )
-            {
-                painter.setPen( Qt::NoPen );
-                painter.setBrush( color );
-                painter.drawEllipse( QRectF( 0, 0, Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth ) );
-            }
-
-            // border
-            if( glow.isValid() )
-            {
-                painter.setPen( QPen( glow, 2 ) );
-                painter.setBrush( Qt::NoBrush );
-                painter.drawEllipse( QRectF( 1, 1, Metrics::ScrollBar_SliderWidth-2, Metrics::ScrollBar_SliderWidth-2 ) );
-            }
-
-            painter.end();
-
-            // create tileset and return
-            tileSet = new TileSet( pixmap, Metrics::ScrollBar_SliderWidth/2, Metrics::ScrollBar_SliderWidth/2, 1, 1 );
-            _scrollBarHandleCache.insert( key, tileSet );
-
-        }
-
-        return tileSet;
-    }
-
-    //________________________________________________________________________________________________________
-    TileSet *Helper::scrollBarHole( const QColor& color )
-    {
-        // in the current implementation, holes and handles are rendered with the same code
-        return scrollBarHandle( color, QColor() );
     }
 
 }
