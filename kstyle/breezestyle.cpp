@@ -193,7 +193,7 @@ namespace Breeze
         {
 
             // buttons
-            case PM_ButtonMargin: return 12;
+            case PM_ButtonMargin: return Metrics::Button_Margin;
             case PM_ButtonDefaultIndicator: return 0;
             case PM_ButtonShiftHorizontal: return 0;
             case PM_ButtonShiftVertical: return 0;
@@ -201,6 +201,12 @@ namespace Breeze
             // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
+
+            // sliders
+            case PM_SliderThickness: return Metrics::Slider_Thickness;
+            case PM_SliderControlThickness: return Metrics::Slider_ControlThickness;
+            case PM_SliderLength: return Metrics::Slider_ControlThickness;
+
 
             // checkboxes and radio buttons
             case PM_IndicatorWidth: return CheckBox_Size;
@@ -221,6 +227,14 @@ namespace Breeze
         switch( hint )
         {
 
+            // groupbox
+            case SH_GroupBox_TextLabelColor:
+            if( option ) return option->palette.color( QPalette::WindowText ).rgba();
+            else return QPalette().color( QPalette::WindowText ).rgba();
+
+            case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
+
+            // scrollbar
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
 
             // fallback
@@ -429,6 +443,25 @@ namespace Breeze
         {
             flags &= ~Qt::TextShowMnemonic;
             flags |= Qt::TextHideMnemonic;
+        }
+
+        if( _animations->widgetEnabilityEngine().enabled() )
+        {
+
+            /*
+            check if painter engine is registered to WidgetEnabilityEngine, and animated
+            if yes, merge the palettes. Note: a static_cast is safe here, since only the address
+            of the pointer is used, not the actual content.
+            */
+            const QWidget* widget( static_cast<const QWidget*>( painter->device() ) );
+            if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
+            {
+
+                const QPalette pal = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
+                return KStyle::drawItemText( painter, r, flags, pal, enabled, text, textRole );
+
+            }
+
         }
 
         // fallback
@@ -679,9 +712,9 @@ namespace Breeze
 
         QColor color;
         QColor outline;
-        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.15 ) );
+        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
-        const QColor normal( palette.color( QPalette::Button ) );
+        const QColor normal( palette.color( QPalette::Window ) );
         const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
         const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
         const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
@@ -897,7 +930,7 @@ namespace Breeze
             if( horizontal ) backgroundRect = centerRect( backgroundRect, backgroundRect.width(), Metrics::ScrollBar_SliderWidth );
             else backgroundRect = centerRect( backgroundRect, Metrics::ScrollBar_SliderWidth, backgroundRect.height() );
 
-            _helper->scrollBarHole( color )->render( backgroundRect, painter, TileSet::Full );
+            renderScrollBarHole( painter, backgroundRect, color );
 
         }
 
@@ -917,7 +950,7 @@ namespace Breeze
             else color = base;
 
             // render
-            _helper->scrollBarHandle( color, QColor() )->render( handleRect, painter, TileSet::Full );
+            renderScrollBarHandle( painter, handleRect, color, QColor() );
 
         }
 
@@ -1011,7 +1044,6 @@ namespace Breeze
         const State& flags( option->state );
 
         // define tiles and adjust rect
-        TileSet::Tiles tiles;
         QRect backgroundRect;
         const bool horizontal( flags & State_Horizontal );
         const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
@@ -1020,30 +1052,19 @@ namespace Breeze
         {
 
             backgroundRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
-            tiles = TileSet::Vertical;
-            if( reverseLayout )
-            {
-                tiles |= TileSet::Left;
-                backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2, 0 );
-
-            } else {
-
-                tiles |= TileSet::Right;
-                backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
-
-            }
+            if( reverseLayout ) backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2, 0 );
+            else backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
 
 
         } else {
 
             backgroundRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
-            tiles = TileSet::Horizontal|TileSet::Bottom;
             backgroundRect.adjust( 0, -Metrics::ScrollBar_SliderWidth/2, 0, 0 );
 
         }
 
         // render
-        _helper->scrollBarHole( color )->render( backgroundRect, painter, tiles );
+        renderScrollBarHole( painter, backgroundRect, color );
 
         return true;
 
@@ -1140,7 +1161,6 @@ namespace Breeze
         const State& flags( option->state );
 
         // define tiles and adjust rect
-        TileSet::Tiles tiles;
         QRect backgroundRect;
         const bool horizontal( flags & State_Horizontal );
         const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
@@ -1149,30 +1169,18 @@ namespace Breeze
         {
 
             backgroundRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
-            tiles = TileSet::Vertical;
-            if( reverseLayout )
-            {
-                tiles |= TileSet::Right;
-                backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
-
-            } else {
-
-                tiles |= TileSet::Left;
-                backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2-1, 0 );
-
-            }
-
+            if( reverseLayout ) backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
+            else backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2-1, 0 );
 
         } else {
 
             backgroundRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
-            tiles = TileSet::Horizontal|TileSet::Top;
             backgroundRect.adjust( 0, 0, 0, Metrics::ScrollBar_SliderWidth/2-1 );
 
         }
 
         // render
-        _helper->scrollBarHole( color )->render( backgroundRect, painter, tiles );
+        renderScrollBarHole( painter, backgroundRect, color );
 
         return true;
 
@@ -1345,8 +1353,43 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Style::renderScrollBarHandle(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, const QColor& outline ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+        const qreal radius( 0.5*Metrics::ScrollBar_SliderWidth );
+
+        // content
+        if( color.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawRoundedRect( baseRect, radius, radius );
+        }
+
+        // border
+        if( outline.isValid() )
+        {
+            painter->setPen( QPen( outline, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            const QRectF outlineRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+            painter->drawRoundedRect( outlineRect, radius - 0.5, radius - 0.5 );
+        }
+
+        return;
+
+    }
+
+
+    //______________________________________________________________________________
     void Style::renderScrollBarArrow(
-        QPainter* painter, const QRect& r, const QColor& color,
+        QPainter* painter, const QRect& rect, const QColor& color,
         ArrowOrientation orientation ) const
     {
         // setup painter
@@ -1358,7 +1401,7 @@ namespace Breeze
         const QColor base( color );
 
         painter->save();
-        painter->translate( QRectF(r).center() );
+        painter->translate( QRectF(rect).center() );
 
         painter->setPen( QPen( base, penThickness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
         painter->drawPolyline( a );

@@ -423,6 +423,13 @@ namespace Breeze
         //! radio button
         void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
 
+        //! scrollbar hole
+        void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
+        { return renderScrollBarHandle( painter, rect, color, QColor() ); }
+
+        //! scrollbar hole
+        void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+
         //! scrollbar arrow
         void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
 
