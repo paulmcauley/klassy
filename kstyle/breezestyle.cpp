@@ -560,9 +560,11 @@ namespace Breeze
         // get direction
         const State& flags( option->state );
         const bool horizontal( flags&State_Horizontal );
+        const bool textVisible( progressBarOption->textVisible );
+        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
         QRect rect( option->rect );
-        if( progressBarOption->textVisible )
+        if( textVisible && !busy )
         {
             if( horizontal ) rect.setTop( rect.height() - Metrics::ProgressBar_Thickness );
             else {
@@ -1022,6 +1024,23 @@ namespace Breeze
         progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
         drawProgressBarGrooveControl( &progressBarOption2, painter, widget );
 
+        // enable busy animations
+        /* need to check both widget and passed styleObject, used for QML */
+        if(( widget || progressBarOption->styleObject ) && _animations->busyIndicatorEngine().enabled() )
+        {
+
+            // register QML object if defined
+            if( !widget && progressBarOption->styleObject )
+            { _animations->busyIndicatorEngine().registerWidget( progressBarOption->styleObject ); }
+
+            _animations->busyIndicatorEngine().setAnimated( widget ? widget : progressBarOption->styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
+
+        }
+
+        // check if animated and pass to option
+        if( _animations->busyIndicatorEngine().isAnimated( widget ? widget : progressBarOption->styleObject ) )
+        { progressBarOption2.progress = _animations->busyIndicatorEngine().value( widget ? widget : progressBarOption->styleObject ); }
+
         // render contents
         progressBarOption2.rect = subElementRect( SE_ProgressBarContents, progressBarOption, widget );
         drawProgressBarContentsControl( &progressBarOption2, painter, widget );
@@ -1032,7 +1051,6 @@ namespace Breeze
             progressBarOption2.rect = subElementRect( SE_ProgressBarLabel, progressBarOption, widget );
             drawProgressBarLabelControl( &progressBarOption2, painter, widget );
         }
-
 
         return true;
 
@@ -1049,37 +1067,48 @@ namespace Breeze
 
         const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
 
-        const QRect& r( option->rect );
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
         // check if anything is to be drawn
         qreal progress = progressBarOption->progress - progressBarOption->minimum;
-        if( !progress ) return true;
+        const bool busyIndicator = ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
+        if( busyIndicator )
+        { progress = _animations->busyIndicatorEngine().value( widget ? widget : progressBarOption->styleObject ); }
 
-        const int steps = qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 );
-        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
-
-        //Calculate width fraction
-        qreal widthFrac( progress/steps );
-        widthFrac = qMin( (qreal)1.0, widthFrac );
-
-        // convert the pixel width
-        const int indicatorSize( widthFrac*( horizontal ? r.width():r.height() ) );
-
-        // do nothing if indicator size is too small
-        if( indicatorSize < Metrics::ProgressBar_Thickness ) return true;
-
-        QRect indicatorRect;
+        if( busyIndicator )
         {
-            if ( horizontal ) indicatorRect = QRect( r.x(), r.y(), indicatorSize, r.height() );
-            else indicatorRect = QRect( r.x(), r.bottom()- indicatorSize + 1, r.width(), indicatorSize );
+
+            const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+            const QColor first( palette.color( QPalette::Highlight ) );
+            const QColor second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
+            renderProgressBarBusyContents( painter, rect, first, second, horizontal, progress );
+
+        } else if( progress ) {
+
+            const int steps = qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 );
+            const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+
+            //Calculate width fraction
+            qreal widthFrac( busyIndicator ?  ProgressBar_BusyIndicatorSize/100.0 : progress/steps );
+            widthFrac = qMin( (qreal)1.0, widthFrac );
+
+            // convert the pixel width
+            const int indicatorSize( widthFrac*( horizontal ? rect.width():rect.height() ) );
+
+            // do nothing if indicator size is too small
+            if( indicatorSize < Metrics::ProgressBar_Thickness ) return true;
+
+            QRect indicatorRect;
+
+            if ( horizontal ) indicatorRect = QRect( rect.x(), rect.y(), indicatorSize, rect.height() );
+            else indicatorRect = QRect( rect.x(), rect.bottom()- indicatorSize + 1, rect.width(), indicatorSize );
+
+            // handle right to left
+            indicatorRect = handleRTL( option, indicatorRect );
+            renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
 
         }
-
-        // handle right to left
-        indicatorRect = handleRTL( option, indicatorRect );
-
-        renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
 
         return true;
 
@@ -1100,7 +1129,7 @@ namespace Breeze
         const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
         if( !progressBarOption ) return true;
 
-        const QRect& r( option->rect );
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
         const State& flags( option->state );
         const bool enabled( flags&State_Enabled );
@@ -1113,20 +1142,20 @@ namespace Breeze
         if( ! ( horizontal || reverseLayout ) )
         {
 
-            painter->translate( r.topRight() );
+            painter->translate( rect.topRight() );
             painter->rotate( 90.0 );
 
         } else if( !horizontal ) {
 
-            painter->translate( r.bottomLeft() );
+            painter->translate( rect.bottomLeft() );
             painter->rotate( -90.0 );
 
         }
 
         // define text rect
-        const QRect textRect( horizontal? r : QRect( 0, 0, r.height(), r.width() ) );
+        const QRect textRect( horizontal? rect : QRect( 0, 0, rect.height(), rect.width() ) );
         Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
-        drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
+        drawItemText( painter, textRect, Qt::AlignBottom | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
 
         return true;
 
@@ -1219,7 +1248,7 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
-        QRect r( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
+        QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
 
         QColor color;
         QStyleOptionSlider localOption( *sliderOption );
@@ -1230,8 +1259,8 @@ namespace Breeze
             {
 
                 //Draw the arrows
-                const QSize halfSize( r.width()/2, r.height() );
-                const QRect leftSubButton( r.topLeft(), halfSize );
+                const QSize halfSize( rect.width()/2, rect.height() );
+                const QRect leftSubButton( rect.topLeft(), halfSize );
                 const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
 
                 localOption.rect = leftSubButton;
@@ -1244,8 +1273,8 @@ namespace Breeze
 
             } else {
 
-                const QSize halfSize( r.width(), r.height()/2 );
-                const QRect topSubButton( r.topLeft(), halfSize );
+                const QSize halfSize( rect.width(), rect.height()/2 );
+                const QRect topSubButton( rect.topLeft(), halfSize );
                 const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
 
                 localOption.rect = topSubButton;
@@ -1260,15 +1289,15 @@ namespace Breeze
 
         } else if( _addLineButtons == SingleButton ) {
 
-            localOption.rect = r;
+            localOption.rect = rect;
             color = scrollBarArrowColor( &localOption,  SC_ScrollBarAddLine, widget );
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, r, color, ArrowLeft );
-                else renderScrollBarArrow( painter, r.translated( 1, 0 ), color, ArrowRight );
+                if( reverseLayout ) renderScrollBarArrow( painter, rect, color, ArrowLeft );
+                else renderScrollBarArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
 
-            } else renderScrollBarArrow( painter, r.translated( 0, 1 ), color, ArrowDown );
+            } else renderScrollBarArrow( painter, rect.translated( 0, 1 ), color, ArrowDown );
 
         }
 
@@ -1336,7 +1365,7 @@ namespace Breeze
         const QColor background( palette.color( QPalette::Window ) );
 
         // adjust rect, based on number of buttons to be drawn
-        QRect r( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
+        QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
 
         QColor color;
         QStyleOptionSlider localOption( *sliderOption );
@@ -1347,8 +1376,8 @@ namespace Breeze
             {
 
                 //Draw the arrows
-                const QSize halfSize( r.width()/2, r.height() );
-                const QRect leftSubButton( r.topLeft(), halfSize );
+                const QSize halfSize( rect.width()/2, rect.height() );
+                const QRect leftSubButton( rect.topLeft(), halfSize );
                 const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
 
                 localOption.rect = leftSubButton;
@@ -1361,8 +1390,8 @@ namespace Breeze
 
             } else {
 
-                const QSize halfSize( r.width(), r.height()/2 );
-                const QRect topSubButton( r.topLeft(), halfSize );
+                const QSize halfSize( rect.width(), rect.height()/2 );
+                const QRect topSubButton( rect.topLeft(), halfSize );
                 const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
 
                 localOption.rect = topSubButton;
@@ -1377,15 +1406,15 @@ namespace Breeze
 
         } else if( _subLineButtons == SingleButton ) {
 
-            localOption.rect = r;
+            localOption.rect = rect;
             color = scrollBarArrowColor( &localOption,  SC_ScrollBarSubLine, widget );
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, r.translated( 1, 0 ), color, ArrowRight );
-                else renderScrollBarArrow( painter, r, color, ArrowLeft );
+                if( reverseLayout ) renderScrollBarArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
+                else renderScrollBarArrow( painter, rect, color, ArrowLeft );
 
-            } else renderScrollBarArrow( painter, r, color, ArrowUp );
+            } else renderScrollBarArrow( painter, rect, color, ArrowUp );
 
         }
 
@@ -1536,7 +1565,7 @@ namespace Breeze
 
     //______________________________________________________________________________
     void Style::renderButtonSlab(
-        QPainter* painter, const QRect& r,
+        QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, const QColor& shadow,
         bool focus, bool sunken ) const
     {
@@ -1545,7 +1574,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         // copy rect
-        QRectF baseRect( r );
+        QRectF baseRect( rect );
 
         // shadow
         if( !sunken )
@@ -1807,6 +1836,56 @@ namespace Breeze
 
     }
 
+
+    //______________________________________________________________________________
+    void Style::renderProgressBarBusyContents(
+        QPainter* painter, const QRect& rect,
+        const QColor& first,
+        const QColor& second,
+        bool horizontal,
+        int progress
+        ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+        const qreal radius( 0.5*Metrics::ProgressBar_Thickness );
+
+        // setup brush
+        QPixmap pixmap( horizontal ? 2*Metrics::ProgressBar_BusyIndicatorSize : 1, horizontal ? 1:2*Metrics::ProgressBar_BusyIndicatorSize );
+        pixmap.fill( second );
+        if( horizontal )
+        {
+
+            QPainter painter( &pixmap );
+            painter.setBrush( first );
+            painter.setPen( Qt::NoPen );
+
+            progress %= 2*Metrics::ProgressBar_BusyIndicatorSize;
+            painter.drawRect( QRect( 0, 0, Metrics::ProgressBar_BusyIndicatorSize, 1 ).translated( progress, 0 ) );
+
+            if( progress > Metrics::ProgressBar_BusyIndicatorSize )
+            { painter.drawRect( QRect( 0, 0, Metrics::ProgressBar_BusyIndicatorSize, 1 ).translated( progress - 2*Metrics::ProgressBar_BusyIndicatorSize, 0 ) ); }
+
+        } else {
+
+            QPainter painter( &pixmap );
+            painter.setBrush( first );
+            painter.setPen( Qt::NoPen );
+            painter.drawRect( QRect( 0, 0, 1, Metrics::ProgressBar_BusyIndicatorSize ).translated( 0, progress % Metrics::ProgressBar_BusyIndicatorSize ) );
+
+        }
+
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( pixmap );
+        painter->drawRoundedRect( baseRect, radius, radius );
+
+        return;
+
+    }
+
     //______________________________________________________________________________
     void Style::renderScrollBarHandle(
         QPainter* painter, const QRect& rect,
@@ -1892,7 +1971,7 @@ namespace Breeze
 
         Q_UNUSED( widget );
 
-        const QRect& r( option->rect );
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
         QColor color( palette.color( QPalette::WindowText ) );
 
@@ -1916,15 +1995,15 @@ namespace Breeze
 
         // retrieve mouse position from engine
         QPoint position( hover ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
-        if( hover && r.contains( position ) )
+        if( hover && rect.contains( position ) )
         {
             // need to update the arrow controlRect on fly because there is no
             // way to get it from the styles directly, outside of repaint events
-            _animations->scrollBarEngine().setSubControlRect( widget, control, r );
+            _animations->scrollBarEngine().setSubControlRect( widget, control, rect );
         }
 
 
-        if( r.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
+        if( rect.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
         {
 
             QColor highlight = _helper->viewHoverBrush().brush( palette ).color();

@@ -50,6 +50,7 @@ set(breeze_PART_SRCS
     animations/breezeanimations.cpp
     animations/breezeanimationdata.cpp
     animations/breezebaseengine.cpp
+    animations/breezebusyindicatorengine.cpp
     animations/breezeenabledata.cpp
     animations/breezegenericdata.cpp
     animations/breezescrollbardata.cpp

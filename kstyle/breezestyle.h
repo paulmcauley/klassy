@@ -443,6 +443,9 @@ namespace Breeze
         void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
         { return renderProgressBarHole( painter, rect, color ); }
 
+        //! progress bar hole
+        void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, int progress  ) const;
+
         //! scrollbar hole
         void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
         { return renderScrollBarHandle( painter, rect, color, QColor() ); }

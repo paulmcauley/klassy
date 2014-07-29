@@ -33,6 +33,7 @@
 
 #include <QDial>
 #include <QGroupBox>
+#include <QProgressBar>
 #include <QScrollBar>
 #include <QToolButton>
 
@@ -44,6 +45,7 @@ namespace Breeze
         QObject( parent )
     {
         _widgetEnabilityEngine = new WidgetStateEngine( this );
+        _busyIndicatorEngine = new BusyIndicatorEngine( this );
 
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
@@ -65,6 +67,9 @@ namespace Breeze
             _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
+            // busy indicator
+            _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
+
         }
 
 
@@ -74,6 +79,9 @@ namespace Breeze
             _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+
+            // busy indicator
+            _busyIndicatorEngine->setDuration( StyleConfigData::progressBarBusyStepDuration() );
 
         }
 
@@ -118,6 +126,9 @@ namespace Breeze
         // scrollbar
         else if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
 
+        // progress bar
+        else if( qobject_cast<QProgressBar*>( widget ) ) { _busyIndicatorEngine->registerWidget( widget ); }
+
         return;
 
     }
@@ -129,6 +140,7 @@ namespace Breeze
         if( !widget ) return;
 
         _widgetEnabilityEngine->unregisterWidget( widget );
+        _busyIndicatorEngine->registerWidget( widget );
 
         // the following allows some optimization of widget unregistration
         // it assumes that a widget can be registered atmost in one of the

@@ -33,6 +33,16 @@
       <default>100</default>
     </entry>
 
+    <!-- busy progress bars -->
+    <entry name="ProgressBarAnimated" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- progress bar animation durations -->
+    <entry name="ProgressBarBusyStepDuration" type="Int">
+      <default>50</default>
+    </entry>
+
     <!-- mnemonics -->
     <entry name="MnemonicsMode" type="Enum">
       <choices>

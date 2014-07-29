@@ -27,6 +27,7 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breezebusyindicatorengine.h"
 #include "breezescrollbarengine.h"
 #include "breezewidgetstateengine.h"
 
@@ -65,6 +66,10 @@ namespace Breeze
         WidgetStateEngine& widgetStateEngine( void ) const
         { return *_widgetStateEngine; }
 
+        //! busy indicator
+        BusyIndicatorEngine& busyIndicatorEngine( void ) const
+        { return *_busyIndicatorEngine; }
+
         //! scrollbar engine
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
@@ -80,6 +85,9 @@ namespace Breeze
 
         //! register new engine
         void registerEngine( BaseEngine* engine );
+
+        //! busy indicator
+        BusyIndicatorEngine* _busyIndicatorEngine;
 
         //! widget enability engine
         WidgetStateEngine* _widgetEnabilityEngine;
