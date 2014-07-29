@@ -30,6 +30,11 @@ namespace Breeze
     enum Metrics
     {
 
+        // buttons
+        CheckBox_Size = 22,
+        CheckBox_BoxTextSpace = 4,
+        RadioButton_Size = 22,
+
         // scrollbar
         ScrollBar_Extend = 20,
         ScrollBar_Width = 10,

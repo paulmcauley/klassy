@@ -29,6 +29,7 @@
 #include <KColorScheme>
 
 #include <QCache>
+#include <QPixmap>
 #include <QScopedPointer>
 
 #if HAVE_X11
@@ -142,14 +143,32 @@ namespace Breeze
 
         //@}
 
+        //!@name pixmaps
+        //@{
+
+
+        //! checkbox state (used for checkboxes _and_ radio buttons)
+        enum CheckBoxState
+        {
+            CheckOff = 0,
+            CheckPartial = 1,
+            CheckOn = 2
+        };
+
+        //! checkbox
+        QPixmap* checkBox( const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state );
+
+        //! radio button
+        QPixmap* radioButton( const QColor& color, const QColor& shadow, bool sunken, bool checked );
+
         //!@name tilesets
         //@{
 
         //! scrollbar hole
-        TileSet *scrollBarHole( const QColor& );
+        TileSet* scrollBarHole( const QColor& );
 
         //! scrollbar handle
-        TileSet *scrollBarHandle( const QColor&, const QColor& );
+        TileSet* scrollBarHandle( const QColor&, const QColor& );
 
         //@}
 
@@ -169,6 +188,13 @@ namespace Breeze
         KStatefulBrush _viewFocusBrush;
         KStatefulBrush _viewHoverBrush;
         KStatefulBrush _viewNegativeTextBrush;
+        //@}
+
+        //!@name pixmap caches
+        //@{
+        typedef BaseCache<QPixmap> PixmapCache;
+        PixmapCache _checkBoxCache;
+        PixmapCache _radioButtonCache;
         //@}
 
         //!@name tileset caches

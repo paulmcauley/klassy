@@ -48,12 +48,16 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::invalidateCaches( void )
     {
+        _radioButtonCache.clear();
+        _checkBoxCache.clear();
         _scrollBarHandleCache.clear();
     }
 
     //____________________________________________________________________
     void Helper::setMaxCacheSize( int value )
     {
+        _radioButtonCache.setMaxCost( value );
+        _checkBoxCache.setMaxCost( value );
         _scrollBarHandleCache.setMaxCost( value );
     }
 
@@ -66,42 +70,182 @@ namespace Breeze
     }
 
     //________________________________________________________________________________________________________
-    TileSet *Helper::scrollBarHandle( const QColor& color, const QColor& glow)
+    QPixmap* Helper::checkBox( const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state )
+    {
+
+        // shadow does not enter the key as it is supposed to always be the same color
+        const quint64 key( ( colorKey(color) << 32 ) | (sunken<<2) | state );
+        QPixmap* pixmap( _checkBoxCache.object( key ) );
+        if( !pixmap )
+        {
+
+            pixmap = new QPixmap( Metrics::RadioButton_Size, Metrics::CheckBox_Size );
+            pixmap->fill( Qt::transparent );
+
+            QPainter painter( pixmap );
+            painter.setRenderHints( QPainter::Antialiasing );
+
+            const QRectF baseRect( 0, 0, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
+
+            // shadow
+            if( !sunken )
+            {
+
+                painter.setPen( QPen( shadow, 2 ) );
+                painter.setBrush( Qt::NoBrush );
+
+                const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+                painter.drawRoundedRect( shadowRect, 2, 2 );
+
+            }
+
+            // content
+            {
+
+                painter.setPen( QPen( color, 2 ) );
+                painter.setBrush( Qt::NoBrush );
+
+                const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+                painter.drawRoundedRect( contentRect, 2, 2 );
+
+            }
+
+            // mark
+            if( state == CheckOn )
+            {
+
+                painter.setBrush( color );
+                painter.setPen( Qt::NoPen );
+
+                const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+                painter.drawRect( markerRect );
+
+            } else if( state == CheckPartial ) {
+
+                QPen pen( color, 2 );
+                pen.setJoinStyle( Qt::MiterJoin );
+                painter.setPen( pen );
+
+                const QRectF markerRect( baseRect.adjusted( 6, 6, -6, -6 ) );
+                painter.drawRect( markerRect );
+
+                painter.setPen( Qt::NoPen );
+                painter.setBrush( color );
+                painter.setRenderHint( QPainter::Antialiasing, false );
+
+                QPainterPath path;
+                path.moveTo( 5, 5 );
+                path.lineTo( qreal( Metrics::CheckBox_Size ) -6, 5 );
+                path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
+                painter.drawPath( path );
+
+            }
+
+            _checkBoxCache.insert( key, pixmap );
+
+        }
+
+        return pixmap;
+
+    }
+
+    //________________________________________________________________________________________________________
+    QPixmap* Helper::radioButton( const QColor& color, const QColor& shadow, bool sunken, bool checked )
+    {
+
+        // shadow does not enter the key as it is supposed to always be the same color
+        const quint64 key( ( colorKey(color) << 32 ) | (sunken<<1) | checked );
+        QPixmap* pixmap( _radioButtonCache.object( key ) );
+        if( !pixmap )
+        {
+
+            pixmap = new QPixmap( Metrics::RadioButton_Size, Metrics::RadioButton_Size );
+            pixmap->fill( Qt::transparent );
+
+            QPainter painter( pixmap );
+            painter.setRenderHints( QPainter::Antialiasing );
+
+            const QRectF baseRect( 0, 0, Metrics::RadioButton_Size, Metrics::RadioButton_Size );
+
+            // shadow
+            if( !sunken )
+            {
+
+                painter.setPen( QPen( shadow, 2 ) );
+                painter.setBrush( Qt::NoBrush );
+
+                const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+                painter.drawEllipse( shadowRect );
+
+            }
+
+            // content
+            {
+
+                painter.setPen( QPen( color, 2 ) );
+                painter.setBrush( Qt::NoBrush );
+
+                const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+                painter.drawEllipse( contentRect );
+
+            }
+
+            // mark
+            if( checked )
+            {
+
+                painter.setBrush( color );
+                painter.setPen( Qt::NoPen );
+
+                const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+                painter.drawEllipse( markerRect );
+
+            }
+
+            _radioButtonCache.insert( key, pixmap );
+
+        }
+
+        return pixmap;
+
+    }
+
+    //________________________________________________________________________________________________________
+    TileSet* Helper::scrollBarHandle( const QColor& color, const QColor& glow)
     {
 
         const quint64 key( ( colorKey(color) << 32 ) | colorKey(glow) );
-        TileSet *tileSet = _scrollBarHandleCache.object( key );
+        TileSet* tileSet( _scrollBarHandleCache.object( key ) );
 
-        if ( !tileSet )
+        if( !tileSet )
         {
 
-            QPixmap pm( Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth );
-            pm.fill( Qt::transparent );
+            QPixmap pixmap( Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth );
+            pixmap.fill( Qt::transparent );
 
-            QPainter p( &pm );
-            p.setRenderHints( QPainter::Antialiasing );
+            QPainter painter( &pixmap );
+            painter.setRenderHints( QPainter::Antialiasing );
 
             // content
             if( color.isValid() )
             {
-                p.setPen( Qt::NoPen );
-                p.setBrush( color );
-                // p.drawEllipse( QRectF( 0.5, 0.5, Metrics::ScrollBar_SliderWidth-1, Metrics::ScrollBar_SliderWidth-1 ) );
-                p.drawEllipse( QRectF( 0, 0, Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth ) );
+                painter.setPen( Qt::NoPen );
+                painter.setBrush( color );
+                painter.drawEllipse( QRectF( 0, 0, Metrics::ScrollBar_SliderWidth, Metrics::ScrollBar_SliderWidth ) );
             }
 
             // border
             if( glow.isValid() )
             {
-                p.setPen( QPen( glow, 2 ) );
-                p.setBrush( Qt::NoBrush );
-                p.drawEllipse( QRectF( 1, 1, Metrics::ScrollBar_SliderWidth-2, Metrics::ScrollBar_SliderWidth-2 ) );
+                painter.setPen( QPen( glow, 2 ) );
+                painter.setBrush( Qt::NoBrush );
+                painter.drawEllipse( QRectF( 1, 1, Metrics::ScrollBar_SliderWidth-2, Metrics::ScrollBar_SliderWidth-2 ) );
             }
 
-            p.end();
+            painter.end();
 
             // create tileset and return
-            tileSet = new TileSet( pm, Metrics::ScrollBar_SliderWidth/2, Metrics::ScrollBar_SliderWidth/2, 1, 1 );
+            tileSet = new TileSet( pixmap, Metrics::ScrollBar_SliderWidth/2, Metrics::ScrollBar_SliderWidth/2, 1, 1 );
             _scrollBarHandleCache.insert( key, tileSet );
 
         }

@@ -173,8 +173,9 @@ namespace Breeze
 //         //! toolbox tab
 //         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 //
-//         //! checkbox contents
-//         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const;
+        //! checkbox and radio button contents
+        QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
+        { return handleRTL( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
 //
 //         //! progressbar contents
 //         QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
@@ -212,8 +213,9 @@ namespace Breeze
         //!@name sizeFromContents
         //@{
 
-//         QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
-//         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+
+        //         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
@@ -267,8 +269,8 @@ namespace Breeze
 //         bool drawIndicatorMenuCheckMarkPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorButtonDropDownPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawIndicatorCheckBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorCheckBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -391,6 +393,10 @@ namespace Breeze
 
         //! scrollbar arrow
         void renderScrollBarArrow( QPainter*, const QRect&, const QColor&, const QColor&, ArrowOrientation ) const;
+
+        //! returns relevant scrollbar parent
+        /*! needed to detect parent focus */
+        QWidget* scrollBarParent( const QWidget* ) const;
 
         //! returns true if given scrollbar arrow is animated
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;

@@ -192,9 +192,15 @@ namespace Breeze
         switch( metric )
         {
 
-
+            // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
+
+            // checkboxes and radio buttons
+            case PM_IndicatorWidth: return CheckBox_Size;
+            case PM_IndicatorHeight: return CheckBox_Size;
+            case PM_ExclusiveIndicatorWidth: return RadioButton_Size;
+            case PM_ExclusiveIndicatorHeight: return RadioButton_Size;
 
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
@@ -224,6 +230,12 @@ namespace Breeze
         switch( element )
         {
 
+            // checkboxes and radio buttons
+            case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
+            case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
+            case SE_CheckBoxFocusRect: return defaultSubElementRect( option, widget );
+            case SE_RadioButtonFocusRect: return defaultSubElementRect( option, widget );
+
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
 
@@ -251,6 +263,10 @@ namespace Breeze
 
         switch( element )
         {
+
+            // checkboxes and radio buttons
+            case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
+            case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
 
             // fallback
             default: return KStyle::sizeFromContents( element, option, size, widget );
@@ -312,13 +328,26 @@ namespace Breeze
     void Style::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        StylePrimitive fcn( nullptr );
         switch( element )
         {
 
+            // checkboxes and radio buttons
+            case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
+            case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
+
             // fallback
-            default: return KStyle::drawPrimitive( element, option, painter, widget );
+            default: break;
 
         }
+
+        painter->save();
+
+        // call function if implemented
+        if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
+        { KStyle::drawPrimitive( element, option, painter, widget ); }
+
+        painter->restore();
 
     }
 
@@ -548,6 +577,98 @@ namespace Breeze
     }
 
 
+    //______________________________________________________________
+    QSize Style::checkBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        //Add size for indicator
+        const int indicator( Metrics::CheckBox_Size );
+
+        //Make sure we can fit the indicator
+        QSize size( contentsSize );
+        size.setHeight( qMax( size.height(), indicator ) );
+
+        //Add space for the indicator and the icon
+        const int spacer( Metrics::CheckBox_BoxTextSpace );
+        size.rwidth() += indicator + spacer;
+
+        return size;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorCheckBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // get rect
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool sunken( flags & State_Sunken );
+
+        Helper::CheckBoxState state( Helper::CheckOff );
+        if( flags & State_NoChange ) state = Helper::CheckPartial;
+        else if( flags & State_On ) state = Helper::CheckOn;
+
+        // color
+        const QPalette& palette( option->palette );
+        const QColor base( palette.color( QPalette::Window ) );
+        QColor color;
+
+        // cannot use transparent colors because of the rendering of the shadow
+        if( !enabled ) color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 );
+        else if( mouseOver ) color = _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color();
+        else if( state != Helper::CheckOff ) color = _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color();
+        else color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 );
+
+        // shadow color
+        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+
+        // pixmap
+        QPixmap* pixmap( _helper->checkBox( color, shadow, sunken, state ) );
+        painter->drawPixmap( option->rect.topLeft(), *pixmap );
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorRadioButtonPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // get rect
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool sunken( flags & State_Sunken );
+        const bool checked( flags & State_On );
+
+        // color
+        const QPalette& palette( option->palette );
+        const QColor base( palette.color( QPalette::Window ) );
+        QColor color;
+
+        // cannot use transparent colors because of the rendering of the shadow
+        if( !enabled ) color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 );
+        else if( mouseOver ) color = _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color();
+        else if( checked ) color = _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color();
+        else color = KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 );
+
+        // shadow color
+        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+
+        // pixmap
+        QPixmap* pixmap( _helper->radioButton( color, shadow, sunken, checked ) );
+        painter->drawPixmap( option->rect.topLeft(), *pixmap );
+
+        return true;
+
+    }
+
     //___________________________________________________________________________________
     bool Style::drawScrollBarSliderControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -569,6 +690,9 @@ namespace Breeze
 
         const bool enabled( flags&State_Enabled );
         const bool mouseOver( enabled && ( flags&State_MouseOver ) );
+
+        QWidget* parent( scrollBarParent( widget ) );
+        const bool focus( enabled && parent && parent->hasFocus() );
 
         // enable animation state
         _animations->scrollBarEngine().updateState( widget, enabled && ( sliderOption->activeSubControls & SC_ScrollBarSlider ) );
@@ -599,15 +723,14 @@ namespace Breeze
             QColor color;
             const QPalette& palette( option->palette );
 
-            const QColor base( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
-            const QColor highlight( palette.color( QPalette::Highlight ) );
+            const QColor base( focus ?
+                _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color():
+                _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
+
+            const QColor highlight( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
             if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
-            else if( mouseOver ) color = palette.color( QPalette::Highlight );
-            else {
-
-                color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 );
-
-            }
+            else if( mouseOver ) color = highlight;
+            else color = base;
 
             // render
             _helper->scrollBarHandle( color, QColor() )->render( handleRect, painter, TileSet::Full );
@@ -917,6 +1040,25 @@ namespace Breeze
         painter->restore();
 
         return;
+
+    }
+
+    //______________________________________________________________________________
+    QWidget* Style::scrollBarParent( const QWidget* widget ) const
+    {
+
+        // check widget and parent
+        if( !(widget && widget->parentWidget() ) ) return nullptr;
+
+        // try cast to scroll area. Must test both parent and grandparent
+        QAbstractScrollArea* scrollArea;
+        if( !(scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget() ) ) )
+        { scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget()->parentWidget() ); }
+
+        if( scrollArea &&
+            (widget == scrollArea->verticalScrollBar() ||
+            widget == scrollArea->horizontalScrollBar() ) ) return scrollArea;
+        else return nullptr;
 
     }
 
