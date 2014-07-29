@@ -1070,80 +1070,43 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-        return false;
-    }
+        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        if( !progressBarOption ) return true;
 
-//     //___________________________________________________________________________________
-//     bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-//     {
-//         const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
-//         if( !progressBarOption ) return true;
-//
-//         const QRect& r( option->rect );
-//         const QPalette& palette( option->palette );
-//         const State& flags( option->state );
-//         const bool enabled( flags&State_Enabled );
-//
-//         const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
-//         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
-//         const bool reverseLayout = ( option->direction == Qt::RightToLeft );
-//
-//         // rotate label for vertical layout
-//         if( ! ( horizontal || reverseLayout ) )
-//         {
-//
-//             painter->translate( r.topRight() );
-//             painter->rotate( 90.0 );
-//
-//         } else if( !horizontal ) {
-//
-//             painter->translate( r.bottomLeft() );
-//             painter->rotate( -90.0 );
-//
-//         }
-//
-//         Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
-//
-//         /*
-//         Figure out the geometry of the indicator.
-//         This is copied from drawProgressBarContentsControl
-//         */
-//         QRect progressRect;
-//         const QRect textRect( horizontal? r : QRect( 0, 0, r.height(), r.width() ) );
-//         const qreal progress = progressBarOption->progress - progressBarOption->minimum;
-//         const int steps = qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 );
-//         const bool busyIndicator = ( steps <= 1 );
-//
-//         int indicatorSize( 0 );
-//         if( !busyIndicator )
-//         {
-//             const qreal widthFrac = qMin( (qreal)1.0, progress / steps );
-//             indicatorSize = widthFrac*( horizontal ? r.width() : r.height() ) - (horizontal ? 2:1);
-//         }
-//
-//         if( indicatorSize > 0 )
-//         {
-//             if ( horizontal ) painter->setClipRect( handleRTL( option, QRect( r.x(), r.y(), indicatorSize, r.height() ) ) );
-//             else if ( !reverseLayout )  painter->setClipRect( QRect( r.height()-indicatorSize, 0, r.height(), r.width() ) );
-//             else painter->setClipRect( QRect( 0, 0, indicatorSize, r.width() ) );
-//
-//             // first pass ( highlighted )
-//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::HighlightedText );
-//
-//             // second pass ( normal )
-//             if( horizontal ) painter->setClipRect( handleRTL( option, QRect( r.x() + indicatorSize, r.y(), r.width() - indicatorSize, r.height() ) ) );
-//             else if( !reverseLayout ) painter->setClipRect( QRect( 0, 0, r.height() - indicatorSize, r.width() ) );
-//             else painter->setClipRect( QRect( indicatorSize, 0, r.height()- indicatorSize, r.width() ) );
-//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
-//
-//         } else {
-//
-//             drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
-//
-//         }
-//
-//         return true;
-//     }
+        const QRect& r( option->rect );
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags&State_Enabled );
+
+        const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
+        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+        const bool reverseLayout = ( option->direction == Qt::RightToLeft );
+
+        // rotate label for vertical layout
+        if( ! ( horizontal || reverseLayout ) )
+        {
+
+            painter->translate( r.topRight() );
+            painter->rotate( 90.0 );
+
+        } else if( !horizontal ) {
+
+            painter->translate( r.bottomLeft() );
+            painter->rotate( -90.0 );
+
+        }
+        /*
+        Figure out the geometry of the indicator.
+        This is copied from drawProgressBarContentsControl
+        */
+        const QRect textRect( horizontal? r : QRect( 0, 0, r.height(), r.width() ) );
+
+        Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
+        drawItemText( painter, textRect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
+
+        return true;
+
+    }
 
     //___________________________________________________________________________________
     bool Style::drawScrollBarSliderControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
