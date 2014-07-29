@@ -270,7 +270,7 @@ namespace Breeze
 //         /*! it uses the same painting as QSplitter, but due to Qt, the horizontal/vertical convention is inverted */
 //         bool drawIndicatorDockWidgetResizeHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget) const;
 //         bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelScrollAreaCornerPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -307,7 +307,7 @@ namespace Breeze
 //         virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //
 //         //! scrollbar
@@ -406,8 +406,8 @@ namespace Breeze
         /*! here mostly to avoid code duplication */
         //@{
 
-//         //! generic button slab
-//         void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+        //! generic button slab
+        void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
 
         //! checkbox state (used for checkboxes _and_ radio buttons)
         enum CheckBoxState

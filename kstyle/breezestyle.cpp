@@ -192,6 +192,12 @@ namespace Breeze
         switch( metric )
         {
 
+            // buttons
+            case PM_ButtonMargin: return 12;
+            case PM_ButtonDefaultIndicator: return 0;
+            case PM_ButtonShiftHorizontal: return 0;
+            case PM_ButtonShiftVertical: return 0;
+
             // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
@@ -334,6 +340,9 @@ namespace Breeze
         switch( element )
         {
 
+            // buttons
+            case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
+
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
@@ -363,6 +372,14 @@ namespace Breeze
         StyleControl fcn( nullptr );
         switch( element )
         {
+
+            /*
+            for CE_PushButtonBevel the only thing that is done is draw the PanelButtonCommand primitive
+            since the prototypes are identical we register the second directly in the control map: fcn = without
+            using an intermediate function
+            */
+            case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
+            case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
 
             // scrollbars
             case CE_ScrollBarSlider: fcn = &Style::drawScrollBarSliderControl; break;
@@ -636,6 +653,83 @@ namespace Breeze
 
     }
 
+    //______________________________________________________________
+    bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
+        const bool sunken( flags & ( State_On|State_Sunken ) );
+        const QPalette& palette( option->palette );
+
+        // update animation state
+        // hover takes precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+
+        // store animation state
+        const bool hoverAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) );
+        const bool focusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
+        const qreal hoverOpacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+        const qreal focusOpacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
+
+        QColor color;
+        QColor outline;
+        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.15 ) );
+
+        const QColor normal( palette.color( QPalette::Button ) );
+        const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
+        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+
+        // colors
+        if( hoverAnimated ) {
+
+            if( hasFocus )
+            {
+
+                color = KColorUtils::mix( focus, hover, hoverOpacity );
+                outline = QColor();
+
+            } else {
+
+                color = KColorUtils::mix( normal, hover, hoverOpacity );
+                outline = _helper->alphaColor( defaultOutline, 1-hoverOpacity );
+
+            }
+
+        } else if( mouseOver ) {
+
+            color = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
+            outline = QColor();
+
+        } else if( focusAnimated ) {
+
+            color = KColorUtils::mix( normal, focus, focusOpacity );
+            outline = _helper->alphaColor( defaultOutline, 1-focusOpacity );
+
+        } else if( hasFocus ) {
+
+            color = focus;
+            outline = QColor();
+
+        } else {
+
+            color = normal;
+            outline = defaultOutline;
+
+        }
+
+        renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+
+        return true;
+
+    }
+
     //___________________________________________________________________________________
     bool Style::drawIndicatorCheckBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -732,6 +826,30 @@ namespace Breeze
         renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
 
         return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawPushButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // need to alter palette for focused buttons
+        const bool hasFocus( option->state & State_HasFocus );
+        const bool mouseOver( option->state & State_MouseOver );
+        if( hasFocus && !mouseOver )
+        {
+
+            const QStyleOptionButton* bOpt = qstyleoption_cast<const QStyleOptionButton*>( option );
+            if ( !bOpt ) return false;
+
+            QStyleOptionButton copy( *bOpt );
+            copy.palette.setColor( QPalette::ButtonText, copy.palette.color( QPalette::HighlightedText ) );
+
+            // call base class, with modified option
+            KStyle::drawControl( CE_PushButtonLabel, &copy, painter, widget );
+            return true;
+
+        } else return false;
 
     }
 
@@ -1057,6 +1175,55 @@ namespace Breeze
         _helper->scrollBarHole( color )->render( backgroundRect, painter, tiles );
 
         return true;
+
+    }
+
+    //______________________________________________________________________________
+    void Style::renderButtonSlab(
+        QPainter* painter, const QRect& r,
+        const QColor& color, const QColor& outline, const QColor& shadow,
+        bool focus, bool sunken ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // copy rect
+        QRectF baseRect( r );
+
+        // shadow
+        if( !sunken )
+        {
+            painter->setPen( QPen( shadow, 2 ) );
+            painter->setBrush( Qt::NoBrush );
+            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+            painter->drawRoundedRect( shadowRect, 2.5, 2.5 );
+        }
+
+        // content
+        {
+
+            painter->setPen( Qt::NoPen );
+
+            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+            QLinearGradient gradient( contentRect.topLeft(), contentRect.bottomLeft() );
+            gradient.setColorAt( 0, color.lighter( focus ? 103:101 ) );
+            gradient.setColorAt( 1, color.darker( focus ? 110:103 ) );
+            painter->setBrush( gradient );
+
+            painter->drawRoundedRect( contentRect, 3, 3 );
+
+        }
+
+        // outline
+        if( outline.isValid() )
+        {
+            painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+            painter->drawRoundedRect( outlineRect, 2.5, 2.5 );
+
+        }
 
     }
 
