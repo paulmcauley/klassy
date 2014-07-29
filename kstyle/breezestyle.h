@@ -240,6 +240,7 @@ namespace Breeze
         //@{
 
         QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize lineEditSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
         //         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -260,7 +261,7 @@ namespace Breeze
         bool emptyPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const
         { return true; }
 
-//         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -326,14 +327,14 @@ namespace Breeze
         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //
-//         //! scrollbar
+        //! scrollbar
         virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarAddPageControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarSubPageControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-//         virtual bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawSizeGripControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawSplitterControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 //         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -421,6 +422,9 @@ namespace Breeze
         //!@name internal rendering methods
         /*! here mostly to avoid code duplication */
         //@{
+
+        //! generic frame
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
 
         //! generic button slab
         void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;

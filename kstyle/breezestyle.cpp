@@ -299,6 +299,7 @@ namespace Breeze
 
             // checkboxes and radio buttons
             case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
+            case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
             case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
 
             // progress bar
@@ -376,6 +377,8 @@ namespace Breeze
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
 
             // frames
+            case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
+            case PE_Frame: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
@@ -422,6 +425,12 @@ namespace Breeze
             case CE_ScrollBarAddPage: fcn = &Style::drawScrollBarAddPageControl; break;
             case CE_ScrollBarSubLine: fcn = &Style::drawScrollBarSubLineControl; break;
             case CE_ScrollBarSubPage: fcn = &Style::drawScrollBarSubPageControl; break;
+
+            // frame
+            case CE_ShapedFrame: fcn = &Style::drawShapedFrameControl; break;
+
+            // size grip
+            case CE_SizeGrip: fcn = &Style::emptyControl; break;
 
             // fallback
             default: break;
@@ -861,7 +870,6 @@ namespace Breeze
         }
     }
 
-
     //______________________________________________________________
     QSize Style::checkBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     {
@@ -875,6 +883,13 @@ namespace Breeze
 
         return size;
 
+    }
+
+    //______________________________________________________________
+    QSize Style::lineEditSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    {
+        QSize size( contentsSize );
+        return size + QSize( 8, 8 );
     }
 
     //______________________________________________________________
@@ -912,6 +927,43 @@ namespace Breeze
 
     }
 
+    //______________________________________________________________
+    bool Style::drawFramePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        const State& flags( option->state );
+
+        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) )
+                                  || ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
+
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && isInputWidget && ( flags&State_MouseOver ) );
+        const bool hasFocus( enabled && ( flags&State_HasFocus ) );
+
+        // cast option and check
+        const QStyleOptionFrame *frameOption = qstyleoption_cast<const QStyleOptionFrame *>( option );
+        if( !frameOption ) return true;
+
+        // do nothing for flat frames
+        if( !( flags & (State_Sunken | State_Raised ) ) ) return true;
+
+        // colors
+        const QPalette& palette( option->palette );
+        QColor outline;
+        if( mouseOver ) outline =  _helper->viewHoverBrush().brush( palette ).color();
+        else if( hasFocus ) outline = _helper->viewHoverBrush().brush( palette ).color();
+        else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
+
+        // render
+        renderFrame( painter, option->rect, QColor(), outline );
+
+        return true;
+
+    }
+
     //___________________________________________________________________________________
     bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -946,27 +998,10 @@ namespace Breeze
 
         // normal frame
         const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
         const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
-        const QColor base( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
 
-        painter->setRenderHint( QPainter::Antialiasing );
-
-        const QRectF baseRect( rect );
-
-        {
-            // content
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( base );
-            painter->drawRoundedRect( baseRect, 2.5, 2.5 );
-        }
-
-        {
-            // outline
-            painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
-        }
+        renderFrame( painter, option->rect, color, outline );
 
         return true;
 
@@ -1621,6 +1656,55 @@ namespace Breeze
 
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        Q_UNUSED( widget );
+
+        // cast option and check
+        const QStyleOptionFrameV3* frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
+        if( !frameOpt ) return false;
+
+        switch( frameOpt->frameShape )
+        {
+
+            case QFrame::Box:
+            {
+                if( option->state & State_Sunken ) return true;
+                else break;
+            }
+
+            case QFrame::HLine:
+            {
+                const QPalette palette( option->palette );
+                const QRect rect( option->rect );
+                const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+                painter->setBrush( Qt::NoBrush );
+                painter->setPen( QPen( color, 1 ) );
+                painter->drawLine( rect.topLeft(), rect.topRight() );
+                return true;
+            }
+
+            case QFrame::VLine:
+            {
+                const QPalette palette( option->palette );
+                const QRect rect( option->rect );
+                const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+                painter->setBrush( Qt::NoBrush );
+                painter->setPen( QPen( color, 1 ) );
+                painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+                return true;
+            }
+
+            default: break;
+
+        }
+
+        return false;
+
+    }
+
     //______________________________________________________________
     bool Style::drawSliderComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -1724,12 +1808,39 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Style::renderFrame(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, const QColor& outline ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const QRectF baseRect( rect );
+
+        if( color.isValid() )
+        {
+            // content
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawRoundedRect( baseRect, 2.5, 2.5 );
+        }
+
+        if( outline.isValid() )
+        {
+            // outline
+            painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+            painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
+        }
+
+    }
+
+    //______________________________________________________________________________
     void Style::renderButtonSlab(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, const QColor& shadow,
         bool focus, bool sunken ) const
     {
-
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
