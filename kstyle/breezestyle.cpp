@@ -1103,7 +1103,7 @@ namespace Breeze
         else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
 
         // render
-        renderFrame( painter, option->rect, QColor(), outline, hasFocus );
+        _helper->renderFrame( painter, option->rect, QColor(), outline, hasFocus );
 
         return true;
 
@@ -1144,7 +1144,7 @@ namespace Breeze
         const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
         const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
 
-        renderFrame( painter, option->rect, color, outline );
+        _helper->renderFrame( painter, option->rect, color, outline );
 
         return true;
 
@@ -1219,7 +1219,7 @@ namespace Breeze
 
         }
 
-        renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+        _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
         return true;
 
@@ -1235,9 +1235,9 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool sunken( flags & State_Sunken );
 
-        CheckBoxState state( CheckOff );
-        if( flags & State_NoChange ) state = CheckPartial;
-        else if( flags & State_On ) state = CheckOn;
+        Helper::CheckBoxState state( Helper::CheckOff );
+        if( flags & State_NoChange ) state =Helper:: CheckPartial;
+        else if( flags & State_On ) state = Helper::CheckOn;
 
         // color
         const QPalette& palette( option->palette );
@@ -1257,18 +1257,18 @@ namespace Breeze
         {
 
             const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-            if( state != CheckOff ) color = KColorUtils::mix( active, hover, opacity );
+            if( state != Helper::CheckOff ) color = KColorUtils::mix( active, hover, opacity );
             else color = KColorUtils::mix( normal, hover, opacity );
 
         } else if( mouseOver ) color = hover;
-        else if( state != CheckOff ) color = active;
+        else if( state != Helper::CheckOff ) color = active;
         else color = normal;
 
         // shadow color
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
         // render
-        renderCheckBox( painter, option->rect, color, shadow, sunken, state );
+        _helper->renderCheckBox( painter, option->rect, color, shadow, sunken, state );
 
         return true;
 
@@ -1314,7 +1314,7 @@ namespace Breeze
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
 
         // render
-        renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
+        _helper->renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
 
         return true;
 
@@ -1426,7 +1426,7 @@ namespace Breeze
             const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
             const QColor first( palette.color( QPalette::Highlight ) );
             const QColor second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
-            renderProgressBarBusyContents( painter, rect, first, second, horizontal, progress );
+            _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, progress );
 
         } else if( progress ) {
 
@@ -1450,7 +1450,7 @@ namespace Breeze
 
             // handle right to left
             indicatorRect = handleRTL( option, indicatorRect );
-            renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
+            _helper->renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
 
         }
 
@@ -1463,7 +1463,7 @@ namespace Breeze
     {
         const QPalette& palette( option->palette );
         const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        renderProgressBarHole( painter, option->rect, color );
+        _helper->renderProgressBarHole( painter, option->rect, color );
         return true;
     }
 
@@ -1547,7 +1547,7 @@ namespace Breeze
             if( horizontal ) backgroundRect = centerRect( backgroundRect, backgroundRect.width(), Metrics::ScrollBar_SliderWidth );
             else backgroundRect = centerRect( backgroundRect, Metrics::ScrollBar_SliderWidth, backgroundRect.height() );
 
-            renderScrollBarHole( painter, backgroundRect, color );
+            _helper->renderScrollBarHole( painter, backgroundRect, color );
 
         }
 
@@ -1567,7 +1567,7 @@ namespace Breeze
             else color = base;
 
             // render
-            renderScrollBarHandle( painter, handleRect, color, QColor() );
+            _helper->renderScrollBarHandle( painter, handleRect, color, QColor() );
 
         }
 
@@ -1681,7 +1681,7 @@ namespace Breeze
         }
 
         // render
-        renderScrollBarHole( painter, backgroundRect, color );
+        _helper->renderScrollBarHole( painter, backgroundRect, color );
 
         return true;
 
@@ -1797,7 +1797,7 @@ namespace Breeze
         }
 
         // render
-        renderScrollBarHole( painter, backgroundRect, color );
+        _helper->renderScrollBarHole( painter, backgroundRect, color );
 
         return true;
 
@@ -1878,7 +1878,7 @@ namespace Breeze
                 else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
 
                 // render
-                renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
+                _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
 
             } else {
 
@@ -1910,7 +1910,7 @@ namespace Breeze
 
                 }
 
-                renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+                _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
             }
 
@@ -1984,7 +1984,7 @@ namespace Breeze
             // base color
             const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
 
-            if( !enabled ) renderSliderHole( painter, holeRect, color );
+            if( !enabled ) _helper->renderSliderHole( painter, holeRect, color );
             else {
 
                 // retrieve slider rect
@@ -2001,21 +2001,21 @@ namespace Breeze
 
                     QRect leftRect( holeRect );
                     leftRect.setRight( sliderRect.right()-1 );
-                    renderSliderHole( painter, leftRect, reverseLayout ? color:highlight );
+                    _helper->renderSliderHole( painter, leftRect, reverseLayout ? color:highlight );
 
                     QRect rightRect( holeRect );
                     rightRect.setLeft( sliderRect.left()+1 );
-                    renderSliderHole( painter, rightRect, reverseLayout ? highlight:color );
+                    _helper->renderSliderHole( painter, rightRect, reverseLayout ? highlight:color );
 
                 } else {
 
                     QRect topRect( holeRect );
                     topRect.setBottom( sliderRect.bottom()-1 );
-                    renderSliderHole( painter, topRect, highlight );
+                    _helper->renderSliderHole( painter, topRect, highlight );
 
                     QRect bottomRect( holeRect );
                     bottomRect.setTop( sliderRect.top()+1 );
-                    renderSliderHole( painter, bottomRect, color );
+                    _helper->renderSliderHole( painter, bottomRect, color );
 
                 }
 
@@ -2057,410 +2057,12 @@ namespace Breeze
             else outline = defaultOutline;
 
             const bool sunken( flags & (State_On|State_Sunken) );
-            renderSliderHandle( painter, sliderRect, color, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, sliderRect, color, outline, shadow, hasFocus, sunken );
 
         }
 
         return true;
     }
-
-    //______________________________________________________________________________
-    void Style::renderFrame(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline, bool focus ) const
-    {
-
-        painter->setRenderHint( QPainter::Antialiasing );
-
-        const QRectF baseRect( rect );
-
-        if( color.isValid() )
-        {
-            // content
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 2.5, 2.5 );
-        }
-
-        if( outline.isValid() )
-        {
-
-            // outline
-            if( focus )
-            {
-
-                painter->setPen( QPen( outline, 2 ) );
-                painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 1.5, 1.5 );
-
-            } else {
-
-                painter->setPen( QPen( outline, 1 ) );
-                painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), 2, 2 );
-
-            }
-        }
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderButtonSlab(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline, const QColor& shadow,
-        bool focus, bool sunken ) const
-    {
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        // copy rect
-        QRectF baseRect( rect );
-
-        // shadow
-        if( !sunken )
-        {
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawRoundedRect( shadowRect, 2.5, 2.5 );
-        }
-
-        // content
-        {
-
-            painter->setPen( Qt::NoPen );
-
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            QLinearGradient gradient( contentRect.topLeft(), contentRect.bottomLeft() );
-            gradient.setColorAt( 0, color.lighter( focus ? 103:101 ) );
-            gradient.setColorAt( 1, color.darker( focus ? 110:103 ) );
-            painter->setBrush( gradient );
-
-            painter->drawRoundedRect( contentRect, 3, 3 );
-
-        }
-
-        // outline
-        if( outline.isValid() )
-        {
-            painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
-            painter->drawRoundedRect( outlineRect, 2.5, 2.5 );
-
-        }
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderCheckBox(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& shadow,
-        bool sunken, CheckBoxState state ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        // copy rect
-        QRectF baseRect( rect );
-
-        // shadow
-        if( !sunken )
-        {
-
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawRoundedRect( shadowRect, 2, 2 );
-
-        }
-
-        // content
-        {
-
-            painter->setPen( QPen( color, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
-            painter->drawRoundedRect( contentRect, 2, 2 );
-
-        }
-
-        // mark
-        if( state == CheckOn )
-        {
-
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
-
-            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
-            painter->drawRect( markerRect );
-
-        } else if( state == CheckPartial ) {
-
-            QPen pen( color, 2 );
-            pen.setJoinStyle( Qt::MiterJoin );
-            painter->setPen( pen );
-
-            const QRectF markerRect( baseRect.adjusted( 6, 6, -6, -6 ) );
-            painter->drawRect( markerRect );
-
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->setRenderHint( QPainter::Antialiasing, false );
-
-            QPainterPath path;
-            path.moveTo( 5, 5 );
-            path.lineTo( qreal( Metrics::CheckBox_Size ) -6, 5 );
-            path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
-            painter->drawPath( path );
-
-        }
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderRadioButton(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& shadow,
-        bool sunken, bool checked ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        QRectF baseRect( rect );
-
-        // shadow
-        if( !sunken )
-        {
-
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawEllipse( shadowRect );
-
-        }
-
-        // content
-        {
-
-            painter->setPen( QPen( color, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
-            painter->drawEllipse( contentRect );
-
-        }
-
-        // mark
-        if( checked )
-        {
-
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
-
-            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
-            painter->drawEllipse( markerRect );
-
-        }
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderSliderHole(
-        QPainter* painter, const QRect& rect,
-        const QColor& color ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const QRectF baseRect( rect );
-        const qreal radius( 0.5*Metrics::Slider_Thickness );
-
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawRoundedRect( baseRect, radius, radius );
-        }
-
-        return;
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderSliderHandle(
-        QPainter* painter, const QRect& rect,
-        const QColor& color,
-        const QColor& outline,
-        const QColor& shadow,
-        bool focus,
-        bool sunken ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        QRectF baseRect( rect );
-
-        // shadow
-        if( !sunken )
-        {
-
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawEllipse( shadowRect );
-
-        }
-
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawEllipse( contentRect );
-
-        }
-
-        // outline
-        if( outline.isValid() )
-        {
-            painter->setBrush( Qt::NoBrush );
-            QRectF outlineRect;
-            if( focus )
-            {
-                painter->setPen( QPen( outline, 2 ) );
-                outlineRect = baseRect.adjusted( 2, 2, -2, -2 );
-            } else {
-                painter->setPen( QPen( outline, 1 ) );
-                outlineRect = baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 );
-            }
-
-            painter->drawEllipse( outlineRect );
-
-        }
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderProgressBarHole(
-        QPainter* painter, const QRect& rect,
-        const QColor& color ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const QRectF baseRect( rect );
-        const qreal radius( 0.5*Metrics::ProgressBar_Thickness );
-
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawRoundedRect( baseRect, radius, radius );
-        }
-
-        return;
-
-    }
-
-
-    //______________________________________________________________________________
-    void Style::renderProgressBarBusyContents(
-        QPainter* painter, const QRect& rect,
-        const QColor& first,
-        const QColor& second,
-        bool horizontal,
-        int progress
-        ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const QRectF baseRect( rect );
-        const qreal radius( 0.5*Metrics::ProgressBar_Thickness );
-
-        // setup brush
-        QPixmap pixmap( horizontal ? 2*Metrics::ProgressBar_BusyIndicatorSize : 1, horizontal ? 1:2*Metrics::ProgressBar_BusyIndicatorSize );
-        pixmap.fill( second );
-        if( horizontal )
-        {
-
-            QPainter painter( &pixmap );
-            painter.setBrush( first );
-            painter.setPen( Qt::NoPen );
-
-            progress %= 2*Metrics::ProgressBar_BusyIndicatorSize;
-            painter.drawRect( QRect( 0, 0, Metrics::ProgressBar_BusyIndicatorSize, 1 ).translated( progress, 0 ) );
-
-            if( progress > Metrics::ProgressBar_BusyIndicatorSize )
-            { painter.drawRect( QRect( 0, 0, Metrics::ProgressBar_BusyIndicatorSize, 1 ).translated( progress - 2*Metrics::ProgressBar_BusyIndicatorSize, 0 ) ); }
-
-        } else {
-
-            QPainter painter( &pixmap );
-            painter.setBrush( first );
-            painter.setPen( Qt::NoPen );
-            painter.drawRect( QRect( 0, 0, 1, Metrics::ProgressBar_BusyIndicatorSize ).translated( 0, progress % Metrics::ProgressBar_BusyIndicatorSize ) );
-
-        }
-
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( pixmap );
-        painter->drawRoundedRect( baseRect, radius, radius );
-
-        return;
-
-    }
-
-    //______________________________________________________________________________
-    void Style::renderScrollBarHandle(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const QRectF baseRect( rect );
-        const qreal radius( 0.5*Metrics::ScrollBar_SliderWidth );
-
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawRoundedRect( baseRect, radius, radius );
-        }
-
-
-        // border
-        if( outline.isValid() )
-        {
-            painter->setPen( QPen( outline, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF outlineRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawRoundedRect( outlineRect, radius - 0.5, radius - 0.5 );
-        }
-
-        return;
-
-    }
-
 
     //______________________________________________________________________________
     void Style::renderScrollBarArrow(

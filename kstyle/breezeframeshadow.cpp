@@ -402,63 +402,50 @@ namespace Breeze
         QWidget *parent = parentWidget();
         if(!parent) return;
 
-        QRect r = parent->contentsRect();
-        r.translate(mapFromParent(QPoint(0, 0)));
+        QRect rect = parent->contentsRect();
+        rect.translate(mapFromParent(QPoint(0, 0)));
 
         QColor base( palette().color(QPalette::Window) );
         switch( shadowArea() )
         {
             case Top:
             {
-                r.adjust( -2, -2, 2, -1 );
+                rect.adjust( -2, -2, 2, -1 );
                 break;
             }
 
             case Bottom:
             {
-                r.adjust( -2, 1, 2, 2 );
+                rect.adjust( -2, 1, 2, 2 );
                 break;
             }
 
             case Left:
             {
-                r.adjust( -2, -4, -1, 4 );
+                rect.adjust( -2, -4, -1, 4 );
                 break;
             }
 
             case Right:
             {
-                r.adjust( -1, -4, 2, 4 );
+                rect.adjust( -1, -4, 2, 4 );
                 break;
             }
 
             default: return;
         }
 
-        QPainter painter(this);
-        painter.setRenderHint( QPainter::Antialiasing );
-
+        // define colors
         QColor outline;
         if( _hover ) outline =  _helper.viewHoverBrush().brush( palette() ).color();
         else if( _focus ) outline = _helper.viewHoverBrush().brush( palette() ).color();
         else outline = KColorUtils::mix( palette().color( QPalette::Window ), palette().color( QPalette::WindowText ), 0.25 );
 
-        // outline
-        const QRectF baseRect( r );
-        if( _focus )
-        {
-
-            painter.setPen( QPen( outline, 2 ) );
-            painter.setBrush( Qt::NoBrush );
-            painter.drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 1.5, 1.5 );
-
-        } else {
-
-            painter.setPen( QPen( outline, 1 ) );
-            painter.setBrush( Qt::NoBrush );
-            painter.drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), 2, 2 );
-
-        }
+        // render
+        QPainter painter(this);
+        painter.setClipRegion( event->region() );
+        painter.setRenderHint( QPainter::Antialiasing );
+        _helper.renderFrame( &painter, rect, QColor(), outline, _focus );
 
         return;
 

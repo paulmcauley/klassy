@@ -146,6 +146,54 @@ namespace Breeze
 
         //@}
 
+        //!@name rendering utilities
+        //@{
+
+        //! generic frame
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
+
+        //! generic button slab
+        void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+
+        //! checkbox state (used for checkboxes _and_ radio buttons)
+        enum CheckBoxState
+        {
+            CheckOff = 0,
+            CheckPartial = 1,
+            CheckOn = 2
+        };
+
+        //! checkbox
+        void renderCheckBox( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state ) const;
+
+        //! radio button
+        void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
+
+        //! slider hole
+        void renderSliderHole( QPainter*, const QRect&, const QColor& ) const;
+
+        //! slider hole
+        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+
+        //! progress bar hole
+        void renderProgressBarHole( QPainter*, const QRect&, const QColor& ) const;
+
+        //! progress bar hole
+        void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
+        { return renderProgressBarHole( painter, rect, color ); }
+
+        //! progress bar hole
+        void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, int progress  ) const;
+
+        //! scrollbar hole
+        void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
+        { return renderScrollBarHandle( painter, rect, color, QColor() ); }
+
+        //! scrollbar hole
+        void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+
+        //@}
+
         protected:
 
         //! return color key for a given color, properly accounting for invalid colors

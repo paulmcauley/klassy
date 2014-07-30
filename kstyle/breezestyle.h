@@ -422,56 +422,6 @@ namespace Breeze
         //! return which arrow button is hit by point for scrollbar double buttons
         inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
-        //!@name internal rendering methods
-        /*! here mostly to avoid code duplication */
-        //@{
-
-        //! generic frame
-        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
-
-        //! generic button slab
-        void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
-
-        //! checkbox state (used for checkboxes _and_ radio buttons)
-        enum CheckBoxState
-        {
-            CheckOff = 0,
-            CheckPartial = 1,
-            CheckOn = 2
-        };
-
-        //! checkbox
-        void renderCheckBox( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state ) const;
-
-        //! radio button
-        void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
-
-        //! slider hole
-        void renderSliderHole( QPainter*, const QRect&, const QColor& ) const;
-
-        //! slider hole
-        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
-
-        //! progress bar hole
-        void renderProgressBarHole( QPainter*, const QRect&, const QColor& ) const;
-
-        //! progress bar hole
-        void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderProgressBarHole( painter, rect, color ); }
-
-        //! progress bar hole
-        void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, int progress  ) const;
-
-        //! scrollbar hole
-        void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderScrollBarHandle( painter, rect, color, QColor() ); }
-
-        //! scrollbar hole
-        void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
-
-        //! scrollbar arrow
-        void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
-
         //! returns relevant scrollbar parent
         /*! needed to detect parent focus */
         QWidget* scrollBarParent( const QWidget* ) const;
@@ -481,6 +431,9 @@ namespace Breeze
 
         //! returns point position for generic arrows
         QPolygonF genericArrow( ArrowOrientation, ArrowSize = ArrowNormal ) const;
+
+        //! scrollbar arrow
+        void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
 
         //! scrollbar buttons
         enum ScrollBarButtonType
