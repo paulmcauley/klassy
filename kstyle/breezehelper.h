@@ -81,6 +81,12 @@ namespace Breeze
         //! frame outline color, using animations
         QColor frameOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
+        //! button outline color, using animations
+        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+
+        //! button panel color, using animations
+        QColor buttonPanelColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+
         //@}
 
         //!@name rendering utilities

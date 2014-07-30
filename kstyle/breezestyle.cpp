@@ -1250,59 +1250,14 @@ namespace Breeze
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
         _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
 
-        // store animation state
-        const bool hoverAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) );
-        const bool focusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
-        const qreal hoverOpacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-        const qreal focusOpacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
+        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
-        QColor color;
-        QColor outline;
         const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+        const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const QColor color( _helper->buttonPanelColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
-        const QColor normal( palette.color( QPalette::Button ) );
-        const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
-        const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
-        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
-
-        // colors
-        if( hoverAnimated ) {
-
-            if( hasFocus )
-            {
-
-                color = KColorUtils::mix( focus, hover, hoverOpacity );
-                outline = QColor();
-
-            } else {
-
-                color = KColorUtils::mix( normal, hover, hoverOpacity );
-                outline = _helper->alphaColor( defaultOutline, 1-hoverOpacity );
-
-            }
-
-        } else if( mouseOver ) {
-
-            color = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
-            outline = QColor();
-
-        } else if( focusAnimated ) {
-
-            color = KColorUtils::mix( normal, focus, focusOpacity );
-            outline = _helper->alphaColor( defaultOutline, 1-focusOpacity );
-
-        } else if( hasFocus ) {
-
-            color = focus;
-            outline = QColor();
-
-        } else {
-
-            color = normal;
-            outline = defaultOutline;
-
-        }
-
+        // render
         _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
         return true;
@@ -1332,7 +1287,7 @@ namespace Breeze
         const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
         QColor color;
 
-        // mouseOver has precedence over focus
+        // update only mouse over state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
 
         // cannot use transparent colors because of the rendering of the shadow
@@ -1378,7 +1333,7 @@ namespace Breeze
         const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
         QColor color;
 
-        // mouseOver has precedence over focus
+        // update only mouse over
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
 
         // cannot use transparent colors because of the rendering of the shadow
@@ -1972,33 +1927,21 @@ namespace Breeze
 
             } else {
 
-                QColor color;
-                QColor outline;
-                const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+                // read only comboboxes. Make it look like a button
 
-                const QColor normal( palette.color( QPalette::Button ) );
-                const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
-                const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
-                const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+                // update animation state
+                // hover takes precedence over focus
+                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver );
+                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+
+                const AnimationMode mode( _animations->lineEditEngine().buttonAnimationMode( widget ) );
+                const qreal opacity( _animations->lineEditEngine().buttonOpacity( widget ) );
+
+                const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+                const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                const QColor color( _helper->buttonPanelColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
                 const bool sunken( flags & ( State_On|State_Sunken ) );
-
-                if( mouseOver ) {
-
-                    color = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
-                    outline = QColor();
-
-                }else if( hasFocus ) {
-
-                    color = focus;
-                    outline = QColor();
-
-                } else {
-
-                    color = normal;
-                    outline = defaultOutline;
-
-                }
 
                 _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
@@ -2013,12 +1956,44 @@ namespace Breeze
             // detect empty comboboxes
             const QComboBox* comboBox = qobject_cast<const QComboBox*>( widget );
             const bool empty( comboBox && !comboBox->count() );
-            const QPalette::ColorGroup group( empty ? QPalette::Disabled : palette.currentColorGroup() );
 
             QColor arrowColor;
-            if( editable ) arrowColor = palette.color( group, QPalette::Text );
-            else if( hasFocus && !mouseOver ) arrowColor = palette.color( group, QPalette::HighlightedText );
-            else arrowColor = palette.color( group, QPalette::ButtonText );
+            if( editable )
+            {
+
+                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::Text );
+                else {
+
+                    // check animation state
+                    const bool subControlHover( enabled && mouseOver && comboBoxOption->activeSubControls&SC_ComboBoxArrow );
+                    _animations->comboBoxEngine().updateState( widget, AnimationHover, subControlHover  );
+
+                    const bool animated( enabled && _animations->comboBoxEngine().isAnimated( widget, AnimationHover ) );
+                    const qreal opacity( _animations->comboBoxEngine().opacity( widget, AnimationHover ) );
+
+                    // color
+                    const QColor normal( palette.color( QPalette::Text ) );
+                    const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
+
+                    if( animated )
+                    {
+                        arrowColor = KColorUtils::mix( normal, hover, opacity );
+
+                    } else if( subControlHover ) {
+
+                        arrowColor = hover;
+
+                    } else arrowColor = normal;
+
+                }
+
+            } else {
+
+                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::Text );
+                else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
+                else arrowColor = palette.color( QPalette::ButtonText );
+
+            }
 
             const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
 
@@ -2063,9 +2038,6 @@ namespace Breeze
             const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
                 _animations->lineEditEngine().frameOpacity( widget ),
                 _animations->lineEditEngine().frameAnimationMode( widget ) ) );
-
-            // render
-            _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
 
             // render
             _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );

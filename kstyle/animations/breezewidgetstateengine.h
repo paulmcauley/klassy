@@ -74,9 +74,9 @@ namespace Breeze
         /*! precedence on focus */
         virtual AnimationMode frameAnimationMode( const QObject* object )
         {
-            if( isAnimated( object, AnimationFocus ) ) return AnimationFocus;
+            if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
+            else if( isAnimated( object, AnimationFocus ) ) return AnimationFocus;
             else if( isAnimated( object, AnimationHover ) ) return AnimationHover;
-            else if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
             else return AnimationNone;
         }
 
@@ -84,9 +84,29 @@ namespace Breeze
         /*! precedence on focus */
         virtual qreal frameOpacity( const QObject* object )
         {
-            if( isAnimated( object, AnimationFocus ) ) return data( object, AnimationFocus ).data()->opacity();
-            else if( isAnimated( object, AnimationHover ) ) return data( object, AnimationFocus ).data()->opacity();
-            else if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
+            if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
+            else if( isAnimated( object, AnimationFocus ) ) return data( object, AnimationFocus ).data()->opacity();
+            else if( isAnimated( object, AnimationHover ) ) return data( object, AnimationHover ).data()->opacity();
+            else return AnimationData::OpacityInvalid;
+        }
+
+        //! animation mode
+        /*! precedence on mouseOver */
+        virtual AnimationMode buttonAnimationMode( const QObject* object )
+        {
+            if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
+            else if( isAnimated( object, AnimationHover ) ) return AnimationHover;
+            else if( isAnimated( object, AnimationFocus ) ) return AnimationFocus;
+            else return AnimationNone;
+        }
+
+        //! animation opacity
+        /*! precedence on mouseOver */
+        virtual qreal buttonOpacity( const QObject* object )
+        {
+            if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
+            else if( isAnimated( object, AnimationHover ) ) return data( object, AnimationHover ).data()->opacity();
+            else if( isAnimated( object, AnimationFocus ) ) return data( object, AnimationFocus ).data()->opacity();
             else return AnimationData::OpacityInvalid;
         }
 

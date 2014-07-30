@@ -38,6 +38,7 @@
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QScrollBar>
+#include <QSpinBox>
 #include <QTextEdit>
 #include <QToolButton>
 
@@ -149,9 +150,16 @@ namespace Breeze
         else if( qobject_cast<QComboBox*>( widget ) ) {
             _comboBoxEngine->registerWidget( widget, AnimationHover );
             _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+
         }
 
-        // editor and lists
+        // spinbox
+        else if( qobject_cast<QSpinBox*>( widget ) ) {
+            // _spinBoxEngine->registerWidget( widget );
+            _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+        }
+
+        // editor
         else if( qobject_cast<QLineEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
         else if( qobject_cast<QTextEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 

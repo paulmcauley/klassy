@@ -95,6 +95,64 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QColor Helper::buttonOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+
+        if( mode == AnimationHover )
+        {
+
+            if( hasFocus ) return QColor();
+            else return alphaColor( defaultOutline, 1-opacity );
+
+        } else if( mouseOver ) {
+
+            return QColor();
+
+        } else if( mode == AnimationFocus ) {
+
+            return alphaColor( defaultOutline, 1-opacity );
+
+        } else if( hasFocus ) {
+
+            return QColor();
+
+        } else return defaultOutline;
+
+    }
+
+    //____________________________________________________________________
+    QColor Helper::buttonPanelColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        const QColor normal( palette.color( QPalette::Button ) );
+        const QColor focus( _viewFocusBrush.brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _viewHoverBrush.brush( palette.currentColorGroup() ).color() );
+
+        if( mode == AnimationHover )
+        {
+
+            if( hasFocus ) return KColorUtils::mix( focus, hover, opacity );
+            else return KColorUtils::mix( normal, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            return hover;
+
+        } else if( mode == AnimationFocus ) {
+
+            return KColorUtils::mix( normal, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            return focus;
+
+        } else return normal;
+
+    }
+
+    //____________________________________________________________________
     QColor Helper::alphaColor( QColor color, qreal alpha )
     {
         if( alpha >= 0 && alpha < 1.0 )
