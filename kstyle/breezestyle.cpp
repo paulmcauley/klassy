@@ -593,7 +593,15 @@ namespace Breeze
 
     //___________________________________________________________________________________________________________________
     QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* ) const
-    { return insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth ); }
+    {
+        // cast option and check
+        const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
+        if( !frameOption ) return option->rect;
+
+        // check flatness
+        const bool isFlat( frameOption->lineWidth == 0 );
+        return isFlat ? option->rect : insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+    }
 
     //___________________________________________________________________________________________________________________
     QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const
@@ -834,6 +842,9 @@ namespace Breeze
                         rect.width() - Metrics::ComboBox_ButtonWidth,
                         rect.height() );
 
+                    // remove line editor margins
+                    labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
+
                 } else {
 
                     labelRect = QRect(
@@ -999,8 +1010,17 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::lineEditSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth ); }
+    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
+        // cast option and check
+        const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
+        if( !frameOption ) return contentsSize;
+
+        // check flatness
+        const bool isFlat( frameOption->lineWidth == 0 );
+        if( isFlat ) return contentsSize;
+        else return expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+    }
 
     //______________________________________________________________
     QSize Style::comboBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
