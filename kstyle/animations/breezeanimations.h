@@ -67,6 +67,14 @@ namespace Breeze
         WidgetStateEngine& widgetStateEngine( void ) const
         { return *_widgetStateEngine; }
 
+        //! editable combobox arrow hover engine
+        WidgetStateEngine& comboBoxEngine( void ) const
+        { return *_comboBoxEngine; }
+
+        //! lineEdit engine
+        WidgetStateEngine& lineEditEngine( void ) const
+        { return *_lineEditEngine; }
+
         //! busy indicator
         BusyIndicatorEngine& busyIndicatorEngine( void ) const
         { return *_busyIndicatorEngine; }
@@ -99,6 +107,12 @@ namespace Breeze
 
         //! abstract button engine
         WidgetStateEngine* _widgetStateEngine;
+
+        //! line editor engine
+        WidgetStateEngine* _lineEditEngine;
+
+        //! editable combobox arrow hover effect
+        WidgetStateEngine* _comboBoxEngine;
 
         //! scrollbar engine
         ScrollBarEngine* _scrollBarEngine;

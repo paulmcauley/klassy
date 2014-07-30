@@ -26,6 +26,7 @@
 #include "breezestyle.moc"
 
 #include "breezeanimations.h"
+#include "breezeanimationmodes.h"
 #include "breezeframeshadow.h"
 #include "breezehelper.h"
 #include "breezemetrics.h"
@@ -1169,22 +1170,58 @@ namespace Breeze
         const bool mouseOver( enabled && isInputWidget && ( flags&State_MouseOver ) );
         const bool hasFocus( enabled && ( flags&State_HasFocus ) );
 
-        // cast option and check
-        const QStyleOptionFrame *frameOption = qstyleoption_cast<const QStyleOptionFrame *>( option );
-        if( !frameOption ) return true;
+        // focus takes precedence over hover
+        _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
+        _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
 
         // do nothing for flat frames
         if( !( flags & (State_Sunken | State_Raised ) ) ) return true;
 
+        // retrieve animation mode and opacity
+        qreal opacity( -1 );
+        AnimationMode mode = AnimationNone;
+        if( enabled && _animations->lineEditEngine().isAnimated( widget, AnimationFocus ) )
+        {
+
+            opacity = _animations->lineEditEngine().opacity( widget, AnimationFocus  );
+            mode = AnimationFocus;
+
+        } else if( enabled && _animations->lineEditEngine().isAnimated( widget, AnimationHover ) ) {
+
+            opacity = _animations->lineEditEngine().opacity( widget, AnimationHover );
+            mode = AnimationHover;
+
+        }
+
+        // update frame shadow factory
         if( _frameShadowFactory->isRegistered( widget ) )
-        { _frameShadowFactory->updateState( widget, hasFocus, mouseOver ); }
+        { _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode ); }
 
         // colors
         const QPalette& palette( option->palette );
+        const QColor focus( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
         QColor outline;
-        if( mouseOver ) outline =  _helper->viewHoverBrush().brush( palette ).color();
-        else if( hasFocus ) outline = _helper->viewHoverBrush().brush( palette ).color();
-        else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
+        if( mode == AnimationFocus )
+        {
+            if( mouseOver ) outline = KColorUtils::mix( hover, focus, opacity );
+            else outline = KColorUtils::mix( defaultOutline, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focus;
+
+        } else if( mode == AnimationHover ) {
+
+            outline = KColorUtils::mix( defaultOutline, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            outline =  hover;
+
+        } else outline = defaultOutline;
 
         // render
         _helper->renderFrame( painter, option->rect, QColor(), outline, hasFocus );

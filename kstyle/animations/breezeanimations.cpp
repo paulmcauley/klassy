@@ -31,10 +31,14 @@
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 
+#include <QAbstractItemView>
 #include <QDial>
+#include <QComboBox>
 #include <QGroupBox>
+#include <QLineEdit>
 #include <QProgressBar>
 #include <QScrollBar>
+#include <QTextEdit>
 #include <QToolButton>
 
 namespace Breeze
@@ -46,8 +50,10 @@ namespace Breeze
     {
         _widgetEnabilityEngine = new WidgetStateEngine( this );
         _busyIndicatorEngine = new BusyIndicatorEngine( this );
+        _comboBoxEngine = new WidgetStateEngine( this );
 
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
+        registerEngine( _lineEditEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
         registerEngine( _sliderEngine = new SliderEngine( this ) );
     }
@@ -66,6 +72,8 @@ namespace Breeze
             // enability
             _widgetEnabilityEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _comboBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _lineEditEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
@@ -80,6 +88,8 @@ namespace Breeze
             // durations
             _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _comboBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _lineEditEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
@@ -134,6 +144,28 @@ namespace Breeze
 
         // progress bar
         else if( qobject_cast<QProgressBar*>( widget ) ) { _busyIndicatorEngine->registerWidget( widget ); }
+
+        // combo box
+        else if( qobject_cast<QComboBox*>( widget ) ) {
+            _comboBoxEngine->registerWidget( widget, AnimationHover );
+            _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+        }
+
+        // editor and lists
+        else if( qobject_cast<QLineEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        else if( qobject_cast<QTextEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+
+        // lists
+        else if( qobject_cast<QAbstractItemView*>( widget ) || widget->inherits("Q3ListView") )
+        { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+
+        // scrollarea
+        else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
+
+            if( scrollArea->frameShadow() == QFrame::Sunken && (widget->focusPolicy()&Qt::StrongFocus) )
+            { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+
+        }
 
         return;
 

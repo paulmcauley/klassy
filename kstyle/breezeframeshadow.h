@@ -31,6 +31,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeaddeventfilter.h"
+#include "breezeanimationmodes.h"
 #include "breezehelper.h"
 
 #include <QEvent>
@@ -84,7 +85,7 @@ namespace Breeze
         virtual bool eventFilter( QObject*, QEvent*);
 
         //! update state
-        void updateState( const QWidget*, bool focus, bool hover ) const;
+        void updateState( const QWidget*, bool focus, bool hover, qreal opacity, AnimationMode ) const;
 
         protected:
 
@@ -151,7 +152,7 @@ namespace Breeze
         virtual void updateGeometry( void ) = 0;
 
         //! update state
-        virtual void updateState( bool, bool )
+        virtual void updateState( bool, bool, qreal, AnimationMode )
         {}
 
         protected:
@@ -184,8 +185,10 @@ namespace Breeze
         SunkenFrameShadow( ShadowArea area, Helper& helper ):
             FrameShadowBase( area ),
             _helper( helper ),
-            _focus( false ),
-            _hover( false )
+            _hasFocus( false ),
+            _mouseOver( false ),
+            _opacity( -1 ),
+            _mode( AnimationNone )
         { init(); }
 
 
@@ -197,7 +200,7 @@ namespace Breeze
         virtual void updateGeometry( void );
 
         //! update state
-        void updateState( bool focus, bool hover );
+        void updateState( bool focus, bool hover, qreal opacity, AnimationMode );
 
         protected:
 
@@ -220,8 +223,10 @@ namespace Breeze
 
         //!@name widget state
         //@{
-        bool _focus;
-        bool _hover;
+        bool _hasFocus;
+        bool _mouseOver;
+        qreal _opacity;
+        AnimationMode _mode;
     };
 }
 

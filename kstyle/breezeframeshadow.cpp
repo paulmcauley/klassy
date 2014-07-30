@@ -203,14 +203,14 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    void FrameShadowFactory::updateState( const QWidget* widget, bool focus, bool hover ) const
+    void FrameShadowFactory::updateState( const QWidget* widget, bool focus, bool hover, qreal opacity, AnimationMode mode ) const
     {
 
         const QList<QObject *> children = widget->children();
         foreach( QObject *child, children )
         {
             if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase *>(child) )
-            { shadow->updateState( focus, hover ); }
+            { shadow->updateState( focus, hover, opacity, mode ); }
         }
 
     }
@@ -369,11 +369,23 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    void SunkenFrameShadow::updateState( bool focus, bool hover )
+    void SunkenFrameShadow::updateState( bool focus, bool hover, qreal opacity, AnimationMode mode )
     {
         bool changed( false );
-        if( _focus != focus ) { _focus = focus; changed |= true; }
-        if( _hover != hover ) { _hover = hover; changed |= !_focus; }
+        if( _hasFocus != focus ) { _hasFocus = focus; changed |= true; }
+        if( _mouseOver != hover ) { _mouseOver = hover; changed |= !_hasFocus; }
+        if( _mode != mode )
+        {
+
+            _mode = mode;
+            changed |=
+                (_mode == AnimationNone) ||
+                (_mode == AnimationFocus) ||
+                (_mode == AnimationHover && !_hasFocus );
+
+        }
+
+        if( _opacity != opacity ) { _opacity = opacity; changed |= (_mode != AnimationNone ); }
         if( changed )
         {
 
@@ -435,17 +447,37 @@ namespace Breeze
             default: return;
         }
 
-        // define colors
+          // colors
+        const QPalette& palette( this->palette() );
+        const QColor focus( _helper.viewFocusBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _helper.viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
         QColor outline;
-        if( _hover ) outline =  _helper.viewHoverBrush().brush( palette() ).color();
-        else if( _focus ) outline = _helper.viewHoverBrush().brush( palette() ).color();
-        else outline = KColorUtils::mix( palette().color( QPalette::Window ), palette().color( QPalette::WindowText ), 0.25 );
+        if( _mode == AnimationFocus )
+        {
+            if( _mouseOver ) outline = KColorUtils::mix( hover, focus, _opacity );
+            else outline = KColorUtils::mix( defaultOutline, focus, _opacity );
+
+        } else if( _hasFocus ) {
+
+            outline = focus;
+
+        } else if( _mode == AnimationHover ) {
+
+            outline = KColorUtils::mix( defaultOutline, hover, _opacity );
+
+        } else if( _mouseOver ) {
+
+            outline =  hover;
+
+        } else outline = defaultOutline;
 
         // render
         QPainter painter(this);
         painter.setClipRegion( event->region() );
         painter.setRenderHint( QPainter::Antialiasing );
-        _helper.renderFrame( &painter, rect, QColor(), outline, _focus );
+        _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
 
         return;
 
