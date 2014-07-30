@@ -41,6 +41,9 @@ namespace Breeze
         ComboBox_ButtonWidth = 20,
         ComboBox_BoxTextSpace = 8,
 
+        // spinbox
+        SpinBox_ButtonWidth = 20,
+
         // groupbox title margin
         GroupBox_TitleMarginWidth = 4,
 

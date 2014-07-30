@@ -223,20 +223,11 @@ namespace Breeze
         //!@name subcontrol Rect specialized functions
         //@{
 
-        //! groupbox
         QRect groupBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
-
-        //! combobox
         QRect comboBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
-
-        //! scrollbar (internal)
+        QRect spinBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
         QRect scrollBarInternalSubControlRect( const QStyleOptionComplex*, SubControl ) const;
-
-        //! scrollbar
         QRect scrollBarSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
-
-        //! spinbox
-//         QRect spinBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
         //@}
 
@@ -246,6 +237,7 @@ namespace Breeze
         QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize lineEditSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
 //         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -357,9 +349,9 @@ namespace Breeze
         //!@name complex ontrols specialized functions
         //@{
         bool drawComboBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        bool drawSpinBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawDialComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         bool drawSliderComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
-//         bool drawSpinBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawToolButtonComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
@@ -434,6 +426,9 @@ namespace Breeze
 
         //! scrollbar arrow
         void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
+
+        //! spinbox arrows
+        void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
 
         //! scrollbar buttons
         enum ScrollBarButtonType

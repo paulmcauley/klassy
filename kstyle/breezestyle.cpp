@@ -291,13 +291,9 @@ namespace Breeze
         switch( element )
         {
 
-            // groupbox
             case CC_GroupBox: return groupBoxSubControlRect( option, subControl, widget );
-
-            // combobox
             case CC_ComboBox: return comboBoxSubControlRect( option, subControl, widget );
-
-            // scrollbar
+            case CC_SpinBox: return spinBoxSubControlRect( option, subControl, widget );
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
 
             // fallback
@@ -314,20 +310,12 @@ namespace Breeze
         switch( element )
         {
 
-            // checkboxes and radio buttons
             case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
             case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
-
-            // line edit
             case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
-
-            // comboboxes
             case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
-
-            // push buttons
+            case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
-
-            // progress bar
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
 
             // fallback
@@ -486,6 +474,7 @@ namespace Breeze
         {
 
             case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
+            case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
 
             // fallback
@@ -870,6 +859,65 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
+    QRect Style::spinBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
+
+        QRect rect( option->rect );
+
+        switch( subControl )
+        {
+            case SC_SpinBoxFrame: return rect;
+
+            case SC_SpinBoxUp:
+            case SC_SpinBoxDown:
+            {
+
+                // take out frame width
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect arrowRect;
+                arrowRect = QRect(
+                    rect.right() - Metrics::SpinBox_ButtonWidth,
+                    rect.top(),
+                    Metrics::SpinBox_ButtonWidth,
+                    rect.height() );
+
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ButtonWidth, Metrics::SpinBox_ButtonWidth );
+                arrowRect.setHeight( Metrics::SpinBox_ButtonWidth/2 );
+                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ButtonWidth/2 );
+
+                return handleRTL( option, arrowRect );
+
+            }
+
+            case SC_SpinBoxEditField:
+            {
+
+                // take out frame width
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect labelRect;
+                labelRect = QRect(
+                    rect.left(), rect.top(),
+                    rect.width() - Metrics::SpinBox_ButtonWidth,
+                    rect.height() );
+
+                // remove line editor margins
+                labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
+
+                return handleRTL( option, labelRect );
+
+            }
+
+            default: break;
+
+        }
+
+        return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );
+
+    }
+
+    //___________________________________________________________________________________________________________________
     QRect Style::scrollBarInternalSubControlRect( const QStyleOptionComplex* option, SubControl subControl ) const
     {
 
@@ -1010,7 +1058,7 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
         // cast option and check
         const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
@@ -1046,6 +1094,26 @@ namespace Breeze
 
         // add framewidth
         return expandSize( size, Metrics::Frame_FrameWidth );
+    }
+
+    //______________________________________________________________
+    QSize Style::spinBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        QSize size( contentsSize );
+
+        // add editor margins
+        size = expandSize( size, Metrics::LineEdit_MarginWidth );
+
+        // make sure there is enough height for the button
+        size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ButtonWidth ) );
+
+        // add button width and spacing
+        size.rwidth() += Metrics::SpinBox_ButtonWidth;
+
+        // add framewidth
+        return expandSize( size, Metrics::Frame_FrameWidth );
+
     }
 
     //______________________________________________________________
@@ -1882,7 +1950,7 @@ namespace Breeze
         const bool editable( comboBoxOption->editable );
 
         // frame
-        if( comboBoxOption->subControls & SC_ComboBoxFrame )
+        if( option->subControls & SC_ComboBoxFrame )
         {
 
             if( editable )
@@ -1933,7 +2001,7 @@ namespace Breeze
         }
 
         // arrow
-        if( comboBoxOption->subControls & SC_ComboBoxArrow )
+        if( option->subControls & SC_ComboBoxArrow )
         {
 
             // detect empty comboboxes
@@ -1959,6 +2027,37 @@ namespace Breeze
             painter->restore();
 
         }
+
+        return true;
+
+    }
+
+    //______________________________________________________________
+    bool Style::drawSpinBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox *>( option ) );
+        if( !spinBoxOption ) return true;
+
+        const State& flags( option->state );
+        const QPalette& palette( option->palette );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool hasFocus( flags & State_HasFocus );
+
+        if( option->subControls & SC_SpinBoxFrame )
+        {
+            QColor outline;
+            if( mouseOver ) outline =  _helper->viewHoverBrush().brush( palette ).color();
+            else if( hasFocus ) outline = _helper->viewHoverBrush().brush( palette ).color();
+            else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
+
+            // render
+            _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
+        }
+
+        if( option->subControls & SC_SpinBoxUp ) renderSpinBoxArrow( painter, spinBoxOption, widget, SC_SpinBoxUp );
+        if( option->subControls & SC_SpinBoxDown ) renderSpinBoxArrow( painter, spinBoxOption, widget, SC_SpinBoxDown );
 
         return true;
 
@@ -2097,6 +2196,72 @@ namespace Breeze
         painter->translate( QRectF(rect).center() );
 
         painter->setPen( QPen( base, penThickness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
+        painter->drawPolyline( a );
+        painter->restore();
+
+        return;
+
+    }
+
+    //____________________________________________________________________________________________________
+    void Style::renderSpinBoxArrow( QPainter* painter, const QStyleOptionSpinBox* option, const QWidget* widget, const SubControl& subControl ) const
+    {
+
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+
+        // enable state
+        bool enabled( flags & State_Enabled );
+
+        // check steps enable step
+        const bool atLimit(
+            (subControl == SC_SpinBoxUp && !(option->stepEnabled & QAbstractSpinBox::StepUpEnabled )) ||
+            (subControl == SC_SpinBoxDown && !(option->stepEnabled & QAbstractSpinBox::StepDownEnabled ) ) );
+
+        // update enabled state accordingly
+        enabled &= !atLimit;
+
+        // update mouse-over effect
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+
+        // check animation state
+        const bool subControlHover( enabled && mouseOver && ( option->activeSubControls & subControl ) );
+//         _animations->spinBoxEngine().updateState( widget, subControl, subControlHover );
+//
+//         const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
+//         const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
+
+        QColor color;
+//         if( animated )
+//         {
+//
+//             QColor highlight = _helper->viewHoverBrush().brush( palette ).color();
+//             color = KColorUtils::mix( palette.color( QPalette::Text ), highlight, opacity );
+//
+//         } else if( subControlHover ) {
+        if( subControlHover ) {
+
+            color = _helper->viewHoverBrush().brush( palette ).color();
+
+        } else if( atLimit ) {
+
+            color = palette.color( QPalette::Disabled, QPalette::Text );
+
+        } else {
+
+            color = palette.color( QPalette::Text );
+
+        }
+
+        const QPolygonF a( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown, ArrowNormal ) );
+        const QRectF arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
+
+        painter->save();
+        painter->translate( arrowRect.center() );
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const qreal penThickness = 1.6;
+        painter->setPen( QPen( color, penThickness ) );
         painter->drawPolyline( a );
         painter->restore();
 
