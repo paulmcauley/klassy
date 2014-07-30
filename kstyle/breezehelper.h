@@ -23,6 +23,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#include "breezeanimationmodes.h"
+
 #include <KSharedConfig>
 #include <KColorScheme>
 
@@ -71,6 +73,13 @@ namespace Breeze
         //! negative text brush ( used for close button hover )
         const KStatefulBrush& viewNegativeTextBrush( void ) const
         { return _viewNegativeTextBrush; }
+
+        //@}
+
+        //!@name color utilities
+
+        //! frame outline color, using animations
+        QColor frameOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
         //@}
 

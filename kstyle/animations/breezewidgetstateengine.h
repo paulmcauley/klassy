@@ -70,6 +70,26 @@ namespace Breeze
         virtual qreal opacity( const QObject* object, AnimationMode mode )
         { return isAnimated( object, mode ) ? data( object, mode ).data()->opacity(): AnimationData::OpacityInvalid; }
 
+        //! animation mode
+        /*! precedence on focus */
+        virtual AnimationMode frameAnimationMode( const QObject* object )
+        {
+            if( isAnimated( object, AnimationFocus ) ) return AnimationFocus;
+            else if( isAnimated( object, AnimationHover ) ) return AnimationHover;
+            else if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
+            else return AnimationNone;
+        }
+
+        //! animation opacity
+        /*! precedence on focus */
+        virtual qreal frameOpacity( const QObject* object )
+        {
+            if( isAnimated( object, AnimationFocus ) ) return data( object, AnimationFocus ).data()->opacity();
+            else if( isAnimated( object, AnimationHover ) ) return data( object, AnimationFocus ).data()->opacity();
+            else if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
+            else return AnimationData::OpacityInvalid;
+        }
+
         //! duration
         virtual void setEnabled( bool value )
         {

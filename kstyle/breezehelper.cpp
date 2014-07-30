@@ -61,6 +61,40 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QColor Helper::frameOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        // colors
+        const QColor focus( _viewFocusBrush.brush( palette.currentColorGroup() ).color() );
+        const QColor hover( _viewHoverBrush.brush( palette.currentColorGroup() ).color() );
+        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
+        QColor outline;
+        if( mode == AnimationFocus )
+        {
+
+            if( mouseOver ) outline = KColorUtils::mix( hover, focus, opacity );
+            else outline = KColorUtils::mix( defaultOutline, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focus;
+
+        } else if( mode == AnimationHover ) {
+
+            outline = KColorUtils::mix( defaultOutline, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            outline = hover;
+
+        } else outline = defaultOutline;
+
+        return outline;
+
+    }
+
+    //____________________________________________________________________
     QColor Helper::alphaColor( QColor color, qreal alpha )
     {
         if( alpha >= 0 && alpha < 1.0 )
