@@ -193,10 +193,14 @@ namespace Breeze
         {
 
             // frame width
-            case PM_DefaultFrameWidth: return Metrics::Frame_FrameWidth;
+            case PM_DefaultFrameWidth:
+            case PM_ComboBoxFrameWidth:
+            case PM_DockWidgetFrameWidth:
+            case PM_SpinBoxFrameWidth:
+            return Metrics::Frame_FrameWidth;
 
             // buttons
-            case PM_ButtonMargin: return Metrics::Button_Margin;
+            case PM_ButtonMargin: return Metrics::Button_MarginWidth;
             case PM_ButtonDefaultIndicator: return 0;
             case PM_ButtonShiftHorizontal: return 0;
             case PM_ButtonShiftVertical: return 0;
@@ -216,6 +220,7 @@ namespace Breeze
             case PM_ExclusiveIndicatorWidth: return RadioButton_Size;
             case PM_ExclusiveIndicatorHeight: return RadioButton_Size;
 
+
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
 
@@ -229,14 +234,15 @@ namespace Breeze
         switch( hint )
         {
 
-            // groupbox
-            case SH_GroupBox_TextLabelColor:
-            if( option ) return option->palette.color( QPalette::WindowText ).rgba();
-            else return QPalette().color( QPalette::WindowText ).rgba();
+            // mouse tracking
+            case SH_ComboBox_ListMouseTracking: return true;
+            case SH_MenuBar_MouseTracking: return true;
+            case SH_Menu_MouseTracking: return true;
 
+            // groupboxes
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
 
-            // scrollbar
+            // scrollbars
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
 
             // fallback
@@ -283,6 +289,9 @@ namespace Breeze
             // groupbox
             case CC_GroupBox: return groupBoxSubControlRect( option, subControl, widget );
 
+            // combobox
+            case CC_ComboBox: return comboBoxSubControlRect( option, subControl, widget );
+
             // scrollbar
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
 
@@ -302,8 +311,16 @@ namespace Breeze
 
             // checkboxes and radio buttons
             case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
-            case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
             case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
+
+            // line edit
+            case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
+
+            // comboboxes
+            case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
+
+            // push buttons
+            case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
 
             // progress bar
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
@@ -382,6 +399,7 @@ namespace Breeze
             // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
+            case PE_FrameLineEdit: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
@@ -415,6 +433,10 @@ namespace Breeze
             */
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
+
+            // combobox
+            case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
+
 
             // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
@@ -458,6 +480,7 @@ namespace Breeze
         switch( element )
         {
 
+            case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
 
             // fallback
@@ -553,10 +576,8 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::checkBoxFocusRect( const QStyleOption* option, const QWidget* widget ) const
+    QRect Style::checkBoxFocusRect( const QStyleOption* option, const QWidget* ) const
     {
-
-        Q_UNUSED( widget );
 
         // cast option
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
@@ -570,13 +591,8 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        Q_UNUSED( widget );
-        return insideMargin( option->rect, Metrics::LineEdit_MarginWidth );
-
-    }
+    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* ) const
+    { return insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth ); }
 
     //___________________________________________________________________________________________________________________
     QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const
@@ -619,10 +635,8 @@ namespace Breeze
     { return progressBarGrooveRect( option, widget ); }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::progressBarLabelRect( const QStyleOption* option, const QWidget* widget ) const
+    QRect Style::progressBarLabelRect( const QStyleOption* option, const QWidget* ) const
     {
-
-        Q_UNUSED( widget );
 
         // cast option
         const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
@@ -677,7 +691,7 @@ namespace Breeze
                 if( checkable ) titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
 
                 // add margin
-                if( titleHeight > 0 ) titleHeight += 2*Metrics::GroupBox_TitleMargin;
+                if( titleHeight > 0 ) titleHeight += 2*Metrics::GroupBox_TitleMarginWidth;
 
                 rect.adjust( 0, titleHeight, 0, 0 );
                 return rect;
@@ -719,7 +733,7 @@ namespace Breeze
                 // adjust height
                 QRect titleRect( rect );
                 titleRect.setHeight( titleHeight );
-                titleRect.translate( 0, Metrics::GroupBox_TitleMargin );
+                titleRect.translate( 0, Metrics::GroupBox_TitleMarginWidth );
 
                 // center
                 titleRect = centerRect( titleRect, titleWidth, titleHeight );
@@ -754,6 +768,92 @@ namespace Breeze
         }
 
         return KStyle::subControlRect( CC_GroupBox, option, subControl, widget );
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
+
+        QRect rect( option->rect );
+        const QStyleOptionComboBox *comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox *>( option );
+        if( !comboBoxOption ) return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
+
+        switch( subControl )
+        {
+            case SC_ComboBoxFrame: return comboBoxOption->frame ? rect : QRect();
+            case SC_ComboBoxListBoxPopup: return rect;
+
+            case SC_ComboBoxArrow:
+            {
+
+                // take out frame width
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect arrowRect;
+                const bool editable( comboBoxOption->editable );
+                if( editable )
+                {
+
+                    arrowRect = QRect(
+                        rect.right() - Metrics::ComboBox_ButtonWidth,
+                        rect.top(),
+                        Metrics::ComboBox_ButtonWidth,
+                        rect.height() );
+
+                } else {
+
+                    arrowRect = QRect(
+                        rect.right() - Metrics::ComboBox_ButtonWidth,
+                        rect.top(),
+                        Metrics::ComboBox_ButtonWidth,
+                        rect.height() );
+
+                }
+
+                arrowRect = centerRect( arrowRect, Metrics::ComboBox_ButtonWidth, Metrics::ComboBox_ButtonWidth );
+                return handleRTL( option, arrowRect );
+
+            }
+
+            case SC_ComboBoxEditField:
+            {
+
+                // take out frame width
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect labelRect;
+                const bool editable( comboBoxOption->editable );
+
+                if( editable )
+                {
+
+                    labelRect = QRect(
+                        rect.left(), rect.top(),
+                        rect.width() - Metrics::ComboBox_ButtonWidth,
+                        rect.height() );
+
+                } else {
+
+                    labelRect = QRect(
+                        rect.left(), rect.top(),
+                        rect.width() - Metrics::ComboBox_ButtonWidth - Metrics::ComboBox_BoxTextSpace,
+                        rect.height() );
+
+                    // remove button margin
+                    labelRect.adjust( Metrics::ComboBox_MarginWidth, Metrics::ComboBox_MarginWidth, 0, -Metrics::ComboBox_MarginWidth );
+
+                }
+
+                return handleRTL( option, labelRect );
+
+            }
+
+            default: break;
+
+        }
+
+        return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
 
     }
 
@@ -899,10 +999,37 @@ namespace Breeze
 
     //______________________________________________________________
     QSize Style::lineEditSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    { return expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth ); }
+
+    //______________________________________________________________
+    QSize Style::comboBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
+
+        // cast option and check
+        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox *>( option ) );
+        if( !comboBoxOption ) return contentsSize;
+
         QSize size( contentsSize );
-        return size + QSize( 2*Metrics::LineEdit_MarginWidth, 2*Metrics::LineEdit_MarginWidth );
+
+        // add relevant margins
+        const bool editable( comboBoxOption->editable );
+        if( editable ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
+        else size = expandSize( size, Metrics::ComboBox_MarginWidth );
+
+        // make sure there is enough height for the button
+        size.setHeight( qMax( size.height(), (int)Metrics::ComboBox_ButtonWidth ) );
+
+        // add button width and spacing
+        size.rwidth() += Metrics::ComboBox_ButtonWidth;
+        if( !editable ) size.rwidth() += Metrics::ComboBox_BoxTextSpace;
+
+        // add framewidth
+        return expandSize( size, Metrics::Frame_FrameWidth );
     }
+
+    //______________________________________________________________
+    QSize Style::pushButtonSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    { return expandSize( contentsSize, Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth ); }
 
     //______________________________________________________________
     QSize Style::progressBarSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
@@ -942,8 +1069,6 @@ namespace Breeze
     //______________________________________________________________
     bool Style::drawFramePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        Q_UNUSED( widget );
 
         const State& flags( option->state );
 
@@ -995,10 +1120,8 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    bool Style::drawFrameGroupBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawFrameGroupBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-
-        Q_UNUSED( widget );
 
         // cast option and check
         const QStyleOptionFrame *frameOption = qstyleoption_cast<const QStyleOptionFrame *>( option );
@@ -1022,8 +1145,6 @@ namespace Breeze
     //______________________________________________________________
     bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        Q_UNUSED( widget );
 
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
@@ -1100,8 +1221,6 @@ namespace Breeze
     bool Style::drawIndicatorCheckBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        Q_UNUSED( widget );
-
         // get rect
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
@@ -1151,8 +1270,6 @@ namespace Breeze
     bool Style::drawIndicatorRadioButtonPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        Q_UNUSED( widget );
-
         // get rect
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
@@ -1199,26 +1316,40 @@ namespace Breeze
     bool Style::drawPushButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // cast option and check
+        const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>( option );
+        if( !buttonOption ) return false;
+
+        // need to alter palette for focused buttons
+        const bool hasFocus( option->state & State_HasFocus );
+        const bool mouseOver( option->state & State_MouseOver );
+        if( mouseOver || !hasFocus ) return false;
+
+        // copy option, alter palette, and call base class method
+        QStyleOptionButton copy( *buttonOption );
+        copy.palette.setColor( QPalette::ButtonText, copy.palette.color( QPalette::HighlightedText ) );
+        KStyle::drawControl( CE_PushButtonLabel, &copy, painter, widget );
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        const QStyleOptionComboBox* comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox*>( option );
+        if( !comboBoxOption ) return false;
+        if( comboBoxOption->editable ) return false;
+
         // need to alter palette for focused buttons
         const bool hasFocus( option->state & State_HasFocus );
         const bool mouseOver( option->state & State_MouseOver );
         if( hasFocus && !mouseOver )
-        {
+        { painter->setPen( QPen( option->palette.color( QPalette::HighlightedText ), 1 ) ); }
 
-            const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>( option );
-            if ( !buttonOption ) return false;
-
-            QStyleOptionButton copy( *buttonOption );
-            copy.palette.setColor( QPalette::ButtonText, copy.palette.color( QPalette::HighlightedText ) );
-
-            // call base class, with modified option
-            KStyle::drawControl( CE_PushButtonLabel, &copy, painter, widget );
-            return true;
-
-        } else return false;
+        return false;
 
     }
-
 
     //___________________________________________________________________________________
     bool Style::drawProgressBarControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
@@ -1265,10 +1396,8 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-
-        Q_UNUSED( widget );
 
         const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
         if( !progressBarOption ) return true;
@@ -1371,8 +1500,6 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawScrollBarSliderControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        Q_UNUSED( widget );
 
         // cast option and check
         const QStyleOptionSlider *sliderOption = qstyleoption_cast<const QStyleOptionSlider *>( option );
@@ -1669,10 +1796,8 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-
-        Q_UNUSED( widget );
 
         // cast option and check
         const QStyleOptionFrameV3* frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
@@ -1714,6 +1839,104 @@ namespace Breeze
         }
 
         return false;
+
+    }
+
+    //______________________________________________________________
+    bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox *>( option ) );
+        if( !comboBoxOption ) return true;
+
+        const State& flags( option->state );
+        const QPalette& palette( option->palette );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool hasFocus( flags & State_HasFocus );
+        const bool editable( comboBoxOption->editable );
+
+        // frame
+        if( comboBoxOption->subControls & SC_ComboBoxFrame )
+        {
+
+            if( editable )
+            {
+
+                QColor outline;
+                if( mouseOver ) outline =  _helper->viewHoverBrush().brush( palette ).color();
+                else if( hasFocus ) outline = _helper->viewHoverBrush().brush( palette ).color();
+                else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
+
+                // render
+                renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
+
+            } else {
+
+                QColor color;
+                QColor outline;
+                const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+
+                const QColor normal( palette.color( QPalette::Button ) );
+                const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+                const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
+                const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+
+                const bool sunken( flags & ( State_On|State_Sunken ) );
+
+                if( mouseOver ) {
+
+                    color = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
+                    outline = QColor();
+
+                }else if( hasFocus ) {
+
+                    color = focus;
+                    outline = QColor();
+
+                } else {
+
+                    color = normal;
+                    outline = defaultOutline;
+
+                }
+
+                renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+
+            }
+
+        }
+
+        // arrow
+        if( comboBoxOption->subControls & SC_ComboBoxArrow )
+        {
+
+            // detect empty comboboxes
+            const QComboBox* comboBox = qobject_cast<const QComboBox*>( widget );
+            const bool empty( comboBox && !comboBox->count() );
+            const QPalette::ColorGroup group( empty ? QPalette::Disabled : palette.currentColorGroup() );
+
+            QColor arrowColor;
+            if( editable ) arrowColor = palette.color( group, QPalette::Text );
+            else if( hasFocus && !mouseOver ) arrowColor = palette.color( group, QPalette::HighlightedText );
+            else arrowColor = palette.color( group, QPalette::ButtonText );
+
+            const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
+
+            const QPolygonF a( genericArrow( ArrowDown, ArrowNormal ) );
+            const qreal penThickness( 1.5 );
+
+            painter->save();
+            painter->translate( arrowRect.center() );
+            painter->setRenderHint( QPainter::Antialiasing );
+            painter->setPen( QPen( arrowColor, penThickness ) );
+            painter->drawPolyline( a );
+            painter->restore();
+
+        }
+
+        return true;
 
     }
 
@@ -2278,8 +2501,6 @@ namespace Breeze
     //______________________________________________________________________________
     QColor Style::scrollBarArrowColor( const QStyleOptionSlider* option, const SubControl& control, const QWidget* widget ) const
     {
-
-        Q_UNUSED( widget );
 
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );

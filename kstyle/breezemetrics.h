@@ -33,14 +33,19 @@ namespace Breeze
         // frames
         Frame_FrameWidth = 2,
 
-        // line edit margins
-        LineEdit_MarginWidth = 4,
+        // line editors
+        LineEdit_MarginWidth = 6,
+
+        // combobox
+        ComboBox_MarginWidth = 4,
+        ComboBox_ButtonWidth = 20,
+        ComboBox_BoxTextSpace = 8,
 
         // groupbox title margin
-        GroupBox_TitleMargin = 4,
+        GroupBox_TitleMarginWidth = 4,
 
         // buttons
-        Button_Margin = 12,
+        Button_MarginWidth = 6,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,

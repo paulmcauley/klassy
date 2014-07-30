@@ -225,8 +225,8 @@ namespace Breeze
         //! groupbox
         QRect groupBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
-//         //! combobox
-//         QRect comboBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        //! combobox
+        QRect comboBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
         //! scrollbar (internal)
         QRect scrollBarInternalSubControlRect( const QStyleOptionComplex*, SubControl ) const;
@@ -244,13 +244,13 @@ namespace Breeze
 
         QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize lineEditSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
-        //         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
-//         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
@@ -316,7 +316,7 @@ namespace Breeze
         { return true; }
 
 //         virtual bool drawCapacityBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -355,9 +355,8 @@ namespace Breeze
 
         //!@name complex ontrols specialized functions
         //@{
-//         bool drawComboBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        bool drawComboBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawDialComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
-//         bool drawGroupBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         bool drawSliderComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawSpinBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
