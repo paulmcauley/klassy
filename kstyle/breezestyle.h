@@ -37,6 +37,7 @@ namespace Breeze
 {
 
     class Animations;
+    class FrameShadowFactory;
     class Helper;
     class Mnemonics;
     class WindowManager;
@@ -522,6 +523,9 @@ namespace Breeze
 
         //! window manager
         WindowManager* _windowManager;
+
+        //! frame shadows
+        FrameShadowFactory* _frameShadowFactory;
 
         //! pointer to primitive specialized function
         typedef bool (Style::*StylePrimitive)( const QStyleOption*, QPainter*, const QWidget* ) const;

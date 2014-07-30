@@ -59,6 +59,7 @@ set(breeze_PART_SRCS
     animations/breezesliderdata.cpp
     animations/breezewidgetstateengine.cpp
     animations/breezewidgetstatedata.cpp
+    breezeframeshadow.cpp
     breezehelper.cpp
     breezemnemonics.cpp
     breezepropertynames.cpp

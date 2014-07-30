@@ -26,6 +26,7 @@
 #include "breezestyle.moc"
 
 #include "breezeanimations.h"
+#include "breezeframeshadow.h"
 #include "breezehelper.h"
 #include "breezemetrics.h"
 #include "breezemnemonics.h"
@@ -79,6 +80,7 @@ namespace Breeze
         _animations( new Animations( this ) ),
         _mnemonics( new Mnemonics( this ) ),
         _windowManager( new WindowManager( this ) ),
+        _frameShadowFactory( new FrameShadowFactory( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
         CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
 
@@ -112,6 +114,7 @@ namespace Breeze
         // register widget to animations
         _animations->registerWidget( widget );
         _windowManager->registerWidget( widget );
+        _frameShadowFactory->registerWidget( widget, *_helper );
 
         // enable hover effects for all necessary widgets
         if(
@@ -178,7 +181,9 @@ namespace Breeze
     {
 
         // register widget to animations
+        _animations->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
+        _frameShadowFactory->unregisterWidget( widget );
 
         KStyle::unpolish( widget );
 
@@ -1086,6 +1091,9 @@ namespace Breeze
 
         // do nothing for flat frames
         if( !( flags & (State_Sunken | State_Raised ) ) ) return true;
+
+        if( _frameShadowFactory->isRegistered( widget ) )
+        { _frameShadowFactory->updateState( widget, hasFocus, mouseOver ); }
 
         // colors
         const QPalette& palette( option->palette );
@@ -2089,7 +2097,6 @@ namespace Breeze
 
                 painter->setPen( QPen( outline, 1 ) );
                 painter->setBrush( Qt::NoBrush );
-                // painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
                 painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), 2, 2 );
 
             }
