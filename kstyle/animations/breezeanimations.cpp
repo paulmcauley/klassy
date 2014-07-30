@@ -52,6 +52,7 @@ namespace Breeze
         _widgetEnabilityEngine = new WidgetStateEngine( this );
         _busyIndicatorEngine = new BusyIndicatorEngine( this );
         _comboBoxEngine = new WidgetStateEngine( this );
+        _spinBoxEngine = new SpinBoxEngine( this );
 
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _lineEditEngine = new WidgetStateEngine( this ) );
@@ -74,6 +75,7 @@ namespace Breeze
             _widgetEnabilityEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _comboBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _spinBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _lineEditEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
@@ -90,6 +92,7 @@ namespace Breeze
             _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _comboBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _spinBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _lineEditEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
@@ -155,7 +158,7 @@ namespace Breeze
 
         // spinbox
         else if( qobject_cast<QSpinBox*>( widget ) ) {
-            // _spinBoxEngine->registerWidget( widget );
+            _spinBoxEngine->registerWidget( widget );
             _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
         }
 

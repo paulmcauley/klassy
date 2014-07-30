@@ -2213,20 +2213,19 @@ namespace Breeze
 
         // check animation state
         const bool subControlHover( enabled && mouseOver && ( option->activeSubControls & subControl ) );
-//         _animations->spinBoxEngine().updateState( widget, subControl, subControlHover );
-//
-//         const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
-//         const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
+        _animations->spinBoxEngine().updateState( widget, subControl, subControlHover );
+
+        const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
+        const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
 
         QColor color;
-//         if( animated )
-//         {
-//
-//             QColor highlight = _helper->viewHoverBrush().brush( palette ).color();
-//             color = KColorUtils::mix( palette.color( QPalette::Text ), highlight, opacity );
-//
-//         } else if( subControlHover ) {
-        if( subControlHover ) {
+        if( animated )
+        {
+
+            QColor highlight = _helper->viewHoverBrush().brush( palette ).color();
+            color = KColorUtils::mix( palette.color( QPalette::Text ), highlight, opacity );
+
+        } else if( subControlHover ) {
 
             color = _helper->viewHoverBrush().brush( palette ).color();
 
