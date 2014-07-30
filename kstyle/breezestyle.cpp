@@ -1834,7 +1834,7 @@ namespace Breeze
             // content
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
-            painter->drawRoundedRect( baseRect, 2.5, 2.5 );
+            painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 2.5, 2.5 );
         }
 
         if( outline.isValid() )
@@ -1852,7 +1852,8 @@ namespace Breeze
 
                 painter->setPen( QPen( outline, 1 ) );
                 painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
+                // painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, 2 );
+                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), 2, 2 );
 
             }
         }
