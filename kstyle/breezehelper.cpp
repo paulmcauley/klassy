@@ -47,14 +47,6 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::invalidateCaches( void )
-    {}
-
-    //____________________________________________________________________
-    void Helper::setMaxCacheSize( int )
-    {}
-
-    //______________________________________________________________________________
     QPalette Helper::mergePalettes( const QPalette& source, qreal ratio ) const
     {
 

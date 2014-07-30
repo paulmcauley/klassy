@@ -568,10 +568,6 @@ namespace Breeze
         // load helper configuration
         _helper->loadConfig();
 
-        // update caches size
-        const int cacheSize( StyleConfigData::cacheEnabled() ? StyleConfigData::maxCacheSize():0 );
-        _helper->setMaxCacheSize( cacheSize );
-
         // reinitialize engines
         _animations->setupEngines();
         _windowManager->initialize();

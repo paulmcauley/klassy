@@ -23,77 +23,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "breezetileset.h"
-
 #include <KSharedConfig>
 #include <KColorScheme>
 
-#include <QCache>
-#include <QPixmap>
-#include <QScopedPointer>
-
-#if HAVE_X11
-#include <xcb/xcb.h>
-#endif
-
 namespace Breeze
 {
-
-    template<typename T> class BaseCache: public QCache<quint64, T>
-    {
-
-        public:
-
-        //! constructor
-        BaseCache( int maxCost ):
-            QCache<quint64, T>( maxCost ),
-            _enabled( true )
-        {}
-
-        //! constructor
-        explicit BaseCache( void ):
-            _enabled( true )
-            {}
-
-        //! destructor
-        ~BaseCache( void )
-        {}
-
-        //! enable
-        void setEnabled( bool value )
-        { _enabled = value; }
-
-        //! enable state
-        bool enabled( void ) const
-        { return _enabled; }
-
-        //! access
-        T* object( const quint64& key )
-        { return _enabled ? QCache<quint64, T>::object( key ) : 0; }
-
-        //! max cost
-        void setMaxCost( int cost )
-        {
-            if( cost <= 0 ) {
-
-                QCache<quint64, T>::clear();
-                QCache<quint64, T>::setMaxCost( 1 );
-                setEnabled( false );
-
-            } else {
-
-                setEnabled( true );
-                QCache<quint64, T>::setMaxCost( cost );
-
-            }
-        }
-
-        private:
-
-        //! enable flag
-        bool _enabled;
-
-    };
 
     //! breeze style helper class.
     /*! contains utility functions used at multiple places in both breeze style and breeze window decoration */
@@ -116,12 +50,6 @@ namespace Breeze
 
         //! pointer to shared config
         KSharedConfigPtr config() const;
-
-        //! reset all caches
-        virtual void invalidateCaches();
-
-        //! update maximum cache size
-        virtual void setMaxCacheSize( int );
 
         //! add alpha channel multiplier to color
         static QColor alphaColor( QColor color, qreal alpha );

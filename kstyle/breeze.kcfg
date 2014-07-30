@@ -7,14 +7,6 @@
 
   <!-- widget style -->
   <group name="Style">
-
-    <!-- cache size -->
-    <entry name="CacheEnabled" type = "Bool">
-       <default>true</default>
-    </entry>
-    <entry name="MaxCacheSize" type = "Int">
-       <default>512</default>
-    </entry>
     
     <!-- animations -->
     <entry name="AnimationsEnabled" type="Bool">
