@@ -1807,9 +1807,23 @@ namespace Breeze
             const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
             QColor outline;
 
-            if( handleActive && mouseOver ) outline = _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color();
-            else if( hasFocus ) outline = _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color();
-            else outline = KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 );
+            _animations->sliderEngine().updateState( widget, enabled && handleActive );
+            const bool animated( _animations->sliderEngine().isAnimated( widget ) );
+            const qreal opacity( _animations->sliderEngine().opacity( widget ) );
+
+            const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
+            const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+            const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+
+            if( animated )
+            {
+
+                if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+                else outline = KColorUtils::mix( defaultOutline, hover, opacity );
+
+            } else if( handleActive && mouseOver ) outline = hover;
+            else if( hasFocus ) outline = focus;
+            else outline = defaultOutline;
 
             const bool sunken( flags & (State_On|State_Sunken) );
             renderSliderHandle( painter, sliderRect, color, outline, shadow, hasFocus, sunken );

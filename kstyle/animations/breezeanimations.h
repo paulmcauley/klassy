@@ -29,6 +29,7 @@
 
 #include "breezebusyindicatorengine.h"
 #include "breezescrollbarengine.h"
+#include "breezesliderengine.h"
 #include "breezewidgetstateengine.h"
 
 #include <QObject>
@@ -74,6 +75,10 @@ namespace Breeze
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
 
+        //! slider engine
+        SliderEngine& sliderEngine( void ) const
+        { return *_sliderEngine; }
+
         //! setup engines
         void setupEngines( void );
 
@@ -97,6 +102,9 @@ namespace Breeze
 
         //! scrollbar engine
         ScrollBarEngine* _scrollBarEngine;
+
+        //! slider engine
+        SliderEngine* _sliderEngine;
 
         //! keep list of existing engines
         QList< BaseEngine::Pointer > _engines;

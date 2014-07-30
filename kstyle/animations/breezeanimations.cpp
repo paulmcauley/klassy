@@ -49,6 +49,7 @@ namespace Breeze
 
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
+        registerEngine( _sliderEngine = new SliderEngine( this ) );
     }
 
     //____________________________________________________________
@@ -66,6 +67,7 @@ namespace Breeze
             _widgetEnabilityEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
             // busy indicator
             _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
@@ -79,6 +81,7 @@ namespace Breeze
             _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
             // busy indicator
             _busyIndicatorEngine->setDuration( StyleConfigData::progressBarBusyStepDuration() );
@@ -125,6 +128,9 @@ namespace Breeze
 
         // scrollbar
         else if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
+
+        // slider
+        else if( qobject_cast<QSlider*>( widget ) ) { _sliderEngine->registerWidget( widget ); }
 
         // progress bar
         else if( qobject_cast<QProgressBar*>( widget ) ) { _busyIndicatorEngine->registerWidget( widget ); }
