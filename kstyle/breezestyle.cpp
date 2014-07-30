@@ -1206,6 +1206,7 @@ namespace Breeze
         QColor outline;
         if( mode == AnimationFocus )
         {
+
             if( mouseOver ) outline = KColorUtils::mix( hover, focus, opacity );
             else outline = KColorUtils::mix( defaultOutline, focus, opacity );
 
@@ -1993,10 +1994,37 @@ namespace Breeze
             if( editable )
             {
 
+                // editable combobox. Make it look like a LineEdit
+                // focus takes precedence over hover
+                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
+                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+
+                // colors
+                const QColor focus( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
+                const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+                const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
                 QColor outline;
-                if( mouseOver ) outline =  _helper->viewHoverBrush().brush( palette ).color();
-                else if( hasFocus ) outline = _helper->viewHoverBrush().brush( palette ).color();
-                else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
+                if( enabled && _animations->lineEditEngine().isAnimated( widget, AnimationFocus ) )
+                {
+                    const qreal opacity( _animations->lineEditEngine().opacity( widget, AnimationFocus  ) );
+                    if( mouseOver ) outline = KColorUtils::mix( hover, focus, opacity );
+                    else outline = KColorUtils::mix( defaultOutline, focus, opacity );
+
+                } else if( hasFocus ) {
+
+                    outline = _helper->viewFocusBrush().brush( palette ).color();
+
+                } else if( enabled && _animations->lineEditEngine().isAnimated( widget, AnimationHover ) ) {
+
+                    const qreal opacity( _animations->lineEditEngine().opacity( widget, AnimationHover  ) );
+                    outline = KColorUtils::mix( defaultOutline, hover, opacity );
+
+                } else if( mouseOver ) {
+
+                    outline =  _helper->viewHoverBrush().brush( palette ).color();
+
+                } else outline = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 );
 
                 // render
                 _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
