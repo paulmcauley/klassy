@@ -28,6 +28,8 @@
 #include <KSharedConfig>
 #include <KColorScheme>
 
+#include <QPainterPath>
+
 namespace Breeze
 {
 
@@ -141,6 +143,20 @@ namespace Breeze
         //! scrollbar handle
         void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
 
+        //! corner enumeration, needed for tabbar tabs
+        enum Corner
+        {
+            CornerTopLeft = 1 << 0,
+            CornerTopRight = 1 << 1,
+            CornerBottomLeft = 1 << 2,
+            CornerBottomRight = 1 << 3
+        };
+
+        Q_DECLARE_FLAGS( Corners, Corner );
+
+        //! tabbar tab
+        void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
+
         //@}
 
         protected:
@@ -148,6 +164,9 @@ namespace Breeze
         //! return color key for a given color, properly accounting for invalid colors
         quint64 colorKey( const QColor& color ) const
         { return color.isValid() ? color.rgba():0; }
+
+        //! return rounded path in a given rect, with only selected corners rounded, and for a given radius
+        QPainterPath roundedPath( const QRectF&, qreal, Corners ) const;
 
         private:
 
@@ -164,5 +183,7 @@ namespace Breeze
       };
 
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::Helper::Corners );
 
 #endif

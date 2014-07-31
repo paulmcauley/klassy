@@ -248,8 +248,8 @@ namespace Breeze
 //         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-//         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 

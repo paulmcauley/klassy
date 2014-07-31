@@ -157,6 +157,4 @@ namespace Breeze
 
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::AnimationModes)
-
 #endif

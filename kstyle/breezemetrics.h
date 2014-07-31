@@ -73,6 +73,11 @@ namespace Breeze
         Slider_Thickness = 6,
         Slider_ControlThickness = 20,
 
+        // tabbar
+        TabBar_TabMarginWidth = 4,
+        TabBar_TabMinWidth = 80,
+        TabBar_TabMinHeight = 28,
+
         // list headers
         Header_MarginWidth = 8,
         Header_BoxTextSpace = 4,

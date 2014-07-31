@@ -211,6 +211,14 @@ namespace Breeze
             case PM_ButtonShiftHorizontal: return 0;
             case PM_ButtonShiftVertical: return 0;
 
+            // tabbar
+            case PM_TabBarTabShiftVertical: return 0;
+            case PM_TabBarTabShiftHorizontal: return 0;
+            case PM_TabBarTabOverlap: return 1;
+            case PM_TabBarBaseOverlap: return 1;
+            case PM_TabBarTabHSpace: return 2*Metrics::TabBar_TabMarginWidth;
+            case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginWidth;
+
             // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
@@ -250,6 +258,9 @@ namespace Breeze
 
             // groupboxes
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
+
+            // tabbar
+            case SH_TabBar_Alignment: return Qt::AlignCenter;
 
             // scrollbars
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
@@ -327,6 +338,9 @@ namespace Breeze
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
             case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
+
+            // tabbar
+            case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
 
             // fallback
             default: return KStyle::sizeFromContents( element, option, size, widget );
@@ -1273,12 +1287,64 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::headerSectionSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    QSize Style::headerSectionSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
-        QSize size( contentsSize );
-        size.rwidth() += Metrics::Header_MarkSize + Metrics::Header_BoxTextSpace;
-        size.setHeight( qMax( size.height(), (int) Metrics::Header_MarkSize ) );
+
+        // cast option and check
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        if( !headerOption ) return contentsSize;
+
+        // get text size
+        const bool horizontal( headerOption->orientation == Qt::Horizontal );
+        const bool hasText( !headerOption->text.isEmpty() );
+        const bool hasIcon( !headerOption->icon.isNull() );
+
+        const QSize textSize( hasText ? headerOption->fontMetrics.size( 0, headerOption->text ) : QSize() );
+        const QSize iconSize( hasIcon ? QSize( 22,22 ) : QSize() );
+
+        // contents width
+        int contentsWidth( 0 );
+        if( hasText ) contentsWidth += textSize.width();
+        if( hasIcon )
+        {
+            contentsWidth += iconSize.width();
+            if( hasText ) contentsWidth += Metrics::Header_BoxTextSpace;
+        }
+
+        // contents height
+        int contentsHeight( 0 );
+        if( hasText ) contentsHeight = textSize.height();
+        if( hasIcon ) contentsHeight = qMax( contentsHeight, iconSize.height() );
+
+        if( horizontal )
+        {
+            // also add space for icon
+            contentsWidth += Metrics::Header_MarkSize + Metrics::Header_BoxTextSpace;
+            contentsHeight = qMax( contentsHeight, (int) Metrics::Header_MarkSize );
+        }
+
+        // update contents size, add margins and return
+        const QSize size( contentsSize.expandedTo( QSize( contentsWidth, contentsHeight ) ) );
         return expandSize( size, Metrics::Header_MarginWidth );
+
+    }
+
+    //______________________________________________________________
+    QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+
+        // add margins
+        QSize size( expandSize( contentsSize, Metrics::TabBar_TabMarginWidth ) );
+
+        // compare to minimum size
+        const bool verticalTabs( tabOption && isVerticalTab( tabOption ) );
+        if( verticalTabs ) size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
+        else size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+
+        return size;
+
     }
 
     //______________________________________________________________
