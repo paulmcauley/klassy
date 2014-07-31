@@ -603,8 +603,8 @@ namespace Breeze
         if( !frameOption ) return option->rect;
 
         // check flatness
-        const bool isFlat( frameOption->lineWidth == 0 );
-        return isFlat ? option->rect : insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+        const bool flat( frameOption->lineWidth == 0 );
+        return flat ? option->rect : insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
     }
 
     //___________________________________________________________________________________________________________________
@@ -823,23 +823,28 @@ namespace Breeze
     QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
 
-        QRect rect( option->rect );
+        // cast option and check
         const QStyleOptionComboBox *comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox *>( option );
         if( !comboBoxOption ) return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
 
+        const bool editable( comboBoxOption->editable );
+        const bool flat( editable && !comboBoxOption->frame );
+
+        // copy rect
+        QRect rect( option->rect );
+
         switch( subControl )
         {
-            case SC_ComboBoxFrame: return comboBoxOption->frame ? rect : QRect();
+            case SC_ComboBoxFrame: return flat ? rect : QRect();
             case SC_ComboBoxListBoxPopup: return rect;
 
             case SC_ComboBoxArrow:
             {
 
                 // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 QRect arrowRect;
-                const bool editable( comboBoxOption->editable );
                 if( editable )
                 {
 
@@ -868,7 +873,7 @@ namespace Breeze
             {
 
                 // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 QRect labelRect;
                 const bool editable( comboBoxOption->editable );
@@ -882,7 +887,8 @@ namespace Breeze
                         rect.height() );
 
                     // remove line editor margins
-                    labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
+                    if( !flat )
+                    { labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth ); }
 
                 } else {
 
@@ -912,18 +918,24 @@ namespace Breeze
     QRect Style::spinBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
 
+        // cast option and check
+        const QStyleOptionSpinBox *spinBoxOption = qstyleoption_cast<const QStyleOptionSpinBox *>( option );
+        if( !spinBoxOption ) return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );;
+        const bool flat( !spinBoxOption->frame );
+
+        // copy rect
         QRect rect( option->rect );
 
         switch( subControl )
         {
-            case SC_SpinBoxFrame: return rect;
+            case SC_SpinBoxFrame: return flat ? QRect():rect;
 
             case SC_SpinBoxUp:
             case SC_SpinBoxDown:
             {
 
                 // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 QRect arrowRect;
                 arrowRect = QRect(
@@ -944,7 +956,7 @@ namespace Breeze
             {
 
                 // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 QRect labelRect;
                 labelRect = QRect(
@@ -953,7 +965,7 @@ namespace Breeze
                     rect.height() );
 
                 // remove line editor margins
-                labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
+                if( !flat ) labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
 
                 return handleRTL( option, labelRect );
 
@@ -1114,10 +1126,8 @@ namespace Breeze
         const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return contentsSize;
 
-        // check flatness
-        const bool isFlat( frameOption->lineWidth == 0 );
-        if( isFlat ) return contentsSize;
-        else return expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+        const bool flat( frameOption->lineWidth == 0 );
+        return flat ? contentsSize : expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
     }
 
     //______________________________________________________________
@@ -1128,12 +1138,15 @@ namespace Breeze
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox *>( option ) );
         if( !comboBoxOption ) return contentsSize;
 
+        const bool editable( comboBoxOption->editable );
+        const bool flat( editable && !comboBoxOption->frame );
+
+        // copy size
         QSize size( contentsSize );
 
         // add relevant margins
-        const bool editable( comboBoxOption->editable );
-        if( editable ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
-        else size = expandSize( size, Metrics::ComboBox_MarginWidth );
+        if( editable && !flat ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
+        else if( !editable ) size = expandSize( size, Metrics::ComboBox_MarginWidth );
 
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), (int)Metrics::ComboBox_ButtonWidth ) );
@@ -1142,18 +1155,26 @@ namespace Breeze
         size.rwidth() += Metrics::ComboBox_ButtonWidth;
         if( !editable ) size.rwidth() += Metrics::ComboBox_BoxTextSpace;
 
-        // add framewidth
-        return expandSize( size, Metrics::Frame_FrameWidth );
+        // add framewidth if needed
+        return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
+
     }
 
     //______________________________________________________________
-    QSize Style::spinBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    QSize Style::spinBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
 
+        // cast option and check
+        const QStyleOptionSpinBox *spinBoxOption = qstyleoption_cast<const QStyleOptionSpinBox *>( option );
+        if( !spinBoxOption ) return contentsSize;
+
+        const bool flat( !spinBoxOption->frame );
+
+        // copy size
         QSize size( contentsSize );
 
         // add editor margins
-        size = expandSize( size, Metrics::LineEdit_MarginWidth );
+        if( !flat ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
 
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ButtonWidth ) );
@@ -1161,8 +1182,8 @@ namespace Breeze
         // add button width and spacing
         size.rwidth() += Metrics::SpinBox_ButtonWidth;
 
-        // add framewidth
-        return expandSize( size, Metrics::Frame_FrameWidth );
+        // add framewidth if needed
+        return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
 
     }
 
@@ -2102,6 +2123,7 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool hasFocus( flags & State_HasFocus );
         const bool editable( comboBoxOption->editable );
+        const bool flat( editable && !comboBoxOption->frame );
 
         // frame
         if( option->subControls & SC_ComboBoxFrame )
@@ -2110,19 +2132,30 @@ namespace Breeze
             if( editable )
             {
 
-                // editable combobox. Make it look like a LineEdit
-                // update animation state
-                // focus takes precedence over hover
-                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+                const QColor color( palette.color( QPalette::Base ) );
+                if( flat )
+                {
 
-                // outline color
-                const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
+                    painter->setBrush( color );
+                    painter->setPen( Qt::NoPen );
+                    painter->drawRect( option->rect );
+
+                } else {
+
+                    // editable combobox. Make it look like a LineEdit
+                    // update animation state
+                    // focus takes precedence over hover
+                    _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
+                    _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+
+                    // outline color
+                    const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
                     _animations->lineEditEngine().frameOpacity( widget ),
                     _animations->lineEditEngine().frameAnimationMode( widget ) ) );
 
-                // render
-                _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
+                    // render
+                    _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
+                }
 
             } else {
 
@@ -2224,22 +2257,35 @@ namespace Breeze
         const bool enabled( flags & State_Enabled );
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool hasFocus( flags & State_HasFocus );
+        const bool flat( !spinBoxOption->frame );
 
         if( option->subControls & SC_SpinBoxFrame )
         {
 
-            // update animation state
-            // focus takes precedence over hover
-            _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-            _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+            const QColor color( palette.color( QPalette::Base ) );
+            if( flat )
+            {
 
-            // outline color
-            const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
-                _animations->lineEditEngine().frameOpacity( widget ),
-                _animations->lineEditEngine().frameAnimationMode( widget ) ) );
+                painter->setBrush( color );
+                painter->setPen( Qt::NoPen );
+                painter->drawRect( option->rect );
 
-            // render
-            _helper->renderFrame( painter, option->rect, palette.color( QPalette::Base ), outline, hasFocus );
+            } else {
+
+                // update animation state
+                // focus takes precedence over hover
+                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
+                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+
+                // outline color
+                const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
+                    _animations->lineEditEngine().frameOpacity( widget ),
+                    _animations->lineEditEngine().frameAnimationMode( widget ) ) );
+
+                // render
+                _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
+            }
+
         }
 
         if( option->subControls & SC_SpinBoxUp ) renderSpinBoxArrow( painter, spinBoxOption, widget, SC_SpinBoxUp );
