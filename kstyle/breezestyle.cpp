@@ -226,6 +226,9 @@ namespace Breeze
             case PM_ExclusiveIndicatorWidth: return RadioButton_Size;
             case PM_ExclusiveIndicatorHeight: return RadioButton_Size;
 
+            // list heaaders
+            case PM_HeaderMarkSize: return Metrics::Header_MarkSize;
+            case PM_HeaderMargin: return Metrics::Header_MarginWidth;
 
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
@@ -280,6 +283,10 @@ namespace Breeze
             case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
             case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
 
+            // headers
+            case QStyle::SE_HeaderArrow: return headerArrowRect( option, widget );
+            case QStyle::SE_HeaderLabel: return headerLabelRect( option, widget );
+
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
 
@@ -318,6 +325,7 @@ namespace Breeze
             case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
+            case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
 
             // fallback
             default: return KStyle::sizeFromContents( element, option, size, widget );
@@ -389,6 +397,7 @@ namespace Breeze
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
+            case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
 
             // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
@@ -431,7 +440,6 @@ namespace Breeze
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
 
-
             // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
             case CE_ProgressBarContents: fcn = &Style::drawProgressBarContentsControl; break;
@@ -450,6 +458,12 @@ namespace Breeze
 
             // size grip
             case CE_SizeGrip: fcn = &Style::emptyControl; break;
+
+            // list headers
+            case CE_HeaderSection: fcn = &Style::drawHeaderSectionControl; break;
+            case CE_HeaderEmptyArea: fcn = &Style::drawHeaderEmptyAreaControl; break;
+            // case CE_HeaderLabel: fcn = &Style::drawHeaderLabelControl; break;
+
 
             // fallback
             default: break;
@@ -656,6 +670,41 @@ namespace Breeze
         }
 
         return rect;
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::headerArrowRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        if( !headerOption ) return option->rect;
+
+        // check if arrow is necessary
+        if( headerOption->sortIndicator == QStyleOptionHeader::None ) return QRect();
+
+        QRect arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
+        arrowRect.setLeft( arrowRect.right() - Metrics::Header_MarkSize );
+
+        return handleRTL( option, arrowRect );
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::headerLabelRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        if( !headerOption ) return option->rect;
+
+        // check if arrow is necessary
+        QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
+        if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
+
+        labelRect.adjust( 0, 0, -Metrics::Header_MarkSize-Metrics::Header_BoxTextSpace, 0 );
+        return handleRTL( option, labelRect );
 
     }
 
@@ -1157,6 +1206,15 @@ namespace Breeze
     }
 
     //______________________________________________________________
+    QSize Style::headerSectionSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    {
+        QSize size( contentsSize );
+        size.rwidth() += Metrics::Header_MarkSize + Metrics::Header_BoxTextSpace;
+        size.setHeight( qMax( size.height(), (int) Metrics::Header_MarkSize ) );
+        return expandSize( size, Metrics::Header_MarginWidth );
+    }
+
+    //______________________________________________________________
     bool Style::drawFramePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
@@ -1203,7 +1261,7 @@ namespace Breeze
             qobject_cast<const QRadioButton*>( widget ) )
         {
             painter->translate( 0, 2 );
-            painter->setPen( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+            painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
             painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
         }
 
@@ -1283,8 +1341,8 @@ namespace Breeze
         const QColor base( palette.color( QPalette::Window ) );
         const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
         const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
-        const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor active( _helper->viewFocusBrush().brush( palette ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
         QColor color;
 
         // update only mouse over state
@@ -1329,8 +1387,8 @@ namespace Breeze
         const QColor base( palette.color( QPalette::Window ) );
         const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
         const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color() );
-        const QColor hover( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+        const QColor active( _helper->viewFocusBrush().brush( palette ).color() );
+        const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
         QColor color;
 
         // update only mouse over
@@ -1357,6 +1415,37 @@ namespace Breeze
 
         return true;
 
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+        const QStyleOptionHeader *headerOption = qstyleoption_cast<const QStyleOptionHeader *>( option );
+        const State& flags( option->state );
+
+        // arrow orientation
+        ArrowOrientation orientation( ArrowNone );
+        if( flags&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
+        else if( flags&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
+        if( orientation == ArrowNone ) return true;
+
+        // flags, rect and palette
+        const QRectF& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // define color and polygon for drawing arrow
+        const QPolygonF a = genericArrow( orientation, ArrowNormal );
+        const QColor color = palette.color( QPalette::WindowText );
+        const qreal penThickness = 1.5;
+
+        // render arrow
+        painter->setRenderHint( QPainter::Antialiasing );
+        painter->setPen( QPen( color, penThickness ) );
+        painter->setBrush( Qt::NoBrush );
+        painter->translate( rect.center() );
+        painter->drawPolyline( a );
+
+        return true;
     }
 
     //___________________________________________________________________________________
@@ -1597,10 +1686,10 @@ namespace Breeze
             const QPalette& palette( option->palette );
 
             const QColor base( focus ?
-                _helper->viewFocusBrush().brush( palette.currentColorGroup() ).color():
+                _helper->viewFocusBrush().brush( palette ).color():
                 _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
 
-            const QColor highlight( _helper->viewHoverBrush().brush( palette.currentColorGroup() ).color() );
+            const QColor highlight( _helper->viewHoverBrush().brush( palette ).color() );
             if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
             else if( mouseOver ) color = highlight;
             else color = base;
@@ -1889,6 +1978,116 @@ namespace Breeze
 
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawHeaderSectionControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool sunken( flags & (State_On|State_Sunken) );
+
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        if( !headerOption ) return true;
+
+        const bool horizontal( headerOption->orientation == Qt::Horizontal );
+        const bool isFirst( horizontal && ( headerOption->position == QStyleOptionHeader::Beginning ) );
+        const bool isCorner( widget && widget->inherits( "QTableCornerButton" ) );
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+        // fill
+        QColor color( palette.color( QPalette::Window ) );
+        if( sunken ) color = KColorUtils::mix( color, _helper->viewFocusBrush().brush( palette ).color(), 0.2 );
+        else if( mouseOver ) color = KColorUtils::mix( color, _helper->viewHoverBrush().brush( palette ).color(), 0.2 );
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setBrush( color );
+        painter->setPen( Qt::NoPen );
+        painter->drawRect( rect );
+
+        // outline
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.1 ) );
+
+        if( isCorner )
+        {
+
+            if( reverseLayout ) painter->drawPoint( rect.bottomLeft() );
+            else painter->drawPoint( rect.bottomRight() );
+
+
+        } else if( horizontal ) {
+
+            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+
+        } else {
+
+            if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            else painter->drawLine( rect.topRight(), rect.bottomRight() );
+
+        }
+
+        // separators
+        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+
+        if( horizontal )
+        {
+            if( headerOption->section != 0 || isFirst )
+            {
+
+                if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
+                else painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
+
+            }
+
+        } else {
+
+            if( reverseLayout ) painter->drawLine( rect.bottomLeft()+QPoint( 1, 0 ), rect.bottomRight() );
+            else painter->drawLine( rect.bottomLeft(), rect.bottomRight() - QPoint( 1, 0 ) );
+
+        }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawHeaderEmptyAreaControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // use the same background as in drawHeaderPrimitive
+        const QRect& rect( option->rect );
+        QPalette palette( option->palette );
+
+        const bool horizontal( option->state & QStyle::State_Horizontal );
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+        // fill
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setBrush( palette.color( QPalette::Window ) );
+        painter->setPen( Qt::NoPen );
+        painter->drawRect( rect );
+
+        // outline
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.1 ) );
+
+        if( horizontal ) {
+
+            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+
+        } else {
+
+            if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            else painter->drawLine( rect.topRight(), rect.bottomRight() );
+
+        }
+
+        return true;
+
+    }
+
     //______________________________________________________________
     bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -2144,8 +2343,8 @@ namespace Breeze
             const bool animated( _animations->sliderEngine().isAnimated( widget ) );
             const qreal opacity( _animations->sliderEngine().opacity( widget ) );
 
-            const QColor hover( _helper->viewHoverBrush().brush( option->palette.currentColorGroup() ).color() );
-            const QColor focus( _helper->viewFocusBrush().brush( option->palette.currentColorGroup() ).color() );
+            const QColor hover( _helper->viewHoverBrush().brush( option->palette ).color() );
+            const QColor focus( _helper->viewFocusBrush().brush( option->palette ).color() );
             const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
 
             if( animated )

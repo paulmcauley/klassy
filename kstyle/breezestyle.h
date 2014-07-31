@@ -218,6 +218,9 @@ namespace Breeze
 //         QRect tabWidgetLeftCornerRect( const QStyleOption* option, const QWidget* widget ) const;
 //         QRect tabWidgetRightCornerRect( const QStyleOption* option, const QWidget* widget ) const;
 
+        QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
+        QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
+
         //@}
 
         //!@name subcontrol Rect specialized functions
@@ -240,7 +243,6 @@ namespace Breeze
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
-//         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 //         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -248,6 +250,7 @@ namespace Breeze
 //         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
         //@}
 
@@ -282,7 +285,6 @@ namespace Breeze
 //         //! dock widget separators
 //         /*! it uses the same painting as QSplitter, but due to Qt, the horizontal/vertical convention is inverted */
 //         bool drawIndicatorDockWidgetResizeHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget) const;
-//         bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -298,6 +300,7 @@ namespace Breeze
 //         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //@}
@@ -311,9 +314,6 @@ namespace Breeze
 //         virtual bool drawCapacityBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -331,7 +331,9 @@ namespace Breeze
         virtual bool drawScrollBarSubPageControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         virtual bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawSizeGripControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+//         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawSplitterControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 //         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 

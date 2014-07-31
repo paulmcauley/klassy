@@ -71,7 +71,12 @@ namespace Breeze
 
         // sliders
         Slider_Thickness = 6,
-        Slider_ControlThickness = 20
+        Slider_ControlThickness = 20,
+
+        // list headers
+        Header_MarginWidth = 8,
+        Header_BoxTextSpace = 4,
+        Header_MarkSize = 10
 
     };
 

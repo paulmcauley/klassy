@@ -65,8 +65,8 @@ namespace Breeze
     {
 
         // colors
-        const QColor focus( _viewFocusBrush.brush( palette.currentColorGroup() ).color() );
-        const QColor hover( _viewHoverBrush.brush( palette.currentColorGroup() ).color() );
+        const QColor focus( _viewFocusBrush.brush( palette ).color() );
+        const QColor hover( _viewHoverBrush.brush( palette ).color() );
         const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
 
         QColor outline;
@@ -127,8 +127,8 @@ namespace Breeze
     {
 
         const QColor normal( palette.color( QPalette::Button ) );
-        const QColor focus( _viewFocusBrush.brush( palette.currentColorGroup() ).color() );
-        const QColor hover( _viewHoverBrush.brush( palette.currentColorGroup() ).color() );
+        const QColor focus( _viewFocusBrush.brush( palette ).color() );
+        const QColor hover( _viewHoverBrush.brush( palette ).color() );
 
         if( mode == AnimationHover )
         {
