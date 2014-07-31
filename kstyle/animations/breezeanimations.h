@@ -28,6 +28,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezebusyindicatorengine.h"
+#include "breezedialengine.h"
+#include "breezeheaderviewengine.h"
 #include "breezescrollbarengine.h"
 #include "breezesliderengine.h"
 #include "breezespinboxengine.h"
@@ -80,6 +82,10 @@ namespace Breeze
         BusyIndicatorEngine& busyIndicatorEngine( void ) const
         { return *_busyIndicatorEngine; }
 
+        //! header view engine
+        HeaderViewEngine& headerViewEngine( void ) const
+        { return *_headerViewEngine; }
+
         //! scrollbar engine
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
@@ -87,6 +93,10 @@ namespace Breeze
         //! slider engine
         SliderEngine& sliderEngine( void ) const
         { return *_sliderEngine; }
+
+        //! dial engine
+        DialEngine& dialEngine( void ) const
+        { return *_dialEngine; }
 
         //! spinbox engine
         SpinBoxEngine& spinBoxEngine( void ) const
@@ -107,6 +117,9 @@ namespace Breeze
         //! busy indicator
         BusyIndicatorEngine* _busyIndicatorEngine;
 
+        //! headerview hover effect
+        HeaderViewEngine* _headerViewEngine;
+
         //! widget enability engine
         WidgetStateEngine* _widgetEnabilityEngine;
 
@@ -124,6 +137,9 @@ namespace Breeze
 
         //! slider engine
         SliderEngine* _sliderEngine;
+
+        //! dial engine
+        DialEngine* _dialEngine;
 
         //! spinbox engine
         SpinBoxEngine* _spinBoxEngine;

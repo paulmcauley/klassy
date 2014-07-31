@@ -1,5 +1,5 @@
-#ifndef breezeslider_datah
-#define breezeslider_datah
+#ifndef breezeslider_data_h
+#define breezeslider_data_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezesliderdata.h
@@ -30,7 +30,6 @@
 #include "breezegenericdata.h"
 
 #include <QStyle>
-#include <QStyleOptionSlider>
 
 namespace Breeze
 {
@@ -45,8 +44,8 @@ namespace Breeze
 
         //! constructor
         SliderData( QObject* parent, QWidget* target, int duration ):
-        GenericData( parent, target, duration ),
-        _sliderHovered( false )
+            GenericData( parent, target, duration ),
+            _handleHovered( false )
         {}
 
         //! destructor
@@ -59,12 +58,12 @@ namespace Breeze
         protected:
 
         //! hover
-        virtual bool sliderHovered( void ) const
-        { return _sliderHovered; }
+        virtual bool handleHovered( void ) const
+        { return _handleHovered; }
 
         //! hover
-        virtual void setSliderHovered( bool value )
-        { _sliderHovered = value; }
+        virtual void setHandleHovered( bool value )
+        { _handleHovered = value; }
 
         //! update slider
         virtual void updateSlider( QStyle::SubControl );
@@ -72,7 +71,7 @@ namespace Breeze
         private:
 
         //! true when slider is hovered
-        bool _sliderHovered;
+        bool _handleHovered;
 
     };
 

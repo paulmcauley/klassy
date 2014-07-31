@@ -1,9 +1,6 @@
-#ifndef breezegeneric_data_h
-#define breezegeneric_data_h
-
 //////////////////////////////////////////////////////////////////////////////
-// breezegenericdata.h
-// generic data container for animations
+// breezedialengine.cpp
+// stores event filters and maps widgets to timelines for animations
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -27,67 +24,27 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezeanimationdata.h"
-#include "breezeanimation.h"
+#include "breezedialengine.h"
+#include "breezedialengine.moc"
 
-#include <QObject>
-#include <QTextStream>
+#include <QEvent>
+
 namespace Breeze
 {
 
-
-    //! generic data
-    class GenericData: public AnimationData
+    //____________________________________________________________
+    bool DialEngine::registerWidget( QWidget* widget )
     {
 
-        Q_OBJECT
+        // check widget
+        if( !widget ) return false;
 
-        //! declare opacity property
-        Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
+        // create new data class
+        if( !_data.contains( widget ) ) _data.insert( widget, new DialData( this, widget, duration() ), enabled() );
 
-        public:
-
-        //! constructor
-        GenericData( QObject* parent, QWidget* widget, int duration );
-
-        //! destructor
-        virtual ~GenericData( void )
-        {}
-
-        //! return animation object
-        virtual const Animation::Pointer& animation() const
-        { return _animation; }
-
-        //! duration
-        virtual void setDuration( int duration )
-        { _animation.data()->setDuration( duration ); }
-
-        //! opacity
-        virtual qreal opacity( void ) const
-        { return _opacity; }
-
-        //! opacity
-        virtual void setOpacity( qreal value )
-        {
-
-            value = digitize( value );
-            if( _opacity == value ) return;
-
-            _opacity = value;
-            setDirty();
-
-        }
-
-        private:
-
-        //! animation handling
-        Animation::Pointer _animation;
-
-        //! opacity variable
-        qreal _opacity;
-
-    };
+        // connect destruction signal
+        connect( widget, SIGNAL(destroyed(QObject*)), this, SLOT(unregisterWidget(QObject*)), Qt::UniqueConnection );
+        return true;
+    }
 
 }
-
-#endif

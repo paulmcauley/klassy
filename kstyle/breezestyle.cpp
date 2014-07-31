@@ -117,7 +117,7 @@ namespace Breeze
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
 
-        // enable hover effects for all necessary widgets
+        // enable mouse over effects for all necessary widgets
         if(
             qobject_cast<QAbstractItemView*>( widget )
             || qobject_cast<QAbstractSpinBox*>( widget )
@@ -139,12 +139,12 @@ namespace Breeze
         if( QAbstractItemView *itemView = qobject_cast<QAbstractItemView*>( widget ) )
         {
 
-            // enable hover effects in itemviews' viewport
+            // enable mouse over effects in itemviews' viewport
             itemView->viewport()->setAttribute( Qt::WA_Hover );
 
         } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
-            // enable hover effect in sunken scrollareas that support focus
+            // enable mouse over effect in sunken scrollareas that support focus
             if( scrollArea->frameShadow() == QFrame::Sunken && widget->focusPolicy()&Qt::StrongFocus )
             { widget->setAttribute( Qt::WA_Hover ); }
 
@@ -303,6 +303,7 @@ namespace Breeze
             case CC_ComboBox: return comboBoxSubControlRect( option, subControl, widget );
             case CC_SpinBox: return spinBoxSubControlRect( option, subControl, widget );
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
+            case CC_Dial: return dialSubControlRect( option, subControl, widget );
 
             // fallback
             default: return KStyle::subControlRect( element, option, subControl, widget );
@@ -491,6 +492,7 @@ namespace Breeze
             case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
             case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
+            case CC_Dial: fcn = &Style::drawDialComplexControl; break;
 
             // fallback
             default: break;
@@ -920,7 +922,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSpinBox *spinBoxOption = qstyleoption_cast<const QStyleOptionSpinBox *>( option );
-        if( !spinBoxOption ) return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );;
+        if( !spinBoxOption ) return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
         // copy rect
@@ -1013,6 +1015,12 @@ namespace Breeze
     //___________________________________________________________________________________________________________________
     QRect Style::scrollBarSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
+
+        // cast option and check
+        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        if( !sliderOption ) return KStyle::subControlRect( CC_ScrollBar, option, subControl, widget );
+
+        // get relevant flags
         const State& flags( option->state );
         const bool horizontal( flags&State_Horizontal );
 
@@ -1023,7 +1031,6 @@ namespace Breeze
             case SC_ScrollBarAddLine:
             return scrollBarInternalSubControlRect( option, subControl );
 
-            //The main groove area. This is used to compute the others...
             case SC_ScrollBarGroove:
             {
                 QRect top = handleRTL( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
@@ -1052,10 +1059,7 @@ namespace Breeze
 
             case SC_ScrollBarSlider:
             {
-                const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-                if( !sliderOption ) return QRect();
-
-                //We do handleRTL here to unreflect things if need be
+                // We handle RTL here to unreflect things if need be
                 QRect groove = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
 
                 if ( sliderOption->minimum == sliderOption->maximum ) return groove;
@@ -1100,8 +1104,50 @@ namespace Breeze
 
             }
 
-            default: return QRect();
+            default: return KStyle::subControlRect( CC_ScrollBar, option, subControl, widget );;
         }
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::dialSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        if( !sliderOption ) return KStyle::subControlRect( CC_Dial, option, subControl, widget );
+
+        // adjust rect to be square, and centered
+        QRect rect( option->rect );
+        const int dimension( qMin( rect.width(), rect.height() ) );
+        rect = centerRect( rect, dimension, dimension );
+
+        switch( subControl )
+        {
+            case QStyle::SC_DialGroove: return insideMargin( rect, (Metrics::Slider_ControlThickness - Metrics::Slider_Thickness)/2 );
+            case QStyle::SC_DialHandle:
+            {
+
+                // calculate angle at which handle needs to be drawn
+                const qreal angle( dialAngle( sliderOption, sliderOption->sliderPosition ) );
+
+                // groove rect
+                const QRectF grooveRect( insideMargin( rect, Metrics::Slider_ControlThickness/2 ) );
+                qreal radius( grooveRect.width()/2 );
+
+                // slider center
+                QPointF center( grooveRect.center() + QPointF( radius*std::cos( angle ), -radius*std::sin( angle ) ) );
+
+                // slider rect
+                QRect handleRect( 0, 0, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+                handleRect.moveCenter( center.toPoint() );
+                return handleRect;
+
+            }
+
+            default: return KStyle::subControlRect( CC_Dial, option, subControl, widget );;
+
+        }
+
     }
 
     //______________________________________________________________
@@ -1249,7 +1295,7 @@ namespace Breeze
         const bool mouseOver( enabled && isInputWidget && ( flags&State_MouseOver ) );
         const bool hasFocus( enabled && ( flags&State_HasFocus ) );
 
-        // focus takes precedence over hover
+        // focus takes precedence over mouse over
         _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
         _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
 
@@ -1325,7 +1371,7 @@ namespace Breeze
         const QPalette& palette( option->palette );
 
         // update animation state
-        // hover takes precedence over focus
+        // mouse over takes precedence over focus
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
         _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
 
@@ -1573,9 +1619,11 @@ namespace Breeze
         {
 
             const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+            const bool reverse = horizontal && option->direction == Qt::RightToLeft;
+
             const QColor first( palette.color( QPalette::Highlight ) );
             const QColor second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
-            _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, progress );
+            _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, reverse, progress );
 
         } else if( progress ) {
 
@@ -1612,7 +1660,7 @@ namespace Breeze
     {
         const QPalette& palette( option->palette );
         const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        _helper->renderProgressBarHole( painter, option->rect, color );
+        _helper->renderProgressBarGroove( painter, option->rect, color );
         return true;
     }
 
@@ -1696,7 +1744,7 @@ namespace Breeze
             if( horizontal ) backgroundRect = centerRect( backgroundRect, backgroundRect.width(), Metrics::ScrollBar_SliderWidth );
             else backgroundRect = centerRect( backgroundRect, Metrics::ScrollBar_SliderWidth, backgroundRect.height() );
 
-            _helper->renderScrollBarHole( painter, backgroundRect, color );
+            _helper->renderScrollBarGroove( painter, backgroundRect, color );
 
         }
 
@@ -1830,7 +1878,7 @@ namespace Breeze
         }
 
         // render
-        _helper->renderScrollBarHole( painter, backgroundRect, color );
+        _helper->renderScrollBarGroove( painter, backgroundRect, color );
 
         return true;
 
@@ -1946,7 +1994,7 @@ namespace Breeze
         }
 
         // render
-        _helper->renderScrollBarHole( painter, backgroundRect, color );
+        _helper->renderScrollBarGroove( painter, backgroundRect, color );
 
         return true;
 
@@ -2008,7 +2056,7 @@ namespace Breeze
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool sunken( flags & (State_On|State_Sunken) );
+        const bool sunken( enabled && ( flags & (State_On|State_Sunken) ) );
 
         const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
         if( !headerOption ) return true;
@@ -2018,10 +2066,22 @@ namespace Breeze
         const bool isCorner( widget && widget->inherits( "QTableCornerButton" ) );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
+        // update animation state
+        _animations->headerViewEngine().updateState( widget, rect.topLeft(), mouseOver );
+        const bool animated( enabled && _animations->headerViewEngine().isAnimated( widget, rect.topLeft() ) );
+        const qreal opacity( _animations->headerViewEngine().opacity( widget, rect.topLeft() ) );
+
         // fill
-        QColor color( palette.color( QPalette::Window ) );
-        if( sunken ) color = KColorUtils::mix( color, _helper->viewFocusBrush().brush( palette ).color(), 0.2 );
-        else if( mouseOver ) color = KColorUtils::mix( color, _helper->viewHoverBrush().brush( palette ).color(), 0.2 );
+        const QColor normal( palette.color( QPalette::Window ) );
+        const QColor focus( KColorUtils::mix( normal, _helper->viewFocusBrush().brush( palette ).color(), 0.2 ) );
+        const QColor hover( KColorUtils::mix( normal, _helper->viewHoverBrush().brush( palette ).color(), 0.2 ) );
+
+        QColor color;
+        if( sunken ) color = focus;
+        else if( animated ) color = KColorUtils::mix( normal, hover, opacity );
+        else if( mouseOver ) color = hover;
+        else color = normal;
+
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setBrush( color );
         painter->setPen( Qt::NoPen );
@@ -2308,37 +2368,39 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool hasFocus( enabled && ( flags & State_HasFocus ) );
 
-        // if( sliderOption->subControls & SC_SliderTickmarks ) { renderSliderTickmarks( painter, sliderOption, widget ); }
+        // do not render tickmarks
+        if( sliderOption->subControls & SC_SliderTickmarks )
+        {}
 
         // groove
         if( sliderOption->subControls & SC_SliderGroove )
         {
-            // retrieve holeRect
-            QRect holeRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+            // retrieve groove rect
+            QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
 
             // adjustments
             if( sliderOption->orientation == Qt::Horizontal )
             {
 
-                holeRect = centerRect( holeRect, holeRect.width()-Metrics::Slider_Thickness, Metrics::Slider_Thickness );
+                grooveRect = centerRect( grooveRect, grooveRect.width()-Metrics::Slider_Thickness, Metrics::Slider_Thickness );
 
             } else {
 
-                holeRect = centerRect( holeRect, Metrics::Slider_Thickness, holeRect.height()-Metrics::Slider_Thickness );
+                grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height()-Metrics::Slider_Thickness );
 
             }
 
             // base color
             const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
 
-            if( !enabled ) _helper->renderSliderHole( painter, holeRect, color );
+            if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, color );
             else {
 
-                // retrieve slider rect
-                QRect sliderRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-                sliderRect = centerRect( sliderRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+                // handle rect
+                QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+                handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
-                // define highlight color
+                // highlight color
                 const QColor highlight( palette.color( QPalette::Highlight ) );
 
                 if( sliderOption->orientation == Qt::Horizontal )
@@ -2346,23 +2408,23 @@ namespace Breeze
 
                     const bool reverseLayout( option->direction == Qt::RightToLeft );
 
-                    QRect leftRect( holeRect );
-                    leftRect.setRight( sliderRect.right()-1 );
-                    _helper->renderSliderHole( painter, leftRect, reverseLayout ? color:highlight );
+                    QRect leftRect( grooveRect );
+                    leftRect.setRight( handleRect.right()-1 );
+                    _helper->renderSliderGroove( painter, leftRect, reverseLayout ? color:highlight );
 
-                    QRect rightRect( holeRect );
-                    rightRect.setLeft( sliderRect.left()+1 );
-                    _helper->renderSliderHole( painter, rightRect, reverseLayout ? highlight:color );
+                    QRect rightRect( grooveRect );
+                    rightRect.setLeft( handleRect.left()+1 );
+                    _helper->renderSliderGroove( painter, rightRect, reverseLayout ? highlight:color );
 
                 } else {
 
-                    QRect topRect( holeRect );
-                    topRect.setBottom( sliderRect.bottom()-1 );
-                    _helper->renderSliderHole( painter, topRect, highlight );
+                    QRect topRect( grooveRect );
+                    topRect.setBottom( handleRect.bottom()-1 );
+                    _helper->renderSliderGroove( painter, topRect, highlight );
 
-                    QRect bottomRect( holeRect );
-                    bottomRect.setTop( sliderRect.top()+1 );
-                    _helper->renderSliderHole( painter, bottomRect, color );
+                    QRect bottomRect( grooveRect );
+                    bottomRect.setTop( handleRect.top()+1 );
+                    _helper->renderSliderGroove( painter, bottomRect, color );
 
                 }
 
@@ -2375,8 +2437,8 @@ namespace Breeze
         {
 
             // get rect and center
-            QRect sliderRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-            sliderRect = centerRect( sliderRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+            QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+            handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
             const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
 
@@ -2404,7 +2466,100 @@ namespace Breeze
             else outline = defaultOutline;
 
             const bool sunken( flags & (State_On|State_Sunken) );
-            _helper->renderSliderHandle( painter, sliderRect, color, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, handleRect, color, outline, shadow, hasFocus, sunken );
+
+        }
+
+        return true;
+    }
+
+
+    //______________________________________________________________
+    bool Style::drawDialComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider *>( option ) );
+        if( !sliderOption ) return true;
+
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
+
+        // do not render tickmarks
+        if( sliderOption->subControls & SC_DialTickmarks )
+        {}
+
+        // groove
+        if( sliderOption->subControls & SC_DialGroove )
+        {
+
+            // groove rect
+            QRect grooveRect( subControlRect( CC_Dial, sliderOption, SC_SliderGroove, widget ) );
+
+            // handle rect
+            // base color
+            const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
+
+            // render groove
+            _helper->renderDialGroove( painter, grooveRect, color );
+
+            if( enabled )
+            {
+
+                // highlight
+                const QColor highlight( palette.color( QPalette::Highlight ) );
+
+                // angles
+                const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
+                const qreal second( dialAngle( sliderOption, sliderOption->sliderPosition ) );
+
+                // render contents
+                _helper->renderDialContents( painter, grooveRect, highlight, first, second );
+
+            }
+
+        }
+
+        // handle
+        if ( sliderOption->subControls & SC_DialHandle )
+        {
+
+            // get handle rect
+            QRect handleRect( subControlRect( CC_Dial, sliderOption, SC_DialHandle, widget ) );
+            handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
+
+            // update animatiosn handle rect
+            _animations->dialEngine().setHandleRect( widget, handleRect );
+            const bool handleActive( mouseOver && handleRect.contains( _animations->dialEngine().position( widget ) ) );
+
+            // define colors
+            const QColor color( palette.color( QPalette::Button ) );
+            const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+            QColor outline;
+
+            _animations->dialEngine().updateState( widget, enabled && handleActive );
+            const bool animated( _animations->dialEngine().isAnimated( widget ) );
+            const qreal opacity( _animations->dialEngine().opacity( widget ) );
+
+            const QColor hover( _helper->viewHoverBrush().brush( option->palette ).color() );
+            const QColor focus( _helper->viewFocusBrush().brush( option->palette ).color() );
+            const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+
+            if( animated )
+            {
+
+                if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+                else outline = KColorUtils::mix( defaultOutline, hover, opacity );
+
+            } else if( handleActive && mouseOver ) outline = hover;
+            else if( hasFocus ) outline = focus;
+            else outline = defaultOutline;
+
+            const bool sunken( flags & (State_On|State_Sunken) );
+            _helper->renderSliderHandle( painter, handleRect, color, outline, shadow, hasFocus, sunken );
 
         }
 
@@ -2501,6 +2656,27 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    qreal Style::dialAngle( const QStyleOptionSlider* sliderOption, int value ) const
+    {
+
+        // calculate angle at which handle needs to be drawn
+        qreal angle( 0 );
+        if( sliderOption->maximum == sliderOption->minimum ) angle = M_PI / 2;
+        else {
+
+            qreal fraction( qreal( value - sliderOption->minimum )/qreal( sliderOption->maximum - sliderOption->minimum ) );
+            if( !sliderOption->upsideDown ) fraction = 1.0 - fraction;
+
+            if( sliderOption->dialWrapping ) angle = 1.5*M_PI - fraction*2*M_PI;
+            else  angle = ( M_PI*8 - fraction*10*M_PI )/6;
+
+        }
+
+        return angle;
+
+    }
+
+    //______________________________________________________________________________
     QWidget* Style::scrollBarParent( const QWidget* widget ) const
     {
 
@@ -2541,13 +2717,13 @@ namespace Breeze
 
         }
 
-        const bool hover( _animations->scrollBarEngine().isHovered( widget, control ) );
+        const bool mouseOver( _animations->scrollBarEngine().isHovered( widget, control ) );
         const bool animated( _animations->scrollBarEngine().isAnimated( widget, control ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, control ) );
 
         // retrieve mouse position from engine
-        QPoint position( hover ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
-        if( hover && rect.contains( position ) )
+        QPoint position( mouseOver ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
+        if( mouseOver && rect.contains( position ) )
         {
             // need to update the arrow controlRect on fly because there is no
             // way to get it from the styles directly, outside of repaint events
@@ -2563,7 +2739,7 @@ namespace Breeze
             {
                 color = KColorUtils::mix( color, highlight, opacity );
 
-            } else if( hover ) {
+            } else if( mouseOver ) {
 
                 color = highlight;
 

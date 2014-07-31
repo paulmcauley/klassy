@@ -40,7 +40,7 @@ namespace Breeze
     //______________________________________________
     bool SliderData::updateState( bool state )
     {
-        if( state == _sliderHovered ) return false;
+        if( state == _handleHovered ) return false;
         updateSlider( state ? QStyle::SC_SliderHandle : QStyle::SC_None );
         return true;
     }
@@ -52,8 +52,8 @@ namespace Breeze
         if( hoverControl == QStyle::SC_SliderHandle )
         {
 
-            if( !sliderHovered() ) {
-                setSliderHovered( true );
+            if( !handleHovered() ) {
+                setHandleHovered( true );
                 if( enabled() )
                 {
                     animation().data()->setDirection( Animation::Forward );
@@ -63,9 +63,9 @@ namespace Breeze
 
         } else {
 
-            if( sliderHovered() )
+            if( handleHovered() )
             {
-                setSliderHovered( false );
+                setHandleHovered( false );
                 if( enabled() )
                 {
                     animation().data()->setDirection( Animation::Backward );

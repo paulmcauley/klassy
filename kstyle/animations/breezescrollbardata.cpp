@@ -129,7 +129,7 @@ namespace Breeze
         if( !scrollBar || scrollBar->isSliderDown() ) return;
 
         // retrieve scrollbar option
-        QStyleOptionSlider opt( qt_qscrollbarStyleOption( qobject_cast<QScrollBar*>( object ) ) );
+        QStyleOptionSlider opt( qt_qscrollbarStyleOption( scrollBar ) );
 
         // cast event
         QHoverEvent *hoverEvent = static_cast<QHoverEvent*>(event);
@@ -146,10 +146,8 @@ namespace Breeze
 
 
     //______________________________________________
-    void ScrollBarData::hoverLeaveEvent(  QObject* object, QEvent* event )
+    void ScrollBarData::hoverLeaveEvent(  QObject*, QEvent* )
     {
-        Q_UNUSED( object );
-        Q_UNUSED( event );
 
         // reset hover state
         updateSubLineArrow( QStyle::SC_None );

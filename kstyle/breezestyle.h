@@ -231,6 +231,7 @@ namespace Breeze
         QRect spinBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
         QRect scrollBarInternalSubControlRect( const QStyleOptionComplex*, SubControl ) const;
         QRect scrollBarSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        QRect dialSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
         //@}
 
@@ -352,8 +353,8 @@ namespace Breeze
         //@{
         bool drawComboBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         bool drawSpinBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
-//         bool drawDialComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         bool drawSliderComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        bool drawDialComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 //         bool drawToolButtonComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
@@ -405,6 +406,9 @@ namespace Breeze
 
         QRect centerRect(const QRect &in, int w, int h) const
         { return QRect(in.x() + (in.width() - w)/2, in.y() + (in.height() - h)/2, w, h); }
+
+        //! return dial angle based on option and value
+        qreal dialAngle( const QStyleOptionSlider*, int ) const;
 
         /*
         Checks whether the point is before the bound rect for bound of given orientation.

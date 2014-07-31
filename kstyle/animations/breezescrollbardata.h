@@ -1,5 +1,5 @@
-#ifndef breezescrollbar_datah
-#define breezescrollbar_datah
+#ifndef breezescrollbar_data_h
+#define breezescrollbar_data_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezescrollbardata.h

@@ -1,5 +1,5 @@
-#ifndef breezeenable_datah
-#define breezeenable_datah
+#ifndef breezeenable_data_h
+#define breezeenable_data_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezeenabledata.h

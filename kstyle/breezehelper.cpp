@@ -368,7 +368,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderSliderHole(
+    void Helper::renderSliderGroove(
         QPainter* painter, const QRect& rect,
         const QColor& color ) const
     {
@@ -385,6 +385,72 @@ namespace Breeze
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
             painter->drawRoundedRect( baseRect, radius, radius );
+        }
+
+        return;
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderDialGroove(
+        QPainter* painter, const QRect& rect,
+        const QColor& color ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+
+        // content
+        if( color.isValid() )
+        {
+            const qreal penWidth( Metrics::Slider_Thickness );
+            const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
+
+            painter->setPen( QPen( color, penWidth ) );
+            painter->setBrush( Qt::NoBrush );
+            painter->drawEllipse( grooveRect );
+        }
+
+        return;
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderDialContents(
+        QPainter* painter, const QRect& rect,
+        const QColor& color,
+        qreal first, qreal second ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        const QRectF baseRect( rect );
+
+        // content
+        if( color.isValid() )
+        {
+
+            // setup groove rect
+            const qreal penWidth( Metrics::Slider_Thickness );
+            const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
+
+            // setup angles
+            const int angleStart( first * 180 * 16 / M_PI );
+            const int angleSpan( (second - first ) * 180 * 16 / M_PI );
+
+            // setup pen
+            if( angleSpan != 0 )
+            {
+                QPen pen( color, penWidth );
+                pen.setCapStyle( Qt::RoundCap );
+                painter->setPen( pen );
+                painter->setBrush( Qt::NoBrush );
+                painter->drawArc( grooveRect, angleStart, angleSpan );
+            }
+
         }
 
         return;
@@ -450,7 +516,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderProgressBarHole(
+    void Helper::renderProgressBarGroove(
         QPainter* painter, const QRect& rect,
         const QColor& color ) const
     {
@@ -480,6 +546,7 @@ namespace Breeze
         const QColor& first,
         const QColor& second,
         bool horizontal,
+        bool reverse,
         int progress
         ) const
     {
@@ -501,6 +568,7 @@ namespace Breeze
             painter.setPen( Qt::NoPen );
 
             progress %= 2*Metrics::ProgressBar_BusyIndicatorSize;
+            if( reverse ) progress = 2*Metrics::ProgressBar_BusyIndicatorSize - progress - 1;
             painter.drawRect( QRect( 0, 0, Metrics::ProgressBar_BusyIndicatorSize, 1 ).translated( progress, 0 ) );
 
             if( progress > Metrics::ProgressBar_BusyIndicatorSize )
@@ -511,7 +579,13 @@ namespace Breeze
             QPainter painter( &pixmap );
             painter.setBrush( first );
             painter.setPen( Qt::NoPen );
-            painter.drawRect( QRect( 0, 0, 1, Metrics::ProgressBar_BusyIndicatorSize ).translated( 0, progress % Metrics::ProgressBar_BusyIndicatorSize ) );
+
+            progress %= 2*Metrics::ProgressBar_BusyIndicatorSize;
+            progress = 2*Metrics::ProgressBar_BusyIndicatorSize - progress - 1;
+            painter.drawRect( QRect( 0, 0, 1, Metrics::ProgressBar_BusyIndicatorSize ).translated( 0, progress ) );
+
+            if( progress > Metrics::ProgressBar_BusyIndicatorSize )
+            { painter.drawRect( QRect( 0, 0, 1, Metrics::ProgressBar_BusyIndicatorSize ).translated( 0, progress - 2*Metrics::ProgressBar_BusyIndicatorSize ) ); }
 
         }
 

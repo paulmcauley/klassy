@@ -1,9 +1,9 @@
-#ifndef breezegeneric_data_h
-#define breezegeneric_data_h
+#ifndef breezedial_data_h
+#define breezedial_data_h
 
 //////////////////////////////////////////////////////////////////////////////
-// breezegenericdata.h
-// generic data container for animations
+// breezedialdata.h
+// data container for QDial animations
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -27,64 +27,52 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezeanimationdata.h"
-#include "breezeanimation.h"
+#include "breezesliderdata.h"
 
-#include <QObject>
-#include <QTextStream>
 namespace Breeze
 {
 
-
-    //! generic data
-    class GenericData: public AnimationData
+    //! dial data
+    class DialData: public SliderData
     {
 
         Q_OBJECT
 
-        //! declare opacity property
-        Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
-
         public:
 
         //! constructor
-        GenericData( QObject* parent, QWidget* widget, int duration );
+        DialData( QObject* parent, QWidget* target, int );
 
         //! destructor
-        virtual ~GenericData( void )
+        virtual ~DialData( void )
         {}
 
-        //! return animation object
-        virtual const Animation::Pointer& animation() const
-        { return _animation; }
+        //! event filter
+        virtual bool eventFilter( QObject*, QEvent* );
 
-        //! duration
-        virtual void setDuration( int duration )
-        { _animation.data()->setDuration( duration ); }
+        //! subcontrol rect
+        virtual void setHandleRect( const QRect& rect )
+        { _handleRect = rect; }
 
-        //! opacity
-        virtual qreal opacity( void ) const
-        { return _opacity; }
+        //! mouse position
+        QPoint position( void ) const
+        { return _position; }
 
-        //! opacity
-        virtual void setOpacity( qreal value )
-        {
+        protected:
 
-            value = digitize( value );
-            if( _opacity == value ) return;
+        //! hoverMoveEvent
+        virtual void hoverMoveEvent( QObject*, QEvent* );
 
-            _opacity = value;
-            setDirty();
-
-        }
+        //! hoverMoveEvent
+        virtual void hoverLeaveEvent( QObject*, QEvent* );
 
         private:
 
-        //! animation handling
-        Animation::Pointer _animation;
+        //! rect
+        QRect _handleRect;
 
-        //! opacity variable
-        qreal _opacity;
+        //! mouse position
+        QPoint _position;
 
     };
 

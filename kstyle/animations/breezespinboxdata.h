@@ -1,5 +1,5 @@
-#ifndef breezespinbox_datah
-#define breezespinbox_datah
+#ifndef breezespinbox_data_h
+#define breezespinbox_data_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezespinboxdata.h

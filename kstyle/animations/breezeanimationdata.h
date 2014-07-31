@@ -1,5 +1,5 @@
-#ifndef breeze_animationdatah
-#define breeze_animationdatah
+#ifndef breeze_animationdata_h
+#define breeze_animationdata_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezeanimationdata.h

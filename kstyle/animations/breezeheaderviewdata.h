@@ -1,5 +1,5 @@
-#ifndef breezeheaderview_datah
-#define breezeheaderview_datah
+#ifndef breezeheaderview_data_h
+#define breezeheaderview_data_h
 
 //////////////////////////////////////////////////////////////////////////////
 // breezeheaderviewdata.h

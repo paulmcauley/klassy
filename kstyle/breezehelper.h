@@ -112,27 +112,33 @@ namespace Breeze
         //! radio button
         void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, bool checked ) const;
 
-        //! slider hole
-        void renderSliderHole( QPainter*, const QRect&, const QColor& ) const;
+        //! slider groove
+        void renderSliderGroove( QPainter*, const QRect&, const QColor& ) const;
 
-        //! slider hole
+        //! slider handle
         void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
 
-        //! progress bar hole
-        void renderProgressBarHole( QPainter*, const QRect&, const QColor& ) const;
+        //! dial groove
+        void renderDialGroove( QPainter*, const QRect&, const QColor& ) const;
 
-        //! progress bar hole
+        //! dial groove
+        void renderDialContents( QPainter*, const QRect&, const QColor&, qreal first, qreal second ) const;
+
+        //! progress bar groove
+        void renderProgressBarGroove( QPainter*, const QRect&, const QColor& ) const;
+
+        //! progress bar contents
         void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderProgressBarHole( painter, rect, color ); }
+        { return renderProgressBarGroove( painter, rect, color ); }
 
-        //! progress bar hole
-        void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, int progress  ) const;
+        //! progress bar contents (animated)
+        void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, bool reverse, int progress  ) const;
 
-        //! scrollbar hole
-        void renderScrollBarHole( QPainter* painter, const QRect& rect, const QColor& color ) const
+        //! scrollbar groove
+        void renderScrollBarGroove( QPainter* painter, const QRect& rect, const QColor& color ) const
         { return renderScrollBarHandle( painter, rect, color, QColor() ); }
 
-        //! scrollbar hole
+        //! scrollbar handle
         void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
 
         //@}

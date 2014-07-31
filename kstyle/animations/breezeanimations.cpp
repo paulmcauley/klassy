@@ -32,9 +32,10 @@
 #include "breezestyleconfigdata.h"
 
 #include <QAbstractItemView>
-#include <QDial>
 #include <QComboBox>
+#include <QDial>
 #include <QGroupBox>
+#include <QHeaderView>
 #include <QLineEdit>
 #include <QProgressBar>
 #include <QScrollBar>
@@ -54,10 +55,12 @@ namespace Breeze
         _comboBoxEngine = new WidgetStateEngine( this );
         _spinBoxEngine = new SpinBoxEngine( this );
 
+        registerEngine( _headerViewEngine = new HeaderViewEngine( this ) );
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _lineEditEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
         registerEngine( _sliderEngine = new SliderEngine( this ) );
+        registerEngine( _dialEngine = new DialEngine( this ) );
     }
 
     //____________________________________________________________
@@ -77,14 +80,15 @@ namespace Breeze
             _comboBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _spinBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _lineEditEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _headerViewEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _dialEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
             // busy indicator
             _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
 
         }
-
 
         {
 
@@ -94,8 +98,10 @@ namespace Breeze
             _comboBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _spinBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _lineEditEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _headerViewEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _dialEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
             // busy indicator
             _busyIndicatorEngine->setDuration( StyleConfigData::progressBarBusyStepDuration() );
@@ -119,15 +125,13 @@ namespace Breeze
 
         // install animation timers
         // for optimization, one should put with most used widgets here first
+
+        // buttons
         if( qobject_cast<QToolButton*>(widget) )
         {
 
 
         } else if( qobject_cast<QAbstractButton*>(widget) ) {
-
-            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
-
-        } else if( qobject_cast<QDial*>(widget) ) {
 
             _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
 
@@ -140,11 +144,10 @@ namespace Breeze
             { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
         }
 
-        // scrollbar
+        // sliders
         else if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
-
-        // slider
         else if( qobject_cast<QSlider*>( widget ) ) { _sliderEngine->registerWidget( widget ); }
+        else if( qobject_cast<QDial*>( widget ) ) { _dialEngine->registerWidget( widget ); }
 
         // progress bar
         else if( qobject_cast<QProgressBar*>( widget ) ) { _busyIndicatorEngine->registerWidget( widget ); }
@@ -162,13 +165,16 @@ namespace Breeze
             _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
         }
 
-        // editor
+        // editors
         else if( qobject_cast<QLineEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
         else if( qobject_cast<QTextEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // lists
         else if( qobject_cast<QAbstractItemView*>( widget ) || widget->inherits("Q3ListView") )
         { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+
+        // header views
+        else if( qobject_cast<QHeaderView*>( widget ) ) { _headerViewEngine->registerWidget( widget ); }
 
         // scrollarea
         else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
@@ -189,6 +195,8 @@ namespace Breeze
         if( !widget ) return;
 
         _widgetEnabilityEngine->unregisterWidget( widget );
+        _spinBoxEngine->unregisterWidget( widget );
+        _comboBoxEngine->unregisterWidget( widget );
         _busyIndicatorEngine->registerWidget( widget );
 
         // the following allows some optimization of widget unregistration

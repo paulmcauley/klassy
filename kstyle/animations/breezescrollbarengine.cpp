@@ -37,10 +37,6 @@ namespace Breeze
     {
 
         // check widget
-        /*
-        note: widget is registered even if animation is disabled because BreezeScrollBarData
-        is also used in non-animated mode to store arrow rect for hover highlight
-        */
         if( !widget ) return false;
 
         // create new data class
