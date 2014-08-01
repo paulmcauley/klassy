@@ -647,7 +647,8 @@ namespace Breeze
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
 
-            QPainterPath path( roundedPath( baseRect, 2.5, corners ) );
+            const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 0.5 );
+            QPainterPath path( roundedPath( baseRect, radius, corners ) );
             painter->drawPath( path );
 
         }
@@ -658,7 +659,8 @@ namespace Breeze
             painter->setPen( QPen( outline, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
-            QPainterPath path( roundedPath( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), 2, corners ) );
+            const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 1 );
+            QPainterPath path( roundedPath( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), radius, corners ) );
             painter->drawPath( path );
         }
 
