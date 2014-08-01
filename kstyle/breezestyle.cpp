@@ -2462,8 +2462,8 @@ namespace Breeze
         const bool isSingle( position == QStyleOptionTab::OnlyOneTab );
         bool isFirst( isSingle || position == QStyleOptionTab::Beginning );
         bool isLast( isSingle || position == QStyleOptionTab::End );
-        bool isLeftOfSelected( tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
-        bool isRightOfSelected( tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
+        bool isLeftOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
+        bool isRightOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
 
         // true if widget is aligned to the frame
         /* need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved */
@@ -2494,8 +2494,8 @@ namespace Breeze
 
                 if( isFirst ) corners |= Helper::CornerTopLeft;
                 if( isLast ) corners |= Helper::CornerTopRight;
-                if( isRightOfSelected && !isLocked ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
-                if( isLeftOfSelected && !isLocked ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
             }
