@@ -32,6 +32,7 @@ namespace Breeze
 
         // frames
         Frame_FrameWidth = 2,
+        Frame_FrameRadius = 3,
 
         // line editors
         LineEdit_MarginWidth = 6,

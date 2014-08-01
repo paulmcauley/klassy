@@ -174,9 +174,11 @@ namespace Breeze
         if( color.isValid() )
         {
             // content
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
-            painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 2.5, 2.5 );
+            painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
         }
 
         if( outline.isValid() )
@@ -186,15 +188,19 @@ namespace Breeze
             if( focus )
             {
 
+                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.5 );
+
                 painter->setPen( QPen( outline, 2 ) );
                 painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), 1.5, 1.5 );
+                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
 
             } else {
 
+                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+
                 painter->setPen( QPen( outline, 1 ) );
                 painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), 2, 2 );
+                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), radius, radius );
 
             }
         }
@@ -216,14 +222,20 @@ namespace Breeze
         // shadow
         if( !sunken )
         {
+
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
             const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawRoundedRect( shadowRect, 2.5, 2.5 );
+            painter->drawRoundedRect( shadowRect, radius, radius );
+
         }
 
         // content
         {
+
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
 
             painter->setPen( Qt::NoPen );
 
@@ -233,17 +245,18 @@ namespace Breeze
             gradient.setColorAt( 1, color.darker( focus ? 110:103 ) );
             painter->setBrush( gradient );
 
-            painter->drawRoundedRect( contentRect, 3, 3 );
+            painter->drawRoundedRect( contentRect, radius, radius );
 
         }
 
         // outline
         if( outline.isValid() )
         {
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
             painter->setPen( QPen( outline, 1 ) );
             painter->setBrush( Qt::NoBrush );
             const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
-            painter->drawRoundedRect( outlineRect, 2.5, 2.5 );
+            painter->drawRoundedRect( outlineRect, radius, radius );
 
         }
 
@@ -266,22 +279,24 @@ namespace Breeze
         if( !sunken )
         {
 
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
             const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawRoundedRect( shadowRect, 2, 2 );
+            painter->drawRoundedRect( shadowRect, radius, radius );
 
         }
 
         // content
         {
 
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
             painter->setPen( QPen( color, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
             const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
-            painter->drawRoundedRect( contentRect, 2, 2 );
+            painter->drawRoundedRect( contentRect, radius, radius );
 
         }
 
