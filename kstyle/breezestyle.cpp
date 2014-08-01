@@ -56,6 +56,44 @@
 
 Q_LOGGING_CATEGORY(BREEZE, "breeze")
 
+namespace BreezePrivate
+{
+    // needed to keep track of tabbars when being dragged
+    class TabBarData: public QObject
+    {
+
+        public:
+
+        //! constructor
+        explicit TabBarData( QObject* parent ):
+            QObject( parent )
+        {}
+
+        //! destructor
+        virtual ~TabBarData( void )
+        {}
+
+        //! assign target tabBar
+        void lock( const QWidget* widget )
+        { _tabBar = widget; }
+
+        //! true if tabbar is locked
+        bool isLocked( const QWidget* widget ) const
+        { return _tabBar && _tabBar.data() == widget; }
+
+        //! release
+        void release( void )
+        { _tabBar.clear(); }
+
+        private:
+
+        //! pointer to target tabBar
+        QPointer<const QWidget> _tabBar;
+
+    };
+
+}
+
 namespace Breeze
 {
 
@@ -80,6 +118,7 @@ namespace Breeze
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
         _animations( new Animations( this ) ),
         _mnemonics( new Mnemonics( this ) ),
+        _tabBarData( new BreezePrivate::TabBarData( this ) ),
         _windowManager( new WindowManager( this ) ),
         _frameShadowFactory( new FrameShadowFactory( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
@@ -2395,9 +2434,6 @@ namespace Breeze
         const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
         if( !tabOption ) return true;
 
-        // rect
-        QRect rect( option->rect );
-
         // palette and flags
         const QPalette& palette( option->palette );
         const State& flags( option->state );
@@ -2405,15 +2441,27 @@ namespace Breeze
         const bool selected( flags & State_Selected );
         const bool mouseOver( enabled && !selected && ( flags & State_MouseOver ) );
 
+        // check if tab is being dragged
+        const bool isDragged( widget && selected && painter->device() != widget );
+        const bool isLocked( widget && _tabBarData->isLocked( widget ) );
+
+        // store rect
+        QRect rect( option->rect );
+
         // animation state
         _animations->tabBarEngine().updateState( widget, rect.topLeft(), mouseOver );
         const bool animated( enabled && !selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft() ) );
         const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft() ) );
 
+        // lock state
+        if( selected && widget && isDragged ) _tabBarData->lock( widget );
+        else if( widget && selected  && _tabBarData->isLocked( widget ) ) _tabBarData->release();
+
         // tab position
         const QStyleOptionTab::TabPosition& position = tabOption->position;
-        bool isFirst( position == QStyleOptionTab::OnlyOneTab || position == QStyleOptionTab::Beginning );
-        bool isLast( position == QStyleOptionTab::OnlyOneTab || position == QStyleOptionTab::End );
+        const bool isSingle( position == QStyleOptionTab::OnlyOneTab );
+        bool isFirst( isSingle || position == QStyleOptionTab::Beginning );
+        bool isLast( isSingle || position == QStyleOptionTab::End );
         bool isLeftOfSelected( tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
         bool isRightOfSelected( tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
 
@@ -2431,54 +2479,79 @@ namespace Breeze
             qSwap( isLeftOfSelected, isRightOfSelected );
         }
 
-        // define corners to be drawn and adjust rectangles, to handle overlaps
+        // adjust rect and define corners based on tabbar orientation
         Helper::Corners corners;
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            corners = Helper::CornerTopLeft|Helper::CornerTopRight;
-            if( selected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
-            else {
+            if( selected ) {
 
-                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabOverlap, 0, 0, 0 );
-                if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                corners = Helper::CornerTopLeft|Helper::CornerTopRight;
+                rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+
+            } else {
+
+                if( isFirst ) corners |= Helper::CornerTopLeft;
+                if( isLast ) corners |= Helper::CornerTopRight;
+                if( isRightOfSelected && !isLocked ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                if( isLeftOfSelected && !isLocked ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
             }
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            corners = Helper::CornerBottomLeft|Helper::CornerBottomRight;
-            if( selected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
-            else {
+            if( selected ) {
 
-                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabOverlap, 0, 0, 0 );
-                if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                corners = Helper::CornerBottomLeft|Helper::CornerBottomRight;
+                rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
+
+            } else {
+
+                if( isFirst ) corners |= Helper::CornerBottomLeft;
+                if( isLast ) corners |= Helper::CornerBottomRight;
+                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
             }
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            corners = Helper::CornerTopLeft|Helper::CornerBottomLeft;
-            if( selected ) rect.adjust( 0, 0, Metrics::TabBar_TabRadius, 0 );
-            else {
+            if( selected )
+            {
+                corners = Helper::CornerTopLeft|Helper::CornerBottomLeft;
+                rect.adjust( 0, 0, Metrics::TabBar_TabRadius, 0 );
 
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabOverlap, 0, 0 );
-                if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+            } else {
+
+                if( isFirst ) corners |= Helper::CornerTopLeft;
+                if( isLast ) corners |= Helper::CornerBottomLeft;
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+                else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
 
             }
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            corners = Helper::CornerTopRight|Helper::CornerBottomRight;
-            if( selected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
-            else {
+            if( selected )
+            {
 
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabOverlap, 0, 0 );
-                if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+                corners = Helper::CornerTopRight|Helper::CornerBottomRight;
+                rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+
+            } else {
+
+                if( isFirst ) corners |= Helper::CornerTopRight;
+                if( isLast ) corners |= Helper::CornerBottomRight;
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+                else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
 
             }
             break;

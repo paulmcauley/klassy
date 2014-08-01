@@ -33,6 +33,11 @@
 #include <QStylePlugin>
 #include <QWidget>
 
+namespace BreezePrivate
+{
+    class TabBarData;
+}
+
 namespace Breeze
 {
 
@@ -474,6 +479,9 @@ namespace Breeze
 
         //! keyboard accelerators
         Mnemonics* _mnemonics;
+
+        //! tabbar data
+        BreezePrivate::TabBarData* _tabBarData;
 
         //! window manager
         WindowManager* _windowManager;
