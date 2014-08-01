@@ -81,7 +81,7 @@ namespace Breeze
         TabBar_TabMinHeight = 28,
         TabBar_TabRadius = 3,
         TabBar_TabOverlap = 1,
-        TabBar_BaseOverlap = 1,
+        TabBar_BaseOverlap = 2,
 
         // tab widget
         TabWidget_MarginWidth = 4,

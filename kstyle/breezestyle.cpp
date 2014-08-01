@@ -343,6 +343,7 @@ namespace Breeze
             case SE_HeaderLabel: return headerLabelRect( option, widget );
 
             // tabbars
+            case SE_TabWidgetTabBar: return tabWidgetTabBarRect( option, widget );
             case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
             case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
 
@@ -388,6 +389,7 @@ namespace Breeze
             case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
 
             // tabbar
+            case CT_TabWidget: return tabWidgetSizeFromContents( option, size, widget );
             case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
 
             // fallback
@@ -784,6 +786,80 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QRect Style::tabWidgetTabBarRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return option->rect;
+
+        // do nothing if tabbar is hidden
+        const QSize tabBarSize( tabOption->tabBarSize );
+        if( tabBarSize.isEmpty() ) return option->rect;
+
+        QRect rect( option->rect );
+        QRect tabBarRect( QPoint(0, 0), tabBarSize );
+
+        // horizontal positioning
+        const bool verticalTabs( isVerticalTab( tabOption->shape ) );
+        if( verticalTabs )
+        {
+
+            tabBarRect.setHeight( qMin( tabBarRect.height(), rect.height() - 2 ) );
+            tabBarRect.moveTop( rect.top() + ( rect.height() - tabBarRect.height() )/2 );
+
+        } else {
+
+            // adjust rect to deal with corner buttons
+            if( !tabOption->leftCornerWidgetSize.isEmpty() )
+            {
+                const QRect buttonRect( subElementRect( SE_TabWidgetLeftCorner, option, widget ) );
+                rect.setLeft( buttonRect.width() );
+            }
+
+            if( !tabOption->rightCornerWidgetSize.isEmpty() )
+            {
+                const QRect buttonRect( subElementRect( SE_TabWidgetRightCorner, option, widget ) );
+                rect.setRight( buttonRect.left()-1 );
+            }
+
+            tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
+            tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
+
+        }
+
+        // vertical positioning
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            tabBarRect.moveTop( rect.top()+1 );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            tabBarRect.moveBottom( rect.bottom()-1 );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            tabBarRect.moveLeft( rect.left()+1 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            tabBarRect.moveRight( rect.right()-1 );
+            break;
+
+            default: break;
+
+        }
+
+        return tabBarRect;
+
+    }
+
+    //____________________________________________________________________
     QRect Style::tabWidgetTabContentsRect( const QStyleOption* option, const QWidget* widget ) const
     {
 
@@ -819,7 +895,7 @@ namespace Breeze
                 return rect.adjusted( 0, 0, -Metrics::TabWidget_MarginWidth, 0 );
 
                 default: return rect;
-        }
+            }
 
         } else return insideMargin( rect, Metrics::TabWidget_MarginWidth );
 
@@ -832,8 +908,9 @@ namespace Breeze
         const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
 
-        // const QSize tabBarSize( tabOption->tabBarSize - QSize( Metrics::TabBar_BaseOverlap, Metrics::TabBar_BaseOverlap ) );
-        const QSize tabBarSize( tabOption->tabBarSize - QSize( Metrics::TabBar_BaseOverlap + 1, Metrics::TabBar_BaseOverlap + 1 ) );
+        const int overlap = Metrics::TabBar_BaseOverlap - 1;
+        const QSize tabBarSize( tabOption->tabBarSize - QSize( overlap, overlap ) );
+
         QRect rect( option->rect );
         switch( tabOption->shape )
         {
@@ -1470,9 +1547,12 @@ namespace Breeze
     }
 
     //______________________________________________________________
+    QSize Style::tabWidgetSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    { return expandSize( contentsSize, Metrics::Frame_FrameWidth ); }
+
+    //______________________________________________________________
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
-
         const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
 
         // add margins
@@ -1567,7 +1647,6 @@ namespace Breeze
     {
 
         // tabwidget frame
-
         // cast option and check
         const QStyleOptionTabWidgetFrame* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
         if( !tabOption ) return true;
@@ -1578,11 +1657,40 @@ namespace Breeze
         // adjust rect to handle overlaps
         QRect rect( option->rect );
 
+        const QSize tabBarSize( tabOption->tabBarSize );
+        Helper::Corners corners = Helper::CornersAll;
+
+        // adjust corners to deal with oversized tabbars
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            if( tabBarSize.width() >= rect.width()-2 ) corners &= ~Helper::CornersTop;
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            if( tabBarSize.width() >= rect.width()-2 ) corners &= ~Helper::CornersBottom;
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            if( tabBarSize.height() >= rect.height()-2 ) corners &= ~Helper::CornersLeft;
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            if( tabBarSize.height() >= rect.height()-2 ) corners &= ~Helper::CornersRight;
+            break;
+
+            default: break;
+        }
+
+        // define colors
         const QPalette& palette( option->palette );
         const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
         const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
-
-        _helper->renderFrame( painter, rect, color, outline );
+        _helper->renderTabWidgetFrame( painter, rect, color, outline, corners );
 
         return true;
     }
@@ -1603,7 +1711,6 @@ namespace Breeze
         // get rect, orientation, palette
         const QRect rect( option->rect );
         const QPalette& palette( option->palette );
-        const bool vertical( isVerticalTab( tabOption->shape ) );
         const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
 
         // setup painter
@@ -1612,10 +1719,35 @@ namespace Breeze
         painter->setPen( QPen( outline, 1 ) );
 
         // render
-        if( vertical ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-        else painter->drawLine( rect.topLeft(), rect.topRight() );
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            painter->drawLine( rect.topLeft(), rect.topRight() );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            painter->drawLine( rect.topRight(), rect.bottomRight() );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            break;
+
+            default:
+            break;
+
+        }
 
         return true;
+
     }
 
     //___________________________________________________________________________________
@@ -1718,7 +1850,7 @@ namespace Breeze
         const QColor color( _helper->buttonPanelColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
         // render
-        _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+        _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
         return true;
 
@@ -1738,27 +1870,31 @@ namespace Breeze
         {
             QRect rect( option->rect );
 
+            // overlap.
+            // subtract 1, because of the empty pixel left the tabwidget frame
+            const int overlap( Metrics::TabBar_BaseOverlap - 1 );
+
             // adjust rect based on tabbar shape
             switch( tabBar->shape() )
             {
                 case QTabBar::RoundedNorth:
                 case QTabBar::TriangularNorth:
-                rect.adjust( 0, 0, 0, -Metrics::TabBar_BaseOverlap );
+                rect.adjust( 0, 0, 0, -overlap );
                 break;
 
                 case QTabBar::RoundedSouth:
                 case QTabBar::TriangularSouth:
-                rect.adjust( 0, Metrics::TabBar_BaseOverlap, 0, 0 );
+                rect.adjust( 0, overlap, 0, 0 );
                 break;
 
                 case QTabBar::RoundedWest:
                 case QTabBar::TriangularWest:
-                rect.adjust( 0, 0, -Metrics::TabBar_BaseOverlap, 0 );
+                rect.adjust( 0, 0, -overlap, 0 );
                 break;
 
                 case QTabBar::RoundedEast:
                 case QTabBar::TriangularEast:
-                rect.adjust( Metrics::TabBar_BaseOverlap, 0, 0, 0 );
+                rect.adjust( overlap, 0, 0, 0 );
                 break;
 
                 default: break;
@@ -2656,6 +2792,7 @@ namespace Breeze
 
             } else {
 
+                rect.adjust( 0, 0, 0, -1 );
                 if( isFirst ) corners |= Helper::CornerTopLeft;
                 if( isLast ) corners |= Helper::CornerTopRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
@@ -2674,6 +2811,7 @@ namespace Breeze
 
             } else {
 
+                rect.adjust( 0, 1, 0, 0 );
                 if( isFirst ) corners |= Helper::CornerBottomLeft;
                 if( isLast ) corners |= Helper::CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
@@ -2692,6 +2830,7 @@ namespace Breeze
 
             } else {
 
+                rect.adjust( 0, 0, -1, 0 );
                 if( isFirst ) corners |= Helper::CornerTopLeft;
                 if( isLast ) corners |= Helper::CornerBottomLeft;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
@@ -2711,6 +2850,7 @@ namespace Breeze
 
             } else {
 
+                rect.adjust( 1, 0, 0, 0 );
                 if( isFirst ) corners |= Helper::CornerTopRight;
                 if( isLast ) corners |= Helper::CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
@@ -2812,7 +2952,7 @@ namespace Breeze
 
                 const bool sunken( flags & ( State_On|State_Sunken ) );
 
-                _helper->renderButtonSlab( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+                _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
             }
 

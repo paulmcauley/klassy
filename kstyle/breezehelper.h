@@ -97,8 +97,27 @@ namespace Breeze
         //! generic frame
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
 
-        //! generic button slab
-        void renderButtonSlab( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+        //! button frame
+        void renderButtonFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+
+        //! corner enumeration, needed for tabbar tabs
+        enum Corner
+        {
+            CornerTopLeft = 1 << 0,
+            CornerTopRight = 1 << 1,
+            CornerBottomLeft = 1 << 2,
+            CornerBottomRight = 1 << 3,
+            CornersTop = CornerTopLeft|CornerTopRight,
+            CornersBottom = CornerBottomLeft|CornerBottomRight,
+            CornersLeft = CornerTopLeft|CornerBottomLeft,
+            CornersRight = CornerTopRight|CornerBottomRight,
+            CornersAll = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
+        };
+
+        Q_DECLARE_FLAGS( Corners, Corner );
+
+        //! tab widget frame
+        void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners corners ) const;
 
         //! checkbox state (used for checkboxes _and_ radio buttons)
         enum CheckBoxState
@@ -142,17 +161,6 @@ namespace Breeze
 
         //! scrollbar handle
         void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
-
-        //! corner enumeration, needed for tabbar tabs
-        enum Corner
-        {
-            CornerTopLeft = 1 << 0,
-            CornerTopRight = 1 << 1,
-            CornerBottomLeft = 1 << 2,
-            CornerBottomRight = 1 << 3
-        };
-
-        Q_DECLARE_FLAGS( Corners, Corner );
 
         //! tabbar tab
         void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;

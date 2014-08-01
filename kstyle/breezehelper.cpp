@@ -160,7 +160,6 @@ namespace Breeze
         return color;
     }
 
-
     //______________________________________________________________________________
     void Helper::renderFrame(
         QPainter* painter, const QRect& rect,
@@ -208,7 +207,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderButtonSlab(
+    void Helper::renderButtonFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, const QColor& shadow,
         bool focus, bool sunken ) const
@@ -257,6 +256,43 @@ namespace Breeze
             painter->setBrush( Qt::NoBrush );
             const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
             painter->drawRoundedRect( outlineRect, radius, radius );
+
+        }
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderTabWidgetFrame(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, const QColor& outline, Corners corners ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const QRectF baseRect( rect );
+
+        if( color.isValid() )
+        {
+            // content
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+            QPainterPath path( roundedPath( contentRect, radius, corners ) );
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawPath( path );
+        }
+
+        if( outline.isValid() )
+        {
+
+            // outline
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+            QPainterPath path( roundedPath( outlineRect, radius, corners ) );
+
+            painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+            painter->drawPath( path );
 
         }
 
