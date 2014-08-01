@@ -89,8 +89,10 @@ namespace Breeze
         // list headers
         Header_MarginWidth = 8,
         Header_BoxTextSpace = 4,
-        Header_MarkSize = 10
+        Header_MarkSize = 10,
 
+        // dock widget
+        DockWidget_TitleMarginWidth = Frame_FrameWidth
     };
 
 }

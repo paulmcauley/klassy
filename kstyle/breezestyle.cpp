@@ -43,8 +43,10 @@
 #include <QDial>
 #include <QDBusConnection>
 #include <QDockWidget>
+#include <QGraphicsView>
 #include <QGroupBox>
 #include <QLineEdit>
+#include <QMainWindow>
 #include <QPainter>
 #include <QPushButton>
 #include <QRadioButton>
@@ -214,6 +216,14 @@ namespace Breeze
 
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
+        // add event filter
+        } else if( qobject_cast<QDockWidget*>( widget ) ) {
+
+            widget->setAutoFillBackground( false );
+            widget->setBackgroundRole( QPalette::NoRole );
+            widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
+            addEventFilter( widget );
+
         }
 
         // base class polishing
@@ -245,7 +255,6 @@ namespace Breeze
             // frame width
             case PM_DefaultFrameWidth:
             case PM_ComboBoxFrameWidth:
-            case PM_DockWidgetFrameWidth:
             case PM_SpinBoxFrameWidth:
             return Metrics::Frame_FrameWidth;
 
@@ -282,6 +291,11 @@ namespace Breeze
             case PM_HeaderMarkSize: return Metrics::Header_MarkSize;
             case PM_HeaderMargin: return Metrics::Header_MarginWidth;
 
+            // dock widget
+            // return 0 here, since frame is handled directly in polish
+            case PM_DockWidgetFrameWidth: return 0;
+            case PM_DockWidgetTitleMargin: return DockWidget_TitleMarginWidth;
+
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
 
@@ -294,6 +308,39 @@ namespace Breeze
     {
         switch( hint )
         {
+
+
+            case SH_RubberBand_Mask:
+            {
+
+                if( QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask*>( returnData ) )
+                {
+
+                    mask->region = option->rect;
+
+                    // need to check on widget before removing inner region
+                    // in order to still preserve rubberband in MainWindow and QGraphicsView
+                    // in QMainWindow because it looks better
+                    // in QGraphicsView because the painting fails completely otherwise
+                    if( widget && (
+                        qobject_cast<const QAbstractItemView*>( widget->parent() ) ||
+                        qobject_cast<const QGraphicsView*>( widget->parent() ) ||
+                        qobject_cast<const QMainWindow*>( widget->parent() ) ) )
+                    { return true; }
+
+                    // also check if widget's parent is some itemView viewport
+                    if( widget && widget->parent() &&
+                        qobject_cast<const QAbstractItemView*>( widget->parent()->parent() ) &&
+                        static_cast<const QAbstractItemView*>( widget->parent()->parent() )->viewport() == widget->parent() )
+                    { return true; }
+
+                    // mask out center
+                    mask->region -= option->rect.adjusted( 1,1,-1,-1 );
+
+                    return true;
+                }
+                return false;
+            }
 
             // mouse tracking
             case SH_ComboBox_ListMouseTracking: return true;
@@ -532,7 +579,11 @@ namespace Breeze
             // frame
             case CE_ShapedFrame: fcn = &Style::drawShapedFrameControl; break;
 
+            // rubber band
+            case CE_RubberBand: fcn = &Style::drawRubberBandControl; break;
+
             // size grip
+            // no size grip is rendered, since its usage is discouraged
             case CE_SizeGrip: fcn = &Style::emptyControl; break;
 
             // list headers
@@ -614,8 +665,8 @@ namespace Breeze
             if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
             {
 
-                const QPalette pal = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
-                return KStyle::drawItemText( painter, r, flags, pal, enabled, text, textRole );
+                const QPalette palette = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
+                return KStyle::drawItemText( painter, r, flags, palette, enabled, text, textRole );
 
             }
 
@@ -630,8 +681,42 @@ namespace Breeze
     //_____________________________________________________________________
     bool Style::eventFilter( QObject *object, QEvent *event )
     {
+
+        // dock widgets
+        if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
+
         // fallback
         return KStyle::eventFilter( object, event );
+    }
+
+    //____________________________________________________________________________
+    bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
+    {
+        switch( event->type() )
+        {
+            case QEvent::Paint:
+            {
+
+                // do nothing for detached docks
+                if( dockWidget->isWindow() ) return false;
+
+                // create painter and clip
+                QPainter painter( dockWidget );
+                QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+                painter.setClipRegion( paintEvent->region() );
+
+                // define color and render
+                const QPalette& palette( dockWidget->palette() );
+                const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+                _helper->renderFrame( &painter, dockWidget->rect(), QColor(), outline );
+
+                return false;
+            }
+
+            default: return false;
+
+        }
+
     }
 
     //_____________________________________________________________________
@@ -1738,7 +1823,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
         /*
@@ -1877,7 +1962,16 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool hasFocus( enabled && ( flags & State_HasFocus ) );
         const bool sunken( flags & ( State_On|State_Sunken ) );
-        const QPalette& palette( option->palette );
+        QPalette palette( option->palette );
+
+        // update button color from palette in case button is default
+        const QStyleOptionButton* buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
+        if( enabled && buttonOption && buttonOption->features & QStyleOptionButton::DefaultButton )
+        {
+            const QColor button( palette.color( QPalette::Button ) );
+            const QColor base( palette.color( QPalette::Base ) );
+            palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
+        }
 
         // update animation state
         // mouse over takes precedence over focus
@@ -2551,7 +2645,7 @@ namespace Breeze
 
             case QFrame::HLine:
             {
-                const QPalette palette( option->palette );
+                const QPalette& palette( option->palette );
                 const QRect rect( option->rect );
                 const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
                 painter->setBrush( Qt::NoBrush );
@@ -2562,7 +2656,7 @@ namespace Breeze
 
             case QFrame::VLine:
             {
-                const QPalette palette( option->palette );
+                const QPalette& palette( option->palette );
                 const QRect rect( option->rect );
                 const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
                 painter->setBrush( Qt::NoBrush );
@@ -2576,6 +2670,23 @@ namespace Breeze
         }
 
         return false;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawRubberBandControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        const QPalette& palette( option->palette );
+        const QRect rect( option->rect );
+
+        QColor color = palette.color( QPalette::Highlight );
+        painter->setPen( KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) ) );
+        color.setAlpha( 50 );
+        painter->setBrush( color );
+        painter->setClipRegion( rect );
+        painter->drawRect( rect.adjusted( 0,0,-1,-1 ) );
+        return true;
 
     }
 

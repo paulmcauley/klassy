@@ -27,6 +27,7 @@
 
 #include <KStyle>
 
+#include <QDockWidget>
 #include <QIcon>
 #include <QLoggingCategory>
 #include <QStyleOption>
@@ -126,8 +127,24 @@ namespace Breeze
             QPainter*, const QRect&, int alignment, const QPalette&, bool enabled,
             const QString&, QPalette::ColorRole = QPalette::NoRole) const;
 
-        //! event filters
+        //!@name event filters
+        //@{
+
         virtual bool eventFilter(QObject *, QEvent *);
+
+        //! dock widget
+        /*! needed to render proper frame */
+        bool eventFilterDockWidget( QDockWidget*, QEvent* );
+
+        //! install event filter to object, in a unique way
+        void addEventFilter( QObject* object )
+        {
+            object->removeEventFilter( this );
+            object->installEventFilter( this );
+        }
+
+        //@}
+
 
         protected Q_SLOTS:
 
@@ -330,7 +347,6 @@ namespace Breeze
         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //
         //! scrollbar
         virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -340,6 +356,7 @@ namespace Breeze
         virtual bool drawScrollBarSubPageControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         virtual bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
