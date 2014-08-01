@@ -172,12 +172,13 @@ namespace Breeze
         else if( qobject_cast<QLineEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
         else if( qobject_cast<QTextEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
+        // header views
+        // need to come before abstract item view, otherwise is skipped
+        else if( qobject_cast<QHeaderView*>( widget ) ) { _headerViewEngine->registerWidget( widget ); }
+
         // lists
         else if( qobject_cast<QAbstractItemView*>( widget ) || widget->inherits("Q3ListView") )
         { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
-
-        // header views
-        else if( qobject_cast<QHeaderView*>( widget ) ) { _headerViewEngine->registerWidget( widget ); }
 
         // tabbar
         else if( qobject_cast<QTabBar*>( widget ) ) { _tabBarEngine->registerWidget( widget ); }

@@ -78,13 +78,7 @@ namespace Breeze
                 }
 
                 setCurrentIndex( index );
-
-                /*
-                for now animation is only triggered when hovering the sorting section,
-                since no hover effect is implemented for all other sections
-                */
-                if( index == local->sortIndicatorSection() )
-                { currentIndexAnimation().data()->restart(); }
+                currentIndexAnimation().data()->restart();
 
                 return true;
 
