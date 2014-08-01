@@ -529,6 +529,7 @@ namespace Breeze
             case CE_HeaderEmptyArea: fcn = &Style::drawHeaderEmptyAreaControl; break;
 
             // tabbar
+            case CE_TabBarTabLabel: fcn = &Style::drawTabBarTabLabelControl; break;
             case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
 
             // fallback
@@ -679,7 +680,7 @@ namespace Breeze
     {
 
         // cast option
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return option->rect;
 
         // get direction
@@ -719,7 +720,7 @@ namespace Breeze
     {
 
         // cast option
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !( progressBarOption && progressBarOption->textVisible ) ) return QRect();
 
         // get direction
@@ -745,7 +746,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return option->rect;
 
         // check if arrow is necessary
@@ -763,7 +764,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return option->rect;
 
         // check if arrow is necessary
@@ -870,7 +871,7 @@ namespace Breeze
             {
 
                 // cast option and check
-                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>( option );
+                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
                 if( !groupBoxOption ) break;
 
                 // take out frame width
@@ -899,7 +900,7 @@ namespace Breeze
             {
 
                 // cast option and check
-                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>( option );
+                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
                 if( !groupBoxOption ) break;
 
                 // take out frame width
@@ -972,7 +973,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionComboBox *comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox *>( option );
+        const QStyleOptionComboBox *comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
 
         const bool editable( comboBoxOption->editable );
@@ -1067,7 +1068,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSpinBox *spinBoxOption = qstyleoption_cast<const QStyleOptionSpinBox *>( option );
+        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
@@ -1327,7 +1328,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox *>( option ) );
+        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return contentsSize;
 
         const bool editable( comboBoxOption->editable );
@@ -1357,7 +1358,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSpinBox *spinBoxOption = qstyleoption_cast<const QStyleOptionSpinBox *>( option );
+        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return contentsSize;
 
         const bool flat( !spinBoxOption->frame );
@@ -1388,7 +1389,7 @@ namespace Breeze
     {
 
         // cast option
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return contentsSize;
 
         const bool textVisible( progressBarOption->textVisible );
@@ -1423,7 +1424,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return contentsSize;
 
         // get text size
@@ -1536,7 +1537,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionFrame *frameOption = qstyleoption_cast<const QStyleOptionFrame *>( option );
+        const QStyleOptionFrame *frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return true;
 
         // no frame for flat groupboxes
@@ -1756,7 +1757,7 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-        const QStyleOptionHeader *headerOption = qstyleoption_cast<const QStyleOptionHeader *>( option );
+        const QStyleOptionHeader *headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         const State& flags( option->state );
 
         // arrow orientation
@@ -1789,7 +1790,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionButton* buttonOption = qstyleoption_cast<const QStyleOptionButton*>( option );
+        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return false;
 
         // need to alter palette for focused buttons
@@ -1809,7 +1810,7 @@ namespace Breeze
     bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const QStyleOptionComboBox* comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox*>( option );
+        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return false;
         if( comboBoxOption->editable ) return false;
 
@@ -1827,7 +1828,7 @@ namespace Breeze
     bool Style::drawProgressBarControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
         // render groove
@@ -1871,10 +1872,10 @@ namespace Breeze
     bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
-        const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
+        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
 
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
@@ -1936,7 +1937,7 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-        const QStyleOptionProgressBar* progressBarOption = qstyleoption_cast<const QStyleOptionProgressBar*>( option );
+        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
         const QRect& rect( option->rect );
@@ -1944,7 +1945,7 @@ namespace Breeze
         const State& flags( option->state );
         const bool enabled( flags&State_Enabled );
 
-        const QStyleOptionProgressBarV2* progressBarOption2 = qstyleoption_cast<const QStyleOptionProgressBarV2*>( option );
+        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
         const bool reverseLayout = ( option->direction == Qt::RightToLeft );
 
@@ -1976,7 +1977,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption = qstyleoption_cast<const QStyleOptionSlider *>( option );
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         painter->setClipRect( option->rect );
@@ -2327,7 +2328,7 @@ namespace Breeze
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
         const bool sunken( enabled && ( flags & (State_On|State_Sunken) ) );
 
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader *>( option ) );
+        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return true;
 
         const bool horizontal( headerOption->orientation == Qt::Horizontal );
@@ -2433,6 +2434,74 @@ namespace Breeze
             else painter->drawLine( rect.topRight(), rect.bottomRight() );
 
         }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawTabBarTabLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // call parent style method
+        KStyle::drawControl( CE_TabBarTabLabel, option, painter, widget );
+
+        // check focus
+        const State& flags( option->state );
+        const bool hasFocus( flags & State_HasFocus );
+        const bool selected( flags & State_Selected );
+        if( !( hasFocus && selected ) ) return true;
+
+        // code is copied from QCommonStyle, but adds focus
+        // cast option and check
+        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>(option) );
+        if( !tabOption || tabOption->text.isEmpty() ) return true;
+
+        // tab option rect
+        QRect rect = tabOption->rect;
+        const bool vertical( isVerticalTab( tabOption ) );
+        const int alignment = Qt::AlignCenter | Qt::TextHideMnemonic;
+
+        // text rect
+        QRect textRect( subElementRect(SE_TabBarTabText, option, widget) );
+
+        if( vertical )
+        {
+
+            // properly rotate painter
+            painter->save();
+            int newX, newY, newRot;
+            if( tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast)
+            {
+
+                newX = rect.width() + rect.x();
+                newY = rect.y();
+                newRot = 90;
+
+            } else {
+
+                newX = rect.x();
+                newY = rect.y() + rect.height();
+                newRot = -90;
+
+            }
+
+            QTransform transform;
+            transform.translate( newX, newY );
+            transform.rotate(newRot);
+            painter->setTransform( transform, true );
+
+        }
+
+        // adjust text rect based on font metrics
+        textRect = option->fontMetrics.boundingRect( textRect, alignment, tabOption->text );
+
+        // render focus line
+        painter->translate( 0, 2 );
+        painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
+        painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+
+        if( vertical ) painter->restore();
 
         return true;
 
@@ -2599,7 +2668,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox *>( option ) );
+        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return true;
 
         const State& flags( option->state );
@@ -2734,7 +2803,7 @@ namespace Breeze
     bool Style::drawSpinBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox *>( option ) );
+        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return true;
 
         const State& flags( option->state );
@@ -2784,7 +2853,7 @@ namespace Breeze
     bool Style::drawSliderComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider *>( option ) );
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         const QPalette& palette( option->palette );
@@ -2904,7 +2973,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider *>( option ) );
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         const QPalette& palette( option->palette );

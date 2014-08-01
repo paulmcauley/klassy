@@ -342,10 +342,9 @@ namespace Breeze
         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawSplitterControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
-//         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //! tabbar tabs.
-        /*! there are two methods (_Single and _Plain) implemented, to deal with tabbar appearance selected from options */
+        virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawToolBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
