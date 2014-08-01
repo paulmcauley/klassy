@@ -460,6 +460,12 @@ namespace Breeze
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
+
+            // arrows
+            case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
+            case PE_IndicatorArrowDown: fcn = &Style::drawIndicatorArrowDownPrimitive; break;
+            case PE_IndicatorArrowLeft: fcn = &Style::drawIndicatorArrowLeftPrimitive; break;
+            case PE_IndicatorArrowRight: fcn = &Style::drawIndicatorArrowRightPrimitive; break;
             case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
 
             // frames
@@ -1629,6 +1635,78 @@ namespace Breeze
 
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QRectF rect( option->rect );
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+
+        // color
+        QColor color;
+        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
+        if( toolButton && toolButton->arrowType() != Qt::NoArrow )
+        {
+
+            // set color properly
+            color = (toolButton->autoRaise() ? palette.color( QPalette::WindowText ):palette.color( QPalette::ButtonText ) );
+
+        } else if( mouseOver ) {
+
+            color = _helper->viewHoverBrush().brush( palette ).color();
+
+        } else {
+
+            color = palette.color( QPalette::WindowText );
+
+        }
+
+        // arrow
+        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
+        const qreal penThickness = 1.5;
+
+        painter->setRenderHint( QPainter::Antialiasing );
+        painter->translate( rect.center() );
+        painter->setPen( QPen( color, penThickness ) );
+        painter->drawPolyline( arrow );
+
+        return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+        const QStyleOptionHeader *headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const State& flags( option->state );
+
+        // arrow orientation
+        ArrowOrientation orientation( ArrowNone );
+        if( flags&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
+        else if( flags&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
+        if( orientation == ArrowNone ) return true;
+
+        // flags, rect and palette
+        const QRectF& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // define color and polygon for drawing arrow
+        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
+        const QColor color = palette.color( QPalette::WindowText );
+        const qreal penThickness = 1.5;
+
+        // render arrow
+        painter->setRenderHint( QPainter::Antialiasing );
+        painter->setPen( QPen( color, penThickness ) );
+        painter->setBrush( Qt::NoBrush );
+        painter->translate( rect.center() );
+        painter->drawPolyline( arrow );
+
+        return true;
+    }
+
     //______________________________________________________________
     bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -1752,37 +1830,6 @@ namespace Breeze
 
         return true;
 
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-        const QStyleOptionHeader *headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        const State& flags( option->state );
-
-        // arrow orientation
-        ArrowOrientation orientation( ArrowNone );
-        if( flags&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
-        else if( flags&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
-        if( orientation == ArrowNone ) return true;
-
-        // flags, rect and palette
-        const QRectF& rect( option->rect );
-        const QPalette& palette( option->palette );
-
-        // define color and polygon for drawing arrow
-        const QPolygonF a = genericArrow( orientation, ArrowNormal );
-        const QColor color = palette.color( QPalette::WindowText );
-        const qreal penThickness = 1.5;
-
-        // render arrow
-        painter->setRenderHint( QPainter::Antialiasing );
-        painter->setPen( QPen( color, penThickness ) );
-        painter->setBrush( Qt::NoBrush );
-        painter->translate( rect.center() );
-        painter->drawPolyline( a );
-
-        return true;
     }
 
     //___________________________________________________________________________________
@@ -2783,14 +2830,14 @@ namespace Breeze
 
             const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
 
-            const QPolygonF a( genericArrow( ArrowDown, ArrowNormal ) );
+            const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
             const qreal penThickness( 1.5 );
 
             painter->save();
             painter->translate( arrowRect.center() );
             painter->setRenderHint( QPainter::Antialiasing );
             painter->setPen( QPen( arrowColor, penThickness ) );
-            painter->drawPolyline( a );
+            painter->drawPolyline( arrow );
             painter->restore();
 
         }
@@ -3069,7 +3116,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         const qreal penThickness( 1.5 );
-        QPolygonF a( genericArrow( orientation, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
 
         const QColor base( color );
 
@@ -3077,7 +3124,7 @@ namespace Breeze
         painter->translate( QRectF(rect).center() );
 
         painter->setPen( QPen( base, penThickness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
-        painter->drawPolyline( a );
+        painter->drawPolyline( arrow );
         painter->restore();
 
         return;
@@ -3133,7 +3180,7 @@ namespace Breeze
 
         }
 
-        const QPolygonF a( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown, ArrowNormal ) );
         const QRectF arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
 
         painter->save();
@@ -3142,7 +3189,7 @@ namespace Breeze
 
         const qreal penThickness = 1.6;
         painter->setPen( QPen( color, penThickness ) );
-        painter->drawPolyline( a );
+        painter->drawPolyline( arrow );
         painter->restore();
 
         return;

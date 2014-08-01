@@ -275,20 +275,22 @@ namespace Breeze
         bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabClose( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
-//         bool drawIndicatorArrowUpPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-//         { return drawIndicatorArrowPrimitive( ArrowUp, option, painter, widget ); }
-//
-//         bool drawIndicatorArrowDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-//         { return drawIndicatorArrowPrimitive( ArrowDown, option, painter, widget ); }
-//
-//         bool drawIndicatorArrowLeftPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-//         { return drawIndicatorArrowPrimitive( ArrowLeft, option, painter, widget ); }
-//
-//         bool drawIndicatorArrowRightPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-//         { return drawIndicatorArrowPrimitive( ArrowRight, option, painter, widget ); }
-//
-//         bool drawIndicatorArrowPrimitive( ArrowOrientation, const QStyleOption*, QPainter*, const QWidget* ) const;
-//
+
+        bool drawIndicatorArrowUpPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+        { return drawIndicatorArrowPrimitive( ArrowUp, option, painter, widget ); }
+
+        bool drawIndicatorArrowDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+        { return drawIndicatorArrowPrimitive( ArrowDown, option, painter, widget ); }
+
+        bool drawIndicatorArrowLeftPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+        { return drawIndicatorArrowPrimitive( ArrowLeft, option, painter, widget ); }
+
+        bool drawIndicatorArrowRightPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+        { return drawIndicatorArrowPrimitive( ArrowRight, option, painter, widget ); }
+
+        bool drawIndicatorArrowPrimitive( ArrowOrientation, const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+
 //         //! dock widget separators
 //         /*! it uses the same painting as QSplitter, but due to Qt, the horizontal/vertical convention is inverted */
 //         bool drawIndicatorDockWidgetResizeHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget) const;
@@ -307,7 +309,6 @@ namespace Breeze
 //         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //@}
