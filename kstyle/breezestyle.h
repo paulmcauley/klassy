@@ -216,8 +216,6 @@ namespace Breeze
 //         // tabbar tab text
 //         QRect tabBarTabTextRect( const QStyleOption* option, const QWidget* widget ) const;
 //
-//         QRect tabWidgetLeftCornerRect( const QStyleOption* option, const QWidget* widget ) const;
-//         QRect tabWidgetRightCornerRect( const QStyleOption* option, const QWidget* widget ) const;
 
         // view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
@@ -227,6 +225,7 @@ namespace Breeze
         QRect tabWidgetTabBarRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
+        QRect tabWidgetCornerRect( SubElement, const QStyleOption* option, const QWidget* widget ) const;
 
         //@}
 

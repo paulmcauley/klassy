@@ -346,6 +346,8 @@ namespace Breeze
             case SE_TabWidgetTabBar: return tabWidgetTabBarRect( option, widget );
             case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
             case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
+            case SE_TabWidgetLeftCorner: return tabWidgetCornerRect( SE_TabWidgetLeftCorner, option, widget );
+            case SE_TabWidgetRightCorner: return tabWidgetCornerRect( SE_TabWidgetRightCorner, option, widget );
 
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
@@ -814,13 +816,13 @@ namespace Breeze
             if( !tabOption->leftCornerWidgetSize.isEmpty() )
             {
                 const QRect buttonRect( subElementRect( SE_TabWidgetLeftCorner, option, widget ) );
-                rect.setLeft( buttonRect.width() );
+                rect.setLeft( buttonRect.width() - 1 );
             }
 
             if( !tabOption->rightCornerWidgetSize.isEmpty() )
             {
                 const QRect buttonRect( subElementRect( SE_TabWidgetRightCorner, option, widget ) );
-                rect.setRight( buttonRect.left()-1 );
+                rect.setRight( buttonRect.left() );
             }
 
             tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
@@ -898,6 +900,46 @@ namespace Breeze
             }
 
         } else return insideMargin( rect, Metrics::TabWidget_MarginWidth );
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::tabWidgetCornerRect( SubElement element, const QStyleOption* option, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return option->rect;
+
+        // do nothing if tabbar is hidden
+        const QSize tabBarSize( tabOption->tabBarSize );
+        if( tabBarSize.isEmpty() ) return QRect();
+
+        // do nothing for vertical tabs
+        const bool verticalTabs( isVerticalTab( tabOption->shape ) );
+        if( verticalTabs ) return QRect();
+
+        const QRect rect( option->rect );
+        QRect cornerRect( QPoint( 0, 0 ), QSize( tabBarSize.height(), tabBarSize.height() + 1 ) );
+        if( element == SE_TabWidgetRightCorner ) cornerRect.moveRight( rect.right() );
+        else cornerRect.moveLeft( rect.left() );
+
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            cornerRect.moveTop( rect.top() );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            cornerRect.moveBottom( rect.bottom() );
+            break;
+
+            default: break;
+        }
+
+        return handleRTL( option, cornerRect );
 
     }
 
@@ -1696,7 +1738,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         /*
@@ -2679,13 +2721,13 @@ namespace Breeze
 
         // tab option rect
         QRect rect = tabOption->rect;
-        const bool vertical( isVerticalTab( tabOption ) );
+        const bool verticalTabs( isVerticalTab( tabOption ) );
         const int alignment = Qt::AlignCenter | Qt::TextHideMnemonic;
 
         // text rect
         QRect textRect( subElementRect(SE_TabBarTabText, option, widget) );
 
-        if( vertical )
+        if( verticalTabs )
         {
 
             // properly rotate painter
@@ -2721,7 +2763,7 @@ namespace Breeze
         painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
         painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
 
-        if( vertical ) painter->restore();
+        if( verticalTabs ) painter->restore();
 
         return true;
 
