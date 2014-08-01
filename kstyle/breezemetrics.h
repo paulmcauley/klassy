@@ -77,6 +77,12 @@ namespace Breeze
         TabBar_TabMarginWidth = 4,
         TabBar_TabMinWidth = 80,
         TabBar_TabMinHeight = 28,
+        TabBar_TabRadius = 3,
+        TabBar_TabOverlap = 1,
+        TabBar_BaseOverlap = 1,
+
+        // tab widget
+        TabWidget_MarginWidth = 4,
 
         // list headers
         Header_MarginWidth = 8,

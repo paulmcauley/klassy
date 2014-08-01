@@ -211,15 +211,16 @@ namespace Breeze
 //         // tabbar tab text
 //         QRect tabBarTabTextRect( const QStyleOption* option, const QWidget* widget ) const;
 //
-//         // tab widgets
-//         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
-//         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
-//
 //         QRect tabWidgetLeftCornerRect( const QStyleOption* option, const QWidget* widget ) const;
 //         QRect tabWidgetRightCornerRect( const QStyleOption* option, const QWidget* widget ) const;
 
+        // view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
         QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
+
+        // tab widgets
+        QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
+        QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
 
         //@}
 
@@ -262,11 +263,11 @@ namespace Breeze
         { return true; }
 
         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabClose( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 //         bool drawIndicatorArrowUpPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
@@ -338,10 +339,9 @@ namespace Breeze
 //         virtual bool drawSplitterControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 //         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-//         //! tabbar tabs.
-//         /*! there are two methods (_Single and _Plain) implemented, to deal with tabbar appearance selected from options */
-//         virtual bool drawTabBarTabShapeControl_Single( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawTabBarTabShapeControl_Plain( const QStyleOption*, QPainter*, const QWidget* ) const;
+        //! tabbar tabs.
+        /*! there are two methods (_Single and _Plain) implemented, to deal with tabbar appearance selected from options */
+        virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawToolBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;

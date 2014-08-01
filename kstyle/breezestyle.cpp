@@ -162,7 +162,12 @@ namespace Breeze
 
             widget->setAttribute( Qt::WA_Hover );
 
+        } else if( qobject_cast<QFrame*>( widget ) && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) ) {
+
+            widget->setAutoFillBackground( false );
+
         }
+
 
         // remove opaque painting for scrollbars
         if( qobject_cast<QScrollBar*>( widget ) )
@@ -214,8 +219,8 @@ namespace Breeze
             // tabbar
             case PM_TabBarTabShiftVertical: return 0;
             case PM_TabBarTabShiftHorizontal: return 0;
-            case PM_TabBarTabOverlap: return 1;
-            case PM_TabBarBaseOverlap: return 1;
+            case PM_TabBarTabOverlap: return Metrics::TabBar_TabOverlap;
+            case PM_TabBarBaseOverlap: return Metrics::TabBar_BaseOverlap;
             case PM_TabBarTabHSpace: return 2*Metrics::TabBar_TabMarginWidth;
             case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginWidth;
 
@@ -295,8 +300,12 @@ namespace Breeze
             case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
 
             // headers
-            case QStyle::SE_HeaderArrow: return headerArrowRect( option, widget );
-            case QStyle::SE_HeaderLabel: return headerLabelRect( option, widget );
+            case SE_HeaderArrow: return headerArrowRect( option, widget );
+            case SE_HeaderLabel: return headerLabelRect( option, widget );
+
+            // tabbars
+            case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
+            case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
 
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
@@ -419,6 +428,8 @@ namespace Breeze
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameLineEdit: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
+            case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
+            case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
             case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
             // fallback
@@ -477,8 +488,9 @@ namespace Breeze
             // list headers
             case CE_HeaderSection: fcn = &Style::drawHeaderSectionControl; break;
             case CE_HeaderEmptyArea: fcn = &Style::drawHeaderEmptyAreaControl; break;
-            // case CE_HeaderLabel: fcn = &Style::drawHeaderLabelControl; break;
 
+            // tabbar
+            case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
 
             // fallback
             default: break;
@@ -721,6 +733,87 @@ namespace Breeze
 
         labelRect.adjust( 0, 0, -Metrics::Header_MarkSize-Metrics::Header_BoxTextSpace, 0 );
         return handleRTL( option, labelRect );
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::tabWidgetTabContentsRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return option->rect;
+
+        // do nothing if tabbar is hidden
+        if( tabOption->tabBarSize.isEmpty() ) return option->rect;
+        const QRect rect = tabWidgetTabPaneRect( option, widget );
+
+        const bool documentMode( tabOption->lineWidth == 0 );
+        if( documentMode )
+        {
+
+            // add margin only to the relevant side
+            switch( tabOption->shape )
+            {
+                case QTabBar::RoundedNorth:
+                case QTabBar::TriangularNorth:
+                return rect.adjusted( 0, Metrics::TabWidget_MarginWidth, 0, 0 );
+
+                case QTabBar::RoundedSouth:
+                case QTabBar::TriangularSouth:
+                return rect.adjusted( 0, 0, 0, -Metrics::TabWidget_MarginWidth );
+
+                case QTabBar::RoundedWest:
+                case QTabBar::TriangularWest:
+                return rect.adjusted( Metrics::TabWidget_MarginWidth, 0, 0, 0 );
+
+                case QTabBar::RoundedEast:
+                case QTabBar::TriangularEast:
+                return rect.adjusted( 0, 0, -Metrics::TabWidget_MarginWidth, 0 );
+
+                default: return rect;
+        }
+
+        } else return insideMargin( rect, Metrics::TabWidget_MarginWidth );
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::tabWidgetTabPaneRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
+
+        // const QSize tabBarSize( tabOption->tabBarSize - QSize( Metrics::TabBar_BaseOverlap, Metrics::TabBar_BaseOverlap ) );
+        const QSize tabBarSize( tabOption->tabBarSize - QSize( Metrics::TabBar_BaseOverlap + 1, Metrics::TabBar_BaseOverlap + 1 ) );
+        QRect rect( option->rect );
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            rect.adjust( 0, tabBarSize.height(), 0, 0 );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            rect.adjust( 0, 0, 0, -tabBarSize.height() );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            rect.adjust( tabBarSize.width(), 0, 0, 0 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            rect.adjust( 0, 0, -tabBarSize.width(), 0 );
+            break;
+
+            default: break;
+        }
+
+        return rect;
 
     }
 
@@ -1353,10 +1446,16 @@ namespace Breeze
 
         const State& flags( option->state );
 
-        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
-        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) )
-                                  || ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
+        // do nothing for flat frames
+        const bool isTitleWidget( widget && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) );
 
+        if( !isTitleWidget && !( flags & (State_Sunken | State_Raised ) ) ) return true;
+
+        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
+            ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
+
+        const QPalette& palette( option->palette );
         const bool enabled( flags & State_Enabled );
         const bool mouseOver( enabled && isInputWidget && ( flags&State_MouseOver ) );
         const bool hasFocus( enabled && ( flags&State_HasFocus ) );
@@ -1364,9 +1463,6 @@ namespace Breeze
         // focus takes precedence over mouse over
         _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
         _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
-
-        // do nothing for flat frames
-        if( !( flags & (State_Sunken | State_Raised ) ) ) return true;
 
         // retrieve animation mode and opacity
         const AnimationMode mode( _animations->lineEditEngine().frameAnimationMode( widget ) );
@@ -1377,26 +1473,9 @@ namespace Breeze
         { _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode ); }
 
         // render
+        const QColor color( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
         const QColor outline( _helper->frameOutlineColor( option->palette, mouseOver, hasFocus, opacity, mode ) );
-        _helper->renderFrame( painter, option->rect, QColor(), outline, hasFocus );
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // checkboxes and radio buttons
-        if(
-            qobject_cast<const QCheckBox*>( widget ) ||
-            qobject_cast<const QRadioButton*>( widget ) )
-        {
-            painter->translate( 0, 2 );
-            painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
-            painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
-        }
+        _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
 
         return true;
 
@@ -1420,6 +1499,80 @@ namespace Breeze
         const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
 
         _helper->renderFrame( painter, option->rect, color, outline );
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameTabWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // tabwidget frame
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
+        if( !tabOption ) return true;
+
+        // do nothing if tabbar is hidden
+        if( tabOption->tabBarSize.isEmpty() ) return true;
+
+        // adjust rect to handle overlaps
+        QRect rect( option->rect );
+
+        const QPalette& palette( option->palette );
+        const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
+        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
+        _helper->renderFrame( painter, rect, color, outline );
+
+        return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        /*
+        tabbar frame
+        used either for 'separate' tabbar, or in 'document mode'
+        */
+
+        // cast option and check
+        const QStyleOptionTabBarBase* tabOption( qstyleoption_cast<const QStyleOptionTabBarBase*>( option ) );
+        if( !tabOption ) return true;
+
+        // get rect, orientation, palette
+        const QRect rect( option->rect );
+        const QPalette& palette( option->palette );
+        const bool vertical( isVerticalTab( tabOption->shape ) );
+        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
+        // setup painter
+        painter->setBrush( Qt::NoBrush );
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setPen( QPen( outline, 1 ) );
+
+        // render
+        if( vertical ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+        else painter->drawLine( rect.topLeft(), rect.topRight() );
+
+        return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // checkboxes and radio buttons
+        if(
+            qobject_cast<const QCheckBox*>( widget ) ||
+            qobject_cast<const QRadioButton*>( widget ) )
+        {
+            painter->translate( 0, 2 );
+            painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
+            painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
+        }
 
         return true;
 
@@ -1797,7 +1950,7 @@ namespace Breeze
         if( widget )
         {
             // render background
-            // it is necessary to retrive the complete widget rect, in order to properly handle overlaps
+            // it is necessary to retrieve the complete widget rect, in order to properly handle overlaps
             // at the scrollbar boundary
             // define color
             const QPalette& palette( option->palette );
@@ -2230,6 +2383,128 @@ namespace Breeze
             else painter->drawLine( rect.topRight(), rect.bottomRight() );
 
         }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawTabBarTabShapeControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        if( !tabOption ) return true;
+
+        // rect
+        QRect rect( option->rect );
+
+        // palette and flags
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool selected( flags & State_Selected );
+        const bool mouseOver( enabled && !selected && ( flags & State_MouseOver ) );
+
+        // animation state
+        _animations->tabBarEngine().updateState( widget, rect.topLeft(), mouseOver );
+        const bool animated( enabled && !selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft() ) );
+        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft() ) );
+
+        // tab position
+        const QStyleOptionTab::TabPosition& position = tabOption->position;
+        bool isFirst( position == QStyleOptionTab::OnlyOneTab || position == QStyleOptionTab::Beginning );
+        bool isLast( position == QStyleOptionTab::OnlyOneTab || position == QStyleOptionTab::End );
+        bool isLeftOfSelected( tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
+        bool isRightOfSelected( tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
+
+        // true if widget is aligned to the frame
+        /* need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved */
+        isFirst &= !isRightOfSelected;
+        isLast &= !isLeftOfSelected;
+
+        // swap flags based on reverse layout, so that they become layout independent
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+        const bool verticalTabs( isVerticalTab( tabOption ) );
+        if( reverseLayout && !verticalTabs )
+        {
+            qSwap( isFirst, isLast );
+            qSwap( isLeftOfSelected, isRightOfSelected );
+        }
+
+        // define corners to be drawn and adjust rectangles, to handle overlaps
+        Helper::Corners corners;
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            corners = Helper::CornerTopLeft|Helper::CornerTopRight;
+            if( selected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+            else {
+
+                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabOverlap, 0, 0, 0 );
+                if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+
+            }
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            corners = Helper::CornerBottomLeft|Helper::CornerBottomRight;
+            if( selected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
+            else {
+
+                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabOverlap, 0, 0, 0 );
+                if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+
+            }
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            corners = Helper::CornerTopLeft|Helper::CornerBottomLeft;
+            if( selected ) rect.adjust( 0, 0, Metrics::TabBar_TabRadius, 0 );
+            else {
+
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabOverlap, 0, 0 );
+                if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+
+            }
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            corners = Helper::CornerTopRight|Helper::CornerBottomRight;
+            if( selected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+            else {
+
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabOverlap, 0, 0 );
+                if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+
+            }
+            break;
+
+            default: break;
+        }
+
+        // color
+        QColor color;
+        if( selected ) color = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 );
+        else {
+
+            const QColor normal( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+            const QColor hover( _helper->alphaColor( _helper->viewHoverBrush().brush( palette ).color(), 0.2 ) );
+            if( animated ) color = KColorUtils::mix( normal, hover, opacity );
+            else if( mouseOver ) color = hover;
+            else color = normal;
+
+        }
+
+        // outline
+        QColor outline;
+        if( selected ) outline = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
+
+        // render
+        _helper->renderTabBarTab( painter, rect, color, outline, corners );
 
         return true;
 

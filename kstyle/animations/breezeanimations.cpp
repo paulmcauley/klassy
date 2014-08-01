@@ -60,6 +60,7 @@ namespace Breeze
         registerEngine( _lineEditEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
         registerEngine( _sliderEngine = new SliderEngine( this ) );
+        registerEngine( _tabBarEngine = new TabBarEngine( this ) );
         registerEngine( _dialEngine = new DialEngine( this ) );
     }
 
@@ -83,6 +84,7 @@ namespace Breeze
             _headerViewEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _tabBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
             _dialEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
 
             // busy indicator
@@ -101,6 +103,7 @@ namespace Breeze
             _headerViewEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            _tabBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
             _dialEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
             // busy indicator
@@ -175,6 +178,9 @@ namespace Breeze
 
         // header views
         else if( qobject_cast<QHeaderView*>( widget ) ) { _headerViewEngine->registerWidget( widget ); }
+
+        // tabbar
+        else if( qobject_cast<QTabBar*>( widget ) ) { _tabBarEngine->registerWidget( widget ); }
 
         // scrollarea
         else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {

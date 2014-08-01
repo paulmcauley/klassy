@@ -680,14 +680,14 @@ namespace Breeze
             path.moveTo( rect.topLeft() + QPointF( radius, 0 ) );
             path.arcTo( QRectF( rect.topLeft(), cornerSize ), 90, 90 );
 
-        } else path.lineTo( rect.topLeft() );
+        } else path.moveTo( rect.topLeft() );
 
         // bottom left corner
         if( corners & CornerBottomLeft )
         {
 
-            path.lineTo( rect.bottomLeft() + QPointF( 0, radius ) );
-            path.arcTo( QRectF( rect.bottomLeft() + QPointF( 0, 2*radius ), cornerSize ), 180, 90 );
+            path.lineTo( rect.bottomLeft() - QPointF( 0, radius ) );
+            path.arcTo( QRectF( rect.bottomLeft() - QPointF( 0, 2*radius ), cornerSize ), 180, 90 );
 
         } else path.lineTo( rect.bottomLeft() );
 
