@@ -456,6 +456,7 @@ namespace Breeze
 
             // buttons
             case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
+            case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
 
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
@@ -1647,22 +1648,8 @@ namespace Breeze
 
         // color
         QColor color;
-        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
-        if( toolButton && toolButton->arrowType() != Qt::NoArrow )
-        {
-
-            // set color properly
-            color = (toolButton->autoRaise() ? palette.color( QPalette::WindowText ):palette.color( QPalette::ButtonText ) );
-
-        } else if( mouseOver ) {
-
-            color = _helper->viewHoverBrush().brush( palette ).color();
-
-        } else {
-
-            color = palette.color( QPalette::WindowText );
-
-        }
+        if( mouseOver ) color = _helper->viewHoverBrush().brush( palette ).color();
+        else color = palette.color( QPalette::WindowText );
 
         // arrow
         const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
@@ -1735,6 +1722,56 @@ namespace Breeze
 
         return true;
 
+    }
+
+    //______________________________________________________________
+    bool Style::drawPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        /*
+        For toolbutton in TabBars, corresponding to expanding arrows, no frame is drawn
+        However one needs to draw the window background, because the button rect might
+        overlap with some tab below. ( this is a Qt bug )
+        */
+        const QTabBar* tabBar( widget ? qobject_cast<const QTabBar*>( widget->parent() ):nullptr );
+        if( tabBar )
+        {
+            QRect rect( option->rect );
+
+            // adjust rect based on tabbar shape
+            switch( tabBar->shape() )
+            {
+                case QTabBar::RoundedNorth:
+                case QTabBar::TriangularNorth:
+                rect.adjust( 0, 0, 0, -Metrics::TabBar_BaseOverlap );
+                break;
+
+                case QTabBar::RoundedSouth:
+                case QTabBar::TriangularSouth:
+                rect.adjust( 0, Metrics::TabBar_BaseOverlap, 0, 0 );
+                break;
+
+                case QTabBar::RoundedWest:
+                case QTabBar::TriangularWest:
+                rect.adjust( 0, 0, -Metrics::TabBar_BaseOverlap, 0 );
+                break;
+
+                case QTabBar::RoundedEast:
+                case QTabBar::TriangularEast:
+                rect.adjust( Metrics::TabBar_BaseOverlap, 0, 0, 0 );
+                break;
+
+                default: break;
+
+            }
+
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( tabBar->palette().color( QPalette::Window ) );
+            painter->drawRect( rect );
+            return true;
+        }
+
+        return true;
     }
 
     //___________________________________________________________________________________
@@ -2700,8 +2737,7 @@ namespace Breeze
         }
 
         // outline
-        QColor outline;
-        if( selected ) outline = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
+        const QColor outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
 
         // render
         _helper->renderTabBarTab( painter, rect, color, outline, corners );
