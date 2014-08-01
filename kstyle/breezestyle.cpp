@@ -261,7 +261,7 @@ namespace Breeze
             case PM_TabBarTabOverlap: return Metrics::TabBar_TabOverlap;
             case PM_TabBarBaseOverlap: return Metrics::TabBar_BaseOverlap;
             case PM_TabBarTabHSpace: return 2*Metrics::TabBar_TabMarginWidth;
-            case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginWidth;
+            case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginHeight;
 
             // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
@@ -1468,12 +1468,23 @@ namespace Breeze
         const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
 
         // add margins
-        QSize size( expandSize( contentsSize, Metrics::TabBar_TabMarginWidth ) );
+        // QSize size( expandSize( contentsSize, Metrics::TabBar_TabMarginWidth ) );
+        QSize size( contentsSize );
 
         // compare to minimum size
         const bool verticalTabs( tabOption && isVerticalTab( tabOption ) );
-        if( verticalTabs ) size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
-        else size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+        if( verticalTabs )
+        {
+
+            size += QSize( 2*Metrics::TabBar_TabMarginHeight, 2*Metrics::TabBar_TabMarginWidth );
+            size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
+
+        } else {
+
+            size += QSize( 2*Metrics::TabBar_TabMarginWidth, 2*Metrics::TabBar_TabMarginHeight );
+            size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+
+        }
 
         return size;
 
