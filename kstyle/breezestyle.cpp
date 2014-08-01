@@ -665,8 +665,8 @@ namespace Breeze
             if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
             {
 
-                const QPalette palette = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
-                return KStyle::drawItemText( painter, r, flags, palette, enabled, text, textRole );
+                const QPalette copy = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
+                return KStyle::drawItemText( painter, r, flags, copy, enabled, text, textRole );
 
             }
 
