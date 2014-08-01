@@ -1637,7 +1637,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
         const QRectF rect( option->rect );
@@ -2737,7 +2737,7 @@ namespace Breeze
         }
 
         // outline
-        const QColor outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
+        const QColor outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
 
         // render
         _helper->renderTabBarTab( painter, rect, color, outline, corners );
