@@ -1792,22 +1792,22 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( tabBarSize.width() >= rect.width()-2 ) corners &= ~Helper::CornersTop;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersTop;
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            if( tabBarSize.width() >= rect.width()-2 ) corners &= ~Helper::CornersBottom;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersBottom;
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            if( tabBarSize.height() >= rect.height()-2 ) corners &= ~Helper::CornersLeft;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersLeft;
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            if( tabBarSize.height() >= rect.height()-2 ) corners &= ~Helper::CornersRight;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersRight;
             break;
 
             default: break;
