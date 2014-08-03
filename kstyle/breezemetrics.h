@@ -52,9 +52,10 @@ namespace Breeze
         Button_MarginWidth = 6,
 
         // checkboxes and radio buttons
-        CheckBox_Size = 22,
-        CheckBox_BoxTextSpace = 8,
         RadioButton_Size = 22,
+        CheckBox_Size = 22,
+        CheckBox_FocusMarginWidth = 2,
+        CheckBox_BoxTextSpace = 8,
 
         // scrollbar
         ScrollBar_Extend = 20,

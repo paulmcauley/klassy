@@ -1511,9 +1511,13 @@ namespace Breeze
     //______________________________________________________________
     QSize Style::checkBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     {
-
-        //Make sure we can fit the indicator
+        // get contents size
         QSize size( contentsSize );
+
+        // add focus height
+        size += QSize( 0, 2*Metrics::CheckBox_FocusMarginWidth );
+
+        // make sure there is enough height for indicator
         size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
 
         //Add space for the indicator and the icon
