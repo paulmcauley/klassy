@@ -363,7 +363,7 @@ namespace Breeze
             path.moveTo( 5, 5 );
             path.lineTo( qreal( Metrics::CheckBox_Size ) -6, 5 );
             path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
-            painter->drawPath( path );
+            painter->drawPath( path.translated( rect.topLeft() ) );
 
         }
 
