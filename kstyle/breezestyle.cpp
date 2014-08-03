@@ -1679,7 +1679,7 @@ namespace Breeze
 
     //______________________________________________________________
     QSize Style::tabWidgetSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::Frame_FrameWidth ); }
+    { return expandSize( contentsSize, Metrics::Frame_FrameWidth - 1); }
 
     //______________________________________________________________
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
