@@ -310,6 +310,57 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderMenuFrame(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, const QColor& outline, bool roundCorners ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const QRectF baseRect( rect );
+
+        if( color.isValid() )
+        {
+            // content
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            if( roundCorners )
+            {
+
+                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
+
+            } else {
+
+                painter->drawRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+
+            }
+
+        }
+
+        if( outline.isValid() )
+        {
+
+            painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+
+            if( roundCorners )
+            {
+
+                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), radius, radius );
+
+            } else {
+
+                painter->drawRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+
+            }
+
+        }
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderButtonFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, const QColor& shadow,
