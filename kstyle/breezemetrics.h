@@ -62,7 +62,17 @@ namespace Breeze
         CheckBox_FocusMarginWidth = 2,
         CheckBox_BoxTextSpace = 8,
 
-        // scrollbar
+        // menubars
+        MenuBar_ItemMarginWidth = 10,
+        MenuBar_ItemMarginHeight = 8,
+
+        // toolbars
+        ToolBar_HandleWidth = 6,
+        ToolBar_SeparatorWidth = 16,
+        ToolBar_ExtensionWidth = 20,
+        ToolBar_ItemSpacing = 1,
+
+        // scrollbars
         ScrollBar_Extend = 20,
         ScrollBar_Width = 10,
         ScrollBar_SliderWidth = ScrollBar_Width,
@@ -71,7 +81,7 @@ namespace Breeze
         ScrollBar_SingleButtonHeight = ScrollBar_Extend,
         ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
 
-        // progress bar
+        // progressbars
         ProgressBar_BusyIndicatorSize = 14,
         ProgressBar_Thickness = 6,
         ProgressBar_BoxTextSpace = 4,
