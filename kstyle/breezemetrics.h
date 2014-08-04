@@ -69,7 +69,6 @@ namespace Breeze
 
         // menu items
         MenuItem_MarginWidth = 4,
-        MenuItem_IconWidth = 12,
         MenuItem_BoxTextSpace = 4,
         MenuItem_ArrowWidth = 20,
 

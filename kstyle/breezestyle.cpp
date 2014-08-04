@@ -1786,7 +1786,7 @@ namespace Breeze
         {
 
             QSize iconSize = buttonOption->iconSize;
-            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize ), pixelMetric( PM_SmallIconSize, option, widget ) );
+            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
 
             size.setHeight( qMax( size.height(), iconSize.height() ) );
 
@@ -1814,7 +1814,7 @@ namespace Breeze
         if( !menuItemOption ) return contentsSize;
 
         // First, we calculate the intrinsic size of the item.
-        // this must be kept consistent with what's in drawMenuItemContol
+        // this must be kept consistent with what's in drawMenuItemControl
         QSize size( contentsSize );
         switch ( menuItemOption->menuItemType )
         {
@@ -1824,7 +1824,7 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                const int iconWidth( qMax( menuItemOption->maxIconWidth, (int) Metrics::MenuItem_IconWidth ) );
+                const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
@@ -2767,9 +2767,12 @@ namespace Breeze
         }
 
         // icon
-        const int iconWidth( qMax( menuItemOption->maxIconWidth, (int) Metrics::MenuItem_IconWidth ) );
+        const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+
+        const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
+        iconRect = centerRect( iconRect, iconSize );
 
         if( !menuItemOption->icon.isNull() )
         {
