@@ -25,14 +25,35 @@
 #include "breezemetrics.h"
 
 #include <KColorUtils>
+#include <KWindowSystem>
+
+#include <QGuiApplication>
 #include <QPainter>
 
 namespace Breeze
 {
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config ):
-        _config( config )
-    {}
+        _config( config ),
+        _isX11( false )
+    {
+
+        #if HAVE_X11
+
+        // initialize X11 flag
+        _isX11 = QGuiApplication::platformName() == QStringLiteral("xcb");
+
+
+        if( _isX11 )
+        {
+            // create compositing screen
+            const QString atomName( QStringLiteral( "_NET_WM_CM_S%1" ).arg( QX11Info::appScreen() ) );
+            _compositingManagerAtom = createAtom( atomName );
+        }
+
+        #endif
+
+    }
 
     //____________________________________________________________________
     KSharedConfigPtr Helper::config() const
@@ -877,5 +898,46 @@ namespace Breeze
         return path;
 
     }
+
+    //________________________________________________________________________________________________________
+    bool Helper::compositingActive( void ) const
+    {
+
+        #if HAVE_X11
+        if( isX11() )
+        {
+            // direct call to X
+            xcb_get_selection_owner_cookie_t cookie( xcb_get_selection_owner( QX11Info::connection(), _compositingManagerAtom ) );
+            ScopedPointer<xcb_get_selection_owner_reply_t> reply( xcb_get_selection_owner_reply( QX11Info::connection(), cookie, nullptr ) );
+            return reply && reply->owner;
+
+        }
+        #endif
+
+        // use KWindowSystem
+        return KWindowSystem::compositingActive();
+
+    }
+
+
+    #if HAVE_X11
+
+    //____________________________________________________________________
+    xcb_atom_t Helper::createAtom( const QString& name ) const
+    {
+
+        if( isX11() )
+        {
+
+            xcb_connection_t* connection( QX11Info::connection() );
+            xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, name.size(), qPrintable( name ) ) );
+            ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
+            return reply ? reply->atom:0;
+
+        } else return 0;
+
+    }
+
+    #endif
 
 }

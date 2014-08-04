@@ -29,6 +29,12 @@
 #include <KColorScheme>
 
 #include <QPainterPath>
+#include <QWidget>
+
+#if HAVE_X11
+#include <QX11Info>
+#include <xcb/xcb.h>
+#endif
 
 namespace Breeze
 {
@@ -189,6 +195,28 @@ namespace Breeze
 
         //@}
 
+        //!@name compositing utilities
+        //@{
+
+        //! true if style was compiled for and is running on X11
+        bool isX11() const
+        { return _isX11; }
+
+        //! returns true if compositing is active
+        bool compositingActive( void ) const;
+
+        //! returns true if a given widget supports alpha channel
+        bool hasAlphaChannel( const QWidget* ) const;
+
+        #if HAVE_X11
+
+        //! create xcb atom
+        xcb_atom_t createAtom( const QString& ) const;
+
+        #endif
+
+        //@}
+
         protected:
 
         //! return color key for a given color, properly accounting for invalid colors
@@ -210,7 +238,16 @@ namespace Breeze
         KStatefulBrush _viewNegativeTextBrush;
         //@}
 
-      };
+        bool _isX11;
+
+        #if HAVE_X11
+
+        //! atom used for compositing manager
+        xcb_atom_t _compositingManagerAtom;
+
+        #endif
+
+    };
 
 }
 
