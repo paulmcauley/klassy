@@ -99,8 +99,11 @@ namespace Breeze
         //! slider outline color, using animations
         QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
 
-        //! checkbox marker, using animations
-        QColor checkBoxMarkerColor( const QPalette&, bool mouseOver, bool active, qreal opacity, AnimationMode ) const;
+        //! checkbox indicator, using animations
+        QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity, AnimationMode ) const;
+
+        //! separator color
+        QColor separatorColor( const QPalette& ) const;
 
         //! merge active and inactive palettes based on ratio, for smooth enable state change transition
         QPalette disabledPalette( const QPalette&, qreal ratio ) const;

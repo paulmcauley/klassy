@@ -598,6 +598,7 @@ namespace Breeze
             case PE_IndicatorArrowLeft: fcn = &Style::drawIndicatorArrowLeftPrimitive; break;
             case PE_IndicatorArrowRight: fcn = &Style::drawIndicatorArrowRightPrimitive; break;
             case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
+            case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
 
             // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
@@ -2171,7 +2172,7 @@ namespace Breeze
 
         // colors
         const QPalette& palette( option->palette );
-        const QColor color( _helper->checkBoxMarkerColor( palette, mouseOver, enabled && active, opacity, mode  ) );
+        const QColor color( _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && active, opacity, mode  ) );
         const QColor shadow( _helper->shadowColor( palette ) );
 
         // render
@@ -2199,11 +2200,43 @@ namespace Breeze
 
         // colors
         const QPalette& palette( option->palette );
-        const QColor color( _helper->checkBoxMarkerColor( palette, mouseOver, enabled && checked, opacity, mode  ) );
+        const QColor color( _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && checked, opacity, mode  ) );
         const QColor shadow( _helper->shadowColor( palette ) );
 
         // render
         _helper->renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // do nothing if disabled from options
+        if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
+
+        const State& flags( option->state );
+        const bool horizontal( flags & State_Horizontal );
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( _helper->separatorColor( palette ) );
+        if( horizontal )
+        {
+
+            painter->translate( rect.width()/2, 0 );
+            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+
+        } else {
+
+            painter->translate( 0, rect.height()/2 );
+            painter->drawLine( rect.topLeft(), rect.topRight() );
+
+        }
 
         return true;
 
@@ -2755,22 +2788,26 @@ namespace Breeze
 
             case QFrame::HLine:
             {
+                painter->setRenderHint( QPainter::Antialiasing, false );
                 const QPalette& palette( option->palette );
                 const QRect rect( option->rect );
-                const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
                 painter->setBrush( Qt::NoBrush );
-                painter->setPen( QPen( color, 1 ) );
+                painter->setPen( _helper->separatorColor( palette ) );
+
+                painter->translate( 0, rect.height()/2 );
                 painter->drawLine( rect.topLeft(), rect.topRight() );
                 return true;
             }
 
             case QFrame::VLine:
             {
+                painter->setRenderHint( QPainter::Antialiasing, false );
                 const QPalette& palette( option->palette );
                 const QRect rect( option->rect );
-                const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
                 painter->setBrush( Qt::NoBrush );
-                painter->setPen( QPen( color, 1 ) );
+                painter->setPen( _helper->separatorColor( palette ) );
+
+                painter->translate( rect.width()/2, 0 );
                 painter->drawLine( rect.topLeft(), rect.bottomLeft() );
                 return true;
             }

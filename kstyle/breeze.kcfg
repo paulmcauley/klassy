@@ -45,6 +45,11 @@
       <default>MN_NEVER</default>
     </entry>
 
+    <!-- toolbars -->
+    <entry name="ToolBarDrawItemSeparator" type="Bool">
+      <default>true</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragEnabled" type="Bool">
       <default>true</default>

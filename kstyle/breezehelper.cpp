@@ -190,7 +190,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    QColor Helper::checkBoxMarkerColor( const QPalette& palette, bool mouseOver, bool active, qreal opacity, AnimationMode mode ) const
+    QColor Helper::checkBoxIndicatorColor( const QPalette& palette, bool mouseOver, bool active, qreal opacity, AnimationMode mode ) const
     {
 
         QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.5 ) );
@@ -215,6 +215,10 @@ namespace Breeze
         return color;
 
     }
+
+    //______________________________________________________________________________
+    QColor Helper::separatorColor( const QPalette& palette ) const
+    { return KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ); }
 
     //______________________________________________________________________________
     QPalette Helper::disabledPalette( const QPalette& source, qreal ratio ) const
