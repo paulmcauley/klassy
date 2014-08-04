@@ -1678,8 +1678,22 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::tabWidgetSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::Frame_FrameWidth - 1); }
+    QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return contentsSize;
+
+        // tab orientation
+        const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
+
+        // need to reduce the size in the tabbar direction, due to a bug in QTabWidget::minimumSize
+        return verticalTabs ?
+            contentsSize + 2*QSize( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
+            contentsSize + 2*QSize( Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth );
+
+    }
 
     //______________________________________________________________
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
@@ -1687,7 +1701,6 @@ namespace Breeze
         const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
 
         // add margins
-        // QSize size( expandSize( contentsSize, Metrics::TabBar_TabMarginWidth ) );
         QSize size( contentsSize );
 
         // compare to minimum size
