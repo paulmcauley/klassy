@@ -61,24 +61,23 @@ namespace Breeze
         //! merge active and inactive palettes based on ratio, for smooth enable state change transition
         QPalette mergePalettes( const QPalette&, qreal ratio ) const;
 
-        //!@name brushes
+        //!@name color utilities
         //@{
 
-        //! focus brush
-        const KStatefulBrush& viewFocusBrush( void ) const
-        { return _viewFocusBrush; }
+        //! mouse over color
+        QColor hoverColor( const QPalette& palette ) const
+        { return _viewHoverBrush.brush( palette ).color(); }
 
-        //! hover brush
-        const KStatefulBrush& viewHoverBrush( void ) const
-        { return _viewHoverBrush; }
+        //! focus color
+        QColor focusColor( const QPalette& palette ) const
+        { return _viewFocusBrush.brush( palette ).color(); }
 
-        //! negative text brush ( used for close button hover )
-        const KStatefulBrush& viewNegativeTextBrush( void ) const
-        { return _viewNegativeTextBrush; }
+        //! negative text color (used for close button)
+        QColor negetiveText( const QPalette& palette ) const
+        { return _viewNegativeTextBrush.brush( palette ).color(); }
 
         //@}
 
-        //!@name color utilities
 
         //! frame outline color, using animations
         QColor frameOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;

@@ -34,6 +34,12 @@ namespace Breeze
         Frame_FrameWidth = 2,
         Frame_FrameRadius = 3,
 
+        // layout
+        Layout_TopLevelMarginWidth = 10,
+        Layout_ChildMarginWidth = 6,
+        Layout_HorizontalSpacing = 6,
+        Layout_VerticalSpacing = 6,
+
         // line editors
         LineEdit_MarginWidth = 6,
 

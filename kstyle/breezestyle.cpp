@@ -258,6 +258,32 @@ namespace Breeze
             case PM_SpinBoxFrameWidth:
             return Metrics::Frame_FrameWidth;
 
+            // layout
+            case PM_LayoutLeftMargin:
+            case PM_LayoutTopMargin:
+            case PM_LayoutRightMargin:
+            case PM_LayoutBottomMargin:
+            {
+                /*
+                use either Child margin or TopLevel margin,
+                depending on  widget type
+                */
+                if( ( option && ( option->state & QStyle::State_Window ) ) || ( widget && widget->isWindow() ) )
+                {
+
+                    return Metrics::Layout_TopLevelMarginWidth;
+
+                } else {
+
+                    return Metrics::Layout_ChildMarginWidth;
+
+                }
+
+            }
+
+            case PM_LayoutHorizontalSpacing: return Metrics::Layout_HorizontalSpacing;
+            case PM_LayoutVerticalSpacing: return Metrics::Layout_VerticalSpacing;
+
             // buttons
             case PM_ButtonMargin: return Metrics::Button_MarginWidth;
             case PM_ButtonDefaultIndicator: return 0;
@@ -1683,15 +1709,15 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return contentsSize;
+        if( !tabOption ) return expandSize( contentsSize, Metrics::Frame_FrameWidth );
 
         // tab orientation
         const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
 
         // need to reduce the size in the tabbar direction, due to a bug in QTabWidget::minimumSize
-        return verticalTabs ?
-            contentsSize + 2*QSize( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
-            contentsSize + 2*QSize( Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth );
+        return contentsSize + ( verticalTabs ?
+            2*QSize( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
+            2*QSize( Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth ) );
 
     }
 
@@ -1904,7 +1930,7 @@ namespace Breeze
             qobject_cast<const QRadioButton*>( widget ) )
         {
             painter->translate( 0, 2 );
-            painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
+            painter->setPen( _helper->focusColor( option->palette ) );
             painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
         }
 
@@ -1924,7 +1950,7 @@ namespace Breeze
 
         // color
         QColor color;
-        if( mouseOver ) color = _helper->viewHoverBrush().brush( palette ).color();
+        if( mouseOver ) color = _helper->hoverColor( palette );
         else color = palette.color( QPalette::WindowText );
 
         // arrow
@@ -2055,6 +2081,9 @@ namespace Breeze
             }
 
             painter->setPen( Qt::NoPen );
+
+            // TODO: should try detect parent groupbox or tabwidget,
+            // to adjust color consistently
             painter->setBrush( tabBar->palette().color( QPalette::Window ) );
             painter->drawRect( rect );
             return true;
@@ -2082,8 +2111,8 @@ namespace Breeze
         const QColor base( palette.color( QPalette::Window ) );
         const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
         const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->viewFocusBrush().brush( palette ).color() );
-        const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
+        const QColor active( _helper->focusColor( palette ) );
+        const QColor hover( _helper->hoverColor( palette ) );
         QColor color;
 
         // update only mouse over state
@@ -2128,8 +2157,8 @@ namespace Breeze
         const QColor base( palette.color( QPalette::Window ) );
         const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
         const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->viewFocusBrush().brush( palette ).color() );
-        const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
+        const QColor active( _helper->focusColor( palette ) );
+        const QColor hover( _helper->hoverColor( palette ) );
         QColor color;
 
         // update only mouse over
@@ -2398,10 +2427,10 @@ namespace Breeze
             const QPalette& palette( option->palette );
 
             const QColor base( focus ?
-                _helper->viewFocusBrush().brush( palette ).color():
+                _helper->focusColor( palette ):
                 _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
 
-            const QColor highlight( _helper->viewHoverBrush().brush( palette ).color() );
+            const QColor highlight( _helper->hoverColor( palette ) );
             if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
             else if( mouseOver ) color = highlight;
             else color = base;
@@ -2733,8 +2762,8 @@ namespace Breeze
 
         // fill
         const QColor normal( palette.color( QPalette::Window ) );
-        const QColor focus( KColorUtils::mix( normal, _helper->viewFocusBrush().brush( palette ).color(), 0.2 ) );
-        const QColor hover( KColorUtils::mix( normal, _helper->viewHoverBrush().brush( palette ).color(), 0.2 ) );
+        const QColor focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
+        const QColor hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
 
         QColor color;
         if( sunken ) color = focus;
@@ -2888,7 +2917,7 @@ namespace Breeze
 
         // render focus line
         painter->translate( 0, 2 );
-        painter->setPen( _helper->viewFocusBrush().brush( option->palette ).color() );
+        painter->setPen( _helper->focusColor( option->palette ) );
         painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
 
         if( verticalTabs ) painter->restore();
@@ -3039,7 +3068,7 @@ namespace Breeze
         else {
 
             const QColor normal( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
-            const QColor hover( _helper->alphaColor( _helper->viewHoverBrush().brush( palette ).color(), 0.2 ) );
+            const QColor hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
             if( animated ) color = KColorUtils::mix( normal, hover, opacity );
             else if( mouseOver ) color = hover;
             else color = normal;
@@ -3152,7 +3181,7 @@ namespace Breeze
 
                     // color
                     const QColor normal( palette.color( QPalette::Text ) );
-                    const QColor hover( _helper->viewHoverBrush().brush( palette ).color() );
+                    const QColor hover( _helper->hoverColor( palette ) );
 
                     if( animated )
                     {
@@ -3338,8 +3367,8 @@ namespace Breeze
             const bool animated( _animations->sliderEngine().isAnimated( widget ) );
             const qreal opacity( _animations->sliderEngine().opacity( widget ) );
 
-            const QColor hover( _helper->viewHoverBrush().brush( option->palette ).color() );
-            const QColor focus( _helper->viewFocusBrush().brush( option->palette ).color() );
+            const QColor hover( _helper->hoverColor( option->palette ) );
+            const QColor focus( _helper->focusColor( option->palette ) );
             const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
 
             if( animated )
@@ -3431,8 +3460,8 @@ namespace Breeze
             const bool animated( _animations->dialEngine().isAnimated( widget ) );
             const qreal opacity( _animations->dialEngine().opacity( widget ) );
 
-            const QColor hover( _helper->viewHoverBrush().brush( option->palette ).color() );
-            const QColor focus( _helper->viewFocusBrush().brush( option->palette ).color() );
+            const QColor hover( _helper->hoverColor( option->palette ) );
+            const QColor focus( _helper->focusColor( option->palette ) );
             const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
 
             if( animated )
@@ -3509,12 +3538,12 @@ namespace Breeze
         if( animated )
         {
 
-            QColor highlight = _helper->viewHoverBrush().brush( palette ).color();
+            QColor highlight = _helper->hoverColor( palette );
             color = KColorUtils::mix( palette.color( QPalette::Text ), highlight, opacity );
 
         } else if( subControlHover ) {
 
-            color = _helper->viewHoverBrush().brush( palette ).color();
+            color = _helper->hoverColor( palette );
 
         } else if( atLimit ) {
 
@@ -3621,7 +3650,7 @@ namespace Breeze
         if( rect.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
         {
 
-            QColor highlight = _helper->viewHoverBrush().brush( palette ).color();
+            QColor highlight = _helper->hoverColor( palette );
             if( animated )
             {
                 color = KColorUtils::mix( color, highlight, opacity );
