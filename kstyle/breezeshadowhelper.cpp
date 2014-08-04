@@ -248,33 +248,6 @@ namespace Breeze
 
             }
 
-            if( false )
-            {
-
-                // middle gradient
-                const qreal gradientSize = qMin( shadowSize, (shadowSize+2*fixedSize)/3 );
-                const qreal voffset = qMin( 1.6*gradientSize/fixedSize, 3.0 );
-
-                // gaussian shadow is used
-                QRadialGradient radialGradient = QRadialGradient( shadowSize, shadowSize+voffset, gradientSize );
-                radialGradient.setColorAt(1, Qt::transparent );
-
-                int nPoints( (10*gradientSize)/fixedSize );
-                Gaussian f( 0.54, 0.21);
-                QColor color( shadowColor );
-                for( int i = 0; i < nPoints; i++ )
-                {
-                    qreal x = qreal(i)/nPoints;
-                    color.setAlphaF( f(x) );
-                    radialGradient.setColorAt( x, color );
-
-                }
-
-                painter.setBrush( radialGradient );
-                painter.drawRect( pixmap.rect() );
-
-            }
-
             {
                 // outer gradient
                 const qreal gradientSize = shadowSize;
