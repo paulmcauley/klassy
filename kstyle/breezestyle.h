@@ -269,6 +269,7 @@ namespace Breeze
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
+        QSize menuItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 
 //         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -343,7 +344,7 @@ namespace Breeze
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;

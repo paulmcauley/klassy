@@ -57,14 +57,20 @@ namespace Breeze
         Button_MarginWidth = 6,
 
         // checkboxes and radio buttons
-        RadioButton_Size = 22,
         CheckBox_Size = 22,
         CheckBox_FocusMarginWidth = 2,
         CheckBox_BoxTextSpace = 8,
 
-        // menubars
-        MenuBar_ItemMarginWidth = 10,
-        MenuBar_ItemMarginHeight = 8,
+        // menubar items
+        MenuBarItem_MarginWidth = 10,
+        MenuBarItem_MarginHeight = 8,
+
+        // menu items
+        MenuItem_MarginWidth = 4,
+        MenuItem_IconWidth = 12,
+        MenuItem_BoxTextSpace = 4,
+        MenuItem_ArrowWidth = 20,
+
 
         // toolbars
         ToolBar_HandleWidth = 6,

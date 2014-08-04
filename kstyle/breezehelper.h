@@ -100,7 +100,7 @@ namespace Breeze
         QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
 
         //! checkbox indicator, using animations
-        QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity, AnimationMode ) const;
+        QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
         //! separator color
         QColor separatorColor( const QPalette& ) const;
@@ -137,6 +137,9 @@ namespace Breeze
 
         //! tab widget frame
         void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners corners ) const;
+
+        //! separator
+        void renderSeparator( QPainter*, const QRect&, const QColor&, bool vertical = false ) const;
 
         //! checkbox state (used for checkboxes _and_ radio buttons)
         enum CheckBoxState

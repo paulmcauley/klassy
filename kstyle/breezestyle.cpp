@@ -337,8 +337,8 @@ namespace Breeze
             // checkboxes and radio buttons
             case PM_IndicatorWidth: return CheckBox_Size;
             case PM_IndicatorHeight: return CheckBox_Size;
-            case PM_ExclusiveIndicatorWidth: return RadioButton_Size;
-            case PM_ExclusiveIndicatorHeight: return RadioButton_Size;
+            case PM_ExclusiveIndicatorWidth: return CheckBox_Size;
+            case PM_ExclusiveIndicatorHeight: return CheckBox_Size;
 
             // list heaaders
             case PM_HeaderMarkSize: return Metrics::Header_MarkSize;
@@ -513,6 +513,7 @@ namespace Breeze
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
             case CT_MenuBar: return defaultSizeFromContents( option, size, widget );
             case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
+            case CT_MenuItem: return menuItemSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
             case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
 
@@ -643,8 +644,11 @@ namespace Breeze
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
 
-            // menubars
+            // menubar items
             case CE_MenuBarItem: fcn = &Style::drawMenuBarItemControl; break;
+
+            // menu items
+            case CE_MenuItem: fcn = &Style::drawMenuItemControl; break;
 
             // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
@@ -1681,7 +1685,89 @@ namespace Breeze
 
     //______________________________________________________________
     QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::MenuBar_ItemMarginWidth, Metrics::MenuBar_ItemMarginHeight ); }
+    { return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight ); }
+
+
+    //______________________________________________________________
+    QSize Style::menuItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        if( !menuItemOption ) return contentsSize;
+
+        // First, we calculate the intrinsic size of the item.
+        // this must be kept consistent with what's in drawMenuItemContol
+        QSize size( contentsSize );
+        switch ( menuItemOption->menuItemType )
+        {
+
+            case QStyleOptionMenuItem::Normal:
+            case QStyleOptionMenuItem::DefaultItem:
+            case QStyleOptionMenuItem::SubMenu:
+            {
+
+                const int iconWidth( qMax( menuItemOption->maxIconWidth, (int) Metrics::MenuItem_IconWidth ) );
+                int leftColumnWidth( iconWidth );
+
+                // add space with respect to text
+                leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
+
+                // add checkbox indicator width
+                if( menuItemOption->menuHasCheckableItems )
+                { leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_BoxTextSpace; }
+
+                // add spacing for accelerator
+                /*
+                Note:
+                The width of the accelerator itself is not included here since
+                Qt will add that on separately after obtaining the
+                sizeFromContents() for each menu item in the menu to be shown
+                ( see QMenuPrivate::calcActionRects() )
+                */
+                const bool hasAccelerator( menuItemOption->text.indexOf( QLatin1Char( '\t' ) ) >= 0 );
+                if( hasAccelerator ) size.setWidth( size.width() + Metrics::MenuItem_BoxTextSpace );
+
+                // right column
+                const int rightColumnWidth = Metrics::MenuItem_ArrowWidth + Metrics::MenuItem_BoxTextSpace;
+                size.setWidth( size.width() + leftColumnWidth + rightColumnWidth );
+
+                // make sure height is large enough for icon and arrow
+                size.setHeight( qMax( size.height(), (int) Metrics::MenuItem_ArrowWidth ) );
+                size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
+                size.setHeight( qMax( size.height(), (int) iconWidth ) );
+                return expandSize( size, Metrics::MenuItem_MarginWidth );
+
+            }
+
+            case QStyleOptionMenuItem::Separator:
+            {
+
+                if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
+                {
+
+                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth );
+
+
+                } else {
+
+                    // separator can have a title and an icon
+                    // in that case they are rendered as menubar 'title', which
+                    // corresponds to checked toolbuttons.
+                    // a rectangle identical to the one of normal items is returned.
+                    QStyleOptionMenuItem copy( *menuItemOption );
+                    copy.menuItemType = QStyleOptionMenuItem::Normal;
+                    return menuItemSizeFromContents( &copy, contentsSize, widget );
+
+                }
+
+            }
+
+            // for all other cases, return input
+            default: return contentsSize;
+        }
+
+    }
 
     //______________________________________________________________
     QSize Style::progressBarSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
@@ -2218,26 +2304,11 @@ namespace Breeze
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
         const State& flags( option->state );
-        const bool horizontal( flags & State_Horizontal );
+        const bool separatorIsVertical( !(flags&State_Horizontal) );
         const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const QColor color( _helper->separatorColor( option->palette ) );
 
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setBrush( Qt::NoBrush );
-        painter->setPen( _helper->separatorColor( palette ) );
-        if( horizontal )
-        {
-
-            painter->translate( rect.width()/2, 0 );
-            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-
-        } else {
-
-            painter->translate( 0, rect.height()/2 );
-            painter->drawLine( rect.topLeft(), rect.topRight() );
-
-        }
-
+        _helper->renderSeparator( painter, rect, color, separatorIsVertical );
         return true;
 
     }
@@ -2291,7 +2362,7 @@ namespace Breeze
 
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
-        const bool active( enabled && (flags & State_Selected) );
+        const bool selected( enabled && (flags & State_Selected) );
         const bool sunken( enabled && (flags & State_Sunken) );
 
         const QPalette& palette( option->palette );
@@ -2305,12 +2376,12 @@ namespace Breeze
         drawItemText( painter, textRect, alignment, palette, enabled, menuItemOption->text, QPalette::WindowText );
 
         // render outline
-        if( active || sunken )
+        if( selected || sunken )
         {
 
             QColor outlineColor;
             if( sunken ) outlineColor = _helper->focusColor( palette );
-            else if( active ) outlineColor = _helper->hoverColor( palette );
+            else if( selected ) outlineColor = _helper->hoverColor( palette );
 
             painter->translate( 0, 2 );
             painter->setBrush( Qt::NoBrush );
@@ -2321,6 +2392,183 @@ namespace Breeze
 
         return true;
 
+    }
+
+
+    //___________________________________________________________________________________
+    bool Style::drawMenuItemControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        if( !menuItemOption ) return true;
+        if( menuItemOption->menuItemType == QStyleOptionMenuItem::EmptyArea ) return true;
+
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // get rect available for contents
+        QRect contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
+
+        // deal with separators
+        if( menuItemOption->menuItemType == QStyleOptionMenuItem::Separator )
+        {
+
+            // normal separator
+            if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
+            {
+
+                const QColor color( _helper->separatorColor( palette ) );
+                _helper->renderSeparator( painter, contentsRect, color );
+                return true;
+
+            } else {
+
+                // separator can have a title and an icon
+                // in that case they are rendered as normal, disabled items
+                QStyleOptionMenuItem copy( *menuItemOption );
+                copy.menuItemType = QStyleOptionMenuItem::Normal;
+                copy.state &= ~(State_Selected|State_Enabled|State_HasFocus|State_MouseOver);
+                return drawMenuItemControl( &copy, painter, widget );
+
+            }
+
+        }
+
+        // store state
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool selected( enabled && (flags & State_Selected) );
+        const bool sunken( enabled && (flags & (State_On|State_Sunken) ) );
+
+        // define relevant rectangles
+        // checkbox
+        QRect checkBoxRect;
+        if( menuItemOption->menuHasCheckableItems )
+        {
+            checkBoxRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-Metrics::CheckBox_Size)/2, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
+            contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+        }
+
+        // render checkbox indicator
+        if( menuItemOption->checkType == QStyleOptionMenuItem::NonExclusive )
+        {
+
+            checkBoxRect = handleRTL( option, checkBoxRect );
+
+            // checkbox state
+            Helper::CheckBoxState state( menuItemOption->checked ? Helper::CheckOn : Helper::CheckOff );
+            const bool active( menuItemOption->checked );
+            const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
+            const QColor shadow( _helper->shadowColor( palette ) );
+            _helper->renderCheckBox( painter, checkBoxRect, color, shadow, sunken, state );
+
+        } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
+
+            checkBoxRect = handleRTL( option, checkBoxRect );
+
+            const bool active( menuItemOption->checked );
+            const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
+            const QColor shadow( _helper->shadowColor( palette ) );
+            _helper->renderRadioButton( painter, checkBoxRect, color, shadow, sunken, active );
+
+        }
+
+        // icon
+        const int iconWidth( qMax( menuItemOption->maxIconWidth, (int) Metrics::MenuItem_IconWidth ) );
+        QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
+        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+
+        if( !menuItemOption->icon.isNull() )
+        {
+
+            iconRect = handleRTL( option, iconRect );
+
+            // icon mode
+            QIcon::Mode mode;
+            if( selected ) mode = QIcon::Active;
+            else if( enabled ) mode = QIcon::Normal;
+            else mode = QIcon::Disabled;
+
+            // icon state
+            const QIcon::State iconState( sunken ? QIcon::On:QIcon::Off );
+            const QPixmap icon = menuItemOption->icon.pixmap( iconRect.size(), mode, iconState );
+            painter->drawPixmap( iconRect, icon );
+
+        }
+
+        // arrow
+        QRect arrowRect( contentsRect.right() - Metrics::MenuItem_ArrowWidth, contentsRect.top() + (contentsRect.height()-Metrics::MenuItem_ArrowWidth)/2, Metrics::MenuItem_ArrowWidth, Metrics::MenuItem_ArrowWidth );
+        contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_BoxTextSpace - 1 );
+        if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
+        {
+
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+            const QPolygonF arrow( genericArrow( reverseLayout ? ArrowLeft:ArrowRight, ArrowNormal ) );
+            const qreal penThickness = 1.5;
+            QColor arrowColor;
+            if( sunken ) arrowColor = _helper->focusColor( palette );
+            else if( selected ) arrowColor = _helper->hoverColor( palette );
+            else arrowColor = palette.color( QPalette::WindowText );
+
+            painter->save();
+            painter->translate( QRectF( arrowRect ).center() );
+            painter->setPen( QPen( arrowColor, penThickness ) );
+            painter->drawPolyline( arrow );
+            painter->restore();
+
+        }
+
+
+        // text
+        QRect textRect = contentsRect;
+        if( !menuItemOption->text.isEmpty() )
+        {
+
+            // adjust textRect
+            QString text = menuItemOption->text;
+            textRect = centerRect( textRect, textRect.width(), option->fontMetrics.size( _mnemonics->textFlags(), text ).height() );
+            textRect = handleRTL( option, textRect );
+
+            // set font
+            painter->setFont( menuItemOption->font );
+
+            // locate accelerator and render
+            const int tabPosition( text.indexOf( QLatin1Char( '\t' ) ) );
+            if( tabPosition >= 0 )
+            {
+                QString accelerator( text.mid( tabPosition + 1 ) );
+                text = text.left( tabPosition );
+                drawItemText( painter, textRect, Qt::AlignRight | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, accelerator, QPalette::WindowText );
+            }
+
+            // render text
+            const int textFlags( Qt::AlignLeft | Qt::AlignVCenter |  _mnemonics->textFlags() );
+            textRect = option->fontMetrics.boundingRect( textRect, textFlags, text );
+            drawItemText( painter, textRect, textFlags, palette, enabled, text, QPalette::WindowText );
+
+            // render hover and focus
+            if( selected || sunken )
+            {
+
+                QColor outlineColor;
+                if( sunken ) outlineColor = _helper->focusColor( palette );
+                else if( selected ) outlineColor = _helper->hoverColor( palette );
+
+                painter->save();
+                painter->setRenderHint( QPainter::Antialiasing, false );
+                painter->translate( 0, 2 );
+                painter->setBrush( Qt::NoBrush );
+                painter->setPen( outlineColor );
+                painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+                painter->restore();
+
+            }
+
+        }
+
+        return true;
     }
 
     //___________________________________________________________________________________
@@ -2559,7 +2807,7 @@ namespace Breeze
         QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
 
         QColor color;
-        QStyleOptionSlider localOption( *sliderOption );
+        QStyleOptionSlider copy( *sliderOption );
         if( _addLineButtons == DoubleButton )
         {
 
@@ -2571,12 +2819,12 @@ namespace Breeze
                 const QRect leftSubButton( rect.topLeft(), halfSize );
                 const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
 
-                localOption.rect = leftSubButton;
-                color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
+                copy.rect = leftSubButton;
+                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
                 renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
 
-                localOption.rect = rightSubButton;
-                color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
+                copy.rect = rightSubButton;
+                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
                 renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
@@ -2585,20 +2833,20 @@ namespace Breeze
                 const QRect topSubButton( rect.topLeft(), halfSize );
                 const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
 
-                localOption.rect = topSubButton;
-                color = scrollBarArrowColor( &localOption, SC_ScrollBarSubLine, widget );
+                copy.rect = topSubButton;
+                color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
                 renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
 
-                localOption.rect = botSubButton;
-                color = scrollBarArrowColor( &localOption, SC_ScrollBarAddLine, widget );
+                copy.rect = botSubButton;
+                color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
                 renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
         } else if( _addLineButtons == SingleButton ) {
 
-            localOption.rect = rect;
-            color = scrollBarArrowColor( &localOption,  SC_ScrollBarAddLine, widget );
+            copy.rect = rect;
+            color = scrollBarArrowColor( &copy,  SC_ScrollBarAddLine, widget );
             if( horizontal )
             {
 
@@ -2676,7 +2924,7 @@ namespace Breeze
         QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
 
         QColor color;
-        QStyleOptionSlider localOption( *sliderOption );
+        QStyleOptionSlider copy( *sliderOption );
         if( _subLineButtons == DoubleButton )
         {
 
@@ -2688,12 +2936,12 @@ namespace Breeze
                 const QRect leftSubButton( rect.topLeft(), halfSize );
                 const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
 
-                localOption.rect = leftSubButton;
-                color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
+                copy.rect = leftSubButton;
+                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
                 renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
 
-                localOption.rect = rightSubButton;
-                color = scrollBarArrowColor( &localOption,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
+                copy.rect = rightSubButton;
+                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
                 renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
@@ -2702,20 +2950,20 @@ namespace Breeze
                 const QRect topSubButton( rect.topLeft(), halfSize );
                 const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
 
-                localOption.rect = topSubButton;
-                color = scrollBarArrowColor( &localOption, SC_ScrollBarSubLine, widget );
+                copy.rect = topSubButton;
+                color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
                 renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
 
-                localOption.rect = botSubButton;
-                color = scrollBarArrowColor( &localOption, SC_ScrollBarAddLine, widget );
+                copy.rect = botSubButton;
+                color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
                 renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
         } else if( _subLineButtons == SingleButton ) {
 
-            localOption.rect = rect;
-            color = scrollBarArrowColor( &localOption,  SC_ScrollBarSubLine, widget );
+            copy.rect = rect;
+            color = scrollBarArrowColor( &copy,  SC_ScrollBarSubLine, widget );
             if( horizontal )
             {
 
@@ -2787,28 +3035,13 @@ namespace Breeze
             }
 
             case QFrame::HLine:
-            {
-                painter->setRenderHint( QPainter::Antialiasing, false );
-                const QPalette& palette( option->palette );
-                const QRect rect( option->rect );
-                painter->setBrush( Qt::NoBrush );
-                painter->setPen( _helper->separatorColor( palette ) );
-
-                painter->translate( 0, rect.height()/2 );
-                painter->drawLine( rect.topLeft(), rect.topRight() );
-                return true;
-            }
-
             case QFrame::VLine:
             {
-                painter->setRenderHint( QPainter::Antialiasing, false );
-                const QPalette& palette( option->palette );
-                const QRect rect( option->rect );
-                painter->setBrush( Qt::NoBrush );
-                painter->setPen( _helper->separatorColor( palette ) );
 
-                painter->translate( rect.width()/2, 0 );
-                painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+                const QRect& rect( option->rect );
+                const QColor color( _helper->separatorColor( option->palette ) );
+                const bool isVertical( frameOpt->frameShape == QFrame::VLine );
+                _helper->renderSeparator( painter, rect, color, isVertical );
                 return true;
             }
 

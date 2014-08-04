@@ -380,6 +380,35 @@ namespace Breeze
 
     }
 
+
+    //______________________________________________________________________________
+    void Helper::renderSeparator(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, bool vertical ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( color );
+
+        if( vertical )
+        {
+
+            painter->translate( rect.width()/2, 0 );
+            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+
+        } else {
+
+            painter->translate( 0, rect.height()/2 );
+            painter->drawLine( rect.topLeft(), rect.topRight() );
+
+
+        }
+
+        return;
+
+    }
+
     //______________________________________________________________________________
     void Helper::renderCheckBox(
         QPainter* painter, const QRect& rect,
