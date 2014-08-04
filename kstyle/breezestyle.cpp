@@ -714,6 +714,9 @@ namespace Breeze
             case CE_TabBarTabLabel: fcn = &Style::drawTabBarTabLabelControl; break;
             case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
 
+            // dock widget titlebar
+            case CE_DockWidgetTitle: fcn = &Style::drawDockWidgetTitleControl; break;
+
             // fallback
             default: break;
 
@@ -3565,6 +3568,85 @@ namespace Breeze
 
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawDockWidgetTitleControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionDockWidget* dockWidgetOption = ::qstyleoption_cast<const QStyleOptionDockWidget*>( option );
+        if ( !dockWidgetOption ) return true;
+
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+        // cast to v2 to check vertical bar
+        const QStyleOptionDockWidgetV2 *v2 = qstyleoption_cast<const QStyleOptionDockWidgetV2*>( option );
+        const bool verticalTitleBar( v2 ? v2->verticalTitleBar : false );
+
+        const QRect buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
+
+        // get rectangle and adjust to properly accounts for buttons
+        QRect rect( insideMargin( dockWidgetOption->rect, DockWidget_TitleMarginWidth ) );
+        if( verticalTitleBar )
+        {
+
+            if( buttonRect.isValid() ) rect.setTop( buttonRect.bottom()+1 );
+
+        } else if( reverseLayout ) {
+
+            if( buttonRect.isValid() ) rect.setLeft( buttonRect.right()+1 );
+            rect.adjust( 0,0,-4,0 );
+
+        } else {
+
+            if( buttonRect.isValid() ) rect.setRight( buttonRect.left()-1 );
+            rect.adjust( 4,0,0,0 );
+
+        }
+
+        QString title( dockWidgetOption->title );
+        QString tmpTitle = title;
+
+        // this is quite suboptimal
+        // and does not really work
+        if( tmpTitle.contains( QLatin1Char( '&' ) ) )
+        {
+            int pos = tmpTitle.indexOf( QLatin1Char( '&' ) );
+            if( !( tmpTitle.size()-1 > pos && tmpTitle.at( pos+1 ) == QLatin1Char( '&' ) ) ) tmpTitle.remove( pos, 1 );
+
+        }
+
+        int tw = dockWidgetOption->fontMetrics.width( tmpTitle );
+        int width = verticalTitleBar ? rect.height() : rect.width();
+        if( width < tw ) title = dockWidgetOption->fontMetrics.elidedText( title, Qt::ElideRight, width, Qt::TextShowMnemonic );
+
+        if( verticalTitleBar )
+        {
+
+            QSize size = rect.size();
+            size.transpose();
+            rect.setSize( size );
+
+            painter->save();
+            painter->translate( rect.left(), rect.top() + rect.width() );
+            painter->rotate( -90 );
+            painter->translate( -rect.left(), -rect.top() );
+            drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText );
+            painter->restore();
+
+
+        } else {
+
+            drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText );
+
+        }
+
+        return true;
+
+
+    }
     //______________________________________________________________
     bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
