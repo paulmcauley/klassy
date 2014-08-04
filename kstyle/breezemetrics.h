@@ -44,17 +44,19 @@ namespace Breeze
 
         // combobox
         ComboBox_MarginWidth = 4,
-        ComboBox_ButtonWidth = 20,
-        ComboBox_BoxTextSpace = 8,
+        ComboBox_ArrowButtonWidth = 20,
+        ComboBox_BoxTextSpace = 4,
 
         // spinbox
-        SpinBox_ButtonWidth = 20,
+        SpinBox_ArrowButtonWidth = 20,
 
         // groupbox title margin
         GroupBox_TitleMarginWidth = 4,
 
         // buttons
         Button_MarginWidth = 6,
+        Button_ArrowButtonWidth = 20,
+        Button_BoxTextSpace = 4,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,

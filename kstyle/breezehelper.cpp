@@ -264,6 +264,17 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderDebugRect( QPainter* painter, const QRect& rect ) const
+    {
+        painter->save();
+        painter->setRenderHints( QPainter::Antialiasing );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( Qt::red );
+        painter->drawRect( QRectF( rect ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+        painter->restore();
+    }
+
+    //______________________________________________________________________________
     void Helper::renderFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, bool focus ) const

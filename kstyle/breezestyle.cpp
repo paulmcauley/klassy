@@ -231,6 +231,16 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
+        } else if( qobject_cast<QToolButton*>( widget ) ) {
+
+            /*
+            all toolbuttons are flat
+            adjust foreground and background role accordingly
+            */
+
+            widget->setBackgroundRole( QPalette::NoRole );
+            widget->setForegroundRole( QPalette::WindowText );
+
         } else if( qobject_cast<QDockWidget*>( widget ) ) {
 
             // add event filter on dock widgets
@@ -252,6 +262,7 @@ namespace Breeze
         } else if( widget->inherits( "QTipLabel" ) ) {
 
             setTranslucentBackground( widget );
+
         }
 
 
@@ -330,6 +341,9 @@ namespace Breeze
             case PM_MenuBarVMargin: return 0;
             case PM_MenuBarItemSpacing: return 0;
             case PM_MenuDesktopFrameWidth: return 0;
+
+            // menu buttons
+            case PM_MenuButtonIndicator: return Metrics::MenuItem_ArrowWidth;
 
             // toolbars
             case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleWidth;
@@ -1359,22 +1373,22 @@ namespace Breeze
                 {
 
                     arrowRect = QRect(
-                        rect.right() - Metrics::ComboBox_ButtonWidth,
+                        rect.right() - Metrics::ComboBox_ArrowButtonWidth,
                         rect.top(),
-                        Metrics::ComboBox_ButtonWidth,
+                        Metrics::ComboBox_ArrowButtonWidth,
                         rect.height() );
 
                 } else {
 
                     arrowRect = QRect(
-                        rect.right() - Metrics::ComboBox_ButtonWidth,
+                        rect.right() - Metrics::ComboBox_ArrowButtonWidth,
                         rect.top(),
-                        Metrics::ComboBox_ButtonWidth,
+                        Metrics::ComboBox_ArrowButtonWidth,
                         rect.height() );
 
                 }
 
-                arrowRect = centerRect( arrowRect, Metrics::ComboBox_ButtonWidth, Metrics::ComboBox_ButtonWidth );
+                arrowRect = centerRect( arrowRect, Metrics::ComboBox_ArrowButtonWidth, Metrics::ComboBox_ArrowButtonWidth );
                 return handleRTL( option, arrowRect );
 
             }
@@ -1393,7 +1407,7 @@ namespace Breeze
 
                     labelRect = QRect(
                         rect.left(), rect.top(),
-                        rect.width() - Metrics::ComboBox_ButtonWidth,
+                        rect.width() - Metrics::ComboBox_ArrowButtonWidth,
                         rect.height() );
 
                     // remove right side line editor margin
@@ -1404,7 +1418,7 @@ namespace Breeze
 
                     labelRect = QRect(
                         rect.left(), rect.top(),
-                        rect.width() - Metrics::ComboBox_ButtonWidth - Metrics::ComboBox_BoxTextSpace,
+                        rect.width() - Metrics::ComboBox_ArrowButtonWidth - Metrics::ComboBox_BoxTextSpace,
                         rect.height() );
 
                     // remove right side button margin
@@ -1449,14 +1463,14 @@ namespace Breeze
 
                 QRect arrowRect;
                 arrowRect = QRect(
-                    rect.right() - Metrics::SpinBox_ButtonWidth,
+                    rect.right() - Metrics::SpinBox_ArrowButtonWidth,
                     rect.top(),
-                    Metrics::SpinBox_ButtonWidth,
+                    Metrics::SpinBox_ArrowButtonWidth,
                     rect.height() );
 
-                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ButtonWidth, Metrics::SpinBox_ButtonWidth );
-                arrowRect.setHeight( Metrics::SpinBox_ButtonWidth/2 );
-                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ButtonWidth/2 );
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, Metrics::SpinBox_ArrowButtonWidth );
+                arrowRect.setHeight( Metrics::SpinBox_ArrowButtonWidth/2 );
+                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ArrowButtonWidth/2 );
 
                 return handleRTL( option, arrowRect );
 
@@ -1471,7 +1485,7 @@ namespace Breeze
                 QRect labelRect;
                 labelRect = QRect(
                     rect.left(), rect.top(),
-                    rect.width() - Metrics::SpinBox_ButtonWidth,
+                    rect.width() - Metrics::SpinBox_ArrowButtonWidth,
                     rect.height() );
 
                 // remove right side line editor margins
@@ -1707,10 +1721,10 @@ namespace Breeze
         else if( !editable ) size = expandSize( size, Metrics::ComboBox_MarginWidth );
 
         // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), (int)Metrics::ComboBox_ButtonWidth ) );
+        size.setHeight( qMax( size.height(), (int)Metrics::ComboBox_ArrowButtonWidth ) );
 
         // add button width and spacing
-        size.rwidth() += Metrics::ComboBox_ButtonWidth;
+        size.rwidth() += Metrics::ComboBox_ArrowButtonWidth;
         if( !editable ) size.rwidth() += Metrics::ComboBox_BoxTextSpace;
 
         // add framewidth if needed
@@ -1735,10 +1749,10 @@ namespace Breeze
         if( !flat ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
 
         // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ButtonWidth ) );
+        size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ArrowButtonWidth ) );
 
         // add button width and spacing
-        size.rwidth() += Metrics::SpinBox_ButtonWidth;
+        size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
 
         // add framewidth if needed
         return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
@@ -1746,8 +1760,45 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::pushButtonSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth ); }
+    QSize Style::pushButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
+        if( !buttonOption ) return contentsSize;
+
+        QSize size( contentsSize );
+
+        // add space for arrow
+        if( buttonOption->features & QStyleOptionButton::HasMenu )
+        {
+            size.rheight() += 2*Metrics::Button_MarginWidth;
+            size.setHeight( qMax( size.height(), int( Metrics::Button_ArrowButtonWidth ) ) );
+            size.rwidth() += Metrics::Button_MarginWidth;
+
+            if( !( buttonOption->icon.isNull() && buttonOption->text.isEmpty() ) )
+            { size.rwidth() += Metrics::Button_BoxTextSpace; }
+
+        }  else size = expandSize( size, Metrics::Button_MarginWidth );
+
+        // add space for icon
+        if( !buttonOption->icon.isNull() )
+        {
+
+            QSize iconSize = buttonOption->iconSize;
+            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize ), pixelMetric( PM_SmallIconSize, option, widget ) );
+
+            size.setHeight( qMax( size.height(), iconSize.height() ) );
+
+            if( !buttonOption->text.isEmpty() )
+            { size.rwidth() += Metrics::Button_BoxTextSpace; }
+
+        }
+
+        // finally add margins
+        return expandSize( size, Metrics::Frame_FrameWidth );
+
+    }
 
     //______________________________________________________________
     QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
@@ -2468,17 +2519,108 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
-        if( !buttonOption ) return false;
+        if( !buttonOption ) return true;
 
-        // need to alter palette for focused buttons
-        const bool hasFocus( option->state & State_HasFocus );
-        const bool mouseOver( option->state & State_MouseOver );
-        if( mouseOver || !hasFocus ) return false;
+        // rect
+        const QRect rect( option->rect );
+        QRect contentsRect( insideMargin( rect, Metrics::Frame_FrameWidth ) );
 
-        // copy option, alter palette, and call base class method
-        QStyleOptionButton copy( *buttonOption );
-        copy.palette.setColor( QPalette::ButtonText, copy.palette.color( QPalette::HighlightedText ) );
-        KStyle::drawControl( CE_PushButtonLabel, &copy, painter, widget );
+        // palette
+        const QPalette& palette( option->palette );
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool sunken( ( flags & State_On ) || ( flags & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+
+        // menu arrow
+        if( buttonOption->features & QStyleOptionButton::HasMenu )
+        {
+
+            QRect arrowRect( contentsRect );
+            arrowRect.setLeft( contentsRect.right() - Metrics::Button_ArrowButtonWidth );
+            arrowRect = centerRect( arrowRect, Metrics::Button_ArrowButtonWidth, Metrics::Button_ArrowButtonWidth );
+
+            contentsRect.setRight( arrowRect.left() - Metrics::Button_BoxTextSpace - 1  );
+            contentsRect.adjust( Metrics::Button_MarginWidth, Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth );
+
+            // handle RTL
+            arrowRect = handleRTL( option, arrowRect );
+
+            // render arrow
+            const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
+            const qreal penThickness = 1.5;
+            const QColor arrowColor( hasFocus ? palette.color( QPalette::HighlightedText ) : palette.color( QPalette::WindowText ) );
+
+            painter->save();
+            painter->setRenderHints( QPainter::Antialiasing );
+            painter->setPen( QPen( arrowColor, penThickness ) );
+            painter->translate( QRectF( arrowRect ).center() );
+            painter->drawPolyline( arrow );
+            painter->restore();
+
+        } else contentsRect = insideMargin( contentsRect, Metrics::Button_MarginWidth );
+
+        // text size
+        QSize contentsSize;
+        if( !buttonOption->text.isEmpty() )
+        {
+            contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), buttonOption->text );
+            if( !buttonOption->icon.isNull() ) contentsSize.rwidth() += Metrics::Button_BoxTextSpace;
+        }
+
+        // icon size
+        QSize iconSize;
+        if( !buttonOption->icon.isNull() )
+        {
+            iconSize = buttonOption->iconSize;
+            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize ), pixelMetric( PM_SmallIconSize, option, widget ) );
+
+            contentsSize.setHeight( qMax( contentsSize.height(), iconSize.height() ) );
+            contentsSize.rwidth() += iconSize.width();
+        }
+
+        // adjust contents rect
+        contentsRect = centerRect( contentsRect, contentsSize );
+
+        if( !buttonOption->icon.isNull() )
+        {
+
+            // icon rect
+            QRect iconRect;
+            if( buttonOption->text.isEmpty() ) iconRect = centerRect( contentsRect, iconSize );
+            else {
+
+                iconRect = contentsRect;
+                iconRect.setWidth( iconSize.width() );
+                iconRect = centerRect( iconRect, iconSize );
+                contentsRect.setLeft( iconRect.right() + 1 + Metrics::Button_BoxTextSpace );
+
+            }
+
+            iconRect = handleRTL( option, iconRect );
+
+            // icon mode
+            QIcon::Mode mode;
+            if( hasFocus ) mode = QIcon::Active;
+            else if( enabled ) mode = QIcon::Normal;
+            else mode = QIcon::Disabled;
+
+            // icon state
+            QIcon::State iconState = sunken ? QIcon::On : QIcon::Off;
+
+            // icon
+            QPixmap icon = buttonOption->icon.pixmap( iconSize, mode, iconState );
+            painter->drawPixmap( iconRect, icon );
+
+        }
+
+        // text
+        contentsRect = handleRTL( option, contentsRect );
+
+        const QPalette::ColorRole role( hasFocus ? QPalette::HighlightedText : QPalette::ButtonText );
+        drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, role );
+
         return true;
 
     }
@@ -2662,6 +2804,7 @@ namespace Breeze
             else arrowColor = palette.color( QPalette::WindowText );
 
             painter->save();
+            painter->setRenderHints( QPainter::Antialiasing );
             painter->translate( QRectF( arrowRect ).center() );
             painter->setPen( QPen( arrowColor, penThickness ) );
             painter->drawPolyline( arrow );

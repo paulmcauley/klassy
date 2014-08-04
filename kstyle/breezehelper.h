@@ -119,6 +119,9 @@ namespace Breeze
         //!@name rendering utilities
         //@{
 
+        //! debug frame
+        void renderDebugRect( QPainter*, const QRect& ) const;
+
         //! generic frame
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
 
