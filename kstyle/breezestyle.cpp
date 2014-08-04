@@ -286,6 +286,7 @@ namespace Breeze
             case PM_DefaultFrameWidth:
             case PM_ComboBoxFrameWidth:
             case PM_SpinBoxFrameWidth:
+            case PM_ToolBarFrameWidth:
             return Metrics::Frame_FrameWidth;
 
             case PM_ToolTipLabelFrameWidth:
@@ -331,7 +332,6 @@ namespace Breeze
             case PM_MenuDesktopFrameWidth: return 0;
 
             // toolbars
-            case PM_ToolBarFrameWidth: return 0;
             case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleWidth;
             case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
             case PM_ToolBarExtensionExtent: return Metrics::ToolBar_ExtensionWidth;
@@ -611,7 +611,11 @@ namespace Breeze
             // buttons
             case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
+
+            // menus
             case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
+
+            // tooltips
             case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
 
             // checkboxes and radio buttons
@@ -675,6 +679,9 @@ namespace Breeze
 
             // menu items
             case CE_MenuItem: fcn = &Style::drawMenuItemControl; break;
+
+            // toolbar
+            case CE_ToolBar: fcn = &Style::emptyControl; break;
 
             // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
