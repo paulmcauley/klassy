@@ -57,6 +57,10 @@ namespace Breeze
         const bool& enabled( void ) const
         { return _enabled; }
 
+        //! alignment flag
+        int textFlags( void ) const
+        { return _enabled ? Qt::TextShowMnemonic : Qt::TextHideMnemonic; }
+
         protected:
 
         //! set enable state
