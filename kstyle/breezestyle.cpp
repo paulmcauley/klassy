@@ -281,8 +281,8 @@ namespace Breeze
 
             }
 
-            case PM_LayoutHorizontalSpacing: return Metrics::Layout_HorizontalSpacing;
-            case PM_LayoutVerticalSpacing: return Metrics::Layout_VerticalSpacing;
+            case PM_LayoutHorizontalSpacing: return Metrics::Layout_DefaultSpacing;
+            case PM_LayoutVerticalSpacing: return Metrics::Layout_DefaultSpacing;
 
             // buttons
             case PM_ButtonMargin: return Metrics::Button_MarginWidth;
@@ -368,10 +368,17 @@ namespace Breeze
                 return false;
             }
 
-            // mouse tracking
+            // combobox
             case SH_ComboBox_ListMouseTracking: return true;
+
+            // menubar
             case SH_MenuBar_MouseTracking: return true;
+
+            // menu
             case SH_Menu_MouseTracking: return true;
+            case SH_Menu_SubMenuPopupDelay: return 150;
+            case SH_Menu_SloppySubMenus: return true;
+            case SH_Menu_SupportsSections: return true;
 
             // groupboxes
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
@@ -381,6 +388,23 @@ namespace Breeze
 
             // scrollbars
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
+
+            // forms
+            case SH_FormLayoutFormAlignment: return Qt::AlignLeft | Qt::AlignTop;
+            case SH_FormLayoutLabelAlignment: return Qt::AlignRight;
+            case SH_FormLayoutFieldGrowthPolicy: return QFormLayout::ExpandingFieldsGrow;
+            case SH_FormLayoutWrapPolicy: return QFormLayout::DontWrapRows;
+
+            // message box
+            case SH_MessageBox_TextInteractionFlags: return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
+
+            // dialog buttons
+            case SH_ProgressDialog_CenterCancelButton:
+            case SH_MessageBox_CenterButtons:
+            return false;
+
+            // input panel
+            case SH_RequestSoftwareInputPanel: return RSIP_OnMouseClick;
 
             // fallback
             default: return KStyle::styleHint( hint, option, widget, returnData );

@@ -37,8 +37,7 @@ namespace Breeze
         // layout
         Layout_TopLevelMarginWidth = 10,
         Layout_ChildMarginWidth = 6,
-        Layout_HorizontalSpacing = 6,
-        Layout_VerticalSpacing = 6,
+        Layout_DefaultSpacing = 6,
 
         // line editors
         LineEdit_MarginWidth = 6,
