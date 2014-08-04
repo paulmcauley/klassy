@@ -46,52 +46,53 @@ namespace Breeze
         _viewNegativeTextBrush = KStatefulBrush( KColorScheme::View, KColorScheme::NegativeText, _config );
     }
 
-    //______________________________________________________________________________
-    QPalette Helper::mergePalettes( const QPalette& source, qreal ratio ) const
-    {
-
-        QPalette out( source );
-        out.setColor( QPalette::Background, KColorUtils::mix( source.color( QPalette::Active, QPalette::Background ), source.color( QPalette::Disabled, QPalette::Background ), 1.0-ratio ) );
-        out.setColor( QPalette::Highlight, KColorUtils::mix( source.color( QPalette::Active, QPalette::Highlight ), source.color( QPalette::Disabled, QPalette::Highlight ), 1.0-ratio ) );
-        out.setColor( QPalette::WindowText, KColorUtils::mix( source.color( QPalette::Active, QPalette::WindowText ), source.color( QPalette::Disabled, QPalette::WindowText ), 1.0-ratio ) );
-        out.setColor( QPalette::ButtonText, KColorUtils::mix( source.color( QPalette::Active, QPalette::ButtonText ), source.color( QPalette::Disabled, QPalette::ButtonText ), 1.0-ratio ) );
-        out.setColor( QPalette::Text, KColorUtils::mix( source.color( QPalette::Active, QPalette::Text ), source.color( QPalette::Disabled, QPalette::Text ), 1.0-ratio ) );
-        out.setColor( QPalette::Button, KColorUtils::mix( source.color( QPalette::Active, QPalette::Button ), source.color( QPalette::Disabled, QPalette::Button ), 1.0-ratio ) );
-        return out;
-    }
-
     //____________________________________________________________________
     QColor Helper::frameOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
-        // colors
-        const QColor focus( _viewFocusBrush.brush( palette ).color() );
-        const QColor hover( _viewHoverBrush.brush( palette ).color() );
-        const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+        QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
 
-        QColor outline;
+        // focus takes precedence over hover
         if( mode == AnimationFocus )
         {
 
+            const QColor focus( focusColor( palette ) );
+            const QColor hover( hoverColor( palette ) );
+
             if( mouseOver ) outline = KColorUtils::mix( hover, focus, opacity );
-            else outline = KColorUtils::mix( defaultOutline, focus, opacity );
+            else outline = KColorUtils::mix( outline, focus, opacity );
 
         } else if( hasFocus ) {
 
-            outline = focus;
+            outline = focusColor( palette );
 
         } else if( mode == AnimationHover ) {
 
-            outline = KColorUtils::mix( defaultOutline, hover, opacity );
+            const QColor hover( hoverColor( palette ) );
+            outline = KColorUtils::mix( outline, hover, opacity );
 
         } else if( mouseOver ) {
 
-            outline = hover;
+            outline = hoverColor( palette );
 
-        } else outline = defaultOutline;
+        }
 
         return outline;
 
+    }
+
+    //____________________________________________________________________
+    QColor Helper::frameBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
+    { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.3 ); }
+
+    //____________________________________________________________________
+    QPalette Helper::framePalette( const QPalette& palette ) const
+    {
+        QPalette copy( palette );
+        copy.setColor( QPalette::Disabled, QPalette::Window, frameBackgroundColor( palette, QPalette::Disabled ) );
+        copy.setColor( QPalette::Active, QPalette::Window, frameBackgroundColor( palette, QPalette::Active ) );
+        copy.setColor( QPalette::Inactive, QPalette::Window, frameBackgroundColor( palette, QPalette::Inactive ) );
+        return copy;
     }
 
     //____________________________________________________________________
@@ -100,6 +101,7 @@ namespace Breeze
 
         const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
 
+        // hover takes precedence over focus
         if( mode == AnimationHover )
         {
 
@@ -123,33 +125,109 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::buttonPanelColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    QColor Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
-        const QColor normal( palette.color( QPalette::Button ) );
-        const QColor focus( _viewFocusBrush.brush( palette ).color() );
-        const QColor hover( _viewHoverBrush.brush( palette ).color() );
-
+        QColor background( palette.color( QPalette::Button ) );
         if( mode == AnimationHover )
         {
 
-            if( hasFocus ) return KColorUtils::mix( focus, hover, opacity );
-            else return KColorUtils::mix( normal, hover, opacity );
+            const QColor focus( focusColor( palette ) );
+            const QColor hover( hoverColor( palette ) );
+            if( hasFocus ) background = KColorUtils::mix( focus, hover, opacity );
+            else background = KColorUtils::mix( background, hover, opacity );
 
         } else if( mouseOver ) {
 
-            return hover;
+            background = hoverColor( palette );
 
         } else if( mode == AnimationFocus ) {
 
-            return KColorUtils::mix( normal, focus, opacity );
+            const QColor focus( focusColor( palette ) );
+            background = KColorUtils::mix( background, focus, opacity );
 
         } else if( hasFocus ) {
 
-            return focus;
+            background = focusColor( palette );
 
-        } else return normal;
+        }
 
+        return background;
+
+    }
+
+    //____________________________________________________________________
+    QColor Helper::sliderOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+
+        // hover takes precedence over focus
+        if( mode == AnimationHover ) {
+
+            const QColor hover( hoverColor( palette ) );
+            const QColor focus( focusColor( palette ) );
+            if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+            else outline = KColorUtils::mix( outline, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            outline = hoverColor( palette );
+
+        } else if( mode == AnimationFocus ) {
+
+            const QColor focus( focusColor( palette ) );
+            outline = KColorUtils::mix( outline, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focusColor( palette );
+
+        }
+
+        return outline;
+
+    }
+
+    //______________________________________________________________________________
+    QColor Helper::checkBoxMarkerColor( const QPalette& palette, bool mouseOver, bool active, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.5 ) );
+        if( mode == AnimationHover )
+        {
+
+            const QColor focus( focusColor( palette ) );
+            const QColor hover( hoverColor( palette ) );
+            if( active ) color =  KColorUtils::mix( focus, hover, opacity );
+            else color = KColorUtils::mix( color, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            color = hoverColor( palette );
+
+        } else if( active ) {
+
+            color = focusColor( palette );
+
+        }
+
+        return color;
+
+    }
+
+    //______________________________________________________________________________
+    QPalette Helper::disabledPalette( const QPalette& source, qreal ratio ) const
+    {
+
+        QPalette out( source );
+        out.setColor( QPalette::Background, KColorUtils::mix( source.color( QPalette::Active, QPalette::Background ), source.color( QPalette::Disabled, QPalette::Background ), 1.0-ratio ) );
+        out.setColor( QPalette::Highlight, KColorUtils::mix( source.color( QPalette::Active, QPalette::Highlight ), source.color( QPalette::Disabled, QPalette::Highlight ), 1.0-ratio ) );
+        out.setColor( QPalette::WindowText, KColorUtils::mix( source.color( QPalette::Active, QPalette::WindowText ), source.color( QPalette::Disabled, QPalette::WindowText ), 1.0-ratio ) );
+        out.setColor( QPalette::ButtonText, KColorUtils::mix( source.color( QPalette::Active, QPalette::ButtonText ), source.color( QPalette::Disabled, QPalette::ButtonText ), 1.0-ratio ) );
+        out.setColor( QPalette::Text, KColorUtils::mix( source.color( QPalette::Active, QPalette::Text ), source.color( QPalette::Disabled, QPalette::Text ), 1.0-ratio ) );
+        out.setColor( QPalette::Button, KColorUtils::mix( source.color( QPalette::Active, QPalette::Button ), source.color( QPalette::Disabled, QPalette::Button ), 1.0-ratio ) );
+        return out;
     }
 
     //____________________________________________________________________

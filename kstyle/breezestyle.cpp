@@ -43,6 +43,7 @@
 #include <QDial>
 #include <QDBusConnection>
 #include <QDockWidget>
+#include <QFormLayout>
 #include <QGraphicsView>
 #include <QGroupBox>
 #include <QLineEdit>
@@ -191,9 +192,18 @@ namespace Breeze
 
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
+            // change palette
+            widget->setPalette( _helper->framePalette( widget->palette() ) );
+
             // checkable group boxes
             if( groupBox->isCheckable() )
             { groupBox->setAttribute( Qt::WA_Hover ); }
+
+
+        } else if( qobject_cast<QTabWidget*>( widget ) )  {
+
+            // change palette
+            widget->setPalette( _helper->framePalette( widget->palette() ) );
 
         } else if( qobject_cast<QAbstractButton*>( widget ) && qobject_cast<QDockWidget*>( widget->parent() ) ) {
 
@@ -220,7 +230,7 @@ namespace Breeze
         } else if( qobject_cast<QDockWidget*>( widget ) ) {
 
             widget->setAutoFillBackground( false );
-            widget->setBackgroundRole( QPalette::NoRole );
+            widget->setPalette( _helper->framePalette( widget->palette() ) );
             widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
             addEventFilter( widget );
 
@@ -715,7 +725,7 @@ namespace Breeze
             if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
             {
 
-                const QPalette copy = _helper->mergePalettes( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
+                const QPalette copy = _helper->disabledPalette( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
                 return KStyle::drawItemText( painter, r, flags, copy, enabled, text, textRole );
 
             }
@@ -756,8 +766,7 @@ namespace Breeze
                 painter.setClipRegion( paintEvent->region() );
 
                 // define color and render
-                const QPalette& palette( dockWidget->palette() );
-                const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+                const QColor outline( _helper->frameOutlineColor( dockWidget->palette() ) );
                 _helper->renderFrame( &painter, dockWidget->rect(), QColor(), outline );
 
                 return false;
@@ -1805,9 +1814,9 @@ namespace Breeze
         { _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode ); }
 
         // render
-        const QColor color( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
+        const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
         const QColor outline( _helper->frameOutlineColor( option->palette, mouseOver, hasFocus, opacity, mode ) );
-        _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
+        _helper->renderFrame( painter, option->rect, background, outline, hasFocus );
 
         return true;
 
@@ -1827,10 +1836,10 @@ namespace Breeze
 
         // normal frame
         const QPalette& palette( option->palette );
-        const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
-        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+        const QColor background( palette.color( QPalette::Window ) );
+        const QColor outline( _helper->frameOutlineColor( palette ) );
 
-        _helper->renderFrame( painter, option->rect, color, outline );
+        _helper->renderFrame( painter, option->rect, background, outline );
 
         return true;
 
@@ -1882,9 +1891,9 @@ namespace Breeze
 
         // define colors
         const QPalette& palette( option->palette );
-        const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 ) );
-        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
-        _helper->renderTabWidgetFrame( painter, rect, color, outline, corners );
+        const QColor background( palette.color( QPalette::Window ) );
+        const QColor outline( _helper->frameOutlineColor( palette ) );
+        _helper->renderTabWidgetFrame( painter, rect, background, outline, corners );
 
         return true;
     }
@@ -1904,8 +1913,7 @@ namespace Breeze
 
         // get rect, orientation, palette
         const QRect rect( option->rect );
-        const QPalette& palette( option->palette );
-        const QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.25 ) );
+        const QColor outline( _helper->frameOutlineColor( option->palette ) );
 
         // setup painter
         painter->setBrush( Qt::NoBrush );
@@ -2048,9 +2056,9 @@ namespace Breeze
         const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
         const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
-        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+        const QColor shadow( _helper->shadowColor( palette ) );
         const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const QColor color( _helper->buttonPanelColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
         // render
         _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
@@ -2124,39 +2132,23 @@ namespace Breeze
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
         const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool sunken( flags & State_Sunken );
+        const bool sunken( enabled && ( flags & State_Sunken ) );
+        const bool active( ( flags & (State_On|State_NoChange) ) );
 
+        // checkbox state
         Helper::CheckBoxState state( Helper::CheckOff );
         if( flags & State_NoChange ) state =Helper:: CheckPartial;
         else if( flags & State_On ) state = Helper::CheckOn;
 
-        // color
-        const QPalette& palette( option->palette );
-        const QColor base( palette.color( QPalette::Window ) );
-        const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
-        const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->focusColor( palette ) );
-        const QColor hover( _helper->hoverColor( palette ) );
-        QColor color;
-
-        // update only mouse over state
+        // animation state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
+        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
-        // cannot use transparent colors because of the rendering of the shadow
-        if( !enabled ) color = disabled;
-        else if( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) )
-        {
-
-            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-            if( state != Helper::CheckOff ) color = KColorUtils::mix( active, hover, opacity );
-            else color = KColorUtils::mix( normal, hover, opacity );
-
-        } else if( mouseOver ) color = hover;
-        else if( state != Helper::CheckOff ) color = active;
-        else color = normal;
-
-        // shadow color
-        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+        // colors
+        const QPalette& palette( option->palette );
+        const QColor color( _helper->checkBoxMarkerColor( palette, mouseOver, enabled && active, opacity, mode  ) );
+        const QColor shadow( _helper->shadowColor( palette ) );
 
         // render
         _helper->renderCheckBox( painter, option->rect, color, shadow, sunken, state );
@@ -2176,33 +2168,15 @@ namespace Breeze
         const bool sunken( flags & State_Sunken );
         const bool checked( flags & State_On );
 
-        // color
-        const QPalette& palette( option->palette );
-        const QColor base( palette.color( QPalette::Window ) );
-        const QColor disabled( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.4 ) );
-        const QColor normal( KColorUtils::mix( base, palette.color( QPalette::WindowText ), 0.5 ) );
-        const QColor active( _helper->focusColor( palette ) );
-        const QColor hover( _helper->hoverColor( palette ) );
-        QColor color;
-
         // update only mouse over
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
+        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
-        // cannot use transparent colors because of the rendering of the shadow
-        if( !enabled ) color = disabled;
-        else if( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) )
-        {
-
-            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-            if( checked ) color = KColorUtils::mix( active, hover, opacity );
-            else color = KColorUtils::mix( normal, hover, opacity );
-
-        } else if( mouseOver ) color = hover;
-        else if( checked ) color = active;
-        else color = normal;
-
-        // shadow color
-        const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+        // colors
+        const QPalette& palette( option->palette );
+        const QColor color( _helper->checkBoxMarkerColor( palette, mouseOver, enabled && checked, opacity, mode  ) );
+        const QColor shadow( _helper->shadowColor( palette ) );
 
         // render
         _helper->renderRadioButton( painter, option->rect, color, shadow, sunken, checked );
@@ -3088,7 +3062,7 @@ namespace Breeze
 
         // color
         QColor color;
-        if( selected ) color = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::Base ), 0.3 );
+        if( selected ) color = palette.color( QPalette::Window );
         else {
 
             const QColor normal( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
@@ -3160,20 +3134,19 @@ namespace Breeze
             } else {
 
                 // read only comboboxes. Make it look like a button
+                const bool sunken( flags & ( State_On|State_Sunken ) );
 
                 // update animation state
                 // hover takes precedence over focus
                 _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver );
                 _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
-
                 const AnimationMode mode( _animations->lineEditEngine().buttonAnimationMode( widget ) );
                 const qreal opacity( _animations->lineEditEngine().buttonOpacity( widget ) );
 
-                const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+                // define colors
+                const QColor shadow( _helper->shadowColor( palette ) );
                 const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                const QColor color( _helper->buttonPanelColor( palette, mouseOver, hasFocus, opacity, mode ) );
-
-                const bool sunken( flags & ( State_On|State_Sunken ) );
+                const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
                 _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
 
@@ -3262,11 +3235,11 @@ namespace Breeze
         if( option->subControls & SC_SpinBoxFrame )
         {
 
-            const QColor color( palette.color( QPalette::Base ) );
+            const QColor background( palette.color( QPalette::Base ) );
             if( flat )
             {
 
-                painter->setBrush( color );
+                painter->setBrush( background );
                 painter->setPen( Qt::NoPen );
                 painter->drawRect( option->rect );
 
@@ -3283,7 +3256,7 @@ namespace Breeze
                     _animations->lineEditEngine().frameAnimationMode( widget ) ) );
 
                 // render
-                _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
+                _helper->renderFrame( painter, option->rect, background, outline, hasFocus );
             }
 
         }
@@ -3331,9 +3304,9 @@ namespace Breeze
             }
 
             // base color
-            const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+            const QColor grooveColor( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
 
-            if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, color );
+            if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, grooveColor );
             else {
 
                 // handle rect
@@ -3350,11 +3323,11 @@ namespace Breeze
 
                     QRect leftRect( grooveRect );
                     leftRect.setRight( handleRect.right()-1 );
-                    _helper->renderSliderGroove( painter, leftRect, reverseLayout ? color:highlight );
+                    _helper->renderSliderGroove( painter, leftRect, reverseLayout ? grooveColor:highlight );
 
                     QRect rightRect( grooveRect );
                     rightRect.setLeft( handleRect.left()+1 );
-                    _helper->renderSliderGroove( painter, rightRect, reverseLayout ? highlight:color );
+                    _helper->renderSliderGroove( painter, rightRect, reverseLayout ? highlight:grooveColor );
 
                 } else {
 
@@ -3364,7 +3337,7 @@ namespace Breeze
 
                     QRect bottomRect( grooveRect );
                     bottomRect.setTop( handleRect.top()+1 );
-                    _helper->renderSliderGroove( painter, bottomRect, color );
+                    _helper->renderSliderGroove( painter, bottomRect, grooveColor );
 
                 }
 
@@ -3380,33 +3353,22 @@ namespace Breeze
             QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
             handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
+            // handle state
             const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
+            const bool sunken( flags & (State_On|State_Sunken) );
 
-            // define colors
-            const QColor color( palette.color( QPalette::Button ) );
-            const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
-            QColor outline;
-
+            // animation state
             _animations->sliderEngine().updateState( widget, enabled && handleActive );
-            const bool animated( _animations->sliderEngine().isAnimated( widget ) );
+            const AnimationMode mode( _animations->sliderEngine().isAnimated( widget ) ? AnimationHover:AnimationNone );
             const qreal opacity( _animations->sliderEngine().opacity( widget ) );
 
-            const QColor hover( _helper->hoverColor( option->palette ) );
-            const QColor focus( _helper->focusColor( option->palette ) );
-            const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+            // define colors
+            const QColor background( palette.color( QPalette::Button ) );
+            const QColor outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            const QColor shadow( _helper->shadowColor( palette ) );
 
-            if( animated )
-            {
-
-                if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
-                else outline = KColorUtils::mix( defaultOutline, hover, opacity );
-
-            } else if( handleActive && mouseOver ) outline = hover;
-            else if( hasFocus ) outline = focus;
-            else outline = defaultOutline;
-
-            const bool sunken( flags & (State_On|State_Sunken) );
-            _helper->renderSliderHandle( painter, handleRect, color, outline, shadow, hasFocus, sunken );
+            // render
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
 
         }
 
@@ -3439,12 +3401,11 @@ namespace Breeze
             // groove rect
             QRect grooveRect( subControlRect( CC_Dial, sliderOption, SC_SliderGroove, widget ) );
 
-            // handle rect
-            // base color
-            const QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
+            // groove
+            const QColor grooveColor( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
 
             // render groove
-            _helper->renderDialGroove( painter, grooveRect, color );
+            _helper->renderDialGroove( painter, grooveRect, grooveColor );
 
             if( enabled )
             {
@@ -3471,35 +3432,23 @@ namespace Breeze
             QRect handleRect( subControlRect( CC_Dial, sliderOption, SC_DialHandle, widget ) );
             handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
-            // update animatiosn handle rect
-            _animations->dialEngine().setHandleRect( widget, handleRect );
+            // handle state
             const bool handleActive( mouseOver && handleRect.contains( _animations->dialEngine().position( widget ) ) );
+            const bool sunken( flags & (State_On|State_Sunken) );
 
-            // define colors
-            const QColor color( palette.color( QPalette::Button ) );
-            const QColor shadow( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
-            QColor outline;
-
+            // animation state
+            _animations->dialEngine().setHandleRect( widget, handleRect );
             _animations->dialEngine().updateState( widget, enabled && handleActive );
-            const bool animated( _animations->dialEngine().isAnimated( widget ) );
+            const AnimationMode mode( _animations->dialEngine().isAnimated( widget ) ? AnimationHover:AnimationNone );
             const qreal opacity( _animations->dialEngine().opacity( widget ) );
 
-            const QColor hover( _helper->hoverColor( option->palette ) );
-            const QColor focus( _helper->focusColor( option->palette ) );
-            const QColor defaultOutline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+            // define colors
+            const QColor background( palette.color( QPalette::Button ) );
+            const QColor outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            const QColor shadow( _helper->shadowColor( palette ) );
 
-            if( animated )
-            {
-
-                if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
-                else outline = KColorUtils::mix( defaultOutline, hover, opacity );
-
-            } else if( handleActive && mouseOver ) outline = hover;
-            else if( hasFocus ) outline = focus;
-            else outline = defaultOutline;
-
-            const bool sunken( flags & (State_On|State_Sunken) );
-            _helper->renderSliderHandle( painter, handleRect, color, outline, shadow, hasFocus, sunken );
+            // render
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
 
         }
 

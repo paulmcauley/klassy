@@ -58,9 +58,6 @@ namespace Breeze
         //! add alpha channel multiplier to color
         static QColor alphaColor( QColor color, qreal alpha );
 
-        //! merge active and inactive palettes based on ratio, for smooth enable state change transition
-        QPalette mergePalettes( const QPalette&, qreal ratio ) const;
-
         //!@name color utilities
         //@{
 
@@ -73,20 +70,40 @@ namespace Breeze
         { return _viewFocusBrush.brush( palette ).color(); }
 
         //! negative text color (used for close button)
-        QColor negetiveText( const QPalette& palette ) const
+        QColor negativeText( const QPalette& palette ) const
         { return _viewNegativeTextBrush.brush( palette ).color(); }
 
-        //@}
-
+        //! shadow
+        QColor shadowColor( const QPalette& palette ) const
+        { return alphaColor( palette.color( QPalette::Shadow ), 0.2 ); }
 
         //! frame outline color, using animations
-        QColor frameOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+
+        //! frame background color
+        QColor frameBackgroundColor( const QPalette& palette ) const
+        { return frameBackgroundColor( palette, palette.currentColorGroup() ); }
+
+        //! frame background color
+        QColor frameBackgroundColor( const QPalette&, QPalette::ColorGroup ) const;
+
+        //! return altered palette suitable for tinted frames
+        QPalette framePalette( const QPalette& ) const;
 
         //! button outline color, using animations
-        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
 
         //! button panel color, using animations
-        QColor buttonPanelColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
+
+        //! slider outline color, using animations
+        QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
+
+        //! checkbox marker, using animations
+        QColor checkBoxMarkerColor( const QPalette&, bool mouseOver, bool active, qreal opacity, AnimationMode ) const;
+
+        //! merge active and inactive palettes based on ratio, for smooth enable state change transition
+        QPalette disabledPalette( const QPalette&, qreal ratio ) const;
 
         //@}
 
