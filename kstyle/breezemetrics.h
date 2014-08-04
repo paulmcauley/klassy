@@ -115,7 +115,11 @@ namespace Breeze
         // list headers
         Header_MarginWidth = 8,
         Header_BoxTextSpace = 4,
-        Header_MarkSize = 10,
+        Header_ArrowSize = 10,
+
+        // tree view
+        ItemView_ArrowSize = 10,
+        ItemView_ItemMarginWidth = 4,
 
         // dock widget
         DockWidget_TitleMarginWidth = Frame_FrameWidth,

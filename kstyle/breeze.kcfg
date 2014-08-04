@@ -50,6 +50,11 @@
       <default>true</default>
     </entry>
 
+    <!-- tree views -->
+    <entry name="ViewDrawTreeBranchLines" type="Bool">
+      <default>true</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragEnabled" type="Bool">
       <default>true</default>

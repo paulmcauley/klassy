@@ -378,7 +378,7 @@ namespace Breeze
             case PM_ExclusiveIndicatorHeight: return CheckBox_Size;
 
             // list heaaders
-            case PM_HeaderMarkSize: return Metrics::Header_MarkSize;
+            case PM_HeaderMarkSize: return Metrics::Header_ArrowSize;
             case PM_HeaderMargin: return Metrics::Header_MarginWidth;
 
             // dock widget
@@ -552,11 +552,14 @@ namespace Breeze
             case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
             case CT_MenuItem: return menuItemSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
-            case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
 
             // tabbars
             case CT_TabWidget: return tabWidgetSizeFromContents( option, size, widget );
             case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
+
+            // item views
+            case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
+            case CT_ItemViewItem: return itemViewItemSizeFromContents( option, size, widget );
 
             // fallback
             default: return KStyle::sizeFromContents( element, option, size, widget );
@@ -643,6 +646,7 @@ namespace Breeze
             case PE_IndicatorArrowRight: fcn = &Style::drawIndicatorArrowRightPrimitive; break;
             case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
             case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
+            case PE_IndicatorBranch: fcn = &Style::drawIndicatorBranchPrimitive; break;
 
             // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
@@ -1015,7 +1019,7 @@ namespace Breeze
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return QRect();
 
         QRect arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
-        arrowRect.setLeft( arrowRect.right() - Metrics::Header_MarkSize );
+        arrowRect.setLeft( arrowRect.right() - Metrics::Header_ArrowSize );
 
         return handleRTL( option, arrowRect );
 
@@ -1033,7 +1037,7 @@ namespace Breeze
         QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
 
-        labelRect.adjust( 0, 0, -Metrics::Header_MarkSize-Metrics::Header_BoxTextSpace, 0 );
+        labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_BoxTextSpace, 0 );
         return handleRTL( option, labelRect );
 
     }
@@ -1954,13 +1958,24 @@ namespace Breeze
         if( horizontal )
         {
             // also add space for icon
-            contentsWidth += Metrics::Header_MarkSize + Metrics::Header_BoxTextSpace;
-            contentsHeight = qMax( contentsHeight, (int) Metrics::Header_MarkSize );
+            contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_BoxTextSpace;
+            contentsHeight = qMax( contentsHeight, (int) Metrics::Header_ArrowSize );
         }
 
         // update contents size, add margins and return
         const QSize size( contentsSize.expandedTo( QSize( contentsWidth, contentsHeight ) ) );
         return expandSize( size, Metrics::Header_MarginWidth );
+
+    }
+
+    //______________________________________________________________
+    QSize Style::itemViewItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
+        // call base class
+        QSize size( KStyle::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
+
+        // add margins
+        return expandSize( size, Metrics::ItemView_ItemMarginWidth );
 
     }
 
@@ -2211,8 +2226,9 @@ namespace Breeze
 
         // checkboxes and radio buttons
         if(
-            qobject_cast<const QCheckBox*>( widget ) ||
-            qobject_cast<const QRadioButton*>( widget ) )
+            ( qobject_cast<const QCheckBox*>( widget ) ||
+            qobject_cast<const QRadioButton*>( widget ) ) &&
+            option->rect.width() >= 2 )
         {
             painter->translate( 0, 2 );
             painter->setPen( _helper->focusColor( option->palette ) );
@@ -2511,6 +2527,84 @@ namespace Breeze
         _helper->renderSeparator( painter, rect, color, separatorIsVertical );
         return true;
 
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorBranchPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        const State& flags( option->state );
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+        //draw expander
+        int expanderAdjust = 0;
+        if( flags & State_Children )
+        {
+
+            // flags
+            const bool expanderOpen( flags & State_Open );
+            const bool enabled( flags & State_Enabled );
+            const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+
+            // expander rect
+            int expanderSize = qMin( rect.width(), rect.height() );
+            expanderSize = qMin( expanderSize, (int) Metrics::ItemView_ArrowSize );
+            expanderAdjust = expanderSize/2 + 1;
+            QRect arrowRect = centerRect( rect, expanderSize, expanderSize );
+
+            // get size from option
+            QPolygonF arrow;
+            if( expanderOpen ) arrow = genericArrow( ArrowDown, ArrowNormal );
+            else if( reverseLayout ) arrow = genericArrow( ArrowLeft, ArrowNormal );
+            else arrow = genericArrow( ArrowRight, ArrowNormal );
+
+            const qreal penThickness( 1.5 );
+            const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : palette.color( QPalette::Text ) );
+
+            // arrows
+            painter->save();
+            painter->setRenderHints( QPainter::Antialiasing );
+            painter->setPen( QPen( arrowColor, penThickness ) );
+            painter->translate( QRectF( arrowRect ).center() );
+            painter->drawPolyline( arrow );
+            painter->restore();
+
+        }
+
+        // tree branches
+        if( !StyleConfigData::viewDrawTreeBranchLines() ) return true;
+
+        const QPoint center( rect.center() );
+        const QColor lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setPen( lineColor );
+        if ( flags & ( State_Item | State_Children | State_Sibling ) )
+        {
+            const QLine line( QPoint( center.x(), rect.top() ), QPoint( center.x(), center.y() - expanderAdjust ) );
+            painter->drawLine( line );
+        }
+
+        //The right/left ( depending on dir ) line gets drawn if we have an item
+        if ( flags & State_Item )
+        {
+            const QLine line = reverseLayout ?
+                QLine( QPoint( rect.left(), center.y() ), QPoint( center.x() - expanderAdjust, center.y() ) ):
+                QLine( QPoint( center.x() + expanderAdjust, center.y() ), QPoint( rect.right(), center.y() ) );
+            painter->drawLine( line );
+
+        }
+
+        //The bottom if we have a sibling
+        if ( flags & State_Sibling )
+        {
+            const QLine line( QPoint( center.x(), center.y() + expanderAdjust ), QPoint( center.x(), rect.bottom() ) );
+            painter->drawLine( line );
+        }
+
+        return true;
     }
 
     //___________________________________________________________________________________
