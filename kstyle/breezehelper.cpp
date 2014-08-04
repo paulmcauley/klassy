@@ -328,11 +328,11 @@ namespace Breeze
             {
 
                 const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
+                painter->drawRoundedRect( baseRect, radius, radius );
 
             } else {
 
-                painter->drawRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+                painter->drawRect( baseRect );
 
             }
 
@@ -348,11 +348,11 @@ namespace Breeze
             {
 
                 const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
-                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), radius, radius );
+                painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), radius, radius );
 
             } else {
 
-                painter->drawRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+                painter->drawRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
 
             }
 
@@ -970,6 +970,9 @@ namespace Breeze
 
     }
 
+    //____________________________________________________________________
+    bool Helper::hasAlphaChannel( const QWidget* widget ) const
+    { return compositingActive() && widget && widget->testAttribute( Qt::WA_TranslucentBackground ); }
 
     #if HAVE_X11
 

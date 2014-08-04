@@ -46,6 +46,7 @@ namespace Breeze
     class FrameShadowFactory;
     class Helper;
     class Mnemonics;
+    class ShadowHelper;
     class WindowManager;
 
     class StylePlugin : public QStylePlugin
@@ -131,10 +132,8 @@ namespace Breeze
         //@{
 
         virtual bool eventFilter(QObject *, QEvent *);
-
-        //! dock widget
-        /*! needed to render proper frame */
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
+        bool eventFilterComboBoxContainer( QWidget*, QEvent* );
 
         //! install event filter to object, in a unique way
         void addEventFilter( QObject* object )
@@ -289,8 +288,8 @@ namespace Breeze
         { return true; }
 
         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -317,9 +316,9 @@ namespace Breeze
 //         bool drawIndicatorDockWidgetResizeHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget) const;
         bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPanelTipLabelPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelScrollAreaCornerPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawPanelTipLabelPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelItemViewItemPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawPanelLineEditPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorMenuCheckMarkPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -492,6 +491,9 @@ namespace Breeze
 
         //@}
 
+        // translucent background
+        void setTranslucentBackground( QWidget* ) const;
+
         private:
 
         //!@name scrollbar button types (for addLine and subLine )
@@ -502,6 +504,9 @@ namespace Breeze
 
         //! helper
         Helper* _helper;
+
+        //! shadow helper
+        ShadowHelper* _shadowHelper;
 
         //! animations
         Animations* _animations;

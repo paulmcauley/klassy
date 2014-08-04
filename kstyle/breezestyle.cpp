@@ -31,6 +31,7 @@
 #include "breezehelper.h"
 #include "breezemetrics.h"
 #include "breezemnemonics.h"
+#include "breezeshadowhelper.h"
 #include "breezestyleconfigdata.h"
 #include "breezewindowmanager.h"
 
@@ -48,6 +49,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QMenu>
 #include <QPainter>
 #include <QPushButton>
 #include <QRadioButton>
@@ -119,6 +121,7 @@ namespace Breeze
         _addLineButtons( SingleButton ),
         _subLineButtons( SingleButton ),
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
+        _shadowHelper( new ShadowHelper( this, *_helper ) ),
         _animations( new Animations( this ) ),
         _mnemonics( new Mnemonics( this ) ),
         _tabBarData( new BreezePrivate::TabBarData( this ) ),
@@ -147,7 +150,10 @@ namespace Breeze
 
     //______________________________________________________________
     Style::~Style( void )
-    { delete _helper; }
+    {
+        delete _shadowHelper;
+        delete _helper;
+    }
 
     //______________________________________________________________
     void Style::polish( QWidget* widget )
@@ -155,6 +161,7 @@ namespace Breeze
         if( !widget ) return;
 
         // register widget to animations
+        _shadowHelper->registerWidget( widget );
         _animations->registerWidget( widget );
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
@@ -219,22 +226,34 @@ namespace Breeze
 
         }
 
-
-        // remove opaque painting for scrollbars
         if( qobject_cast<QScrollBar*>( widget ) )
         {
-
+            // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
-        // add event filter
         } else if( qobject_cast<QDockWidget*>( widget ) ) {
 
+            // add event filter on dock widgets
+            // and alter palette
             widget->setAutoFillBackground( false );
             widget->setPalette( _helper->framePalette( widget->palette() ) );
             widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
             addEventFilter( widget );
 
+        } else if( qobject_cast<QMenu*>( widget ) ) {
+
+            setTranslucentBackground( widget );
+
+        } else if( widget->inherits( "QComboBoxPrivateContainer" ) ) {
+
+            addEventFilter( widget );
+            setTranslucentBackground( widget );
+
+        } else if( widget->inherits( "QTipLabel" ) ) {
+
+            setTranslucentBackground( widget );
         }
+
 
         // base class polishing
         KStyle::polish( widget );
@@ -246,6 +265,7 @@ namespace Breeze
     {
 
         // register widget to animations
+        _shadowHelper->unregisterWidget( widget );
         _animations->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _frameShadowFactory->unregisterWidget( widget );
@@ -267,6 +287,9 @@ namespace Breeze
             case PM_ComboBoxFrameWidth:
             case PM_SpinBoxFrameWidth:
             return Metrics::Frame_FrameWidth;
+
+            case PM_ToolTipLabelFrameWidth:
+            return Metrics::ToolTip_FrameWidth;
 
             // layout
             case PM_LayoutLeftMargin:
@@ -588,6 +611,8 @@ namespace Breeze
             // buttons
             case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
+            case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
+            case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
 
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
@@ -605,9 +630,10 @@ namespace Breeze
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameLineEdit: fcn = &Style::drawFramePrimitive; break;
+            case PE_FrameMenu: fcn = &Style::drawFrameMenuPrimitive; break;
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
-            case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
+            case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
             case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
 
             // fallback
@@ -772,6 +798,10 @@ namespace Breeze
         // dock widgets
         if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
 
+        // cast to QWidget
+        QWidget *widget = static_cast<QWidget*>( object );
+        if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
+
         // fallback
         return KStyle::eventFilter( object, event );
     }
@@ -779,35 +809,61 @@ namespace Breeze
     //____________________________________________________________________________
     bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
     {
-        switch( event->type() )
+        if( event->type() == QEvent::Paint && !dockWidget->isWindow() )
         {
-            case QEvent::Paint:
-            {
+            // create painter and clip
+            QPainter painter( dockWidget );
+            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+            painter.setClipRegion( paintEvent->region() );
 
-                // do nothing for detached docks
-                if( dockWidget->isWindow() ) return false;
-
-                // create painter and clip
-                QPainter painter( dockWidget );
-                QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
-                painter.setClipRegion( paintEvent->region() );
-
-                // define color and render
-                const QColor outline( _helper->frameOutlineColor( dockWidget->palette() ) );
-                _helper->renderFrame( &painter, dockWidget->rect(), QColor(), outline );
-
-                return false;
-            }
-
-            default: return false;
+            // define color and render
+            const QColor outline( _helper->frameOutlineColor( dockWidget->palette() ) );
+            _helper->renderFrame( &painter, dockWidget->rect(), QColor(), outline );
 
         }
+
+        return false;
+
+    }
+
+    //_________________________________________________________
+    bool Style::eventFilterComboBoxContainer( QWidget* widget, QEvent* event )
+    {
+        if( event->type() == QEvent::Paint )
+        {
+
+            QPainter painter( widget );
+            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+            painter.setClipRegion( paintEvent->region() );
+
+            const QRect rect( widget->rect() );
+            const QPalette& palette( widget->palette() );
+            const QColor background( _helper->frameBackgroundColor( palette ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
+
+            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+            if( hasAlpha )
+            {
+
+                painter.setCompositionMode( QPainter::CompositionMode_Source );
+                _helper->renderMenuFrame( &painter, rect, background, outline, true );
+
+            } else {
+
+                _helper->renderMenuFrame( &painter, rect, background, outline, false );
+
+            }
+
+        }
+
+        return false;
 
     }
 
     //_____________________________________________________________________
     void Style::configurationChanged()
     {
+
         // reparse breezerc
         StyleConfigData::self()->readConfig();
 
@@ -1933,6 +1989,31 @@ namespace Breeze
 
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawFrameMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QPalette& palette( option->palette );
+        const QColor background( _helper->frameBackgroundColor( palette ) );
+        const QColor outline( _helper->frameOutlineColor( palette ) );
+
+        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+        if( hasAlpha )
+        {
+
+            painter->setCompositionMode( QPainter::CompositionMode_Source );
+            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
+
+        } else {
+
+            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
+
+        }
+
+        return true;
+
+    }
+
     //______________________________________________________________
     bool Style::drawFrameGroupBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
@@ -2233,6 +2314,64 @@ namespace Breeze
         }
 
         return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawPanelMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // do nothing if menu is embedded in another widget
+        // this corresponds to having a transparent background
+        if( widget && !widget->isWindow() ) return true;
+
+        const QPalette& palette( option->palette );
+        const QColor background( _helper->frameBackgroundColor( palette ) );
+        const QColor outline( _helper->frameOutlineColor( palette ) );
+
+        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+        if( hasAlpha )
+        {
+
+            painter->setCompositionMode( QPainter::CompositionMode_Source );
+            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
+
+        } else {
+
+            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
+
+        }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawPanelTipLabelPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // force registration of widget
+        if( widget && widget->window() )
+        { _shadowHelper->registerWidget( widget->window(), true ); }
+
+        const QPalette& palette( option->palette );
+        const QColor background( palette.color( QPalette::ToolTipBase ) );
+        const QColor outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
+
+        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+        if( hasAlpha )
+        {
+
+            painter->setCompositionMode( QPainter::CompositionMode_Source );
+            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
+
+        } else {
+
+            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
+
+        }
+
+        return true;
+
     }
 
     //___________________________________________________________________________________
@@ -4020,6 +4159,18 @@ namespace Breeze
         }
 
         return a;
+
+    }
+
+    //____________________________________________________________________________________
+    void Style::setTranslucentBackground( QWidget* widget ) const
+    {
+        widget->setAttribute( Qt::WA_TranslucentBackground );
+
+        #ifdef Q_WS_WIN
+        // FramelessWindowHint is needed on windows to make WA_TranslucentBackground work properly
+        widget->setWindowFlags( widget->windowFlags() | Qt::FramelessWindowHint );
+        #endif
 
     }
 
