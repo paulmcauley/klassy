@@ -2443,7 +2443,7 @@ namespace Breeze
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
         const State& flags( option->state );
-        const bool separatorIsVertical( !(flags&State_Horizontal) );
+        const bool separatorIsVertical( flags&State_Horizontal );
         const QRect& rect( option->rect );
         const QColor color( _helper->separatorColor( option->palette ) );
 
