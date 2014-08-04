@@ -29,7 +29,6 @@
 #include "breezehelper.h"
 #include "breezemetrics.h"
 
-#include <QDebug>
 #include <QDockWidget>
 #include <QEvent>
 #include <QGuiApplication>
@@ -208,7 +207,6 @@ namespace Breeze
         if( !_shadowTiles.isValid() )
         {
 
-            qDebug() << "ShadowHelper::shadowTiles - creating ";
             const QPalette palette( QGuiApplication::palette() );
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
@@ -307,7 +305,6 @@ namespace Breeze
             _shadowTiles = TileSet( pixmap, shadowSize, shadowSize, shadowSize, shadowSize, shadowSize, shadowSize, 1, 1 );
 
         }
-        qDebug() << "ShadowHelper::shadowTiles - valid: " << _shadowTiles.isValid();
 
         return _shadowTiles;
 
@@ -414,7 +411,6 @@ namespace Breeze
     //______________________________________________
     const QVector<uint32_t>& ShadowHelper::createPixmapHandles( void )
     {
-        qDebug() << "ShadowHelper::createPixmapHandles";
 
         /*!
         shadow atom and property specification available at
@@ -432,7 +428,6 @@ namespace Breeze
         if( _pixmaps.empty() && _shadowTiles.isValid() )
         {
 
-            qDebug() << "installing pixmaps";
             _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 1 ) ) );
             _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 2 ) ) );
             _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 5 ) ) );
