@@ -228,6 +228,7 @@ namespace Breeze
 
         if( qobject_cast<QScrollBar*>( widget ) )
         {
+
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
