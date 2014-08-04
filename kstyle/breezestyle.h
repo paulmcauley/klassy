@@ -260,15 +260,17 @@ namespace Breeze
 
         //!@name sizeFromContents
         //@{
+        QSize defaultSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const
+        { return size; }
 
         QSize checkBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize lineEditSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 
 //         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-//         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
 //         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
@@ -340,7 +342,7 @@ namespace Breeze
 //         virtual bool drawCapacityBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -383,12 +385,20 @@ namespace Breeze
         //@}
 
         //! adjust rect based on provided margins
-        QRect insideMargin( const QRect& r, int main, int left = 0, int top = 0, int right = 0, int bottom = 0 ) const
-        { return r.adjusted( main+left, main+top, -main-right, -main-bottom ); }
+        QRect insideMargin( const QRect& r, int margin ) const
+        { return insideMargin( r, margin, margin ); }
+
+        //! adjust rect based on provided margins
+        QRect insideMargin( const QRect& r, int marginWidth, int marginHeight ) const
+        { return r.adjusted( marginWidth, marginHeight, -marginWidth, -marginHeight ); }
 
         //! expand size based on margins
-        QSize expandSize( const QSize& size, int main, int left = 0, int top = 0, int right = 0, int bottom = 0 ) const
-        { return size + QSize( 2*main+left+right, 2*main+top+bottom ); }
+        QSize expandSize( const QSize& size, int margin ) const
+        { return expandSize( size, margin, margin ); }
+
+        //! expand size based on margins
+        QSize expandSize( const QSize& size, int marginWidth, int marginHeight ) const
+        { return size + 2*QSize( marginWidth, marginHeight ); }
 
         //! returns true for vertical tabs
         bool isVerticalTab( const QStyleOptionTab* option ) const

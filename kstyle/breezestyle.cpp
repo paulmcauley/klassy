@@ -300,7 +300,24 @@ namespace Breeze
             case PM_ButtonShiftHorizontal: return 0;
             case PM_ButtonShiftVertical: return 0;
 
-            // tabbar
+            // menubars
+            case PM_MenuBarPanelWidth: return 0;
+            case PM_MenuBarHMargin: return 0;
+            case PM_MenuBarVMargin: return 0;
+            case PM_MenuBarItemSpacing: return 0;
+            case PM_MenuDesktopFrameWidth: return 0;
+
+            // toolbars
+            case PM_ToolBarFrameWidth: return 0;
+            case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleWidth;
+            case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
+            case PM_ToolBarExtensionExtent: return Metrics::ToolBar_ExtensionWidth;
+
+            // toolbar items
+            case PM_ToolBarItemMargin: return 0;
+            case PM_ToolBarItemSpacing: return Metrics::ToolBar_ItemSpacing;
+
+            // tabbars
             case PM_TabBarTabShiftVertical: return 0;
             case PM_TabBarTabShiftHorizontal: return 0;
             case PM_TabBarTabOverlap: return Metrics::TabBar_TabOverlap;
@@ -371,7 +388,7 @@ namespace Breeze
                     { return true; }
 
                     // mask out center
-                    mask->region -= option->rect.adjusted( 1,1,-1,-1 );
+                    mask->region -= insideMargin( option->rect, 1 );
 
                     return true;
                 }
@@ -494,10 +511,12 @@ namespace Breeze
             case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
             case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
+            case CT_MenuBar: return defaultSizeFromContents( option, size, widget );
+            case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
             case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
 
-            // tabbar
+            // tabbars
             case CT_TabWidget: return tabWidgetSizeFromContents( option, size, widget );
             case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
 
@@ -622,6 +641,9 @@ namespace Breeze
 
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
+
+            // menubars
+            case CE_MenuBarItem: fcn = &Style::drawMenuBarItemControl; break;
 
             // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
@@ -813,7 +835,7 @@ namespace Breeze
 
         // calculate text rect
         const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
-        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextShowMnemonic, buttonOption->text ) );
+        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|_mnemonics->textFlags(), buttonOption->text ) );
         return handleRTL( option, boundingRect );
 
     }
@@ -1145,8 +1167,7 @@ namespace Breeze
                 if( !groupBoxOption ) break;
 
                 // take out frame width
-                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-                rect.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth );
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 // get flags
                 const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
@@ -1174,8 +1195,7 @@ namespace Breeze
                 if( !groupBoxOption ) break;
 
                 // take out frame width
-                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-                rect.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth );
+                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 const bool emptyText( groupBoxOption->text.isEmpty() );
                 const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
@@ -1187,7 +1207,7 @@ namespace Breeze
                 {
                     const QFontMetrics fontMetrics = option->fontMetrics;
                     titleHeight = qMax( titleHeight, fontMetrics.height() );
-                    titleWidth += fontMetrics.size( Qt::TextShowMnemonic, groupBoxOption->text ).width();
+                    titleWidth += fontMetrics.size( _mnemonics->textFlags(), groupBoxOption->text ).width();
                 }
 
                 if( checkable )
@@ -1305,7 +1325,7 @@ namespace Breeze
                         rect.width() - Metrics::ComboBox_ButtonWidth,
                         rect.height() );
 
-                    // remove line editor margins
+                    // remove right side line editor margin
                     if( !flat )
                     { labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth ); }
 
@@ -1316,7 +1336,7 @@ namespace Breeze
                         rect.width() - Metrics::ComboBox_ButtonWidth - Metrics::ComboBox_BoxTextSpace,
                         rect.height() );
 
-                    // remove button margin
+                    // remove right side button margin
                     labelRect.adjust( Metrics::ComboBox_MarginWidth, Metrics::ComboBox_MarginWidth, 0, -Metrics::ComboBox_MarginWidth );
 
                 }
@@ -1383,7 +1403,7 @@ namespace Breeze
                     rect.width() - Metrics::SpinBox_ButtonWidth,
                     rect.height() );
 
-                // remove line editor margins
+                // remove right side line editor margins
                 if( !flat ) labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
 
                 return handleRTL( option, labelRect );
@@ -1574,7 +1594,7 @@ namespace Breeze
         QSize size( contentsSize );
 
         // add focus height
-        size += QSize( 0, 2*Metrics::CheckBox_FocusMarginWidth );
+        size = expandSize( size, 0, Metrics::CheckBox_FocusMarginWidth );
 
         // make sure there is enough height for indicator
         size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
@@ -1657,6 +1677,10 @@ namespace Breeze
     //______________________________________________________________
     QSize Style::pushButtonSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     { return expandSize( contentsSize, Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth ); }
+
+    //______________________________________________________________
+    QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
+    { return expandSize( contentsSize, Metrics::MenuBar_ItemMarginWidth, Metrics::MenuBar_ItemMarginHeight ); }
 
     //______________________________________________________________
     QSize Style::progressBarSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
@@ -1748,9 +1772,9 @@ namespace Breeze
         const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
 
         // need to reduce the size in the tabbar direction, due to a bug in QTabWidget::minimumSize
-        return contentsSize + ( verticalTabs ?
-            2*QSize( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
-            2*QSize( Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth ) );
+        return verticalTabs ?
+            expandSize( contentsSize, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
+            expandSize( contentsSize, Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth );
 
     }
 
@@ -1767,12 +1791,12 @@ namespace Breeze
         if( verticalTabs )
         {
 
-            size += QSize( 2*Metrics::TabBar_TabMarginHeight, 2*Metrics::TabBar_TabMarginWidth );
+            size = expandSize( size, Metrics::TabBar_TabMarginHeight, Metrics::TabBar_TabMarginWidth );
             size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
 
         } else {
 
-            size += QSize( 2*Metrics::TabBar_TabMarginWidth, 2*Metrics::TabBar_TabMarginHeight );
+            size = expandSize( size, Metrics::TabBar_TabMarginWidth, Metrics::TabBar_TabMarginHeight );
             size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
 
         }
@@ -2221,6 +2245,48 @@ namespace Breeze
         { painter->setPen( QPen( option->palette.color( QPalette::HighlightedText ), 1 ) ); }
 
         return false;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawMenuBarItemControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        if ( !menuItemOption ) return true;
+
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool active( enabled && (flags & State_Selected) );
+        const bool sunken( enabled && (flags & State_Sunken) );
+
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // get text rect
+        const int alignment( Qt::AlignCenter|_mnemonics->textFlags() );
+        const QRect textRect = option->fontMetrics.boundingRect( rect, alignment, menuItemOption->text );
+
+        // render text
+        drawItemText( painter, textRect, alignment, palette, enabled, menuItemOption->text, QPalette::WindowText );
+
+        // render outline
+        if( active || sunken )
+        {
+
+            QColor outlineColor;
+            if( sunken ) outlineColor = _helper->focusColor( palette );
+            else if( active ) outlineColor = _helper->hoverColor( palette );
+
+            painter->translate( 0, 2 );
+            painter->setBrush( Qt::NoBrush );
+            painter->setPen( outlineColor );
+            painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+
+        }
+
+        return true;
 
     }
 
@@ -2877,7 +2943,7 @@ namespace Breeze
         // tab option rect
         QRect rect = tabOption->rect;
         const bool verticalTabs( isVerticalTab( tabOption ) );
-        const int alignment = Qt::AlignCenter | Qt::TextHideMnemonic;
+        const int alignment = Qt::AlignCenter | _mnemonics->textFlags();
 
         // text rect
         QRect textRect( subElementRect(SE_TabBarTabText, option, widget) );
