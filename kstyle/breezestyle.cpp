@@ -2396,10 +2396,10 @@ namespace Breeze
 
         const QColor shadow( _helper->shadowColor( palette ) );
         const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
         // render
-        _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+        _helper->renderButtonFrame( painter, option->rect, background, outline, shadow, hasFocus, sunken );
 
         return true;
 
@@ -2483,7 +2483,7 @@ namespace Breeze
             // render as push button
             const QColor shadow( _helper->shadowColor( palette ) );
             const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
-            const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
 
             // adjust frame in case of menu
             if( hasIndicator )
@@ -2494,7 +2494,7 @@ namespace Breeze
             }
 
             // render
-            _helper->renderButtonFrame( painter, rect, color, outline, shadow, hasFocus, sunken );
+            _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
 
         } else {
 
@@ -2680,7 +2680,7 @@ namespace Breeze
                 // render as push button
                 const QColor shadow( _helper->shadowColor( palette ) );
                 const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
-                const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+                const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
 
                 QRect frameRect( rect );
                 painter->setClipRect( rect );
@@ -2688,7 +2688,7 @@ namespace Breeze
                 else frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
 
                 // render
-                _helper->renderButtonFrame( painter, frameRect, color, outline, shadow, hasFocus, sunken );
+                _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
 
                 // disable mouse over and adjust arrow color
                 mouseOver = false;
@@ -4128,7 +4128,7 @@ namespace Breeze
             } else {
 
                 // read only comboboxes. Make it look like a button
-                const bool sunken( state & ( State_On|State_Sunken ) );
+                const bool sunken( state & State_On );
 
                 // update animation state
                 // hover takes precedence over focus
@@ -4140,9 +4140,9 @@ namespace Breeze
                 // define colors
                 const QColor shadow( _helper->shadowColor( palette ) );
                 const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
-                _helper->renderButtonFrame( painter, option->rect, color, outline, shadow, hasFocus, sunken );
+                _helper->renderButtonFrame( painter, option->rect, background, outline, shadow, hasFocus, sunken );
 
             }
 
