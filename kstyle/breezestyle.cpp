@@ -353,7 +353,7 @@ namespace Breeze
             case PM_MenuDesktopFrameWidth: return 0;
 
             // menu buttons
-            case PM_MenuButtonIndicator: return Metrics::MenuItem_ArrowWidth;
+            case PM_MenuButtonIndicator: return Metrics::MenuButton_IndicatorWidth;
 
             // toolbars
             case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleWidth;
@@ -394,7 +394,7 @@ namespace Breeze
             // dock widget
             // return 0 here, since frame is handled directly in polish
             case PM_DockWidgetFrameWidth: return 0;
-            case PM_DockWidgetTitleMargin: return DockWidget_TitleMarginWidth;
+            case PM_DockWidgetTitleMargin: return Frame_FrameWidth;
 
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
@@ -533,6 +533,7 @@ namespace Breeze
         {
 
             case CC_GroupBox: return groupBoxSubControlRect( option, subControl, widget );
+            case CC_ToolButton: return toolButtonSubControlRect( option, subControl, widget );
             case CC_ComboBox: return comboBoxSubControlRect( option, subControl, widget );
             case CC_SpinBox: return spinBoxSubControlRect( option, subControl, widget );
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
@@ -706,7 +707,6 @@ namespace Breeze
             */
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
-            case CE_ToolButtonLabel: fcn = &Style::drawToolButtonLabelControl; break;
 
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
@@ -780,6 +780,7 @@ namespace Breeze
         switch( element )
         {
 
+            case CC_ToolButton: fcn = &Style::drawToolButtonComplexControl; break;
             case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
             case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
@@ -1371,9 +1372,59 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    QRect Style::toolButtonSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
 
+        // cast option and check
+        const QStyleOptionToolButton* toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
+        if( !toolButtonOption ) return KStyle::subControlRect( CC_ToolButton, option, subControl, widget );
+
+        const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
+        const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
+
+        // store rect
+        const QRect& rect( option->rect );
+        const int menuButtonWidth( Metrics::MenuButton_IndicatorWidth );
+        switch( subControl )
+        {
+            case SC_ToolButtonMenu:
+            {
+
+                // check fratures
+                if( !(hasPopupMenu || hasInlineIndicator ) ) return QRect();
+
+                // check features
+                QRect menuRect( rect );
+                menuRect.setLeft( rect.right() + 1 - menuButtonWidth );
+                if( hasInlineIndicator )
+                { menuRect.setTop( menuRect.bottom() + 1 - menuButtonWidth ); }
+
+                return handleRTL( option, menuRect );
+            }
+
+            case SC_ToolButton:
+            {
+
+                if( hasPopupMenu )
+                {
+
+                    QRect contentsRect( rect );
+                    contentsRect.setRight( rect.right() - menuButtonWidth );
+                    return handleRTL( option, contentsRect );
+
+                } else return rect;
+
+            }
+
+            default: return QRect();
+
+        }
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
         // cast option and check
         const QStyleOptionComboBox *comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
@@ -1400,22 +1451,22 @@ namespace Breeze
                 {
 
                     arrowRect = QRect(
-                        rect.right() - Metrics::ComboBox_ArrowButtonWidth,
+                        rect.right() - Metrics::MenuButton_IndicatorWidth,
                         rect.top(),
-                        Metrics::ComboBox_ArrowButtonWidth,
+                        Metrics::MenuButton_IndicatorWidth,
                         rect.height() );
 
                 } else {
 
                     arrowRect = QRect(
-                        rect.right() - Metrics::ComboBox_ArrowButtonWidth,
+                        rect.right() - Metrics::MenuButton_IndicatorWidth,
                         rect.top(),
-                        Metrics::ComboBox_ArrowButtonWidth,
+                        Metrics::MenuButton_IndicatorWidth,
                         rect.height() );
 
                 }
 
-                arrowRect = centerRect( arrowRect, Metrics::ComboBox_ArrowButtonWidth, Metrics::ComboBox_ArrowButtonWidth );
+                arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
                 return handleRTL( option, arrowRect );
 
             }
@@ -1434,7 +1485,7 @@ namespace Breeze
 
                     labelRect = QRect(
                         rect.left(), rect.top(),
-                        rect.width() - Metrics::ComboBox_ArrowButtonWidth,
+                        rect.width() - Metrics::MenuButton_IndicatorWidth,
                         rect.height() );
 
                     // remove right side line editor margin
@@ -1445,7 +1496,7 @@ namespace Breeze
 
                     labelRect = QRect(
                         rect.left(), rect.top(),
-                        rect.width() - Metrics::ComboBox_ArrowButtonWidth - Metrics::ComboBox_BoxTextSpace,
+                        rect.width() - Metrics::MenuButton_IndicatorWidth - Metrics::ComboBox_BoxTextSpace,
                         rect.height() );
 
                     // remove right side button margin
@@ -1748,10 +1799,10 @@ namespace Breeze
         else if( !editable ) size = expandSize( size, Metrics::ComboBox_MarginWidth );
 
         // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), (int)Metrics::ComboBox_ArrowButtonWidth ) );
+        size.setHeight( qMax( size.height(), (int)Metrics::MenuButton_IndicatorWidth ) );
 
         // add button width and spacing
-        size.rwidth() += Metrics::ComboBox_ArrowButtonWidth;
+        size.rwidth() += Metrics::MenuButton_IndicatorWidth;
         if( !editable ) size.rwidth() += Metrics::ComboBox_BoxTextSpace;
 
         // add framewidth if needed
@@ -1802,7 +1853,7 @@ namespace Breeze
         if( buttonOption->features & QStyleOptionButton::HasMenu )
         {
             size.rheight() += 2*Metrics::Button_MarginWidth;
-            size.setHeight( qMax( size.height(), int( Metrics::Button_ArrowButtonWidth ) ) );
+            size.setHeight( qMax( size.height(), int( Metrics::MenuButton_IndicatorWidth ) ) );
             size.rwidth() += Metrics::Button_MarginWidth;
 
             if( !( buttonOption->icon.isNull() && buttonOption->text.isEmpty() ) )
@@ -1843,23 +1894,14 @@ namespace Breeze
         // get relevant state flags
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
-        if( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup )
-        {
+        const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
+        const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
+        const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
 
-            // for menu toolbuttons, take out the right margin
-            // size.rwidth() -= Metrics::Button_MarginWidth;
+        if( hasInlineIndicator ) size.rwidth() += Metrics::ToolButton_BoxTextSpace;
+        size = expandSize( size, marginWidth );
 
-        } else if( toolButtonOption->features & QStyleOptionToolButton::HasMenu ) {
-
-            // for toolbuttons with inline indicator, add indicator size
-            size.rwidth() += Metrics::ToolButton_ArrowButtonWidth;
-
-        }
-
-        // add margins and frame width
-        if( autoRaise ) return expandSize( size, Metrics::ToolButton_MarginWidth );
-        else return expandSize( size, Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-
+        return size;
     }
 
     //______________________________________________________________
@@ -1908,11 +1950,11 @@ namespace Breeze
                 if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_BoxTextSpace;
 
                 // right column
-                const int rightColumnWidth = Metrics::MenuItem_ArrowWidth + Metrics::MenuItem_BoxTextSpace;
+                const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_BoxTextSpace;
                 size.rwidth() += leftColumnWidth + rightColumnWidth;
 
                 // make sure height is large enough for icon and arrow
-                size.setHeight( qMax( size.height(), (int) Metrics::MenuItem_ArrowWidth ) );
+                size.setHeight( qMax( size.height(), (int) Metrics::MenuButton_IndicatorWidth ) );
                 size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
                 size.setHeight( qMax( size.height(), (int) iconWidth ) );
                 return expandSize( size, Metrics::MenuItem_MarginWidth );
@@ -2298,7 +2340,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
         // store rect and palette
@@ -2309,32 +2351,11 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
-        const bool sunken( state & ( State_On|State_Sunken ) );
 
         // color
         QColor color;
-
-        // arrows painted in toolbuttons have no hover
-        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
-        if( toolButton )
-        {
-
-            const bool autoRaise( toolButton->autoRaise() );
-            mouseOver = false;
-            if( autoRaise )
-            {
-                if( hasFocus && sunken ) color = palette.color( QPalette::HighlightedText );
-                else color = palette.color( QPalette::WindowText );
-            } else if( hasFocus )  color = palette.color( QPalette::HighlightedText );
-            else color = palette.color( QPalette::ButtonText );
-
-        } else {
-
-            if( mouseOver ) color = _helper->hoverColor( palette );
-            else color = palette.color( QPalette::WindowText );
-
-        }
+        if( mouseOver ) color = _helper->hoverColor( palette );
+        else color = palette.color( QPalette::WindowText );
 
         // arrow
         const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
@@ -2510,8 +2531,7 @@ namespace Breeze
 
             /* need to check widget for popup mode, because option is not set properly */
             const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-            const bool hasIndicator( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
+            const bool hasPopupMenu( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
 
             // render as push button
             const QColor shadow( _helper->shadowColor( palette ) );
@@ -2519,11 +2539,11 @@ namespace Breeze
             const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
 
             // adjust frame in case of menu
-            if( hasIndicator )
+            if( hasPopupMenu )
             {
                 painter->setClipRect( rect );
-                if( reverseLayout ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                else rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+                rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+                rect = handleRTL( option, rect );
             }
 
             // render
@@ -2705,8 +2725,6 @@ namespace Breeze
 
             const bool hasFocus( enabled && ( state & State_HasFocus ) );
             const bool autoRaise( state & State_AutoRaise );
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-
             if( !autoRaise )
             {
 
@@ -2717,8 +2735,8 @@ namespace Breeze
 
                 QRect frameRect( rect );
                 painter->setClipRect( rect );
-                if( reverseLayout ) frameRect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                else frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+                frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+                frameRect = handleRTL( option, frameRect );
 
                 // render
                 _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
@@ -2870,8 +2888,8 @@ namespace Breeze
 
             // define rect
             QRect arrowRect( contentsRect );
-            arrowRect.setLeft( contentsRect.right() - Metrics::Button_ArrowButtonWidth );
-            arrowRect = centerRect( arrowRect, Metrics::Button_ArrowButtonWidth, Metrics::Button_ArrowButtonWidth );
+            arrowRect.setLeft( contentsRect.right() - Metrics::MenuButton_IndicatorWidth );
+            arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
 
             contentsRect.setRight( arrowRect.left() - Metrics::Button_BoxTextSpace - 1  );
             contentsRect.adjust( Metrics::Button_MarginWidth, Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth );
@@ -2955,42 +2973,6 @@ namespace Breeze
             drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, textRole );
         }
 
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawToolButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        const QStyleOptionToolButton* buttonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
-        if( !buttonOption ) return false;
-
-        // need to alter palette for focused buttons
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
-        const bool autoRaise( state & State_AutoRaise );
-
-        QPalette::ColorRole textRole;
-        if( autoRaise )
-        {
-
-            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
-            else textRole = QPalette::WindowText;
-
-        } else if( hasFocus ) textRole = QPalette::HighlightedText;
-        else textRole = QPalette::ButtonText;
-
-        // copy option and alter palette
-        QStyleOptionToolButton copy( *buttonOption );
-        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
-        copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
-
-        // call base class method
-        KStyle::drawControl( CE_ToolButtonLabel, &copy, painter, widget );
         return true;
 
     }
@@ -3179,7 +3161,7 @@ namespace Breeze
         }
 
         // arrow
-        QRect arrowRect( contentsRect.right() - Metrics::MenuItem_ArrowWidth, contentsRect.top() + (contentsRect.height()-Metrics::MenuItem_ArrowWidth)/2, Metrics::MenuItem_ArrowWidth, Metrics::MenuItem_ArrowWidth );
+        QRect arrowRect( contentsRect.right() - Metrics::MenuButton_IndicatorWidth, contentsRect.top() + (contentsRect.height()-Metrics::MenuButton_IndicatorWidth)/2, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
         contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_BoxTextSpace - 1 );
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
         {
@@ -4120,7 +4102,7 @@ namespace Breeze
         const QRect buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
 
         // get rectangle and adjust to properly accounts for buttons
-        QRect rect( insideMargin( dockWidgetOption->rect, DockWidget_TitleMarginWidth ) );
+        QRect rect( insideMargin( dockWidgetOption->rect, Frame_FrameWidth ) );
         if( verticalTitleBar )
         {
 
@@ -4179,6 +4161,97 @@ namespace Breeze
 
 
     }
+
+    //______________________________________________________________
+    bool Style::drawToolButtonComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
+        if( !toolButtonOption ) return false;
+
+        // need to alter palette for focused buttons
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && (option->state & State_HasFocus) );
+        const bool autoRaise( state & State_AutoRaise );
+
+        // define text role for label and arrow
+        QPalette::ColorRole textRole;
+        if( autoRaise )
+        {
+
+            if( sunken && !mouseOver ) textRole = QPalette::HighlightedText;
+            else textRole = QPalette::WindowText;
+
+        } else if( hasFocus && !mouseOver ) textRole = QPalette::HighlightedText;
+        else textRole = QPalette::ButtonText;
+
+        const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
+        const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
+
+        const QRect buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
+        const QRect menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
+
+        // frame
+        if( toolButtonOption->subControls & SC_ToolButton )
+        {
+            // get relevant rect
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.rect = buttonRect;
+
+            drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
+        }
+
+        // arrow
+        if( toolButtonOption->subControls & SC_ToolButtonMenu )
+        {
+
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.rect = menuRect;
+            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+            if( !autoRaise )
+            { drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget ); }
+
+            copy.state &= ~State_MouseOver;
+            drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
+
+        } else if( hasInlineIndicator ) {
+
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.rect = menuRect;
+            copy.state &= ~State_MouseOver;
+            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+            drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
+
+        }
+
+        // contents
+        {
+
+            // define contents rect
+            QRect contentsRect( buttonRect );
+            const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
+            contentsRect = insideMargin( contentsRect, marginWidth );
+            if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
+
+            // copy option, adjust rect and palette
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.rect = contentsRect;
+            copy.palette.setColor( QPalette::Text, option->palette.color( textRole ) );
+            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+            copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
+
+            // render
+            drawControl( CE_ToolButtonLabel, &copy, painter, widget);
+
+        }
+
+        return true;
+    }
+
     //______________________________________________________________
     bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -4304,11 +4377,11 @@ namespace Breeze
             } else if( flat )  {
 
                 if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::WindowText );
-                else if( hasFocus && sunken ) arrowColor = palette.color( QPalette::HighlightedText );
+                else if( hasFocus && !mouseOver && sunken ) arrowColor = palette.color( QPalette::HighlightedText );
                 else arrowColor = palette.color( QPalette::WindowText );
 
             } else if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::ButtonText );
-            else if( hasFocus ) arrowColor = palette.color( QPalette::HighlightedText );
+            else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
             else arrowColor = palette.color( QPalette::ButtonText );
 
             // render arrow
@@ -4340,7 +4413,7 @@ namespace Breeze
         const QPalette& palette( option->palette );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( state & State_HasFocus );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
         const bool flat( !spinBoxOption->frame );
 
         if( option->subControls & SC_SpinBoxFrame )
