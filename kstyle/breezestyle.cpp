@@ -2301,11 +2301,16 @@ namespace Breeze
     bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // store rect and palette
         const QRectF rect( option->rect );
         const QPalette& palette( option->palette );
+
+        // store state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
+        const bool sunken( state & ( State_On|State_Sunken ) );
 
         // color
         QColor color;
@@ -2315,8 +2320,13 @@ namespace Breeze
         if( toolButton )
         {
 
+            const bool autoRaise( toolButton->autoRaise() );
             mouseOver = false;
-            if( toolButton->autoRaise() ) color = palette.color( QPalette::WindowText );
+            if( autoRaise )
+            {
+                if( hasFocus && sunken ) color = palette.color( QPalette::HighlightedText );
+                else color = palette.color( QPalette::WindowText );
+            } else if( hasFocus )  color = palette.color( QPalette::HighlightedText );
             else color = palette.color( QPalette::ButtonText );
 
         } else {
