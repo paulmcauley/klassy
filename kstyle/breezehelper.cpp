@@ -178,13 +178,48 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor outline;
+
+        // hover takes precedence over focus
+        if( mode == AnimationHover )
+        {
+
+            const QColor hover( hoverColor( palette ) );
+            const QColor focus( focusColor( palette ) );
+            if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+            else outline = alphaColor( hover, opacity );
+
+        } else if( mouseOver ) {
+
+            outline = hoverColor( palette );
+
+        } else if( mode == AnimationFocus ) {
+
+            const QColor focus( focusColor( palette ) );
+            outline = alphaColor( focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focusColor( palette );
+
+        }
+
+        return outline;
+
+    }
+
+    //____________________________________________________________________
     QColor Helper::sliderOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
         QColor outline( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.5 ) );
 
         // hover takes precedence over focus
-        if( mode == AnimationHover ) {
+        if( mode == AnimationHover )
+        {
 
             const QColor hover( hoverColor( palette ) );
             const QColor focus( focusColor( palette ) );
@@ -418,6 +453,44 @@ namespace Breeze
         {
             const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
             painter->setPen( QPen( outline, 1 ) );
+            painter->setBrush( Qt::NoBrush );
+            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+            painter->drawRoundedRect( outlineRect, radius, radius );
+
+        }
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderToolButtonFrame(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, bool sunken ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // do nothing for invalid color
+        if( !color.isValid() ) return;
+
+        const QRectF baseRect( rect );
+
+        if( sunken )
+        {
+
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+
+            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
+            painter->drawRoundedRect( baseRect, radius, radius );
+
+        } else {
+
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.0 );
+
+            painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
             const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
             painter->drawRoundedRect( outlineRect, radius, radius );

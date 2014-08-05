@@ -102,6 +102,9 @@ namespace Breeze
         //! button panel color, using animations
         QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
+        //! tool button color
+        QColor toolButtonColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+
         //! slider outline color, using animations
         QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
@@ -130,6 +133,9 @@ namespace Breeze
 
         //! button frame
         void renderButtonFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+
+        //! toolbutton frame
+        void renderToolButtonFrame( QPainter*, const QRect&, const QColor& color, bool sunken ) const;
 
         //! corner enumeration, needed for tabbar tabs
         enum Corner
