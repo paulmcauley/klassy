@@ -969,8 +969,8 @@ namespace Breeze
         if( !progressBarOption ) return option->rect;
 
         // get direction
-        const State& flags( option->state );
-        const bool horizontal( flags&State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state&State_Horizontal );
         const bool textVisible( progressBarOption->textVisible );
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
@@ -1009,8 +1009,8 @@ namespace Breeze
         if( !( progressBarOption && progressBarOption->textVisible ) ) return QRect();
 
         // get direction
-        const State& flags( option->state );
-        const bool horizontal( flags&State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state&State_Horizontal );
 
         QRect rect( option->rect );
         if( horizontal ) rect.setHeight( rect.height() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
@@ -1277,7 +1277,7 @@ namespace Breeze
                 // take out frame width
                 rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
-                // get flags
+                // get state
                 const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
                 const bool emptyText( groupBoxOption->text.isEmpty() );
 
@@ -1531,8 +1531,8 @@ namespace Breeze
     {
 
         const QRect& r = option->rect;
-        const State& flags( option->state );
-        const bool horizontal( flags&State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state&State_Horizontal );
 
         switch ( subControl )
         {
@@ -1565,9 +1565,9 @@ namespace Breeze
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return KStyle::subControlRect( CC_ScrollBar, option, subControl, widget );
 
-        // get relevant flags
-        const State& flags( option->state );
-        const bool horizontal( flags&State_Horizontal );
+        // get relevant state
+        const State& state( option->state );
+        const bool horizontal( state&State_Horizontal );
 
         switch ( subControl )
         {
@@ -1923,8 +1923,8 @@ namespace Breeze
         QSize size( contentsSize );
 
         // get direction
-        const State& flags( option->state );
-        const bool horizontal( flags&State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state&State_Horizontal );
 
         if( horizontal ) {
 
@@ -2047,21 +2047,21 @@ namespace Breeze
     bool Style::drawFramePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const State& flags( option->state );
+        const State& state( option->state );
 
         // do nothing for flat frames
         const bool isTitleWidget( widget && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) );
 
-        if( !isTitleWidget && !( flags & (State_Sunken | State_Raised ) ) ) return true;
+        if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
 
         const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
             ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
 
         const QPalette& palette( option->palette );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && isInputWidget && ( flags&State_MouseOver ) );
-        const bool hasFocus( enabled && ( flags&State_HasFocus ) );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && isInputWidget && ( state&State_MouseOver ) );
+        const bool hasFocus( enabled && ( state&State_HasFocus ) );
 
         // focus takes precedence over mouse over
         _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
@@ -2264,9 +2264,9 @@ namespace Breeze
 
         const QRectF rect( option->rect );
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         // color
         QColor color;
@@ -2289,15 +2289,15 @@ namespace Breeze
     bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
         const QStyleOptionHeader *headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        const State& flags( option->state );
+        const State& state( option->state );
 
         // arrow orientation
         ArrowOrientation orientation( ArrowNone );
-        if( flags&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
-        else if( flags&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
+        if( state&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
+        else if( state&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
         if( orientation == ArrowNone ) return true;
 
-        // flags, rect and palette
+        // state, rect and palette
         const QRectF& rect( option->rect );
         const QPalette& palette( option->palette );
 
@@ -2320,11 +2320,11 @@ namespace Breeze
     bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
-        const bool sunken( flags & ( State_On|State_Sunken ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
+        const bool sunken( state & ( State_On|State_Sunken ) );
         QPalette palette( option->palette );
 
         // update button color from palette in case button is default
@@ -2496,16 +2496,16 @@ namespace Breeze
     {
 
         // get rect
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool sunken( enabled && ( flags & State_Sunken ) );
-        const bool active( ( flags & (State_On|State_NoChange) ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool sunken( enabled && ( state & State_Sunken ) );
+        const bool active( ( state & (State_On|State_NoChange) ) );
 
         // checkbox state
-        Helper::CheckBoxState state( Helper::CheckOff );
-        if( flags & State_NoChange ) state =Helper:: CheckPartial;
-        else if( flags & State_On ) state = Helper::CheckOn;
+        Helper::CheckBoxState checkBoxState( Helper::CheckOff );
+        if( state & State_NoChange ) checkBoxState = Helper::CheckPartial;
+        else if( state & State_On ) checkBoxState = Helper::CheckOn;
 
         // animation state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
@@ -2518,7 +2518,7 @@ namespace Breeze
         const QColor shadow( _helper->shadowColor( palette ) );
 
         // render
-        _helper->renderCheckBox( painter, option->rect, color, shadow, sunken, state );
+        _helper->renderCheckBox( painter, option->rect, color, shadow, sunken, checkBoxState );
 
         return true;
 
@@ -2529,11 +2529,11 @@ namespace Breeze
     {
 
         // get rect
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool sunken( flags & State_Sunken );
-        const bool checked( flags & State_On );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool sunken( state & State_Sunken );
+        const bool checked( state & State_On );
 
         // update only mouse over
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
@@ -2559,8 +2559,8 @@ namespace Breeze
         // do nothing if disabled from options
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
-        const State& flags( option->state );
-        const bool separatorIsVertical( flags&State_Horizontal );
+        const State& state( option->state );
+        const bool separatorIsVertical( state&State_Horizontal );
         const QRect& rect( option->rect );
         const QColor color( _helper->separatorColor( option->palette ) );
 
@@ -2573,7 +2573,7 @@ namespace Breeze
     bool Style::drawIndicatorBranchPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const State& flags( option->state );
+        const State& state( option->state );
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
@@ -2581,13 +2581,13 @@ namespace Breeze
 
         //draw expander
         int expanderAdjust = 0;
-        if( flags & State_Children )
+        if( state & State_Children )
         {
 
-            // flags
-            const bool expanderOpen( flags & State_Open );
-            const bool enabled( flags & State_Enabled );
-            const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+            // state
+            const bool expanderOpen( state & State_Open );
+            const bool enabled( state & State_Enabled );
+            const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
             // expander rect
             int expanderSize = qMin( rect.width(), rect.height() );
@@ -2621,14 +2621,14 @@ namespace Breeze
         const QColor lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( lineColor );
-        if ( flags & ( State_Item | State_Children | State_Sibling ) )
+        if ( state & ( State_Item | State_Children | State_Sibling ) )
         {
             const QLine line( QPoint( center.x(), rect.top() ), QPoint( center.x(), center.y() - expanderAdjust ) );
             painter->drawLine( line );
         }
 
         //The right/left ( depending on dir ) line gets drawn if we have an item
-        if ( flags & State_Item )
+        if ( state & State_Item )
         {
             const QLine line = reverseLayout ?
                 QLine( QPoint( rect.left(), center.y() ), QPoint( center.x() - expanderAdjust, center.y() ) ):
@@ -2638,7 +2638,7 @@ namespace Breeze
         }
 
         //The bottom if we have a sibling
-        if ( flags & State_Sibling )
+        if ( state & State_Sibling )
         {
             const QLine line( QPoint( center.x(), center.y() + expanderAdjust ), QPoint( center.x(), rect.bottom() ) );
             painter->drawLine( line );
@@ -2661,9 +2661,9 @@ namespace Breeze
 
         // palette
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool sunken( ( flags & State_On ) || ( flags & State_Sunken ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
 
@@ -2785,10 +2785,10 @@ namespace Breeze
         const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if ( !menuItemOption ) return true;
 
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool selected( enabled && (flags & State_Selected) );
-        const bool sunken( enabled && (flags & State_Sunken) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool selected( enabled && (state & State_Selected) );
+        const bool sunken( enabled && (state & State_Sunken) );
 
         const QPalette& palette( option->palette );
         const QRect& rect( option->rect );
@@ -2862,10 +2862,10 @@ namespace Breeze
         }
 
         // store state
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool selected( enabled && (flags & State_Selected) );
-        const bool sunken( enabled && (flags & (State_On|State_Sunken) ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool selected( enabled && (state & State_Selected) );
+        const bool sunken( enabled && (state & (State_On|State_Sunken) ) );
 
         // define relevant rectangles
         // checkbox
@@ -3118,8 +3118,8 @@ namespace Breeze
 
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags&State_Enabled );
+        const State& state( option->state );
+        const bool enabled( state&State_Enabled );
 
         const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
@@ -3160,13 +3160,13 @@ namespace Breeze
 
         // define handle rect
         QRect handleRect;
-        const State& flags( option->state );
-        const bool horizontal( flags & State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state & State_Horizontal );
         if( horizontal ) handleRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
         else handleRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
 
-        const bool enabled( flags&State_Enabled );
-        const bool mouseOver( enabled && ( flags&State_MouseOver ) );
+        const bool enabled( state&State_Enabled );
+        const bool mouseOver( enabled && ( state&State_MouseOver ) );
 
         QWidget* parent( scrollBarParent( widget ) );
         const bool focus( enabled && parent && parent->hasFocus() );
@@ -3228,8 +3228,8 @@ namespace Breeze
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if ( !sliderOption ) return true;
 
-        const State& flags( option->state );
-        const bool horizontal( flags & State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state & State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
@@ -3301,11 +3301,11 @@ namespace Breeze
 
         const QPalette& palette( option->palette );
         const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        const State& flags( option->state );
+        const State& state( option->state );
 
         // define tiles and adjust rect
         QRect backgroundRect;
-        const bool horizontal( flags & State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
         const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
 
         if( horizontal )
@@ -3341,8 +3341,8 @@ namespace Breeze
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if ( !sliderOption ) return true;
 
-        const State& flags( option->state );
-        const bool horizontal( flags & State_Horizontal );
+        const State& state( option->state );
+        const bool horizontal( state & State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // colors
@@ -3418,11 +3418,11 @@ namespace Breeze
 
         const QPalette& palette( option->palette );
         const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        const State& flags( option->state );
+        const State& state( option->state );
 
         // define tiles and adjust rect
         QRect backgroundRect;
-        const bool horizontal( flags & State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
         const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
 
         if( horizontal )
@@ -3505,10 +3505,10 @@ namespace Breeze
 
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool sunken( enabled && ( flags & (State_On|State_Sunken) ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool sunken( enabled && ( state & (State_On|State_Sunken) ) );
 
         const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return true;
@@ -3629,9 +3629,9 @@ namespace Breeze
         KStyle::drawControl( CE_TabBarTabLabel, option, painter, widget );
 
         // check focus
-        const State& flags( option->state );
-        const bool hasFocus( flags & State_HasFocus );
-        const bool selected( flags & State_Selected );
+        const State& state( option->state );
+        const bool hasFocus( state & State_HasFocus );
+        const bool selected( state & State_Selected );
         if( !( hasFocus && selected ) ) return true;
 
         // code is copied from QCommonStyle, but adds focus
@@ -3696,12 +3696,12 @@ namespace Breeze
         const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
         if( !tabOption ) return true;
 
-        // palette and flags
+        // palette and state
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool selected( flags & State_Selected );
-        const bool mouseOver( enabled && !selected && ( flags & State_MouseOver ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool selected( state & State_Selected );
+        const bool mouseOver( enabled && !selected && ( state & State_MouseOver ) );
 
         // check if tab is being dragged
         const bool isDragged( widget && selected && painter->device() != widget );
@@ -3732,7 +3732,7 @@ namespace Breeze
         isFirst &= !isRightOfSelected;
         isLast &= !isLeftOfSelected;
 
-        // swap flags based on reverse layout, so that they become layout independent
+        // swap state based on reverse layout, so that they become layout independent
         const bool reverseLayout( option->direction == Qt::RightToLeft );
         const bool verticalTabs( isVerticalTab( tabOption ) );
         if( reverseLayout && !verticalTabs )
@@ -3857,8 +3857,8 @@ namespace Breeze
         if ( !dockWidgetOption ) return true;
 
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // cast to v2 to check vertical bar
@@ -3935,11 +3935,11 @@ namespace Breeze
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return true;
 
-        const State& flags( option->state );
+        const State& state( option->state );
         const QPalette& palette( option->palette );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool hasFocus( flags & State_HasFocus );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( state & State_HasFocus );
         const bool editable( comboBoxOption->editable );
         const bool flat( editable && !comboBoxOption->frame );
 
@@ -3978,7 +3978,7 @@ namespace Breeze
             } else {
 
                 // read only comboboxes. Make it look like a button
-                const bool sunken( flags & ( State_On|State_Sunken ) );
+                const bool sunken( state & ( State_On|State_Sunken ) );
 
                 // update animation state
                 // hover takes precedence over focus
@@ -4069,11 +4069,11 @@ namespace Breeze
         const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return true;
 
-        const State& flags( option->state );
+        const State& state( option->state );
         const QPalette& palette( option->palette );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool hasFocus( flags & State_HasFocus );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( state & State_HasFocus );
         const bool flat( !spinBoxOption->frame );
 
         if( option->subControls & SC_SpinBoxFrame )
@@ -4120,10 +4120,10 @@ namespace Breeze
         if( !sliderOption ) return true;
 
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
         // do not render tickmarks
         if( sliderOption->subControls & SC_SliderTickmarks )
@@ -4199,7 +4199,7 @@ namespace Breeze
 
             // handle state
             const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
-            const bool sunken( flags & (State_On|State_Sunken) );
+            const bool sunken( state & (State_On|State_Sunken) );
 
             // animation state
             _animations->sliderEngine().updateState( widget, enabled && handleActive );
@@ -4228,10 +4228,10 @@ namespace Breeze
         if( !sliderOption ) return true;
 
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
-        const bool hasFocus( enabled && ( flags & State_HasFocus ) );
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
         // do not render tickmarks
         if( sliderOption->subControls & SC_DialTickmarks )
@@ -4277,7 +4277,7 @@ namespace Breeze
 
             // handle state
             const bool handleActive( mouseOver && handleRect.contains( _animations->dialEngine().position( widget ) ) );
-            const bool sunken( flags & (State_On|State_Sunken) );
+            const bool sunken( state & (State_On|State_Sunken) );
 
             // animation state
             _animations->dialEngine().setHandleRect( widget, handleRect );
@@ -4343,10 +4343,10 @@ namespace Breeze
     {
 
         const QPalette& palette( option->palette );
-        const State& flags( option->state );
+        const State& state( option->state );
 
         // enable state
-        bool enabled( flags & State_Enabled );
+        bool enabled( state & State_Enabled );
 
         // check steps enable step
         const bool atLimit(
@@ -4357,7 +4357,7 @@ namespace Breeze
         enabled &= !atLimit;
 
         // update mouse-over effect
-        const bool mouseOver( enabled && ( flags & State_MouseOver ) );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         // check animation state
         const bool subControlHover( enabled && mouseOver && ( option->activeSubControls & subControl ) );
