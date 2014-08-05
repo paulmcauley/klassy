@@ -232,6 +232,16 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
+        } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
+
+            // make sure scrollbar background role matches viewport
+            QWidget* viewport( scrollArea->viewport() );
+            QScrollBar* scrollBar;
+
+            // make sure scrollbar background color matches
+            if( viewport && ( scrollBar = scrollArea->verticalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
+            if( viewport && ( scrollBar = scrollArea->horizontalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
+
         } else if( qobject_cast<QToolButton*>( widget ) ) {
 
             /*
@@ -630,6 +640,10 @@ namespace Breeze
             case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
 
+            // scroll areas
+            case PE_PanelScrollAreaCorner: fcn = &Style::drawPanelScrollAreaCornerPrimitive; break;
+
+
             // menus
             case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
 
@@ -692,6 +706,9 @@ namespace Breeze
 
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
+
+            // menu bars
+            case CE_MenuBarEmptyArea: fcn = &Style::emptyControl; break;
 
             // menubar items
             case CE_MenuBarItem: fcn = &Style::drawMenuBarItemControl; break;
@@ -763,6 +780,7 @@ namespace Breeze
             case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
             case CC_Dial: fcn = &Style::drawDialComplexControl; break;
+            case CC_ScrollBar: fcn = &Style::drawScrollBarComplexControl; break;
 
             // fallback
             default: break;
@@ -2394,6 +2412,27 @@ namespace Breeze
         return true;
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawPanelScrollAreaCornerPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // make sure background role matches viewport
+        const QAbstractScrollArea* scrollArea;
+        if( ( scrollArea = qobject_cast<const QAbstractScrollArea*>( widget ) ) && scrollArea->viewport() )
+        {
+
+            painter->setBrush( option->palette.color( scrollArea->viewport()->backgroundRole() ) );
+            painter->setPen( Qt::NoPen );
+            painter->drawRect( option->rect );
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
     //___________________________________________________________________________________
     bool Style::drawPanelMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -4180,7 +4219,6 @@ namespace Breeze
         return true;
     }
 
-
     //______________________________________________________________
     bool Style::drawDialComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -4257,6 +4295,22 @@ namespace Breeze
 
         }
 
+        return true;
+    }
+
+    //______________________________________________________________
+    bool Style::drawScrollBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        if( widget )
+        {
+            painter->setBrush( option->palette.color( widget->backgroundRole() ) );
+            painter->setPen( Qt::NoPen );
+            painter->drawRect( option->rect );
+        }
+
+        // call base class primitive
+        KStyle::drawComplexControl( CC_ScrollBar, option, painter, widget );
         return true;
     }
 
