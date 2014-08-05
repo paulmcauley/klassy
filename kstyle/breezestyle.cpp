@@ -1866,11 +1866,11 @@ namespace Breeze
                 ( see QMenuPrivate::calcActionRects() )
                 */
                 const bool hasAccelerator( menuItemOption->text.indexOf( QLatin1Char( '\t' ) ) >= 0 );
-                if( hasAccelerator ) size.setWidth( size.width() + Metrics::MenuItem_BoxTextSpace );
+                if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_BoxTextSpace;
 
                 // right column
                 const int rightColumnWidth = Metrics::MenuItem_ArrowWidth + Metrics::MenuItem_BoxTextSpace;
-                size.setWidth( size.width() + leftColumnWidth + rightColumnWidth );
+                size.rwidth() += leftColumnWidth + rightColumnWidth;
 
                 // make sure height is large enough for icon and arrow
                 size.setHeight( qMax( size.height(), (int) Metrics::MenuItem_ArrowWidth ) );
