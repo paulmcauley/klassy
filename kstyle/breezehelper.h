@@ -97,13 +97,13 @@ namespace Breeze
         QPalette framePalette( const QPalette& ) const;
 
         //! button outline color, using animations
-        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
+        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
         //! button panel color, using animations
-        QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
+        QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
         //! slider outline color, using animations
-        QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode ) const;
+        QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
 
         //! checkbox indicator, using animations
         QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity = -1, AnimationMode = AnimationNone ) const;
