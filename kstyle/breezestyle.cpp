@@ -2370,21 +2370,20 @@ namespace Breeze
     bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // cast option and check
+        const QStyleOptionButton* buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
+        if( !buttonOption ) return true;
+
+        // rect and palette
+        const QRect& rect( option->rect );
+
+        // button state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool hasFocus( enabled && ( state & State_HasFocus ) );
         const bool sunken( state & ( State_On|State_Sunken ) );
-        QPalette palette( option->palette );
-
-        // update button color from palette in case button is default
-        const QStyleOptionButton* buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
-        if( enabled && buttonOption && buttonOption->features & QStyleOptionButton::DefaultButton )
-        {
-            const QColor button( palette.color( QPalette::Button ) );
-            const QColor base( palette.color( QPalette::Base ) );
-            palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
-        }
+        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
 
         // update animation state
         // mouse over takes precedence over focus
@@ -2394,12 +2393,33 @@ namespace Breeze
         const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
         const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
-        const QColor shadow( _helper->shadowColor( palette ) );
-        const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        if( flat )
+        {
 
-        // render
-        _helper->renderButtonFrame( painter, option->rect, background, outline, shadow, hasFocus, sunken );
+            // define colors and render
+            const QPalette& palette( option->palette );
+            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
+            _helper->renderToolButtonFrame( painter, rect, color, sunken );
+
+        } else {
+
+            // update button color from palette in case button is default
+            QPalette palette( option->palette );
+            if( enabled && buttonOption->features & QStyleOptionButton::DefaultButton )
+            {
+                const QColor button( palette.color( QPalette::Button ) );
+                const QColor base( palette.color( QPalette::Base ) );
+                palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
+            }
+
+            const QColor shadow( _helper->shadowColor( palette ) );
+            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+
+            // render
+            _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
+
+        }
 
         return true;
 
@@ -2811,16 +2831,31 @@ namespace Breeze
 
         // palette
         const QPalette& palette( option->palette );
+
+        // state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
+
+        // color role
+        QPalette::ColorRole textRole;
+        if( flat )
+        {
+
+            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
+            else textRole = QPalette::WindowText;
+
+        } else if( hasFocus ) textRole = QPalette::HighlightedText;
+        else textRole = QPalette::ButtonText;
 
         // menu arrow
         if( buttonOption->features & QStyleOptionButton::HasMenu )
         {
 
+            // define rect
             QRect arrowRect( contentsRect );
             arrowRect.setLeft( contentsRect.right() - Metrics::Button_ArrowButtonWidth );
             arrowRect = centerRect( arrowRect, Metrics::Button_ArrowButtonWidth, Metrics::Button_ArrowButtonWidth );
@@ -2828,13 +2863,14 @@ namespace Breeze
             contentsRect.setRight( arrowRect.left() - Metrics::Button_BoxTextSpace - 1  );
             contentsRect.adjust( Metrics::Button_MarginWidth, Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth );
 
-            // handle RTL
             arrowRect = handleRTL( option, arrowRect );
+
+            // define color
+            const QColor arrowColor( palette.color( textRole ) );
 
             // render arrow
             const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
             const qreal penThickness = 1.5;
-            const QColor arrowColor( hasFocus ? palette.color( QPalette::HighlightedText ) : palette.color( QPalette::WindowText ) );
 
             painter->save();
             painter->setRenderHints( QPainter::Antialiasing );
@@ -2900,10 +2936,11 @@ namespace Breeze
         }
 
         // text
-        contentsRect = handleRTL( option, contentsRect );
-
-        const QPalette::ColorRole role( hasFocus ? QPalette::HighlightedText : QPalette::ButtonText );
-        drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, role );
+        if( !buttonOption->text.isEmpty() )
+        {
+            contentsRect = handleRTL( option, contentsRect );
+            drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, textRole );
+        }
 
         return true;
 
