@@ -197,17 +197,6 @@ namespace Breeze
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
         { return handleRTL( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
 
-        //! checkbox focus
-        QRect checkBoxFocusRect( const QStyleOption*, const QWidget* ) const;
-
-        //! radio button contents
-        QRect radioButtonContentsRect( const QStyleOption* option, const QWidget* widget ) const
-        { return checkBoxContentsRect( option, widget ); }
-
-        //! radio button focus
-        QRect radioButtonFocusRect( const QStyleOption* option, const QWidget* widget ) const
-        { return checkBoxFocusRect( option, widget ); }
-
         //! line edit contents
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
 
@@ -277,7 +266,6 @@ namespace Breeze
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabClose( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 
@@ -331,6 +319,7 @@ namespace Breeze
         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //! scrollbar
         virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;

@@ -497,13 +497,9 @@ namespace Breeze
         switch( element )
         {
 
-            // checkboxes
+            // checkboxes and radio buttons
             case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
-            case SE_CheckBoxFocusRect: return checkBoxFocusRect( option, widget );
-
-            // radio buttons
-            case SE_RadioButtonContents: return radioButtonContentsRect( option, widget );
-            case SE_RadioButtonFocusRect: return radioButtonFocusRect( option, widget );
+            case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
 
             // line edit content
             case SE_LineEditContents: return lineEditContentsRect( option, widget );
@@ -682,7 +678,7 @@ namespace Breeze
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
             case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
-            case PE_FrameFocusRect: fcn = &Style::drawFrameFocusRectPrimitive; break;
+            case PE_FrameFocusRect: fcn = &Style::emptyPrimitive; break;
 
             // fallback
             default: break;
@@ -714,6 +710,8 @@ namespace Breeze
             */
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
+            case CE_CheckBoxLabel: fcn = &Style::drawCheckBoxLabelControl; break;
+            case CE_RadioButtonLabel: fcn = &Style::drawCheckBoxLabelControl; break;
 
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
@@ -946,21 +944,6 @@ namespace Breeze
 
         // splitter proxy
         _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::checkBoxFocusRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option
-        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
-        if( !buttonOption ) return option->rect;
-
-        // calculate text rect
-        const QRect contentsRect( option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) );
-        const QRect boundingRect( option->fontMetrics.boundingRect( contentsRect, Qt::AlignLeft|Qt::AlignVCenter|_mnemonics->textFlags(), buttonOption->text ) );
-        return handleRTL( option, boundingRect );
-
     }
 
     //___________________________________________________________________________________________________________________
@@ -2331,25 +2314,6 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // checkboxes and radio buttons
-        if(
-            ( qobject_cast<const QCheckBox*>( widget ) ||
-            qobject_cast<const QRadioButton*>( widget ) ) &&
-            option->rect.width() >= 2 )
-        {
-            painter->translate( 0, 2 );
-            painter->setPen( _helper->focusColor( option->palette ) );
-            painter->drawLine( option->rect.bottomLeft(), option->rect.bottomRight() );
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
     bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
@@ -2478,8 +2442,7 @@ namespace Breeze
         However one needs to draw the window background, because the button rect might
         overlap with some tab below. ( this is a Qt bug )
         */
-        const QTabBar* tabBar( widget ? qobject_cast<const QTabBar*>( widget->parent() ):nullptr );
-        if( tabBar )
+        if( const QTabBar* tabBar = qobject_cast<const QTabBar*>( widget->parent() ) )
         {
             QRect rect( option->rect );
 
@@ -2515,9 +2478,6 @@ namespace Breeze
             }
 
             painter->setPen( Qt::NoPen );
-
-            // TODO: should try detect parent groupbox or tabwidget,
-            // to adjust color consistently
             painter->setBrush( tabBar->palette().color( QPalette::Window ) );
             painter->drawRect( rect );
             return true;
@@ -3088,6 +3048,75 @@ namespace Breeze
         return true;
 
     }
+
+    //___________________________________________________________________________________
+    bool Style::drawCheckBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
+        if( !buttonOption ) return true;
+
+        // copy palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // store state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+
+        // text alignment
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+        const int alignment = _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft );
+
+        // text rect
+        QRect textRect( rect );
+
+        // render icon
+        if( !buttonOption->icon.isNull() )
+        {
+            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
+            const QPixmap pixmap( buttonOption->icon.pixmap(  buttonOption->iconSize, mode ) );
+            drawItemPixmap( painter, rect, alignment, pixmap );
+
+            // adjust rect (copied from QCommonStyle)
+            textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
+            textRect = handleRTL( option, textRect );
+
+        }
+
+        // render text
+        if( !buttonOption->text.isEmpty() )
+        {
+            textRect = option->fontMetrics.boundingRect( textRect, alignment, buttonOption->text );
+            drawItemText( painter, textRect, alignment, palette, enabled, buttonOption->text, QPalette::WindowText );
+
+            // check focus state
+            const bool hasFocus( enabled && ( state & State_HasFocus ) );
+
+            // update animation state
+            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+            const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
+
+            // focus color
+            QColor focusColor;
+            if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
+            else if( hasFocus ) focusColor =  _helper->focusColor( palette );
+
+            // render focus
+            if( focusColor.isValid() )
+            {
+                painter->translate( 0, 2 );
+                painter->setPen( focusColor );
+                painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+            }
+        }
+
+        return true;
+
+    }
+
 
     //___________________________________________________________________________________
     bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
