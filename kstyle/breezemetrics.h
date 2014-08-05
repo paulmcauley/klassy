@@ -42,9 +42,14 @@ namespace Breeze
         // line editors
         LineEdit_MarginWidth = 6,
 
+        // menu items
+        MenuItem_MarginWidth = 4,
+        MenuItem_BoxTextSpace = 4,
+        MenuItem_ArrowWidth = 20,
+
         // combobox
         ComboBox_MarginWidth = 4,
-        ComboBox_ArrowButtonWidth = 20,
+        ComboBox_ArrowButtonWidth = MenuItem_ArrowWidth,
         ComboBox_BoxTextSpace = 4,
 
         // spinbox
@@ -55,8 +60,13 @@ namespace Breeze
 
         // buttons
         Button_MarginWidth = 6,
-        Button_ArrowButtonWidth = 20,
+        Button_ArrowButtonWidth = MenuItem_ArrowWidth,
         Button_BoxTextSpace = 4,
+
+        // tool buttons
+        ToolButton_MarginWidth = 6,
+        ToolButton_ArrowButtonWidth = MenuItem_ArrowWidth,
+        ToolButton_BoxTextSpace = 4,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,
@@ -66,12 +76,6 @@ namespace Breeze
         // menubar items
         MenuBarItem_MarginWidth = 10,
         MenuBarItem_MarginHeight = 8,
-
-        // menu items
-        MenuItem_MarginWidth = 4,
-        MenuItem_BoxTextSpace = 4,
-        MenuItem_ArrowWidth = 20,
-
 
         // toolbars
         ToolBar_HandleWidth = 6,
