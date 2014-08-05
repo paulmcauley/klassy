@@ -2947,7 +2947,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
@@ -2955,12 +2955,28 @@ namespace Breeze
         if( comboBoxOption->editable ) return false;
 
         // need to alter palette for focused buttons
-        const bool hasFocus( option->state & State_HasFocus );
-        const bool mouseOver( option->state & State_MouseOver );
-        if( hasFocus && !mouseOver )
-        { painter->setPen( QPen( option->palette.color( QPalette::HighlightedText ), 1 ) ); }
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+        const bool flat( !comboBoxOption->frame );
 
-        return false;
+        QPalette::ColorRole textRole;
+        if( flat )  {
+
+            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
+            else textRole = QPalette::WindowText;
+
+        } else if( hasFocus ) textRole = QPalette::HighlightedText;
+        else textRole = QPalette::ButtonText;
+
+        // change pen color directly
+        painter->setPen( QPen( option->palette.color( textRole ), 1 ) );
+
+        // call base class method
+        KStyle::drawControl( CE_ComboBoxLabel, option, painter, widget );
+        return true;
 
     }
 
@@ -4122,13 +4138,18 @@ namespace Breeze
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return true;
 
-        const State& state( option->state );
+        // rect and palette
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
+
+        // state
+        const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool hasFocus( state & State_HasFocus );
         const bool editable( comboBoxOption->editable );
-        const bool flat( editable && !comboBoxOption->frame );
+        const bool sunken( state & (State_On|State_Sunken) );
+        const bool flat( !comboBoxOption->frame );
 
         // frame
         if( option->subControls & SC_ComboBoxFrame )
@@ -4143,7 +4164,7 @@ namespace Breeze
 
                     painter->setBrush( color );
                     painter->setPen( Qt::NoPen );
-                    painter->drawRect( option->rect );
+                    painter->drawRect( rect );
 
                 } else {
 
@@ -4159,13 +4180,10 @@ namespace Breeze
                     _animations->lineEditEngine().frameAnimationMode( widget ) ) );
 
                     // render
-                    _helper->renderFrame( painter, option->rect, color, outline, hasFocus );
+                    _helper->renderFrame( painter, rect, color, outline, hasFocus );
                 }
 
             } else {
-
-                // read only comboboxes. Make it look like a button
-                const bool sunken( state & State_On );
 
                 // update animation state
                 // hover takes precedence over focus
@@ -4174,12 +4192,23 @@ namespace Breeze
                 const AnimationMode mode( _animations->lineEditEngine().buttonAnimationMode( widget ) );
                 const qreal opacity( _animations->lineEditEngine().buttonOpacity( widget ) );
 
-                // define colors
-                const QColor shadow( _helper->shadowColor( palette ) );
-                const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                if( flat ) {
 
-                _helper->renderButtonFrame( painter, option->rect, background, outline, shadow, hasFocus, sunken );
+                    // define colors and render
+                    const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
+                    _helper->renderToolButtonFrame( painter, rect, color, sunken );
+
+                } else {
+
+                    // define colors
+                    const QColor shadow( _helper->shadowColor( palette ) );
+                    const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                    const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+
+                    // render
+                    _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
+
+                }
 
             }
 
@@ -4223,16 +4252,18 @@ namespace Breeze
 
                 }
 
-            } else {
+            } else if( flat )  {
 
-                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::Text );
-                else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
-                else arrowColor = palette.color( QPalette::ButtonText );
+                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::WindowText );
+                else if( hasFocus && sunken ) arrowColor = palette.color( QPalette::HighlightedText );
+                else arrowColor = palette.color( QPalette::WindowText );
 
-            }
+            } else if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::ButtonText );
+            else if( hasFocus ) arrowColor = palette.color( QPalette::HighlightedText );
+            else arrowColor = palette.color( QPalette::ButtonText );
 
+            // render arrow
             const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
-
             const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
             const qreal penThickness( 1.5 );
 
