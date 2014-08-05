@@ -1737,7 +1737,7 @@ namespace Breeze
         if( !comboBoxOption ) return contentsSize;
 
         const bool editable( comboBoxOption->editable );
-        const bool flat( editable && !comboBoxOption->frame );
+        const bool flat( !comboBoxOption->frame );
 
         // copy size
         QSize size( contentsSize );
@@ -1793,6 +1793,8 @@ namespace Breeze
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return contentsSize;
 
+        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
+
         QSize size( contentsSize );
 
         // add space for arrow
@@ -1822,7 +1824,7 @@ namespace Breeze
         }
 
         // finally add margins
-        return expandSize( size, Metrics::Frame_FrameWidth );
+        return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
 
     }
 
