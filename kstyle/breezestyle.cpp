@@ -242,15 +242,14 @@ namespace Breeze
             if( viewport && ( scrollBar = scrollArea->verticalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
             if( viewport && ( scrollBar = scrollArea->horizontalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
 
-        } else if( qobject_cast<QToolButton*>( widget ) ) {
+        } else if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) ) {
 
-            /*
-            all toolbuttons are flat
-            adjust foreground and background role accordingly
-            */
-
-            widget->setBackgroundRole( QPalette::NoRole );
-            widget->setForegroundRole( QPalette::WindowText );
+            if( toolButton->autoRaise() )
+            {
+                // for flat toolbuttons, adjust foreground and background role accordingly
+                widget->setBackgroundRole( QPalette::NoRole );
+                widget->setForegroundRole( QPalette::WindowText );
+            }
 
         } else if( qobject_cast<QDockWidget*>( widget ) ) {
 
@@ -559,6 +558,7 @@ namespace Breeze
             case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
             case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
+            case CT_ToolButton: return toolButtonSizeFromContents( option, size, widget );
             case CT_MenuBar: return defaultSizeFromContents( option, size, widget );
             case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
             case CT_MenuItem: return menuItemSizeFromContents( option, size, widget );
@@ -653,6 +653,9 @@ namespace Breeze
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
+
+            // menu indicator
+            case PE_IndicatorButtonDropDown: fcn = &Style::drawIndicatorButtonDropDownPrimitive; break;
 
             // arrows
             case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
@@ -970,7 +973,7 @@ namespace Breeze
 
         // get direction
         const State& state( option->state );
-        const bool horizontal( state&State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
         const bool textVisible( progressBarOption->textVisible );
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
@@ -1010,7 +1013,7 @@ namespace Breeze
 
         // get direction
         const State& state( option->state );
-        const bool horizontal( state&State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
 
         QRect rect( option->rect );
         if( horizontal ) rect.setHeight( rect.height() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
@@ -1532,7 +1535,7 @@ namespace Breeze
 
         const QRect& r = option->rect;
         const State& state( option->state );
-        const bool horizontal( state&State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
 
         switch ( subControl )
         {
@@ -1567,7 +1570,7 @@ namespace Breeze
 
         // get relevant state
         const State& state( option->state );
-        const bool horizontal( state&State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
 
         switch ( subControl )
         {
@@ -1824,6 +1827,39 @@ namespace Breeze
     }
 
     //______________________________________________________________
+    QSize Style::toolButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionToolButton* toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
+        if( !toolButtonOption ) return contentsSize;
+
+        // copy size
+        QSize size = contentsSize;
+
+        // get relevant state flags
+        const State& state( option->state );
+        const bool autoRaise( state & State_AutoRaise );
+        if( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup )
+        {
+
+            // for menu toolbuttons, take out the right margin
+            // size.rwidth() -= Metrics::Button_MarginWidth;
+
+        } else if( toolButtonOption->features & QStyleOptionToolButton::HasMenu ) {
+
+            // for toolbuttons with inline indicator, add indicator size
+            size.rwidth() += Metrics::ToolButton_ArrowButtonWidth;
+
+        }
+
+        // add margins and frame width
+        if( autoRaise ) return expandSize( size, Metrics::ToolButton_MarginWidth );
+        else return expandSize( size, Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
+
+    }
+
+    //______________________________________________________________
     QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     { return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight ); }
 
@@ -1924,7 +1960,7 @@ namespace Breeze
 
         // get direction
         const State& state( option->state );
-        const bool horizontal( state&State_Horizontal );
+        const bool horizontal( state & State_Horizontal );
 
         if( horizontal ) {
 
@@ -2060,8 +2096,8 @@ namespace Breeze
 
         const QPalette& palette( option->palette );
         const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && isInputWidget && ( state&State_MouseOver ) );
-        const bool hasFocus( enabled && ( state&State_HasFocus ) );
+        const bool mouseOver( enabled && isInputWidget && ( state & State_MouseOver ) );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
         // focus takes precedence over mouse over
         _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
@@ -2259,19 +2295,33 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         const QRectF rect( option->rect );
         const QPalette& palette( option->palette );
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         // color
         QColor color;
-        if( mouseOver ) color = _helper->hoverColor( palette );
-        else color = palette.color( QPalette::WindowText );
+
+        // arrows painted in toolbuttons have no hover
+        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
+        if( toolButton )
+        {
+
+            mouseOver = false;
+            if( toolButton->autoRaise() ) color = palette.color( QPalette::WindowText );
+            else color = palette.color( QPalette::ButtonText );
+
+        } else {
+
+            if( mouseOver ) color = _helper->hoverColor( palette );
+            else color = palette.color( QPalette::WindowText );
+
+        }
 
         // arrow
         const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
@@ -2293,8 +2343,8 @@ namespace Breeze
 
         // arrow orientation
         ArrowOrientation orientation( ArrowNone );
-        if( state&State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
-        else if( state&State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
+        if( state & State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
+        else if( state & State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
         if( orientation == ArrowNone ) return true;
 
         // state, rect and palette
@@ -2407,6 +2457,45 @@ namespace Breeze
             painter->setBrush( tabBar->palette().color( QPalette::Window ) );
             painter->drawRect( rect );
             return true;
+
+        }
+
+        // copy palette and rect
+        const QPalette& palette( option->palette );
+        QRect rect( option->rect );
+
+        // store relevant flags
+        const State& state( option->state );
+        const bool autoRaise( state & State_AutoRaise );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+
+        if( !autoRaise )
+        {
+
+            /* need to check widget for popup mode, because option is not set properly */
+            const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+            const bool hasIndicator( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
+
+            // render as push button
+            const QColor shadow( _helper->shadowColor( palette ) );
+            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
+            const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+
+            // adjust frame in case of menu
+            if( hasIndicator )
+            {
+                painter->setClipRect( rect );
+                if( reverseLayout ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+                else rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+            }
+
+            // render
+            _helper->renderButtonFrame( painter, rect, color, outline, shadow, hasFocus, sunken );
+
         }
 
         return true;
@@ -2553,6 +2642,62 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
+    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // store palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // store state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool sunken( enabled && ( state & State_Sunken ) );
+
+        // arrow color
+        QColor arrowColor;
+        if( mouseOver ) arrowColor = _helper->hoverColor( palette );
+        else arrowColor = palette.color( QPalette::WindowText );
+
+        // for toolbuttons, need to render the relevant part of the frame
+        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
+        if( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup )
+        {
+
+            const bool hasFocus( enabled && ( state & State_HasFocus ) );
+            const bool autoRaise( state & State_AutoRaise );
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+
+            if( !autoRaise )
+            {
+
+                // render as push button
+                const QColor shadow( _helper->shadowColor( palette ) );
+                const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
+                const QColor color( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+
+                QRect frameRect( rect );
+                painter->setClipRect( rect );
+                if( reverseLayout ) frameRect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+                else frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+
+                // render
+                _helper->renderButtonFrame( painter, frameRect, color, outline, shadow, hasFocus, sunken );
+
+                // disable mouse over and adjust arrow color
+                mouseOver = false;
+                arrowColor = palette.color( QPalette::ButtonText );
+
+            }
+
+        }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
@@ -2560,7 +2705,7 @@ namespace Breeze
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
         const State& state( option->state );
-        const bool separatorIsVertical( state&State_Horizontal );
+        const bool separatorIsVertical( state & State_Horizontal );
         const QRect& rect( option->rect );
         const QColor color( _helper->separatorColor( option->palette ) );
 
@@ -3119,7 +3264,7 @@ namespace Breeze
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
         const State& state( option->state );
-        const bool enabled( state&State_Enabled );
+        const bool enabled( state & State_Enabled );
 
         const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
@@ -3165,8 +3310,8 @@ namespace Breeze
         if( horizontal ) handleRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
         else handleRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
 
-        const bool enabled( state&State_Enabled );
-        const bool mouseOver( enabled && ( state&State_MouseOver ) );
+        const bool enabled( state & State_Enabled );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         QWidget* parent( scrollBarParent( widget ) );
         const bool focus( enabled && parent && parent->hasFocus() );
