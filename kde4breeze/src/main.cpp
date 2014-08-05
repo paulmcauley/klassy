@@ -49,6 +49,8 @@ void cloneColorScheme()
     QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/Breeze.colors");
     QString dest = migration.saveLocation("data", "color-schemes") + "Breeze.colors";
 
+    QDir dir;
+    dir.mkpath(migration.saveLocation("data", "color-schemes"));
     QFile::remove(dest);
     QFile::copy(src, dest);
 }
