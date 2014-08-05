@@ -2470,7 +2470,7 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+        const bool hasFocus( enabled && (option->state & State_HasFocus) );
 
         if( !autoRaise )
         {
