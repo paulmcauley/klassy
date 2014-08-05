@@ -706,6 +706,7 @@ namespace Breeze
             */
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
+            case CE_ToolButtonLabel: fcn = &Style::drawToolButtonLabelControl; break;
 
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
@@ -2944,6 +2945,42 @@ namespace Breeze
             drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, textRole );
         }
 
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawToolButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        const QStyleOptionToolButton* buttonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
+        if( !buttonOption ) return false;
+
+        // need to alter palette for focused buttons
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+        const bool autoRaise( state & State_AutoRaise );
+
+        QPalette::ColorRole textRole;
+        if( autoRaise )
+        {
+
+            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
+            else textRole = QPalette::WindowText;
+
+        } else if( hasFocus ) textRole = QPalette::HighlightedText;
+        else textRole = QPalette::ButtonText;
+
+        // copy option and alter palette
+        QStyleOptionToolButton copy( *buttonOption );
+        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+        copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
+
+        // call base class method
+        KStyle::drawControl( CE_ToolButtonLabel, &copy, painter, widget );
         return true;
 
     }
