@@ -72,6 +72,7 @@ set(breeze_PART_SRCS
     breezemnemonics.cpp
     breezepropertynames.cpp
     breezeshadowhelper.cpp
+    breezesplitterproxy.cpp
     breezestyle.cpp
     breezetileset.cpp
     breezewindowmanager.cpp

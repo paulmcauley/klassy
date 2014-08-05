@@ -47,6 +47,7 @@ namespace Breeze
     class Helper;
     class Mnemonics;
     class ShadowHelper;
+    class SplitterFactory;
     class WindowManager;
 
     class StylePlugin : public QStylePlugin
@@ -189,9 +190,6 @@ namespace Breeze
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
-//         //! pushbutton contents
-//         QRect pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const;
-//
 //         //! toolbox tab
 //         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 //
@@ -221,17 +219,6 @@ namespace Breeze
 
         //! progressbar label
         QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
-
-//         //! tabBar buttons
-//         QRect tabBarTabLeftButtonRect( const QStyleOption* option, const QWidget* widget ) const;
-//
-//         QRect tabBarTabRightButtonRect( const QStyleOption* option, const QWidget* widget ) const;
-//
-//         QRect tabBarTabButtonRect( SubElement, const QStyleOption*, const QWidget* ) const;
-//
-//         // tabbar tab text
-//         QRect tabBarTabTextRect( const QStyleOption* option, const QWidget* widget ) const;
-//
 
         // view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
@@ -270,13 +257,9 @@ namespace Breeze
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
         QSize menuItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-
-//         QSize menuBarSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-//         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-//         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
         QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize itemViewItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -321,9 +304,7 @@ namespace Breeze
         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelTipLabelPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelScrollAreaCornerPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawPanelItemViewItemPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawPanelLineEditPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawIndicatorMenuCheckMarkPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPanelItemViewItemPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorCheckBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorButtonDropDownPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -515,14 +496,17 @@ namespace Breeze
         //! keyboard accelerators
         Mnemonics* _mnemonics;
 
-        //! tabbar data
-        BreezePrivate::TabBarData* _tabBarData;
-
         //! window manager
         WindowManager* _windowManager;
 
         //! frame shadows
         FrameShadowFactory* _frameShadowFactory;
+
+        //! splitter Factory, to extend splitters hit area
+        SplitterFactory* _splitterFactory;
+
+        //! tabbar data
+        BreezePrivate::TabBarData* _tabBarData;
 
         //! pointer to primitive specialized function
         typedef bool (Style::*StylePrimitive)( const QStyleOption*, QPainter*, const QWidget* ) const;

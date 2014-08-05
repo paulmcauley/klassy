@@ -91,6 +91,15 @@
       <default>true</default>
     </entry>
 
+    <!-- splitter proxy -->
+    <entry name="SplitterProxyEnabled" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="SplitterProxyWidth" type="Int">
+      <default>12</default>
+    </entry>
+
   </group>
 
 </kcfg>

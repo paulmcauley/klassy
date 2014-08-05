@@ -540,6 +540,29 @@ namespace Breeze
 
 
     //______________________________________________________________________________
+    void Helper::renderSelection(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, Corners corners ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        const QRectF baseRect( rect );
+
+        if( color.isValid() )
+        {
+            // content
+            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+            const QRectF contentRect( baseRect );
+            QPainterPath path( roundedPath( contentRect, radius, corners ) );
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawPath( path );
+        }
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderSeparator(
         QPainter* painter, const QRect& rect,
         const QColor& color, bool vertical ) const
@@ -991,6 +1014,22 @@ namespace Breeze
     {
 
         QPainterPath path;
+
+        // simple cases
+        if( corners == 0 )
+        {
+
+            path.addRect( rect );
+            return path;
+
+        }
+
+        if( corners == CornersAll ) {
+
+            path.addRoundedRect( rect, radius, radius );
+            return path;
+
+        }
 
         const QSizeF cornerSize( 2*radius, 2*radius );
 

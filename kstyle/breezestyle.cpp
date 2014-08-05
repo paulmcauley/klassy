@@ -32,6 +32,7 @@
 #include "breezemetrics.h"
 #include "breezemnemonics.h"
 #include "breezeshadowhelper.h"
+#include "breezesplitterproxy.h"
 #include "breezestyleconfigdata.h"
 #include "breezewindowmanager.h"
 
@@ -124,9 +125,10 @@ namespace Breeze
         _shadowHelper( new ShadowHelper( this, *_helper ) ),
         _animations( new Animations( this ) ),
         _mnemonics( new Mnemonics( this ) ),
-        _tabBarData( new BreezePrivate::TabBarData( this ) ),
         _windowManager( new WindowManager( this ) ),
         _frameShadowFactory( new FrameShadowFactory( this ) ),
+        _splitterFactory( new SplitterFactory( this ) ),
+        _tabBarData( new BreezePrivate::TabBarData( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
         CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
 
@@ -161,10 +163,11 @@ namespace Breeze
         if( !widget ) return;
 
         // register widget to animations
-        _shadowHelper->registerWidget( widget );
         _animations->registerWidget( widget );
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
+        _shadowHelper->registerWidget( widget );
+        _splitterFactory->registerWidget( widget );
 
         // enable mouse over effects for all necessary widgets
         if(
@@ -286,10 +289,11 @@ namespace Breeze
     {
 
         // register widget to animations
-        _shadowHelper->unregisterWidget( widget );
         _animations->unregisterWidget( widget );
-        _windowManager->unregisterWidget( widget );
         _frameShadowFactory->unregisterWidget( widget );
+        _shadowHelper->unregisterWidget( widget );
+        _windowManager->unregisterWidget( widget );
+        _splitterFactory->unregisterWidget( widget );
 
         KStyle::unpolish( widget );
 
@@ -651,6 +655,9 @@ namespace Breeze
             // tooltips
             case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
 
+            // item view
+            case PE_PanelItemViewItem: fcn = &Style::drawPanelItemViewItemPrimitive; break;
+
             // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
@@ -936,6 +943,9 @@ namespace Breeze
 
         // mnemonics
         _mnemonics->setMode( StyleConfigData::mnemonicsMode() );
+
+        // splitter proxy
+        _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
     }
 
     //___________________________________________________________________________________________________________________
@@ -2636,6 +2646,108 @@ namespace Breeze
 
         return true;
 
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawPanelItemViewItemPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionViewItem *viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
+        if( !viewItemOption ) return false;
+
+        // try cast widget
+        const QAbstractItemView *abstractItemView = qobject_cast<const QAbstractItemView *>( widget );
+
+        // store palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // store flags
+        const State& state( option->state );
+        const bool mouseOver( ( state & State_MouseOver ) && ( !abstractItemView || abstractItemView->selectionMode() != QAbstractItemView::NoSelection ) );
+        const bool selected( state & State_Selected );
+        const bool enabled( state & State_Enabled );
+        const bool active( state & State_Active );
+
+        const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !( state & State_Selected );
+        const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
+        const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItemV2::Alternate );
+
+        // do nothing if no background is to be rendered
+        if( !( mouseOver || selected || hasCustomBackground || hasAlternateBackground ) )
+        { return true; }
+
+        // define color group
+        QPalette::ColorGroup colorGroup;
+        if( enabled ) colorGroup = active ? QPalette::Normal : QPalette::Inactive;
+        else colorGroup = QPalette::Disabled;
+
+        // render alternate background
+        if( viewItemOption && ( viewItemOption->features & QStyleOptionViewItemV2::Alternate ) )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( palette.brush( colorGroup, QPalette::AlternateBase ) );
+            painter->drawRect( rect );
+        }
+
+        // stop here if no highlight is needed
+        if( !( mouseOver || selected ||hasCustomBackground ) )
+        { return true; }
+
+        // render custom background
+        if( hasCustomBackground && !hasSolidBackground )
+        {
+
+            painter->setBrushOrigin( viewItemOption->rect.topLeft() );
+            painter->setBrush( viewItemOption->backgroundBrush );
+            painter->setPen( Qt::NoPen );
+            painter->drawRect( viewItemOption->rect );
+            return true;
+
+        }
+
+        // render selection
+        // define color
+        QColor color;
+        if( hasCustomBackground && hasSolidBackground ) color = viewItemOption->backgroundBrush.color();
+        else color = palette.color( colorGroup, QPalette::Highlight );
+
+        // change color to implement mouse over
+        if( mouseOver && !hasCustomBackground )
+        {
+            if( !selected ) color.setAlphaF( 0.2 );
+            else color = color.lighter( 110 );
+        }
+
+        // get selection path
+        Helper::Corners corners;
+        const bool hasSingleSelection( abstractItemView && abstractItemView->selectionMode() == QAbstractItemView::SingleSelection );
+        if( hasSingleSelection )
+        {
+
+            // round relevant corners
+            if(
+                viewItemOption->viewItemPosition == QStyleOptionViewItemV4::OnlyOne ||
+                viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Invalid ||
+                ( abstractItemView && abstractItemView->selectionBehavior() != QAbstractItemView::SelectRows ) )
+            {
+
+                corners = Helper::CornersAll;
+
+            } else {
+
+                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= Helper::CornersLeft;
+                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= Helper::CornersRight;
+
+            }
+
+        }
+
+        // render
+        _helper->renderSelection( painter, rect, color, corners );
+
+        return true;
     }
 
     //___________________________________________________________________________________

@@ -78,7 +78,7 @@ namespace Breeze
         ToolBar_HandleWidth = 6,
         ToolBar_SeparatorWidth = 16,
         ToolBar_ExtensionWidth = 20,
-        ToolBar_ItemSpacing = 1,
+        ToolBar_ItemSpacing = 0,
 
         // scrollbars
         ScrollBar_Extend = 20,
