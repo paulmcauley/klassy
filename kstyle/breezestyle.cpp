@@ -2498,7 +2498,7 @@ namespace Breeze
 
         } else {
 
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus ) );
+            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         }
