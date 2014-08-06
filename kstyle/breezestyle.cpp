@@ -2111,14 +2111,15 @@ namespace Breeze
 
                 } else {
 
-                    // separator can have a title and an icon
-                    // in that case they are rendered as menubar 'title', which
-                    // corresponds to checked toolbuttons.
-                    // a rectangle identical to the one of normal items is returned.
-                    QStyleOptionMenuItem copy( *menuItemOption );
-                    copy.menuItemType = QStyleOptionMenuItem::Normal;
-                    return menuItemSizeFromContents( &copy, contentsSize, widget );
+                    // build toolbutton option
+                    const QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
 
+                    // make sure height is large enough for icon
+                    const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
+                    size.setHeight( qMax( size.height(), (int) iconWidth ) );
+
+                    // return size from CT_ToolButton
+                    return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
                 }
 
             }
@@ -3401,11 +3402,10 @@ namespace Breeze
             } else {
 
                 // separator can have a title and an icon
-                // in that case they are rendered as normal, disabled items
-                QStyleOptionMenuItem copy( *menuItemOption );
-                copy.menuItemType = QStyleOptionMenuItem::Normal;
-                copy.state &= ~(State_Selected|State_Enabled|State_HasFocus|State_MouseOver);
-                return drawMenuItemControl( &copy, painter, widget );
+                // in that case they are rendered as sunken flat toolbuttons
+                QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
+                drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
+                return true;
 
             }
 
@@ -5384,6 +5384,30 @@ namespace Breeze
         // FramelessWindowHint is needed on windows to make WA_TranslucentBackground work properly
         widget->setWindowFlags( widget->windowFlags() | Qt::FramelessWindowHint );
         #endif
+
+    }
+
+    //____________________________________________________________________________________
+    QStyleOptionToolButton Style::separatorMenuItemOption( const QStyleOptionMenuItem* menuItemOption, const QWidget* widget ) const
+    {
+
+        // separator can have a title and an icon
+        // in that case they are rendered as sunken flat toolbuttons
+        QStyleOptionToolButton toolButtonOption;
+        toolButtonOption.initFrom( widget );
+        toolButtonOption.rect = menuItemOption->rect;
+        toolButtonOption.features = QStyleOptionToolButton::None;
+        toolButtonOption.state = State_On|State_Sunken|State_Enabled|State_AutoRaise;
+        toolButtonOption.subControls = SC_ToolButton;
+        toolButtonOption.icon =  menuItemOption->icon;
+
+        int iconWidth( pixelMetric( PM_SmallIconSize, menuItemOption, widget ) );
+        toolButtonOption.iconSize = QSize( iconWidth, iconWidth );
+        toolButtonOption.text = menuItemOption->text;
+
+        toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
+
+        return toolButtonOption;
 
     }
 

@@ -460,10 +460,17 @@ namespace Breeze
 
         //@}
 
-        // translucent background
+        //! translucent background
         void setTranslucentBackground( QWidget* ) const;
 
-        // load icon from svg resource
+        /*!
+        separator can have a title and an icon
+        in that case they are rendered as sunken flat toolbuttons
+        return toolbutton option that matches named separator menu items
+        */
+        QStyleOptionToolButton separatorMenuItemOption( const QStyleOptionMenuItem*, const QWidget* ) const;
+
+        //! load icon from svg resource
         QIcon iconFromResource( const QString& ) const;
 
         private:
