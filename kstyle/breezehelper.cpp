@@ -338,7 +338,7 @@ namespace Breeze
             if( focus )
             {
 
-                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.5 );
+                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
 
                 painter->setPen( QPen( outline, 2 ) );
                 painter->setBrush( Qt::NoBrush );
