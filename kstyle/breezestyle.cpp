@@ -3017,10 +3017,7 @@ namespace Breeze
         const bool sunken( state & State_Sunken );
 
         // decide icon mode and state
-        QIcon::Mode iconMode;
-        if( enabled ) iconMode = active ? QIcon::Active:QIcon::Normal;
-        else iconMode = QIcon::Disabled;
-
+        const QIcon::Mode iconMode( (active&&enabled) ? QIcon::Active:QIcon::Disabled );
         const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
 
         // icon size
