@@ -161,6 +161,18 @@ namespace Breeze
     }
 
     //______________________________________________________________
+    void Style::polish( QApplication* )
+    {
+
+        // alter palette for relevant framed widgets
+        const QPalette palette( _helper->framePalette( QGuiApplication::palette() ) );
+        QApplication::setPalette( palette, "QDockWidget" );
+        QApplication::setPalette( palette, "QGroupBox" );
+        QApplication::setPalette( palette, "QTabWidget" );
+
+    }
+
+    //______________________________________________________________
     void Style::polish( QWidget* widget )
     {
         if( !widget ) return;
@@ -206,18 +218,9 @@ namespace Breeze
 
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
-            // change palette
-            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
-
             // checkable group boxes
             if( groupBox->isCheckable() )
             { groupBox->setAttribute( Qt::WA_Hover ); }
-
-
-        } else if( qobject_cast<QTabWidget*>( widget ) )  {
-
-            // change palette
-            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
 
         } else if( qobject_cast<QAbstractButton*>( widget ) && qobject_cast<QDockWidget*>( widget->parent() ) ) {
 
@@ -263,7 +266,6 @@ namespace Breeze
             // add event filter on dock widgets
             // and alter palette
             widget->setAutoFillBackground( false );
-            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
             widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
             addEventFilter( widget );
 
