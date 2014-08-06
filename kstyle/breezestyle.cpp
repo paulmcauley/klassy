@@ -272,6 +272,7 @@ namespace Breeze
         } else if( qobject_cast<QMdiSubWindow*>( widget ) ) {
 
             widget->setAutoFillBackground( false );
+            addEventFilter( widget );
 
         } else if( qobject_cast<QMenu*>( widget ) ) {
 
@@ -877,8 +878,8 @@ namespace Breeze
     bool Style::eventFilter( QObject *object, QEvent *event )
     {
 
-        // dock widgets
         if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
+        else if( QMdiSubWindow* subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
 
         // cast to QWidget
         QWidget *widget = static_cast<QWidget*>( object );
@@ -904,6 +905,41 @@ namespace Breeze
 
         }
 
+        return false;
+
+    }
+
+    //____________________________________________________________________________
+    bool Style::eventFilterMdiSubWindow( QMdiSubWindow* subWindow, QEvent* event )
+    {
+
+        if( event->type() == QEvent::Paint )
+        {
+            QPainter painter( subWindow );
+            QPaintEvent* paintEvent( static_cast<QPaintEvent*>( event ) );
+            painter.setClipRegion( paintEvent->region() );
+
+            const QRect rect( subWindow->rect() );
+            const QColor background( subWindow->palette().color( QPalette::Window ) );
+
+            if( subWindow->isMaximized() )
+            {
+
+                // full painting
+                painter.setPen( Qt::NoPen );
+                painter.setBrush( background );
+                painter.drawRect( rect );
+
+            } else {
+
+                // framed painting
+                _helper->renderMenuFrame( &painter, rect, background, QColor() );
+
+            }
+
+        }
+
+        // continue with normal painting
         return false;
 
     }
@@ -2386,9 +2422,9 @@ namespace Breeze
         const State state( option->state );
         const bool selected( state & State_Selected );
 
-        const QColor background( palette.color( QPalette::Window ) );
+        // render frame outline
         const QColor outline( _helper->frameOutlineColor( palette, false, selected ) );
-        _helper->renderMenuFrame( painter, rect, background, outline );
+        _helper->renderMenuFrame( painter, rect, QColor(), outline );
 
         return true;
 

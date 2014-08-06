@@ -30,6 +30,7 @@
 #include <QDockWidget>
 #include <QIcon>
 #include <QLoggingCategory>
+#include <QMdiSubWindow>
 #include <QStyleOption>
 #include <QStylePlugin>
 #include <QWidget>
@@ -137,8 +138,9 @@ namespace Breeze
         //@{
 
         virtual bool eventFilter(QObject *, QEvent *);
-        bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
+        bool eventFilterDockWidget( QDockWidget*, QEvent* );
+        bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );
 
         //! install event filter to object, in a unique way
         void addEventFilter( QObject* object )
