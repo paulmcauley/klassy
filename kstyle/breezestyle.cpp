@@ -311,6 +311,35 @@ namespace Breeze
 
     }
 
+
+    //____________________________________________________________________
+    QIcon Style::standardIcon( StandardPixmap standardIcon, const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        switch( standardIcon )
+        {
+
+            case SP_TitleBarNormalButton:
+            return iconFromResource( "restore" );
+
+            case SP_TitleBarMinButton:
+            case SP_TitleBarShadeButton:
+            return iconFromResource( "minimize" );
+
+            case SP_TitleBarMaxButton:
+            case SP_TitleBarUnshadeButton:
+            return iconFromResource( "maximize" );
+
+            case SP_TitleBarCloseButton:
+            case SP_DockWidgetCloseButton:
+            return iconFromResource( "close" );
+
+            default: return KStyle::standardIcon( standardIcon, option, widget );
+
+        }
+
+    }
+
     //______________________________________________________________
     int Style::pixelMetric( PixelMetric metric, const QStyleOption* option, const QWidget* widget ) const
     {
@@ -498,6 +527,9 @@ namespace Breeze
 
             // input panel
             case SH_RequestSoftwareInputPanel: return RSIP_OnMouseClick;
+
+            // title bars
+            case SH_TitleBar_NoBorder: return true;
 
             // fallback
             default: return KStyle::styleHint( hint, option, widget, returnData );
@@ -5286,4 +5318,23 @@ namespace Breeze
 
     }
 
+    //____________________________________________________________________________________
+    QIcon Style::iconFromResource( const QString& name ) const
+    {
+
+        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
+
+        QIcon icon;
+        foreach( const int& iconSize, iconSizes )
+        {
+            const QSize size( iconSize, iconSize );
+            icon.addFile( QString( ":/%1.svg" ).arg( name ), size, QIcon::Normal );
+            icon.addFile( QString( ":/%1-active.svg" ).arg( name ), size, QIcon::Selected );
+            icon.addFile( QString( ":/%1-pressed.svg" ).arg( name ), size, QIcon::Selected, QIcon::On );
+        }
+
+        icon.pixmap( QSize( 32, 32 ), QIcon::Normal ).save( QString( "%1.png" ).arg( name ) );
+
+        return icon;
+    }
 }

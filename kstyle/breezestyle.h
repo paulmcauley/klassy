@@ -159,8 +159,8 @@ namespace Breeze
 
         protected:
 
-//         //! standard icons
-//         virtual QIcon standardIcon( StandardPixmap, const QStyleOption* = 0, const QWidget* = 0) const;
+        //! standard icons
+        virtual QIcon standardIcon( StandardPixmap, const QStyleOption* = 0, const QWidget* = 0) const;
 
         //! load configuration
         void loadConfiguration();
@@ -470,6 +470,9 @@ namespace Breeze
 
         // translucent background
         void setTranslucentBackground( QWidget* ) const;
+
+        // load icon from svg resource
+        QIcon iconFromResource( const QString& ) const;
 
         private:
 

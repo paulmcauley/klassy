@@ -80,9 +80,12 @@ set(breeze_PART_SRCS
     breezewindowmanager.cpp
 )
 
+set( breeze_RESOURCES resources/resources.qrc )
+qt5_add_resources( breeze_RESOURCES_RCC ${breeze_RESOURCES} )
+
 kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
 
-add_library(breeze MODULE ${breeze_PART_SRCS})
+add_library(breeze MODULE ${breeze_PART_SRCS} ${breeze_RESOURCES_RCC})
 
 target_link_libraries(breeze  ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
 
