@@ -421,6 +421,9 @@ namespace Breeze
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
             case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
 
+            // title bar
+            case PM_TitleBarHeight: return 2*Metrics::TitleBar_MarginWidth + pixelMetric( PM_SmallIconSize, option, widget );
+
             // sliders
             case PM_SliderThickness: return Metrics::Slider_ControlThickness;
             case PM_SliderControlThickness: return Metrics::Slider_ControlThickness;
@@ -849,6 +852,7 @@ namespace Breeze
             case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
             case CC_Dial: fcn = &Style::drawDialComplexControl; break;
             case CC_ScrollBar: fcn = &Style::drawScrollBarComplexControl; break;
+            case CC_TitleBar: fcn = &Style::drawTitleBarComplexControl; break;
 
             // fallback
             default: break;
@@ -5072,6 +5076,64 @@ namespace Breeze
         // call base class primitive
         KStyle::drawComplexControl( CC_ScrollBar, option, painter, widget );
         return true;
+    }
+
+    //______________________________________________________________
+    bool Style::drawTitleBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTitleBar *titleBarOption( qstyleoption_cast<const QStyleOptionTitleBar *>( option ) );
+        if( !titleBarOption ) return true;
+
+        // store palette and rect
+        QPalette palette( option->palette );
+        const QRect& rect( option->rect );
+
+        const State& flags( option->state );
+        const bool enabled( flags & State_Enabled );
+        const bool active( enabled && ( titleBarOption->titleBarState & Qt::WindowActive ) );
+
+        if( titleBarOption->subControls & SC_TitleBarLabel )
+        {
+
+            const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
+            qDebug() << "iconSize: " << iconSize << endl;
+
+            // render background
+            painter->setClipRect( rect );
+            const QColor outline( _helper->frameOutlineColor( palette, false, false ) );
+            const QColor background( palette.color( active ? QPalette::Highlight : QPalette::Window ) );
+            _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, Helper::CornersTop );
+
+            // render text
+            const QRect textRect( subControlRect( CC_TitleBar, titleBarOption, SC_TitleBarLabel, widget ) );
+            KStyle::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, active ? QPalette::HighlightedText : QPalette::WindowText );
+
+        }
+
+        // buttons
+        static const QList<SubControl> subControls =
+        {
+            SC_TitleBarMinButton,
+            SC_TitleBarMaxButton,
+            SC_TitleBarCloseButton,
+            SC_TitleBarNormalButton,
+            SC_TitleBarShadeButton,
+            SC_TitleBarUnshadeButton
+        };
+
+        // loop over supported buttons
+        foreach( const SubControl subControl, subControls )
+        {
+
+            // skip if not requested
+            if( !titleBarOption->subControls & subControl ) continue;
+
+        }
+
+        return true;
+
     }
 
     //______________________________________________________________________________

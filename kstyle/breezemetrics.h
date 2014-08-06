@@ -94,6 +94,9 @@ namespace Breeze
         ProgressBar_Thickness = 6,
         ProgressBar_BoxTextSpace = 4,
 
+        // mdi title bar
+        TitleBar_MarginWidth = 4,
+
         // sliders
         Slider_Thickness = 6,
         Slider_ControlThickness = 20,
