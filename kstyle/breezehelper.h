@@ -137,6 +137,9 @@ namespace Breeze
         //! toolbutton frame
         void renderToolButtonFrame( QPainter*, const QRect&, const QColor& color, bool sunken ) const;
 
+        //! toolbutton frame
+        void renderToolBoxFrame( QPainter*, const QRect&, int tabWidth, const QColor& color ) const;
+
         //! corner enumeration, needed for tabbar tabs
         enum Corner
         {

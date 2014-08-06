@@ -110,6 +110,10 @@ namespace Breeze
         // tab widget
         TabWidget_MarginWidth = 4,
 
+        // toolbox
+        ToolBox_TabMinWidth = 80,
+        ToolBox_TabBoxTextSpace = 4,
+
         // tooltips
         ToolTip_FrameWidth = 3,
 

@@ -464,6 +464,9 @@ namespace Breeze
             // tabbar
             case SH_TabBar_Alignment: return Qt::AlignCenter;
 
+            // toolbox
+            case SH_ToolBox_SelectedPageTitleBold: return false;
+
             // scrollbars
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
 
@@ -519,6 +522,9 @@ namespace Breeze
             case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
             case SE_TabWidgetLeftCorner: return tabWidgetCornerRect( SE_TabWidgetLeftCorner, option, widget );
             case SE_TabWidgetRightCorner: return tabWidgetCornerRect( SE_TabWidgetRightCorner, option, widget );
+
+            // toolbox
+            case SE_ToolBoxTabContents: return toolBoxTabContentsRect( option, widget );
 
             // fallback
             default: return KStyle::subElementRect( element, option, widget );
@@ -758,6 +764,10 @@ namespace Breeze
             // tabbar
             case CE_TabBarTabLabel: fcn = &Style::drawTabBarTabLabelControl; break;
             case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
+
+            // toolbox
+            case CE_ToolBoxTabLabel: fcn = &Style::drawToolBoxTabLabelControl; break;
+            case CE_ToolBoxTabShape: fcn = &Style::drawToolBoxTabShapeControl; break;
 
             // dock widget titlebar
             case CE_DockWidgetTitle: fcn = &Style::drawDockWidgetTitleControl; break;
@@ -1252,6 +1262,40 @@ namespace Breeze
         }
 
         return rect;
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::toolBoxTabContentsRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        if( !toolBoxOption ) return option->rect;
+
+        // copy rect
+        const QRect& rect( option->rect );
+
+        int contentsWidth(0);
+        if( !toolBoxOption->icon.isNull() )
+        {
+            const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
+            contentsWidth += iconSize;
+
+            if( !toolBoxOption->text.isEmpty() ) contentsWidth += Metrics::ToolBox_TabBoxTextSpace;
+        }
+
+        if( !toolBoxOption->text.isEmpty() )
+        {
+
+            const int textWidth = toolBoxOption->fontMetrics.size( _mnemonics->textFlags(), toolBoxOption->text ).width();
+            contentsWidth += textWidth;
+
+        }
+
+        contentsWidth = qMin( contentsWidth, rect.width() );
+        contentsWidth = qMax( contentsWidth, (int)Metrics::ToolBox_TabMinWidth );
+        return centerRect( rect, contentsWidth, rect.height() );
 
     }
 
@@ -2943,6 +2987,9 @@ namespace Breeze
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
 
+        // alignment
+        const int alignment = _mnemonics->textFlags() | Qt::AlignCenter;
+
         // color role
         QPalette::ColorRole textRole;
         if( flat )
@@ -3033,8 +3080,8 @@ namespace Breeze
             QIcon::State iconState = sunken ? QIcon::On : QIcon::Off;
 
             // icon
-            QPixmap icon = buttonOption->icon.pixmap( iconSize, mode, iconState );
-            painter->drawPixmap( iconRect, icon );
+            QPixmap pixmap = buttonOption->icon.pixmap( iconSize, mode, iconState );
+            drawItemPixmap( painter, iconRect, alignment, pixmap );
 
         }
 
@@ -3042,7 +3089,7 @@ namespace Breeze
         if( !buttonOption->text.isEmpty() )
         {
             contentsRect = handleRTL( option, contentsRect );
-            drawItemText( painter, contentsRect, Qt::AlignCenter | _mnemonics->textFlags(), palette, enabled, buttonOption->text, textRole );
+            drawItemText( painter, contentsRect, alignment, palette, enabled, buttonOption->text, textRole );
         }
 
         return true;
@@ -4224,6 +4271,121 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
+    bool Style::drawToolBoxTabLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // rendering is similar to drawPushButtonLabelControl
+
+        // cast option and check
+        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        if( !toolBoxOption ) return true;
+
+        // copy palette
+        const QPalette& palette( option->palette );
+
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+
+        // text alignment
+        const int alignment = _mnemonics->textFlags() | Qt::AlignCenter;
+
+        // contents rect
+        const QRect rect( toolBoxTabContentsRect( option, widget ) );
+
+        // store icon size
+        const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
+
+        // find contents size and rect
+        QRect contentsRect( rect );
+        QSize contentsSize;
+        if( !toolBoxOption->text.isEmpty() )
+        {
+            contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), toolBoxOption->text );
+            if( !toolBoxOption->icon.isNull() ) contentsSize.rwidth() += Metrics::ToolBox_TabBoxTextSpace;
+        }
+
+        // icon size
+        if( !toolBoxOption->icon.isNull() )
+        {
+
+            contentsSize.setHeight( qMax( contentsSize.height(), iconSize ) );
+            contentsSize.rwidth() += iconSize;
+
+        }
+
+        // adjust contents rect
+        contentsRect = centerRect( contentsRect, contentsSize );
+
+        // render icon
+        if( !toolBoxOption->icon.isNull() )
+        {
+
+            // icon rect
+            QRect iconRect;
+            if( toolBoxOption->text.isEmpty() ) iconRect = centerRect( contentsRect, iconSize, iconSize );
+            else {
+
+                iconRect = contentsRect;
+                iconRect.setWidth( iconSize );
+                iconRect = centerRect( iconRect, iconSize, iconSize );
+                contentsRect.setLeft( iconRect.right() + 1 + Metrics::ToolBox_TabBoxTextSpace );
+
+            }
+
+            iconRect = handleRTL( option, iconRect );
+            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
+            const QPixmap pixmap( toolBoxOption->icon.pixmap( iconSize, mode ) );
+            drawItemPixmap( painter, iconRect, alignment, pixmap );
+
+        }
+
+        // render text
+        if( !toolBoxOption->text.isEmpty() )
+        {
+            contentsRect = handleRTL( option, contentsRect );
+            drawItemText( painter, contentsRect, alignment, palette, enabled, toolBoxOption->text, QPalette::WindowText );
+        }
+
+        return true;
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawToolBoxTabShapeControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        if( !toolBoxOption ) return true;
+
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QRect tabRect( toolBoxTabContentsRect( option, widget ) );
+
+        /*
+        important: option returns the wrong palette.
+        we use the widget palette instead, when set
+        */
+        const QPalette palette( widget ? widget->palette() : option->palette );
+
+        // store flags
+        const State& flags( option->state );
+        const bool enabled( flags&State_Enabled );
+        const bool selected( flags&State_Selected );
+        const bool mouseOver( enabled && !selected && ( flags&State_MouseOver ) );
+        const bool hasFocus( enabled && ( flags&State_HasFocus ) );
+
+        // color
+        QColor outline;
+        if( selected ) outline = _helper->focusColor( palette );
+        else outline = _helper->frameOutlineColor( palette, mouseOver, hasFocus );
+
+        // render
+        _helper->renderToolBoxFrame( painter, rect, tabRect.width(), outline );
+
+        return true;
+    }
+
+    //___________________________________________________________________________________
     bool Style::drawDockWidgetTitleControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
@@ -4262,20 +4424,9 @@ namespace Breeze
         }
 
         QString title( dockWidgetOption->title );
-        QString tmpTitle = title;
-
-        // this is quite suboptimal
-        // and does not really work
-        if( tmpTitle.contains( QLatin1Char( '&' ) ) )
-        {
-            int pos = tmpTitle.indexOf( QLatin1Char( '&' ) );
-            if( !( tmpTitle.size()-1 > pos && tmpTitle.at( pos+1 ) == QLatin1Char( '&' ) ) ) tmpTitle.remove( pos, 1 );
-
-        }
-
-        int tw = dockWidgetOption->fontMetrics.width( tmpTitle );
+        int titleWidth = dockWidgetOption->fontMetrics.size( _mnemonics->textFlags(), title ).width();
         int width = verticalTitleBar ? rect.height() : rect.width();
-        if( width < tw ) title = dockWidgetOption->fontMetrics.elidedText( title, Qt::ElideRight, width, Qt::TextShowMnemonic );
+        if( width < titleWidth ) title = dockWidgetOption->fontMetrics.elidedText( title, Qt::ElideRight, width, Qt::TextShowMnemonic );
 
         if( verticalTitleBar )
         {

@@ -502,6 +502,45 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderToolBoxFrame(
+        QPainter* painter, const QRect& rect, int tabWidth,
+        const QColor& outline ) const
+    {
+
+        if( !outline.isValid() ) return;
+
+        // round radius
+        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.0 );
+        const QSizeF cornerSize( 2*radius, 2*radius );
+
+        QRectF baseRect( rect );
+        baseRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+
+        // create path
+        QPainterPath path;
+        path.moveTo( 0, baseRect.height()-1 );
+        path.lineTo( ( baseRect.width() - tabWidth )/2 - radius, baseRect.height()-1 );
+        path.arcTo( QRectF( QPointF( ( baseRect.width() - tabWidth )/2 - 2*radius, baseRect.height()-1 - 2*radius ), cornerSize ), 270, 90 );
+        path.lineTo( ( baseRect.width() - tabWidth )/2, radius );
+        path.arcTo( QRectF( QPointF( ( baseRect.width() - tabWidth )/2, 0 ), cornerSize ), 180, -90 );
+        path.lineTo( ( baseRect.width() + tabWidth )/2 -1 - radius, 0 );
+        path.arcTo( QRectF(  QPointF( ( baseRect.width() + tabWidth )/2 -1 - 2*radius, 0 ), cornerSize ), 90, -90 );
+        path.lineTo( ( baseRect.width() + tabWidth )/2 -1, baseRect.height()-1 - radius );
+        path.arcTo( QRectF( QPointF( ( baseRect.width() + tabWidth )/2 -1, baseRect.height()-1 - 2*radius ), cornerSize ), 180, 90 );
+        path.lineTo( baseRect.width()-1, baseRect.height()-1 );
+
+        // render
+        painter->setRenderHints( QPainter::Antialiasing );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( outline );
+        painter->translate( baseRect.topLeft() );
+        painter->drawPath( path );
+
+        return;
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderTabWidgetFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, Corners corners ) const

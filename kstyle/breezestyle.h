@@ -190,9 +190,6 @@ namespace Breeze
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
-//         //! toolbox tab
-//         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
-//
         //! checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
         { return handleRTL( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
@@ -209,15 +206,18 @@ namespace Breeze
         //! progressbar label
         QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
 
-        // view headers
+        //! view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
         QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
 
-        // tab widgets
+        //! tab widgets
         QRect tabWidgetTabBarRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetCornerRect( SubElement, const QStyleOption* option, const QWidget* widget ) const;
+
+        //! toolbox tab
+        QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 
         //@}
 
@@ -338,8 +338,8 @@ namespace Breeze
         //! tabbar tabs.
         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //!@}
