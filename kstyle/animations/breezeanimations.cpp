@@ -41,6 +41,7 @@
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QTextEdit>
+#include <QToolBox>
 #include <QToolButton>
 
 namespace Breeze
@@ -54,6 +55,7 @@ namespace Breeze
         _busyIndicatorEngine = new BusyIndicatorEngine( this );
         _comboBoxEngine = new WidgetStateEngine( this );
         _spinBoxEngine = new SpinBoxEngine( this );
+        _toolBoxEngine = new ToolBoxEngine( this );
 
         registerEngine( _headerViewEngine = new HeaderViewEngine( this ) );
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
@@ -73,19 +75,21 @@ namespace Breeze
 
         {
             // default enability, duration and maxFrame
-            bool animationsEnabled( StyleConfigData::animationsEnabled() );
+            const bool animationsEnabled( StyleConfigData::animationsEnabled() );
+            const bool genericAnimationsEnabled( animationsEnabled && StyleConfigData::genericAnimationsEnabled() );
 
             // enability
-            _widgetEnabilityEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _widgetStateEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _comboBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _spinBoxEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _lineEditEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _headerViewEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _scrollBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _sliderEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _tabBarEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
-            _dialEngine->setEnabled( animationsEnabled &&  StyleConfigData::genericAnimationsEnabled() );
+            _widgetEnabilityEngine->setEnabled( genericAnimationsEnabled );
+            _widgetStateEngine->setEnabled( genericAnimationsEnabled );
+            _comboBoxEngine->setEnabled( genericAnimationsEnabled );
+            _spinBoxEngine->setEnabled( genericAnimationsEnabled );
+            _lineEditEngine->setEnabled( genericAnimationsEnabled );
+            _headerViewEngine->setEnabled( genericAnimationsEnabled );
+            _scrollBarEngine->setEnabled( genericAnimationsEnabled );
+            _sliderEngine->setEnabled( genericAnimationsEnabled );
+            _tabBarEngine->setEnabled( genericAnimationsEnabled );
+            _toolBoxEngine->setEnabled( genericAnimationsEnabled );
+            _dialEngine->setEnabled( genericAnimationsEnabled );
 
             // busy indicator
             _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
@@ -95,15 +99,17 @@ namespace Breeze
         {
 
             // durations
-            _widgetEnabilityEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _widgetStateEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _comboBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _spinBoxEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _lineEditEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _headerViewEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _scrollBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _sliderEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
-            _tabBarEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
+            const int genericAnimationsDuration( StyleConfigData::genericAnimationsDuration() );
+            _widgetEnabilityEngine->setDuration( genericAnimationsDuration );
+            _widgetStateEngine->setDuration( genericAnimationsDuration );
+            _comboBoxEngine->setDuration( genericAnimationsDuration );
+            _spinBoxEngine->setDuration( genericAnimationsDuration );
+            _lineEditEngine->setDuration( genericAnimationsDuration );
+            _headerViewEngine->setDuration( genericAnimationsDuration );
+            _scrollBarEngine->setDuration( genericAnimationsDuration );
+            _sliderEngine->setDuration( genericAnimationsDuration );
+            _tabBarEngine->setDuration( genericAnimationsDuration );
+            _toolBoxEngine->setDuration( genericAnimationsDuration );
             _dialEngine->setDuration( StyleConfigData::genericAnimationsDuration() );
 
             // busy indicator
@@ -135,6 +141,10 @@ namespace Breeze
 
 
         } else if( qobject_cast<QAbstractButton*>(widget) ) {
+
+            // register to toolbox engine if needed
+            if( qobject_cast<QToolBox*>( widget->parent() ) )
+            { _toolBoxEngine->registerWidget( widget ); }
 
             _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
 

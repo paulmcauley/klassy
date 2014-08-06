@@ -2,11 +2,7 @@
 #define breeze_helper_h
 
 /*
- * Copyright 2009-2010 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * Copyright 2008 Long Huynh Huu <long.upcase@googlemail.com>
- * Copyright 2007 Matthew Woehlke <mw_triad@users.sourceforge.net>
- * Copyright 2007 Casper Boemann <cbr@boemann.dk>
- * Copyright 2007 Fredrik H?glund <fredrik@kde.org>
+ * Copyright 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -24,6 +20,7 @@
  */
 
 #include "breezeanimationmodes.h"
+#include "breezeanimationdata.h"
 
 #include <KSharedConfig>
 #include <KColorScheme>
@@ -84,7 +81,7 @@ namespace Breeze
         { return alphaColor( palette.color( QPalette::Shadow ), 0.2 ); }
 
         //! frame outline color, using animations
-        QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! frame background color
         QColor frameBackgroundColor( const QPalette& palette ) const
@@ -97,19 +94,19 @@ namespace Breeze
         QPalette framePalette( const QPalette& ) const;
 
         //! button outline color, using animations
-        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! button panel color, using animations
-        QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! tool button color
-        QColor toolButtonColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor toolButtonColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! slider outline color, using animations
-        QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! checkbox indicator, using animations
-        QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity = -1, AnimationMode = AnimationNone ) const;
+        QColor checkBoxIndicatorColor( const QPalette&, bool mouseOver, bool active, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
         //! separator color
         QColor separatorColor( const QPalette& ) const;

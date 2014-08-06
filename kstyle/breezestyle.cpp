@@ -4407,12 +4407,27 @@ namespace Breeze
         const bool enabled( flags&State_Enabled );
         const bool selected( flags&State_Selected );
         const bool mouseOver( enabled && !selected && ( flags&State_MouseOver ) );
-        const bool hasFocus( enabled && ( flags&State_HasFocus ) );
+
+        // update animation state
+        /*
+        the proper widget ( the toolbox tab ) is not passed as argument by Qt.
+        What is passed is the toolbox directly. To implement animations properly,
+        the painter->device() is used instead
+        */
+        bool isAnimated( false );
+        qreal opacity( AnimationData::OpacityInvalid );
+        QPaintDevice* device = painter->device();
+        if( enabled && device )
+        {
+            _animations->toolBoxEngine().updateState( device, mouseOver );
+            isAnimated = _animations->toolBoxEngine().isAnimated( device );
+            opacity = _animations->toolBoxEngine().opacity( device );
+        }
 
         // color
         QColor outline;
         if( selected ) outline = _helper->focusColor( palette );
-        else outline = _helper->frameOutlineColor( palette, mouseOver, hasFocus );
+        else outline = _helper->frameOutlineColor( palette, mouseOver, false, opacity, isAnimated ? AnimationHover:AnimationNone );
 
         // render
         _helper->renderToolBoxFrame( painter, rect, tabRect.width(), outline );

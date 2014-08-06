@@ -34,6 +34,7 @@
 #include "breezesliderengine.h"
 #include "breezespinboxengine.h"
 #include "breezetabbarengine.h"
+#include "breezetoolboxengine.h"
 #include "breezewidgetstateengine.h"
 
 #include <QObject>
@@ -107,6 +108,10 @@ namespace Breeze
         TabBarEngine& tabBarEngine( void ) const
         { return *_tabBarEngine; }
 
+        //! toolbox
+        ToolBoxEngine& toolBoxEngine( void ) const
+        { return *_toolBoxEngine; }
+
         //! setup engines
         void setupEngines( void );
 
@@ -151,6 +156,9 @@ namespace Breeze
 
         //! tabbar engine
         TabBarEngine* _tabBarEngine;
+
+        //! toolbar engine
+        ToolBoxEngine* _toolBoxEngine;
 
         //! keep list of existing engines
         QList< BaseEngine::Pointer > _engines;
