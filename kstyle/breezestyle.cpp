@@ -207,7 +207,7 @@ namespace Breeze
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
             // change palette
-            widget->setPalette( _helper->framePalette( widget->palette() ) );
+            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
 
             // checkable group boxes
             if( groupBox->isCheckable() )
@@ -217,7 +217,7 @@ namespace Breeze
         } else if( qobject_cast<QTabWidget*>( widget ) )  {
 
             // change palette
-            widget->setPalette( _helper->framePalette( widget->palette() ) );
+            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
 
         } else if( qobject_cast<QAbstractButton*>( widget ) && qobject_cast<QDockWidget*>( widget->parent() ) ) {
 
@@ -263,7 +263,7 @@ namespace Breeze
             // add event filter on dock widgets
             // and alter palette
             widget->setAutoFillBackground( false );
-            widget->setPalette( _helper->framePalette( widget->palette() ) );
+            widget->setPalette( _helper->framePalette( QGuiApplication::palette() ) );
             widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
             addEventFilter( widget );
 
@@ -2556,9 +2556,17 @@ namespace Breeze
 
             }
 
+            // get the relevant palette
+            const QWidget* parent( tabBar->parentWidget() );
+            if( qobject_cast<const QTabWidget*>( parent ) )
+            { parent = parent->parentWidget(); }
+            const QPalette palette( parent ? parent->palette() : QGuiApplication::palette() );
+
+            // render flat background
             painter->setPen( Qt::NoPen );
-            painter->setBrush( tabBar->palette().color( QPalette::Window ) );
+            painter->setBrush( palette.color( QPalette::Window ) );
             painter->drawRect( rect );
+
             return true;
 
         }
