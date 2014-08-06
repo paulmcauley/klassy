@@ -179,15 +179,6 @@ namespace Breeze
             ArrowRight
         };
 
-
-        //! get polygon corresponding to generic arrow
-        enum ArrowSize
-        {
-            ArrowNormal,
-            ArrowSmall,
-            ArrowTiny
-        };
-
         //@}
 
         //!@name subelementRect specialized functions
@@ -439,7 +430,7 @@ namespace Breeze
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;
 
         //! returns point position for generic arrows
-        QPolygonF genericArrow( ArrowOrientation, ArrowSize = ArrowNormal ) const;
+        QPolygonF genericArrow( ArrowOrientation ) const;
 
         //! scrollbar arrow
         void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;

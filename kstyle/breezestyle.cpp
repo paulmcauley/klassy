@@ -2496,7 +2496,7 @@ namespace Breeze
         else color = palette.color( QPalette::WindowText );
 
         // arrow
-        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( orientation ) );
         const qreal penThickness = 1.5;
 
         painter->setRenderHint( QPainter::Antialiasing );
@@ -2524,7 +2524,7 @@ namespace Breeze
         const QPalette& palette( option->palette );
 
         // define color and polygon for drawing arrow
-        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( orientation ) );
         const QColor color = palette.color( QPalette::WindowText );
         const qreal penThickness = 1.5;
 
@@ -3042,9 +3042,9 @@ namespace Breeze
 
             // get size from option
             QPolygonF arrow;
-            if( expanderOpen ) arrow = genericArrow( ArrowDown, ArrowNormal );
-            else if( reverseLayout ) arrow = genericArrow( ArrowLeft, ArrowNormal );
-            else arrow = genericArrow( ArrowRight, ArrowNormal );
+            if( expanderOpen ) arrow = genericArrow( ArrowDown );
+            else if( reverseLayout ) arrow = genericArrow( ArrowLeft );
+            else arrow = genericArrow( ArrowRight );
 
             const qreal penThickness( 1.5 );
             const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : palette.color( QPalette::Text ) );
@@ -3147,7 +3147,7 @@ namespace Breeze
             const QColor arrowColor( palette.color( textRole ) );
 
             // render arrow
-            const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
+            const QPolygonF arrow( genericArrow( ArrowDown ) );
             const qreal penThickness = 1.5;
 
             painter->save();
@@ -3483,7 +3483,7 @@ namespace Breeze
         {
 
             const bool reverseLayout( option->direction == Qt::RightToLeft );
-            const QPolygonF arrow( genericArrow( reverseLayout ? ArrowLeft:ArrowRight, ArrowNormal ) );
+            const QPolygonF arrow( genericArrow( reverseLayout ? ArrowLeft:ArrowRight ) );
             const qreal penThickness = 1.5;
             QColor arrowColor;
             if( sunken ) arrowColor = _helper->focusColor( palette );
@@ -4821,7 +4821,7 @@ namespace Breeze
 
             // render arrow
             const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
-            const QPolygonF arrow( genericArrow( ArrowDown, ArrowNormal ) );
+            const QPolygonF arrow( genericArrow( ArrowDown ) );
             const qreal penThickness( 1.5 );
 
             painter->save();
@@ -5184,7 +5184,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         const qreal penThickness( 1.5 );
-        const QPolygonF arrow( genericArrow( orientation, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( orientation ) );
 
         const QColor base( color );
 
@@ -5248,7 +5248,7 @@ namespace Breeze
 
         }
 
-        const QPolygonF arrow( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown, ArrowNormal ) );
+        const QPolygonF arrow( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown ) );
         const QRectF arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
 
         painter->save();
@@ -5361,49 +5361,17 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    QPolygonF Style::genericArrow( Style::ArrowOrientation orientation, Style::ArrowSize size ) const
+    QPolygonF Style::genericArrow( Style::ArrowOrientation orientation ) const
     {
 
-        QPolygonF a;
         switch( orientation )
         {
-            case ArrowUp:
-            {
-                if( size == ArrowTiny ) a << QPointF( -1.75, 1.125 ) << QPointF( 0.5, -1.125 ) << QPointF( 2.75, 1.125 );
-                else if( size == ArrowSmall ) a << QPointF( -2,1.5 ) << QPointF( 0.5, -1.5 ) << QPointF( 3,1.5 );
-                else a << QPointF( -4,2 ) << QPointF( 0, -2 ) << QPointF( 4,2 );
-                break;
-            }
-
-            case ArrowDown:
-            {
-                if( size == ArrowTiny ) a << QPointF( -1.75, -1.125 ) << QPointF( 0.5, 1.125 ) << QPointF( 2.75, -1.125 );
-                else if( size == ArrowSmall ) a << QPointF( -2,-1.5 ) << QPointF( 0.5, 1.5 ) << QPointF( 3,-1.5 );
-                else a << QPointF( -4,-2 ) << QPointF( 0, 2 ) << QPointF( 4,-2 );
-                break;
-            }
-
-            case ArrowLeft:
-            {
-                if( size == ArrowTiny ) a << QPointF( 1.125, -1.75 ) << QPointF( -1.125, 0.5 ) << QPointF( 1.125, 2.75 );
-                else if( size == ArrowSmall ) a << QPointF( 1.5,-2 ) << QPointF( -1.5, 0.5 ) << QPointF( 1.5,3 );
-                else a << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 );
-                break;
-            }
-
-            case ArrowRight:
-            {
-                if( size == ArrowTiny ) a << QPointF( -1.125, -1.75 ) << QPointF( 1.125, 0.5 ) << QPointF( -1.125, 2.75 );
-                else if( size == ArrowSmall ) a << QPointF( -1.5,-2 ) << QPointF( 1.5, 0.5 ) << QPointF( -1.5,3 );
-                else a << QPointF( -2,-4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 );
-                break;
-            }
-
-            default: break;
-
+            case ArrowUp: return QPolygonF() << QPointF( -4,2 ) << QPointF( 0, -2 ) << QPointF( 4,2 );
+            case ArrowDown: return QPolygonF() << QPointF( -4,-2 ) << QPointF( 0, 2 ) << QPointF( 4,-2 );
+            case ArrowLeft: return QPolygonF() << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 );
+            case ArrowRight: return QPolygonF() << QPointF( -2,-4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 );
+            default: return QPolygonF();
         }
-
-        return a;
 
     }
 
