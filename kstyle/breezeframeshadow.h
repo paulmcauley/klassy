@@ -47,11 +47,9 @@ namespace Breeze
 
     //! shadow area
     enum ShadowArea {
-        Unknown,
-        Left,
-        Top,
-        Right,
-        Bottom
+        Unknown = 0,
+        ShadowAreaTop,
+        ShadowAreaBottom
     };
 
     //! shadow manager
@@ -212,10 +210,8 @@ namespace Breeze
         //! shadow sizes
         enum
         {
-            SHADOW_SIZE_TOP = 3,
-            SHADOW_SIZE_BOTTOM = 3,
-            SHADOW_SIZE_LEFT = 3,
-            SHADOW_SIZE_RIGHT = 3
+            ShadowSizeTop = 3,
+            ShadowSizeBottom = 3,
         };
 
         //! helper

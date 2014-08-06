@@ -30,6 +30,8 @@
 #include "breezeframeshadow.h"
 #include "breezeframeshadow.moc"
 
+#include "breezemetrics.h"
+
 #include <QDebug>
 #include <QAbstractScrollArea>
 #include <QApplication>
@@ -138,8 +140,8 @@ namespace Breeze
         widget->installEventFilter(this);
 
         widget->installEventFilter( &_addEventFilter );
-        installShadow( widget, helper, Top );
-        installShadow( widget, helper, Bottom );
+        installShadow( widget, helper, ShadowAreaTop );
+        installShadow( widget, helper, ShadowAreaBottom );
         widget->removeEventFilter( &_addEventFilter );
 
     }
@@ -339,25 +341,15 @@ namespace Breeze
         switch (shadowArea())
         {
 
-            case Top:
-            cr.setHeight( SHADOW_SIZE_TOP );
+            case ShadowAreaTop:
+            cr.setHeight( ShadowSizeTop );
             cr.adjust( -1, -1, 1, 0 );
             break;
 
-            case Left:
-            cr.setWidth(SHADOW_SIZE_LEFT);
-            cr.adjust(-1, SHADOW_SIZE_TOP, 0, -SHADOW_SIZE_BOTTOM);
-            break;
 
-
-            case Bottom:
-            cr.setTop(cr.bottom() - SHADOW_SIZE_BOTTOM + 1);
+            case ShadowAreaBottom:
+            cr.setTop(cr.bottom() - ShadowSizeBottom + 1);
             cr.adjust( -1, 0, 1, 1 );
-            break;
-
-            case Right:
-            cr.setLeft(cr.right() - SHADOW_SIZE_RIGHT + 1);
-            cr.adjust(0, SHADOW_SIZE_TOP, 1, -SHADOW_SIZE_BOTTOM);
             break;
 
             case Unknown:
@@ -417,32 +409,11 @@ namespace Breeze
         QRect rect = parent->contentsRect();
         rect.translate(mapFromParent(QPoint(0, 0)));
 
-        QColor base( palette().color(QPalette::Window) );
+        const int frameWidth( Metrics::Frame_FrameWidth );
         switch( shadowArea() )
         {
-            case Top:
-            {
-                rect.adjust( -2, -2, 2, -1 );
-                break;
-            }
-
-            case Bottom:
-            {
-                rect.adjust( -2, 1, 2, 2 );
-                break;
-            }
-
-            case Left:
-            {
-                rect.adjust( -2, -4, -1, 4 );
-                break;
-            }
-
-            case Right:
-            {
-                rect.adjust( -1, -4, 2, 4 );
-                break;
-            }
+            case ShadowAreaTop: rect.adjust( -frameWidth, -frameWidth, frameWidth, -1 ); break;
+            case ShadowAreaBottom: rect.adjust( -frameWidth, 1, frameWidth, frameWidth ); break;
 
             default: return;
         }
@@ -452,8 +423,12 @@ namespace Breeze
         painter.setClipRegion( event->region() );
         painter.setRenderHint( QPainter::Antialiasing );
 
-        const QColor outline( _helper.frameOutlineColor( palette(), _mouseOver, _hasFocus, _opacity, _mode ) );
-        _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
+        {
+            // render frame
+            const QColor outline( _helper.frameOutlineColor( palette(), _mouseOver, _hasFocus, _opacity, _mode ) );
+            painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+            _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
+        }
 
         return;
 
