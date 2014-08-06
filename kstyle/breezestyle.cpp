@@ -58,6 +58,7 @@
 #include <QRadioButton>
 #include <QScrollBar>
 #include <QSplitterHandle>
+#include <QSvgRenderer>
 #include <QTextEdit>
 #include <QToolBox>
 #include <QToolButton>
@@ -324,20 +325,20 @@ namespace Breeze
         {
 
             case SP_TitleBarNormalButton:
-            icon = iconFromResource( "restore" );
+            icon = iconFromResource( ":/restore.svgz" );
             break;
 
             case SP_TitleBarMinButton:
-            icon = iconFromResource( "minimize" );
+            icon = iconFromResource( ":/minimize.svgz" );
             break;
 
             case SP_TitleBarMaxButton:
-            icon = iconFromResource( "maximize" );
+            icon = iconFromResource( ":/maximize.svgz" );
             break;
 
             case SP_TitleBarCloseButton:
             case SP_DockWidgetCloseButton:
-            icon = iconFromResource( "close" );
+            icon = iconFromResource( ":/close.svgz" );
             break;
 
             default:
@@ -5198,7 +5199,7 @@ namespace Breeze
 
             // get pixmap
             const bool subControlActive( titleBarOption->activeSubControls & subControl );
-            const QIcon::Mode iconMode( active ? QIcon::Active : QIcon::Normal );
+            const QIcon::Mode iconMode = ( active && enabled ) ? QIcon::Selected:QIcon::Disabled;
             const QIcon::State iconState( subControlActive ? QIcon::On : QIcon::Off );
             const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
 
@@ -5448,27 +5449,78 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
+    //! conveniant struct needed to map svg element id to icon mode and state
+    struct IconData
+    {
+
+        IconData( const QString& id, QIcon::Mode mode, QIcon::State state ):
+            _id( id ),
+            _mode( mode ),
+            _state( state )
+        {}
+
+        QString _id;
+        QIcon::Mode _mode;
+        QIcon::State _state;
+    };
+
+    //____________________________________________________________________________________
     QIcon Style::iconFromResource( const QString& name ) const
     {
 
+        // default icon sizes
         static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
 
-        QIcon icon;
-        foreach( const int& iconSize, iconSizes )
+        // element names
+        static const QList<IconData> elementNames =
         {
-            const QSize size( iconSize, iconSize );
-            icon.addFile( QString( ":/%1-normal-off.svg" ).arg( name ), size, QIcon::Normal, QIcon::Off );
-            icon.addFile( QString( ":/%1-normal-on.svg" ).arg( name ), size, QIcon::Normal, QIcon::On );
+            IconData( "selected", QIcon::Selected, QIcon::Off ),
+            IconData( "active", QIcon::Active, QIcon::Off ),
+            IconData( "normal", QIcon::Normal, QIcon::Off ),
+            IconData( "disabled", QIcon::Disabled, QIcon::Off ),
+            IconData( "pressed-selected", QIcon::Selected, QIcon::On ),
+            IconData( "pressed-active", QIcon::Active, QIcon::On ),
+            IconData( "pressed-normal", QIcon::Normal, QIcon::On ),
+            IconData( "pressed-disabled", QIcon::Disabled, QIcon::On ),
+        };
 
-            icon.addFile( QString( ":/%1-active-off.svg" ).arg( name ), size, QIcon::Active, QIcon::Off );
-            icon.addFile( QString( ":/%1-active-on.svg" ).arg( name ), size, QIcon::Active, QIcon::On );
+        // output icon
+        QIcon icon;
 
-            icon.addFile( QString( ":/%1-active-off.svg" ).arg( name ), size, QIcon::Selected, QIcon::Off );
-            icon.addFile( QString( ":/%1-active-on.svg" ).arg( name ), size, QIcon::Selected, QIcon::On );
+        // create renderer
+        QSvgRenderer svgRenderer( name );
+        foreach( const IconData& iconData, elementNames )
+        {
+
+            // do nothing if element is not found
+            if( !svgRenderer.elementExists( iconData._id ) )
+            {
+                qDebug() << "Style::iconFromResource - name: " << name << " could not find " << iconData._id;
+                continue;
+            }
+
+            // loop over icon sizes
+            foreach( const int& iconWidth, iconSizes )
+            {
+
+                // store icon size and create pixmap
+                const QSize iconSize( iconWidth, iconWidth );
+                QPixmap pixmap( iconSize );
+                pixmap.fill( Qt::transparent );
+
+                // render
+                QPainter painter( &pixmap );
+                painter.setWindow( 0, 0, 18, 18 );
+                QRectF rect( -4, -4, 26, 26 );
+                svgRenderer.render( &painter, iconData._id, rect );
+                painter.end();
+
+                // add pixmap to icon
+                icon.addPixmap( pixmap, iconData._mode, iconData._state );
+
+            }
 
         }
-
-        icon.pixmap( QSize( 32, 32 ), QIcon::Normal ).save( QString( "%1.png" ).arg( name ) );
 
         return icon;
     }

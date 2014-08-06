@@ -8,7 +8,7 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 
 ################# Qt5/KF5 #################
-find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
+find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets Svg)
 find_package(KF5 REQUIRED COMPONENTS
     I18n
     Config
@@ -89,7 +89,7 @@ add_library(breeze MODULE ${breeze_PART_SRCS} ${breeze_RESOURCES_RCC})
 
 target_link_libraries(breeze  ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
 
-target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
+target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Svg Qt5::DBus)
 target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::Style KF5::WindowSystem)
 
 if(X11_FOUND)
