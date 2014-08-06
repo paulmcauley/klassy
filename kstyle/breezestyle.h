@@ -45,6 +45,7 @@ namespace Breeze
     class Animations;
     class FrameShadowFactory;
     class Helper;
+    class MdiWindowShadowFactory;
     class Mnemonics;
     class ShadowHelper;
     class SplitterFactory;
@@ -266,7 +267,7 @@ namespace Breeze
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabClose( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 
         bool drawIndicatorArrowUpPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
@@ -490,6 +491,9 @@ namespace Breeze
 
         //! frame shadows
         FrameShadowFactory* _frameShadowFactory;
+
+        //! mdi window shadows
+        MdiWindowShadowFactory* _mdiWindowShadowFactory;
 
         //! splitter Factory, to extend splitters hit area
         SplitterFactory* _splitterFactory;

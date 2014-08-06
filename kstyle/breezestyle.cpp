@@ -30,6 +30,7 @@
 #include "breezeframeshadow.h"
 #include "breezehelper.h"
 #include "breezemetrics.h"
+#include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
@@ -50,6 +51,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QMdiSubWindow>
 #include <QMenu>
 #include <QPainter>
 #include <QPushButton>
@@ -127,6 +129,7 @@ namespace Breeze
         _mnemonics( new Mnemonics( this ) ),
         _windowManager( new WindowManager( this ) ),
         _frameShadowFactory( new FrameShadowFactory( this ) ),
+        _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) ),
         _splitterFactory( new SplitterFactory( this ) ),
         _tabBarData( new BreezePrivate::TabBarData( this ) ),
         SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
@@ -166,6 +169,7 @@ namespace Breeze
         _animations->registerWidget( widget );
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
+        _mdiWindowShadowFactory->registerWidget( widget );
         _shadowHelper->registerWidget( widget );
         _splitterFactory->registerWidget( widget );
 
@@ -263,6 +267,10 @@ namespace Breeze
             widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
             addEventFilter( widget );
 
+        } else if( qobject_cast<QMdiSubWindow*>( widget ) ) {
+
+            widget->setAutoFillBackground( false );
+
         } else if( qobject_cast<QMenu*>( widget ) ) {
 
             setTranslucentBackground( widget );
@@ -291,6 +299,7 @@ namespace Breeze
         // register widget to animations
         _animations->unregisterWidget( widget );
         _frameShadowFactory->unregisterWidget( widget );
+        _mdiWindowShadowFactory->unregisterWidget( widget );
         _shadowHelper->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
@@ -684,6 +693,10 @@ namespace Breeze
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
             case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
+            case PE_FrameWindow: fcn = &Style::drawFrameWindowPrimitive; break;
+
+            // disable all focus rect rendering
+            // it is handled directly in the relevant primitives
             case PE_FrameFocusRect: fcn = &Style::emptyPrimitive; break;
 
             // fallback
@@ -954,6 +967,10 @@ namespace Breeze
 
         // splitter proxy
         _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
+
+
+        // set mdiwindow factory shadow tiles
+        _mdiWindowShadowFactory->setShadowTiles( _shadowHelper->shadowTiles() );
     }
 
     //___________________________________________________________________________________________________________________
@@ -2352,6 +2369,24 @@ namespace Breeze
             break;
 
         }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameWindowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+        const State state( option->state );
+        const bool selected( state & State_Selected );
+
+        const QColor background( palette.color( QPalette::Window ) );
+        const QColor outline( _helper->frameOutlineColor( palette, false, selected ) );
+        _helper->renderMenuFrame( painter, rect, background, outline );
 
         return true;
 
