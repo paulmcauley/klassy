@@ -28,6 +28,7 @@
 #include <KStyle>
 
 #include <QDockWidget>
+#include <QHash>
 #include <QIcon>
 #include <QLoggingCategory>
 #include <QMdiSubWindow>
@@ -508,6 +509,10 @@ namespace Breeze
 
         //! tabbar data
         BreezePrivate::TabBarData* _tabBarData;
+
+        //! icon hash
+        typedef QHash<StandardPixmap, QIcon> IconCache;
+        IconCache _iconCache;
 
         //! pointer to primitive specialized function
         typedef bool (Style::*StylePrimitive)( const QStyleOption*, QPainter*, const QWidget* ) const;

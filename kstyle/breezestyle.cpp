@@ -316,27 +316,38 @@ namespace Breeze
     QIcon Style::standardIcon( StandardPixmap standardIcon, const QStyleOption* option, const QWidget* widget ) const
     {
 
+        // lookup cache
+        if( _iconCache.contains( standardIcon ) ) return _iconCache.value( standardIcon );
+
+        QIcon icon;
         switch( standardIcon )
         {
 
             case SP_TitleBarNormalButton:
-            return iconFromResource( "restore" );
+            icon = iconFromResource( "restore" );
+            break;
 
             case SP_TitleBarMinButton:
-            case SP_TitleBarShadeButton:
-            return iconFromResource( "minimize" );
+            icon = iconFromResource( "minimize" );
+            break;
 
             case SP_TitleBarMaxButton:
-            case SP_TitleBarUnshadeButton:
-            return iconFromResource( "maximize" );
+            icon = iconFromResource( "maximize" );
+            break;
 
             case SP_TitleBarCloseButton:
             case SP_DockWidgetCloseButton:
-            return iconFromResource( "close" );
+            icon = iconFromResource( "close" );
+            break;
 
-            default: return KStyle::standardIcon( standardIcon, option, widget );
+            default:
+            icon = KStyle::standardIcon( standardIcon, option, widget );
+            break;
 
         }
+
+        const_cast<IconCache*>(&_iconCache)->insert( standardIcon, icon );
+        return icon;
 
     }
 
@@ -5097,9 +5108,6 @@ namespace Breeze
         if( titleBarOption->subControls & SC_TitleBarLabel )
         {
 
-            const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
-            qDebug() << "iconSize: " << iconSize << endl;
-
             // render background
             painter->setClipRect( rect );
             const QColor outline( _helper->frameOutlineColor( palette, false, false ) );
@@ -5107,7 +5115,7 @@ namespace Breeze
             _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, Helper::CornersTop );
 
             // render text
-            const QRect textRect( subControlRect( CC_TitleBar, titleBarOption, SC_TitleBarLabel, widget ) );
+            const QRect textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
             KStyle::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, active ? QPalette::HighlightedText : QPalette::WindowText );
 
         }
@@ -5119,8 +5127,7 @@ namespace Breeze
             SC_TitleBarMaxButton,
             SC_TitleBarCloseButton,
             SC_TitleBarNormalButton,
-            SC_TitleBarShadeButton,
-            SC_TitleBarUnshadeButton
+            SC_TitleBarSysMenu
         };
 
         // loop over supported buttons
@@ -5129,6 +5136,35 @@ namespace Breeze
 
             // skip if not requested
             if( !titleBarOption->subControls & subControl ) continue;
+
+            // find matching icon
+            QIcon icon;
+            switch( subControl )
+            {
+                case SC_TitleBarMinButton: icon = standardIcon( SP_TitleBarMinButton, option, widget ); break;
+                case SC_TitleBarMaxButton: icon = standardIcon( SP_TitleBarMaxButton, option, widget ); break;
+                case SC_TitleBarCloseButton: icon = standardIcon( SP_TitleBarCloseButton, option, widget ); break;
+                case SC_TitleBarNormalButton: icon = standardIcon( SP_TitleBarNormalButton, option, widget ); break;
+                case SC_TitleBarSysMenu: icon = titleBarOption->icon; break;
+                default: break;
+            }
+
+            // check icon
+            if( icon.isNull() ) continue;
+
+            // define icon rect
+            QRect iconRect( subControlRect( CC_TitleBar, option, subControl, widget ) );
+            if( iconRect.isEmpty() ) continue;
+
+            const int iconWidth( pixelMetric( PM_SmallIconSize, option, widget ) );
+            const QSize iconSize( iconWidth, iconWidth );
+            iconRect = centerRect( iconRect, iconSize );
+
+            // get pixmap
+            const QPixmap pixmap = icon.pixmap( iconSize );
+
+            // render
+            painter->drawPixmap( iconRect, pixmap );
 
         }
 
