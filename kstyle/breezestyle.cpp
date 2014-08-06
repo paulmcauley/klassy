@@ -5111,7 +5111,7 @@ namespace Breeze
             // render background
             painter->setClipRect( rect );
             const QColor outline( _helper->frameOutlineColor( palette, false, false ) );
-            const QColor background( palette.color( active ? QPalette::Highlight : QPalette::Window ) );
+            const QColor background( palette.color( active ? QPalette::Active : QPalette::Disabled, QPalette::Highlight ) );
             _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, Helper::CornersTop );
 
             // render text
@@ -5161,7 +5161,10 @@ namespace Breeze
             iconRect = centerRect( iconRect, iconSize );
 
             // get pixmap
-            const QPixmap pixmap = icon.pixmap( iconSize );
+            const bool subControlActive( titleBarOption->activeSubControls & subControl );
+            const QIcon::Mode iconMode( active ? QIcon::Active : QIcon::Normal );
+            const QIcon::State iconState( subControlActive ? QIcon::On : QIcon::Off );
+            const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
 
             // render
             painter->drawPixmap( iconRect, pixmap );
@@ -5426,9 +5429,15 @@ namespace Breeze
         foreach( const int& iconSize, iconSizes )
         {
             const QSize size( iconSize, iconSize );
-            icon.addFile( QString( ":/%1.svg" ).arg( name ), size, QIcon::Normal );
-            icon.addFile( QString( ":/%1-active.svg" ).arg( name ), size, QIcon::Selected );
-            icon.addFile( QString( ":/%1-pressed.svg" ).arg( name ), size, QIcon::Selected, QIcon::On );
+            icon.addFile( QString( ":/%1-normal-off.svg" ).arg( name ), size, QIcon::Normal, QIcon::Off );
+            icon.addFile( QString( ":/%1-normal-on.svg" ).arg( name ), size, QIcon::Normal, QIcon::On );
+
+            icon.addFile( QString( ":/%1-active-off.svg" ).arg( name ), size, QIcon::Active, QIcon::Off );
+            icon.addFile( QString( ":/%1-active-on.svg" ).arg( name ), size, QIcon::Active, QIcon::On );
+
+            icon.addFile( QString( ":/%1-active-off.svg" ).arg( name ), size, QIcon::Selected, QIcon::Off );
+            icon.addFile( QString( ":/%1-active-on.svg" ).arg( name ), size, QIcon::Selected, QIcon::On );
+
         }
 
         icon.pixmap( QSize( 32, 32 ), QIcon::Normal ).save( QString( "%1.png" ).arg( name ) );

@@ -1,18 +1,25 @@
 <!DOCTYPE RCC><RCC version="1.0">
   <qresource>
     
-    <file>close-active.svg</file>
-    <file>close-pressed.svg</file>    
-    <file>close.svg</file>            
-    <file>maximize-active.svg</file>  
-    <file>maximize-pressed.svg</file> 
-    <file>maximize.svg</file>         
-    <file>minimize-active.svg</file>  
-    <file>minimize-pressed.svg</file> 
-    <file>minimize.svg</file>         
-    <file>restore-active.svg</file>   
-    <file>restore-pressed.svg</file>  
-    <file>restore.svg</file>          
+    <file>close-active-off.svg</file>
+    <file>close-active-on.svg</file>
+    <file>close-normal-off.svg</file>
+    <file>close-normal-on.svg</file>
+
+    <file>maximize-active-off.svg</file>
+    <file>maximize-active-on.svg</file>
+    <file>maximize-normal-off.svg</file>
+    <file>maximize-normal-on.svg</file>
+
+    <file>minimize-active-off.svg</file>
+    <file>minimize-active-on.svg</file>
+    <file>minimize-normal-off.svg</file>
+    <file>minimize-normal-on.svg</file>
+
+    <file>restore-active-off.svg</file>
+    <file>restore-active-on.svg</file>
+    <file>restore-normal-off.svg</file>
+    <file>restore-normal-on.svg</file>
 
     </qresource>
 </RCC>
