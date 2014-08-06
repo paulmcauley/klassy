@@ -110,7 +110,7 @@ namespace Breeze
         virtual int styleHint(StyleHint, const QStyleOption* = 0, const QWidget* = 0, QStyleHintReturn* = 0) const;
 
         //! returns rect corresponding to one widget's subelement
-        virtual QRect subElementRect( SubElement subRect, const QStyleOption*, const QWidget* ) const;
+        virtual QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const;
 
         //! returns rect corresponding to one widget's subcontrol
         virtual QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const;
