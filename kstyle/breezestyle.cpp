@@ -725,6 +725,9 @@ namespace Breeze
             // menu indicator
             case PE_IndicatorButtonDropDown: fcn = &Style::drawIndicatorButtonDropDownPrimitive; break;
 
+            // tab close
+            case PE_IndicatorTabClose: fcn = &Style::drawIndicatorTabClosePrimitive; break;
+
             // arrows
             case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
             case PE_IndicatorArrowDown: fcn = &Style::drawIndicatorArrowDownPrimitive; break;
@@ -2996,6 +2999,39 @@ namespace Breeze
 
         return true;
 
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorTabClosePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // get icon and check
+        QIcon icon( standardIcon( SP_TitleBarCloseButton, option, widget ) );
+        if( icon.isNull() ) return false;
+
+        // store state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool active( state & State_Raised );
+        const bool sunken( state & State_Sunken );
+
+        // decide icon mode and state
+        QIcon::Mode iconMode;
+        if( enabled ) iconMode = active ? QIcon::Active:QIcon::Normal;
+        else iconMode = QIcon::Disabled;
+
+        const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
+
+        // icon size
+        const int iconWidth( pixelMetric(QStyle::PM_SmallIconSize, option, widget ) );
+        const QSize iconSize( iconWidth, iconWidth );
+
+        // get pixmap
+        const QPixmap pixmap( icon.pixmap( iconSize, iconMode, iconState ) );
+
+        // render
+        drawItemPixmap( painter, option->rect, Qt::AlignCenter, pixmap );
+        return true;
     }
 
     //___________________________________________________________________________________
