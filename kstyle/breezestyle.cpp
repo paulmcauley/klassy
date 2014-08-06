@@ -4658,6 +4658,12 @@ namespace Breeze
         } else if( hasFocus && !mouseOver ) textRole = QPalette::HighlightedText;
         else textRole = QPalette::ButtonText;
 
+        // copy option and alter palette
+        QStyleOptionToolButton copy( *toolButtonOption );
+        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
+        copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
+
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
 
@@ -4667,20 +4673,14 @@ namespace Breeze
         // frame
         if( toolButtonOption->subControls & SC_ToolButton )
         {
-            // get relevant rect
-            QStyleOptionToolButton copy( *toolButtonOption );
             copy.rect = buttonRect;
-
             drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
         }
 
         // arrow
         if( toolButtonOption->subControls & SC_ToolButtonMenu )
         {
-
-            QStyleOptionToolButton copy( *toolButtonOption );
             copy.rect = menuRect;
-            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
             if( !autoRaise )
             { drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget ); }
 
@@ -4692,7 +4692,6 @@ namespace Breeze
             QStyleOptionToolButton copy( *toolButtonOption );
             copy.rect = menuRect;
             copy.state &= ~State_MouseOver;
-            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         }
@@ -4706,12 +4705,9 @@ namespace Breeze
             contentsRect = insideMargin( contentsRect, marginWidth );
             if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
 
-            // copy option, adjust rect and palette
-            QStyleOptionToolButton copy( *toolButtonOption );
+            // restore state and assign rect
+            copy.state = option->state;
             copy.rect = contentsRect;
-            copy.palette.setColor( QPalette::Text, option->palette.color( textRole ) );
-            copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
-            copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
 
             // render
             drawControl( CE_ToolButtonLabel, &copy, painter, widget);
