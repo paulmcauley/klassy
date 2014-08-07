@@ -64,6 +64,7 @@ namespace Breeze
         registerEngine( _sliderEngine = new SliderEngine( this ) );
         registerEngine( _tabBarEngine = new TabBarEngine( this ) );
         registerEngine( _dialEngine = new DialEngine( this ) );
+
     }
 
     //____________________________________________________________
@@ -73,48 +74,29 @@ namespace Breeze
         // animation steps
         AnimationData::setSteps( StyleConfigData::animationSteps() );
 
+        const bool animationsEnabled( StyleConfigData::animationsEnabled() );
+        const int animationsDuration( StyleConfigData::animationsDuration() );
+
+        _widgetEnabilityEngine->setEnabled( animationsEnabled );
+        _comboBoxEngine->setEnabled( animationsEnabled );
+        _spinBoxEngine->setEnabled( animationsEnabled );
+        _toolBoxEngine->setEnabled( animationsEnabled );
+
+        _widgetEnabilityEngine->setDuration( animationsDuration );
+        _comboBoxEngine->setDuration( animationsDuration );
+        _spinBoxEngine->setDuration( animationsDuration );
+        _toolBoxEngine->setDuration( animationsDuration );
+
+        // registered engines
+        foreach( const BaseEngine::Pointer& engine, _engines )
         {
-            // default enability, duration and maxFrame
-            const bool animationsEnabled( StyleConfigData::animationsEnabled() );
-
-            // enability
-            _widgetEnabilityEngine->setEnabled( animationsEnabled );
-            _widgetStateEngine->setEnabled( animationsEnabled );
-            _comboBoxEngine->setEnabled( animationsEnabled );
-            _spinBoxEngine->setEnabled( animationsEnabled );
-            _lineEditEngine->setEnabled( animationsEnabled );
-            _headerViewEngine->setEnabled( animationsEnabled );
-            _scrollBarEngine->setEnabled( animationsEnabled );
-            _sliderEngine->setEnabled( animationsEnabled );
-            _tabBarEngine->setEnabled( animationsEnabled );
-            _toolBoxEngine->setEnabled( animationsEnabled );
-            _dialEngine->setEnabled( animationsEnabled );
-
-            // busy indicator
-            _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
-
+            engine.data()->setEnabled( animationsEnabled );
+            engine.data()->setDuration( animationsDuration );
         }
 
-        {
-
-            // durations
-            const int animationsDuration( StyleConfigData::animationsDuration() );
-            _widgetEnabilityEngine->setDuration( animationsDuration );
-            _widgetStateEngine->setDuration( animationsDuration );
-            _comboBoxEngine->setDuration( animationsDuration );
-            _spinBoxEngine->setDuration( animationsDuration );
-            _lineEditEngine->setDuration( animationsDuration );
-            _headerViewEngine->setDuration( animationsDuration );
-            _scrollBarEngine->setDuration( animationsDuration );
-            _sliderEngine->setDuration( animationsDuration );
-            _tabBarEngine->setDuration( animationsDuration );
-            _toolBoxEngine->setDuration( animationsDuration );
-            _dialEngine->setDuration( StyleConfigData::animationsDuration() );
-
-            // busy indicator
-            _busyIndicatorEngine->setDuration( StyleConfigData::progressBarBusyStepDuration() );
-
-        }
+        // busy indicator
+        _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
+        _busyIndicatorEngine->setDuration( StyleConfigData::progressBarBusyStepDuration() );
 
     }
 
