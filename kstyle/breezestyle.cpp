@@ -1127,7 +1127,7 @@ namespace Breeze
             else {
 
                 rect.setWidth( Metrics::ProgressBar_Thickness );
-                rect = handleRTL( option, rect );
+                rect = handleRightToLeftLayout( option, rect );
 
             }
 
@@ -1162,7 +1162,7 @@ namespace Breeze
         else {
 
             rect.setLeft( Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace );
-            rect = handleRTL( option, rect );
+            rect = handleRightToLeftLayout( option, rect );
 
         }
 
@@ -1184,7 +1184,7 @@ namespace Breeze
         QRect arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
         arrowRect.setLeft( arrowRect.right() - Metrics::Header_ArrowSize );
 
-        return handleRTL( option, arrowRect );
+        return handleRightToLeftLayout( option, arrowRect );
 
     }
 
@@ -1201,7 +1201,7 @@ namespace Breeze
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
 
         labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_BoxTextSpace, 0 );
-        return handleRTL( option, labelRect );
+        return handleRightToLeftLayout( option, labelRect );
 
     }
 
@@ -1357,7 +1357,7 @@ namespace Breeze
             default: break;
         }
 
-        return handleRTL( option, cornerRect );
+        return handleRightToLeftLayout( option, cornerRect );
 
     }
 
@@ -1572,7 +1572,7 @@ namespace Breeze
                 if( hasInlineIndicator )
                 { menuRect.setTop( menuRect.bottom() + 1 - menuButtonWidth ); }
 
-                return handleRTL( option, menuRect );
+                return handleRightToLeftLayout( option, menuRect );
             }
 
             case SC_ToolButton:
@@ -1583,7 +1583,7 @@ namespace Breeze
 
                     QRect contentsRect( rect );
                     contentsRect.setRight( rect.right() - menuButtonWidth );
-                    return handleRTL( option, contentsRect );
+                    return handleRightToLeftLayout( option, contentsRect );
 
                 } else return rect;
 
@@ -1640,7 +1640,7 @@ namespace Breeze
                 }
 
                 arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
-                return handleRTL( option, arrowRect );
+                return handleRightToLeftLayout( option, arrowRect );
 
             }
 
@@ -1677,7 +1677,7 @@ namespace Breeze
 
                 }
 
-                return handleRTL( option, labelRect );
+                return handleRightToLeftLayout( option, labelRect );
 
             }
 
@@ -1723,7 +1723,7 @@ namespace Breeze
                 arrowRect.setHeight( Metrics::SpinBox_ArrowButtonWidth/2 );
                 if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ArrowButtonWidth/2 );
 
-                return handleRTL( option, arrowRect );
+                return handleRightToLeftLayout( option, arrowRect );
 
             }
 
@@ -1742,7 +1742,7 @@ namespace Breeze
                 // remove right side line editor margins
                 if( !flat ) labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
 
-                return handleRTL( option, labelRect );
+                return handleRightToLeftLayout( option, labelRect );
 
             }
 
@@ -1768,16 +1768,16 @@ namespace Breeze
             case SC_ScrollBarSubLine:
             {
                 int majorSize( scrollBarButtonHeight( _subLineButtons ) );
-                if( horizontal ) return handleRTL( option, QRect( r.x(), r.y(), majorSize, r.height() ) );
-                else return handleRTL( option, QRect( r.x(), r.y(), r.width(), majorSize ) );
+                if( horizontal ) return handleRightToLeftLayout( option, QRect( r.x(), r.y(), majorSize, r.height() ) );
+                else return handleRightToLeftLayout( option, QRect( r.x(), r.y(), r.width(), majorSize ) );
 
             }
 
             case SC_ScrollBarAddLine:
             {
                 int majorSize( scrollBarButtonHeight( _addLineButtons ) );
-                if( horizontal ) return handleRTL( option, QRect( r.right() - majorSize, r.y(), majorSize, r.height() ) );
-                else return handleRTL( option, QRect( r.x(), r.bottom() - majorSize, r.width(), majorSize ) );
+                if( horizontal ) return handleRightToLeftLayout( option, QRect( r.right() - majorSize, r.y(), majorSize, r.height() ) );
+                else return handleRightToLeftLayout( option, QRect( r.x(), r.bottom() - majorSize, r.width(), majorSize ) );
             }
 
             default: return QRect();
@@ -1806,8 +1806,8 @@ namespace Breeze
 
             case SC_ScrollBarGroove:
             {
-                QRect top = handleRTL( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
-                QRect bot = handleRTL( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
+                QRect top = handleRightToLeftLayout( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
+                QRect bot = handleRightToLeftLayout( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
 
                 QPoint topLeftCorner;
                 QPoint botRightCorner;
@@ -1826,14 +1826,14 @@ namespace Breeze
                 }
 
                 // define rect
-                return handleRTL( option, QRect( topLeftCorner, botRightCorner )  );
+                return handleRightToLeftLayout( option, QRect( topLeftCorner, botRightCorner )  );
 
             }
 
             case SC_ScrollBarSlider:
             {
                 // We handle RTL here to unreflect things if need be
-                QRect groove = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                QRect groove = handleRightToLeftLayout( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
 
                 if ( sliderOption->minimum == sliderOption->maximum ) return groove;
 
@@ -1850,30 +1850,30 @@ namespace Breeze
 
                 int pos = qRound( qreal( sliderOption->sliderPosition - sliderOption->minimum )/ ( sliderOption->maximum - sliderOption->minimum )*space );
                 if( sliderOption->upsideDown ) pos = space - pos;
-                if( horizontal ) return handleRTL( option, QRect( groove.x() + pos, groove.y(), sliderSize, groove.height() ) );
-                else return handleRTL( option, QRect( groove.x(), groove.y() + pos, groove.width(), sliderSize ) );
+                if( horizontal ) return handleRightToLeftLayout( option, QRect( groove.x() + pos, groove.y(), sliderSize, groove.height() ) );
+                else return handleRightToLeftLayout( option, QRect( groove.x(), groove.y() + pos, groove.width(), sliderSize ) );
             }
 
             case SC_ScrollBarSubPage:
             {
 
-                //We do handleRTL here to unreflect things if need be
-                QRect slider = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
-                QRect groove = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                //We do handleRightToLeftLayout here to unreflect things if need be
+                QRect slider = handleRightToLeftLayout( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
+                QRect groove = handleRightToLeftLayout( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
 
-                if( horizontal ) return handleRTL( option, QRect( groove.x(), groove.y(), slider.x() - groove.x(), groove.height() ) );
-                else return handleRTL( option, QRect( groove.x(), groove.y(), groove.width(), slider.y() - groove.y() ) );
+                if( horizontal ) return handleRightToLeftLayout( option, QRect( groove.x(), groove.y(), slider.x() - groove.x(), groove.height() ) );
+                else return handleRightToLeftLayout( option, QRect( groove.x(), groove.y(), groove.width(), slider.y() - groove.y() ) );
             }
 
             case SC_ScrollBarAddPage:
             {
 
-                //We do handleRTL here to unreflect things if need be
-                QRect slider = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
-                QRect groove = handleRTL( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                //We do handleRightToLeftLayout here to unreflect things if need be
+                QRect slider = handleRightToLeftLayout( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
+                QRect groove = handleRightToLeftLayout( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
 
-                if( horizontal ) return handleRTL( option, QRect( slider.right() + 1, groove.y(), groove.right() - slider.right(), groove.height() ) );
-                else return handleRTL( option, QRect( groove.x(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom() ) );
+                if( horizontal ) return handleRightToLeftLayout( option, QRect( slider.right() + 1, groove.y(), groove.right() - slider.right(), groove.height() ) );
+                else return handleRightToLeftLayout( option, QRect( groove.x(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom() ) );
 
             }
 
@@ -2716,7 +2716,7 @@ namespace Breeze
             {
                 painter->setClipRect( rect );
                 rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                rect = handleRTL( option, rect );
+                rect = handleRightToLeftLayout( option, rect );
             }
 
             // render
@@ -3016,7 +3016,7 @@ namespace Breeze
             QRect frameRect( rect );
             painter->setClipRect( rect );
             frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-            frameRect = handleRTL( option, frameRect );
+            frameRect = handleRightToLeftLayout( option, frameRect );
 
             // render
             _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
@@ -3024,7 +3024,7 @@ namespace Breeze
             // also render separator
             QRect separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
             separatorRect.setWidth( 1 );
-            separatorRect = handleRTL( option, separatorRect );
+            separatorRect = handleRightToLeftLayout( option, separatorRect );
             _helper->renderSeparator( painter, separatorRect, outline, true );
 
         }
@@ -3241,7 +3241,7 @@ namespace Breeze
             contentsRect.setRight( arrowRect.left() - Metrics::Button_BoxTextSpace - 1  );
             contentsRect.adjust( Metrics::Button_MarginWidth, Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth );
 
-            arrowRect = handleRTL( option, arrowRect );
+            arrowRect = handleRightToLeftLayout( option, arrowRect );
 
             // define color
             const QColor arrowColor( palette.color( textRole ) );
@@ -3288,7 +3288,7 @@ namespace Breeze
 
             }
 
-            iconRect = handleRTL( option, iconRect );
+            iconRect = handleRightToLeftLayout( option, iconRect );
 
             // icon mode
             QIcon::Mode mode;
@@ -3308,7 +3308,7 @@ namespace Breeze
         // text
         if( !buttonOption->text.isEmpty() )
         {
-            contentsRect = handleRTL( option, contentsRect );
+            contentsRect = handleRightToLeftLayout( option, contentsRect );
             drawItemText( painter, contentsRect, alignment, palette, enabled, buttonOption->text, textRole );
         }
 
@@ -3348,7 +3348,7 @@ namespace Breeze
 
             // adjust rect (copied from QCommonStyle)
             textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
-            textRect = handleRTL( option, textRect );
+            textRect = handleRightToLeftLayout( option, textRect );
 
         }
 
@@ -3522,7 +3522,7 @@ namespace Breeze
         if( menuItemOption->checkType == QStyleOptionMenuItem::NonExclusive )
         {
 
-            checkBoxRect = handleRTL( option, checkBoxRect );
+            checkBoxRect = handleRightToLeftLayout( option, checkBoxRect );
 
             // checkbox state
             CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
@@ -3533,7 +3533,7 @@ namespace Breeze
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
 
-            checkBoxRect = handleRTL( option, checkBoxRect );
+            checkBoxRect = handleRightToLeftLayout( option, checkBoxRect );
 
             const bool active( menuItemOption->checked );
             const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
@@ -3553,7 +3553,7 @@ namespace Breeze
         if( !menuItemOption->icon.isNull() )
         {
 
-            iconRect = handleRTL( option, iconRect );
+            iconRect = handleRightToLeftLayout( option, iconRect );
 
             // icon mode
             QIcon::Mode mode;
@@ -3576,7 +3576,7 @@ namespace Breeze
         {
 
             // apply right-to-left layout
-            arrowRect = handleRTL( option, arrowRect );
+            arrowRect = handleRightToLeftLayout( option, arrowRect );
 
             // arrow orientation
             const ArrowOrientation orientation( reverseLayout ? ArrowLeft:ArrowRight );
@@ -3601,7 +3601,7 @@ namespace Breeze
             // adjust textRect
             QString text = menuItemOption->text;
             textRect = centerRect( textRect, textRect.width(), option->fontMetrics.size( _mnemonics->textFlags(), text ).height() );
-            textRect = handleRTL( option, textRect );
+            textRect = handleRightToLeftLayout( option, textRect );
 
             // set font
             painter->setFont( menuItemOption->font );
@@ -3736,7 +3736,7 @@ namespace Breeze
             else indicatorRect = QRect( rect.x(), rect.bottom()- indicatorSize + 1, rect.width(), indicatorSize );
 
             // handle right to left
-            indicatorRect = handleRTL( option, indicatorRect );
+            indicatorRect = handleRightToLeftLayout( option, indicatorRect );
             _helper->renderProgressBarContents( painter, indicatorRect, palette.color( QPalette::Highlight ) );
 
         }
@@ -4455,7 +4455,7 @@ namespace Breeze
 
             }
 
-            iconRect = handleRTL( option, iconRect );
+            iconRect = handleRightToLeftLayout( option, iconRect );
             const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
             const QPixmap pixmap( toolBoxOption->icon.pixmap( iconSize, mode ) );
             drawItemPixmap( painter, iconRect, alignment, pixmap );
@@ -4465,7 +4465,7 @@ namespace Breeze
         // render text
         if( !toolBoxOption->text.isEmpty() )
         {
-            contentsRect = handleRTL( option, contentsRect );
+            contentsRect = handleRightToLeftLayout( option, contentsRect );
             drawItemText( painter, contentsRect, alignment, palette, enabled, toolBoxOption->text, QPalette::WindowText );
         }
 
