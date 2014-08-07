@@ -5486,7 +5486,7 @@ namespace Breeze
         };
 
         // map colors to icon states
-        static const QList<IconData> iconTypes =
+        const QList<IconData> iconTypes =
         {
             { palette.color( QPalette::Normal, QPalette::WindowText ), QIcon::Normal, QIcon::Off },
             { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off }
@@ -5568,11 +5568,13 @@ namespace Breeze
         // map colors to icon states
         const QList<IconData> iconTypes =
         {
+            // state off icons
             { _helper->alphaColor( base, 0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
             { _helper->alphaColor( selected, 0.5 ), invertNormalState, QIcon::Selected, QIcon::Off },
             { _helper->alphaColor( negative, 0.3 ), true, QIcon::Active, QIcon::Off },
             { _helper->alphaColor( base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
 
+            // state on icons
             { _helper->alphaColor( negative, 0.7 ), true, QIcon::Normal, QIcon::On },
             { _helper->alphaColor( negativeSelected, 0.7 ), true, QIcon::Selected, QIcon::On },
             { _helper->alphaColor( negative, 0.7 ), true, QIcon::Active, QIcon::On },
