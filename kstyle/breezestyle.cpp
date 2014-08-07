@@ -460,6 +460,7 @@ namespace Breeze
             // return 0 here, since frame is handled directly in polish
             case PM_DockWidgetFrameWidth: return 0;
             case PM_DockWidgetTitleMargin: return Frame_FrameWidth;
+            case PM_DockWidgetTitleBarButtonMargin: return ToolButton_MarginWidth;
 
             // fallback
             default: return KStyle::pixelMetric( metric, option, widget );
@@ -550,6 +551,9 @@ namespace Breeze
 
             // title bars
             case SH_TitleBar_NoBorder: return true;
+
+            // dock widget buttons
+            case SH_DockWidget_ButtonsHaveFrame: return false;
 
             // fallback
             default: return KStyle::styleHint( hint, option, widget, returnData );
@@ -4713,14 +4717,34 @@ namespace Breeze
         // contents
         {
 
-            // define contents rect
-            QRect contentsRect( buttonRect );
-            const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-            contentsRect = insideMargin( contentsRect, marginWidth );
-            if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
-
             // restore state and assign rect
             copy.state = option->state;
+
+            // define contents rect
+            QRect contentsRect( buttonRect );
+
+            // detect dock widget title button
+            /* for dockwidget title buttons, do not take out margins, so that icon do not get scaled down */
+            const bool isDockWidgetTitleButton( widget && widget->inherits( "QDockWidgetTitleButton" ) );
+            if( isDockWidgetTitleButton )
+            {
+
+                // cast to abstract button
+                const QAbstractButton* button( qobject_cast<const QAbstractButton*>( widget ) );
+
+                // adjust state to have correct icon rendered
+                if( button->isChecked() || button->isDown() ) copy.state |= State_On;
+                else if( !(copy.state & State_MouseOver) ) copy.state &= ~State_Enabled;
+
+            } else {
+
+                // take out margins
+                const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
+                contentsRect = insideMargin( contentsRect, marginWidth );
+                if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
+
+            }
+
             copy.rect = contentsRect;
 
             // render
