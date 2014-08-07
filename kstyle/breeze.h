@@ -187,6 +187,15 @@ namespace Breeze
         ArrowRight
     };
 
+    //! button type
+    enum ButtonType
+    {
+        ButtonClose,
+        ButtonMaximize,
+        ButtonMinimize,
+        ButtonRestore
+    };
+
     //! shadow area
     enum ShadowArea
     {

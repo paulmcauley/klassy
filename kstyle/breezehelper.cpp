@@ -1037,7 +1037,6 @@ namespace Breeze
 
     }
 
-
     //______________________________________________________________________________
     void Helper::renderArrow( QPainter* painter, const QRect& rect, const QColor& color, ArrowOrientation orientation ) const
     {
@@ -1062,6 +1061,107 @@ namespace Breeze
         painter->restore();
 
         return;
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted ) const
+    {
+
+        painter->save();
+        painter->setViewport( rect );
+        painter->setWindow( 0, 0, 18, 18 );
+        painter->setRenderHints( QPainter::Antialiasing );
+
+        // initialize pen
+        QPen pen;
+        pen.setCapStyle( Qt::RoundCap );
+        pen.setJoinStyle( Qt::MiterJoin );
+
+        if( inverted )
+        {
+            // render circle
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+
+            // take out the inner part
+            painter->setCompositionMode( QPainter::CompositionMode_SourceOut );
+            pen.setColor( Qt::black );
+
+        } else {
+
+            painter->setBrush( Qt::NoBrush );
+            pen.setColor( color );
+
+        }
+
+        switch( buttonType )
+        {
+            case ButtonClose:
+            {
+
+                // adjust pen and assign
+                const qreal penWidth( 1.8/2 );
+                pen.setWidth( 2*penWidth );
+                painter->setPen( pen );
+
+                // render
+                painter->drawLine( 5 + penWidth, 5 + penWidth, 13 - penWidth, 13 - penWidth );
+                painter->drawLine( 13 - penWidth, 5 + penWidth, 5 + penWidth, 13 - penWidth );
+                break;
+
+            }
+
+            case ButtonMaximize:
+            {
+                const qreal penWidth( 2.5/2 );
+                pen.setWidth( 2*penWidth );
+                painter->setPen( pen );
+
+                painter->drawPolyline( QPolygonF()
+                    << QPointF( 3.5 + penWidth, 13.8 - penWidth )
+                    << QPointF( 9, 6 + penWidth )
+                    << QPointF( 14.5 - penWidth, 13.8 - penWidth ) );
+
+                break;
+            }
+
+            case ButtonMinimize:
+            {
+                const qreal penWidth( 2.5/2 );
+                pen.setWidth( 2*penWidth );
+                painter->setPen( pen );
+
+                painter->drawPolyline( QPolygonF()
+                    << QPointF( 3.5 + penWidth, 6 + penWidth )
+                    << QPointF( 9, 13.8 - penWidth )
+                    << QPointF( 14.5 - penWidth, 6 + penWidth ) );
+
+                break;
+            }
+
+            case ButtonRestore:
+            {
+
+                const qreal penWidth( 2.5/2 );
+                pen.setWidth( 2*penWidth );
+                pen.setJoinStyle( Qt::RoundJoin );
+                painter->setPen( pen );
+
+                painter->drawPolygon( QPolygonF()
+                    << QPointF( 3.25 + penWidth, 9 )
+                    << QPointF( 9, 3.25 + penWidth )
+                    << QPointF( 14.75 - penWidth, 9 )
+                    << QPointF( 9, 14.75 - penWidth ) );
+
+                break;
+            }
+
+            default: break;
+        }
+
+        painter->restore();
+
     }
 
     //______________________________________________________________________________
