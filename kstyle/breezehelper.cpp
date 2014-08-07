@@ -518,11 +518,11 @@ namespace Breeze
         const QColor& color, bool sunken ) const
     {
 
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
         // do nothing for invalid color
         if( !color.isValid() ) return;
+
+        // setup painter
+        painter->setRenderHints( QPainter::Antialiasing );
 
         const QRectF baseRect( rect );
 
@@ -535,7 +535,7 @@ namespace Breeze
             painter->setBrush( color );
 
             const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawRoundedRect( baseRect, radius, radius );
+            painter->drawRoundedRect( contentRect, radius, radius );
 
         } else {
 
