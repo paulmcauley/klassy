@@ -4755,11 +4755,9 @@ namespace Breeze
             {
 
                 // cast to abstract button
-                const QAbstractButton* button( qobject_cast<const QAbstractButton*>( widget ) );
-
                 // adjust state to have correct icon rendered
+                const QAbstractButton* button( qobject_cast<const QAbstractButton*>( widget ) );
                 if( button->isChecked() || button->isDown() ) copy.state |= State_On;
-                else if( !(copy.state & State_MouseOver) ) copy.state &= ~State_Enabled;
 
             } else {
 
@@ -5248,15 +5246,25 @@ namespace Breeze
             const QSize iconSize( iconWidth, iconWidth );
             iconRect = centerRect( iconRect, iconSize );
 
-            // get pixmap
+            // set icon mode and state
             const bool subControlActive( titleBarOption->activeSubControls & subControl );
-            const QIcon::Mode iconMode =QIcon::Normal;
-            const QIcon::State iconState( QIcon::On );
-//             const QIcon::Mode iconMode = ( active && enabled ) ? QIcon::Selected:QIcon::Normal;
-//             const QIcon::State iconState( subControlActive ? QIcon::On : QIcon::Off );
-            const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
+            QIcon::Mode iconMode;
+            QIcon::State iconState;
 
-            // render
+            if( !enabled )
+            {
+                iconMode = QIcon::Disabled;
+                iconState = QIcon::Off;
+
+            } else {
+
+                iconMode = active ? QIcon::Selected : QIcon::Normal;
+                iconState = subControlActive ? QIcon::On : QIcon::Off;
+
+            }
+
+            // get pixmap and render
+            const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
             painter->drawPixmap( iconRect, pixmap );
 
         }
