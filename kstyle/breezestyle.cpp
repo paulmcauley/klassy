@@ -278,7 +278,9 @@ namespace Breeze
         const QPalette palette( _helper->framePalette( QGuiApplication::palette() ) );
         if( qobject_cast<QDockWidget*>( widget ) ||
             qobject_cast<QGroupBox*>( widget ) ||
-            qobject_cast<QTabWidget*>( widget ) )
+            qobject_cast<QTabWidget*>( widget ) ||
+            qobject_cast<QMenu*>( widget ) ||
+            widget->inherits( "QComboBoxPrivateContainer" ) )
             { widget->setPalette( palette ); }
 
         // base class polishing
@@ -1011,7 +1013,7 @@ namespace Breeze
 
             const QRect rect( widget->rect() );
             const QPalette& palette( widget->palette() );
-            const QColor background( _helper->frameBackgroundColor( palette ) );
+            const QColor background( palette.color( QPalette::Window ) );
             const QColor outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
@@ -2338,7 +2340,7 @@ namespace Breeze
     {
 
         const QPalette& palette( option->palette );
-        const QColor background( _helper->frameBackgroundColor( palette ) );
+        const QColor background( palette.color( QPalette::Window ) );
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
