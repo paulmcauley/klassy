@@ -311,45 +311,58 @@ namespace Breeze
 
 
     //____________________________________________________________________
-    QIcon Style::standardIcon( StandardPixmap standardIcon, const QStyleOption* option, const QWidget* widget ) const
+    QIcon Style::standardIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
     {
 
         // lookup cache
-        if( _iconCache.contains( standardIcon ) ) return _iconCache.value( standardIcon );
+        if( _iconCache.contains( standardPixmap ) ) return _iconCache.value( standardPixmap );
 
         QIcon icon;
-        switch( standardIcon )
+        switch( standardPixmap )
         {
 
+//             case SP_TitleBarNormalButton:
+//             icon = iconFromResource( ":/restore.svgz" );
+//             break;
+//
+//             case SP_TitleBarMinButton:
+//             icon = iconFromResource( ":/minimize.svgz" );
+//             break;
+//
+//             case SP_TitleBarMaxButton:
+//             icon = iconFromResource( ":/maximize.svgz" );
+//             break;
+//
+//             case SP_TitleBarCloseButton:
+//             case SP_DockWidgetCloseButton:
+//             icon = iconFromResource( ":/close.svgz" );
+//             break;
+//
+//             case SP_ToolBarHorizontalExtensionButton:
+//             case SP_ToolBarVerticalExtensionButton:
+//             icon = toolBarExtensionIcon( standardPixmap, option, widget );
+//             break;
+
             case SP_TitleBarNormalButton:
-            icon = iconFromResource( ":/restore.svgz" );
-            break;
-
             case SP_TitleBarMinButton:
-            icon = iconFromResource( ":/minimize.svgz" );
-            break;
-
             case SP_TitleBarMaxButton:
-            icon = iconFromResource( ":/maximize.svgz" );
-            break;
-
             case SP_TitleBarCloseButton:
             case SP_DockWidgetCloseButton:
-            icon = iconFromResource( ":/close.svgz" );
+            icon = titleBarButtonIcon( standardPixmap, option, widget );
             break;
 
             case SP_ToolBarHorizontalExtensionButton:
             case SP_ToolBarVerticalExtensionButton:
-            icon = toolBarExtensionIcon( standardIcon, option, widget );
+            icon = toolBarExtensionIcon( standardPixmap, option, widget );
             break;
 
             default:
-            icon = KStyle::standardIcon( standardIcon, option, widget );
+            icon = KStyle::standardIcon( standardPixmap, option, widget );
             break;
 
         }
 
-        const_cast<IconCache*>(&_iconCache)->insert( standardIcon, icon );
+        const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
         return icon;
 
     }
@@ -5225,8 +5238,10 @@ namespace Breeze
 
             // get pixmap
             const bool subControlActive( titleBarOption->activeSubControls & subControl );
-            const QIcon::Mode iconMode = ( active && enabled ) ? QIcon::Selected:QIcon::Disabled;
-            const QIcon::State iconState( subControlActive ? QIcon::On : QIcon::Off );
+            const QIcon::Mode iconMode =QIcon::Normal;
+            const QIcon::State iconState( QIcon::On );
+//             const QIcon::Mode iconMode = ( active && enabled ) ? QIcon::Selected:QIcon::Normal;
+//             const QIcon::State iconState( subControlActive ? QIcon::On : QIcon::Off );
             const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
 
             // render
@@ -5481,6 +5496,88 @@ namespace Breeze
 
             // add to icon
             icon.addPixmap( pixmap, iconData._mode, iconData._state );
+
+        }
+
+        return icon;
+
+    }
+
+    //____________________________________________________________________________________
+    QIcon Style::titleBarButtonIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // map standardPixmap to button type
+        ButtonType buttonType;
+        switch( standardPixmap )
+        {
+            case SP_TitleBarNormalButton: buttonType = ButtonRestore; break;
+            case SP_TitleBarMinButton: buttonType = ButtonMinimize; break;
+            case SP_TitleBarMaxButton: buttonType = ButtonMaximize; break;
+            case SP_TitleBarCloseButton:
+            case SP_DockWidgetCloseButton:
+            buttonType = ButtonClose;
+            break;
+
+            default: return QIcon();
+        }
+
+        // store palette
+        /* due to Qt, it is not always safe to assume that either option, nor widget are defined */
+        QPalette palette;
+        if( option ) palette = option->palette;
+        else if( widget ) palette = widget->palette();
+        else palette = QGuiApplication::palette();
+
+        palette.setCurrentColorGroup( QPalette::Active );
+        const QColor base( palette.color( QPalette::WindowText ) );
+        const QColor highlight( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):base );
+        // const QColor highlight( _helper->negativeText( palette ) );
+        qDebug() << "titleBarButtonIcon - button type: " << buttonType << " highlight: " << highlight << endl;
+
+        // convenience class to map color to icon mode
+        struct IconData
+        {
+            QColor _color;
+            bool _inverted;
+            QIcon::Mode _mode;
+            QIcon::State _state;
+        };
+
+        // map colors to icon states
+        static const QList<IconData> iconTypes =
+        {
+            { _helper->alphaColor( base, 0.5 ), true, QIcon::Normal, QIcon::Off },
+            { _helper->alphaColor( base, 0.5 ), true, QIcon::Selected, QIcon::Off },
+            { _helper->alphaColor( highlight, 0.3 ), true, QIcon::Active, QIcon::Off },
+            { _helper->alphaColor( highlight, 0.7 ), true, QIcon::Normal, QIcon::On },
+            { _helper->alphaColor( base, 0.2 ), true, QIcon::Disabled, QIcon::Off }
+        };
+
+        // default icon sizes
+        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
+
+        // output icon
+        QIcon icon;
+
+        foreach( const IconData& iconData, iconTypes )
+        {
+
+            foreach( const int& iconSize, iconSizes )
+            {
+                // create pixmap
+                QPixmap pixmap( iconSize, iconSize );
+                pixmap.fill( Qt::transparent );
+
+                // create painter and render
+                QPainter painter( &pixmap );
+                _helper->renderButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
+
+                painter.end();
+
+                // store
+                icon.addPixmap( pixmap, iconData._mode, iconData._state );
+            }
 
         }
 

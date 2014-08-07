@@ -445,6 +445,9 @@ namespace Breeze
         //! create toolbar extension icon
         QIcon toolBarExtensionIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 
+        //! create title bar button icon
+        QIcon titleBarButtonIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
+
         //! load icon from svg resource
         QIcon iconFromResource( const QString& ) const;
 
