@@ -2970,49 +2970,43 @@ namespace Breeze
     bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // store palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
-
         // store state
         const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool sunken( enabled && ( state & State_Sunken ) );
-
-        // arrow color
-        QColor arrowColor;
-        if( mouseOver ) arrowColor = _helper->hoverColor( palette );
-        else arrowColor = palette.color( QPalette::WindowText );
+        const bool autoRaise( state & State_AutoRaise );
 
         // for toolbuttons, need to render the relevant part of the frame
         const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
-        if( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup )
+        if( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup && !autoRaise )
         {
 
+            // store palette and rect
+            const QPalette& palette( option->palette );
+            const QRect& rect( option->rect );
+
+            // store state
+            const bool enabled( state & State_Enabled );
             const bool hasFocus( enabled && ( state & State_HasFocus ) );
-            const bool autoRaise( state & State_AutoRaise );
-            if( !autoRaise )
-            {
+            const bool mouseOver( enabled && ( state & State_MouseOver ) );
+            const bool sunken( enabled && ( state & State_Sunken ) );
 
-                // render as push button
-                const QColor shadow( _helper->shadowColor( palette ) );
-                const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
-                const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+            // render as push button
+            const QColor shadow( _helper->shadowColor( palette ) );
+            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
 
-                QRect frameRect( rect );
-                painter->setClipRect( rect );
-                frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                frameRect = handleRTL( option, frameRect );
+            QRect frameRect( rect );
+            painter->setClipRect( rect );
+            frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+            frameRect = handleRTL( option, frameRect );
 
-                // render
-                _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
+            // render
+            _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
 
-                // disable mouse over and adjust arrow color
-                mouseOver = false;
-                arrowColor = palette.color( QPalette::ButtonText );
-
-            }
+            // also render separator
+            QRect separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
+            separatorRect.setWidth( 1 );
+            separatorRect = handleRTL( option, separatorRect );
+            _helper->renderSeparator( painter, separatorRect, outline, true );
 
         }
 
