@@ -1144,16 +1144,16 @@ namespace Breeze
             case ButtonRestore:
             {
 
-                const qreal penWidth( 1.2 );
+                const qreal penWidth( 1 );
                 pen.setWidth( 2*penWidth );
                 pen.setJoinStyle( Qt::RoundJoin );
                 painter->setPen( pen );
 
                 painter->drawPolygon( QPolygonF()
-                    << QPointF( 4 + penWidth, 9 )
-                    << QPointF( 9, 4 + penWidth )
-                    << QPointF( 14 - penWidth, 9 )
-                    << QPointF( 9, 14 - penWidth ) );
+                    << QPointF( 3.5 + penWidth, 9 )
+                    << QPointF( 9, 3.5 + penWidth )
+                    << QPointF( 14.5 - penWidth, 9 )
+                    << QPointF( 9, 14.5 - penWidth ) );
 
                 break;
             }
