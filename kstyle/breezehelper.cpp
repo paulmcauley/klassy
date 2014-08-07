@@ -301,7 +301,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderDebugRect( QPainter* painter, const QRect& rect ) const
+    void Helper::renderDebugFrame( QPainter* painter, const QRect& rect ) const
     {
         painter->save();
         painter->setRenderHints( QPainter::Antialiasing );

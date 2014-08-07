@@ -120,7 +120,7 @@ namespace Breeze
         //@{
 
         //! debug frame
-        void renderDebugRect( QPainter*, const QRect& ) const;
+        void renderDebugFrame( QPainter*, const QRect& ) const;
 
         //! generic frame
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor(), bool focus = false ) const;
