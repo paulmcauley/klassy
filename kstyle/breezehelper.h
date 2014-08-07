@@ -123,7 +123,7 @@ namespace Breeze
         void renderDebugRect( QPainter*, const QRect& ) const;
 
         //! generic frame
-        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool focus = false ) const;
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor(), bool focus = false ) const;
 
         //! menu frame
         void renderMenuFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool roundCorners = true ) const;
@@ -184,13 +184,18 @@ namespace Breeze
 
         //! scrollbar groove
         void renderScrollBarGroove( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderScrollBarHandle( painter, rect, color, QColor() ); }
+        { return renderScrollBarHandle( painter, rect, color ); }
 
         //! scrollbar handle
-        void renderScrollBarHandle( QPainter*, const QRect&, const QColor& color, const QColor& outline ) const;
+        void renderScrollBarHandle( QPainter*, const QRect&, const QColor& ) const;
+
+        //! toolbar handle
+        void renderToolBarHandle( QPainter* painter, const QRect& rect, const QColor& color ) const
+        { return renderProgressBarGroove( painter, rect, color ); }
 
         //! tabbar tab
         void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
+
 
         //! generic arrow
         void renderArrow( QPainter*, const QRect&, const QColor&, ArrowOrientation ) const;

@@ -81,20 +81,20 @@ namespace Breeze
         MenuBarItem_MarginWidth = 10,
         MenuBarItem_MarginHeight = 8,
 
-        // toolbars
-        ToolBar_HandleWidth = 6,
-        ToolBar_SeparatorWidth = 16,
-        ToolBar_ExtensionWidth = 20,
-        ToolBar_ItemSpacing = 0,
-
         // scrollbars
         ScrollBar_Extend = 20,
-        ScrollBar_Width = 10,
-        ScrollBar_SliderWidth = ScrollBar_Width,
-        ScrollBar_MinSliderHeight = ScrollBar_Width,
+        ScrollBar_SliderWidth = 10,
+        ScrollBar_MinSliderHeight = 10,
         ScrollBar_NoButtonHeight = 0,
         ScrollBar_SingleButtonHeight = ScrollBar_Extend,
         ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
+
+        // toolbars
+        ToolBar_HandleExtent = 8,
+        ToolBar_HandleWidth = 6,
+        ToolBar_SeparatorWidth = 8,
+        ToolBar_ExtensionWidth = 20,
+        ToolBar_ItemSpacing = 0,
 
         // progressbars
         ProgressBar_BusyIndicatorSize = 14,

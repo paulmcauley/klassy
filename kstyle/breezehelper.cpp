@@ -982,7 +982,7 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderScrollBarHandle(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline ) const
+        const QColor& color ) const
     {
 
         // setup painter
@@ -997,17 +997,6 @@ namespace Breeze
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
             painter->drawRoundedRect( baseRect, radius, radius );
-        }
-
-
-        // outline
-        if( outline.isValid() )
-        {
-            painter->setPen( QPen( outline, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const QRectF outlineRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawRoundedRect( outlineRect, radius - 0.5, radius - 0.5 );
         }
 
         return;

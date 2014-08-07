@@ -412,7 +412,7 @@ namespace Breeze
             case PM_MenuButtonIndicator: return Metrics::MenuButton_IndicatorWidth;
 
             // toolbars
-            case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleWidth;
+            case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleExtent;
             case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
             case PM_ToolBarExtensionExtent: return Metrics::ToolBar_ExtensionWidth;
 
@@ -3031,7 +3031,29 @@ namespace Breeze
 
     //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    { return true; }
+    {
+        // store rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // store flags
+        const State& state( option->state );
+        const bool horizontal( state & State_Horizontal );
+
+        // handle rect
+        QRect handleRect( rect );
+        if( horizontal ) handleRect.setWidth( Metrics::ToolBar_HandleWidth );
+        else handleRect.setHeight( Metrics::ToolBar_HandleWidth );
+
+        handleRect = centerRect( rect, handleRect.size() );
+
+        // color
+        QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
+
+        // render
+        _helper->renderToolBarHandle( painter, handleRect, color );
+        return true;
+    }
 
     //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
@@ -3749,6 +3771,7 @@ namespace Breeze
             // it is necessary to retrieve the complete widget rect, in order to properly handle overlaps
             // at the scrollbar boundary
             // define color
+            // TODO: try use subControlRect instead
             const QPalette& palette( option->palette );
             const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
 
@@ -3779,7 +3802,7 @@ namespace Breeze
             else color = base;
 
             // render
-            _helper->renderScrollBarHandle( painter, handleRect, color, QColor() );
+            _helper->renderScrollBarHandle( painter, handleRect, color );
 
         }
 
