@@ -4685,6 +4685,10 @@ namespace Breeze
                 contentsRect = insideMargin( contentsRect, marginWidth );
                 if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
 
+                // disable mouse over in case of arrow buttons
+                if( toolButtonOption->features & QStyleOptionToolButton::Arrow )
+                { copy.state &= ~State_MouseOver; }
+
             }
 
             copy.rect = contentsRect;
