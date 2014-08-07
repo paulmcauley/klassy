@@ -943,16 +943,24 @@ namespace Breeze
     //____________________________________________________________________________
     bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
     {
-        if( event->type() == QEvent::Paint && !dockWidget->isWindow() )
+        if( event->type() == QEvent::Paint )
         {
             // create painter and clip
             QPainter painter( dockWidget );
             QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
             painter.setClipRegion( paintEvent->region() );
 
-            // define color and render
-            const QColor outline( _helper->frameOutlineColor( dockWidget->palette() ) );
-            _helper->renderFrame( &painter, dockWidget->rect(), QColor(), outline );
+            // store palette and set colors
+            const QPalette& palette( dockWidget->palette() );
+            const QColor background( palette.color( QPalette::Window ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
+
+            // store rect
+            const QRect rect( dockWidget->rect() );
+
+            // render
+            if( dockWidget->isWindow() ) _helper->renderMenuFrame( &painter, rect, background, outline, false );
+            else _helper->renderFrame( &painter, rect, background, outline );
 
         }
 
