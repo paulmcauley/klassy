@@ -340,6 +340,11 @@ namespace Breeze
             icon = iconFromResource( ":/close.svgz" );
             break;
 
+            case SP_ToolBarHorizontalExtensionButton:
+            case SP_ToolBarVerticalExtensionButton:
+            icon = toolBarExtensionIcon( standardIcon, option, widget );
+            break;
+
             default:
             icon = KStyle::standardIcon( standardIcon, option, widget );
             break;
@@ -414,7 +419,10 @@ namespace Breeze
             // toolbars
             case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleExtent;
             case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
-            case PM_ToolBarExtensionExtent: return Metrics::ToolBar_ExtensionWidth;
+
+            // need to make sure there is enough room to draw the icon
+            case PM_ToolBarExtensionExtent:
+            return pixelMetric( PM_SmallIconSize, option, widget ) + 2*Metrics::ToolButton_MarginWidth;
 
             // toolbar items
             case PM_ToolBarItemMargin: return 0;
@@ -5407,6 +5415,14 @@ namespace Breeze
     struct IconData
     {
 
+        //! constructor (using color)
+        IconData( const QColor& color, QIcon::Mode mode, QIcon::State state ):
+            _color( color ),
+            _mode( mode ),
+            _state( state )
+        {}
+
+        //! constructor (using svg id)
         IconData( const QString& id, QIcon::Mode mode, QIcon::State state ):
             _id( id ),
             _mode( mode ),
@@ -5414,9 +5430,58 @@ namespace Breeze
         {}
 
         QString _id;
+        QColor _color;
         QIcon::Mode _mode;
         QIcon::State _state;
     };
+
+    //____________________________________________________________________________________
+    QIcon Style::toolBarExtensionIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // store palette
+        /* due to Qt, it is not always safe to assume that either option, nor widget are defined */
+        QPalette palette;
+        if( option ) palette = option->palette;
+        else if( widget ) palette = widget->palette();
+        else palette = QGuiApplication::palette();
+
+        // create icon
+        QIcon icon;
+
+        // map colors to icon states
+        static const QList<IconData> iconTypes =
+        {
+            IconData( palette.color( QPalette::Normal, QPalette::WindowText ), QIcon::Normal, QIcon::Off ),
+            IconData( palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off )
+        };
+
+        // decide arrow orientation
+        const ArrowOrientation orientation( standardPixmap == SP_ToolBarHorizontalExtensionButton ? ArrowRight : ArrowDown );
+
+        // icon size
+        const int iconWidth( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
+
+        foreach( const IconData& iconData, iconTypes )
+        {
+            // create pixmap
+            QPixmap pixmap( iconWidth, iconWidth );
+            pixmap.fill( Qt::transparent );
+
+            // render
+            {
+                QPainter painter( &pixmap );
+                _helper->renderArrow( &painter, pixmap.rect(), iconData._color, orientation );
+            }
+
+            // add to icon
+            icon.addPixmap( pixmap, iconData._mode, iconData._state );
+
+        }
+
+        return icon;
+
+    }
 
     //____________________________________________________________________________________
     QIcon Style::iconFromResource( const QString& name ) const
@@ -5425,17 +5490,17 @@ namespace Breeze
         // default icon sizes
         static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
 
-        // element names
+        // map element names to icon states
         static const QList<IconData> elementNames =
         {
-            IconData( "selected", QIcon::Selected, QIcon::Off ),
-            IconData( "active", QIcon::Active, QIcon::Off ),
-            IconData( "normal", QIcon::Normal, QIcon::Off ),
-            IconData( "disabled", QIcon::Disabled, QIcon::Off ),
-            IconData( "pressed-selected", QIcon::Selected, QIcon::On ),
-            IconData( "pressed-active", QIcon::Active, QIcon::On ),
-            IconData( "pressed-normal", QIcon::Normal, QIcon::On ),
-            IconData( "pressed-disabled", QIcon::Disabled, QIcon::On ),
+            IconData( QString( "selected" ), QIcon::Selected, QIcon::Off ),
+            IconData( QString( "active" ), QIcon::Active, QIcon::Off ),
+            IconData( QString( "normal" ), QIcon::Normal, QIcon::Off ),
+            IconData( QString( "disabled" ), QIcon::Disabled, QIcon::Off ),
+            IconData( QString( "pressed-selected" ), QIcon::Selected, QIcon::On ),
+            IconData( QString( "pressed-active" ), QIcon::Active, QIcon::On ),
+            IconData( QString( "pressed-normal" ), QIcon::Normal, QIcon::On ),
+            IconData( QString( "pressed-disabled" ), QIcon::Disabled, QIcon::On ),
         };
 
         // output icon

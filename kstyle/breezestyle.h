@@ -449,6 +449,9 @@ namespace Breeze
         */
         QStyleOptionToolButton separatorMenuItemOption( const QStyleOptionMenuItem*, const QWidget* ) const;
 
+        //! create toolbar extension icon
+        QIcon toolBarExtensionIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
+
         //! load icon from svg resource
         QIcon iconFromResource( const QString& ) const;
 
