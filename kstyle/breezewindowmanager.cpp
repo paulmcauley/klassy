@@ -643,12 +643,11 @@ namespace Breeze
             memset(&releaseEvent, 0, sizeof(releaseEvent));
 
             releaseEvent.response_type = XCB_BUTTON_RELEASE;
-            //     releaseEvent.sequence = ??;
             releaseEvent.event = window;
             releaseEvent.child = XCB_WINDOW_NONE;
             releaseEvent.root = QX11Info::appRootWindow();
             releaseEvent.event_x = _dragPoint.x();
-            releaseEvent.event_y = _dragPoint.x();
+            releaseEvent.event_y = _dragPoint.y();
             releaseEvent.root_x = position.x();
             releaseEvent.root_y = position.y();
             releaseEvent.detail = XCB_BUTTON_INDEX_1;
