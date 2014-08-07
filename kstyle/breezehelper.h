@@ -146,14 +146,6 @@ namespace Breeze
         //! separator
         void renderSeparator( QPainter*, const QRect&, const QColor&, bool vertical = false ) const;
 
-        //! checkbox state (used for checkboxes _and_ radio buttons)
-        enum CheckBoxState
-        {
-            CheckOff = 0,
-            CheckPartial = 1,
-            CheckOn = 2
-        };
-
         //! checkbox
         void renderCheckBox( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state ) const;
 
@@ -195,7 +187,6 @@ namespace Breeze
 
         //! tabbar tab
         void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
-
 
         //! generic arrow
         void renderArrow( QPainter*, const QRect&, const QColor&, ArrowOrientation ) const;

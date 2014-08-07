@@ -2905,9 +2905,9 @@ namespace Breeze
         const bool active( ( state & (State_On|State_NoChange) ) );
 
         // checkbox state
-        Helper::CheckBoxState checkBoxState( Helper::CheckOff );
-        if( state & State_NoChange ) checkBoxState = Helper::CheckPartial;
-        else if( state & State_On ) checkBoxState = Helper::CheckOn;
+        CheckBoxState checkBoxState( CheckOff );
+        if( state & State_NoChange ) checkBoxState = CheckPartial;
+        else if( state & State_On ) checkBoxState = CheckOn;
 
         // animation state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
@@ -3487,7 +3487,7 @@ namespace Breeze
             checkBoxRect = handleRTL( option, checkBoxRect );
 
             // checkbox state
-            Helper::CheckBoxState state( menuItemOption->checked ? Helper::CheckOn : Helper::CheckOff );
+            CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
             const bool active( menuItemOption->checked );
             const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
             const QColor shadow( _helper->shadowColor( palette ) );
