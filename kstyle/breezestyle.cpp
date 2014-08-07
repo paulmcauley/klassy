@@ -158,18 +158,6 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    void Style::polish( QApplication* )
-    {
-
-        // alter palette for relevant framed widgets
-        const QPalette palette( _helper->framePalette( QGuiApplication::palette() ) );
-        QApplication::setPalette( palette, "QDockWidget" );
-        QApplication::setPalette( palette, "QGroupBox" );
-        QApplication::setPalette( palette, "QTabWidget" );
-
-    }
-
-    //______________________________________________________________
     void Style::polish( QWidget* widget )
     {
         if( !widget ) return;
@@ -286,6 +274,12 @@ namespace Breeze
 
         }
 
+        // alter palette for relevant framed widgets
+        const QPalette palette( _helper->framePalette( QGuiApplication::palette() ) );
+        if( qobject_cast<QDockWidget*>( widget ) ||
+            qobject_cast<QGroupBox*>( widget ) ||
+            qobject_cast<QTabWidget*>( widget ) )
+            { widget->setPalette( palette ); }
 
         // base class polishing
         KStyle::polish( widget );

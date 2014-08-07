@@ -90,9 +90,6 @@ namespace Breeze
         //! destructor
         virtual ~Style( void );
 
-        //! application polishing
-        virtual void polish( QApplication* );
-
         //! widget polishing
         virtual void polish( QWidget* );
 
