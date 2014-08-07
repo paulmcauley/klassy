@@ -266,10 +266,6 @@ namespace Breeze
 
         bool drawIndicatorArrowPrimitive( ArrowOrientation, const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-
-//         //! dock widget separators
-//         /*! it uses the same painting as QSplitter, but due to Qt, the horizontal/vertical convention is inverted */
-//         bool drawIndicatorDockWidgetResizeHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget) const;
         bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -293,7 +289,6 @@ namespace Breeze
         bool emptyControl( const QStyleOption*, QPainter*, const QWidget* ) const
         { return true; }
 
-//         virtual bool drawCapacityBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -315,8 +310,6 @@ namespace Breeze
         virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawHeaderLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         virtual bool drawSplitterControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 
         //! tabbar tabs.
         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -508,9 +501,6 @@ namespace Breeze
 
         //! use Argb Drag and Drop Window
         QStyle::StyleHint SH_ArgbDndWindow;
-
-        //! styled painting for KCapacityBar
-        QStyle::ControlElement CE_CapacityBar;
 
         //@}
 

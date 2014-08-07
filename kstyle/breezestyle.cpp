@@ -132,9 +132,7 @@ namespace Breeze
         _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) ),
         _splitterFactory( new SplitterFactory( this ) ),
         _tabBarData( new BreezePrivate::TabBarData( this ) ),
-        SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) ),
-        CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
-
+        SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
     {
 
         // use DBus connection to update on breeze configuration change
@@ -4982,21 +4980,21 @@ namespace Breeze
                     const bool reverseLayout( option->direction == Qt::RightToLeft );
 
                     QRect leftRect( grooveRect );
-                    leftRect.setRight( handleRect.right()-1 );
+                    leftRect.setRight( handleRect.right()-2 );
                     _helper->renderSliderGroove( painter, leftRect, reverseLayout ? grooveColor:highlight );
 
                     QRect rightRect( grooveRect );
-                    rightRect.setLeft( handleRect.left()+1 );
+                    rightRect.setLeft( handleRect.left()+2 );
                     _helper->renderSliderGroove( painter, rightRect, reverseLayout ? highlight:grooveColor );
 
                 } else {
 
                     QRect topRect( grooveRect );
-                    topRect.setBottom( handleRect.bottom()-1 );
+                    topRect.setBottom( handleRect.bottom()-2 );
                     _helper->renderSliderGroove( painter, topRect, highlight );
 
                     QRect bottomRect( grooveRect );
-                    bottomRect.setTop( handleRect.top()+1 );
+                    bottomRect.setTop( handleRect.top()+2 );
                     _helper->renderSliderGroove( painter, bottomRect, grooveColor );
 
                 }
@@ -5006,7 +5004,7 @@ namespace Breeze
         }
 
         // handle
-        if ( sliderOption->subControls & SC_SliderHandle )
+        if( sliderOption->subControls & SC_SliderHandle )
         {
 
             // get rect and center
