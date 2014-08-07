@@ -2691,6 +2691,14 @@ namespace Breeze
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & State_HasFocus) );
 
+        // update animation state
+        // mouse over takes precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+
+        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+
         if( !autoRaise )
         {
 
@@ -2700,8 +2708,8 @@ namespace Breeze
 
             // render as push button
             const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
             // adjust frame in case of menu
             if( hasPopupMenu )
@@ -2716,7 +2724,7 @@ namespace Breeze
 
         } else {
 
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken ) );
+            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         }
@@ -2967,7 +2975,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         // cast option and check
@@ -2992,10 +3000,18 @@ namespace Breeze
             const bool mouseOver( enabled && ( state & State_MouseOver ) );
             const bool sunken( enabled && ( state & State_Sunken ) );
 
+            // update animation state
+            // mouse over takes precedence over focus
+            _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+
+            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+
             // render as push button
             const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus ) );
+            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
             QRect frameRect( rect );
             painter->setClipRect( rect );

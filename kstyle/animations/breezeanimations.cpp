@@ -120,6 +120,7 @@ namespace Breeze
         if( qobject_cast<QToolButton*>(widget) )
         {
 
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
 
         } else if( qobject_cast<QAbstractButton*>(widget) ) {
 
