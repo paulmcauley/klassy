@@ -5471,6 +5471,7 @@ namespace Breeze
             // render
             {
                 QPainter painter( &pixmap );
+                painter.translate( standardPixmap == SP_ToolBarHorizontalExtensionButton ? QPoint( 1, 0 ) : QPoint( 0, 1 ) );
                 _helper->renderArrow( &painter, pixmap.rect(), iconData._color, orientation );
             }
 
