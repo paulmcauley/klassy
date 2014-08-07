@@ -2624,61 +2624,6 @@ namespace Breeze
     bool Style::drawPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        /*
-        For toolbutton in TabBars, corresponding to expanding arrows, no frame is drawn
-        However one needs to draw the window background, because the button rect might
-        overlap with some tab below. ( this is a Qt bug )
-        */
-        if( const QTabBar* tabBar = qobject_cast<const QTabBar*>( widget->parent() ) )
-        {
-            QRect rect( option->rect );
-
-            // overlap.
-            // subtract 1, because of the empty pixel left the tabwidget frame
-            const int overlap( Metrics::TabBar_BaseOverlap - 1 );
-
-            // adjust rect based on tabbar shape
-            switch( tabBar->shape() )
-            {
-                case QTabBar::RoundedNorth:
-                case QTabBar::TriangularNorth:
-                rect.adjust( 0, 0, 0, -overlap );
-                break;
-
-                case QTabBar::RoundedSouth:
-                case QTabBar::TriangularSouth:
-                rect.adjust( 0, overlap, 0, 0 );
-                break;
-
-                case QTabBar::RoundedWest:
-                case QTabBar::TriangularWest:
-                rect.adjust( 0, 0, -overlap, 0 );
-                break;
-
-                case QTabBar::RoundedEast:
-                case QTabBar::TriangularEast:
-                rect.adjust( overlap, 0, 0, 0 );
-                break;
-
-                default: break;
-
-            }
-
-            // get the relevant palette
-            const QWidget* parent( tabBar->parentWidget() );
-            if( qobject_cast<const QTabWidget*>( parent ) )
-            { parent = parent->parentWidget(); }
-            const QPalette palette( parent ? parent->palette() : QGuiApplication::palette() );
-
-            // render flat background
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( palette.color( QPalette::Window ) );
-            painter->drawRect( rect );
-
-            return true;
-
-        }
-
         // copy palette and rect
         const QPalette& palette( option->palette );
         QRect rect( option->rect );
@@ -2730,6 +2675,61 @@ namespace Breeze
         }
 
         return true;
+    }
+
+    //______________________________________________________________
+    bool Style::drawTabBarPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // copy palette and rect
+        QRect rect( option->rect );
+
+        /* static_cast is safe here since check was already performed in calling function */
+        const QTabBar* tabBar( static_cast<QTabBar*>( widget->parentWidget() ) );
+
+        // overlap.
+        // subtract 1, because of the empty pixel left the tabwidget frame
+        const int overlap( Metrics::TabBar_BaseOverlap - 1 );
+
+        // adjust rect based on tabbar shape
+        switch( tabBar->shape() )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            rect.adjust( 0, 0, 0, -overlap );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            rect.adjust( 0, overlap, 0, 0 );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            rect.adjust( 0, 0, -overlap, 0 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            rect.adjust( overlap, 0, 0, 0 );
+            break;
+
+            default: break;
+
+        }
+
+        // get the relevant palette
+        const QWidget* parent( tabBar->parentWidget() );
+        if( qobject_cast<const QTabWidget*>( parent ) ) parent = parent->parentWidget();
+        const QPalette palette( parent ? parent->palette() : QGuiApplication::palette() );
+
+        // render flat background
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( palette.color( QPalette::Window ) );
+        painter->drawRect( rect );
+
+        return true;
+
     }
 
     //___________________________________________________________________________________
@@ -4630,11 +4630,15 @@ namespace Breeze
         const QRect buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
         const QRect menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
 
+        // detect buttons in tabbar, for which special rendering is needed
+        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
+
         // frame
         if( toolButtonOption->subControls & SC_ToolButton )
         {
             copy.rect = buttonRect;
-            drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
+            if( inTabBar ) drawTabBarPanelButtonToolPrimitive( &copy, painter, widget );
+            else drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
         }
 
         // arrow
@@ -4685,7 +4689,7 @@ namespace Breeze
                 contentsRect = insideMargin( contentsRect, marginWidth );
                 if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
 
-                // disable mouse over in case of arrow buttons
+                // adjust state
                 if( toolButtonOption->features & QStyleOptionToolButton::Arrow )
                 { copy.state &= ~State_MouseOver; }
 

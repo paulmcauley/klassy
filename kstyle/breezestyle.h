@@ -280,6 +280,9 @@ namespace Breeze
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
+        //! special primitive to deal with arrow tool buttons in tabbars
+        bool drawTabBarPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+
         //@}
 
         //!@name controls specialized functions
@@ -354,19 +357,6 @@ namespace Breeze
                 || shape == QTabBar::RoundedWest
                 || shape == QTabBar::TriangularEast
                 || shape == QTabBar::TriangularWest;
-
-        }
-
-        //! returns true for reflected tabs
-        bool isReflected( const QStyleOptionTab* option ) const
-        { return isReflected( option->shape ); }
-
-        bool isReflected( const QTabBar::Shape& shape ) const
-        {
-            return shape == QTabBar::RoundedEast
-                || shape == QTabBar::RoundedSouth
-                || shape == QTabBar::TriangularEast
-                || shape == QTabBar::TriangularSouth;
 
         }
 
