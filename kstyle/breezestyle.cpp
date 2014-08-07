@@ -57,7 +57,6 @@
 #include <QRadioButton>
 #include <QScrollBar>
 #include <QSplitterHandle>
-#include <QSvgRenderer>
 #include <QTextEdit>
 #include <QToolBox>
 #include <QToolButton>
@@ -5607,71 +5606,4 @@ namespace Breeze
 
     }
 
-    //____________________________________________________________________________________
-    QIcon Style::iconFromResource( const QString& name ) const
-    {
-
-        struct IconData
-        {
-            QString _id;
-            QIcon::Mode _mode;
-            QIcon::State _state;
-        };
-
-        // default icon sizes
-        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
-
-        // map element names to icon states
-        static const QList<IconData> elementNames =
-        {
-            { "selected", QIcon::Selected, QIcon::Off },
-            { "active", QIcon::Active, QIcon::Off },
-            { "normal", QIcon::Normal, QIcon::Off },
-            { "disabled", QIcon::Disabled, QIcon::Off },
-            { "pressed-selected", QIcon::Selected, QIcon::On },
-            { "pressed-active", QIcon::Active, QIcon::On },
-            { "pressed-normal", QIcon::Normal, QIcon::On },
-            { "pressed-disabled", QIcon::Disabled, QIcon::On }
-        };
-
-        // output icon
-        QIcon icon;
-
-        // create renderer
-        QSvgRenderer svgRenderer( name );
-        foreach( const IconData& iconData, elementNames )
-        {
-
-            // do nothing if element is not found
-            if( !svgRenderer.elementExists( iconData._id ) )
-            {
-                qDebug() << "Style::iconFromResource - name: " << name << " could not find " << iconData._id;
-                continue;
-            }
-
-            // loop over icon sizes
-            foreach( const int& iconWidth, iconSizes )
-            {
-
-                // store icon size and create pixmap
-                const QSize iconSize( iconWidth, iconWidth );
-                QPixmap pixmap( iconSize );
-                pixmap.fill( Qt::transparent );
-
-                // render
-                QPainter painter( &pixmap );
-                painter.setWindow( 0, 0, 18, 18 );
-                QRectF rect( -4, -4, 26, 26 );
-                svgRenderer.render( &painter, iconData._id, rect );
-                painter.end();
-
-                // add pixmap to icon
-                icon.addPixmap( pixmap, iconData._mode, iconData._state );
-
-            }
-
-        }
-
-        return icon;
-    }
 }

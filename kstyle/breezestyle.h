@@ -448,9 +448,6 @@ namespace Breeze
         //! create title bar button icon
         QIcon titleBarButtonIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 
-        //! load icon from svg resource
-        QIcon iconFromResource( const QString& ) const;
-
         private:
 
         //!@name scrollbar button types (for addLine and subLine )
