@@ -312,6 +312,23 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderFocusLine( QPainter* painter, const QRect& rect, const QColor& color ) const
+    {
+
+        if( !color.isValid() ) return;
+
+        painter->save();
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( color );
+
+        painter->translate( 0, 2 );
+        painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+        painter->restore();
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, bool focus ) const

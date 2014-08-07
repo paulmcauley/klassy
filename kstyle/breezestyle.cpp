@@ -3372,12 +3372,8 @@ namespace Breeze
             else if( hasFocus ) focusColor =  _helper->focusColor( palette );
 
             // render focus
-            if( focusColor.isValid() )
-            {
-                painter->translate( 0, 2 );
-                painter->setPen( focusColor );
-                painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
-            }
+            _helper->renderFocusLine( painter, textRect, focusColor );
+
         }
 
         return true;
@@ -3450,10 +3446,7 @@ namespace Breeze
             if( sunken ) outlineColor = _helper->focusColor( palette );
             else if( selected ) outlineColor = _helper->hoverColor( palette );
 
-            painter->translate( 0, 2 );
-            painter->setBrush( Qt::NoBrush );
-            painter->setPen( outlineColor );
-            painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+            _helper->renderFocusLine( painter, textRect, outlineColor );
 
         }
 
@@ -3629,13 +3622,7 @@ namespace Breeze
                 if( sunken ) outlineColor = _helper->focusColor( palette );
                 else if( selected ) outlineColor = _helper->hoverColor( palette );
 
-                painter->save();
-                painter->setRenderHint( QPainter::Antialiasing, false );
-                painter->translate( 0, 2 );
-                painter->setBrush( Qt::NoBrush );
-                painter->setPen( outlineColor );
-                painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
-                painter->restore();
+                _helper->renderFocusLine( painter, textRect, outlineColor );
 
             }
 
@@ -4239,9 +4226,7 @@ namespace Breeze
         else if( hasFocus ) focusColor =  _helper->focusColor( palette );
 
         // render focus line
-        painter->translate( 0, 2 );
-        painter->setPen( focusColor );
-        painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
+        _helper->renderFocusLine( painter, textRect, focusColor );
 
         if( verticalTabs ) painter->restore();
 
