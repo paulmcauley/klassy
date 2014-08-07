@@ -5433,31 +5433,6 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    //! conveniant struct needed to map svg element id to icon mode and state
-    struct IconData
-    {
-
-        //! constructor (using color)
-        IconData( const QColor& color, QIcon::Mode mode, QIcon::State state ):
-            _color( color ),
-            _mode( mode ),
-            _state( state )
-        {}
-
-        //! constructor (using svg id)
-        IconData( const QString& id, QIcon::Mode mode, QIcon::State state ):
-            _id( id ),
-            _mode( mode ),
-            _state( state )
-        {}
-
-        QString _id;
-        QColor _color;
-        QIcon::Mode _mode;
-        QIcon::State _state;
-    };
-
-    //____________________________________________________________________________________
     QIcon Style::toolBarExtensionIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
     {
 
@@ -5468,14 +5443,19 @@ namespace Breeze
         else if( widget ) palette = widget->palette();
         else palette = QGuiApplication::palette();
 
-        // create icon
-        QIcon icon;
+        // convenience class to map color to icon mode
+        struct IconData
+        {
+            QColor _color;
+            QIcon::Mode _mode;
+            QIcon::State _state;
+        };
 
         // map colors to icon states
         static const QList<IconData> iconTypes =
         {
-            IconData( palette.color( QPalette::Normal, QPalette::WindowText ), QIcon::Normal, QIcon::Off ),
-            IconData( palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off )
+            { palette.color( QPalette::Normal, QPalette::WindowText ), QIcon::Normal, QIcon::Off },
+            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off }
         };
 
         // decide arrow orientation
@@ -5484,6 +5464,8 @@ namespace Breeze
         // icon size
         const int iconWidth( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
 
+        // create icon and fill
+        QIcon icon;
         foreach( const IconData& iconData, iconTypes )
         {
             // create pixmap
@@ -5510,20 +5492,27 @@ namespace Breeze
     QIcon Style::iconFromResource( const QString& name ) const
     {
 
+        struct IconData
+        {
+            QString _id;
+            QIcon::Mode _mode;
+            QIcon::State _state;
+        };
+
         // default icon sizes
         static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
 
         // map element names to icon states
         static const QList<IconData> elementNames =
         {
-            IconData( QString( "selected" ), QIcon::Selected, QIcon::Off ),
-            IconData( QString( "active" ), QIcon::Active, QIcon::Off ),
-            IconData( QString( "normal" ), QIcon::Normal, QIcon::Off ),
-            IconData( QString( "disabled" ), QIcon::Disabled, QIcon::Off ),
-            IconData( QString( "pressed-selected" ), QIcon::Selected, QIcon::On ),
-            IconData( QString( "pressed-active" ), QIcon::Active, QIcon::On ),
-            IconData( QString( "pressed-normal" ), QIcon::Normal, QIcon::On ),
-            IconData( QString( "pressed-disabled" ), QIcon::Disabled, QIcon::On ),
+            { "selected", QIcon::Selected, QIcon::Off },
+            { "active", QIcon::Active, QIcon::Off },
+            { "normal", QIcon::Normal, QIcon::Off },
+            { "disabled", QIcon::Disabled, QIcon::Off },
+            { "pressed-selected", QIcon::Selected, QIcon::On },
+            { "pressed-active", QIcon::Active, QIcon::On },
+            { "pressed-normal", QIcon::Normal, QIcon::On },
+            { "pressed-disabled", QIcon::Disabled, QIcon::On }
         };
 
         // output icon
