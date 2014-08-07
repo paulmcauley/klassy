@@ -35,6 +35,15 @@
       <default>800</default>
     </entry>
 
+    <!-- scrollbar buttons -->
+    <entry name="ScrollBarAddLineButtons" type="Int">
+      <default>1</default>
+    </entry>
+
+    <entry name="ScrollBarSubLineButtons" type="Int">
+      <default>1</default>
+    </entry>
+
     <!-- mnemonics -->
     <entry name="MnemonicsMode" type="Enum">
       <choices>

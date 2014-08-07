@@ -831,9 +831,11 @@ namespace Breeze
             // scrollbars
             case CE_ScrollBarSlider: fcn = &Style::drawScrollBarSliderControl; break;
             case CE_ScrollBarAddLine: fcn = &Style::drawScrollBarAddLineControl; break;
-            case CE_ScrollBarAddPage: fcn = &Style::drawScrollBarAddPageControl; break;
             case CE_ScrollBarSubLine: fcn = &Style::drawScrollBarSubLineControl; break;
-            case CE_ScrollBarSubPage: fcn = &Style::drawScrollBarSubPageControl; break;
+
+            // these two are handled directly in CC_ScrollBar
+            case CE_ScrollBarAddPage: fcn = &Style::emptyControl; break;
+            case CE_ScrollBarSubPage: fcn = &Style::emptyControl; break;
 
             // frame
             case CE_ShapedFrame: fcn = &Style::drawShapedFrameControl; break;
@@ -1092,6 +1094,25 @@ namespace Breeze
 
         // clear icon cache
         _iconCache.clear();
+
+        // scrollbar buttons
+        switch( StyleConfigData::scrollBarAddLineButtons() )
+        {
+            case 0: _addLineButtons = NoButton; break;
+            case 1: _addLineButtons = SingleButton; break;
+
+            default:
+            case 2: _addLineButtons = DoubleButton; break;
+        }
+
+        switch( StyleConfigData::scrollBarSubLineButtons() )
+        {
+            case 0: _subLineButtons = NoButton; break;
+            case 1: _subLineButtons = SingleButton; break;
+
+            default:
+            case 2: _subLineButtons = DoubleButton; break;
+        }
 
     }
 
@@ -3796,33 +3817,13 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
-        QWidget* parent( scrollBarParent( widget ) );
+        // check focus from relevant parent
+        const QWidget* parent( scrollBarParent( widget ) );
         const bool focus( enabled && parent && parent->hasFocus() );
 
         // enable animation state
         _animations->scrollBarEngine().updateState( widget, enabled && ( sliderOption->activeSubControls & SC_ScrollBarSlider ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
-        if( widget )
-        {
-            // render background
-            // it is necessary to retrieve the complete widget rect, in order to properly handle overlaps
-            // at the scrollbar boundary
-            // define color
-            // TODO: try use subControlRect instead
-            const QPalette& palette( option->palette );
-            const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-
-            // adjust rect
-            QStyleOptionSlider copy( *sliderOption );
-            copy.rect = widget->rect();
-            QRect backgroundRect( scrollBarSubControlRect( &copy, SC_ScrollBarGroove, widget ) );
-            if( horizontal ) backgroundRect = centerRect( backgroundRect, backgroundRect.width(), Metrics::ScrollBar_SliderWidth );
-            else backgroundRect = centerRect( backgroundRect, Metrics::ScrollBar_SliderWidth, backgroundRect.height() );
-
-            _helper->renderScrollBarGroove( painter, backgroundRect, color );
-
-        }
-
         {
             // render handle
             // define colors
@@ -3918,46 +3919,6 @@ namespace Breeze
         return true;
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawScrollBarAddPageControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if ( !sliderOption ) return true;
-
-        painter->setClipRect( option->rect );
-
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        const State& state( option->state );
-
-        // define tiles and adjust rect
-        QRect backgroundRect;
-        const bool horizontal( state & State_Horizontal );
-        const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
-
-        if( horizontal )
-        {
-
-            backgroundRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
-            if( reverseLayout ) backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2, 0 );
-            else backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
-
-
-        } else {
-
-            backgroundRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
-            backgroundRect.adjust( 0, -Metrics::ScrollBar_SliderWidth/2, 0, 0 );
-
-        }
-
-        // render
-        _helper->renderScrollBarGroove( painter, backgroundRect, color );
-
-        return true;
-
-    }
 
     //___________________________________________________________________________________
     bool Style::drawScrollBarSubLineControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
@@ -4033,46 +3994,6 @@ namespace Breeze
         }
 
         return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawScrollBarSubPageControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if ( !sliderOption ) return true;
-
-        painter->setClipRect( option->rect );
-
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        const State& state( option->state );
-
-        // define tiles and adjust rect
-        QRect backgroundRect;
-        const bool horizontal( state & State_Horizontal );
-        const bool reverseLayout( sliderOption->direction == Qt::RightToLeft );
-
-        if( horizontal )
-        {
-
-            backgroundRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
-            if( reverseLayout ) backgroundRect.adjust( -Metrics::ScrollBar_SliderWidth/2, 0, 0, 0 );
-            else backgroundRect.adjust( 0, 0, Metrics::ScrollBar_SliderWidth/2-1, 0 );
-
-        } else {
-
-            backgroundRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
-            backgroundRect.adjust( 0, 0, 0, Metrics::ScrollBar_SliderWidth/2-1 );
-
-        }
-
-        // render
-        _helper->renderScrollBarGroove( painter, backgroundRect, color );
-
-        return true;
-
     }
 
     //___________________________________________________________________________________
@@ -5165,11 +5086,31 @@ namespace Breeze
     bool Style::drawScrollBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // render background behind widget with correct role
         if( widget )
         {
             painter->setBrush( option->palette.color( widget->backgroundRole() ) );
             painter->setPen( Qt::NoPen );
             painter->drawRect( option->rect );
+        }
+
+        // render full groove directly, rather than using the addPage and subPage control element methods
+        if( option->subControls && SC_ScrollBarGroove )
+        {
+            // retrieve groove rectangle
+            QRect grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+
+            const QPalette& palette( option->palette );
+            const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+            const State& state( option->state );
+            const bool horizontal( state & State_Horizontal );
+
+            if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidth );
+            else grooveRect = centerRect( grooveRect, Metrics::ScrollBar_SliderWidth, grooveRect.height() );
+
+            // render
+            _helper->renderScrollBarGroove( painter, grooveRect, color );
+
         }
 
         // call base class primitive
