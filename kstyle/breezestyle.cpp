@@ -1126,9 +1126,8 @@ namespace Breeze
             if( horizontal ) rect.setTop( rect.height() - Metrics::ProgressBar_Thickness );
             else {
 
-                const bool reverseLayout( option->direction == Qt::RightToLeft );
-                if( reverseLayout ) rect.setLeft( rect.width() - Metrics::ProgressBar_Thickness );
-                else rect.setWidth( Metrics::ProgressBar_Thickness );
+                rect.setWidth( Metrics::ProgressBar_Thickness );
+                rect = handleRTL( option, rect );
 
             }
 
@@ -1162,9 +1161,8 @@ namespace Breeze
         if( horizontal ) rect.setHeight( rect.height() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
         else {
 
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-            if( reverseLayout ) rect.setWidth( rect.width() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
-            else rect.setLeft( Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace );
+            rect.setLeft( Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace );
+            rect = handleRTL( option, rect );
 
         }
 
@@ -3161,7 +3159,7 @@ namespace Breeze
             painter->drawLine( line );
         }
 
-        //The right/left ( depending on dir ) line gets drawn if we have an item
+        //The right/left (depending on direction ) line gets drawn if we have an item
         if ( state & State_Item )
         {
             const QLine line = reverseLayout ?
@@ -3496,6 +3494,7 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool selected( enabled && (state & State_Selected) );
         const bool sunken( enabled && (state & (State_On|State_Sunken) ) );
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // define relevant rectangles
         // checkbox
@@ -3559,11 +3558,15 @@ namespace Breeze
         // arrow
         QRect arrowRect( contentsRect.right() - Metrics::MenuButton_IndicatorWidth, contentsRect.top() + (contentsRect.height()-Metrics::MenuButton_IndicatorWidth)/2, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
         contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_BoxTextSpace - 1 );
+
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
         {
 
+            // apply right-to-left layout
+            arrowRect = handleRTL( option, arrowRect );
+
             // arrow orientation
-            const ArrowOrientation orientation( option->direction == Qt::RightToLeft ? ArrowLeft:ArrowRight );
+            const ArrowOrientation orientation( reverseLayout ? ArrowLeft:ArrowRight );
 
             // color
             QColor arrowColor;
@@ -3600,7 +3603,8 @@ namespace Breeze
             }
 
             // render text
-            const int textFlags( Qt::AlignLeft | Qt::AlignVCenter |  _mnemonics->textFlags() );
+            const int textFlags( Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft ) | _mnemonics->textFlags() );
+
             textRect = option->fontMetrics.boundingRect( textRect, textFlags, text );
             drawItemText( painter, textRect, textFlags, palette, enabled, text, QPalette::WindowText );
 
