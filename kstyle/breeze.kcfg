@@ -17,11 +17,7 @@
        <default>10</default>
     </entry>
 
-    <entry name="GenericAnimationsEnabled" type="Bool">
-      <default>true</default>
-    </entry>
-
-    <entry name="GenericAnimationsDuration" type="Int">
+    <entry name="AnimationsDuration" type="Int">
       <default>100</default>
     </entry>
 
