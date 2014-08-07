@@ -25,8 +25,10 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezesplitterproxy.h"
+#include "breezesplitterproxy.moc"
+
+#include "breeze.h"
 #include "breezestyleconfigdata.h"
-#include "breezemetrics.h"
 
 #include <QCoreApplication>
 #include <QDebug>

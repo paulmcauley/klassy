@@ -23,7 +23,7 @@
 // Boston, MA 02110-1301, USA.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezemetrics.h"
+#include "breeze.h"
 
 #include <KStyle>
 
@@ -166,21 +166,6 @@ namespace Breeze
         //! load configuration
         void loadConfiguration();
 
-        //!@name enumerations and convenience classes
-        //@{
-
-        //! arrow orientation
-        enum ArrowOrientation
-        {
-            ArrowNone,
-            ArrowUp,
-            ArrowDown,
-            ArrowLeft,
-            ArrowRight
-        };
-
-        //@}
-
         //!@name subelementRect specialized functions
         //@{
 
@@ -295,7 +280,7 @@ namespace Breeze
         bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorButtonDropDownPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-//         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 //         bool drawWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -428,12 +413,6 @@ namespace Breeze
 
         //! returns true if given scrollbar arrow is animated
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;
-
-        //! returns point position for generic arrows
-        QPolygonF genericArrow( ArrowOrientation ) const;
-
-        //! scrollbar arrow
-        void renderScrollBarArrow( QPainter*, const QRect&, const QColor& color, ArrowOrientation ) const;
 
         //! spinbox arrows
         void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;

@@ -30,7 +30,7 @@
 #include "breezeframeshadow.h"
 #include "breezeframeshadow.moc"
 
-#include "breezemetrics.h"
+#include "breeze.h"
 
 #include <QDebug>
 #include <QAbstractScrollArea>
@@ -352,7 +352,6 @@ namespace Breeze
             cr.adjust( -1, 0, 1, 1 );
             break;
 
-            case Unknown:
             default:
             return;
         }

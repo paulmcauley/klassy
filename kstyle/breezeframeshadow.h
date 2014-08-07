@@ -30,8 +30,8 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
 #include "breezeaddeventfilter.h"
-#include "breezeanimationmodes.h"
 #include "breezehelper.h"
 
 #include <QEvent>
@@ -44,13 +44,6 @@
 
 namespace Breeze
 {
-
-    //! shadow area
-    enum ShadowArea {
-        Unknown = 0,
-        ShadowAreaTop,
-        ShadowAreaBottom
-    };
 
     //! shadow manager
     class FrameShadowFactory: public QObject

@@ -1,10 +1,15 @@
-#ifndef breezemetrics_h
-#define breezemetrics_h
+#ifndef breeze_h
+#define breeze_h
 
 /*
-* this file is part of the breeze gtk engine
-* Copyright (c) 2010 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-* Copyright (c) 2010 Ruslan Kabatsayev <b7.10110111@gmail.com>
+* breeze.h
+* all enumerations
+* -------------------
+*
+* Copyright (c) 2012 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+*
+* Largely inspired from Qtcurve style
+* Copyright (C) Craig Drummond, 2003 - 2010 craig.p.drummond@gmail.com
 *
 * This  library is free  software; you can  redistribute it and/or
 * modify it  under  the terms  of the  GNU Lesser  General  Public
@@ -21,6 +26,8 @@
 * Software Foundation, Inc., 51  Franklin St, Fifth Floor, Boston,
 * MA 02110-1301, USA.
 */
+
+#include "QtCore/QFlags"
 
 namespace Breeze
 {
@@ -135,6 +142,53 @@ namespace Breeze
 
     };
 
+    //! animation mode
+    enum AnimationMode
+    {
+        AnimationNone = 0,
+        AnimationHover = 1<<0,
+        AnimationFocus = 1<<1,
+        AnimationEnable = 1<<2
+    };
+
+    Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
+
+    //! corners
+    enum Corner
+    {
+        CornerTopLeft = 1 << 0,
+        CornerTopRight = 1 << 1,
+        CornerBottomLeft = 1 << 2,
+        CornerBottomRight = 1 << 3,
+        CornersTop = CornerTopLeft|CornerTopRight,
+        CornersBottom = CornerBottomLeft|CornerBottomRight,
+        CornersLeft = CornerTopLeft|CornerBottomLeft,
+        CornersRight = CornerTopRight|CornerBottomRight,
+        CornersAll = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
+    };
+
+    Q_DECLARE_FLAGS( Corners, Corner );
+
+    //! arrow orientation
+    enum ArrowOrientation
+    {
+        ArrowNone,
+        ArrowUp,
+        ArrowDown,
+        ArrowLeft,
+        ArrowRight
+    };
+
+    //! shadow area
+    enum ShadowArea
+    {
+        ShadowAreaTop,
+        ShadowAreaBottom
+    };
+
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::AnimationModes );
+Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::Corners );
 
 #endif

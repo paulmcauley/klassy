@@ -27,6 +27,8 @@
 // Boston, MA 02110-1301, USA.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breezeaddeventfilter.h"
+
 #include <QEvent>
 #include <QMap>
 #include <QPointer>
@@ -36,8 +38,6 @@
 #include <QSplitterHandle>
 #include <QWidget>
 
-#include "breezeaddeventfilter.h"
-
 namespace Breeze
 {
 
@@ -46,6 +46,8 @@ namespace Breeze
     //! factory
     class SplitterFactory: public QObject
     {
+
+        Q_OBJECT
 
         public:
 
@@ -88,6 +90,8 @@ namespace Breeze
     //! splitter 'proxy' widget, with extended hit area
     class SplitterProxy : public QWidget
     {
+
+        Q_OBJECT
 
         public:
 

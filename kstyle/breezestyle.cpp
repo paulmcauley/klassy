@@ -25,11 +25,10 @@
 #include "breezestyle.h"
 #include "breezestyle.moc"
 
+#include "breeze.h"
 #include "breezeanimations.h"
-#include "breezeanimationmodes.h"
 #include "breezeframeshadow.h"
 #include "breezehelper.h"
-#include "breezemetrics.h"
 #include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
 #include "breezeshadowhelper.h"
@@ -735,6 +734,7 @@ namespace Breeze
             case PE_IndicatorArrowLeft: fcn = &Style::drawIndicatorArrowLeftPrimitive; break;
             case PE_IndicatorArrowRight: fcn = &Style::drawIndicatorArrowRightPrimitive; break;
             case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
+            case PE_IndicatorToolBarHandle: fcn = &Style::drawIndicatorToolBarHandlePrimitive; break;
             case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
             case PE_IndicatorBranch: fcn = &Style::drawIndicatorBranchPrimitive; break;
 
@@ -2381,29 +2381,29 @@ namespace Breeze
         QRect rect( option->rect );
 
         const QSize tabBarSize( tabOption->tabBarSize );
-        Helper::Corners corners = Helper::CornersAll;
+        Corners corners = CornersAll;
 
         // adjust corners to deal with oversized tabbars
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersTop;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersTop;
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersBottom;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersBottom;
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersLeft;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersLeft;
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~Helper::CornersRight;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersRight;
             break;
 
             default: break;
@@ -2495,7 +2495,7 @@ namespace Breeze
     {
 
         // store rect and palette
-        const QRectF rect( option->rect );
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
         // store state
@@ -2508,14 +2508,8 @@ namespace Breeze
         if( mouseOver ) color = _helper->hoverColor( palette );
         else color = palette.color( QPalette::WindowText );
 
-        // arrow
-        const QPolygonF arrow( genericArrow( orientation ) );
-        const qreal penThickness = 1.5;
-
-        painter->setRenderHint( QPainter::Antialiasing );
-        painter->translate( rect.center() );
-        painter->setPen( QPen( color, penThickness ) );
-        painter->drawPolyline( arrow );
+        // render
+        _helper->renderArrow( painter, rect, color, orientation );
 
         return true;
     }
@@ -2533,20 +2527,14 @@ namespace Breeze
         if( orientation == ArrowNone ) return true;
 
         // state, rect and palette
-        const QRectF& rect( option->rect );
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
         // define color and polygon for drawing arrow
-        const QPolygonF arrow( genericArrow( orientation ) );
         const QColor color = palette.color( QPalette::WindowText );
-        const qreal penThickness = 1.5;
 
-        // render arrow
-        painter->setRenderHint( QPainter::Antialiasing );
-        painter->setPen( QPen( color, penThickness ) );
-        painter->setBrush( Qt::NoBrush );
-        painter->translate( rect.center() );
-        painter->drawPolyline( arrow );
+        // render
+        _helper->renderArrow( painter, rect, color, orientation );
 
         return true;
     }
@@ -2866,7 +2854,7 @@ namespace Breeze
         }
 
         // get selection path
-        Helper::Corners corners;
+        Corners corners;
         const bool hasSingleSelection( abstractItemView && abstractItemView->selectionMode() == QAbstractItemView::SingleSelection );
         if( hasSingleSelection )
         {
@@ -2878,12 +2866,12 @@ namespace Breeze
                 ( abstractItemView && abstractItemView->selectionBehavior() != QAbstractItemView::SelectRows ) )
             {
 
-                corners = Helper::CornersAll;
+                corners = CornersAll;
 
             } else {
 
-                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= Helper::CornersLeft;
-                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= Helper::CornersRight;
+                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= CornersLeft;
+                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= CornersRight;
 
             }
 
@@ -3040,6 +3028,11 @@ namespace Breeze
         return true;
     }
 
+
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorToolBarHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    { return true; }
+
     //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
@@ -3081,24 +3074,19 @@ namespace Breeze
             int expanderSize = qMin( rect.width(), rect.height() );
             expanderSize = qMin( expanderSize, (int) Metrics::ItemView_ArrowSize );
             expanderAdjust = expanderSize/2 + 1;
-            QRect arrowRect = centerRect( rect, expanderSize, expanderSize );
+            const QRect arrowRect = centerRect( rect, expanderSize, expanderSize );
 
-            // get size from option
-            QPolygonF arrow;
-            if( expanderOpen ) arrow = genericArrow( ArrowDown );
-            else if( reverseLayout ) arrow = genericArrow( ArrowLeft );
-            else arrow = genericArrow( ArrowRight );
+            // get orientation from option
+            ArrowOrientation orientation;
+            if( expanderOpen ) orientation = ArrowDown;
+            else if( reverseLayout ) orientation = ArrowLeft;
+            else orientation = ArrowRight;
 
-            const qreal penThickness( 1.5 );
+            // color
             const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : palette.color( QPalette::Text ) );
 
-            // arrows
-            painter->save();
-            painter->setRenderHints( QPainter::Antialiasing );
-            painter->setPen( QPen( arrowColor, penThickness ) );
-            painter->translate( QRectF( arrowRect ).center() );
-            painter->drawPolyline( arrow );
-            painter->restore();
+            // render
+            _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
 
         }
 
@@ -3189,16 +3177,8 @@ namespace Breeze
             // define color
             const QColor arrowColor( palette.color( textRole ) );
 
-            // render arrow
-            const QPolygonF arrow( genericArrow( ArrowDown ) );
-            const qreal penThickness = 1.5;
-
-            painter->save();
-            painter->setRenderHints( QPainter::Antialiasing );
-            painter->setPen( QPen( arrowColor, penThickness ) );
-            painter->translate( QRectF( arrowRect ).center() );
-            painter->drawPolyline( arrow );
-            painter->restore();
+            // render
+            _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
         } else contentsRect = insideMargin( contentsRect, Metrics::Button_MarginWidth );
 
@@ -3524,20 +3504,17 @@ namespace Breeze
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
         {
 
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-            const QPolygonF arrow( genericArrow( reverseLayout ? ArrowLeft:ArrowRight ) );
-            const qreal penThickness = 1.5;
+            // arrow orientation
+            const ArrowOrientation orientation( option->direction == Qt::RightToLeft ? ArrowLeft:ArrowRight );
+
+            // color
             QColor arrowColor;
             if( sunken ) arrowColor = _helper->focusColor( palette );
             else if( selected ) arrowColor = _helper->hoverColor( palette );
             else arrowColor = palette.color( QPalette::WindowText );
 
-            painter->save();
-            painter->setRenderHints( QPainter::Antialiasing );
-            painter->translate( QRectF( arrowRect ).center() );
-            painter->setPen( QPen( arrowColor, penThickness ) );
-            painter->drawPolyline( arrow );
-            painter->restore();
+            // render
+            _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
 
         }
 
@@ -3842,11 +3819,11 @@ namespace Breeze
 
                 copy.rect = leftSubButton;
                 color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
+                _helper->renderArrow( painter, leftSubButton, color, ArrowLeft );
 
                 copy.rect = rightSubButton;
                 color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
+                _helper->renderArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
 
@@ -3856,11 +3833,11 @@ namespace Breeze
 
                 copy.rect = topSubButton;
                 color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
+                _helper->renderArrow( painter, topSubButton, color, ArrowUp );
 
                 copy.rect = botSubButton;
                 color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
+                _helper->renderArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
@@ -3871,10 +3848,10 @@ namespace Breeze
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, rect, color, ArrowLeft );
-                else renderScrollBarArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
+                if( reverseLayout ) _helper->renderArrow( painter, rect, color, ArrowLeft );
+                else _helper->renderArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
 
-            } else renderScrollBarArrow( painter, rect.translated( 0, 1 ), color, ArrowDown );
+            } else _helper->renderArrow( painter, rect.translated( 0, 1 ), color, ArrowDown );
 
         }
 
@@ -3959,11 +3936,11 @@ namespace Breeze
 
                 copy.rect = leftSubButton;
                 color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, leftSubButton, color, ArrowLeft );
+                _helper->renderArrow( painter, leftSubButton, color, ArrowLeft );
 
                 copy.rect = rightSubButton;
                 color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, rightSubButton, color, ArrowRight );
+                _helper->renderArrow( painter, rightSubButton, color, ArrowRight );
 
             } else {
 
@@ -3973,11 +3950,11 @@ namespace Breeze
 
                 copy.rect = topSubButton;
                 color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
-                renderScrollBarArrow( painter, topSubButton, color, ArrowUp );
+                _helper->renderArrow( painter, topSubButton, color, ArrowUp );
 
                 copy.rect = botSubButton;
                 color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
-                renderScrollBarArrow( painter, botSubButton, color, ArrowDown );
+                _helper->renderArrow( painter, botSubButton, color, ArrowDown );
 
             }
 
@@ -3988,10 +3965,10 @@ namespace Breeze
             if( horizontal )
             {
 
-                if( reverseLayout ) renderScrollBarArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
-                else renderScrollBarArrow( painter, rect, color, ArrowLeft );
+                if( reverseLayout ) _helper->renderArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
+                else _helper->renderArrow( painter, rect, color, ArrowLeft );
 
-            } else renderScrollBarArrow( painter, rect, color, ArrowUp );
+            } else _helper->renderArrow( painter, rect, color, ArrowUp );
 
         }
 
@@ -4334,21 +4311,21 @@ namespace Breeze
         }
 
         // adjust rect and define corners based on tabbar orientation
-        Helper::Corners corners;
+        Corners corners;
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
             if( selected ) {
 
-                corners = Helper::CornerTopLeft|Helper::CornerTopRight;
+                corners = CornerTopLeft|CornerTopRight;
                 rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
 
             } else {
 
                 rect.adjust( 0, 0, 0, -1 );
-                if( isFirst ) corners |= Helper::CornerTopLeft;
-                if( isLast ) corners |= Helper::CornerTopRight;
+                if( isFirst ) corners |= CornerTopLeft;
+                if( isLast ) corners |= CornerTopRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
@@ -4360,14 +4337,14 @@ namespace Breeze
             case QTabBar::TriangularSouth:
             if( selected ) {
 
-                corners = Helper::CornerBottomLeft|Helper::CornerBottomRight;
+                corners = CornerBottomLeft|CornerBottomRight;
                 rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
 
             } else {
 
                 rect.adjust( 0, 1, 0, 0 );
-                if( isFirst ) corners |= Helper::CornerBottomLeft;
-                if( isLast ) corners |= Helper::CornerBottomRight;
+                if( isFirst ) corners |= CornerBottomLeft;
+                if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
@@ -4379,14 +4356,14 @@ namespace Breeze
             case QTabBar::TriangularWest:
             if( selected )
             {
-                corners = Helper::CornerTopLeft|Helper::CornerBottomLeft;
+                corners = CornerTopLeft|CornerBottomLeft;
                 rect.adjust( 0, 0, Metrics::TabBar_TabRadius, 0 );
 
             } else {
 
                 rect.adjust( 0, 0, -1, 0 );
-                if( isFirst ) corners |= Helper::CornerTopLeft;
-                if( isLast ) corners |= Helper::CornerBottomLeft;
+                if( isFirst ) corners |= CornerTopLeft;
+                if( isLast ) corners |= CornerBottomLeft;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
@@ -4399,14 +4376,14 @@ namespace Breeze
             if( selected )
             {
 
-                corners = Helper::CornerTopRight|Helper::CornerBottomRight;
+                corners = CornerTopRight|CornerBottomRight;
                 rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
 
             } else {
 
                 rect.adjust( 1, 0, 0, 0 );
-                if( isFirst ) corners |= Helper::CornerTopRight;
-                if( isLast ) corners |= Helper::CornerBottomRight;
+                if( isFirst ) corners |= CornerTopRight;
+                if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
@@ -4817,6 +4794,7 @@ namespace Breeze
             const QComboBox* comboBox = qobject_cast<const QComboBox*>( widget );
             const bool empty( comboBox && !comboBox->count() );
 
+            // arrow color
             QColor arrowColor;
             if( editable )
             {
@@ -4857,17 +4835,11 @@ namespace Breeze
             else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
             else arrowColor = palette.color( QPalette::ButtonText );
 
-            // render arrow
-            const QRectF arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
-            const QPolygonF arrow( genericArrow( ArrowDown ) );
-            const qreal penThickness( 1.5 );
+            // arrow rect
+            const QRect arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
 
-            painter->save();
-            painter->translate( arrowRect.center() );
-            painter->setRenderHint( QPainter::Antialiasing );
-            painter->setPen( QPen( arrowColor, penThickness ) );
-            painter->drawPolyline( arrow );
-            painter->restore();
+            // render
+            _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
         }
 
@@ -5150,7 +5122,7 @@ namespace Breeze
             painter->setClipRect( rect );
             const QColor outline( _helper->frameOutlineColor( palette, false, false ) );
             const QColor background( palette.color( active ? QPalette::Active : QPalette::Disabled, QPalette::Highlight ) );
-            _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, Helper::CornersTop );
+            _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, CornersTop );
 
             // render text
             const QRect textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
@@ -5213,30 +5185,6 @@ namespace Breeze
 
     }
 
-    //______________________________________________________________________________
-    void Style::renderScrollBarArrow(
-        QPainter* painter, const QRect& rect, const QColor& color,
-        ArrowOrientation orientation ) const
-    {
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const qreal penThickness( 1.5 );
-        const QPolygonF arrow( genericArrow( orientation ) );
-
-        const QColor base( color );
-
-        painter->save();
-        painter->translate( QRectF(rect).center() );
-
-        painter->setPen( QPen( base, penThickness, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin ) );
-        painter->drawPolyline( arrow );
-        painter->restore();
-
-        return;
-
-    }
-
     //____________________________________________________________________________________________________
     void Style::renderSpinBoxArrow( QPainter* painter, const QStyleOptionSpinBox* option, const QWidget* widget, const SubControl& subControl ) const
     {
@@ -5286,17 +5234,14 @@ namespace Breeze
 
         }
 
-        const QPolygonF arrow( genericArrow( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown ) );
-        const QRectF arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
+        // arrow orientation
+        ArrowOrientation orientation( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown );
 
-        painter->save();
-        painter->translate( arrowRect.center() );
-        painter->setRenderHint( QPainter::Antialiasing );
+        // arrow rect
+        const QRect arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
 
-        const qreal penThickness = 1.6;
-        painter->setPen( QPen( color, penThickness ) );
-        painter->drawPolyline( arrow );
-        painter->restore();
+        // render
+        _helper->renderArrow( painter, arrowRect, color, orientation );
 
         return;
 
@@ -5395,21 +5340,6 @@ namespace Breeze
         }
 
         return color;
-
-    }
-
-    //____________________________________________________________________________________
-    QPolygonF Style::genericArrow( Style::ArrowOrientation orientation ) const
-    {
-
-        switch( orientation )
-        {
-            case ArrowUp: return QPolygonF() << QPointF( -4,2 ) << QPointF( 0, -2 ) << QPointF( 4,2 );
-            case ArrowDown: return QPolygonF() << QPointF( -4,-2 ) << QPointF( 0, 2 ) << QPointF( 4,-2 );
-            case ArrowLeft: return QPolygonF() << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 );
-            case ArrowRight: return QPolygonF() << QPointF( -2,-4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 );
-            default: return QPolygonF();
-        }
 
     }
 

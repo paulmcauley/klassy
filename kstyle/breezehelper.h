@@ -19,7 +19,7 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include "breezeanimationmodes.h"
+#include "breeze.h"
 #include "breezeanimationdata.h"
 
 #include <KSharedConfig>
@@ -137,22 +137,6 @@ namespace Breeze
         //! toolbutton frame
         void renderToolBoxFrame( QPainter*, const QRect&, int tabWidth, const QColor& color ) const;
 
-        //! corner enumeration, needed for tabbar tabs
-        enum Corner
-        {
-            CornerTopLeft = 1 << 0,
-            CornerTopRight = 1 << 1,
-            CornerBottomLeft = 1 << 2,
-            CornerBottomRight = 1 << 3,
-            CornersTop = CornerTopLeft|CornerTopRight,
-            CornersBottom = CornerBottomLeft|CornerBottomRight,
-            CornersLeft = CornerTopLeft|CornerBottomLeft,
-            CornersRight = CornerTopRight|CornerBottomRight,
-            CornersAll = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
-        };
-
-        Q_DECLARE_FLAGS( Corners, Corner );
-
         //! tab widget frame
         void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners corners ) const;
 
@@ -207,6 +191,9 @@ namespace Breeze
 
         //! tabbar tab
         void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
+
+        //! generic arrow
+        void renderArrow( QPainter*, const QRect&, const QColor&, ArrowOrientation ) const;
 
         //@}
 
@@ -265,7 +252,5 @@ namespace Breeze
     };
 
 }
-
-Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::Helper::Corners );
 
 #endif

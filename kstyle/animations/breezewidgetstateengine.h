@@ -27,10 +27,10 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
 #include "breezebaseengine.h"
 #include "breezedatamap.h"
 #include "breezewidgetstatedata.h"
-#include "breezeanimationmodes.h"
 
 namespace Breeze
 {

@@ -27,7 +27,7 @@
 #include "breezebusyindicatorengine.h"
 #include "breezebusyindicatorengine.moc"
 
-#include "../breezemetrics.h"
+#include "breeze.h"
 
 #include <QVariant>
 

@@ -26,8 +26,9 @@
 
 #include "breezeshadowhelper.h"
 #include "breezeshadowhelper.moc"
+
+#include "breeze.h"
 #include "breezehelper.h"
-#include "breezemetrics.h"
 
 #include <QDockWidget>
 #include <QEvent>

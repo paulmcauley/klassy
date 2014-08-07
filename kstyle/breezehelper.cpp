@@ -22,7 +22,7 @@
 
 #include "breezehelper.h"
 
-#include "breezemetrics.h"
+#include "breeze.h"
 
 #include <KColorUtils>
 #include <KWindowSystem>
@@ -1046,6 +1046,33 @@ namespace Breeze
             painter->drawPath( path );
         }
 
+    }
+
+
+    //______________________________________________________________________________
+    void Helper::renderArrow( QPainter* painter, const QRect& rect, const QColor& color, ArrowOrientation orientation ) const
+    {
+
+        // define polygon
+        QPolygonF arrow;
+        switch( orientation )
+        {
+            case ArrowUp: arrow << QPointF( -4,2 ) << QPointF( 0, -2 ) << QPointF( 4,2 ); break;
+            case ArrowDown: arrow << QPointF( -4,-2 ) << QPointF( 0, 2 ) << QPointF( 4,-2 ); break;
+            case ArrowLeft: arrow << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 ); break;
+            case ArrowRight: arrow << QPointF( -2,-4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 ); break;
+            default: break;
+        }
+
+        painter->save();
+        painter->setRenderHints( QPainter::Antialiasing );
+        painter->translate( QRectF( rect ).center() );
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( QPen( color, 1.5 ) );
+        painter->drawPolyline( arrow );
+        painter->restore();
+
+        return;
     }
 
     //______________________________________________________________________________
