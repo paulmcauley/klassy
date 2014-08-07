@@ -4173,11 +4173,22 @@ namespace Breeze
         // call parent style method
         KStyle::drawControl( CE_TabBarTabLabel, option, painter, widget );
 
+        // store rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
         // check focus
         const State& state( option->state );
-        const bool hasFocus( state & State_HasFocus );
+        const bool enabled( state & State_Enabled );
         const bool selected( state & State_Selected );
-        if( !( hasFocus && selected ) ) return true;
+        const bool hasFocus( enabled && selected && (state & State_HasFocus) );
+
+        // update mouse over animation state
+        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationFocus, hasFocus );
+        const bool animated( enabled && selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft(), AnimationFocus ) );
+        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft(), AnimationFocus ) );
+
+        if( !( hasFocus || animated ) ) return true;
 
         // code is copied from QCommonStyle, but adds focus
         // cast option and check
@@ -4185,7 +4196,6 @@ namespace Breeze
         if( !tabOption || tabOption->text.isEmpty() ) return true;
 
         // tab option rect
-        QRect rect = tabOption->rect;
         const bool verticalTabs( isVerticalTab( tabOption ) );
         const int alignment = Qt::AlignCenter | _mnemonics->textFlags();
 
@@ -4223,9 +4233,14 @@ namespace Breeze
         // adjust text rect based on font metrics
         textRect = option->fontMetrics.boundingRect( textRect, alignment, tabOption->text );
 
+        // focus color
+        QColor focusColor;
+        if( animated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
+        else if( hasFocus ) focusColor =  _helper->focusColor( palette );
+
         // render focus line
         painter->translate( 0, 2 );
-        painter->setPen( _helper->focusColor( option->palette ) );
+        painter->setPen( focusColor );
         painter->drawLine( textRect.bottomLeft(), textRect.bottomRight() );
 
         if( verticalTabs ) painter->restore();
@@ -4255,10 +4270,10 @@ namespace Breeze
         // store rect
         QRect rect( option->rect );
 
-        // animation state
-        _animations->tabBarEngine().updateState( widget, rect.topLeft(), mouseOver );
-        const bool animated( enabled && !selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft() ) );
-        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft() ) );
+        // update mouse over animation state
+        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationHover, mouseOver );
+        const bool animated( enabled && !selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft(), AnimationHover ) );
+        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft(), AnimationHover ) );
 
         // lock state
         if( selected && widget && isDragged ) _tabBarData->lock( widget );

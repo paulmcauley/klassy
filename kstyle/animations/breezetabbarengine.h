@@ -27,6 +27,7 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
 #include "breezebaseengine.h"
 #include "breezedatamap.h"
 #include "breezetabbardata.h"
@@ -55,44 +56,51 @@ namespace Breeze
         virtual bool registerWidget( QWidget* );
 
         //! true if widget hover state is changed
-        virtual bool updateState( const QObject*, const QPoint&, bool );
+        virtual bool updateState( const QObject*, const QPoint&, AnimationMode, bool );
 
         //! true if widget is animated
-        virtual bool isAnimated( const QObject* object, const QPoint& point )
-        {
-            if( DataMap<TabBarData>::Value data = _data.find( object ) )
-            { if( Animation::Pointer animation = data.data()->animation( point ) ) return animation.data()->isRunning(); }
-            return false;
-        }
+        virtual bool isAnimated( const QObject* object, const QPoint& point, AnimationMode );
 
         //! animation opacity
-        virtual qreal opacity( const QObject* object, const QPoint& point )
-        { return isAnimated( object, point ) ? _data.find( object ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
+        virtual qreal opacity( const QObject* object, const QPoint& point, AnimationMode mode )
+        { return isAnimated( object, point, mode ) ? data( object, mode ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
         //! enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
-            _data.setEnabled( value );
+            _hoverData.setEnabled( value );
+            _focusData.setEnabled( value );
         }
 
         //! duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
-            _data.setDuration( value );
+            _hoverData.setDuration( value );
+            _focusData.setDuration( value );
         }
 
         public Q_SLOTS:
 
         //! remove widget from map
         virtual bool unregisterWidget( QObject* object )
-        { return _data.unregisterWidget( object ); }
+        {
+            if( !object ) return false;
+            bool found = false;
+            if( _hoverData.unregisterWidget( object ) ) found = true;
+            if( _focusData.unregisterWidget( object ) ) found = true;
+            return found;
+        }
 
         private:
 
+        //! returns data associated to widget
+        DataMap<TabBarData>::Value data( const QObject*, AnimationMode );
+
         //! data map
-        DataMap<TabBarData> _data;
+        DataMap<TabBarData> _hoverData;
+        DataMap<TabBarData> _focusData;
 
     };
 
