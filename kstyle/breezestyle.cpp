@@ -2513,7 +2513,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         // store rect and palette
@@ -2524,10 +2524,20 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         bool mouseOver( enabled && ( state & State_MouseOver ) );
+        bool hasFocus( enabled && ( state & State_HasFocus ) );
+
+        // detect buttons in tabbar, for which special rendering is needed
+        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
+
+        // get animation state
+        /* there is no need to update the engine since this was already done when rendering the frame */
+        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
         // color
         QColor color;
         if( mouseOver ) color = _helper->hoverColor( palette );
+        else if( inTabBar && hasFocus ) color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
         else color = palette.color( QPalette::WindowText );
 
         // render
@@ -2636,11 +2646,8 @@ namespace Breeze
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & State_HasFocus) );
 
-        // update animation state
-        // mouse over takes precedence over focus
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
-
+        // get animation state
+        // no need to update, this was already done in drawToolButtonComplexControl
         const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
         const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
@@ -4608,10 +4615,21 @@ namespace Breeze
         const bool hasFocus( enabled && (option->state & State_HasFocus) );
         const bool autoRaise( state & State_AutoRaise );
 
+        // update animation state
+        // mouse over takes precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+
+        // detect buttons in tabbar, for which special rendering is needed
+        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
+
         // define text role for label and arrow
         QPalette::ColorRole textRole;
-        if( autoRaise )
-        {
+        if( inTabBar ) {
+
+            textRole = QPalette::WindowText;
+
+        } else if( autoRaise ) {
 
             if( sunken && !mouseOver ) textRole = QPalette::HighlightedText;
             else textRole = QPalette::WindowText;
@@ -4629,9 +4647,6 @@ namespace Breeze
 
         const QRect buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
         const QRect menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
-
-        // detect buttons in tabbar, for which special rendering is needed
-        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
 
         // frame
         if( toolButtonOption->subControls & SC_ToolButton )
@@ -4690,7 +4705,7 @@ namespace Breeze
                 if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
 
                 // adjust state
-                if( toolButtonOption->features & QStyleOptionToolButton::Arrow )
+                if( (toolButtonOption->features & QStyleOptionToolButton::Arrow) && !inTabBar )
                 { copy.state &= ~State_MouseOver; }
 
             }

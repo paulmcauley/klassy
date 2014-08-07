@@ -117,6 +117,38 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QColor Helper::arrowColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor outline( palette.color( QPalette::WindowText ) );
+        if( mode == AnimationHover )
+        {
+
+            const QColor focus( focusColor( palette ) );
+            const QColor hover( hoverColor( palette ) );
+            if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+            else outline = KColorUtils::mix( outline, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            outline = hoverColor( palette );
+
+        } else if( mode == AnimationFocus ) {
+
+            const QColor focus( focusColor( palette ) );
+            outline = KColorUtils::mix( outline, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focusColor( palette );
+
+        }
+
+        return outline;
+
+    }
+
+    //____________________________________________________________________
     QColor Helper::buttonOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
