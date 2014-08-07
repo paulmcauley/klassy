@@ -320,28 +320,6 @@ namespace Breeze
         switch( standardPixmap )
         {
 
-//             case SP_TitleBarNormalButton:
-//             icon = iconFromResource( ":/restore.svgz" );
-//             break;
-//
-//             case SP_TitleBarMinButton:
-//             icon = iconFromResource( ":/minimize.svgz" );
-//             break;
-//
-//             case SP_TitleBarMaxButton:
-//             icon = iconFromResource( ":/maximize.svgz" );
-//             break;
-//
-//             case SP_TitleBarCloseButton:
-//             case SP_DockWidgetCloseButton:
-//             icon = iconFromResource( ":/close.svgz" );
-//             break;
-//
-//             case SP_ToolBarHorizontalExtensionButton:
-//             case SP_ToolBarVerticalExtensionButton:
-//             icon = toolBarExtensionIcon( standardPixmap, option, widget );
-//             break;
-
             case SP_TitleBarNormalButton:
             case SP_TitleBarMinButton:
             case SP_TitleBarMaxButton:
