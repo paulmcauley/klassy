@@ -5550,7 +5550,11 @@ namespace Breeze
 
         palette.setCurrentColorGroup( QPalette::Active );
         const QColor base( palette.color( QPalette::WindowText ) );
-        const QColor highlight( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):base );
+        const QColor selected( palette.color( QPalette::HighlightedText ) );
+        const QColor negative( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):base );
+        const QColor negativeSelected( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):selected );
+
+        const bool invertNormalState( buttonType == ButtonClose );
 
         // convenience class to map color to icon mode
         struct IconData
@@ -5564,15 +5568,15 @@ namespace Breeze
         // map colors to icon states
         const QList<IconData> iconTypes =
         {
-            { _helper->alphaColor( base, 0.5 ), true, QIcon::Normal, QIcon::Off },
-            { _helper->alphaColor( base, 0.5 ), true, QIcon::Selected, QIcon::Off },
-            { _helper->alphaColor( highlight, 0.3 ), true, QIcon::Active, QIcon::Off },
-            { _helper->alphaColor( base, 0.2 ), true, QIcon::Disabled, QIcon::Off },
+            { _helper->alphaColor( base, 0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
+            { _helper->alphaColor( selected, 0.5 ), invertNormalState, QIcon::Selected, QIcon::Off },
+            { _helper->alphaColor( negative, 0.3 ), true, QIcon::Active, QIcon::Off },
+            { _helper->alphaColor( base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
 
-            { _helper->alphaColor( highlight, 0.7 ), true, QIcon::Normal, QIcon::On },
-            { _helper->alphaColor( highlight, 0.7 ), true, QIcon::Selected, QIcon::On },
-            { _helper->alphaColor( highlight, 0.7 ), true, QIcon::Active, QIcon::On },
-            { _helper->alphaColor( base, 0.2 ), true, QIcon::Disabled, QIcon::On }
+            { _helper->alphaColor( negative, 0.7 ), true, QIcon::Normal, QIcon::On },
+            { _helper->alphaColor( negativeSelected, 0.7 ), true, QIcon::Selected, QIcon::On },
+            { _helper->alphaColor( negative, 0.7 ), true, QIcon::Active, QIcon::On },
+            { _helper->alphaColor( base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
         };
 
         // default icon sizes
