@@ -2967,16 +2967,19 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
+
+        // cast option and check
+        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
+        if( !toolButtonOption ) return true;
 
         // store state
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
 
         // for toolbuttons, need to render the relevant part of the frame
-        const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
-        if( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup && !autoRaise )
+        if( (toolButtonOption->subControls & SC_ToolButtonMenu) && !autoRaise )
         {
 
             // store palette and rect
@@ -4579,7 +4582,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
-        if( !toolButtonOption ) return false;
+        if( !toolButtonOption ) return true;
 
         // need to alter palette for focused buttons
         const State& state( option->state );
@@ -4603,7 +4606,6 @@ namespace Breeze
         // copy option and alter palette
         QStyleOptionToolButton copy( *toolButtonOption );
         copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
-        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
         copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
 
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
@@ -4626,7 +4628,9 @@ namespace Breeze
             if( !autoRaise )
             { drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget ); }
 
-            copy.state &= ~State_MouseOver;
+            if( !( autoRaise && ( toolButtonOption->activeSubControls & SC_ToolButtonMenu ) ) )
+            { copy.state &= ~State_MouseOver; }
+
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         } else if( hasInlineIndicator ) {
@@ -4641,8 +4645,8 @@ namespace Breeze
         // contents
         {
 
-            // restore state and assign rect
-            copy.state = option->state;
+            // restore state
+            copy.state = state;
 
             // define contents rect
             QRect contentsRect( buttonRect );
