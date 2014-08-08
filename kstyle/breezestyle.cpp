@@ -2846,7 +2846,7 @@ namespace Breeze
 
         // define color group
         QPalette::ColorGroup colorGroup;
-        if( enabled ) colorGroup = active ? QPalette::Normal : QPalette::Inactive;
+        if( enabled ) colorGroup = active ? QPalette::Active : QPalette::Inactive;
         else colorGroup = QPalette::Disabled;
 
         // render alternate background
@@ -5447,8 +5447,15 @@ namespace Breeze
         // map colors to icon states
         const QList<IconData> iconTypes =
         {
-            { palette.color( QPalette::Normal, QPalette::WindowText ), QIcon::Normal, QIcon::Off },
-            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off }
+            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Normal, QIcon::Off },
+            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Selected, QIcon::Off },
+            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Active, QIcon::Off },
+            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off },
+
+            { palette.color( QPalette::Active, QPalette::HighlightedText ), QIcon::Normal, QIcon::On },
+            { palette.color( QPalette::Active, QPalette::HighlightedText ), QIcon::Selected, QIcon::On },
+            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Active, QIcon::On },
+            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::On }
         };
 
         // decide arrow orientation
