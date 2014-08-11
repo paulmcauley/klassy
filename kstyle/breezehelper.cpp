@@ -369,7 +369,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
-        const qreal radius( frameRadius() - 0.5 );
+        qreal radius( frameRadius() );
 
         // set pen
         if( outline.isValid() )
@@ -379,13 +379,14 @@ namespace Breeze
 
                 painter->setPen( QPen( outline, 2 ) );
                 frameRect.adjust( 1, 1, -1, -1 );
-
             } else {
 
                 painter->setPen( QPen( outline, 1 ) );
                 frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
             }
+
+            radius -= 0.5;
 
         } else {
 
@@ -411,7 +412,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect );
-        const qreal radius( frameRadius() - 0.5 );
+        qreal radius( frameRadius() );
 
         // set pen
         if( outline.isValid() )
@@ -419,6 +420,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            radius -= 0.5;
 
         } else painter->setPen( Qt::NoPen );
 
@@ -459,13 +461,16 @@ namespace Breeze
         }
 
         // outline
-        const qreal radius( frameRadius() - 0.5 );
+        qreal radius( frameRadius() );
         frameRect.adjust( 1, 1, -1, -1 );
 
         if( outline.isValid() && !hasFocus )
         {
+
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            radius -= 0.5;
+
         } else painter->setPen( Qt::NoPen );
 
         // content
@@ -501,7 +506,7 @@ namespace Breeze
         if( sunken )
         {
 
-            const qreal radius( frameRadius() - 0.5 );
+            const qreal radius( frameRadius() );
 
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
@@ -511,7 +516,7 @@ namespace Breeze
 
         } else {
 
-            const qreal radius( frameRadius() - 1.0 );
+            const qreal radius( frameRadius()-0.5 );
 
             painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
@@ -531,7 +536,7 @@ namespace Breeze
         if( !outline.isValid() ) return;
 
         // round radius
-        const qreal radius( frameRadius() - 1.0 );
+        const qreal radius( frameRadius() );
         const QSizeF cornerSize( 2*radius, 2*radius );
 
         QRectF baseRect( rect );
@@ -570,7 +575,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
-        const qreal radius( frameRadius() - 0.5 );
+        qreal radius( frameRadius() );
 
         // set pen
         if( outline.isValid() )
@@ -578,6 +583,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            radius -= 0.5;
 
         } else painter->setPen( Qt::NoPen );
 
@@ -605,7 +611,7 @@ namespace Breeze
         if( color.isValid() )
         {
             // content
-            const qreal radius( frameRadius() - 0.5 );
+            const qreal radius( frameRadius() );
             const QRectF contentRect( baseRect );
             QPainterPath path( roundedPath( contentRect, radius, corners ) );
             painter->setPen( Qt::NoPen );
@@ -672,7 +678,7 @@ namespace Breeze
         // content
         {
 
-            const qreal radius( frameRadius() - 0.5 );
+            const qreal radius( frameRadius() );
             painter->setPen( QPen( color, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
@@ -1024,7 +1030,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         QRectF frameRect( rect );
-        const qreal radius( frameRadius() - 0.5 );
+        qreal radius( frameRadius() );
 
         // pen
         if( outline.isValid() )
@@ -1032,6 +1038,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            radius -= 0.5;
 
         } else painter->setPen( Qt::NoPen );
 
