@@ -228,7 +228,7 @@ namespace Breeze
 
         //! frame radius
         qreal frameRadius( void ) const
-        { return Metrics::Frame_FrameRadius; }
+        { return qreal( Metrics::Frame_FrameRadius )+0.5; }
 
         //! return color key for a given color, properly accounting for invalid colors
         quint64 colorKey( const QColor& color ) const
