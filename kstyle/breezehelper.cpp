@@ -461,7 +461,7 @@ namespace Breeze
     void Helper::renderButtonFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline, const QColor& shadow,
-        bool focus, bool sunken ) const
+        bool hasFocus, bool sunken ) const
     {
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
@@ -470,7 +470,7 @@ namespace Breeze
         QRectF baseRect( rect );
 
         // shadow
-        if( !sunken )
+        if( !sunken && shadow.isValid() )
         {
 
             const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
@@ -491,8 +491,8 @@ namespace Breeze
 
             const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
             QLinearGradient gradient( contentRect.topLeft(), contentRect.bottomLeft() );
-            gradient.setColorAt( 0, color.lighter( focus ? 103:101 ) );
-            gradient.setColorAt( 1, color.darker( focus ? 110:103 ) );
+            gradient.setColorAt( 0, color.lighter( hasFocus ? 103:101 ) );
+            gradient.setColorAt( 1, color.darker( hasFocus ? 110:103 ) );
             painter->setBrush( gradient );
 
             painter->drawRoundedRect( contentRect, radius, radius );
@@ -500,7 +500,7 @@ namespace Breeze
         }
 
         // outline
-        if( outline.isValid() )
+        if( !hasFocus && outline.isValid() )
         {
             const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
             painter->setPen( QPen( outline, 1 ) );
@@ -894,7 +894,7 @@ namespace Breeze
         const QColor& color,
         const QColor& outline,
         const QColor& shadow,
-        bool focus,
+        bool hasFocus,
         bool sunken ) const
     {
 
@@ -931,7 +931,7 @@ namespace Breeze
         {
             painter->setBrush( Qt::NoBrush );
             QRectF outlineRect;
-            if( focus )
+            if( hasFocus )
             {
                 painter->setPen( QPen( outline, 2 ) );
                 outlineRect = baseRect.adjusted( 2, 2, -2, -2 );
