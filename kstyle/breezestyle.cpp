@@ -5290,8 +5290,18 @@ namespace Breeze
             const QSize iconSize( iconWidth, iconWidth );
             iconRect = centerRect( iconRect, iconSize );
 
-            // set icon mode and state
+            // active state
             const bool subControlActive( titleBarOption->activeSubControls & subControl );
+
+            // mouse over state
+            const bool mouseOver(
+                !subControlActive &&
+                widget &&
+                iconRect.translated( widget->mapToGlobal( QPoint( 0,0 ) ) ).contains( QCursor::pos() ) );
+
+            _animations->mdiWindowEngine().updateState( widget, subControl, mouseOver );
+
+            // set icon mode and state
             QIcon::Mode iconMode;
             QIcon::State iconState;
 
@@ -5302,7 +5312,10 @@ namespace Breeze
 
             } else {
 
-                iconMode = active ? QIcon::Selected : QIcon::Normal;
+                if( mouseOver ) iconMode = QIcon::Active;
+                else if( active ) iconMode = QIcon::Selected;
+                else iconMode = QIcon::Normal;
+
                 iconState = subControlActive ? QIcon::On : QIcon::Off;
 
             }

@@ -37,6 +37,7 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLineEdit>
+#include <QMdiSubWindow>
 #include <QProgressBar>
 #include <QScrollBar>
 #include <QSpinBox>
@@ -64,6 +65,7 @@ namespace Breeze
         registerEngine( _sliderEngine = new SliderEngine( this ) );
         registerEngine( _tabBarEngine = new TabBarEngine( this ) );
         registerEngine( _dialEngine = new DialEngine( this ) );
+        registerEngine( _mdiWindowEngine = new MdiWindowEngine( this ) );
 
     }
 
@@ -182,6 +184,10 @@ namespace Breeze
             { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         }
+
+        // mdi subwindows
+        else if( qobject_cast<QMdiSubWindow*>( widget ) )
+        { _mdiWindowEngine->registerWidget( widget ); }
 
         return;
 
