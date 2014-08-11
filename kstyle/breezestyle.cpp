@@ -3172,6 +3172,8 @@ namespace Breeze
         const QPalette& palette( option->palette );
         QRect rect( option->rect );
 
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+
         const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( color );
@@ -3182,13 +3184,15 @@ namespace Breeze
             case QTabBar::TriangularNorth:
             case QTabBar::RoundedNorth:
             rect.adjust( 0, 1, 0, 0 );
-            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() );
+            else painter->drawLine( rect.topLeft(), rect.bottomLeft() );
             break;
 
             case QTabBar::TriangularSouth:
             case QTabBar::RoundedSouth:
             rect.adjust( 0, 0, 0, -1 );
-            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() );
+            else painter->drawLine( rect.topLeft(), rect.bottomLeft() );
             break;
 
             case QTabBar::TriangularWest:
