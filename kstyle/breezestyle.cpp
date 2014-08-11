@@ -2401,6 +2401,9 @@ namespace Breeze
         const QColor background( palette.color( QPalette::Window ) );
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
+        // need to reset painter's clip region in order to paint behind textbox label
+        // (was taken out in QCommonStyle)
+        painter->setClipRegion( option->rect );
         _helper->renderFrame( painter, option->rect, background, outline );
 
         return true;
