@@ -2904,7 +2904,7 @@ namespace Breeze
             } else {
 
                 if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= CornersLeft;
-                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= CornersRight;
+                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::End ) corners |= CornersRight;
 
             }
 
