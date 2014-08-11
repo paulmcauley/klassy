@@ -1731,7 +1731,7 @@ namespace Breeze
                     Metrics::SpinBox_ArrowButtonWidth,
                     rect.height() );
 
-                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, Metrics::SpinBox_ArrowButtonWidth );
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, qMax( rect.height(), int( Metrics::SpinBox_ArrowButtonWidth ) ) );
                 arrowRect.setHeight( Metrics::SpinBox_ArrowButtonWidth/2 );
                 if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ArrowButtonWidth/2 );
 
@@ -1742,9 +1742,6 @@ namespace Breeze
             case SC_SpinBoxEditField:
             {
 
-                // take out frame width
-                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
                 QRect labelRect;
                 labelRect = QRect(
                     rect.left(), rect.top(),
@@ -1752,7 +1749,13 @@ namespace Breeze
                     rect.height() );
 
                 // remove right side line editor margins
-                if( !flat ) labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth );
+                if( !flat )
+                {
+                    const int marginWidth( Metrics::Frame_FrameWidth + Metrics::LineEdit_MarginWidth );
+                    if( labelRect.height() > option->fontMetrics.height() + 2*marginWidth )
+                    { labelRect.adjust( marginWidth, marginWidth, -Metrics::Frame_FrameWidth, -marginWidth ); }
+
+                }
 
                 return handleRightToLeftLayout( option, labelRect );
 
