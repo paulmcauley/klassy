@@ -189,6 +189,13 @@ namespace Breeze
             )
         { widget->setAttribute( Qt::WA_Hover ); }
 
+        // enforce translucency for drag and drop window
+        if( widget->testAttribute( Qt::WA_X11NetWmWindowTypeDND ) && _helper->compositingActive() )
+        {
+            widget->setAttribute( Qt::WA_TranslucentBackground );
+            widget->clearMask();
+        }
+
         if( QAbstractItemView *itemView = qobject_cast<QAbstractItemView*>( widget ) )
         {
 
@@ -1062,7 +1069,7 @@ namespace Breeze
         _mnemonics->setMode( StyleConfigData::mnemonicsMode() );
 
         // splitter proxy
-        _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
+        // _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
 
         // set mdiwindow factory shadow tiles
         _mdiWindowShadowFactory->setShadowTiles( _shadowHelper->shadowTiles() );
