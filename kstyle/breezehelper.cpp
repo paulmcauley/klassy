@@ -370,7 +370,7 @@ namespace Breeze
 
         QRectF frameRect( rect );
         const qreal radius( frameRadius() - 0.5 );
-
+        frameRect.adjust( 1, 1, -1, -1 );
         // set pen
         if( outline.isValid() )
         {
@@ -383,14 +383,14 @@ namespace Breeze
             } else {
 
                 painter->setPen( QPen( outline, 1 ) );
-                frameRect.adjust( 1.5, 1.5, -1.5, -1.5 );
+                frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
             }
 
         } else {
 
             painter->setPen( Qt::NoPen );
-            frameRect.adjust( 1, 1, -1, -1 );
+            //frameRect.adjust( 1, 1, -1, -1 );
 
         }
 

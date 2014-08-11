@@ -200,7 +200,9 @@ namespace Breeze
     enum ShadowArea
     {
         ShadowAreaTop,
-        ShadowAreaBottom
+        ShadowAreaBottom,
+        ShadowAreaLeft,
+        ShadowAreaRight
     };
 
 }

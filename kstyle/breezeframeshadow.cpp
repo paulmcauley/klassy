@@ -142,6 +142,8 @@ namespace Breeze
         widget->installEventFilter( &_addEventFilter );
         installShadow( widget, helper, ShadowAreaTop );
         installShadow( widget, helper, ShadowAreaBottom );
+        installShadow( widget, helper, ShadowAreaLeft );
+        installShadow( widget, helper, ShadowAreaRight );
         widget->removeEventFilter( &_addEventFilter );
 
     }
@@ -352,6 +354,17 @@ namespace Breeze
             cr.adjust( -1, 0, 1, 1 );
             break;
 
+            case ShadowAreaLeft:
+            cr.setWidth(ShadowSizeLeft);
+            cr.adjust(-1, ShadowSizeTop, 0, -ShadowSizeBottom);
+            break;
+
+
+            case ShadowAreaRight:
+            cr.setLeft(cr.right() - ShadowSizeRight + 1);
+            cr.adjust(0, ShadowSizeTop, 1, -ShadowSizeBottom);
+            break;
+
             default:
             return;
         }
@@ -413,7 +426,8 @@ namespace Breeze
         {
             case ShadowAreaTop: rect.adjust( -frameWidth, -frameWidth, frameWidth, -1 ); break;
             case ShadowAreaBottom: rect.adjust( -frameWidth, 1, frameWidth, frameWidth ); break;
-
+            case ShadowAreaLeft: rect.adjust( -frameWidth, -2*frameWidth, -1, 2*frameWidth ); break;
+            case ShadowAreaRight: rect.adjust( -1, -2*frameWidth, frameWidth, 2*frameWidth ); break;
             default: return;
         }
 

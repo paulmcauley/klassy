@@ -205,6 +205,8 @@ namespace Breeze
         {
             ShadowSizeTop = 3,
             ShadowSizeBottom = 3,
+            ShadowSizeLeft = 3,
+            ShadowSizeRight = 3
         };
 
         //! helper
