@@ -2816,6 +2816,8 @@ namespace Breeze
         if( ( scrollArea = qobject_cast<const QAbstractScrollArea*>( widget ) ) && scrollArea->viewport() )
         {
 
+            // need to adjust clipRect in order not to render outside of frame
+            painter->setClipRect( insideMargin( scrollArea->rect(), Metrics::Frame_FrameWidth ) );
             painter->setBrush( option->palette.color( scrollArea->viewport()->backgroundRole() ) );
             painter->setPen( Qt::NoPen );
             painter->drawRect( option->rect );
