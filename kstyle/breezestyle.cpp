@@ -2486,22 +2486,22 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersTop;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            if( tabBarSize.width() >= rect.width()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersBottom;
+            if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersLeft;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersLeft;
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            if( tabBarSize.height() >= rect.height()-2*Metrics::TabBar_TabRadius ) corners &= ~CornersRight;
+            if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersRight;
             break;
 
             default: break;
@@ -4433,14 +4433,14 @@ namespace Breeze
             if( selected ) {
 
                 corners = CornerTopLeft|CornerTopRight;
-                rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+                rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
 
             } else {
 
                 rect.adjust( 0, 0, 0, -1 );
                 if( isFirst ) corners |= CornerTopLeft;
                 if( isLast ) corners |= CornerTopRight;
-                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
@@ -4452,14 +4452,14 @@ namespace Breeze
             if( selected ) {
 
                 corners = CornerBottomLeft|CornerBottomRight;
-                rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
+                rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
 
             } else {
 
                 rect.adjust( 0, 1, 0, 0 );
                 if( isFirst ) corners |= CornerBottomLeft;
                 if( isLast ) corners |= CornerBottomRight;
-                if( isRightOfSelected ) rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
@@ -4471,15 +4471,15 @@ namespace Breeze
             if( selected )
             {
                 corners = CornerTopLeft|CornerBottomLeft;
-                rect.adjust( 0, 0, Metrics::TabBar_TabRadius, 0 );
+                rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
 
             } else {
 
                 rect.adjust( 0, 0, -1, 0 );
                 if( isFirst ) corners |= CornerTopLeft;
                 if( isLast ) corners |= CornerBottomLeft;
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
 
             }
@@ -4491,15 +4491,15 @@ namespace Breeze
             {
 
                 corners = CornerTopRight|CornerBottomRight;
-                rect.adjust( -Metrics::TabBar_TabRadius, 0, 0, 0 );
+                rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
 
             } else {
 
                 rect.adjust( 1, 0, 0, 0 );
                 if( isFirst ) corners |= CornerTopRight;
                 if( isLast ) corners |= CornerBottomRight;
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::TabBar_TabRadius, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabRadius );
+                if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
 
             }

@@ -369,7 +369,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect );
-        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+        const qreal radius( frameRadius() - 0.5 );
 
         // set pen
         if( outline.isValid() )
@@ -412,7 +412,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect );
-        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+        const qreal radius( frameRadius() - 0.5 );
 
         // set pen
         if( outline.isValid() )
@@ -451,7 +451,7 @@ namespace Breeze
         {
 
             QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+            const qreal radius( frameRadius() - 1 );
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
@@ -460,7 +460,7 @@ namespace Breeze
         }
 
         // outline
-        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+        const qreal radius( frameRadius() - 0.5 );
         frameRect.adjust( 1, 1, -1, -1 );
 
         if( outline.isValid() && !hasFocus )
@@ -502,7 +502,7 @@ namespace Breeze
         if( sunken )
         {
 
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+            const qreal radius( frameRadius() - 0.5 );
 
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
@@ -512,7 +512,7 @@ namespace Breeze
 
         } else {
 
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.0 );
+            const qreal radius( frameRadius() - 1.0 );
 
             painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
@@ -532,7 +532,7 @@ namespace Breeze
         if( !outline.isValid() ) return;
 
         // round radius
-        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1.0 );
+        const qreal radius( frameRadius() - 1.0 );
         const QSizeF cornerSize( 2*radius, 2*radius );
 
         QRectF baseRect( rect );
@@ -571,7 +571,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
-        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+        const qreal radius( frameRadius() - 0.5 );
 
         // set pen
         if( outline.isValid() )
@@ -606,7 +606,7 @@ namespace Breeze
         if( color.isValid() )
         {
             // content
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+            const qreal radius( frameRadius() - 0.5 );
             const QRectF contentRect( baseRect );
             QPainterPath path( roundedPath( contentRect, radius, corners ) );
             painter->setPen( Qt::NoPen );
@@ -661,7 +661,7 @@ namespace Breeze
         if( !sunken )
         {
 
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
+            const qreal radius( frameRadius() - 1 );
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
@@ -673,7 +673,7 @@ namespace Breeze
         // content
         {
 
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+            const qreal radius( frameRadius() - 0.5 );
             painter->setPen( QPen( color, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
@@ -1025,7 +1025,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         QRectF frameRect( rect );
-        const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 0.5 );
+        const qreal radius( frameRadius() - 0.5 );
 
         // pen
         if( outline.isValid() )

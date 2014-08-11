@@ -226,6 +226,10 @@ namespace Breeze
 
         protected:
 
+        //! frame radius
+        qreal frameRadius( void ) const
+        { return Metrics::Frame_FrameRadius; }
+
         //! return color key for a given color, properly accounting for invalid colors
         quint64 colorKey( const QColor& color ) const
         { return color.isValid() ? color.rgba():0; }

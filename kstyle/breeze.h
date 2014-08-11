@@ -39,7 +39,7 @@ namespace Breeze
 
         // frames
         Frame_FrameWidth = 2,
-        Frame_FrameRadius = 3,
+        Frame_FrameRadius = 2,
 
         // layout
         Layout_TopLevelMarginWidth = 10,
@@ -114,7 +114,6 @@ namespace Breeze
         TabBar_TabMarginWidth = 8,
         TabBar_TabMinWidth = 80,
         TabBar_TabMinHeight = 28,
-        TabBar_TabRadius = 3,
         TabBar_TabOverlap = 1,
         TabBar_BaseOverlap = 2,
 
