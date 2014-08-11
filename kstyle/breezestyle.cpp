@@ -3276,7 +3276,7 @@ namespace Breeze
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
-        } else contentsRect = insideMargin( contentsRect, Metrics::Button_MarginWidth );
+        } else contentsRect.adjust( Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth, 0 );
 
         // text size
         QSize contentsSize;
@@ -4768,7 +4768,7 @@ namespace Breeze
 
                 // take out margins
                 const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-                contentsRect = insideMargin( contentsRect, marginWidth );
+                contentsRect.adjust( marginWidth, 0, -marginWidth, 0 );
                 if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
 
                 // adjust state
