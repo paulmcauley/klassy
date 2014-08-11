@@ -1676,7 +1676,7 @@ namespace Breeze
                     // remove margins
                     if( !flat )
                     {
-                        if( option->fontMetrics.height() > 2*Metrics::LineEdit_MarginWidth )
+                        if( rect.height() > option->fontMetrics.height() + 2*Metrics::LineEdit_MarginWidth )
                         { labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth ); }
                     }
 
@@ -1688,8 +1688,8 @@ namespace Breeze
                         rect.height() );
 
                     // remove right side button margin
-                    if( option->fontMetrics.height() > 2*Metrics::ComboBox_MarginWidth )
-                    { labelRect.adjust( Metrics::ComboBox_MarginWidth, Metrics::ComboBox_MarginWidth, 0, -Metrics::ComboBox_MarginWidth ); }
+                    if( rect.height() > option->fontMetrics.height() + 2*Metrics::ComboBox_MarginWidth )
+                   { labelRect.adjust( Metrics::ComboBox_MarginWidth, Metrics::ComboBox_MarginWidth, 0, -Metrics::ComboBox_MarginWidth ); }
 
                 }
 
