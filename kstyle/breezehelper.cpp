@@ -368,9 +368,9 @@ namespace Breeze
 
         painter->setRenderHint( QPainter::Antialiasing );
 
-        QRectF frameRect( rect );
+        QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
         const qreal radius( frameRadius() - 0.5 );
-        frameRect.adjust( 1, 1, -1, -1 );
+
         // set pen
         if( outline.isValid() )
         {
@@ -390,7 +390,6 @@ namespace Breeze
         } else {
 
             painter->setPen( Qt::NoPen );
-            //frameRect.adjust( 1, 1, -1, -1 );
 
         }
 
