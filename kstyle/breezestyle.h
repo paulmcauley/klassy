@@ -27,6 +27,7 @@
 
 #include <KStyle>
 
+#include <QAbstractScrollArea>
 #include <QDockWidget>
 #include <QHash>
 #include <QIcon>
@@ -136,6 +137,7 @@ namespace Breeze
         //@{
 
         virtual bool eventFilter(QObject *, QEvent *);
+        bool eventFilterScrollArea( QAbstractScrollArea*, QEvent* );
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );

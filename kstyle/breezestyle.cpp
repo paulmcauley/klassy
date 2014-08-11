@@ -234,15 +234,9 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
-        } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
+        } else if( qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
-            // make sure scrollbar background role matches viewport
-            QWidget* viewport( scrollArea->viewport() );
-            QScrollBar* scrollBar;
-
-            // make sure scrollbar background color matches
-            if( viewport && ( scrollBar = scrollArea->verticalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
-            if( viewport && ( scrollBar = scrollArea->horizontalScrollBar() ) ) scrollBar->setBackgroundRole( scrollArea->viewport()->backgroundRole() );
+            addEventFilter( widget );
 
         } else if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) ) {
 
@@ -962,6 +956,7 @@ namespace Breeze
     {
 
         if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
+        else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( object ) ) { return eventFilterScrollArea( scrollArea, event ); }
         else if( QMdiSubWindow* subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
 
         // cast to QWidget
@@ -998,6 +993,43 @@ namespace Breeze
 
         return false;
 
+    }
+
+    //____________________________________________________________________________
+    bool Style::eventFilterScrollArea( QAbstractScrollArea* scrollArea, QEvent* event )
+    {
+
+        if( event->type() == QEvent::Paint )
+        {
+
+            // get scrollarea viewport
+            QWidget* viewport( scrollArea->viewport() );
+            if( !viewport ) return false;
+
+            // get scrollarea horizontal and vertical containers
+            QWidget* widget( nullptr );
+            QList<QWidget*> widgets;
+            if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && widget->isVisible() )
+            { widgets.append( widget ); }
+
+            if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && widget->isVisible() )
+            { widgets.append( widget ); }
+
+            if( widgets.empty() ) return false;
+
+            // make sure proper background is rendered behind the containers
+            QPainter p( scrollArea );
+            p.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+
+            p.setPen( Qt::NoPen );
+            p.setBrush( widget->palette().color( viewport->backgroundRole() ) );
+
+            foreach( QWidget* widget, widgets )
+            { p.drawRect( widget->geometry() ); }
+
+        }
+
+        return false;
     }
 
     //____________________________________________________________________________
@@ -5186,14 +5218,6 @@ namespace Breeze
     //______________________________________________________________
     bool Style::drawScrollBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        // render background behind widget with correct role
-        if( widget )
-        {
-            painter->setBrush( option->palette.color( widget->backgroundRole() ) );
-            painter->setPen( Qt::NoPen );
-            painter->drawRect( option->rect );
-        }
 
         // render full groove directly, rather than using the addPage and subPage control element methods
         if( option->subControls && SC_ScrollBarGroove )
