@@ -98,7 +98,7 @@
 
     <!-- splitter proxy -->
     <entry name="SplitterProxyEnabled" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
 
     <entry name="SplitterProxyWidth" type="Int">
