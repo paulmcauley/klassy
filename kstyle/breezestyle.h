@@ -242,6 +242,7 @@ namespace Breeze
         { return true; }
 
         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameLineEditPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;

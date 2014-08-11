@@ -47,7 +47,7 @@ namespace Breeze
         Layout_DefaultSpacing = 6,
 
         // line editors
-        LineEdit_MarginWidth = 6,
+        LineEdit_FrameWidth = 8,
 
         // menu items
         MenuItem_MarginWidth = 4,
@@ -55,10 +55,10 @@ namespace Breeze
         MenuButton_IndicatorWidth = 20,
 
         // combobox
-        ComboBox_MarginWidth = 4,
-        ComboBox_BoxTextSpace = 4,
+        ComboBox_FrameWidth = 6,
 
         // spinbox
+        SpinBox_FrameWidth = 8,
         SpinBox_ArrowButtonWidth = 20,
 
         // groupbox title margin
@@ -90,6 +90,7 @@ namespace Breeze
         ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
 
         // toolbars
+        ToolBar_FrameWidth = 2,
         ToolBar_HandleExtent = 8,
         ToolBar_HandleWidth = 6,
         ToolBar_SeparatorWidth = 8,

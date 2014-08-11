@@ -357,10 +357,36 @@ namespace Breeze
 
             // frame width
             case PM_DefaultFrameWidth:
-            case PM_ComboBoxFrameWidth:
-            case PM_SpinBoxFrameWidth:
-            case PM_ToolBarFrameWidth:
+            if( qobject_cast<const QLineEdit*>( widget ) ) return LineEdit_FrameWidth;
+            else if( option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" ) )
+            {
+                const QString &elementType = option->styleObject->property( "elementType" ).toString();
+                if ( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
+                {
+
+                    return LineEdit_FrameWidth;
+
+                } else if ( elementType == QLatin1String( "combobox" ) ) {
+
+                    return ComboBox_FrameWidth;
+                }
+
+            }
+
+            // fallback
             return Metrics::Frame_FrameWidth;
+
+            case PM_ComboBoxFrameWidth:
+            {
+                const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast< const QStyleOptionComboBox*>( option ) );
+                return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
+            }
+
+            case PM_SpinBoxFrameWidth:
+            return Metrics::SpinBox_FrameWidth;
+
+            case PM_ToolBarFrameWidth:
+            return Metrics::ToolBar_FrameWidth;
 
             case PM_ToolTipLabelFrameWidth:
             return Metrics::ToolTip_FrameWidth;
@@ -744,7 +770,7 @@ namespace Breeze
             // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
-            case PE_FrameLineEdit: fcn = &Style::drawFramePrimitive; break;
+            case PE_FrameLineEdit: fcn = &Style::drawFrameLineEditPrimitive; break;
             case PE_FrameMenu: fcn = &Style::drawFrameMenuPrimitive; break;
             case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
@@ -1099,7 +1125,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* ) const
+    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
     {
         // cast option and check
         const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
@@ -1113,8 +1139,8 @@ namespace Breeze
         QRect rect( option->rect );
 
         // take out margins if there is enough room
-        rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-        if( rect.height() > option->fontMetrics.height() + 2*Metrics::LineEdit_MarginWidth ) return insideMargin( rect, Metrics::LineEdit_MarginWidth );
+        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+        if( rect.height() > option->fontMetrics.height() + 2*frameWidth ) return insideMargin( rect, frameWidth );
         else return rect;
     }
 
@@ -1659,39 +1685,16 @@ namespace Breeze
             case SC_ComboBoxEditField:
             {
 
-                // take out frame width
-                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
                 QRect labelRect;
-                const bool editable( comboBoxOption->editable );
+                const int frameWidth( pixelMetric( PM_ComboBoxFrameWidth, option, widget ) );
+                labelRect = QRect(
+                    rect.left(), rect.top(),
+                    rect.width() - Metrics::MenuButton_IndicatorWidth,
+                    rect.height() );
 
-                if( editable )
-                {
-
-                    labelRect = QRect(
-                        rect.left(), rect.top(),
-                        rect.width() - Metrics::MenuButton_IndicatorWidth,
-                        rect.height() );
-
-                    // remove margins
-                    if( !flat )
-                    {
-                        if( rect.height() > option->fontMetrics.height() + 2*Metrics::LineEdit_MarginWidth )
-                        { labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth ); }
-                    }
-
-                } else {
-
-                    labelRect = QRect(
-                        rect.left(), rect.top(),
-                        rect.width() - Metrics::MenuButton_IndicatorWidth - Metrics::ComboBox_BoxTextSpace,
-                        rect.height() );
-
-                    // remove right side button margin
-                    if( rect.height() > option->fontMetrics.height() + 2*Metrics::ComboBox_MarginWidth )
-                   { labelRect.adjust( Metrics::ComboBox_MarginWidth, Metrics::ComboBox_MarginWidth, 0, -Metrics::ComboBox_MarginWidth ); }
-
-                }
+                // remove margins
+                if( !flat && rect.height() > option->fontMetrics.height() + 2*frameWidth )
+                { labelRect.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
 
                 return handleRightToLeftLayout( option, labelRect );
 
@@ -1752,15 +1755,10 @@ namespace Breeze
                     rect.width() - Metrics::SpinBox_ArrowButtonWidth,
                     rect.height() );
 
-                labelRect = insideMargin( labelRect, Metrics::Frame_FrameWidth );
-
                 // remove right side line editor margins
-                if( !flat )
-                {
-                    if( labelRect.height() > option->fontMetrics.height() + 2*Metrics::LineEdit_MarginWidth )
-                    { labelRect.adjust( Metrics::LineEdit_MarginWidth, Metrics::LineEdit_MarginWidth, 0, -Metrics::LineEdit_MarginWidth ); }
-
-                }
+                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
+                if( !flat && labelRect.height() > option->fontMetrics.height() + 2*frameWidth )
+                { labelRect.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
 
                 return handleRightToLeftLayout( option, labelRect );
 
@@ -1955,56 +1953,56 @@ namespace Breeze
         // make sure there is enough height for indicator
         size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
 
-        //Add space for the indicator and the icon
+        // Add space for the indicator and the icon
         size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace;
+
+        // also add extra space, to leave room to the right of the label
+        size.rwidth() += Metrics::CheckBox_BoxTextSpace;
 
         return size;
 
     }
 
     //______________________________________________________________
-    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
         // cast option and check
         const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return contentsSize;
 
         const bool flat( frameOption->lineWidth == 0 );
-        return flat ? contentsSize : expandSize( contentsSize, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+        return flat ? contentsSize : expandSize( contentsSize, frameWidth );
     }
 
     //______________________________________________________________
-    QSize Style::comboBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    QSize Style::comboBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
 
         // cast option and check
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return contentsSize;
 
-        const bool editable( comboBoxOption->editable );
-        const bool flat( !comboBoxOption->frame );
-
         // copy size
         QSize size( contentsSize );
 
-        // add relevant margins
-        if( editable && !flat ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
-        else if( !editable ) size = expandSize( size, Metrics::ComboBox_MarginWidth );
+        // add relevant margin
+        const bool flat( !comboBoxOption->frame );
+        const int frameWidth( pixelMetric( PM_ComboBoxFrameWidth, option, widget ) );
+        if( !flat ) size = expandSize( size, frameWidth );
 
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), (int)Metrics::MenuButton_IndicatorWidth ) );
 
         // add button width and spacing
         size.rwidth() += Metrics::MenuButton_IndicatorWidth;
-        if( !editable ) size.rwidth() += Metrics::ComboBox_BoxTextSpace;
 
-        // add framewidth if needed
-        return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
+        return size;
 
     }
 
     //______________________________________________________________
-    QSize Style::spinBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    QSize Style::spinBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
 
         // cast option and check
@@ -2017,7 +2015,8 @@ namespace Breeze
         QSize size( contentsSize );
 
         // add editor margins
-        if( !flat ) size = expandSize( size, Metrics::LineEdit_MarginWidth );
+        const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
+        if( !flat ) size = expandSize( size, frameWidth );
 
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ArrowButtonWidth ) );
@@ -2025,8 +2024,7 @@ namespace Breeze
         // add button width and spacing
         size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
 
-        // add framewidth if needed
-        return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
+        return size;
 
     }
 
@@ -2354,6 +2352,21 @@ namespace Breeze
         const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
         const QColor outline( _helper->frameOutlineColor( option->palette, mouseOver, hasFocus, opacity, mode ) );
         _helper->renderFrame( painter, option->rect, background, outline, hasFocus );
+
+        return true;
+
+    }
+
+    //______________________________________________________________
+    bool Style::drawFrameLineEditPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // render background
+        const QColor background( option->palette.color( QPalette::Base ) );
+        _helper->renderFrame( painter, option->rect, background );
+
+        // render outline
+        drawFramePrimitive( option, painter, widget );
 
         return true;
 
