@@ -2583,7 +2583,7 @@ namespace Breeze
         const QPalette& palette( option->palette );
 
         // define color and polygon for drawing arrow
-        const QColor color = palette.color( QPalette::WindowText );
+        const QColor color = palette.color( QPalette::ButtonText );
 
         // render
         _helper->renderArrow( painter, rect, color, orientation );
@@ -4083,7 +4083,7 @@ namespace Breeze
         const qreal opacity( _animations->headerViewEngine().opacity( widget, rect.topLeft() ) );
 
         // fill
-        const QColor normal( palette.color( QPalette::Window ) );
+        const QColor normal( palette.color( QPalette::Button ) );
         const QColor focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
         const QColor hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
 
@@ -4157,13 +4157,13 @@ namespace Breeze
 
         // fill
         painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setBrush( palette.color( QPalette::Window ) );
+        painter->setBrush( palette.color( QPalette::Button ) );
         painter->setPen( Qt::NoPen );
         painter->drawRect( rect );
 
         // outline
         painter->setBrush( Qt::NoBrush );
-        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.1 ) );
+        painter->setPen( _helper->alphaColor( palette.color( QPalette::ButtonText ), 0.1 ) );
 
         if( horizontal ) {
 
@@ -4737,7 +4737,6 @@ namespace Breeze
 
         } else if( hasInlineIndicator ) {
 
-            QStyleOptionToolButton copy( *toolButtonOption );
             copy.rect = menuRect;
             copy.state &= ~State_MouseOver;
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
