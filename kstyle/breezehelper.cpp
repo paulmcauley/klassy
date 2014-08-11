@@ -363,46 +363,43 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderFrame(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline, bool focus ) const
+        const QColor& color, const QColor& outline, bool hasFocus ) const
     {
 
         painter->setRenderHint( QPainter::Antialiasing );
 
-        const QRectF baseRect( rect );
+        QRectF frameRect( rect );
+        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
 
-        if( color.isValid() )
-        {
-            // content
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
-        }
-
+        // set pen
         if( outline.isValid() )
         {
-
-            // outline
-            if( focus )
+            if( hasFocus )
             {
 
-                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-
                 painter->setPen( QPen( outline, 2 ) );
-                painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1, 1, -1, -1 ), radius, radius );
+                frameRect.adjust( 1, 1, -1, -1 );
 
             } else {
 
-                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
-
                 painter->setPen( QPen( outline, 1 ) );
-                painter->setBrush( Qt::NoBrush );
-                painter->drawRoundedRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ), radius, radius );
+                frameRect.adjust( 1.5, 1.5, -1.5, -1.5 );
 
             }
+
+        } else {
+
+            painter->setPen( Qt::NoPen );
+            frameRect.adjust( 1, 1, -1, -1 );
+
         }
+
+        // set brush
+        if( color.isValid() ) painter->setBrush( color );
+        else painter->setBrush( Qt::NoBrush );
+
+        // render
+        painter->drawRoundedRect( frameRect, radius, radius );
 
     }
 
@@ -414,46 +411,25 @@ namespace Breeze
 
         painter->setRenderHint( QPainter::Antialiasing );
 
-        const QRectF baseRect( rect );
+        QRectF frameRect( rect );
+        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
 
-        if( color.isValid() )
-        {
-            // content
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            if( roundCorners )
-            {
-
-                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-                painter->drawRoundedRect( baseRect, radius, radius );
-
-            } else {
-
-                painter->drawRect( baseRect );
-
-            }
-
-        }
-
+        // set pen
         if( outline.isValid() )
         {
 
             painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
-            if( roundCorners )
-            {
+        } else painter->setPen( Qt::NoPen );
 
-                const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
-                painter->drawRoundedRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), radius, radius );
+        // set brush
+        if( color.isValid() ) painter->setBrush( color );
+        else painter->setBrush( Qt::NoBrush );
 
-            } else {
-
-                painter->drawRect( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-
-            }
-
-        }
+        // render
+        if( roundCorners ) painter->drawRoundedRect( frameRect, radius, radius );
+        else painter->drawRect( frameRect );
 
     }
 
@@ -463,52 +439,49 @@ namespace Breeze
         const QColor& color, const QColor& outline, const QColor& shadow,
         bool hasFocus, bool sunken ) const
     {
+
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         // copy rect
-        QRectF baseRect( rect );
+        QRectF frameRect( rect );
 
         // shadow
-        if( !sunken && shadow.isValid() )
+        if( shadow.isValid() && !sunken )
         {
 
+            QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
             const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
             painter->drawRoundedRect( shadowRect, radius, radius );
 
         }
 
+        // outline
+        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
+        frameRect.adjust( 1, 1, -1, -1 );
+
+        if( outline.isValid() && !hasFocus )
+        {
+            painter->setPen( QPen( outline, 1 ) );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+        } else painter->setPen( Qt::NoPen );
+
         // content
+        if( color.isValid() )
         {
 
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-
-            painter->setPen( Qt::NoPen );
-
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            QLinearGradient gradient( contentRect.topLeft(), contentRect.bottomLeft() );
+            QLinearGradient gradient( frameRect.topLeft(), frameRect.bottomLeft() );
             gradient.setColorAt( 0, color.lighter( hasFocus ? 103:101 ) );
             gradient.setColorAt( 1, color.darker( hasFocus ? 110:103 ) );
             painter->setBrush( gradient );
 
-            painter->drawRoundedRect( contentRect, radius, radius );
+        } else painter->setBrush( Qt::NoBrush );
 
-        }
-
-        // outline
-        if( !hasFocus && outline.isValid() )
-        {
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
-            painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
-            painter->drawRoundedRect( outlineRect, radius, radius );
-
-        }
+        // render
+        painter->drawRoundedRect( frameRect, radius, radius );
 
     }
 
@@ -597,32 +570,25 @@ namespace Breeze
 
         painter->setRenderHint( QPainter::Antialiasing );
 
-        const QRectF baseRect( rect );
+        QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
+        const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
 
-        if( color.isValid() )
-        {
-            // content
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 0.5 );
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            QPainterPath path( roundedPath( contentRect, radius, corners ) );
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawPath( path );
-        }
-
+        // set pen
         if( outline.isValid() )
         {
 
-            // outline
-            const qreal radius( qreal( Metrics::Frame_FrameRadius ) - 1 );
-            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
-            QPainterPath path( roundedPath( outlineRect, radius, corners ) );
-
             painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawPath( path );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
-        }
+        } else painter->setPen( Qt::NoPen );
+
+        // set brush
+        if( color.isValid() ) painter->setBrush( color );
+        else painter->setBrush( Qt::NoBrush );
+
+        // render
+        QPainterPath path( roundedPath( frameRect, radius, corners ) );
+        painter->drawPath( path );
 
     }
 
@@ -901,48 +867,47 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        QRectF baseRect( rect );
+        QRectF frameRect( rect );
 
         // shadow
-        if( !sunken )
+        if( shadow.isValid() && !sunken )
         {
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
+            const QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
             painter->drawEllipse( shadowRect );
 
         }
 
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
+        frameRect.adjust( 1, 1, -1, -1 );
 
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawEllipse( contentRect );
-
-        }
-
-        // outline
+        // set pen
         if( outline.isValid() )
         {
-            painter->setBrush( Qt::NoBrush );
-            QRectF outlineRect;
+
             if( hasFocus )
             {
+
                 painter->setPen( QPen( outline, 2 ) );
-                outlineRect = baseRect.adjusted( 2, 2, -2, -2 );
+                frameRect.adjust( 1, 1, -1, -1 );
+
             } else {
+
                 painter->setPen( QPen( outline, 1 ) );
-                outlineRect = baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 );
+                frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+
             }
 
-            painter->drawEllipse( outlineRect );
+        } else painter->setPen( Qt::NoPen );
 
-        }
+        // set brush
+        if( color.isValid() ) painter->setBrush( color );
+        else painter->setBrush( Qt::NoBrush );
+
+        // render
+        painter->drawEllipse( frameRect );
 
     }
 
@@ -1059,30 +1024,26 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        const QRectF baseRect( rect );
+        QRectF frameRect( rect );
+        const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 0.5 );
 
-        // content
-        if( color.isValid() )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-
-            const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 0.5 );
-            QPainterPath path( roundedPath( baseRect, radius, corners ) );
-            painter->drawPath( path );
-
-        }
-
-        // outline
+        // pen
         if( outline.isValid() )
         {
-            painter->setPen( QPen( outline, 1 ) );
-            painter->setBrush( Qt::NoBrush );
 
-            const qreal radius( qreal( Metrics::TabBar_TabRadius ) - 1 );
-            QPainterPath path( roundedPath( baseRect.adjusted( 0.5, 0.5, -0.5, -0.5 ), radius, corners ) );
-            painter->drawPath( path );
-        }
+            painter->setPen( QPen( outline, 1 ) );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+
+        } else painter->setPen( Qt::NoPen );
+
+
+        // brush
+        if( color.isValid() ) painter->setBrush( color );
+        else painter->setBrush( Qt::NoBrush );
+
+        // render
+        QPainterPath path( roundedPath( frameRect, radius, corners ) );
+        painter->drawPath( path );
 
     }
 
