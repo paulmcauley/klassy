@@ -1107,7 +1107,15 @@ namespace Breeze
 
         // check flatness
         const bool flat( frameOption->lineWidth == 0 );
-        return flat ? option->rect : insideMargin( option->rect, Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+        if( flat ) return option->rect;
+
+        // copy rect and take out margins
+        QRect rect( option->rect );
+
+        // take out margins if there is enough room
+        const int marginWidth( Metrics::LineEdit_MarginWidth + Metrics::Frame_FrameWidth );
+        if( rect.height() > option->fontMetrics.height() + 2*marginWidth ) return insideMargin( rect, marginWidth );
+        else return rect;
     }
 
     //___________________________________________________________________________________________________________________
