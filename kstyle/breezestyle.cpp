@@ -859,6 +859,7 @@ namespace Breeze
         switch( element )
         {
 
+            case CC_GroupBox: fcn = &Style::drawGroupBoxComplexControl; break;
             case CC_ToolButton: fcn = &Style::drawToolButtonComplexControl; break;
             case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
             case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
@@ -4596,9 +4597,57 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    bool Style::drawToolButtonComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawGroupBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // base class method
+        KStyle::drawComplexControl( CC_GroupBox, option, painter, widget );
+
+        // cast option and check
+        const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
+        if( !groupBoxOption ) return true;
+
+        // do nothing if either label is not selected or groupbox is empty
+        if( !(option->subControls & QStyle::SC_GroupBoxLabel) || groupBoxOption->text.isEmpty() )
+        { return true; }
+
+        // store palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // check focus state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool hasFocus( enabled && (option->state & State_HasFocus) );
+        if( !hasFocus ) return true;
+
+        // alignment
+        const int alignment = groupBoxOption->textAlignment | _mnemonics->textFlags();
+
+        // update animation state
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+        const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
+        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
+
+        // get relevant rect
+        QRect textRect = subControlRect( CC_GroupBox, option, SC_GroupBoxLabel, widget );
+        textRect = option->fontMetrics.boundingRect( textRect, alignment, groupBoxOption->text );
+
+        // focus color
+        QColor focusColor;
+        if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
+        else if( hasFocus ) focusColor =  _helper->focusColor( palette );
+
+        // render focus
+        _helper->renderFocusLine( painter, textRect, focusColor );
+
+        return true;
+
+    }
+
+    //______________________________________________________________
+    bool Style::drawToolButtonComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
+    {
         // cast option and check
         const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
         if( !toolButtonOption ) return true;
