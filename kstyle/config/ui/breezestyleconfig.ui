@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BreezeStyleConfig</class>
+ <widget class="QWidget" name="BreezeStyleConfig">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>671</width>
+    <height>406</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Animations</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="2" column="0">
+       <widget class="QLabel" name="_animationsDurationLabel">
+        <property name="text">
+         <string>Animations d&amp;uration:</string>
+        </property>
+        <property name="buddy">
+         <cstring>_animationsDuration</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="_animationsDuration">
+        <property name="suffix">
+         <string>ms</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>461</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QCheckBox" name="_animationsEnabled">
+        <property name="text">
+         <string>Enable animations</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Scrollbars</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="_scrollBarSubLineLabel">
+        <property name="text">
+         <string>Top arrow button type:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="_scrollBarSubLineButtons">
+        <item>
+         <property name="text">
+          <string>No Buttons</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>One Button</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Two Buttons</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="_scrollBarAddLineLabel">
+        <property name="text">
+         <string>Bottom arrow button type:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="_scrollBarAddLineButtons">
+        <item>
+         <property name="text">
+          <string>No Buttons</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>One Button</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Two Buttons</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>405</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Advanced</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="1" colspan="2">
+       <widget class="QCheckBox" name="_toolBarDrawItemSeparator">
+        <property name="text">
+         <string>Draw toolbar item separators</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="KComboBox" name="_mnemonicsMode">
+        <item>
+         <property name="text">
+          <string>Always Hide Keyboard Accelerators</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Show Keyboard Accelerators When Needed</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Always Show Keyboard Accelerators</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="_mnemonicsLabel">
+        <property name="text">
+         <string>&amp;Keyboard accelerators visibility:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_mnemonicsMode</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="_windowDragLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>W&amp;indows' drag mode:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>_windowDragMode</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QCheckBox" name="_splitterProxyEnabled">
+        <property name="text">
+         <string>Enable extended resize handles</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>65</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="1" rowspan="2" colspan="2">
+       <widget class="KComboBox" name="_windowDragMode">
+        <item>
+         <property name="text">
+          <string>Drag windows from titlebar only</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Drag windows from titlebar, menubar and toolbars</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Drag windows from all empty areas</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="3">
+       <widget class="QCheckBox" name="_useWMMoveResize">
+        <property name="text">
+         <string>Use window manager to perform windows' drag</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

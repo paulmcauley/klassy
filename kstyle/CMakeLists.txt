@@ -101,3 +101,6 @@ install( FILES breeze.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes )
 
 ########### summary ###############
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+
+########### subdirectories ###############
+add_subdirectory( config )
