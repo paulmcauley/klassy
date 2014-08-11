@@ -748,8 +748,9 @@ namespace Breeze
             // menu indicator
             case PE_IndicatorButtonDropDown: fcn = &Style::drawIndicatorButtonDropDownPrimitive; break;
 
-            // tab close
+            // tabwidget tebs
             case PE_IndicatorTabClose: fcn = &Style::drawIndicatorTabClosePrimitive; break;
+            case PE_IndicatorTabTear: fcn = &Style::drawIndicatorTabTearPrimitive; break;
 
             // arrows
             case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
@@ -1301,16 +1302,20 @@ namespace Breeze
         } else {
 
             // adjust rect to deal with corner buttons
+            // need to properly deal with reverse layout
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
             if( !tabOption->leftCornerWidgetSize.isEmpty() )
             {
                 const QRect buttonRect( subElementRect( SE_TabWidgetLeftCorner, option, widget ) );
-                rect.setLeft( buttonRect.width() - 1 );
+                if( reverseLayout ) rect.setRight( buttonRect.left() );
+                else rect.setLeft( buttonRect.width() - 1 );
             }
 
             if( !tabOption->rightCornerWidgetSize.isEmpty() )
             {
                 const QRect buttonRect( subElementRect( SE_TabWidgetRightCorner, option, widget ) );
-                rect.setRight( buttonRect.left() );
+                if( reverseLayout ) rect.setLeft( buttonRect.width() - 1 );
+                else rect.setRight( buttonRect.left() );
             }
 
             tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
@@ -1409,6 +1414,7 @@ namespace Breeze
 
         const QRect rect( option->rect );
         QRect cornerRect( QPoint( 0, 0 ), QSize( tabBarSize.height(), tabBarSize.height() + 1 ) );
+
         if( element == SE_TabWidgetRightCorner ) cornerRect.moveRight( rect.right() );
         else cornerRect.moveLeft( rect.left() );
 
@@ -1427,7 +1433,9 @@ namespace Breeze
             default: break;
         }
 
-        return handleRightToLeftLayout( option, cornerRect );
+        // return cornerRect;
+        cornerRect = handleRightToLeftLayout( option, cornerRect );
+        return cornerRect;
 
     }
 
@@ -3152,6 +3160,55 @@ namespace Breeze
         return true;
     }
 
+    //___________________________________________________________________________________
+    bool Style::drawIndicatorTabTearPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        if( !tabOption ) return true;
+
+        // store palette and rect
+        const QPalette& palette( option->palette );
+        QRect rect( option->rect );
+
+        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setPen( color );
+        painter->setBrush( Qt::NoBrush );
+        switch( tabOption->shape )
+        {
+
+            case QTabBar::TriangularNorth:
+            case QTabBar::RoundedNorth:
+            rect.adjust( 0, 1, 0, 0 );
+            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            break;
+
+            case QTabBar::TriangularSouth:
+            case QTabBar::RoundedSouth:
+            rect.adjust( 0, 0, 0, -1 );
+            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            break;
+
+            case QTabBar::TriangularWest:
+            case QTabBar::RoundedWest:
+            rect.adjust( 1, 0, 0, 0 );
+            painter->drawLine( rect.topLeft(), rect.topRight() );
+            break;
+
+            case QTabBar::TriangularEast:
+            case QTabBar::RoundedEast:
+            rect.adjust( 0, 0, -1, 0 );
+            painter->drawLine( rect.topLeft(), rect.topRight() );
+            break;
+
+            default: break;
+        }
+
+        return true;
+
+    }
 
     //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
