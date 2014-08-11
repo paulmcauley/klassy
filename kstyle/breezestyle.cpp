@@ -4613,7 +4613,6 @@ namespace Breeze
 
         // store palette and rect
         const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
 
         // check focus state
         const State& state( option->state );
