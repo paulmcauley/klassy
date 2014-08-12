@@ -1263,8 +1263,8 @@ namespace Breeze
         if( isX11() )
         {
             // direct call to X
-            xcb_get_selection_owner_cookie_t cookie( xcb_get_selection_owner( QX11Info::connection(), _compositingManagerAtom ) );
-            ScopedPointer<xcb_get_selection_owner_reply_t> reply( xcb_get_selection_owner_reply( QX11Info::connection(), cookie, nullptr ) );
+            xcb_get_selection_owner_cookie_t cookie( xcb_get_selection_owner( Helper::connection(), _compositingManagerAtom ) );
+            ScopedPointer<xcb_get_selection_owner_reply_t> reply( xcb_get_selection_owner_reply( Helper::connection(), cookie, nullptr ) );
             return reply && reply->owner;
 
         }
@@ -1282,13 +1282,16 @@ namespace Breeze
     #if HAVE_X11
 
     //____________________________________________________________________
+    xcb_connection_t* Helper::connection( void )
+    { return QX11Info::connection(); }
+
+    //____________________________________________________________________
     xcb_atom_t Helper::createAtom( const QString& name ) const
     {
-
         if( isX11() )
         {
 
-            xcb_connection_t* connection( QX11Info::connection() );
+            xcb_connection_t* connection( Helper::connection() );
             xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, name.size(), qPrintable( name ) ) );
             ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
             return reply ? reply->atom:0;

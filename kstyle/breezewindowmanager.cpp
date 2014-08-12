@@ -92,7 +92,7 @@ namespace Breeze
         if( _isX11 )
         {
             // create move-resize atom
-            xcb_connection_t* connection( QX11Info::connection() );
+            xcb_connection_t* connection( Helper::connection() );
             const QString atomName( QStringLiteral( "_NET_WM_MOVERESIZE" ) );
             xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
             Helper::ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
@@ -633,7 +633,7 @@ namespace Breeze
 
             #if HAVE_X11
             // connection
-            xcb_connection_t* connection( QX11Info::connection() );
+            xcb_connection_t* connection( Helper::connection() );
 
             // window
             const WId window( widget->window()->winId() );

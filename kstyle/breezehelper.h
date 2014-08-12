@@ -217,6 +217,9 @@ namespace Breeze
 
         #if HAVE_X11
 
+        //! get xcb connection
+        static xcb_connection_t* connection( void );
+
         //! create xcb atom
         xcb_atom_t createAtom( const QString& ) const;
 

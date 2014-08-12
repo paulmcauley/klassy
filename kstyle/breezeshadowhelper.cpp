@@ -122,7 +122,7 @@ namespace Breeze
 
         #if HAVE_X11
         if( _helper.isX11() )
-        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( QX11Info::connection(), value ); }
+        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
     }
@@ -132,7 +132,7 @@ namespace Breeze
     {
         #if HAVE_X11
         if( _helper.isX11() )
-        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( QX11Info::connection(), value ); }
+        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
         _pixmaps.clear();
@@ -304,7 +304,7 @@ namespace Breeze
         if( !netSupportedAtom ) return false;
 
         // store connection locally
-        xcb_connection_t* connection( QX11Info::connection() );
+        xcb_connection_t* connection( Helper::connection() );
 
         // get property
         const uint32_t maxLength = std::string().max_size();
@@ -438,19 +438,19 @@ namespace Breeze
         const int height( source.height() );
 
         // create X11 pixmap
-        xcb_pixmap_t pixmap = xcb_generate_id( QX11Info::connection() );
-        xcb_create_pixmap( QX11Info::connection(), 32, pixmap, QX11Info::appRootWindow(), width, height );
+        xcb_pixmap_t pixmap = xcb_generate_id( Helper::connection() );
+        xcb_create_pixmap( Helper::connection(), 32, pixmap, QX11Info::appRootWindow(), width, height );
 
         // create gc
         if( !_gc )
         {
-            _gc = xcb_generate_id( QX11Info::connection() );
-            xcb_create_gc( QX11Info::connection(), _gc, pixmap, 0, 0x0 );
+            _gc = xcb_generate_id( Helper::connection() );
+            xcb_create_gc( Helper::connection(), _gc, pixmap, 0, 0x0 );
         }
 
         // create image from QPixmap and assign to pixmap
         QImage image( source.toImage() );
-        xcb_put_image( QX11Info::connection(), XCB_IMAGE_FORMAT_Z_PIXMAP, pixmap, _gc, image.width(), image.height(), 0, 0, 0, 32, image.byteCount(), image.constBits());
+        xcb_put_image( Helper::connection(), XCB_IMAGE_FORMAT_Z_PIXMAP, pixmap, _gc, image.width(), image.height(), 0, 0, 0, 32, image.byteCount(), image.constBits());
 
         return pixmap;
 
@@ -532,8 +532,8 @@ namespace Breeze
 
         }
 
-        xcb_change_property( QX11Info::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
-        xcb_flush( QX11Info::connection() );
+        xcb_change_property( Helper::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
+        xcb_flush( Helper::connection() );
 
         return true;
 
@@ -552,7 +552,7 @@ namespace Breeze
         if( !_supported ) return;
         if( !_helper.isX11() ) return;
         if( !( widget && widget->testAttribute(Qt::WA_WState_Created) ) ) return;
-        xcb_delete_property( QX11Info::connection(), widget->winId(), _atom);
+        xcb_delete_property( Helper::connection(), widget->winId(), _atom);
         #else
         Q_UNUSED( widget )
         #endif
