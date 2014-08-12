@@ -230,9 +230,8 @@ namespace Breeze
         qreal frameRadius( void ) const
         { return qreal( Metrics::Frame_FrameRadius )-0.5; }
 
-        //! return color key for a given color, properly accounting for invalid colors
-        quint64 colorKey( const QColor& color ) const
-        { return color.isValid() ? color.rgba():0; }
+        //! return rectangle for widgets shadow, offset depending on light source
+        QRectF shadowRect( const QRectF& ) const;
 
         //! return rounded path in a given rect, with only selected corners rounded, and for a given radius
         QPainterPath roundedPath( const QRectF&, qreal, Corners ) const;

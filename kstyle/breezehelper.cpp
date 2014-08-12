@@ -447,23 +447,18 @@ namespace Breeze
 
         // copy rect
         QRectF frameRect( rect );
+        frameRect.adjust( 1, 1, -1, -1 );
+        qreal radius( frameRadius() );
 
         // shadow
         if( shadow.isValid() && !sunken )
         {
 
-            QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            const qreal radius( frameRadius() );
-
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( shadowRect, radius, radius );
+            painter->drawRoundedRect( shadowRect( frameRect ), radius, radius );
 
         }
-
-        // outline
-        qreal radius( frameRadius() );
-        frameRect.adjust( 1, 1, -1, -1 );
 
         if( outline.isValid() && !hasFocus )
         {
@@ -660,30 +655,29 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        // copy rect
-        QRectF baseRect( rect );
+        // copy rect and radius
+        QRectF frameRect( rect );
+        frameRect.adjust( 1, 1, -1, -1 );
+        const qreal radius( frameRadius() );
 
         // shadow
         if( !sunken )
         {
 
-            const qreal radius( frameRadius() );
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawRoundedRect( shadowRect, radius, radius );
+            painter->drawRoundedRect( shadowRect( frameRect ), radius, radius );
 
         }
 
         // content
         {
 
-            const qreal radius( frameRadius() );
             painter->setPen( QPen( color, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+            const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ) );
             painter->drawRoundedRect( contentRect, radius, radius );
 
         }
@@ -695,7 +689,7 @@ namespace Breeze
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
 
-            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
             painter->drawRect( markerRect );
 
         } else if( state == CheckPartial ) {
@@ -704,7 +698,7 @@ namespace Breeze
             pen.setJoinStyle( Qt::MiterJoin );
             painter->setPen( pen );
 
-            const QRectF markerRect( baseRect.adjusted( 6, 6, -6, -6 ) );
+            const QRectF markerRect( frameRect.adjusted( 5, 5, -5, -5 ) );
             painter->drawRect( markerRect );
 
             painter->setPen( Qt::NoPen );
@@ -731,7 +725,9 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        QRectF baseRect( rect );
+        // copy rect
+        QRectF frameRect( rect );
+        frameRect.adjust( 1, 1, -1, -1 );
 
         // shadow
         if( !sunken )
@@ -739,9 +735,7 @@ namespace Breeze
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-
-            const QRectF shadowRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawEllipse( shadowRect );
+            painter->drawEllipse( shadowRect( frameRect ) );
 
         }
 
@@ -751,7 +745,7 @@ namespace Breeze
             painter->setPen( QPen( color, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( baseRect.adjusted( 2, 2, -2, -2 ) );
+            const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ) );
             painter->drawEllipse( contentRect );
 
         }
@@ -763,7 +757,7 @@ namespace Breeze
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
 
-            const QRectF markerRect( baseRect.adjusted( 5, 5, -5, -5 ) );
+            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
             painter->drawEllipse( markerRect );
 
         }
@@ -873,7 +867,9 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
+        // copy rect
         QRectF frameRect( rect );
+        frameRect.adjust( 1, 1, -1, -1 );
 
         // shadow
         if( shadow.isValid() && !sunken )
@@ -881,13 +877,9 @@ namespace Breeze
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-
-            const QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            painter->drawEllipse( shadowRect );
+            painter->drawEllipse( shadowRect( frameRect ) );
 
         }
-
-        frameRect.adjust( 1, 1, -1, -1 );
 
         // set pen
         if( outline.isValid() )
@@ -1181,6 +1173,19 @@ namespace Breeze
         painter->restore();
         return;
 
+    }
+
+
+    //______________________________________________________________________________
+    QRectF Helper::shadowRect( const QRectF& rect ) const
+    {
+        switch( StyleConfigData::lightSource() )
+        {
+            case StyleConfigData::LS_TOP: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0, 0.5 );
+            case StyleConfigData::LS_TOPLEFT: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0.5, 0.5 );
+            case StyleConfigData::LS_TOPRIGHT: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( -0.5, 0.5 );
+            default: return rect;
+        }
     }
 
     //______________________________________________________________________________
