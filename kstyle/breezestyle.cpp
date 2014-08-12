@@ -1773,7 +1773,7 @@ namespace Breeze
             {
 
                 // take out frame width
-                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+                if( !flat && rect.height() >= 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
 
                 QRect arrowRect;
                 arrowRect = QRect(
@@ -1782,9 +1782,10 @@ namespace Breeze
                     Metrics::SpinBox_ArrowButtonWidth,
                     rect.height() );
 
-                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, Metrics::SpinBox_ArrowButtonWidth );
-                arrowRect.setHeight( Metrics::SpinBox_ArrowButtonWidth/2 );
-                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, Metrics::SpinBox_ArrowButtonWidth/2 );
+                const int arrowHeight( qMin( rect.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, arrowHeight );
+                arrowRect.setHeight( arrowHeight/2 );
+                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, arrowHeight/2 );
 
                 return handleRightToLeftLayout( option, arrowRect );
 
@@ -4930,7 +4931,7 @@ namespace Breeze
             {
 
                 const QColor color( palette.color( QPalette::Base ) );
-                if( flat )
+                if( flat || rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth )
                 {
 
                     painter->setBrush( color );
@@ -5035,7 +5036,7 @@ namespace Breeze
             else arrowColor = palette.color( QPalette::ButtonText );
 
             // arrow rect
-            const QRect arrowRect( comboBoxSubControlRect( option, SC_ComboBoxArrow, widget ) );
+            const QRect arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
@@ -5053,8 +5054,12 @@ namespace Breeze
         const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return true;
 
-        const State& state( option->state );
+        // store palette and rect
         const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // store state
+        const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool hasFocus( enabled && ( state & State_HasFocus ) );
@@ -5064,12 +5069,12 @@ namespace Breeze
         {
 
             const QColor background( palette.color( QPalette::Base ) );
-            if( flat )
+            if( flat || rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth )
             {
 
                 painter->setBrush( background );
                 painter->setPen( Qt::NoPen );
-                painter->drawRect( option->rect );
+                painter->drawRect( rect );
 
             } else {
 
@@ -5084,7 +5089,7 @@ namespace Breeze
                     _animations->lineEditEngine().frameAnimationMode( widget ) ) );
 
                 // render
-                _helper->renderFrame( painter, option->rect, background, outline, hasFocus );
+                _helper->renderFrame( painter, rect, background, outline, hasFocus );
             }
 
         }
