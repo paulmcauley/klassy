@@ -3222,27 +3222,44 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawIndicatorToolBarHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
+
+        // do nothing if disabled from options
+        if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
+
         // store rect and palette
-        const QRect& rect( option->rect );
+        QRect rect( option->rect );
         const QPalette& palette( option->palette );
 
-        // store flags
+        // store state
         const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
+        const bool separatorIsVertical( state & State_Horizontal );
 
-        // handle rect
-        QRect handleRect( rect );
-        if( horizontal ) handleRect.setWidth( Metrics::ToolBar_HandleWidth );
-        else handleRect.setHeight( Metrics::ToolBar_HandleWidth );
+        // define color and render
+        const QColor color( _helper->separatorColor( palette ) );
+        if( separatorIsVertical )
+        {
+            rect.setWidth( Metrics::ToolBar_HandleWidth );
+            rect = centerRect( option->rect, rect.size() );
+            rect.setWidth( 3 );
+            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
 
-        handleRect = centerRect( rect, handleRect.size() );
+            rect.translate( 2, 0 );
+            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
 
-        // color
-        QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
+        } else {
 
-        // render
-        _helper->renderToolBarHandle( painter, handleRect, color );
+            rect.setHeight( Metrics::ToolBar_HandleWidth );
+            rect = centerRect( option->rect, rect.size() );
+            rect.setHeight( 3 );
+            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
+
+            rect.translate( 0, 2 );
+            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
+
+        }
+
         return true;
+
     }
 
     //___________________________________________________________________________________
@@ -3252,12 +3269,18 @@ namespace Breeze
         // do nothing if disabled from options
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
+        // store rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // store state
         const State& state( option->state );
         const bool separatorIsVertical( state & State_Horizontal );
-        const QRect& rect( option->rect );
-        const QColor color( _helper->separatorColor( option->palette ) );
 
+        // define color and render
+        const QColor color( _helper->separatorColor( palette ) );
         _helper->renderSeparator( painter, rect, color, separatorIsVertical );
+
         return true;
 
     }
