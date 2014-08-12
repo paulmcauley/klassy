@@ -55,6 +55,7 @@ namespace Breeze
         connect( _animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( _lightSource, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _useWMMoveResize, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
 
@@ -68,6 +69,7 @@ namespace Breeze
         StyleConfigData::setMnemonicsMode( _mnemonicsMode->currentIndex() );
         StyleConfigData::setScrollBarAddLineButtons( _scrollBarAddLineButtons->currentIndex() );
         StyleConfigData::setScrollBarSubLineButtons( _scrollBarSubLineButtons->currentIndex() );
+        StyleConfigData::setLightSource( _lightSource->currentIndex() );
         StyleConfigData::setAnimationsEnabled( _animationsEnabled->isChecked() );
         StyleConfigData::setAnimationsDuration( _animationsDuration->value() );
 
@@ -117,6 +119,7 @@ namespace Breeze
         else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
         else if( _scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons() ) modified = true;
         else if( _scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons() ) modified = true;
+        else if( _lightSource->currentIndex() != StyleConfigData::lightSource() ) modified = true;
         else if( _splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled() ) modified = true;
         else if( _animationsEnabled->isChecked() != StyleConfigData::animationsEnabled() ) modified = true;
         else if( _animationsDuration->value() != StyleConfigData::animationsDuration() ) modified = true;
@@ -156,6 +159,7 @@ namespace Breeze
         _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
         _scrollBarAddLineButtons->setCurrentIndex( StyleConfigData::scrollBarAddLineButtons() );
         _scrollBarSubLineButtons->setCurrentIndex( StyleConfigData::scrollBarSubLineButtons() );
+        _lightSource->setCurrentIndex( StyleConfigData::lightSource() );
         _animationsEnabled->setChecked( StyleConfigData::animationsEnabled() );
         _animationsDuration->setValue( StyleConfigData::animationsDuration() );
         if( !StyleConfigData::windowDragEnabled() ) _windowDragMode->setCurrentIndex(0);

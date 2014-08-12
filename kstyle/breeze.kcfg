@@ -109,8 +109,8 @@
     <entry name="LightSource" type="Enum">
       <choices>
           <choice name="LS_TOPLEFT" />
-          <choice name="LS_TOPRIGHT" />
           <choice name="LS_TOP" />
+          <choice name="LS_TOPRIGHT" />
       </choices>
       <default>LS_TOPLEFT</default>
     </entry>
