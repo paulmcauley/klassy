@@ -153,7 +153,7 @@ namespace Breeze
     QColor Helper::buttonOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
-        QColor outline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.4 ) );
+        QColor outline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.3 ) );
         if( mode == AnimationHover )
         {
 
@@ -667,7 +667,8 @@ namespace Breeze
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
-            painter->drawRoundedRect( shadowRect( frameRect ), radius, radius );
+            const qreal shadowRadius( radius + 0.5 );
+            painter->drawRoundedRect( shadowRect( frameRect ), shadowRadius, shadowRadius );
 
         }
 
