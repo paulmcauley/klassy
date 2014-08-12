@@ -1178,7 +1178,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
-    QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const
+    QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* widget ) const
     {
 
         // cast option
@@ -1192,6 +1192,10 @@ namespace Breeze
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
         QRect rect( option->rect );
+        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+        if( horizontal ) rect.adjust( frameWidth, 0, -frameWidth, 0 );
+        else rect.adjust( 0, frameWidth, 0, -frameWidth );
+
         if( textVisible && !busy )
         {
             if( horizontal ) rect.setTop( rect.height() - Metrics::ProgressBar_Thickness );
@@ -5114,16 +5118,17 @@ namespace Breeze
         {
             // retrieve groove rect
             QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+            grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
 
             // adjustments
             if( sliderOption->orientation == Qt::Horizontal )
             {
 
-                grooveRect = centerRect( grooveRect, grooveRect.width()-Metrics::Slider_Thickness, Metrics::Slider_Thickness );
+                grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_Thickness );
 
             } else {
 
-                grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height()-Metrics::Slider_Thickness );
+                grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height() );
 
             }
 
