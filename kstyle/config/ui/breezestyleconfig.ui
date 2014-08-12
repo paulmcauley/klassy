@@ -325,6 +325,18 @@
    <header>kcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>_animationsEnabled</tabstop>
+  <tabstop>_animationsDuration</tabstop>
+  <tabstop>_scrollBarSubLineButtons</tabstop>
+  <tabstop>_scrollBarAddLineButtons</tabstop>
+  <tabstop>_toolBarDrawItemSeparator</tabstop>
+  <tabstop>_splitterProxyEnabled</tabstop>
+  <tabstop>_lightSource</tabstop>
+  <tabstop>_mnemonicsMode</tabstop>
+  <tabstop>_windowDragMode</tabstop>
+  <tabstop>_useWMMoveResize</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
