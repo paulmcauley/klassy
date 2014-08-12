@@ -56,7 +56,7 @@ namespace Breeze
         virtual void loadConfig();
 
         //! pointer to shared config
-        KSharedConfigPtr config() const;
+        KSharedConfig::Ptr config() const;
 
         //!@name color utilities
         //@{
@@ -242,7 +242,7 @@ namespace Breeze
         private:
 
         //! configuration
-        KSharedConfigPtr _config;
+        KSharedConfig::Ptr _config;
 
         //!@name brushes
         //@{

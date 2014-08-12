@@ -57,7 +57,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    KSharedConfigPtr Helper::config() const
+    KSharedConfig::Ptr Helper::config() const
     { return _config; }
 
     //____________________________________________________________________
