@@ -58,11 +58,11 @@ namespace Breeze
         //! pointer to shared config
         KSharedConfigPtr config() const;
 
-        //! add alpha channel multiplier to color
-        static QColor alphaColor( QColor color, qreal alpha );
-
         //!@name color utilities
         //@{
+
+        //! add alpha channel multiplier to color
+        QColor alphaColor( QColor color, qreal alpha ) const;
 
         //! mouse over color
         QColor hoverColor( const QPalette& palette ) const
@@ -228,7 +228,7 @@ namespace Breeze
 
         //! frame radius
         qreal frameRadius( void ) const
-        { return qreal( Metrics::Frame_FrameRadius )+0.5; }
+        { return qreal( Metrics::Frame_FrameRadius )-0.5; }
 
         //! return color key for a given color, properly accounting for invalid colors
         quint64 colorKey( const QColor& color ) const

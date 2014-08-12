@@ -39,7 +39,7 @@ namespace Breeze
 
         // frames
         Frame_FrameWidth = 2,
-        Frame_FrameRadius = 2,
+        Frame_FrameRadius = 3,
 
         // layout
         Layout_TopLevelMarginWidth = 10,

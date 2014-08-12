@@ -23,6 +23,7 @@
 #include "breezehelper.h"
 
 #include "breeze.h"
+#include "breezestyleconfigdata.h"
 
 #include <KColorUtils>
 #include <KWindowSystem>
@@ -325,7 +326,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::alphaColor( QColor color, qreal alpha )
+    QColor Helper::alphaColor( QColor color, qreal alpha ) const
     {
         if( alpha >= 0 && alpha < 1.0 )
         { color.setAlphaF( alpha*color.alphaF() ); }
@@ -452,7 +453,7 @@ namespace Breeze
         {
 
             QRectF shadowRect( frameRect.adjusted( 1.5, 1.5, -1.5, -1.5 ).translated( 0, 0.5 ) );
-            const qreal radius( frameRadius() - 1 );
+            const qreal radius( frameRadius() );
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
@@ -666,7 +667,7 @@ namespace Breeze
         if( !sunken )
         {
 
-            const qreal radius( frameRadius() - 1 );
+            const qreal radius( frameRadius() );
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
 
