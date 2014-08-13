@@ -128,7 +128,7 @@ namespace Breeze
         for( DataMap<BusyIndicatorData>::iterator iter = _data.begin(); iter != _data.end(); ++iter )
         {
 
-            if( iter.value()->isAnimated() )
+            if( iter.value().data()->isAnimated() )
             {
 
                 // update animation flag
