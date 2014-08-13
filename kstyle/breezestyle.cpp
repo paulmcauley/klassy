@@ -1200,24 +1200,27 @@ namespace Breeze
         if( horizontal ) rect.adjust( frameWidth, 0, -frameWidth, 0 );
         else rect.adjust( 0, frameWidth, 0, -frameWidth );
 
-        if( textVisible && !busy )
+        if( textVisible && !busy && horizontal )
         {
-            if( horizontal ) rect.setTop( rect.bottom() - Metrics::ProgressBar_Thickness );
-            else {
 
-                rect.setWidth( Metrics::ProgressBar_Thickness );
-                rect = handleRightToLeftLayout( option, rect );
+            QRect textRect( subElementRect( SE_ProgressBarLabel, option, widget ) );
+            textRect = handleRightToLeftLayout( option, textRect );
+            rect.setRight( textRect.left() - 1 - Metrics::ProgressBar_BoxTextSpace );
+            rect = handleRightToLeftLayout( option, rect );
+            rect = centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
 
-            }
+        } else if( horizontal ) {
+
+            rect = centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
 
         } else {
 
-            // center everything, if text is hidden
-            if( horizontal ) return centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
-            else return centerRect( rect, Metrics::ProgressBar_Thickness, rect.height() );
+            rect = centerRect( rect, Metrics::ProgressBar_Thickness, rect.height() );
 
         }
+
         return rect;
+
     }
 
     //___________________________________________________________________________________________________________________
@@ -1228,21 +1231,28 @@ namespace Breeze
     QRect Style::progressBarLabelRect( const QStyleOption* option, const QWidget* ) const
     {
 
-        // cast option
+        // cast option and check
         const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !( progressBarOption && progressBarOption->textVisible ) ) return QRect();
+        if( !progressBarOption ) return QRect();
 
+        // get flags and check
+        const bool textVisible( progressBarOption->textVisible );
+        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
+        if( !textVisible || busy ) return QRect();
+
+        // get direction and check
         const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
+        if( !horizontal ) return QRect();
+
+        int textWidth = qMax(
+            option->fontMetrics.size( _mnemonics->textFlags(), progressBarOption->text ).width(),
+            option->fontMetrics.size( _mnemonics->textFlags(), QStringLiteral( "100%" ) ).width() );
 
         QRect rect( option->rect );
-        if( horizontal ) rect.setHeight( rect.height() - Metrics::ProgressBar_Thickness - Metrics::ProgressBar_BoxTextSpace );
-        else {
-
-            rect.setLeft( Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace );
-            rect = handleRightToLeftLayout( option, rect );
-
-        }
+        rect.adjust( Metrics::Frame_FrameWidth, 0, -Metrics::Frame_FrameWidth, 0 );
+        rect.setLeft( rect.right() - textWidth );
+        rect = handleRightToLeftLayout( option, rect );
 
         return rect;
 
@@ -2238,9 +2248,6 @@ namespace Breeze
         const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return contentsSize;
 
-        // get flags
-        const bool textVisible( progressBarOption->textVisible );
-
         const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
 
@@ -2249,15 +2256,17 @@ namespace Breeze
 
         if( horizontal ) {
 
+            // check text visibility
+            const bool textVisible( progressBarOption->textVisible );
+
             size.setWidth( qMax( size.width(), (int) Metrics::ProgressBar_Thickness ) );
-            if( textVisible ) size.rheight() += Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace;
-            else size.setHeight( Metrics::ProgressBar_Thickness );
+            size.setHeight( qMax( size.height(), (int) Metrics::ProgressBar_Thickness ) );
+            if( textVisible ) size.setHeight( qMax( size.height(), option->fontMetrics.height() ) );
 
         } else {
 
             size.setHeight( qMax( size.height(), (int) Metrics::ProgressBar_Thickness ) );
-            if( textVisible ) size.rwidth() += Metrics::ProgressBar_Thickness + Metrics::ProgressBar_BoxTextSpace;
-            else size.setWidth( Metrics::ProgressBar_Thickness );
+            size.setWidth( qMax( size.width(), (int) Metrics::ProgressBar_Thickness ) );
 
         }
 
@@ -3874,7 +3883,9 @@ namespace Breeze
         drawProgressBarContentsControl( &progressBarOption2, painter, widget );
 
         // render text
-        if( progressBarOption->textVisible )
+        const bool textVisible( progressBarOption->textVisible );
+        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
+        if( textVisible && !busy )
         {
             progressBarOption2.rect = subElementRect( SE_ProgressBarLabel, progressBarOption, widget );
             drawProgressBarLabelControl( &progressBarOption2, painter, widget );
@@ -3954,8 +3965,15 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
+
+        // cast option and check
         const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
+
+        // get direction and check
+        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+        if( !horizontal ) return true;
 
         // store rect and palette
         const QRect& rect( option->rect );
@@ -3965,28 +3983,9 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
 
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
-        const bool reverseLayout = ( option->direction == Qt::RightToLeft );
-
-        // rotate label for vertical layout
-        if( ! ( horizontal || reverseLayout ) )
-        {
-
-            painter->translate( rect.topRight() );
-            painter->rotate( 90.0 );
-
-        } else if( !horizontal ) {
-
-            painter->translate( rect.bottomLeft() );
-            painter->rotate( -90.0 );
-
-        }
-
         // define text rect
-        const QRect textRect( horizontal? rect : QRect( 0, 0, rect.height(), rect.width() ) );
         Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
-        drawItemText( painter, textRect, Qt::AlignBottom | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
+        drawItemText( painter, rect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
 
         return true;
 
