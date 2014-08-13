@@ -381,7 +381,7 @@ namespace Breeze
 
             }
 
-            radius -= 0.5;
+            radius -= 1.0;
 
         } else {
 
@@ -415,7 +415,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 0.5;
+            radius -= 1.0;
 
         } else painter->setPen( Qt::NoPen );
 
@@ -459,7 +459,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 0.5;
+            radius -= 1.0;
 
         } else painter->setPen( Qt::NoPen );
 
@@ -573,7 +573,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 0.5;
+            radius -= 1.0;
 
         } else painter->setPen( Qt::NoPen );
 
@@ -1026,7 +1026,7 @@ namespace Breeze
 
             painter->setPen( QPen( outline, 1 ) );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 0.5;
+            radius -= 1.0;
 
         } else painter->setPen( Qt::NoPen );
 
