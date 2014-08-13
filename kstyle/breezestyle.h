@@ -74,9 +74,12 @@ namespace Breeze
 
     };
 
+    //! convenience typedef for base class
+    using ParentStyleClass = KStyle;
+
     //! base class for breeze style
     /*! it is responsible to draw all the primitives to be displayed on screen, on request from Qt paint engine */
-    class Style: public KStyle
+    class Style: public ParentStyleClass
     {
         Q_OBJECT
 
@@ -98,8 +101,8 @@ namespace Breeze
         virtual void unpolish( QWidget* );
 
         //! needed to avoid warnings at compilation time
-        using  KStyle::polish;
-        using  KStyle::unpolish;
+        using  ParentStyleClass::polish;
+        using  ParentStyleClass::unpolish;
 
         //! pixel metrics
         virtual int pixelMetric(PixelMetric, const QStyleOption* = 0, const QWidget* = 0) const;

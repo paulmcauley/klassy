@@ -285,7 +285,7 @@ namespace Breeze
             { widget->setPalette( palette ); }
 
         // base class polishing
-        KStyle::polish( widget );
+        ParentStyleClass::polish( widget );
 
     }
 
@@ -301,7 +301,7 @@ namespace Breeze
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
 
-        KStyle::unpolish( widget );
+        ParentStyleClass::unpolish( widget );
 
     }
 
@@ -331,7 +331,7 @@ namespace Breeze
             break;
 
             default:
-            icon = KStyle::standardIcon( standardPixmap, option, widget );
+            icon = ParentStyleClass::standardIcon( standardPixmap, option, widget );
             break;
 
         }
@@ -476,7 +476,7 @@ namespace Breeze
             case PM_DockWidgetTitleBarButtonMargin: return ToolButton_MarginWidth;
 
             // fallback
-            default: return KStyle::pixelMetric( metric, option, widget );
+            default: return ParentStyleClass::pixelMetric( metric, option, widget );
 
         }
 
@@ -569,7 +569,7 @@ namespace Breeze
             case SH_DockWidget_ButtonsHaveFrame: return false;
 
             // fallback
-            default: return KStyle::styleHint( hint, option, widget, returnData );
+            default: return ParentStyleClass::styleHint( hint, option, widget, returnData );
 
         }
 
@@ -608,7 +608,7 @@ namespace Breeze
             case SE_ToolBoxTabContents: return toolBoxTabContentsRect( option, widget );
 
             // fallback
-            default: return KStyle::subElementRect( element, option, widget );
+            default: return ParentStyleClass::subElementRect( element, option, widget );
 
         }
     }
@@ -627,7 +627,7 @@ namespace Breeze
             case CC_Dial: return dialSubControlRect( option, subControl, widget );
 
             // fallback
-            default: return KStyle::subControlRect( element, option, subControl, widget );
+            default: return ParentStyleClass::subControlRect( element, option, subControl, widget );
 
         }
 
@@ -661,7 +661,7 @@ namespace Breeze
             case CT_ItemViewItem: return itemViewItemSizeFromContents( option, size, widget );
 
             // fallback
-            default: return KStyle::sizeFromContents( element, option, size, widget );
+            default: return ParentStyleClass::sizeFromContents( element, option, size, widget );
 
         }
 
@@ -710,7 +710,7 @@ namespace Breeze
             }
 
             // fallback
-            default: return KStyle::hitTestComplexControl( control, option, point, widget );
+            default: return ParentStyleClass::hitTestComplexControl( control, option, point, widget );
 
         }
 
@@ -785,7 +785,7 @@ namespace Breeze
 
         // call function if implemented
         if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
-        { KStyle::drawPrimitive( element, option, painter, widget ); }
+        { ParentStyleClass::drawPrimitive( element, option, painter, widget ); }
 
         painter->restore();
 
@@ -873,7 +873,7 @@ namespace Breeze
 
         // call function if implemented
         if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
-        { KStyle::drawControl( element, option, painter, widget ); }
+        { ParentStyleClass::drawControl( element, option, painter, widget ); }
 
         painter->restore();
 
@@ -906,7 +906,7 @@ namespace Breeze
 
         // call function if implemented
         if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
-        { KStyle::drawComplexControl( element, option, painter, widget ); }
+        { ParentStyleClass::drawComplexControl( element, option, painter, widget ); }
 
         painter->restore();
 
@@ -940,14 +940,14 @@ namespace Breeze
             {
 
                 const QPalette copy = _helper->disabledPalette( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
-                return KStyle::drawItemText( painter, r, flags, copy, enabled, text, textRole );
+                return ParentStyleClass::drawItemText( painter, r, flags, copy, enabled, text, textRole );
 
             }
 
         }
 
         // fallback
-        return KStyle::drawItemText( painter, r, flags, palette, enabled, text, textRole );
+        return ParentStyleClass::drawItemText( painter, r, flags, palette, enabled, text, textRole );
 
     }
 
@@ -965,7 +965,7 @@ namespace Breeze
         if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
 
         // fallback
-        return KStyle::eventFilter( object, event );
+        return ParentStyleClass::eventFilter( object, event );
     }
 
     //____________________________________________________________________________
@@ -1622,7 +1622,7 @@ namespace Breeze
 
         }
 
-        return KStyle::subControlRect( CC_GroupBox, option, subControl, widget );
+        return ParentStyleClass::subControlRect( CC_GroupBox, option, subControl, widget );
 
     }
 
@@ -1632,7 +1632,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionToolButton* toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
-        if( !toolButtonOption ) return KStyle::subControlRect( CC_ToolButton, option, subControl, widget );
+        if( !toolButtonOption ) return ParentStyleClass::subControlRect( CC_ToolButton, option, subControl, widget );
 
         const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
@@ -1682,7 +1682,7 @@ namespace Breeze
     {
         // cast option and check
         const QStyleOptionComboBox *comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
-        if( !comboBoxOption ) return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
+        if( !comboBoxOption ) return ParentStyleClass::subControlRect( CC_ComboBox, option, subControl, widget );
 
         const bool editable( comboBoxOption->editable );
         const bool flat( editable && !comboBoxOption->frame );
@@ -1748,7 +1748,7 @@ namespace Breeze
 
         }
 
-        return KStyle::subControlRect( CC_ComboBox, option, subControl, widget );
+        return ParentStyleClass::subControlRect( CC_ComboBox, option, subControl, widget );
 
     }
 
@@ -1758,7 +1758,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
-        if( !spinBoxOption ) return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );
+        if( !spinBoxOption ) return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
         // copy rect
@@ -1813,7 +1813,7 @@ namespace Breeze
 
         }
 
-        return KStyle::subControlRect( CC_SpinBox, option, subControl, widget );
+        return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
 
     }
 
@@ -1854,7 +1854,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return KStyle::subControlRect( CC_ScrollBar, option, subControl, widget );
+        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );
 
         // get relevant state
         const State& state( option->state );
@@ -1940,7 +1940,7 @@ namespace Breeze
 
             }
 
-            default: return KStyle::subControlRect( CC_ScrollBar, option, subControl, widget );;
+            default: return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );;
         }
     }
 
@@ -1950,7 +1950,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return KStyle::subControlRect( CC_Dial, option, subControl, widget );
+        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );
 
         // adjust rect to be square, and centered
         QRect rect( option->rect );
@@ -1980,7 +1980,7 @@ namespace Breeze
 
             }
 
-            default: return KStyle::subControlRect( CC_Dial, option, subControl, widget );;
+            default: return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );;
 
         }
 
@@ -2309,7 +2309,7 @@ namespace Breeze
     QSize Style::itemViewItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
         // call base class
-        QSize size( KStyle::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
+        QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
 
         // add margins
         return expandSize( size, Metrics::ItemView_ItemMarginWidth );
@@ -3576,7 +3576,7 @@ namespace Breeze
         painter->setPen( QPen( option->palette.color( textRole ), 1 ) );
 
         // call base class method
-        KStyle::drawControl( CE_ComboBoxLabel, option, painter, widget );
+        ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
         return true;
 
     }
@@ -4324,7 +4324,7 @@ namespace Breeze
     {
 
         // call parent style method
-        KStyle::drawControl( CE_TabBarTabLabel, option, painter, widget );
+        ParentStyleClass::drawControl( CE_TabBarTabLabel, option, painter, widget );
 
         // store rect and palette
         const QRect& rect( option->rect );
@@ -4763,7 +4763,7 @@ namespace Breeze
     {
 
         // base class method
-        KStyle::drawComplexControl( CC_GroupBox, option, painter, widget );
+        ParentStyleClass::drawComplexControl( CC_GroupBox, option, painter, widget );
 
         // cast option and check
         const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
@@ -5335,7 +5335,7 @@ namespace Breeze
         }
 
         // call base class primitive
-        KStyle::drawComplexControl( CC_ScrollBar, option, painter, widget );
+        ParentStyleClass::drawComplexControl( CC_ScrollBar, option, painter, widget );
         return true;
     }
 
@@ -5366,7 +5366,7 @@ namespace Breeze
 
             // render text
             const QRect textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
-            KStyle::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, active ? QPalette::HighlightedText : QPalette::WindowText );
+            ParentStyleClass::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, active ? QPalette::HighlightedText : QPalette::WindowText );
 
         }
 
