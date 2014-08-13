@@ -169,9 +169,10 @@ namespace Breeze
     enum AnimationMode
     {
         AnimationNone = 0,
-        AnimationHover = 1<<0,
-        AnimationFocus = 1<<1,
-        AnimationEnable = 1<<2
+        AnimationHover = 0x1,
+        AnimationFocus = 0x2,
+        AnimationEnable = 0x4,
+        AnimationPressed = 0x8
     };
 
     Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
@@ -179,10 +180,10 @@ namespace Breeze
     //! corners
     enum Corner
     {
-        CornerTopLeft = 1 << 0,
-        CornerTopRight = 1 << 1,
-        CornerBottomLeft = 1 << 2,
-        CornerBottomRight = 1 << 3,
+        CornerTopLeft = 0x1,
+        CornerTopRight = 0x2,
+        CornerBottomLeft = 0x4,
+        CornerBottomRight = 0x8,
         CornersTop = CornerTopLeft|CornerTopRight,
         CornersBottom = CornerBottomLeft|CornerBottomRight,
         CornersLeft = CornerTopLeft|CornerBottomLeft,
