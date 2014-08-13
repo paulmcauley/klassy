@@ -3817,8 +3817,12 @@ namespace Breeze
         if( styleObject && _animations->busyIndicatorEngine().enabled() )
         {
 
+            #if QT_VERSION >= 0x050000
             // register QML object if defined
-            _animations->busyIndicatorEngine().registerWidget( styleObject );
+            if( !widget && progressBarOption->styleObject )
+            { _animations->busyIndicatorEngine().registerWidget( progressBarOption->styleObject ); }
+            #endif
+
             _animations->busyIndicatorEngine().setAnimated( styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
 
         }
