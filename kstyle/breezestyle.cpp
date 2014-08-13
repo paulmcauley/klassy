@@ -120,8 +120,10 @@ namespace Breeze
         _frameShadowFactory( new FrameShadowFactory( this ) ),
         _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) ),
         _splitterFactory( new SplitterFactory( this ) ),
-        _tabBarData( new BreezePrivate::TabBarData( this ) ),
-        SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
+        _tabBarData( new BreezePrivate::TabBarData( this ) )
+        #if QT_VERSION >= 0x050000
+        , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
+        #endif
     {
 
         // use DBus connection to update on breeze configuration change

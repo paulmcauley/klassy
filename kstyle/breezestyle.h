@@ -28,6 +28,7 @@
 #include <KStyle>
 
 #include <QAbstractScrollArea>
+#include <QCommonStyle>
 #include <QDockWidget>
 #include <QHash>
 #include <QIcon>
@@ -53,7 +54,11 @@ namespace Breeze
     class WindowManager;
 
     //! convenience typedef for base class
+    #if QT_VERSION >= 0x050000
     using ParentStyleClass = KStyle;
+    #else
+    using ParentStyleClass = QCommonStyle;
+    #endif
 
     //! base class for breeze style
     /*! it is responsible to draw all the primitives to be displayed on screen, on request from Qt paint engine */
