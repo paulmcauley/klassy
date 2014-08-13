@@ -463,8 +463,10 @@ namespace Breeze
             // dock widget
             // return 0 here, since frame is handled directly in polish
             case PM_DockWidgetFrameWidth: return 0;
-            case PM_DockWidgetTitleMargin: return Frame_FrameWidth;
-            case PM_DockWidgetTitleBarButtonMargin: return ToolButton_MarginWidth;
+            case PM_DockWidgetTitleMargin: return Metrics::Frame_FrameWidth;
+            case PM_DockWidgetTitleBarButtonMargin: return Metrics::ToolButton_MarginWidth;
+
+            case PM_SplitterWidth: return Metrics::Splitter_SplitterWidth;
 
             // fallback
             default: return ParentStyleClass::pixelMetric( metric, option, widget );

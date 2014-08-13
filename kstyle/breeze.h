@@ -160,6 +160,9 @@ namespace Breeze
         ItemView_ArrowSize = 10,
         ItemView_ItemMarginWidth = 4,
 
+        // splitter
+        Splitter_SplitterWidth = 1,
+
         // shadow
         Shadow_Size = 10,
         Shadow_Overlap = 4
