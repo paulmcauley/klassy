@@ -106,7 +106,13 @@ namespace Breeze
     Style::Style( void ):
         _addLineButtons( SingleButton ),
         _subLineButtons( SingleButton ),
+
+        #if QT_VERSION >= 0x050000
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
+        #else
+        _helper( new Helper( "breeze" ) ),
+        #endif
+
         _shadowHelper( new ShadowHelper( this, *_helper ) ),
         _animations( new Animations( this ) ),
         _mnemonics( new Mnemonics( this ) ),
@@ -333,6 +339,7 @@ namespace Breeze
             // frame width
             case PM_DefaultFrameWidth:
             if( qobject_cast<const QLineEdit*>( widget ) ) return LineEdit_FrameWidth;
+            #if QT_VERSION >= 0x050000
             else if( option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" ) )
             {
                 const QString &elementType = option->styleObject->property( "elementType" ).toString();
@@ -347,6 +354,7 @@ namespace Breeze
                 }
 
             }
+            #endif
 
             // fallback
             return Metrics::Frame_FrameWidth;
@@ -512,7 +520,10 @@ namespace Breeze
             case SH_Menu_MouseTracking: return true;
             case SH_Menu_SubMenuPopupDelay: return 150;
             case SH_Menu_SloppySubMenus: return true;
+
+            #if QT_VERSION >= 0x050000
             case SH_Menu_SupportsSections: return true;
+            #endif
 
             // groupboxes
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
@@ -2353,9 +2364,13 @@ namespace Breeze
 
         if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
 
+        #if QT_VERSION >= 0x050000
         const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
             ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
+        #else
+        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) );
+        #endif
 
         const QPalette& palette( option->palette );
         const bool enabled( state & State_Enabled );
@@ -2887,7 +2902,8 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionViewItem *viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
+        // const QStyleOptionViewItem *viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
+        const QStyleOptionViewItemV4 *viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
         if( !viewItemOption ) return false;
 
         // try cast widget
@@ -3790,21 +3806,25 @@ namespace Breeze
         progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
         drawProgressBarGrooveControl( &progressBarOption2, painter, widget );
 
+        #if QT_VERSION >= 0x050000
+        const QObject* styleObject( widget ? widget:progressBarOption->styleObject;
+        #else
+        const QObject* styleObject( widget );
+        #endif
+
         // enable busy animations
         /* need to check both widget and passed styleObject, used for QML */
-        if(( widget || progressBarOption->styleObject ) && _animations->busyIndicatorEngine().enabled() )
+        if( styleObject && _animations->busyIndicatorEngine().enabled() )
         {
 
             // register QML object if defined
-            if( !widget && progressBarOption->styleObject )
-            { _animations->busyIndicatorEngine().registerWidget( progressBarOption->styleObject ); }
-
-            _animations->busyIndicatorEngine().setAnimated( widget ? widget : progressBarOption->styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
+            _animations->busyIndicatorEngine().registerWidget( styleObject );
+            _animations->busyIndicatorEngine().setAnimated( styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
 
         }
 
         // check if animated and pass to option
-        if( _animations->busyIndicatorEngine().isAnimated( widget ? widget : progressBarOption->styleObject ) )
+        if( _animations->busyIndicatorEngine().isAnimated( styleObject ) )
         { progressBarOption2.progress = _animations->busyIndicatorEngine().value(); }
 
         // render contents
