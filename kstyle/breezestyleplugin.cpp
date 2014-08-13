@@ -22,6 +22,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezestyleplugin.h"
+#include "breezestyleplugin.moc"
 #include "breezestyle.h"
 
 #include <QApplication>
@@ -30,17 +31,21 @@ namespace Breeze
 {
 
     //_________________________________________________
-    QStyle* Breeze::StylePlugin::create( const QString &key )
+    QStyle* StylePlugin::create( const QString &key )
     {
         if( key.toLower() == QStringLiteral( "breeze" ) ) return new Style();
         else return nullptr;
     }
 
     //_________________________________________________
-    Breeze::StylePlugin::~StylePlugin()
+    StylePlugin::~StylePlugin()
     {
         // Delete style when using ::exit() otherwise it'll outlive the unloaded plugin and we'll get a crash
         if (qApp) delete qApp->style();
     }
+
+    //_________________________________________________
+    QStringList StylePlugin::keys() const
+    { return QStringList( QStringLiteral( "Breeze" ) ); }
 
 }

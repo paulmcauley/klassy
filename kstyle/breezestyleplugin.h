@@ -30,8 +30,12 @@ namespace Breeze
 
     class StylePlugin : public QStylePlugin
     {
+
         Q_OBJECT
+
+        #if QT_VERSION >= 0x050000
         Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "breeze.json" )
+        #endif
 
         public:
 
@@ -43,11 +47,18 @@ namespace Breeze
         //! destructor
         ~StylePlugin();
 
+        //! returns list of valid keys
+        QStringList keys() const;
+
         //! create style
         QStyle* create( const QString& );
 
     };
 
 }
+
+#if QT_VERSION < 0x050000
+Q_EXPORT_PLUGIN2( breeze-qt, Breeze::StylePlugin )
+#endif
 
 #endif
