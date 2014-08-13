@@ -52,13 +52,10 @@ if( USE_KDE4 )
 
 else()
 
-  find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
+  find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets DBus)
   find_package(KF5 REQUIRED COMPONENTS
       I18n
       Config
-      GuiAddons
-      WidgetsAddons
-      Service
       Completion
       FrameworkIntegration
       WindowSystem)
