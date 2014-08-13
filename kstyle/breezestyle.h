@@ -31,7 +31,6 @@
 #include <QDockWidget>
 #include <QHash>
 #include <QIcon>
-#include <QLoggingCategory>
 #include <QMdiSubWindow>
 #include <QStyleOption>
 #include <QWidget>
@@ -503,7 +502,5 @@ namespace Breeze
     }
 
 }
-
-Q_DECLARE_LOGGING_CATEGORY(BREEZE )
 
 #endif

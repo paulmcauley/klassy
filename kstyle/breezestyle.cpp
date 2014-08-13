@@ -61,8 +61,6 @@
 #include <QToolBox>
 #include <QToolButton>
 
-Q_LOGGING_CATEGORY(BREEZE, "breeze")
-
 namespace BreezePrivate
 {
     // needed to keep track of tabbars when being dragged
@@ -126,9 +124,6 @@ namespace Breeze
             QStringLiteral( "/BreezeStyle" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
-
-        // enable debugging
-        QLoggingCategory::setFilterRules(QStringLiteral("breeze.debug = false"));
 
         // call the slot directly; this initial call will set up things that also
         // need to be reset when the system palette changes
