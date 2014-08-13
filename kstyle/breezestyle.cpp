@@ -262,7 +262,7 @@ namespace Breeze
         }
 
         // alter palette for relevant framed widgets
-        const QPalette palette( _helper->framePalette( QGuiApplication::palette() ) );
+        const QPalette palette( _helper->framePalette( QApplication::palette() ) );
         if( qobject_cast<QDockWidget*>( widget ) ||
             qobject_cast<QGroupBox*>( widget ) ||
             qobject_cast<QTabWidget*>( widget ) ||
@@ -2795,7 +2795,7 @@ namespace Breeze
         // get the relevant palette
         const QWidget* parent( tabBar->parentWidget() );
         if( qobject_cast<const QTabWidget*>( parent ) ) parent = parent->parentWidget();
-        const QPalette palette( parent ? parent->palette() : QGuiApplication::palette() );
+        const QPalette palette( parent ? parent->palette() : QApplication::palette() );
 
         // render flat background
         painter->setPen( Qt::NoPen );
@@ -5639,7 +5639,7 @@ namespace Breeze
         QPalette palette;
         if( option ) palette = option->palette;
         else if( widget ) palette = widget->palette();
-        else palette = QGuiApplication::palette();
+        else palette = QApplication::palette();
 
         // convenience class to map color to icon mode
         struct IconData
@@ -5717,7 +5717,7 @@ namespace Breeze
         QPalette palette;
         if( option ) palette = option->palette;
         else if( widget ) palette = widget->palette();
-        else palette = QGuiApplication::palette();
+        else palette = QApplication::palette();
 
         palette.setCurrentColorGroup( QPalette::Active );
         const QColor base( palette.color( QPalette::WindowText ) );

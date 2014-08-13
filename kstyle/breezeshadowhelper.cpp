@@ -32,7 +32,7 @@
 
 #include <QDockWidget>
 #include <QEvent>
-#include <QGuiApplication>
+#include <QApplication>
 #include <QMenu>
 #include <QPainter>
 #include <QPixmap>
@@ -208,7 +208,7 @@ namespace Breeze
         if( !_shadowTiles.isValid() )
         {
 
-            const QPalette palette( QGuiApplication::palette() );
+            const QPalette palette( QApplication::palette() );
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
             static const qreal fixedSize = 25.5;

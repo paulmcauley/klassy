@@ -28,7 +28,7 @@
 #include <KColorUtils>
 #include <KWindowSystem>
 
-#include <QGuiApplication>
+#include <QApplication>
 #include <QPainter>
 
 namespace Breeze
@@ -1174,7 +1174,7 @@ namespace Breeze
     //______________________________________________________________________________
     bool Helper::isX11( void )
     {
-        static bool isX11 = QGuiApplication::platformName() == QStringLiteral("xcb");
+        static bool isX11 = QApplication::platformName() == QStringLiteral("xcb");
         return isX11;
     }
 
