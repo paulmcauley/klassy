@@ -4,20 +4,25 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
-find_package(ECM 0.0.9 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+if( USE_KDE4 )
 
-################# Qt5/KF5 #################
-find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
-find_package(KF5 REQUIRED COMPONENTS
-    I18n
-    Config
-    GuiAddons
-    WidgetsAddons
-    Service
-    Completion
-    FrameworkIntegration
-    WindowSystem)
+  ############ Language and toolchain features
+  ############ copied from ECM
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel" AND NOT WIN32)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  endif()
+
+  add_definitions( -DUSE_KDE4=1 )
+
+else()
+
+  find_package(ECM 0.0.9 REQUIRED NO_MODULE)
+  set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
+  add_definitions( -DUSE_KDE4=0 )
+
+endif()
 
 ################# X11 #################
 find_package(X11)
@@ -29,17 +34,48 @@ set_package_properties(X11 PROPERTIES DESCRIPTION "X11 libraries"
 
 add_definitions( -DHAVE_X11=${X11_FOUND} )
 
-if(X11_FOUND)
-  find_package(XCB REQUIRED COMPONENTS XCB)
-  set_package_properties(XCB PROPERTIES TYPE REQUIRED)
+################# Qt/KDE #################
+if( USE_KDE4 )
 
-  find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
+  find_package(KDE4 REQUIRED)
+  include(KDE4Defaults)
+  include(MacroLibrary)
+
+  add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+  include_directories(${KDE4_INCLUDES})
+
+  if( X11_FOUND )
+    ### XCB
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules( XCB REQUIRED xcb x11-xcb)
+  endif()
+
+else()
+
+  find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
+  find_package(KF5 REQUIRED COMPONENTS
+      I18n
+      Config
+      GuiAddons
+      WidgetsAddons
+      Service
+      Completion
+      FrameworkIntegration
+      WindowSystem)
+
+  if(X11_FOUND)
+    ### XCB
+    find_package(XCB REQUIRED COMPONENTS XCB)
+    find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
+  endif()
+
+  ### includes
+  include(KDEInstallDirs)
+  include(KDECMakeSettings)
+  include(KDECompilerSettings)
+  include(GenerateExportHeader)
+
 endif()
-
-include(KDEInstallDirs)
-include(KDECMakeSettings)
-include(KDECompilerSettings)
-include(GenerateExportHeader)
 
 ################# includes #################
 include_directories( animations )
@@ -83,21 +119,35 @@ set(breeze_PART_SRCS
     breezewindowmanager.cpp
 )
 
-kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
+if( USE_KDE4 )
 
-add_library(breeze MODULE ${breeze_PART_SRCS})
+  kde4_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
+  kde4_add_plugin(breeze ${breeze_PART_SRCS})
+  target_link_libraries(breeze  ${KDE4_KDEUI_LIBS} )
 
-target_link_libraries(breeze  ${KDE4_KDEUI_LIBS} ${KDE4_KIO_LIBS})
+  if( X11_FOUND )
+    target_link_libraries( breeze ${X11_X11_LIB} )
+    target_link_libraries( breeze ${X11_XCB_LIBRARIES} )
+    target_link_libraries( breeze ${XCB_LIBRARIES} )
+  endif()
 
-target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
-target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::Style KF5::WindowSystem)
+  install(TARGETS breeze  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
 
-if(X11_FOUND)
-  target_link_libraries(breeze ${XCB_LIBRARIES})
-  target_link_libraries(breeze Qt5::X11Extras)
+else()
+
+  kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
+  add_library(breeze MODULE ${breeze_PART_SRCS})
+  target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
+  target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::Style KF5::WindowSystem)
+
+  if(X11_FOUND)
+    target_link_libraries(breeze ${XCB_LIBRARIES})
+    target_link_libraries(breeze Qt5::X11Extras)
+  endif()
+
+  install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/ )
+
 endif()
-
-install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/ )
 
 ########### install files ###############
 install( FILES breeze.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes )

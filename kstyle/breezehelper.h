@@ -25,7 +25,7 @@
 #include <KColorScheme>
 #include <KSharedConfig>
 
-#if QT_VERSION < 0x050000
+#if USE_KDE4
 #include <KComponentData>
 #endif
 
@@ -49,7 +49,7 @@ namespace Breeze
         //! constructor
         explicit Helper( KSharedConfig::Ptr );
 
-        #if QT_VERSION < 0x050000
+        #if USE_KDE4
         //! constructor
         explicit Helper( const QByteArray& );
         #endif
@@ -254,7 +254,7 @@ namespace Breeze
 
         private:
 
-        #if QT_VERSION < 0x050000
+        #if USE_KDE4
         //! component data
         KComponentData _componentData;
         #endif

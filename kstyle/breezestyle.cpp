@@ -104,24 +104,24 @@ namespace Breeze
 
     //______________________________________________________________
     Style::Style( void ):
-        _addLineButtons( SingleButton ),
-        _subLineButtons( SingleButton ),
+        _addLineButtons( SingleButton )
+        , _subLineButtons( SingleButton )
 
-        #if QT_VERSION >= 0x050000
-        _helper( new Helper( StyleConfigData::self()->sharedConfig() ) ),
+        #if USE_KDE4
+        , _helper( new Helper( "breeze" ) )
         #else
-        _helper( new Helper( "breeze" ) ),
+        , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
         #endif
 
-        _shadowHelper( new ShadowHelper( this, *_helper ) ),
-        _animations( new Animations( this ) ),
-        _mnemonics( new Mnemonics( this ) ),
-        _windowManager( new WindowManager( this ) ),
-        _frameShadowFactory( new FrameShadowFactory( this ) ),
-        _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) ),
-        _splitterFactory( new SplitterFactory( this ) ),
-        _tabBarData( new BreezePrivate::TabBarData( this ) )
-        #if QT_VERSION >= 0x050000
+        , _shadowHelper( new ShadowHelper( this, *_helper ) )
+        , _animations( new Animations( this ) )
+        , _mnemonics( new Mnemonics( this ) )
+        , _windowManager( new WindowManager( this ) )
+        , _frameShadowFactory( new FrameShadowFactory( this ) )
+        , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
+        , _splitterFactory( new SplitterFactory( this ) )
+        , _tabBarData( new BreezePrivate::TabBarData( this ) )
+        #if !USE_KDE4
         , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
         #endif
     {

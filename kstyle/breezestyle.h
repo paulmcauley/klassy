@@ -54,10 +54,10 @@ namespace Breeze
     class WindowManager;
 
     //! convenience typedef for base class
-    #if QT_VERSION >= 0x050000
-    using ParentStyleClass = KStyle;
-    #else
+    #if USE_KDE4
     using ParentStyleClass = QCommonStyle;
+    #else
+    using ParentStyleClass = KStyle;
     #endif
 
     //! base class for breeze style
