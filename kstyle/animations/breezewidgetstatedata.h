@@ -43,6 +43,7 @@ namespace Breeze
         //! constructor
         WidgetStateData( QObject* parent, QWidget* target, int duration, bool state = false ):
             GenericData( parent, target, duration ),
+            _initialized( false ),
             _state( state )
         {}
 
@@ -58,6 +59,7 @@ namespace Breeze
 
         private:
 
+        bool _initialized;
         bool _state;
 
     };
