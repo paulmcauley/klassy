@@ -203,14 +203,18 @@ namespace Breeze
         //@{
 
         //! true if style was compiled for and is running on X11
-        bool isX11() const
-        { return _isX11; }
+        static bool isX11();
 
         //! returns true if compositing is active
         bool compositingActive( void ) const;
 
         //! returns true if a given widget supports alpha channel
         bool hasAlphaChannel( const QWidget* ) const;
+
+        //@}
+
+        //!@name X11 utilities
+        //@{
 
         #if HAVE_X11
 
@@ -247,8 +251,6 @@ namespace Breeze
         KStatefulBrush _viewHoverBrush;
         KStatefulBrush _viewNegativeTextBrush;
         //@}
-
-        bool _isX11;
 
         #if HAVE_X11
 

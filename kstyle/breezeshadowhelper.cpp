@@ -121,7 +121,7 @@ namespace Breeze
     {
 
         #if HAVE_X11
-        if( _helper.isX11() )
+        if( Helper::isX11() )
         { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
@@ -131,7 +131,7 @@ namespace Breeze
     void ShadowHelper::reset( void )
     {
         #if HAVE_X11
-        if( _helper.isX11() )
+        if( Helper::isX11() )
         { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
@@ -297,7 +297,7 @@ namespace Breeze
         #if HAVE_X11
 
         // make sure we are on X11
-        if( !_helper.isX11() ) return false;
+        if( !Helper::isX11() ) return false;
 
         // create atom
         xcb_atom_t netSupportedAtom( _helper.createAtom( "_NET_SUPPORTED" ) );
@@ -393,7 +393,7 @@ namespace Breeze
 
         // create atom
         #if HAVE_X11
-        if( !_atom && _helper.isX11() ) _atom = _helper.createAtom( QLatin1String( netWMShadowAtomName ) );
+        if( !_atom && Helper::isX11() ) _atom = _helper.createAtom( QLatin1String( netWMShadowAtomName ) );
         #endif
 
         shadowTiles();
@@ -424,7 +424,7 @@ namespace Breeze
 
         // do nothing for invalid pixmaps
         if( source.isNull() ) return 0;
-        if( !_helper.isX11() ) return 0;
+        if( !Helper::isX11() ) return 0;
 
         /*
         in some cases, pixmap handle is invalid. This is the case notably
@@ -469,7 +469,7 @@ namespace Breeze
 
         // check widget and shadow
         if( !widget ) return false;
-        if( !_helper.isX11() ) return false;
+        if( !Helper::isX11() ) return false;
 
         #if HAVE_X11
         #ifndef QT_NO_XRENDER
@@ -550,7 +550,7 @@ namespace Breeze
 
         #if HAVE_X11
         if( !_supported ) return;
-        if( !_helper.isX11() ) return;
+        if( !Helper::isX11() ) return;
         if( !( widget && widget->testAttribute(Qt::WA_WState_Created) ) ) return;
         xcb_delete_property( Helper::connection(), widget->winId(), _atom);
         #else

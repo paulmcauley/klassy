@@ -35,17 +35,12 @@ namespace Breeze
 {
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config ):
-        _config( config ),
-        _isX11( false )
+        _config( config )
     {
 
         #if HAVE_X11
 
-        // initialize X11 flag
-        _isX11 = QGuiApplication::platformName() == QStringLiteral("xcb");
-
-
-        if( _isX11 )
+        if( isX11() )
         {
             // create compositing screen
             const QString atomName( QStringLiteral( "_NET_WM_CM_S%1" ).arg( QX11Info::appScreen() ) );
@@ -1176,6 +1171,12 @@ namespace Breeze
 
     }
 
+    //______________________________________________________________________________
+    bool Helper::isX11( void )
+    {
+        static bool isX11 = QGuiApplication::platformName() == QStringLiteral("xcb");
+        return isX11;
+    }
 
     //______________________________________________________________________________
     QRectF Helper::shadowRect( const QRectF& rect ) const

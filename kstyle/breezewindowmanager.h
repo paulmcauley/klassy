@@ -298,8 +298,6 @@ namespace Breeze
         xcb_atom_t _moveResizeAtom;
         #endif
 
-        bool _isX11;
-
         //! allow access of all private members to the app event filter
         friend class AppEventFilter;
 

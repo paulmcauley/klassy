@@ -78,8 +78,7 @@ namespace Breeze
         _dragAboutToStart( false ),
         _dragInProgress( false ),
         _locked( false ),
-        _cursorOverride( false ),
-        _isX11( false )
+        _cursorOverride( false )
     {
 
         // install application wise event filter
@@ -87,9 +86,8 @@ namespace Breeze
         qApp->installEventFilter( _appEventFilter );
 
         #if HAVE_X11
-        _isX11 = QGuiApplication::platformName() == QStringLiteral("xcb");
         _moveResizeAtom = 0;
-        if( _isX11 )
+        if( Helper::isX11() )
         {
             // create move-resize atom
             xcb_connection_t* connection( Helper::connection() );
@@ -700,10 +698,10 @@ namespace Breeze
     {
 
         #if HAVE_X11
-        return _isX11;
-        #endif
-
+        return Helper::isX11();
+        #else
         return false;
+        #endif
 
     }
 
