@@ -403,7 +403,13 @@ namespace Breeze
             case PM_LayoutVerticalSpacing: return Metrics::Layout_DefaultSpacing;
 
             // buttons
-            case PM_ButtonMargin: return Metrics::Button_MarginWidth;
+            case PM_ButtonMargin:
+            {
+                /* HACK: needs special case for kcalc buttons, to prevent the application to set too small margins */
+                if( widget && widget->inherits( "KCalcButton" ) ) return Metrics::Button_MarginWidth + 4;
+                else return Metrics::Button_MarginWidth;
+            }
+
             case PM_ButtonDefaultIndicator: return 0;
             case PM_ButtonShiftHorizontal: return 0;
             case PM_ButtonShiftVertical: return 0;
