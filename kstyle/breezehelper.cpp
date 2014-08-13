@@ -40,20 +40,13 @@ namespace Breeze
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config ):
         _config( config )
-    {
+    { init(); }
 
-        #if HAVE_X11
-
-        if( isX11() )
-        {
-            // create compositing screen
-            const QString atomName( QStringLiteral( "_NET_WM_CM_S%1" ).arg( QX11Info::appScreen() ) );
-            _compositingManagerAtom = createAtom( atomName );
-        }
-
-        #endif
-
-    }
+    //____________________________________________________________________
+    Helper::Helper( const QByteArray& name ):
+        _componentData( name, 0, KComponentData::SkipMainComponentRegistration ),
+        _config( _componentData.config() )
+    { init(); }
 
     //____________________________________________________________________
     KSharedConfig::Ptr Helper::config() const
@@ -1328,5 +1321,21 @@ namespace Breeze
     }
 
     #endif
+
+    //____________________________________________________________________
+    void Helper::init( void )
+    {
+        #if HAVE_X11
+
+        if( isX11() )
+        {
+            // create compositing screen
+            const QString atomName( QStringLiteral( "_NET_WM_CM_S%1" ).arg( QX11Info::appScreen() ) );
+            _compositingManagerAtom = createAtom( atomName );
+        }
+
+        #endif
+
+    }
 
 }

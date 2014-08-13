@@ -22,8 +22,9 @@
 #include "breeze.h"
 #include "breezeanimationdata.h"
 
-#include <KSharedConfig>
 #include <KColorScheme>
+#include <KComponentData>
+#include <KSharedConfig>
 
 #include <QPainterPath>
 #include <QWidget>
@@ -44,6 +45,9 @@ namespace Breeze
 
         //! constructor
         explicit Helper( KSharedConfig::Ptr );
+
+        //! constructor
+        explicit Helper( const QByteArray& );
 
         //! destructor
         virtual ~Helper()
@@ -230,6 +234,9 @@ namespace Breeze
 
         protected:
 
+        //! initialize
+        void init( void );
+
         //! frame radius
         qreal frameRadius( void ) const
         { return qreal( Metrics::Frame_FrameRadius )-0.5; }
@@ -243,6 +250,7 @@ namespace Breeze
         private:
 
         //! configuration
+        KComponentData _componentData;
         KSharedConfig::Ptr _config;
 
         //!@name brushes
