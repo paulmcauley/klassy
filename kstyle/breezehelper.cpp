@@ -1174,8 +1174,13 @@ namespace Breeze
     //______________________________________________________________________________
     bool Helper::isX11( void )
     {
+        #if HAVE_X11
         static bool isX11 = QApplication::platformName() == QStringLiteral("xcb");
         return isX11;
+        #endif
+
+        return false;
+
     }
 
     //______________________________________________________________________________
