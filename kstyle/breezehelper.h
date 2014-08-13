@@ -23,8 +23,11 @@
 #include "breezeanimationdata.h"
 
 #include <KColorScheme>
-#include <KComponentData>
 #include <KSharedConfig>
+
+#if QT_VERSION < 0x050000
+#include <KComponentData>
+#endif
 
 #include <QPainterPath>
 #include <QWidget>
@@ -46,8 +49,10 @@ namespace Breeze
         //! constructor
         explicit Helper( KSharedConfig::Ptr );
 
+        #if QT_VERSION < 0x050000
         //! constructor
         explicit Helper( const QByteArray& );
+        #endif
 
         //! destructor
         virtual ~Helper()
@@ -249,8 +254,12 @@ namespace Breeze
 
         private:
 
-        //! configuration
+        #if QT_VERSION < 0x050000
+        //! component data
         KComponentData _componentData;
+        #endif
+
+        //! configuration
         KSharedConfig::Ptr _config;
 
         //!@name brushes

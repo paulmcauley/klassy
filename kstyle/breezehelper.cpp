@@ -43,10 +43,12 @@ namespace Breeze
     { init(); }
 
     //____________________________________________________________________
+    #if QT_VERSION < 0x050000
     Helper::Helper( const QByteArray& name ):
         _componentData( name, 0, KComponentData::SkipMainComponentRegistration ),
         _config( _componentData.config() )
     { init(); }
+    #endif
 
     //____________________________________________________________________
     KSharedConfig::Ptr Helper::config() const
