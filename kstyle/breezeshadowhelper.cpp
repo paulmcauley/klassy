@@ -309,7 +309,7 @@ namespace Breeze
         // get property
         const uint32_t maxLength = std::string().max_size();
         xcb_get_property_cookie_t cookie( xcb_get_property( connection, 0, QX11Info::appRootWindow(), netSupportedAtom, XCB_ATOM_ATOM, 0, (maxLength+3) / 4 ) );
-        Helper::ScopedPointer<xcb_get_property_reply_t> reply( xcb_get_property_reply( connection, cookie, nullptr ) );
+        ScopedPointer<xcb_get_property_reply_t> reply( xcb_get_property_reply( connection, cookie, nullptr ) );
         if( !reply ) return false;
 
         // get reply length and data
@@ -323,7 +323,7 @@ namespace Breeze
             xcb_atom_t atom( atoms[i] );
 
             xcb_get_atom_name_cookie_t cookie( xcb_get_atom_name( connection, atom ) );
-            Helper::ScopedPointer<xcb_get_atom_name_reply_t> reply( xcb_get_atom_name_reply( connection, cookie, 0 ) );
+            ScopedPointer<xcb_get_atom_name_reply_t> reply( xcb_get_atom_name_reply( connection, cookie, 0 ) );
             if( !reply ) continue;
 
             // get name and compare

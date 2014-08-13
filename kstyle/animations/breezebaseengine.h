@@ -27,9 +27,10 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
+
 #include <QObject>
 #include <QSet>
-#include <QPointer>
 
 namespace Breeze
 {
@@ -43,7 +44,7 @@ namespace Breeze
 
         public:
 
-        typedef QPointer<BaseEngine> Pointer;
+        using Pointer = WeakPointer<BaseEngine>;
 
         //! constructor
         explicit BaseEngine( QObject* parent ):

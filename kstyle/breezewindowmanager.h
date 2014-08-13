@@ -6,29 +6,24 @@
 // pass some window mouse press/release/move event actions to window manager
 // -------------------
 //
-// Copyright (c) 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// Copyright (C) 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
 //
-// Largely inspired from BeSpin style
-// Copyright (C) 2007 Thomas Luebking <thomas.luebking@web.de>
+// This library is free software; you can redistribute it and/or
+// modify it under the terms of the GNU Library General Public
+// License version 2 as published by the Free Software Foundation.
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to
-// deal in the Software without restriction, including without limitation the
-// rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
-// sell copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
+// This library is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// Library General Public License for more details.
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-// IN THE SOFTWARE.
+// You should have received a copy of the GNU Library General Public License
+// along with this library; see the file COPYING.LIB.  If not, write to
+// the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+// Boston, MA 02110-1301, USA.
 //////////////////////////////////////////////////////////////////////////////
+
+#include "breeze.h"
 
 #include <QEvent>
 
@@ -36,8 +31,6 @@
 #include <QObject>
 #include <QSet>
 #include <QString>
-#include <QPointer>
-
 #include <QWidget>
 
 #if HAVE_X11
@@ -250,8 +243,8 @@ namespace Breeze
         QBasicTimer _dragTimer;
 
         //! target being dragged
-        /*! QPointer is used in case the target gets deleted while drag is in progress */
-        QPointer<QWidget> _target;
+        /*! Weak pointer is used in case the target gets deleted while drag is in progress */
+        WeakPointer<QWidget> _target;
 
         //! true if drag is about to start
         bool _dragAboutToStart;

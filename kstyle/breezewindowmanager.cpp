@@ -95,7 +95,7 @@ namespace Breeze
             xcb_connection_t* connection( Helper::connection() );
             const QString atomName( QStringLiteral( "_NET_WM_MOVERESIZE" ) );
             xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
-            Helper::ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
+            ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
             _moveResizeAtom = reply ? reply->atom:0;
         }
         #endif

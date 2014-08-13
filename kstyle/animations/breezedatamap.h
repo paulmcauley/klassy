@@ -27,23 +27,24 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
+
 #include <QObject>
 #include <QMap>
 #include <QPaintDevice>
-#include <QPointer>
 
 namespace Breeze
 {
 
     //! data map
     /*! it maps templatized data object to associated object */
-    template< typename K, typename T > class BaseDataMap: public QMap< const K*, QPointer<T> >
+    template< typename K, typename T > class BaseDataMap: public QMap< const K*, WeakPointer<T> >
     {
 
         public:
 
-        typedef const K* Key;
-        typedef QPointer<T> Value;
+        using Key = const K*;
+        using Value = WeakPointer<T>;
 
         //! constructor
         BaseDataMap( void ):

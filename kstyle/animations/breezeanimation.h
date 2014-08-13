@@ -26,7 +26,8 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <QPointer>
+#include "breeze.h"
+
 #include <QPropertyAnimation>
 #include <QVariant>
 
@@ -40,8 +41,8 @@ namespace Breeze
 
         public:
 
-        //! TimeLine shared pointer
-        typedef QPointer<Animation> Pointer;
+        //! convenience
+        using Pointer = WeakPointer<Animation>;
 
         //! constructor
         Animation( int duration, QObject* parent ):

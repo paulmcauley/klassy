@@ -27,10 +27,23 @@
 * MA 02110-1301, USA.
 */
 
-#include "QtCore/QFlags"
+#include <QFlags>
+#include <QPointer>
+#include <QScopedPointer>
 
 namespace Breeze
 {
+
+    //!@name convenience typedef
+    //@{
+
+    //! scoped pointer convenience typedef
+    template <typename T> using WeakPointer = QPointer<T>;
+
+    //! scoped pointer convenience typedef
+    template <typename T> using ScopedPointer = QScopedPointer<T, QScopedPointerPodDeleter>;
+
+    //@}
 
     //! metrics
     /*! these are copied from the old KStyle WidgetProperties */

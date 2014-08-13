@@ -30,7 +30,6 @@
 #include "breezetileset.h"
 
 #include <QObject>
-#include <QPointer>
 #include <QMap>
 
 #if HAVE_X11

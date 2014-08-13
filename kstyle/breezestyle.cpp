@@ -95,7 +95,7 @@ namespace BreezePrivate
         private:
 
         //! pointer to target tabBar
-        QPointer<const QWidget> _tabBar;
+        Breeze::WeakPointer<const QWidget> _tabBar;
 
     };
 

@@ -31,8 +31,8 @@
 
 #include <QEvent>
 #include <QObject>
-#include <QPointer>
 #include <QWidget>
+
 #include <cmath>
 
 namespace Breeze
@@ -73,7 +73,7 @@ namespace Breeze
         { _enabled = value; }
 
         //! target
-        const QPointer<QWidget>& target( void ) const
+        const WeakPointer<QWidget>& target( void ) const
         { return _target; }
 
         //! invalid opacity
@@ -98,7 +98,7 @@ namespace Breeze
         private:
 
         //! guarded target
-        QPointer<QWidget> _target;
+        WeakPointer<QWidget> _target;
 
         //! enability
         bool _enabled;

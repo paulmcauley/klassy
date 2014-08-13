@@ -27,13 +27,13 @@
 // Boston, MA 02110-1301, USA.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
 #include "breezeaddeventfilter.h"
 
 #include <QEvent>
-#include <QMap>
-#include <QPointer>
 #include <QHoverEvent>
 #include <QMainWindow>
+#include <QMap>
 #include <QMouseEvent>
 #include <QSplitterHandle>
 #include <QWidget>
@@ -79,7 +79,7 @@ namespace Breeze
         AddEventFilter _addEventFilter;
 
         //! pointer to SplitterProxy
-        typedef QPointer<SplitterProxy> SplitterProxyPointer;
+        using SplitterProxyPointer = WeakPointer<SplitterProxy>;
 
         //! registered widgets
         typedef QMap<QWidget*, SplitterProxyPointer > WidgetMap;
@@ -130,7 +130,7 @@ namespace Breeze
         bool _enabled;
 
         //! splitter object
-        QPointer<QWidget> _splitter;
+        WeakPointer<QWidget> _splitter;
 
         //! hook
         QPoint _hook;

@@ -42,9 +42,6 @@ namespace Breeze
     {
         public:
 
-        //! scoped pointer convenience typedef
-        template <typename T> using ScopedPointer = QScopedPointer<T, QScopedPointerPodDeleter>;
-
         //! constructor
         explicit Helper( KSharedConfig::Ptr );
 
