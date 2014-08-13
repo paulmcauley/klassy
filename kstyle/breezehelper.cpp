@@ -31,6 +31,10 @@
 #include <QApplication>
 #include <QPainter>
 
+#if HAVE_X11 && QT_VERSION < 0x050000
+#include <X11/Xlib-xcb.h>
+#endif
+
 namespace Breeze
 {
     //____________________________________________________________________
@@ -1175,8 +1179,12 @@ namespace Breeze
     bool Helper::isX11( void )
     {
         #if HAVE_X11
+        #if QT_VERSION >= 0x050000
         static bool isX11 = QApplication::platformName() == QStringLiteral("xcb");
         return isX11;
+        #else
+        return true;
+        #endif
         #endif
 
         return false;
@@ -1289,7 +1297,20 @@ namespace Breeze
 
     //____________________________________________________________________
     xcb_connection_t* Helper::connection( void )
-    { return QX11Info::connection(); }
+    {
+
+        #if QT_VERSION >= 0x050000
+        return QX11Info::connection();
+        #else
+        static xcb_connection_t* connection = nullptr;
+        if( !connection )
+        {
+            Display* display = QX11Info::display();
+            if( display ) connection = XGetXCBConnection( display );
+        }
+        return connection;
+        #endif
+    }
 
     //____________________________________________________________________
     xcb_atom_t Helper::createAtom( const QString& name ) const
