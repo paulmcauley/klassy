@@ -34,7 +34,6 @@
 #include <QLoggingCategory>
 #include <QMdiSubWindow>
 #include <QStyleOption>
-#include <QStylePlugin>
 #include <QWidget>
 
 namespace BreezePrivate
@@ -53,26 +52,6 @@ namespace Breeze
     class ShadowHelper;
     class SplitterFactory;
     class WindowManager;
-
-    class StylePlugin : public QStylePlugin
-    {
-        Q_OBJECT
-        Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QStyleFactoryInterface" FILE "breeze.json" )
-
-        public:
-
-        //! constructor
-        StylePlugin(QObject *parent = 0):
-            QStylePlugin(parent)
-        {}
-
-        //! destructor
-        ~StylePlugin();
-
-        //! create style
-        QStyle* create( const QString& );
-
-    };
 
     //! convenience typedef for base class
     using ParentStyleClass = KStyle;

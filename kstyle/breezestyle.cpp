@@ -104,20 +104,6 @@ namespace BreezePrivate
 namespace Breeze
 {
 
-    //_________________________________________________
-    QStyle* Breeze::StylePlugin::create( const QString &key )
-    {
-        if( key.toLower() == QStringLiteral( "breeze" ) ) return new Style();
-        else return nullptr;
-    }
-
-    //_________________________________________________
-    Breeze::StylePlugin::~StylePlugin()
-    {
-        // Delete style when using ::exit() otherwise it'll outlive the unloaded plugin and we'll get a crash
-        if (qApp) delete qApp->style();
-    }
-
     //______________________________________________________________
     Style::Style( void ):
         _addLineButtons( SingleButton ),
