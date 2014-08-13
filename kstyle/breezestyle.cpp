@@ -3809,7 +3809,7 @@ namespace Breeze
         drawProgressBarGrooveControl( &progressBarOption2, painter, widget );
 
         #if QT_VERSION >= 0x050000
-        const QObject* styleObject( widget ? widget:progressBarOption->styleObject;
+        const QObject* styleObject( widget ? widget:progressBarOption->styleObject );
         #else
         const QObject* styleObject( widget );
         #endif
