@@ -33,12 +33,14 @@
 
 #include <QAbstractItemView>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QDial>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLineEdit>
 #include <QMdiSubWindow>
 #include <QProgressBar>
+#include <QRadioButton>
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QTextEdit>
@@ -123,6 +125,10 @@ namespace Breeze
         {
 
             _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+
+        } else if( qobject_cast<QCheckBox*>(widget) || qobject_cast<QRadioButton*>(widget) ) {
+
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus|AnimationPressed );
 
         } else if( qobject_cast<QAbstractButton*>(widget) ) {
 

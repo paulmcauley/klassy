@@ -193,12 +193,21 @@ namespace Breeze
 
     Q_DECLARE_FLAGS( Corners, Corner );
 
-    //! checkbox state (used for checkboxes _and_ radio buttons)
+    //! checkbox state
     enum CheckBoxState
     {
         CheckOff,
         CheckPartial,
-        CheckOn
+        CheckOn,
+        CheckAnimated
+    };
+
+    //! radio button state
+    enum RadioButtonState
+    {
+        RadioOff,
+        RadioOn,
+        RadioAnimated
     };
 
     //! arrow orientation

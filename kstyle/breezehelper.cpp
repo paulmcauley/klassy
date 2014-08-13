@@ -643,7 +643,7 @@ namespace Breeze
     void Helper::renderCheckBox(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& shadow,
-        bool sunken, CheckBoxState state ) const
+        bool sunken, CheckBoxState state, qreal animation ) const
     {
 
         // setup painter
@@ -693,7 +693,7 @@ namespace Breeze
             pen.setJoinStyle( Qt::MiterJoin );
             painter->setPen( pen );
 
-            const QRectF markerRect( frameRect.adjusted( 5, 5, -5, -5 ) );
+            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
             painter->drawRect( markerRect );
 
             painter->setPen( Qt::NoPen );
@@ -706,6 +706,20 @@ namespace Breeze
             path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
             painter->drawPath( path.translated( rect.topLeft() ) );
 
+        } else if( state == CheckAnimated ) {
+
+            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            QPainterPath path;
+            path.moveTo( markerRect.topRight() );
+            path.lineTo( markerRect.center() + animation*( markerRect.topLeft() - markerRect.center() ) );
+            path.lineTo( markerRect.bottomLeft() );
+            path.lineTo( markerRect.center() + animation*( markerRect.bottomRight() - markerRect.center() ) );
+            path.closeSubpath();
+
+            painter->setBrush( color );
+            painter->setPen( Qt::NoPen );
+            painter->drawPath( path );
+
         }
 
     }
@@ -714,7 +728,7 @@ namespace Breeze
     void Helper::renderRadioButton(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& shadow,
-        bool sunken, bool checked ) const
+        bool sunken, RadioButtonState state, qreal animation ) const
     {
 
         // setup painter
@@ -746,13 +760,26 @@ namespace Breeze
         }
 
         // mark
-        if( checked )
+        if( state == RadioOn )
         {
 
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
 
             const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            painter->drawEllipse( markerRect );
+
+        } else if( state == RadioAnimated ) {
+
+            painter->setBrush( color );
+            painter->setPen( Qt::NoPen );
+            QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+
+            painter->translate( markerRect.center() );
+            painter->rotate( 45 );
+
+            markerRect.setWidth( markerRect.width()*animation );
+            markerRect.translate( -markerRect.center() );
             painter->drawEllipse( markerRect );
 
         }
