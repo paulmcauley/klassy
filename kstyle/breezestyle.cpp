@@ -5236,11 +5236,11 @@ namespace Breeze
 
                     QRect topRect( grooveRect );
                     topRect.setBottom( handleRect.bottom()-2 );
-                    _helper->renderSliderGroove( painter, topRect, highlight );
+                    _helper->renderSliderGroove( painter, topRect, grooveColor );
 
                     QRect bottomRect( grooveRect );
                     bottomRect.setTop( handleRect.top()+2 );
-                    _helper->renderSliderGroove( painter, bottomRect, grooveColor );
+                    _helper->renderSliderGroove( painter, bottomRect, highlight );
 
                 }
 
