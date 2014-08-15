@@ -2229,7 +2229,8 @@ namespace Breeze
                     size.setHeight( qMax( size.height(), (int) iconWidth ) );
 
                     // return size from CT_ToolButton
-                    return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
+                    return expandSize( size, Metrics::MenuItem_MarginWidth );
+
                 }
 
             }
@@ -3698,6 +3699,8 @@ namespace Breeze
                 // separator can have a title and an icon
                 // in that case they are rendered as sunken flat toolbuttons
                 QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
+                toolButtonOption.state = State_On|State_Sunken|State_Enabled;
+
                 drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
                 return true;
 
@@ -5676,7 +5679,7 @@ namespace Breeze
         toolButtonOption.initFrom( widget );
         toolButtonOption.rect = menuItemOption->rect;
         toolButtonOption.features = QStyleOptionToolButton::None;
-        toolButtonOption.state = State_On|State_Sunken|State_Enabled|State_AutoRaise;
+        toolButtonOption.state = State_On|State_Sunken|State_Enabled;
         toolButtonOption.subControls = SC_ToolButton;
         toolButtonOption.icon =  menuItemOption->icon;
 
