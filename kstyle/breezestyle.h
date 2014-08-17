@@ -27,6 +27,7 @@
 
 #include <KStyle>
 
+#include <QAbstractItemView>
 #include <QAbstractScrollArea>
 #include <QCommonStyle>
 #include <QDockWidget>
@@ -377,7 +378,7 @@ namespace Breeze
 
         //! returns relevant scrollbar parent
         /*! needed to detect parent focus */
-        QWidget* scrollBarParent( const QWidget* ) const;
+        const QWidget* scrollBarParent( const QWidget* ) const;
 
         //! returns true if given scrollbar arrow is animated
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;
@@ -422,6 +423,18 @@ namespace Breeze
 
         //! create title bar button icon
         QIcon titleBarButtonIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
+
+        //! returns item view parent if any
+        /*! needed to have correct color on focused checkboxes and radiobuttons */
+        const QAbstractItemView* itemViewParent( const QWidget* ) const;
+
+        //! returns true if a given widget is a selected item in a focused list
+        /*!
+        This is necessary to have the correct colors used for e.g. checkboxes and radiobuttons in lists
+        @param widget The widget to be checked
+        @param position Used to find the relevant QModelIndex
+        */
+        bool isSelectedItem( const QWidget*, const QPoint& ) const;
 
         private:
 

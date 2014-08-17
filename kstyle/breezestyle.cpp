@@ -40,7 +40,6 @@
 #include <KColorUtils>
 
 #include <QApplication>
-#include <QAbstractItemView>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDial>
@@ -3049,7 +3048,11 @@ namespace Breeze
     bool Style::drawIndicatorCheckBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // get rect
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // store flags
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
@@ -3061,22 +3064,28 @@ namespace Breeze
         if( state & State_NoChange ) checkBoxState = CheckPartial;
         else if( state & State_On ) checkBoxState = CheckOn;
 
+        // detect checkboxes in lists
+        const bool isSelectedItem( this->isSelectedItem( widget, rect.center() ) );
+
         // animation state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
-        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-
         _animations->widgetStateEngine().updateState( widget, AnimationPressed, checkBoxState != CheckOff );
         if( _animations->widgetStateEngine().isAnimated( widget, AnimationPressed ) ) checkBoxState = CheckAnimated;
         const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
 
-        // colors
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && active, opacity, mode  ) );
         const QColor shadow( _helper->shadowColor( palette ) );
+        QColor color;
+        if( isSelectedItem ) color = palette.color( QPalette::HighlightedText );
+        else {
+
+            const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+            color = _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && active, opacity, mode  );
+
+        }
 
         // render
-        _helper->renderCheckBox( painter, option->rect, color, shadow, sunken, checkBoxState, animation );
+        _helper->renderCheckBox( painter, rect, color, shadow, sunken, checkBoxState, animation );
         return true;
 
     }
@@ -3085,31 +3094,43 @@ namespace Breeze
     bool Style::drawIndicatorRadioButtonPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // get rect
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // store flags
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool sunken( state & State_Sunken );
         const bool checked( state & State_On );
 
+        // radio button state
         RadioButtonState radioButtonState( state & State_On ? RadioOn:RadioOff );
+
+        // detect radiobuttons in lists
+        const bool isSelectedItem( this->isSelectedItem( widget, rect.center() ) );
 
         // animation state
         _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
-        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-
         _animations->widgetStateEngine().updateState( widget, AnimationPressed, radioButtonState != RadioOff );
         if( _animations->widgetStateEngine().isAnimated( widget, AnimationPressed ) ) radioButtonState = RadioAnimated;
         const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
 
         // colors
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && checked, opacity, mode  ) );
         const QColor shadow( _helper->shadowColor( palette ) );
+        QColor color;
+        if( isSelectedItem ) color = palette.color( QPalette::HighlightedText );
+        else {
+
+            const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+            color = _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && checked, opacity, mode  );
+
+        }
 
         // render
-        _helper->renderRadioButton( painter, option->rect, color, shadow, sunken, radioButtonState, animation );
+        _helper->renderRadioButton( painter, rect, color, shadow, sunken, radioButtonState, animation );
 
         return true;
 
@@ -5589,7 +5610,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    QWidget* Style::scrollBarParent( const QWidget* widget ) const
+    const QWidget* Style::scrollBarParent( const QWidget* widget ) const
     {
 
         // check widget and parent
@@ -5849,6 +5870,51 @@ namespace Breeze
         }
 
         return icon;
+
+    }
+
+    //______________________________________________________________________________
+    const QAbstractItemView* Style::itemViewParent( const QWidget* widget ) const
+    {
+
+        const QAbstractItemView* itemView( nullptr );
+
+        // check widget directly
+        if( ( itemView = qobject_cast<const QAbstractItemView*>( widget ) ) ) return itemView;
+
+        // check widget grand-parent
+        else if(
+            widget &&
+            widget->parentWidget() &&
+            ( itemView = qobject_cast<const QAbstractItemView*>( widget->parentWidget()->parentWidget() ) ) &&
+            itemView->viewport() == widget->parentWidget() )
+        { return itemView; }
+
+        // return null otherwise
+        else return nullptr;
+    }
+
+    //____________________________________________________________________
+    bool Style::isSelectedItem( const QWidget* widget, const QPoint& localPosition ) const
+    {
+
+        // get relevant itemview parent and check
+        const QAbstractItemView* itemView( itemViewParent( widget ) );
+        if( !( itemView && itemView->hasFocus() && itemView->selectionModel() ) ) return false;
+
+        #if QT_VERSION >= 0x050000
+        QPoint position = widget->mapTo( itemView, localPosition );
+        #else
+        // qt4 misses a const for mapTo argument, although nothing is actually changed to the passed widget
+        QPoint position = widget->mapTo( const_cast<QAbstractItemView*>( itemView ), localPosition );
+        #endif
+
+        // get matching QModelIndex and check
+        const QModelIndex index( itemView->indexAt( position ) );
+        if( !index.isValid() ) return false;
+
+        // check whether index is selected
+        return itemView->selectionModel()->isSelected( index );
 
     }
 
