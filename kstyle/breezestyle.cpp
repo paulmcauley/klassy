@@ -69,30 +69,30 @@ namespace BreezePrivate
 
         public:
 
-        //! constructor
+        //* constructor
         explicit TabBarData( QObject* parent ):
             QObject( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~TabBarData( void )
         {}
 
-        //! assign target tabBar
+        //* assign target tabBar
         void lock( const QWidget* widget )
         { _tabBar = widget; }
 
-        //! true if tabbar is locked
+        //* true if tabbar is locked
         bool isLocked( const QWidget* widget ) const
         { return _tabBar && _tabBar.data() == widget; }
 
-        //! release
+        //* release
         void release( void )
         { _tabBar.clear(); }
 
         private:
 
-        //! pointer to target tabBar
+        //* pointer to target tabBar
         Breeze::WeakPointer<const QWidget> _tabBar;
 
     };

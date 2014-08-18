@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! stores slider hovered action and timeLine
+    //* stores slider hovered action and timeLine
     class SliderEngine: public BaseEngine
     {
 
@@ -42,19 +42,19 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit SliderEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~SliderEngine( void )
         {}
 
-        //! register slider
+        //* register slider
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object )
         {
             if( DataMap<SliderData>::Value data = _data.find( object ) )
@@ -66,7 +66,7 @@ namespace Breeze
 
         }
 
-        //! update state
+        //* update state
         virtual bool updateState( const QObject* object, bool state )
         {
 
@@ -79,18 +79,18 @@ namespace Breeze
 
         }
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object )
         { return isAnimated( object ) ? _data.find( object ).data()->opacity() : AnimationData::OpacityInvalid; }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -99,13 +99,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! data map
+        //* data map
         DataMap<SliderData> _data;
 
     };

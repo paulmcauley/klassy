@@ -32,7 +32,7 @@
 namespace Breeze
 {
 
-    //! dial data
+    //* dial data
     class DialData: public SliderData
     {
 
@@ -40,38 +40,38 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         DialData( QObject* parent, QWidget* target, int );
 
-        //! destructor
+        //* destructor
         virtual ~DialData( void )
         {}
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //! subcontrol rect
+        //* subcontrol rect
         virtual void setHandleRect( const QRect& rect )
         { _handleRect = rect; }
 
-        //! mouse position
+        //* mouse position
         QPoint position( void ) const
         { return _position; }
 
         protected:
 
-        //! hoverMoveEvent
+        //* hoverMoveEvent
         virtual void hoverMoveEvent( QObject*, QEvent* );
 
-        //! hoverMoveEvent
+        //* hoverMoveEvent
         virtual void hoverLeaveEvent( QObject*, QEvent* );
 
         private:
 
-        //! rect
+        //* rect
         QRect _handleRect;
 
-        //! mouse position
+        //* mouse position
         QPoint _position;
 
     };

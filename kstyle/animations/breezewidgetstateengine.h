@@ -35,7 +35,7 @@
 namespace Breeze
 {
 
-    //! used for simple widgets
+    //* used for simple widgets
     class WidgetStateEngine: public BaseEngine
     {
 
@@ -43,35 +43,35 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit WidgetStateEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~WidgetStateEngine( void )
         {}
 
-        //! register widget
+        //* register widget
         virtual bool registerWidget( QWidget*, AnimationModes );
 
-        //! returns registered widgets
+        //* returns registered widgets
         virtual WidgetList registeredWidgets( AnimationModes ) const;
 
         using BaseEngine::registeredWidgets;
 
-        //! true if widget hover state is changed
+        //* true if widget hover state is changed
         virtual bool updateState( const QObject*, AnimationMode, bool );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject*, AnimationMode );
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object, AnimationMode mode )
         { return isAnimated( object, mode ) ? data( object, mode ).data()->opacity(): AnimationData::OpacityInvalid; }
 
-        //! animation mode
-        /*! precedence on focus */
+        //* animation mode
+        /** precedence on focus */
         virtual AnimationMode frameAnimationMode( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
@@ -80,8 +80,8 @@ namespace Breeze
             else return AnimationNone;
         }
 
-        //! animation opacity
-        /*! precedence on focus */
+        //* animation opacity
+        /** precedence on focus */
         virtual qreal frameOpacity( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
@@ -90,8 +90,8 @@ namespace Breeze
             else return AnimationData::OpacityInvalid;
         }
 
-        //! animation mode
-        /*! precedence on mouseOver */
+        //* animation mode
+        /** precedence on mouseOver */
         virtual AnimationMode buttonAnimationMode( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
@@ -100,8 +100,8 @@ namespace Breeze
             else return AnimationNone;
         }
 
-        //! animation opacity
-        /*! precedence on mouseOver */
+        //* animation opacity
+        /** precedence on mouseOver */
         virtual qreal buttonOpacity( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
@@ -110,7 +110,7 @@ namespace Breeze
             else return AnimationData::OpacityInvalid;
         }
 
-        //! duration
+        //* duration
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
@@ -119,7 +119,7 @@ namespace Breeze
             _enableData.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -131,7 +131,7 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         {
             if( !object ) return false;
@@ -145,12 +145,12 @@ namespace Breeze
 
         protected:
 
-        //! returns data associated to widget
+        //* returns data associated to widget
         DataMap<WidgetStateData>::Value data( const QObject*, AnimationMode );
 
         private:
 
-        //! maps
+        //* maps
         DataMap<WidgetStateData> _hoverData;
         DataMap<WidgetStateData> _focusData;
         DataMap<WidgetStateData> _enableData;

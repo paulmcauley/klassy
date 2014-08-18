@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! stores dial hovered action and timeLine
+    //* stores dial hovered action and timeLine
     class DialEngine: public BaseEngine
     {
 
@@ -42,19 +42,19 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit DialEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~DialEngine( void )
         {}
 
-        //! register dial
+        //* register dial
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object )
         {
             if( DataMap<DialData>::Value data = _data.find( object ) )
@@ -66,7 +66,7 @@ namespace Breeze
 
         }
 
-        //! update state
+        //* update state
         virtual bool updateState( const QObject* object, bool state )
         {
 
@@ -79,25 +79,25 @@ namespace Breeze
 
         }
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object )
         { return isAnimated( object ) ? _data.find( object ).data()->opacity() : AnimationData::OpacityInvalid; }
 
-        //! control rect
+        //* control rect
         virtual void setHandleRect( const QObject* object, const QRect& rect )
         {
             if( DataMap<DialData>::Value data = _data.find( object ) )
             { data.data()->setHandleRect( rect ); }
         }
 
-        //! mouse position
+        //* mouse position
         virtual QPoint position( const QObject* object )
         {
             if( DataMap<DialData>::Value data = _data.find( object ) ) return data.data()->position();
             else return QPoint( -1, -1 );
         }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
@@ -111,7 +111,7 @@ namespace Breeze
 
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -120,13 +120,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! data map
+        //* data map
         DataMap<DialData> _data;
 
     };

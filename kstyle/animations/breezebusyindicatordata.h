@@ -37,37 +37,37 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         BusyIndicatorData( QObject* parent ):
             QObject( parent ),
             _animated( false )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~BusyIndicatorData( void )
         {}
 
-        //!@name accessors
+        //*@name accessors
         //@{
 
-        //! animated
+        //* animated
         bool isAnimated( void ) const
         { return _animated; }
 
         //@}
 
-        //!@name modifiers
+        //*@name modifiers
         //@{
 
-        //! enabled
+        //* enabled
         void setEnabled( bool )
         {}
 
-        //! enabled
+        //* enabled
         void setDuration( int )
         {}
 
-        //! animated
+        //* animated
         void setAnimated( bool value )
         { _animated = value; }
 
@@ -75,7 +75,7 @@ namespace Breeze
 
         private:
 
-        //! animated
+        //* animated
         bool _animated;
 
     };

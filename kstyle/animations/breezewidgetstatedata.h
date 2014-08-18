@@ -32,7 +32,7 @@
 namespace Breeze
 {
 
-    //! handle widget state (hover/focus/enable) changes
+    //* handle widget state (hover/focus/enable) changes
     class WidgetStateData: public GenericData
     {
 
@@ -40,18 +40,18 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         WidgetStateData( QObject* parent, QWidget* target, int duration, bool state = false ):
             GenericData( parent, target, duration ),
             _initialized( false ),
             _state( state )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~WidgetStateData( void )
         {}
 
-        /*!
+        /**
         returns true if hover has Changed
         and starts timer accordingly
         */

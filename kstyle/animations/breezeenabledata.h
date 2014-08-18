@@ -32,7 +32,7 @@
 namespace Breeze
 {
 
-    //! Enable data
+    //* Enable data
     class EnableData: public WidgetStateData
     {
 
@@ -40,16 +40,16 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         EnableData( QObject* parent, QWidget* target, int duration, bool state = true ):
         WidgetStateData( parent, target, duration, state )
         { target->installEventFilter( this ); }
 
-        //! destructor
+        //* destructor
         virtual ~EnableData( void )
         {}
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
     };

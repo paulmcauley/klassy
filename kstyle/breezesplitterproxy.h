@@ -43,7 +43,7 @@ namespace Breeze
 
     class SplitterProxy;
 
-    //! factory
+    //* factory
     class SplitterFactory: public QObject
     {
 
@@ -51,43 +51,43 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit SplitterFactory( QObject* parent ):
             QObject( parent ),
             _enabled( false )
             {}
 
-        //! destructor
+        //* destructor
         virtual ~SplitterFactory( void )
         {}
 
-        //! enabled state
+        //* enabled state
         void setEnabled( bool );
 
-        //! register widget
+        //* register widget
         bool registerWidget( QWidget* );
 
-        //! unregister widget
+        //* unregister widget
         void unregisterWidget( QWidget* );
 
         private:
 
-        //! enabled state
+        //* enabled state
         bool _enabled;
 
-        //! needed to block ChildAdded events when creating proxy
+        //* needed to block ChildAdded events when creating proxy
         AddEventFilter _addEventFilter;
 
-        //! pointer to SplitterProxy
+        //* pointer to SplitterProxy
         using SplitterProxyPointer = WeakPointer<SplitterProxy>;
 
-        //! registered widgets
+        //* registered widgets
         typedef QMap<QWidget*, SplitterProxyPointer > WidgetMap;
         WidgetMap _widgets;
 
     };
 
-    //! splitter 'proxy' widget, with extended hit area
+    //* splitter 'proxy' widget, with extended hit area
     class SplitterProxy : public QWidget
     {
 
@@ -95,47 +95,47 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit SplitterProxy( QWidget*, bool = false );
 
-        //! destructor
+        //* destructor
         virtual ~SplitterProxy( void );
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //! enable state
+        //* enable state
         void setEnabled( bool );
 
-        //! enable state
+        //* enable state
         bool enabled( void ) const
         { return _enabled; }
 
         protected:
 
-        //! event handler
+        //* event handler
         virtual bool event( QEvent* );
 
         protected:
 
-        //! reset 'true' splitter widget
+        //* reset 'true' splitter widget
         void clearSplitter( void );
 
-        //! keep track of 'true' splitter widget
+        //* keep track of 'true' splitter widget
         void setSplitter( QWidget* );
 
         private:
 
-        //! enabled state
+        //* enabled state
         bool _enabled;
 
-        //! splitter object
+        //* splitter object
         WeakPointer<QWidget> _splitter;
 
-        //! hook
+        //* hook
         QPoint _hook;
 
-        //! timer id
+        //* timer id
         int _timerId;
 
     };

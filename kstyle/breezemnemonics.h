@@ -37,38 +37,38 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit Mnemonics( QObject* parent ):
             QObject( parent ),
             _enabled( true )
             {}
 
-        //! destructor
+        //* destructor
         virtual ~Mnemonics( void )
         {}
 
-        //! set mode
+        //* set mode
         void setMode( int );
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //! true if mnemonics are enabled
+        //* true if mnemonics are enabled
         const bool& enabled( void ) const
         { return _enabled; }
 
-        //! alignment flag
+        //* alignment flag
         int textFlags( void ) const
         { return _enabled ? Qt::TextShowMnemonic : Qt::TextHideMnemonic; }
 
         protected:
 
-        //! set enable state
+        //* set enable state
         void setEnabled( bool );
 
         private:
 
-        //! enable state
+        //* enable state
         bool _enabled;
 
     };

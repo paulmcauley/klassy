@@ -31,29 +31,29 @@
 namespace Breeze
 {
 
-    //!@name convenience typedef
+    //*@name convenience typedef
     //@{
 
     #if QT_VERSION >= 0x050000
-    //! scoped pointer convenience typedef
+    //* scoped pointer convenience typedef
     template <typename T> using WeakPointer = QPointer<T>;
     #else
-    //! scoped pointer convenience typedef
+    //* scoped pointer convenience typedef
     template <typename T> using WeakPointer = QWeakPointer<T>;
     #endif
 
-    //! scoped pointer convenience typedef
+    //* scoped pointer convenience typedef
     template <typename T> using ScopedPointer = QScopedPointer<T, QScopedPointerPodDeleter>;
 
-    //! disable QStringLiteral for older Qt version
+    //* disable QStringLiteral for older Qt version
     #if QT_VERSION < 0x050000
     using QStringLiteral = QString;
     #endif
 
     //@}
 
-    //! metrics
-    /*! these are copied from the old KStyle WidgetProperties */
+    //* metrics
+    /** these are copied from the old KStyle WidgetProperties */
     enum Metrics
     {
 
@@ -165,7 +165,7 @@ namespace Breeze
 
     };
 
-    //! animation mode
+    //* animation mode
     enum AnimationMode
     {
         AnimationNone = 0,
@@ -177,7 +177,7 @@ namespace Breeze
 
     Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
 
-    //! corners
+    //* corners
     enum Corner
     {
         CornerTopLeft = 0x1,
@@ -193,7 +193,7 @@ namespace Breeze
 
     Q_DECLARE_FLAGS( Corners, Corner );
 
-    //! checkbox state
+    //* checkbox state
     enum CheckBoxState
     {
         CheckOff,
@@ -202,7 +202,7 @@ namespace Breeze
         CheckAnimated
     };
 
-    //! radio button state
+    //* radio button state
     enum RadioButtonState
     {
         RadioOff,
@@ -210,7 +210,7 @@ namespace Breeze
         RadioAnimated
     };
 
-    //! arrow orientation
+    //* arrow orientation
     enum ArrowOrientation
     {
         ArrowNone,
@@ -220,7 +220,7 @@ namespace Breeze
         ArrowRight
     };
 
-    //! button type
+    //* button type
     enum ButtonType
     {
         ButtonClose,
@@ -229,7 +229,7 @@ namespace Breeze
         ButtonRestore
     };
 
-    //! shadow area
+    //* shadow area
     enum ShadowArea
     {
         ShadowAreaTop,

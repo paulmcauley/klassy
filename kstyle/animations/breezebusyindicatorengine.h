@@ -40,73 +40,73 @@
 namespace Breeze
 {
 
-    //! handles progress bar animations
+    //* handles progress bar animations
     class BusyIndicatorEngine: public BaseEngine
     {
 
         Q_OBJECT
 
-        //! declare opacity property
+        //* declare opacity property
         Q_PROPERTY( int value READ value WRITE setValue )
 
         public:
 
-        //! constructor
+        //* constructor
         explicit BusyIndicatorEngine( QObject* );
 
-        //! destructor
+        //* destructor
         virtual ~BusyIndicatorEngine( void )
         {}
 
-        //!@name accessors
+        //*@name accessors
         //@{
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* );
 
-        //! value
+        //* value
         virtual int value( void ) const
         { return _value; }
 
         //@}
 
-        //!@name modifiers
+        //*@name modifiers
         //@{
 
-        //! register progressbar
+        //* register progressbar
         virtual bool registerWidget( QObject* );
 
-        //! duration
+        //* duration
         virtual void setDuration( int );
 
-        //! set object as animated
+        //* set object as animated
         virtual void setAnimated( const QObject*, bool );
 
-        //! opacity
+        //* opacity
         virtual void setValue( int value );
 
         //@}
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         protected:
 
-        //! returns data associated to widget
+        //* returns data associated to widget
         DataMap<BusyIndicatorData>::Value data( const QObject* );
 
         private:
 
-        //! map widgets to progressbar data
+        //* map widgets to progressbar data
         DataMap<BusyIndicatorData> _data;
 
-        //! animation
+        //* animation
         Animation::Pointer _animation;
 
-        //! value
+        //* value
         int _value;
 
     };

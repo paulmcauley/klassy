@@ -47,85 +47,85 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit WindowManager( QObject* );
 
-        //! destructor
+        //* destructor
         virtual ~WindowManager( void )
         {}
 
-        //! initialize
-        /*! read relevant options from BreezeStyleConfigData */
+        //* initialize
+        /** read relevant options from BreezeStyleConfigData */
         void initialize( void );
 
-        //! register widget
+        //* register widget
         void registerWidget( QWidget* );
 
-        //! unregister widget
+        //* unregister widget
         void unregisterWidget( QWidget* );
 
-        //! event filter [reimplemented]
+        //* event filter [reimplemented]
         virtual bool eventFilter( QObject*, QEvent* );
 
         protected:
 
-        //! timer event,
-        /*! used to start drag if button is pressed for a long enough time */
+        //* timer event,
+        /** used to start drag if button is pressed for a long enough time */
         void timerEvent( QTimerEvent* );
 
-        //! mouse press event
+        //* mouse press event
         bool mousePressEvent( QObject*, QEvent* );
 
-        //! mouse move event
+        //* mouse move event
         bool mouseMoveEvent( QObject*, QEvent* );
 
-        //! mouse release event
+        //* mouse release event
         bool mouseReleaseEvent( QObject*, QEvent* );
 
-        //!@name configuration
+        //*@name configuration
         //@{
 
-        //! enable state
+        //* enable state
         bool enabled( void ) const
         { return _enabled; }
 
-        //! enable state
+        //* enable state
         void setEnabled( bool value )
         { _enabled = value; }
 
-        //! returns true if window manager is used for moving
+        //* returns true if window manager is used for moving
         bool useWMMoveResize( void ) const
         { return supportWMMoveResize() && _useWMMoveResize; }
 
-        //! use window manager for moving, when available
+        //* use window manager for moving, when available
         void setUseWMMoveResize( bool value )
         { _useWMMoveResize = value; }
 
-        //! drag mode
+        //* drag mode
         int dragMode( void ) const
         { return _dragMode; }
 
-        //! drag mode
+        //* drag mode
         void setDragMode( int value )
         { _dragMode = value; }
 
-        //! drag distance (pixels)
+        //* drag distance (pixels)
         void setDragDistance( int value )
         { _dragDistance = value; }
 
-        //! drag delay (msec)
+        //* drag delay (msec)
         void setDragDelay( int value )
         { _dragDelay = value; }
 
-        //! set list of whiteListed widgets
-        /*!
+        //* set list of whiteListed widgets
+        /**
         white list is read from options and is used to adjust
         per-app window dragging issues
         */
         void initializeWhiteList();
 
-        //! set list of blackListed widgets
-        /*!
+        //* set list of blackListed widgets
+        /**
         black list is read from options and is used to adjust
         per-app window dragging issues
         */
@@ -133,75 +133,75 @@ namespace Breeze
 
         //@}
 
-        //! returns true if widget is dragable
+        //* returns true if widget is dragable
         bool isDragable( QWidget* );
 
-        //! returns true if widget is dragable
+        //* returns true if widget is dragable
         bool isBlackListed( QWidget* );
 
-        //! returns true if widget is dragable
+        //* returns true if widget is dragable
         bool isWhiteListed( QWidget* ) const;
 
-        //! returns true if drag can be started from current widget
+        //* returns true if drag can be started from current widget
         bool canDrag( QWidget* );
 
-        //! returns true if drag can be started from current widget and position
-        /*! child at given position is passed as second argument */
+        //* returns true if drag can be started from current widget and position
+        /** child at given position is passed as second argument */
         bool canDrag( QWidget*, QWidget*, const QPoint& );
 
-        //! reset drag
+        //* reset drag
         void resetDrag( void );
 
-        //! start drag
+        //* start drag
         void startDrag( QWidget*, const QPoint& );
 
-        //! returns true if window manager is used for moving
-        /*! right now this is true only for X11 */
+        //* returns true if window manager is used for moving
+        /** right now this is true only for X11 */
         bool supportWMMoveResize( void ) const;
 
-        //! utility function
+        //* utility function
         bool isDockWidgetTitle( const QWidget* ) const;
 
-        //!@name lock
+        //*@name lock
         //@{
 
         void setLocked( bool value )
         { _locked = value; }
 
-        //! lock
+        //* lock
         bool isLocked( void ) const
         { return _locked; }
 
         //@}
 
-        //! returns first widget matching given class, or 0L if none
+        //* returns first widget matching given class, or 0L if none
         template<typename T> T findParent( const QWidget* ) const;
 
         private:
 
-        //! enability
+        //* enability
         bool _enabled;
 
-        //! use WM moveResize
+        //* use WM moveResize
         bool _useWMMoveResize;
 
-        //! drag mode
+        //* drag mode
         int _dragMode;
 
-        //! drag distance
-        /*! this is copied from kwin::geometry */
+        //* drag distance
+        /** this is copied from kwin::geometry */
         int _dragDistance;
 
-        //! drag delay
-        /*! this is copied from kwin::geometry */
+        //* drag delay
+        /** this is copied from kwin::geometry */
         int _dragDelay;
 
-        //! wrapper for exception id
+        //* wrapper for exception id
         class ExceptionId: public QPair<QString, QString>
         {
             public:
 
-            //! constructor
+            //* constructor
             explicit ExceptionId( const QString& value )
             {
                 const QStringList args( value.split( QChar::fromLatin1( '@' ) ) );
@@ -218,49 +218,49 @@ namespace Breeze
 
         };
 
-        //! exception set
+        //* exception set
         typedef QSet<ExceptionId> ExceptionSet;
 
-        //! list of white listed special widgets
-        /*!
+        //* list of white listed special widgets
+        /**
         it is read from options and is used to adjust
         per-app window dragging issues
         */
         ExceptionSet _whiteList;
 
-        //! list of black listed special widgets
-        /*!
+        //* list of black listed special widgets
+        /**
         it is read from options and is used to adjust
         per-app window dragging issues
         */
         ExceptionSet _blackList;
 
-        //! drag point
+        //* drag point
         QPoint _dragPoint;
         QPoint _globalDragPoint;
 
-        //! drag timer
+        //* drag timer
         QBasicTimer _dragTimer;
 
-        //! target being dragged
-        /*! Weak pointer is used in case the target gets deleted while drag is in progress */
+        //* target being dragged
+        /** Weak pointer is used in case the target gets deleted while drag is in progress */
         WeakPointer<QWidget> _target;
 
-        //! true if drag is about to start
+        //* true if drag is about to start
         bool _dragAboutToStart;
 
-        //! true if drag is in progress
+        //* true if drag is in progress
         bool _dragInProgress;
 
-        //! true if drag is locked
+        //* true if drag is locked
         bool _locked;
 
-        //! cursor override
-        /*! used to keep track of application cursor being overridden when dragging in non-WM mode */
+        //* cursor override
+        /** used to keep track of application cursor being overridden when dragging in non-WM mode */
         bool _cursorOverride;
 
-        //! provide application-wise event filter
-        /*!
+        //* provide application-wise event filter
+        /**
         it us used to unlock dragging and make sure event look is properly restored
         after a drag has occurred
         */
@@ -269,36 +269,36 @@ namespace Breeze
 
             public:
 
-            //! constructor
+            //* constructor
             explicit AppEventFilter( WindowManager* parent ):
                 QObject( parent ),
                 _parent( parent )
             {}
 
-            //! event filter
+            //* event filter
             virtual bool eventFilter( QObject*, QEvent* );
 
             protected:
 
-            //! application-wise event.
-            /*! needed to catch end of XMoveResize events */
+            //* application-wise event.
+            /** needed to catch end of XMoveResize events */
             bool appMouseEvent( QObject*, QEvent* );
 
             private:
 
-            //! parent
+            //* parent
             WindowManager* _parent;
 
         };
 
-        //! application event filter
+        //* application event filter
         AppEventFilter* _appEventFilter;
 
         #if HAVE_X11
         xcb_atom_t _moveResizeAtom;
         #endif
 
-        //! allow access of all private members to the app event filter
+        //* allow access of all private members to the app event filter
         friend class AppEventFilter;
 
     };

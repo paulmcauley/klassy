@@ -44,7 +44,7 @@
 namespace Breeze
 {
 
-    //! stores engines
+    //* stores engines
     class Animations: public QObject
     {
 
@@ -52,123 +52,123 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit Animations( QObject* );
 
-        //! destructor
+        //* destructor
         virtual ~Animations( void )
         {}
 
-        //! register animations corresponding to given widget, depending on its type.
+        //* register animations corresponding to given widget, depending on its type.
         void registerWidget( QWidget* widget ) const;
 
-        /*! unregister all animations associated to a widget */
+        /** unregister all animations associated to a widget */
         void unregisterWidget( QWidget* widget ) const;
 
-        //! enability engine
+        //* enability engine
         WidgetStateEngine& widgetEnabilityEngine( void ) const
         { return *_widgetEnabilityEngine; }
 
-        //! abstractButton engine
+        //* abstractButton engine
         WidgetStateEngine& widgetStateEngine( void ) const
         { return *_widgetStateEngine; }
 
-        //! editable combobox arrow hover engine
+        //* editable combobox arrow hover engine
         WidgetStateEngine& comboBoxEngine( void ) const
         { return *_comboBoxEngine; }
 
-        //! lineEdit engine
+        //* lineEdit engine
         WidgetStateEngine& lineEditEngine( void ) const
         { return *_lineEditEngine; }
 
-        //! busy indicator
+        //* busy indicator
         BusyIndicatorEngine& busyIndicatorEngine( void ) const
         { return *_busyIndicatorEngine; }
 
-        //! header view engine
+        //* header view engine
         HeaderViewEngine& headerViewEngine( void ) const
         { return *_headerViewEngine; }
 
-        //! scrollbar engine
+        //* scrollbar engine
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
 
-        //! slider engine
+        //* slider engine
         SliderEngine& sliderEngine( void ) const
         { return *_sliderEngine; }
 
-        //! dial engine
+        //* dial engine
         DialEngine& dialEngine( void ) const
         { return *_dialEngine; }
 
-        //! spinbox engine
+        //* spinbox engine
         SpinBoxEngine& spinBoxEngine( void ) const
         { return *_spinBoxEngine; }
 
-        //! tabbar
+        //* tabbar
         TabBarEngine& tabBarEngine( void ) const
         { return *_tabBarEngine; }
 
-        //! toolbox
+        //* toolbox
         ToolBoxEngine& toolBoxEngine( void ) const
         { return *_toolBoxEngine; }
 
-        //! mdi windows
+        //* mdi windows
         MdiWindowEngine& mdiWindowEngine( void ) const
         { return *_mdiWindowEngine; }
 
-        //! setup engines
+        //* setup engines
         void setupEngines( void );
 
         protected Q_SLOTS:
 
-        //! enregister engine
+        //* enregister engine
         void unregisterEngine( QObject* );
         private:
 
-        //! register new engine
+        //* register new engine
         void registerEngine( BaseEngine* engine );
 
-        //! busy indicator
+        //* busy indicator
         BusyIndicatorEngine* _busyIndicatorEngine;
 
-        //! headerview hover effect
+        //* headerview hover effect
         HeaderViewEngine* _headerViewEngine;
 
-        //! widget enability engine
+        //* widget enability engine
         WidgetStateEngine* _widgetEnabilityEngine;
 
-        //! abstract button engine
+        //* abstract button engine
         WidgetStateEngine* _widgetStateEngine;
 
-        //! line editor engine
+        //* line editor engine
         WidgetStateEngine* _lineEditEngine;
 
-        //! editable combobox arrow hover effect
+        //* editable combobox arrow hover effect
         WidgetStateEngine* _comboBoxEngine;
 
-        //! scrollbar engine
+        //* scrollbar engine
         ScrollBarEngine* _scrollBarEngine;
 
-        //! slider engine
+        //* slider engine
         SliderEngine* _sliderEngine;
 
-        //! dial engine
+        //* dial engine
         DialEngine* _dialEngine;
 
-        //! spinbox engine
+        //* spinbox engine
         SpinBoxEngine* _spinBoxEngine;
 
-        //! tabbar engine
+        //* tabbar engine
         TabBarEngine* _tabBarEngine;
 
-        //! toolbar engine
+        //* toolbar engine
         ToolBoxEngine* _toolBoxEngine;
 
-        //! mdi window
+        //* mdi window
         MdiWindowEngine* _mdiWindowEngine;
 
-        //! keep list of existing engines
+        //* keep list of existing engines
         QList< BaseEngine::Pointer > _engines;
 
     };

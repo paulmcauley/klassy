@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! stores scrollbar hovered action and timeLine
+    //* stores scrollbar hovered action and timeLine
     class ScrollBarEngine: public BaseEngine
     {
 
@@ -42,61 +42,61 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit ScrollBarEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~ScrollBarEngine( void )
         {}
 
-        //! register scrollbar
+        //* register scrollbar
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object, QStyle::SubControl control );
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object, QStyle::SubControl control )
         { return isAnimated( object, control ) ? _data.find( object ).data()->opacity( control ):AnimationData::OpacityInvalid; }
 
-        //! return true if given subcontrol is hovered
+        //* return true if given subcontrol is hovered
         virtual bool isHovered( const QObject* object, QStyle::SubControl control )
         {
             if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->isHovered( control );
             else return false;
         }
 
-        //! control rect associated to object
+        //* control rect associated to object
         virtual QRect subControlRect( const QObject* object, QStyle::SubControl control )
         {
             if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->subControlRect( control );
             else return QRect();
         }
 
-        //! control rect
+        //* control rect
         virtual void setSubControlRect( const QObject* object, QStyle::SubControl control, const QRect& rect )
         {
             if( DataMap<ScrollBarData>::Value data = _data.find( object ) )
             { data.data()->setSubControlRect( control, rect ); }
         }
 
-        //! control rect
+        //* control rect
         virtual void updateState( const QObject* object, bool state )
         {
             if( DataMap<ScrollBarData>::Value data = _data.find( object ) )
             { data.data()->updateState( state ); }
         }
 
-        //! mouse position
+        //* mouse position
         virtual QPoint position( const QObject* object )
         {
             if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->position();
             else return QPoint( -1, -1 );
         }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
@@ -110,7 +110,7 @@ namespace Breeze
 
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -119,13 +119,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! data map
+        //* data map
         DataMap<ScrollBarData> _data;
 
     };

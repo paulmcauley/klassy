@@ -41,23 +41,23 @@ namespace Breeze
 
         public:
 
-        //! convenience
+        //* convenience
         using Pointer = WeakPointer<Animation>;
 
-        //! constructor
+        //* constructor
         Animation( int duration, QObject* parent ):
             QPropertyAnimation( parent )
         { setDuration( duration ); }
 
-        //! destructor
+        //* destructor
         virtual ~Animation( void )
         {}
 
-        //! true if running
+        //* true if running
         bool isRunning( void ) const
         { return state() == Animation::Running; }
 
-        //! restart
+        //* restart
         void restart( void )
         {
             if( isRunning() ) stop();

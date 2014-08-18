@@ -35,8 +35,8 @@
 namespace Breeze
 {
 
-    //! base class for all animation engines
-    /*! it is used to store configuration values used by all animations stored in the engine */
+    //* base class for all animation engines
+    /** it is used to store configuration values used by all animations stored in the engine */
     class BaseEngine: public QObject
     {
 
@@ -46,49 +46,49 @@ namespace Breeze
 
         using Pointer = WeakPointer<BaseEngine>;
 
-        //! constructor
+        //* constructor
         explicit BaseEngine( QObject* parent ):
             QObject( parent ),
             _enabled( true ),
             _duration( 200 )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~BaseEngine( void )
         {}
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         { _enabled = value; }
 
-        //! enability
+        //* enability
         virtual bool enabled( void ) const
         { return _enabled; }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         { _duration = value; }
 
-        //! duration
+        //* duration
         virtual int duration( void ) const
         { return _duration; }
 
-        //! unregister widget
+        //* unregister widget
         virtual bool unregisterWidget( QObject* object ) = 0;
 
-        //! list of widgets
+        //* list of widgets
         typedef QSet<QWidget*> WidgetList;
 
-        //! returns registered widgets
+        //* returns registered widgets
         virtual WidgetList registeredWidgets( void ) const
         { return WidgetList(); }
 
         private:
 
-        //! engine enability
+        //* engine enability
         bool _enabled;
 
-        //! animation duration
+        //* animation duration
         int _duration;
 
     };

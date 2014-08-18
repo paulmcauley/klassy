@@ -34,29 +34,29 @@
 namespace Breeze
 {
 
-    //! handles mdiwindow arrows hover
+    //* handles mdiwindow arrows hover
     class MdiWindowData: public AnimationData
     {
 
         Q_OBJECT
 
-        //! declare opacity property
+        //* declare opacity property
         Q_PROPERTY( qreal currentOpacity READ currentOpacity WRITE setCurrentOpacity )
         Q_PROPERTY( qreal previousOpacity READ previousOpacity WRITE setPreviousOpacity )
 
         public:
 
-        //! constructor
+        //* constructor
         MdiWindowData( QObject*, QWidget*, int );
 
-        //! destructor
+        //* destructor
         virtual ~MdiWindowData( void )
         {}
 
-        //! animation state
+        //* animation state
         virtual bool updateState( int primitive, bool value );
 
-        //! animation state
+        //* animation state
         virtual bool isAnimated( int primitive ) const
         {
             return(
@@ -64,7 +64,7 @@ namespace Breeze
                 ( primitive == _previousData._primitive && previousAnimation().data()->isRunning() ) );
         }
 
-        //! opacity
+        //* opacity
         virtual qreal opacity( int primitive ) const
         {
             if( primitive == _currentData._primitive ) return currentOpacity();
@@ -72,21 +72,21 @@ namespace Breeze
             else return OpacityInvalid;
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int duration )
         {
             currentAnimation().data()->setDuration( duration );
             previousAnimation().data()->setDuration( duration );
         }
 
-        //!@name current animation
+        //*@name current animation
         //@{
 
-        //! opacity
+        //* opacity
         qreal currentOpacity( void ) const
         { return _currentData._opacity; }
 
-        //! opacity
+        //* opacity
         void setCurrentOpacity( qreal value )
         {
             value = digitize( value );
@@ -95,19 +95,19 @@ namespace Breeze
             setDirty();
         }
 
-        //! animation
+        //* animation
         Animation::Pointer currentAnimation( void ) const
         { return _currentData._animation; }
 
         //@}
-        //!@name previous animation
+        //*@name previous animation
         //@{
 
-        //! opacity
+        //* opacity
         qreal previousOpacity( void ) const
         { return _previousData._opacity; }
 
-        //! opacity
+        //* opacity
         void setPreviousOpacity( qreal value )
         {
             value = digitize( value );
@@ -116,7 +116,7 @@ namespace Breeze
             setDirty();
         }
 
-        //! animation
+        //* animation
         Animation::Pointer previousAnimation( void ) const
         { return _previousData._animation; }
 
@@ -124,36 +124,36 @@ namespace Breeze
 
         private:
 
-        //! container for needed animation data
+        //* container for needed animation data
         class Data
         {
 
             public:
 
-            //! default constructor
+            //* default constructor
             Data( void ):
                 _primitive( 0 ),
                 _opacity(0)
                 {}
 
-            //! subcontrol
+            //* subcontrol
             bool updateSubControl( int );
 
-            //! subcontrol
+            //* subcontrol
             int _primitive;
 
-            //! animation
+            //* animation
             Animation::Pointer _animation;
 
-            //! opacity
+            //* opacity
             qreal _opacity;
 
         };
 
-        //! current data
+        //* current data
         Data _currentData;
 
-        //! previous data
+        //* previous data
         Data _previousData;
 
     };

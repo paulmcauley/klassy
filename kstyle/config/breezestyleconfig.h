@@ -34,40 +34,40 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit StyleConfig(QWidget*);
 
-        //! destructor
+        //* destructor
         virtual ~StyleConfig( void )
         {}
 
         Q_SIGNALS:
 
-        //! emmited whenever one option is changed.
+        //* emmited whenever one option is changed.
         void changed(bool);
 
         public Q_SLOTS:
 
-        //! save current state
+        //* save current state
         void save( void );
 
-        //! restore all default values
+        //* restore all default values
         void defaults( void );
 
-        //! reset to saved configuration
+        //* reset to saved configuration
         void reset( void );
 
         protected Q_SLOTS:
 
-        //! update modified state when option is checked/unchecked
+        //* update modified state when option is checked/unchecked
         void updateChanged( void );
 
-        //! update options enable state based on selected drag mode
+        //* update options enable state based on selected drag mode
         void windowDragModeChanged( int );
 
         protected:
 
-        //! load setup from config data
+        //* load setup from config data
         void load( void );
 
         int windowDragMode( void ) const;

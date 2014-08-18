@@ -41,18 +41,18 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         AddEventFilter( void ):
             QObject()
             {}
 
-        //! destructor
+        //* destructor
         virtual ~AddEventFilter( void )
         {}
 
 
-        //! event filter
-        /*! blocks all AddChild events */
+        //* event filter
+        /** blocks all AddChild events */
         virtual bool eventFilter( QObject*, QEvent* event )
         { return event->type() == QEvent::ChildAdded; }
 

@@ -36,37 +36,37 @@ namespace Breeze
 {
 
 
-    //! generic data
+    //* generic data
     class GenericData: public AnimationData
     {
 
         Q_OBJECT
 
-        //! declare opacity property
+        //* declare opacity property
         Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
         public:
 
-        //! constructor
+        //* constructor
         GenericData( QObject* parent, QWidget* widget, int duration );
 
-        //! destructor
+        //* destructor
         virtual ~GenericData( void )
         {}
 
-        //! return animation object
+        //* return animation object
         virtual const Animation::Pointer& animation() const
         { return _animation; }
 
-        //! duration
+        //* duration
         virtual void setDuration( int duration )
         { _animation.data()->setDuration( duration ); }
 
-        //! opacity
+        //* opacity
         virtual qreal opacity( void ) const
         { return _opacity; }
 
-        //! opacity
+        //* opacity
         virtual void setOpacity( qreal value )
         {
 
@@ -80,10 +80,10 @@ namespace Breeze
 
         private:
 
-        //! animation handling
+        //* animation handling
         Animation::Pointer _animation;
 
-        //! opacity variable
+        //* opacity variable
         qreal _opacity;
 
     };

@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! handle spinbox arrows hover effect
+    //* handle spinbox arrows hover effect
     class SpinBoxEngine: public BaseEngine
     {
 
@@ -42,19 +42,19 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit SpinBoxEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~SpinBoxEngine( void )
         {}
 
-        //! register widget
+        //* register widget
         virtual bool registerWidget( QWidget* );
 
-        //! state
+        //* state
         virtual bool updateState( const QObject* object, QStyle::SubControl subControl, bool value )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
@@ -63,7 +63,7 @@ namespace Breeze
             } else return false;
         }
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object, QStyle::SubControl subControl )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
@@ -73,7 +73,7 @@ namespace Breeze
 
         }
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object, QStyle::SubControl subControl )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
@@ -82,14 +82,14 @@ namespace Breeze
             } else return AnimationData::OpacityInvalid;
         }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -99,13 +99,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! data map
+        //* data map
         DataMap<SpinBoxData> _data;
 
     };

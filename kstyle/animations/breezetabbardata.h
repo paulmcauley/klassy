@@ -34,43 +34,43 @@
 namespace Breeze
 {
 
-    //! tabbars
+    //* tabbars
     class TabBarData: public AnimationData
     {
 
         Q_OBJECT
 
-        //! declare opacity property
+        //* declare opacity property
         Q_PROPERTY( qreal currentOpacity READ currentOpacity WRITE setCurrentOpacity )
         Q_PROPERTY( qreal previousOpacity READ previousOpacity WRITE setPreviousOpacity )
 
         public:
 
-        //! constructor
+        //* constructor
         TabBarData( QObject* parent, QWidget* target, int duration );
 
-        //! destructor
+        //* destructor
         virtual ~TabBarData( void )
         {}
 
-        //! duration
+        //* duration
         void setDuration( int duration )
         {
             currentIndexAnimation().data()->setDuration( duration );
             previousIndexAnimation().data()->setDuration( duration );
         }
 
-        //! update state
+        //* update state
         bool updateState( const QPoint&, bool );
 
-        //!@name current index handling
+        //*@name current index handling
         //@{
 
-        //! current opacity
+        //* current opacity
         virtual qreal currentOpacity( void ) const
         { return _current._opacity; }
 
-        //! current opacity
+        //* current opacity
         virtual void setCurrentOpacity( qreal value )
         {
             if( _current._opacity == value ) return;
@@ -78,28 +78,28 @@ namespace Breeze
             setDirty();
         }
 
-        //! current index
+        //* current index
         virtual int currentIndex( void ) const
         { return _current._index; }
 
-        //! current index
+        //* current index
         virtual void setCurrentIndex( int index )
         { _current._index = index; }
 
-        //! current index animation
+        //* current index animation
         virtual const Animation::Pointer& currentIndexAnimation( void ) const
         { return _current._animation; }
 
         //@}
 
-        //!@name previous index handling
+        //*@name previous index handling
         //@{
 
-        //! previous opacity
+        //* previous opacity
         virtual qreal previousOpacity( void ) const
         { return _previous._opacity; }
 
-        //! previous opacity
+        //* previous opacity
         virtual void setPreviousOpacity( qreal value )
         {
             if( _previous._opacity == value ) return;
@@ -107,34 +107,34 @@ namespace Breeze
             setDirty();
         }
 
-        //! previous index
+        //* previous index
         virtual int previousIndex( void ) const
         { return _previous._index; }
 
-        //! previous index
+        //* previous index
         virtual void setPreviousIndex( int index )
         { _previous._index = index; }
 
-        //! previous index Animation
+        //* previous index Animation
         virtual const Animation::Pointer& previousIndexAnimation( void ) const
         { return _previous._animation; }
 
         //@}
 
-        //! return Animation associated to action at given position, if any
+        //* return Animation associated to action at given position, if any
         virtual Animation::Pointer animation( const QPoint& position ) const;
 
-        //! return opacity associated to action at given position, if any
+        //* return opacity associated to action at given position, if any
         virtual qreal opacity( const QPoint& position ) const;
 
         private:
 
-        //! container for needed animation data
+        //* container for needed animation data
         class Data
         {
             public:
 
-            //! default constructor
+            //* default constructor
             Data( void ):
                 _opacity(0),
                 _index(-1)
@@ -145,10 +145,10 @@ namespace Breeze
             int _index;
         };
 
-        //! current tab animation data (for hover enter animations)
+        //* current tab animation data (for hover enter animations)
         Data _current;
 
-        //! previous tab animations data (for hover leave animations)
+        //* previous tab animations data (for hover leave animations)
         Data _previous;
 
     };

@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! scrollbar data
+    //* scrollbar data
     class SliderData: public GenericData
     {
 
@@ -42,35 +42,35 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         SliderData( QObject* parent, QWidget* target, int duration ):
             GenericData( parent, target, duration ),
             _handleHovered( false )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~SliderData( void )
         {}
 
-        //! update state
+        //* update state
         virtual bool updateState( bool );
 
         protected:
 
-        //! hover
+        //* hover
         virtual bool handleHovered( void ) const
         { return _handleHovered; }
 
-        //! hover
+        //* hover
         virtual void setHandleHovered( bool value )
         { _handleHovered = value; }
 
-        //! update slider
+        //* update slider
         virtual void updateSlider( QStyle::SubControl );
 
         private:
 
-        //! true when slider is hovered
+        //* true when slider is hovered
         bool _handleHovered;
 
     };

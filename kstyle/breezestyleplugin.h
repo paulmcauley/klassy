@@ -39,18 +39,18 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         StylePlugin(QObject *parent = 0):
             QStylePlugin(parent)
         {}
 
-        //! destructor
+        //* destructor
         ~StylePlugin();
 
-        //! returns list of valid keys
+        //* returns list of valid keys
         QStringList keys() const;
 
-        //! create style
+        //* create style
         QStyle* create( const QString& );
 
     };

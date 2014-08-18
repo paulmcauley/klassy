@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! QToolBox animation engine
+    //* QToolBox animation engine
     class ToolBoxEngine: public BaseEngine
     {
 
@@ -42,45 +42,45 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit ToolBoxEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~ToolBoxEngine( void )
         {}
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
         }
 
-        //! register widget
+        //* register widget
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget hover state is changed
+        //* true if widget hover state is changed
         virtual bool updateState( const QPaintDevice*, bool );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QPaintDevice* );
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QPaintDevice* object )
         { return isAnimated( object ) ? data( object ).data()->opacity(): AnimationData::OpacityInvalid; }
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* data )
         {
 
@@ -94,19 +94,19 @@ namespace Breeze
 
         protected:
 
-        //! returns data associated to widget
+        //* returns data associated to widget
         PaintDeviceDataMap<WidgetStateData>::Value data( const QPaintDevice* object )
         { return _data.find( object ).data(); }
 
         private:
 
-        //! engine enability
+        //* engine enability
         bool _enabled;
 
-        //! animation duration
+        //* animation duration
         int _duration;
 
-        //! map
+        //* map
         PaintDeviceDataMap<WidgetStateData> _data;
 
     };

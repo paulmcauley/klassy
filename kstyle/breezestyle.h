@@ -55,15 +55,15 @@ namespace Breeze
     class WidgetExplorer;
     class WindowManager;
 
-    //! convenience typedef for base class
+    //* convenience typedef for base class
     #if USE_KDE4
     using ParentStyleClass = QCommonStyle;
     #else
     using ParentStyleClass = KStyle;
     #endif
 
-    //! base class for breeze style
-    /*! it is responsible to draw all the primitives to be displayed on screen, on request from Qt paint engine */
+    //* base class for breeze style
+    /** it is responsible to draw all the primitives to be displayed on screen, on request from Qt paint engine */
     class Style: public ParentStyleClass
     {
         Q_OBJECT
@@ -73,55 +73,55 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit Style( void );
 
-        //! destructor
+        //* destructor
         virtual ~Style( void );
 
-        //! widget polishing
+        //* widget polishing
         virtual void polish( QWidget* );
 
-        //! widget unpolishing
+        //* widget unpolishing
         virtual void unpolish( QWidget* );
 
-        //! needed to avoid warnings at compilation time
+        //* needed to avoid warnings at compilation time
         using  ParentStyleClass::polish;
         using  ParentStyleClass::unpolish;
 
-        //! pixel metrics
+        //* pixel metrics
         virtual int pixelMetric(PixelMetric, const QStyleOption* = 0, const QWidget* = 0) const;
 
-        //! style hints
+        //* style hints
         virtual int styleHint(StyleHint, const QStyleOption* = 0, const QWidget* = 0, QStyleHintReturn* = 0) const;
 
-        //! returns rect corresponding to one widget's subelement
+        //* returns rect corresponding to one widget's subelement
         virtual QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const;
 
-        //! returns rect corresponding to one widget's subcontrol
+        //* returns rect corresponding to one widget's subcontrol
         virtual QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
-        //! returns size matching contents
+        //* returns size matching contents
         QSize sizeFromContents( ContentsType, const QStyleOption*, const QSize&, const QWidget* ) const;
 
-        //! returns which subcontrol given QPoint corresponds to
+        //* returns which subcontrol given QPoint corresponds to
         SubControl hitTestComplexControl( ComplexControl, const QStyleOptionComplex*, const QPoint&, const QWidget* ) const;
 
-        //! primitives
+        //* primitives
         void drawPrimitive( PrimitiveElement, const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! controls
+        //* controls
         void drawControl( ControlElement, const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! complex controls
+        //* complex controls
         void drawComplexControl( ComplexControl, const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 
-        //! generic text rendering
+        //* generic text rendering
         virtual void drawItemText(
             QPainter*, const QRect&, int alignment, const QPalette&, bool enabled,
             const QString&, QPalette::ColorRole = QPalette::NoRole) const;
 
-        //!@name event filters
+        //*@name event filters
         //@{
 
         virtual bool eventFilter(QObject *, QEvent *);
@@ -130,7 +130,7 @@ namespace Breeze
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );
 
-        //! install event filter to object, in a unique way
+        //* install event filter to object, in a unique way
         void addEventFilter( QObject* object )
         {
             object->removeEventFilter( this );
@@ -142,56 +142,56 @@ namespace Breeze
 
         protected Q_SLOTS:
 
-        //! update breeze configuration
+        //* update breeze configuration
         void configurationChanged( void );
 
         protected:
 
-        //! standard icons
+        //* standard icons
         virtual QIcon standardIcon( StandardPixmap, const QStyleOption* = 0, const QWidget* = 0) const;
 
-        //! load configuration
+        //* load configuration
         void loadConfiguration();
 
-        //!@name subelementRect specialized functions
+        //*@name subelementRect specialized functions
         //@{
 
-        //! default implementation. Does not change anything
+        //* default implementation. Does not change anything
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
-        //! checkbox contents
+        //* checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
         { return handleRightToLeftLayout( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
 
-        //! line edit contents
+        //* line edit contents
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
 
-        //! progressbar groove
+        //* progressbar groove
         QRect progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const;
 
-        //! progressbar groove
+        //* progressbar groove
         QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
 
-        //! progressbar label
+        //* progressbar label
         QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
 
-        //! view headers
+        //* view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
         QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
 
-        //! tab widgets
+        //* tab widgets
         QRect tabWidgetTabBarRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetCornerRect( SubElement, const QStyleOption* option, const QWidget* widget ) const;
 
-        //! toolbox tab
+        //* toolbox tab
         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 
         //@}
 
-        //!@name subcontrol Rect specialized functions
+        //*@name subcontrol Rect specialized functions
         //@{
 
         QRect groupBoxSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
@@ -204,7 +204,7 @@ namespace Breeze
 
         //@}
 
-        //!@name sizeFromContents
+        //*@name sizeFromContents
         //@{
         QSize defaultSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const
         { return size; }
@@ -225,7 +225,7 @@ namespace Breeze
 
         //@}
 
-        //!@name primitives specialized functions
+        //*@name primitives specialized functions
         //@{
 
         bool emptyPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const
@@ -268,12 +268,12 @@ namespace Breeze
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! special primitive to deal with arrow tool buttons in tabbars
+        //* special primitive to deal with arrow tool buttons in tabbars
         bool drawTabBarPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //@}
 
-        //!@name controls specialized functions
+        //*@name controls specialized functions
         //@{
 
         bool emptyControl( const QStyleOption*, QPainter*, const QWidget* ) const
@@ -289,7 +289,7 @@ namespace Breeze
         virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! scrollbar
+        //* scrollbar
         virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -299,16 +299,16 @@ namespace Breeze
         virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! tabbar tabs.
+        //* tabbar tabs.
         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //!@}
+        //*@}
 
-        //!@name complex ontrols specialized functions
+        //*@name complex ontrols specialized functions
         //@{
         bool drawGroupBoxComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         bool drawToolButtonComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
@@ -320,23 +320,23 @@ namespace Breeze
         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
 
-        //! adjust rect based on provided margins
+        //* adjust rect based on provided margins
         QRect insideMargin( const QRect& r, int margin ) const
         { return insideMargin( r, margin, margin ); }
 
-        //! adjust rect based on provided margins
+        //* adjust rect based on provided margins
         QRect insideMargin( const QRect& r, int marginWidth, int marginHeight ) const
         { return r.adjusted( marginWidth, marginHeight, -marginWidth, -marginHeight ); }
 
-        //! expand size based on margins
+        //* expand size based on margins
         QSize expandSize( const QSize& size, int margin ) const
         { return expandSize( size, margin, margin ); }
 
-        //! expand size based on margins
+        //* expand size based on margins
         QSize expandSize( const QSize& size, int marginWidth, int marginHeight ) const
         { return size + 2*QSize( marginWidth, marginHeight ); }
 
-        //! returns true for vertical tabs
+        //* returns true for vertical tabs
         bool isVerticalTab( const QStyleOptionTab* option ) const
         { return isVerticalTab( option->shape ); }
 
@@ -349,11 +349,11 @@ namespace Breeze
 
         }
 
-        //! right to left alignment handling
+        //* right to left alignment handling
         QRect handleRightToLeftLayout(const QStyleOption* opt, const QRect& subRect) const
         { return visualRect(opt->direction, opt->rect, subRect); }
 
-        //! right to left alignment handling
+        //* right to left alignment handling
         QPoint handleRightToLeftLayout(const QStyleOption* opt, const QPoint& pos) const
         { return visualPos(opt->direction, opt->rect, pos); }
 
@@ -363,7 +363,7 @@ namespace Breeze
         QRect centerRect(const QRect &in, int w, int h) const
         { return QRect(in.x() + (in.width() - w)/2, in.y() + (in.height() - h)/2, w, h); }
 
-        //! return dial angle based on option and value
+        //* return dial angle based on option and value
         qreal dialAngle( const QStyleOptionSlider*, int ) const;
 
         /*
@@ -373,20 +373,20 @@ namespace Breeze
         */
         inline bool preceeds( const QPoint&, const QRect&, const QStyleOption* ) const;
 
-        //! return which arrow button is hit by point for scrollbar double buttons
+        //* return which arrow button is hit by point for scrollbar double buttons
         inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
-        //! returns relevant scrollbar parent
-        /*! needed to detect parent focus */
+        //* returns relevant scrollbar parent
+        /** needed to detect parent focus */
         const QWidget* scrollBarParent( const QWidget* ) const;
 
-        //! returns true if given scrollbar arrow is animated
+        //* returns true if given scrollbar arrow is animated
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;
 
-        //! spinbox arrows
+        //* spinbox arrows
         void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
 
-        //! scrollbar buttons
+        //* scrollbar buttons
         enum ScrollBarButtonType
         {
             NoButton,
@@ -394,7 +394,7 @@ namespace Breeze
             DoubleButton
         };
 
-        //! returns height for scrollbar buttons depending of button types
+        //* returns height for scrollbar buttons depending of button types
         int scrollBarButtonHeight( const ScrollBarButtonType& type ) const
         {
             switch( type )
@@ -408,28 +408,28 @@ namespace Breeze
 
         //@}
 
-        //! translucent background
+        //* translucent background
         void setTranslucentBackground( QWidget* ) const;
 
-        /*!
+        /**
         separator can have a title and an icon
         in that case they are rendered as sunken flat toolbuttons
         return toolbutton option that matches named separator menu items
         */
         QStyleOptionToolButton separatorMenuItemOption( const QStyleOptionMenuItem*, const QWidget* ) const;
 
-        //! create toolbar extension icon
+        //* create toolbar extension icon
         QIcon toolBarExtensionIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 
-        //! create title bar button icon
+        //* create title bar button icon
         QIcon titleBarButtonIcon( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 
-        //! returns item view parent if any
-        /*! needed to have correct color on focused checkboxes and radiobuttons */
+        //* returns item view parent if any
+        /** needed to have correct color on focused checkboxes and radiobuttons */
         const QAbstractItemView* itemViewParent( const QWidget* ) const;
 
-        //! returns true if a given widget is a selected item in a focused list
-        /*!
+        //* returns true if a given widget is a selected item in a focused list
+        /**
         This is necessary to have the correct colors used for e.g. checkboxes and radiobuttons in lists
         @param widget The widget to be checked
         @param position Used to find the relevant QModelIndex
@@ -438,59 +438,59 @@ namespace Breeze
 
         private:
 
-        //!@name scrollbar button types (for addLine and subLine )
+        //*@name scrollbar button types (for addLine and subLine )
         //@{
         ScrollBarButtonType _addLineButtons;
         ScrollBarButtonType _subLineButtons;
         //@}
 
-        //! helper
+        //* helper
         Helper* _helper;
 
-        //! shadow helper
+        //* shadow helper
         ShadowHelper* _shadowHelper;
 
-        //! animations
+        //* animations
         Animations* _animations;
 
-        //! keyboard accelerators
+        //* keyboard accelerators
         Mnemonics* _mnemonics;
 
-        //! window manager
+        //* window manager
         WindowManager* _windowManager;
 
-        //! frame shadows
+        //* frame shadows
         FrameShadowFactory* _frameShadowFactory;
 
-        //! mdi window shadows
+        //* mdi window shadows
         MdiWindowShadowFactory* _mdiWindowShadowFactory;
 
-        //! splitter Factory, to extend splitters hit area
+        //* splitter Factory, to extend splitters hit area
         SplitterFactory* _splitterFactory;
 
-        //! widget explorer
+        //* widget explorer
         WidgetExplorer* _widgetExplorer;
 
-        //! tabbar data
+        //* tabbar data
         BreezePrivate::TabBarData* _tabBarData;
 
-        //! icon hash
+        //* icon hash
         typedef QHash<StandardPixmap, QIcon> IconCache;
         IconCache _iconCache;
 
-        //! pointer to primitive specialized function
+        //* pointer to primitive specialized function
         typedef bool (Style::*StylePrimitive)( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! pointer to control specialized function
+        //* pointer to control specialized function
         typedef bool (Style::*StyleControl)( const QStyleOption*, QPainter*, const QWidget* ) const;
 
-        //! pointer to control specialized function
+        //* pointer to control specialized function
         typedef bool (Style::*StyleComplexControl)( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 
-        //!@name custom elements
+        //*@name custom elements
         //@{
 
-        //! use Argb Drag and Drop Window
+        //* use Argb Drag and Drop Window
         QStyle::StyleHint SH_ArgbDndWindow;
 
         //@}

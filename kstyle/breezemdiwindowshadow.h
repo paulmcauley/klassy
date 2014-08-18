@@ -42,8 +42,8 @@
 namespace Breeze
 {
 
-    //! frame shadow
-    /*! this allows the shadow to be painted over the widgets viewport */
+    //* frame shadow
+    /** this allows the shadow to be painted over the widgets viewport */
     class MdiWindowShadow: public QWidget
     {
 
@@ -51,10 +51,10 @@ namespace Breeze
 
         public:
 
-        //! shadow size (hard coded)
+        //* shadow size (hard coded)
         enum { ShadowSize = 10 };
 
-        //! constructor
+        //* constructor
         explicit MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
           QWidget( parent ),
           _widget( 0L ),
@@ -65,43 +65,43 @@ namespace Breeze
             setFocusPolicy( Qt::NoFocus );
         }
 
-        //! destructor
+        //* destructor
         virtual ~MdiWindowShadow( void )
         {}
 
-        //! update geometry
+        //* update geometry
         void updateGeometry( void );
 
-        //! update ZOrder
+        //* update ZOrder
         void updateZOrder( void );
 
-        //! set associated window
+        //* set associated window
         void setWidget( QWidget* value )
         { _widget = value; }
 
-        //! associated window
+        //* associated window
         QWidget* widget( void ) const
         { return _widget; }
 
         protected:
 
-        //! painting
+        //* painting
         virtual void paintEvent(QPaintEvent *);
 
         private:
 
-        //! associated widget
+        //* associated widget
         QWidget* _widget;
 
-        //! tileset rect, used for painting
+        //* tileset rect, used for painting
         QRect _shadowTilesRect;
 
-        //! tileset used to draw shadow
+        //* tileset used to draw shadow
         TileSet _shadowTiles;
 
     };
 
-    //! shadow manager
+    //* shadow manager
     class MdiWindowShadowFactory: public QObject
     {
 
@@ -109,49 +109,49 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         MdiWindowShadowFactory( QObject* );
 
-        //! destructor
+        //* destructor
         virtual ~MdiWindowShadowFactory( void )
         {}
 
-        //! set shadow tiles
+        //* set shadow tiles
         void setShadowTiles( const TileSet& shadowTiles )
         { _shadowTiles = shadowTiles; }
 
-        //! register widget
+        //* register widget
         bool registerWidget( QWidget* );
 
-        //! unregister
+        //* unregister
         void unregisterWidget( QWidget* );
 
-        //! true if widget is registered
+        //* true if widget is registered
         bool isRegistered( const QObject* widget ) const
         { return _registeredWidgets.contains( widget ); }
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent*);
 
         protected:
 
-        //! find shadow matching a given object
+        //* find shadow matching a given object
         MdiWindowShadow* findShadow( QObject* ) const;
 
-        //! install shadows on given widget
+        //* install shadows on given widget
         void installShadow( QObject* );
 
-        //! remove shadows from widget
+        //* remove shadows from widget
         void removeShadow( QObject* );
 
-        //! hide shadows
+        //* hide shadows
         void hideShadows( QObject* object ) const
         {
             if( MdiWindowShadow* windowShadow = findShadow( object ) )
             { windowShadow->hide(); }
         }
 
-        //! update ZOrder
+        //* update ZOrder
         void updateShadowZOrder( QObject* object ) const
         {
             if( MdiWindowShadow* windowShadow = findShadow( object ) )
@@ -161,14 +161,14 @@ namespace Breeze
             }
         }
 
-        //! update shadows geometry
+        //* update shadows geometry
         void updateShadowGeometry( QObject* object ) const
         {
             if( MdiWindowShadow* windowShadow = findShadow( object ) )
             { windowShadow->updateGeometry(); }
         }
 
-        //! update shadows
+        //* update shadows
         void update( QObject* object ) const
         {
             if( MdiWindowShadow* windowShadow = findShadow( object ) )
@@ -177,15 +177,15 @@ namespace Breeze
 
         protected Q_SLOTS:
 
-        //! triggered by object destruction
+        //* triggered by object destruction
         void widgetDestroyed( QObject* );
 
         private:
 
-        //! set of registered widgets
+        //* set of registered widgets
         QSet<const QObject*> _registeredWidgets;
 
-        //! tileset used to draw shadow
+        //* tileset used to draw shadow
         TileSet _shadowTiles;
 
     };

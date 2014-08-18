@@ -50,25 +50,25 @@ namespace Breeze
     const char* const ShadowHelper::netWMForceShadowPropertyName( "_KDE_NET_WM_FORCE_SHADOW" );
     const char* const ShadowHelper::netWMSkipShadowPropertyName( "_KDE_NET_WM_SKIP_SHADOW" );
 
-    //! square
+    //* square
     template< typename T> T square( T x ) { return x*x; }
 
-    //! functions used to draw shadows
+    //* functions used to draw shadows
     class Parabolic
     {
         public:
 
-        //! constructor
+        //* constructor
         Parabolic( qreal amplitude, qreal width ):
             amplitude_( amplitude ),
             width_( width )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~Parabolic( void )
         {}
 
-        //! value
+        //* value
         virtual qreal operator() ( qreal x ) const
         { return qMax( 0.0, amplitude_*(1.0 - square(x/width_) ) ); }
 
@@ -79,22 +79,22 @@ namespace Breeze
 
     };
 
-    //! functions used to draw shadows
+    //* functions used to draw shadows
     class Gaussian
     {
         public:
 
-        //! constructor
+        //* constructor
         Gaussian( qreal amplitude, qreal width ):
             amplitude_( amplitude ),
             width_( width )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~Gaussian( void )
         {}
 
-        //! value
+        //* value
         virtual qreal operator() ( qreal x ) const
         { return qMax( 0.0, amplitude_*(std::exp( -square(x/width_) -0.05 ) ) ); }
 
@@ -386,7 +386,7 @@ namespace Breeze
     const QVector<uint32_t>& ShadowHelper::createPixmapHandles( void )
     {
 
-        /*!
+        /**
         shadow atom and property specification available at
         http://community.kde.org/KWin/Shadow
         */

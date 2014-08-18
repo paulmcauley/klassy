@@ -45,7 +45,7 @@
 namespace Breeze
 {
 
-    //! shadow manager
+    //* shadow manager
     class FrameShadowFactory: public QObject
     {
 
@@ -53,68 +53,68 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit FrameShadowFactory( QObject* parent ):
         QObject( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~FrameShadowFactory( void )
         {}
 
-        //! register widget
+        //* register widget
         bool registerWidget( QWidget*, Helper& );
 
-        //! unregister
+        //* unregister
         void unregisterWidget( QWidget* );
 
-        //! true if widget is registered
+        //* true if widget is registered
         bool isRegistered( const QWidget* widget ) const
         { return _registeredWidgets.contains( widget ); }
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent*);
 
-        //! update state
+        //* update state
         void updateState( const QWidget*, bool focus, bool hover, qreal opacity, AnimationMode ) const;
 
         protected:
 
-        //! install shadows on given widget
+        //* install shadows on given widget
         void installShadows( QWidget*, Helper& );
 
-        //! remove shadows from widget
+        //* remove shadows from widget
         void removeShadows( QWidget* );
 
-        //! update shadows geometry
+        //* update shadows geometry
         void updateShadowsGeometry( QObject* ) const;
 
-        //! raise shadows
+        //* raise shadows
         void raiseShadows( QObject* ) const;
 
-        //! update shadows
+        //* update shadows
         void update( QObject* ) const;
 
-        //! install shadow on given side
+        //* install shadow on given side
         void installShadow( QWidget*, Helper&, ShadowArea ) const;
 
         protected Q_SLOTS:
 
-        //! triggered by object destruction
+        //* triggered by object destruction
         void widgetDestroyed( QObject* );
 
         private:
 
-        //! needed to block ChildAdded events when creating shadows
+        //* needed to block ChildAdded events when creating shadows
         AddEventFilter _addEventFilter;
 
-        //! set of registered widgets
+        //* set of registered widgets
         QSet<const QObject*> _registeredWidgets;
 
     };
 
-    //! frame shadow
-    /*! this allows the shadow to be painted over the widgets viewport */
+    //* frame shadow
+    /** this allows the shadow to be painted over the widgets viewport */
     class FrameShadowBase: public QWidget
     {
 
@@ -122,57 +122,57 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit FrameShadowBase( ShadowArea area ):
             _area( area )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~FrameShadowBase( void )
         {}
 
-        //! shadow area
+        //* shadow area
         void setShadowArea(ShadowArea area)
         { _area = area; }
 
-        //! shadow area
+        //* shadow area
         const ShadowArea& shadowArea() const
         { return _area; }
 
-        //! update geometry
+        //* update geometry
         virtual void updateGeometry( void ) = 0;
 
-        //! update state
+        //* update state
         virtual void updateState( bool, bool, qreal, AnimationMode )
         {}
 
         protected:
 
-        //! event handler
+        //* event handler
         virtual bool event(QEvent *e);
 
-        //! initialization
+        //* initialization
         virtual void init();
 
-        //! return viewport associated to parent widget
+        //* return viewport associated to parent widget
         virtual QWidget* viewport( void ) const;
 
         private:
 
-        //! shadow area
+        //* shadow area
         ShadowArea _area;
 
     };
 
-    //! frame shadow
-    /*! this allows the shadow to be painted over the widgets viewport */
+    //* frame shadow
+    /** this allows the shadow to be painted over the widgets viewport */
     class SunkenFrameShadow : public FrameShadowBase
     {
         Q_OBJECT
 
         public:
 
-        //! constructor
+        //* constructor
         SunkenFrameShadow( ShadowArea area, Helper& helper ):
             FrameShadowBase( area ),
             _helper( helper ),
@@ -183,24 +183,24 @@ namespace Breeze
         { init(); }
 
 
-        //! destructor
+        //* destructor
         virtual ~SunkenFrameShadow()
         {}
 
-        //! update geometry
+        //* update geometry
         virtual void updateGeometry( void );
 
-        //! update state
+        //* update state
         void updateState( bool focus, bool hover, qreal opacity, AnimationMode );
 
         protected:
 
-        //! painting
+        //* painting
         virtual void paintEvent(QPaintEvent *);
 
         private:
 
-        //! shadow sizes
+        //* shadow sizes
         enum
         {
             ShadowSizeTop = 3,
@@ -209,10 +209,10 @@ namespace Breeze
             ShadowSizeRight = 3
         };
 
-        //! helper
+        //* helper
         Helper& _helper;
 
-        //!@name widget state
+        //*@name widget state
         //@{
         bool _hasFocus;
         bool _mouseOver;

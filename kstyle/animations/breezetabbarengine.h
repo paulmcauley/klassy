@@ -35,7 +35,7 @@
 namespace Breeze
 {
 
-    //! stores tabbar hovered action and timeLine
+    //* stores tabbar hovered action and timeLine
     class TabBarEngine: public BaseEngine
     {
 
@@ -43,29 +43,29 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit TabBarEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~TabBarEngine( void )
         {}
 
-        //! register tabbar
+        //* register tabbar
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget hover state is changed
+        //* true if widget hover state is changed
         virtual bool updateState( const QObject*, const QPoint&, AnimationMode, bool );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object, const QPoint& point, AnimationMode );
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object, const QPoint& point, AnimationMode mode )
         { return isAnimated( object, point, mode ) ? data( object, mode ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
@@ -73,7 +73,7 @@ namespace Breeze
             _focusData.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -83,7 +83,7 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         {
             if( !object ) return false;
@@ -95,10 +95,10 @@ namespace Breeze
 
         private:
 
-        //! returns data associated to widget
+        //* returns data associated to widget
         DataMap<TabBarData>::Value data( const QObject*, AnimationMode );
 
-        //! data map
+        //* data map
         DataMap<TabBarData> _hoverData;
         DataMap<TabBarData> _focusData;
 

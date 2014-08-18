@@ -39,10 +39,10 @@
 namespace Breeze
 {
 
-    //! forward declaration
+    //* forward declaration
     class Helper;
 
-    //! handle shadow pixmaps passed to window manager via X property
+    //* handle shadow pixmaps passed to window manager via X property
     class ShadowHelper: public QObject
     {
 
@@ -50,65 +50,65 @@ namespace Breeze
 
         public:
 
-        //!@name property names
+        //*@name property names
         //@{
         static const char* const netWMShadowAtomName;
         static const char* const netWMForceShadowPropertyName;
         static const char* const netWMSkipShadowPropertyName;
         //@}
 
-        //! constructor
+        //* constructor
         ShadowHelper( QObject*, Helper& );
 
-        //! destructor
+        //* destructor
         virtual ~ShadowHelper( void );
 
-        //! true if supported
+        //* true if supported
         bool isSupported( void ) const
         { return _supported; }
 
-        //! reset
+        //* reset
         void reset( void );
 
-        //! register widget
+        //* register widget
         bool registerWidget( QWidget*, bool force = false );
 
-        //! unregister widget
+        //* unregister widget
         void unregisterWidget( QWidget* );
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //! shadow size
+        //* shadow size
         int shadowSize( void ) const;
 
-        //! shadow tiles
-        /*! is public because it is also needed for mdi windows */
+        //* shadow tiles
+        /** is public because it is also needed for mdi windows */
         TileSet shadowTiles( void );
 
         protected Q_SLOTS:
 
-        //! unregister widget
+        //* unregister widget
         void objectDeleted( QObject* );
 
         protected:
 
-        //! true if shadows are supported
+        //* true if shadows are supported
         bool checkSupported( void ) const;
 
-        //! true if widget is a menu
+        //* true if widget is a menu
         bool isMenu( QWidget* ) const;
 
-        //! true if widget is a tooltip
+        //* true if widget is a tooltip
         bool isToolTip( QWidget* ) const;
 
-        //! dock widget
+        //* dock widget
         bool isDockWidget( QWidget* ) const;
 
-        //! toolbar
+        //* toolbar
         bool isToolBar( QWidget* ) const;
 
-        //! accept widget
+        //* accept widget
         bool acceptWidget( QWidget* ) const;
 
         // create pixmap handles from tileset
@@ -117,42 +117,42 @@ namespace Breeze
         // create pixmap handle from pixmap
         uint32_t createPixmap( const QPixmap& );
 
-        //! install shadow X11 property on given widget
-        /*!
+        //* install shadow X11 property on given widget
+        /**
         shadow atom and property specification available at
         http://community.kde.org/KWin/Shadow
         */
         bool installX11Shadows( QWidget* );
 
-        //! uninstall shadow X11 property on given widget
+        //* uninstall shadow X11 property on given widget
         void uninstallX11Shadows( QWidget* ) const;
 
         private:
 
-        //! helper
+        //* helper
         Helper& _helper;
 
-        //! true if supported
+        //* true if supported
         bool _supported;
 
-        //! registered widgets
+        //* registered widgets
         QMap<QWidget*, WId> _widgets;
 
-        //! tileset
+        //* tileset
         TileSet _shadowTiles;
 
-        //! number of pixmaps
+        //* number of pixmaps
         enum { numPixmaps = 8 };
 
-        //! pixmaps
+        //* pixmaps
         QVector<uint32_t> _pixmaps;
 
         #if HAVE_X11
 
-        //! graphical context
+        //* graphical context
         xcb_gcontext_t _gc;
 
-        //! shadow atom
+        //* shadow atom
         xcb_atom_t _atom;
 
         #endif

@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! stores headerview hovered action and timeLine
+    //* stores headerview hovered action and timeLine
     class HeaderViewEngine: public BaseEngine
     {
 
@@ -42,22 +42,22 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit HeaderViewEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~HeaderViewEngine( void )
         {}
 
-        //! register headerview
+        //* register headerview
         virtual bool registerWidget( QWidget* );
 
-        //! true if widget hover state is changed
+        //* true if widget hover state is changed
         virtual bool updateState( const QObject*, const QPoint&, bool );
 
-        //! true if widget is animated
+        //* true if widget is animated
         virtual bool isAnimated( const QObject* object, const QPoint& point )
         {
             if( DataMap<HeaderViewData>::Value data = _data.find( object ) )
@@ -65,18 +65,18 @@ namespace Breeze
             return false;
         }
 
-        //! animation opacity
+        //* animation opacity
         virtual qreal opacity( const QObject* object, const QPoint& point )
         { return isAnimated( object, point ) ? _data.find( object ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
-        //! enability
+        //* enability
         virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
@@ -85,13 +85,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
+        //* remove widget from map
         virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! data map
+        //* data map
         DataMap<HeaderViewData> _data;
 
     };

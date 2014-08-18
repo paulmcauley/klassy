@@ -32,7 +32,7 @@
 namespace Breeze
 {
 
-    //! scrollbar data
+    //* scrollbar data
     class ScrollBarData: public SliderData
     {
 
@@ -42,27 +42,27 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         ScrollBarData( QObject* parent, QWidget* target, int );
 
-        //! destructor
+        //* destructor
         virtual ~ScrollBarData( void )
         {}
 
-        //! event filter
+        //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //! needed to avoid warning about virtual function being hidden
+        //* needed to avoid warning about virtual function being hidden
         using SliderData::animation;
         using SliderData::opacity;
 
-        //! return animation for a given subcontrol
+        //* return animation for a given subcontrol
         virtual const Animation::Pointer& animation( QStyle::SubControl ) const;
 
-        //! return default opacity for a given subcontrol
+        //* return default opacity for a given subcontrol
         virtual qreal opacity( QStyle::SubControl ) const;
 
-        //! return default opacity for a given subcontrol
+        //* return default opacity for a given subcontrol
         virtual bool isHovered( QStyle::SubControl control ) const
         {
             switch( control )
@@ -75,7 +75,7 @@ namespace Breeze
 
         }
 
-        //! subControlRect
+        //* subControlRect
         virtual QRect subControlRect( QStyle::SubControl control ) const
         {
             switch( control )
@@ -87,7 +87,7 @@ namespace Breeze
         }
 
 
-        //! subcontrol rect
+        //* subcontrol rect
         virtual void setSubControlRect( QStyle::SubControl control, const QRect& rect )
         {
             switch( control )
@@ -104,7 +104,7 @@ namespace Breeze
             }
         }
 
-        //! duration
+        //* duration
         virtual void setDuration( int duration )
         {
             SliderData::setDuration( duration );
@@ -112,7 +112,7 @@ namespace Breeze
             subLineAnimation().data()->setDuration( duration );
         }
 
-        //! addLine opacity
+        //* addLine opacity
         virtual void setAddLineOpacity( qreal value )
         {
             value = digitize( value );
@@ -121,11 +121,11 @@ namespace Breeze
             setDirty();
         }
 
-        //! addLine opacity
+        //* addLine opacity
         virtual qreal addLineOpacity( void ) const
         { return _addLineData._opacity; }
 
-        //! subLine opacity
+        //* subLine opacity
         virtual void setSubLineOpacity( qreal value )
         {
             value = digitize( value );
@@ -134,24 +134,24 @@ namespace Breeze
             setDirty();
         }
 
-        //! subLine opacity
+        //* subLine opacity
         virtual qreal subLineOpacity( void ) const
         { return _subLineData._opacity; }
 
-        //! mouse position
+        //* mouse position
         QPoint position( void ) const
         { return _position; }
 
         protected Q_SLOTS:
 
-        //! clear addLineRect
+        //* clear addLineRect
         void clearAddLineRect( void )
         {
             if( addLineAnimation().data()->direction() == Animation::Backward )
             { _addLineData._rect = QRect(); }
         }
 
-        //! clear subLineRect
+        //* clear subLineRect
         void clearSubLineRect( void )
         {
             if( subLineAnimation().data()->direction() == Animation::Backward )
@@ -160,13 +160,13 @@ namespace Breeze
 
         protected:
 
-        //! hoverMoveEvent
+        //* hoverMoveEvent
         virtual void hoverMoveEvent( QObject*, QEvent* );
 
-        //! hoverMoveEvent
+        //* hoverMoveEvent
         virtual void hoverLeaveEvent( QObject*, QEvent* );
 
-        //!@name hover flags
+        //*@name hover flags
         //@{
 
         virtual bool addLineArrowHovered( void ) const
@@ -183,13 +183,13 @@ namespace Breeze
 
         //@}
 
-        //! update add line arrow
+        //* update add line arrow
         virtual void updateAddLineArrow( QStyle::SubControl );
 
-        //! update sub line arrow
+        //* update sub line arrow
         virtual void updateSubLineArrow( QStyle::SubControl );
 
-        //!@name timelines
+        //*@name timelines
         //@{
 
         virtual const Animation::Pointer& addLineAnimation( void ) const
@@ -200,40 +200,40 @@ namespace Breeze
 
         private:
 
-        //! stores arrow data
+        //* stores arrow data
         class Data
         {
 
           public:
 
-          //! constructor
+          //* constructor
           Data( void ):
             _hovered( false ),
             _opacity( AnimationData::OpacityInvalid )
           {}
 
-          //! true if hovered
+          //* true if hovered
           bool _hovered;
 
-          //! animation
+          //* animation
           Animation::Pointer _animation;
 
-          //! opacity
+          //* opacity
           qreal _opacity;
 
-          //! rect
+          //* rect
           QRect _rect;
 
         };
 
 
-        //! add line data (down arrow)
+        //* add line data (down arrow)
         Data _addLineData;
 
-        //! subtract line data (up arrow)
+        //* subtract line data (up arrow)
         Data _subLineData;
 
-        //! mouse position
+        //* mouse position
         QPoint _position;
 
     };
