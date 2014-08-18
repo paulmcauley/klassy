@@ -5238,15 +5238,66 @@ namespace Breeze
         const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
+        // copy rect and palette
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
+
+        // copy state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
+        // direction
+        const bool horizontal( sliderOption->orientation == Qt::Horizontal );
+
         // do not render tickmarks
         if( sliderOption->subControls & SC_SliderTickmarks )
-        {}
+        {
+            const int tickPosition( sliderOption->tickPosition );
+            const int available( pixelMetric( PM_SliderSpaceAvailable, option, widget ) );
+            int interval = sliderOption->tickInterval;
+            if( interval < 1 ) interval = sliderOption->pageStep;
+
+            const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
+            const int tickSize( horizontal ? rect.height()/3 : rect.width()/3 );
+            int current( sliderOption->minimum );
+
+            painter->translate( rect.topLeft() );
+
+            const QColor base( _helper->separatorColor( palette ) );
+            const QColor highlight( palette.color( QPalette::Highlight ) );
+
+            while( current <= sliderOption->maximum )
+            {
+
+                // adjust color
+                const QColor color( current <= sliderOption->sliderPosition ? highlight:base );
+                painter->setPen( color );
+
+                // calculate positions and draw lines
+                int position( sliderPositionFromValue( sliderOption->minimum, sliderOption->maximum, current, available ) + fudge );
+                if( horizontal )
+                {
+                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, 0, position, tickSize );
+                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, rect.height()-tickSize, position, rect.height() );
+
+                } else {
+
+                    position = rect.height() - position;
+                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( 0, position, tickSize, position );
+                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( rect.width()-tickSize, position, rect.width(), position );
+
+                }
+
+                // go to next position
+                current += interval;
+
+            }
+
+            painter->translate( -rect.topLeft() );
+
+        }
 
         // groove
         if( sliderOption->subControls & SC_SliderGroove )
@@ -5256,7 +5307,7 @@ namespace Breeze
             grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
 
             // adjustments
-            if( sliderOption->orientation == Qt::Horizontal )
+            if( horizontal )
             {
 
                 grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_Thickness );
