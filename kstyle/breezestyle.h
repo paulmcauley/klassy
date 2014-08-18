@@ -201,6 +201,7 @@ namespace Breeze
         QRect scrollBarInternalSubControlRect( const QStyleOptionComplex*, SubControl ) const;
         QRect scrollBarSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
         QRect dialSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        QRect sliderSubControlRect( const QStyleOptionComplex*, SubControl, const QWidget* ) const;
 
         //@}
 

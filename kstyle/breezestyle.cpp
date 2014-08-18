@@ -628,6 +628,7 @@ namespace Breeze
             case CC_SpinBox: return spinBoxSubControlRect( option, subControl, widget );
             case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
             case CC_Dial: return dialSubControlRect( option, subControl, widget );
+            case CC_Slider: return sliderSubControlRect( option, subControl, widget );
 
             // fallback
             default: return ParentStyleClass::subControlRect( element, option, subControl, widget );
@@ -2044,6 +2045,38 @@ namespace Breeze
 
             default: return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );;
 
+        }
+
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::sliderSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget );
+
+        switch( subControl )
+        {
+            case SC_SliderGroove:
+            {
+
+                // direction
+                const bool horizontal( sliderOption->orientation == Qt::Horizontal );
+
+                // get base class rect
+                QRect grooveRect( ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget ) );
+                grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
+
+                // centering
+                if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_Thickness );
+                else grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height() );
+                return grooveRect;
+
+            }
+
+            default: return ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget );
         }
 
     }
@@ -5254,62 +5287,57 @@ namespace Breeze
         // do not render tickmarks
         if( sliderOption->subControls & SC_SliderTickmarks )
         {
+            const bool upsideDown( sliderOption->upsideDown );
             const int tickPosition( sliderOption->tickPosition );
             const int available( pixelMetric( PM_SliderSpaceAvailable, option, widget ) );
             int interval = sliderOption->tickInterval;
             if( interval < 1 ) interval = sliderOption->pageStep;
-
-            const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
-            const int tickSize( horizontal ? rect.height()/3 : rect.width()/3 );
-            int current( sliderOption->minimum );
-//                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, 0, position, tickSize );
-//                     if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, rect.height()-tickSize, position, rect.height() );
-//
-//                 } else {
-//
-//                     position = rect.height() - position;
-//                     if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( 0, position, tickSize, position );
-//                     if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( rect.width()-tickSize, position, rect.width(), position );
-
-            QList<QLine> tickLines;
-            if( horizontal )
+            if( interval >= 1 )
             {
+                const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
+                const int tickSize( ( horizontal ? (rect.height() - Metrics::Slider_Thickness)/2 : (rect.width()-Metrics::Slider_Thickness)/2 ) - 1 );
+                int current( sliderOption->minimum );
 
-                if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.top(), rect.left(), rect.top() + tickSize ) );
-                if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.bottom(), rect.left(), rect.bottom() - tickSize ) );
-
-            } else {
-
-                if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.bottom(), rect.left() + tickSize, rect.bottom() ) );
-                if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.right(), rect.bottom(), rect.right() - tickSize, rect.bottom() ) );
-
-            }
-
-            // colors
-            const QColor base( _helper->separatorColor( palette ) );
-            const QColor highlight( palette.color( QPalette::Highlight ) );
-
-            while( current <= sliderOption->maximum )
-            {
-
-                // adjust color
-                const QColor color( current <= sliderOption->sliderPosition ? highlight:base );
-                painter->setPen( color );
-
-                // calculate positions and draw lines
-                int position( sliderPositionFromValue( sliderOption->minimum, sliderOption->maximum, current, available ) + fudge );
-                foreach( const QLine& tickLine, tickLines )
+                // store tick lines
+                const QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+                QList<QLine> tickLines;
+                if( horizontal )
                 {
 
-                    if( horizontal ) painter->drawLine( tickLine.translated( position, 0 ) );
-                    else painter->drawLine( tickLine.translated( 0, -position ) );
+                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), grooveRect.top() - 2, rect.left(), grooveRect.top() - tickSize - 2 ) );
+                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), grooveRect.bottom() + 2, rect.left(), grooveRect.bottom() + tickSize + 2 ) );
+
+                } else {
+
+                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( grooveRect.left() - 2, rect.top(), grooveRect.left() - tickSize - 2, rect.top() ) );
+                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( grooveRect.right() + 2, rect.top(), grooveRect.right() + tickSize + 2, rect.top() ) );
+
                 }
 
-                // go to next position
-                current += interval;
+                // colors
+                const QColor base( _helper->separatorColor( palette ) );
+                const QColor highlight( palette.color( QPalette::Highlight ) );
 
+                while( current <= sliderOption->maximum )
+                {
+
+                    // adjust color
+                    const QColor color( (enabled && current <= sliderOption->sliderPosition) ? highlight:base );
+                    painter->setPen( color );
+
+                    // calculate positions and draw lines
+                    int position( sliderPositionFromValue( sliderOption->minimum, sliderOption->maximum, current, available ) + fudge );
+                    foreach( const QLine& tickLine, tickLines )
+                    {
+                        if( horizontal ) painter->drawLine( tickLine.translated( upsideDown ? (rect.width() - position) : position, 0 ) );
+                        else painter->drawLine( tickLine.translated( 0, upsideDown ? (rect.height() - position):position ) );
+                    }
+
+                    // go to next position
+                    current += interval;
+
+                }
             }
-
         }
 
         // groove
@@ -5317,19 +5345,6 @@ namespace Breeze
         {
             // retrieve groove rect
             QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
-            grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-
-            // adjustments
-            if( horizontal )
-            {
-
-                grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_Thickness );
-
-            } else {
-
-                grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height() );
-
-            }
 
             // base color
             const QColor grooveColor( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
@@ -5337,9 +5352,10 @@ namespace Breeze
             if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, grooveColor );
             else {
 
+                const bool upsideDown( sliderOption->upsideDown );
+
                 // handle rect
                 QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-                handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
                 // highlight color
                 const QColor highlight( palette.color( QPalette::Highlight ) );
@@ -5347,25 +5363,23 @@ namespace Breeze
                 if( sliderOption->orientation == Qt::Horizontal )
                 {
 
-                    const bool reverseLayout( option->direction == Qt::RightToLeft );
-
                     QRect leftRect( grooveRect );
                     leftRect.setRight( handleRect.right()-2 );
-                    _helper->renderSliderGroove( painter, leftRect, reverseLayout ? grooveColor:highlight );
+                    _helper->renderSliderGroove( painter, leftRect, upsideDown ? grooveColor:highlight );
 
                     QRect rightRect( grooveRect );
                     rightRect.setLeft( handleRect.left()+2 );
-                    _helper->renderSliderGroove( painter, rightRect, reverseLayout ? highlight:grooveColor );
+                    _helper->renderSliderGroove( painter, rightRect, upsideDown ? highlight:grooveColor );
 
                 } else {
 
                     QRect topRect( grooveRect );
                     topRect.setBottom( handleRect.bottom()-2 );
-                    _helper->renderSliderGroove( painter, topRect, grooveColor );
+                    _helper->renderSliderGroove( painter, topRect, upsideDown ? grooveColor:highlight );
 
                     QRect bottomRect( grooveRect );
                     bottomRect.setTop( handleRect.top()+2 );
-                    _helper->renderSliderGroove( painter, bottomRect, highlight );
+                    _helper->renderSliderGroove( painter, bottomRect, upsideDown ? highlight:grooveColor );
 
                 }
 
@@ -5379,7 +5393,6 @@ namespace Breeze
 
             // get rect and center
             QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-            handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
             // handle state
             const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
