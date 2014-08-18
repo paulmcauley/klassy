@@ -162,7 +162,7 @@ namespace Breeze
 
         //* checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
-        { return handleRightToLeftLayout( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
+        { return visualRect( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
 
         //* line edit contents
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
@@ -350,13 +350,11 @@ namespace Breeze
         }
 
         //* right to left alignment handling
-        QRect handleRightToLeftLayout(const QStyleOption* opt, const QRect& subRect) const
-        { return visualRect(opt->direction, opt->rect, subRect); }
+        using ParentStyleClass::visualRect;
+        QRect visualRect(const QStyleOption* opt, const QRect& subRect) const
+        { return ParentStyleClass::visualRect(opt->direction, opt->rect, subRect); }
 
-        //* right to left alignment handling
-        QPoint handleRightToLeftLayout(const QStyleOption* opt, const QPoint& pos) const
-        { return visualPos(opt->direction, opt->rect, pos); }
-
+        //* centering
         QRect centerRect(const QRect &in, const QSize& s ) const
         { return centerRect( in, s.width(), s.height() ); }
 
