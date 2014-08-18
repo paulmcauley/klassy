@@ -115,6 +115,15 @@
       <default>LS_TOPLEFT</default>
     </entry>
 
+    <!-- debugging -->
+    <entry name="WidgetExplorerEnabled" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <entry name="DrawWidgetRects" type="Bool">
+      <default>false</default>
+    </entry>
+
   </group>
 
 </kcfg>

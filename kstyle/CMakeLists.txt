@@ -75,7 +75,10 @@ else()
 endif()
 
 ################# includes #################
-include_directories( animations )
+include_directories(
+  animations
+  debug
+)
 
 ########### next target ###############
 set(breeze_PART_SRCS
@@ -103,6 +106,7 @@ set(breeze_PART_SRCS
     animations/breezetoolboxengine.cpp
     animations/breezewidgetstateengine.cpp
     animations/breezewidgetstatedata.cpp
+    debug/breezewidgetexplorer.cpp
     breezeframeshadow.cpp
     breezehelper.cpp
     breezemdiwindowshadow.cpp

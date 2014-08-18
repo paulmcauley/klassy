@@ -34,6 +34,7 @@
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
 #include "breezestyleconfigdata.h"
+#include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
 
 #include <KColorUtils>
@@ -120,6 +121,7 @@ namespace Breeze
         , _frameShadowFactory( new FrameShadowFactory( this ) )
         , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
         , _splitterFactory( new SplitterFactory( this ) )
+        , _widgetExplorer( new WidgetExplorer( this ) )
         , _tabBarData( new BreezePrivate::TabBarData( this ) )
         #if !USE_KDE4
         , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
@@ -1156,6 +1158,10 @@ namespace Breeze
             default:
             case 2: _subLineButtons = DoubleButton; break;
         }
+
+        // widget explorer
+        _widgetExplorer->setEnabled( StyleConfigData::widgetExplorerEnabled() );
+        _widgetExplorer->setDrawWidgetRects( StyleConfigData::drawWidgetRects() );
 
     }
 

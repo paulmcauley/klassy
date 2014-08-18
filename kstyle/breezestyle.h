@@ -51,6 +51,7 @@ namespace Breeze
     class Mnemonics;
     class ShadowHelper;
     class SplitterFactory;
+    class WidgetExplorer;
     class WindowManager;
 
     //! convenience typedef for base class
@@ -453,6 +454,9 @@ namespace Breeze
 
         //! splitter Factory, to extend splitters hit area
         SplitterFactory* _splitterFactory;
+
+        //! widget explorer
+        WidgetExplorer* _widgetExplorer;
 
         //! tabbar data
         BreezePrivate::TabBarData* _tabBarData;
