@@ -5262,9 +5262,30 @@ namespace Breeze
             const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
             const int tickSize( horizontal ? rect.height()/3 : rect.width()/3 );
             int current( sliderOption->minimum );
+//                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, 0, position, tickSize );
+//                     if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, rect.height()-tickSize, position, rect.height() );
+//
+//                 } else {
+//
+//                     position = rect.height() - position;
+//                     if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( 0, position, tickSize, position );
+//                     if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( rect.width()-tickSize, position, rect.width(), position );
 
-            painter->translate( rect.topLeft() );
+            QList<QLine> tickLines;
+            if( horizontal )
+            {
 
+                if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.top(), rect.left(), rect.top() + tickSize ) );
+                if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.bottom(), rect.left(), rect.bottom() - tickSize ) );
+
+            } else {
+
+                if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), rect.bottom(), rect.left() + tickSize, rect.bottom() ) );
+                if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.right(), rect.bottom(), rect.right() - tickSize, rect.bottom() ) );
+
+            }
+
+            // colors
             const QColor base( _helper->separatorColor( palette ) );
             const QColor highlight( palette.color( QPalette::Highlight ) );
 
@@ -5277,25 +5298,17 @@ namespace Breeze
 
                 // calculate positions and draw lines
                 int position( sliderPositionFromValue( sliderOption->minimum, sliderOption->maximum, current, available ) + fudge );
-                if( horizontal )
+                foreach( const QLine& tickLine, tickLines )
                 {
-                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, 0, position, tickSize );
-                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( position, rect.height()-tickSize, position, rect.height() );
 
-                } else {
-
-                    position = rect.height() - position;
-                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) painter->drawLine( 0, position, tickSize, position );
-                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) painter->drawLine( rect.width()-tickSize, position, rect.width(), position );
-
+                    if( horizontal ) painter->drawLine( tickLine.translated( position, 0 ) );
+                    else painter->drawLine( tickLine.translated( 0, -position ) );
                 }
 
                 // go to next position
                 current += interval;
 
             }
-
-            painter->translate( -rect.topLeft() );
 
         }
 
