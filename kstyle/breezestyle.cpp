@@ -4933,7 +4933,8 @@ namespace Breeze
 
         // define text role for label and arrow
         QPalette::ColorRole textRole;
-        if( inTabBar ) {
+        if( inTabBar )
+        {
 
             textRole = QPalette::WindowText;
 
@@ -5009,7 +5010,11 @@ namespace Breeze
                 // take out margins
                 const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
                 contentsRect.adjust( marginWidth, 0, -marginWidth, 0 );
-                if( hasInlineIndicator ) contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
+                if( hasInlineIndicator )
+                {
+                    contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
+                    contentsRect = visualRect( option, contentsRect );
+                }
 
                 // adjust state
                 if( (toolButtonOption->features & QStyleOptionToolButton::Arrow) && !inTabBar )
