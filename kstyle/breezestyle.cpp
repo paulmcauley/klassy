@@ -2999,20 +2999,9 @@ namespace Breeze
         const QPalette& palette( option->palette );
         const QColor background( palette.color( QPalette::ToolTipBase ) );
         const QColor outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
-
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-        if( hasAlpha )
-        {
 
-            painter->setCompositionMode( QPainter::CompositionMode_Source );
-            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
-
-        } else {
-
-            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
-
-        }
-
+        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
         return true;
 
     }
