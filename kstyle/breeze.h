@@ -72,6 +72,7 @@ namespace Breeze
         // menu items
         MenuItem_MarginWidth = 4,
         MenuItem_BoxTextSpace = 4,
+        MenuItem_AcceleratorSpace = 16,
         MenuButton_IndicatorWidth = 20,
 
         // combobox

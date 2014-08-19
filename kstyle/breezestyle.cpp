@@ -2288,7 +2288,7 @@ namespace Breeze
                 ( see QMenuPrivate::calcActionRects() )
                 */
                 const bool hasAccelerator( menuItemOption->text.indexOf( QLatin1Char( '\t' ) ) >= 0 );
-                if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_BoxTextSpace;
+                if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
 
                 // right column
                 const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_BoxTextSpace;
