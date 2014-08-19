@@ -5936,17 +5936,19 @@ namespace Breeze
         // map colors to icon states
         const QList<IconData> iconTypes =
         {
+
             // state off icons
-            { _helper->alphaColor( base, 0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
-            { _helper->alphaColor( selected, 0.5 ), invertNormalState, QIcon::Selected, QIcon::Off },
-            { _helper->alphaColor( negative, 0.3 ), true, QIcon::Active, QIcon::Off },
-            { _helper->alphaColor( base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ), invertNormalState, QIcon::Selected, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.5 ), true, QIcon::Active, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
 
             // state on icons
-            { _helper->alphaColor( negative, 0.7 ), true, QIcon::Normal, QIcon::On },
-            { _helper->alphaColor( negativeSelected, 0.7 ), true, QIcon::Selected, QIcon::On },
-            { _helper->alphaColor( negative, 0.7 ), true, QIcon::Active, QIcon::On },
-            { _helper->alphaColor( base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
+            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.7 ), true, QIcon::Normal, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeSelected, 0.7 ), true, QIcon::Selected, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.7 ), true, QIcon::Active, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
+
         };
 
         // default icon sizes
