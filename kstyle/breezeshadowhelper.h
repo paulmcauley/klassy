@@ -79,9 +79,6 @@ namespace Breeze
         //* event filter
         virtual bool eventFilter( QObject*, QEvent* );
 
-        //* shadow size
-        int shadowSize( void ) const;
-
         //* shadow tiles
         /** is public because it is also needed for mdi windows */
         TileSet shadowTiles( void );
