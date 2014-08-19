@@ -2262,7 +2262,7 @@ namespace Breeze
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
-                if( iconWidth ) leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
+                leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
 
                 // add checkbox indicator width
                 if( menuItemOption->menuHasCheckableItems )
@@ -3823,9 +3823,7 @@ namespace Breeze
         const int iconWidth( menuItemOption->maxIconWidth );
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
-
-        if( iconWidth > 0 )
-        { contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 ); }
+        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
 
 
         if( !menuItemOption->icon.isNull() )
