@@ -78,7 +78,7 @@ namespace Breeze
         ComboBox_FrameWidth = 6,
 
         // spinbox
-        SpinBox_FrameWidth = 8,
+        SpinBox_FrameWidth = LineEdit_FrameWidth,
         SpinBox_ArrowButtonWidth = 20,
 
         // groupbox title margin
