@@ -2542,17 +2542,7 @@ namespace Breeze
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-        if( hasAlpha )
-        {
-
-            painter->setCompositionMode( QPainter::CompositionMode_Source );
-            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
-
-        } else {
-
-            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
-
-        }
+        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
         return true;
 
@@ -2972,17 +2962,7 @@ namespace Breeze
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-        if( hasAlpha )
-        {
-
-            painter->setCompositionMode( QPainter::CompositionMode_Source );
-            _helper->renderMenuFrame( painter, option->rect, background, outline, true );
-
-        } else {
-
-            _helper->renderMenuFrame( painter, option->rect, background, outline, false );
-
-        }
+        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
         return true;
 
