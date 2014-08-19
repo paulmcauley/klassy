@@ -5590,10 +5590,6 @@ namespace Breeze
             QRect iconRect( subControlRect( CC_TitleBar, option, subControl, widget ) );
             if( iconRect.isEmpty() ) continue;
 
-            const int iconWidth( pixelMetric( PM_SmallIconSize, option, widget ) );
-            const QSize iconSize( iconWidth, iconWidth );
-            iconRect = centerRect( iconRect, iconSize );
-
             // active state
             const bool subControlActive( titleBarOption->activeSubControls & subControl );
 
@@ -5603,7 +5599,10 @@ namespace Breeze
                 widget &&
                 iconRect.translated( widget->mapToGlobal( QPoint( 0,0 ) ) ).contains( QCursor::pos() ) );
 
-            _animations->mdiWindowEngine().updateState( widget, subControl, mouseOver );
+            // adjust iconRect
+            const int iconWidth( pixelMetric( PM_SmallIconSize, option, widget ) );
+            const QSize iconSize( iconWidth, iconWidth );
+            iconRect = centerRect( iconRect, iconSize );
 
             // set icon mode and state
             QIcon::Mode iconMode;

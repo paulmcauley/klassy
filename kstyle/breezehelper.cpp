@@ -376,7 +376,7 @@ namespace Breeze
                 frameRect.adjust( 1, 1, -1, -1 );
             } else {
 
-                painter->setPen( QPen( outline, 1 ) );
+                painter->setPen( outline );
                 frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
             }
@@ -413,7 +413,7 @@ namespace Breeze
         if( outline.isValid() )
         {
 
-            painter->setPen( QPen( outline, 1 ) );
+            painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
             radius -= 1.0;
 
@@ -457,7 +457,7 @@ namespace Breeze
         if( outline.isValid() && !hasFocus )
         {
 
-            painter->setPen( QPen( outline, 1 ) );
+            painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
             radius -= 1.0;
 
@@ -571,7 +571,7 @@ namespace Breeze
         if( outline.isValid() )
         {
 
-            painter->setPen( QPen( outline, 1 ) );
+            painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
             radius -= 1.0;
 
@@ -915,7 +915,7 @@ namespace Breeze
 
             } else {
 
-                painter->setPen( QPen( outline, 1 ) );
+                painter->setPen( outline );
                 frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
             }
@@ -1051,7 +1051,7 @@ namespace Breeze
         if( outline.isValid() )
         {
 
-            painter->setPen( QPen( outline, 1 ) );
+            painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
             radius -= 1.0;
 

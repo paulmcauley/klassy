@@ -95,8 +95,6 @@ set(breeze_PART_SRCS
     animations/breezeheaderviewengine.cpp
     animations/breezescrollbardata.cpp
     animations/breezescrollbarengine.cpp
-    animations/breezemdiwindowdata.cpp
-    animations/breezemdiwindowengine.cpp
     animations/breezesliderengine.cpp
     animations/breezesliderdata.cpp
     animations/breezespinboxengine.cpp

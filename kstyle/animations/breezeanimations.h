@@ -30,7 +30,6 @@
 #include "breezebusyindicatorengine.h"
 #include "breezedialengine.h"
 #include "breezeheaderviewengine.h"
-#include "breezemdiwindowengine.h"
 #include "breezescrollbarengine.h"
 #include "breezesliderengine.h"
 #include "breezespinboxengine.h"
@@ -113,10 +112,6 @@ namespace Breeze
         ToolBoxEngine& toolBoxEngine( void ) const
         { return *_toolBoxEngine; }
 
-        //* mdi windows
-        MdiWindowEngine& mdiWindowEngine( void ) const
-        { return *_mdiWindowEngine; }
-
         //* setup engines
         void setupEngines( void );
 
@@ -164,9 +159,6 @@ namespace Breeze
 
         //* toolbar engine
         ToolBoxEngine* _toolBoxEngine;
-
-        //* mdi window
-        MdiWindowEngine* _mdiWindowEngine;
 
         //* keep list of existing engines
         QList< BaseEngine::Pointer > _engines;
