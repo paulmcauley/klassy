@@ -86,6 +86,14 @@ namespace Breeze
         QColor shadowColor( const QPalette& palette ) const
         { return alphaColor( palette.color( QPalette::Shadow ), 0.2 ); }
 
+        //* titlebar color
+        const QColor& titleBarColor( bool active ) const
+        { return active ? _activeTitleBarColor:_inactiveTitleBarColor; }
+
+        //* titlebar text color
+        const QColor& titleBarTextColor( bool active ) const
+        { return active ? _activeTitleBarTextColor:_inactiveTitleBarTextColor; }
+
         //* frame outline color, using animations
         QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
@@ -267,6 +275,14 @@ namespace Breeze
         KStatefulBrush _viewFocusBrush;
         KStatefulBrush _viewHoverBrush;
         KStatefulBrush _viewNegativeTextBrush;
+        //@}
+
+        //*@name windeco colors
+        //@{
+        QColor _activeTitleBarColor;
+        QColor _activeTitleBarTextColor;
+        QColor _inactiveTitleBarColor;
+        QColor _inactiveTitleBarTextColor;
         //@}
 
         #if HAVE_X11
