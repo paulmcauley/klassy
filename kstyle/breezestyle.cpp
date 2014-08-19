@@ -2258,11 +2258,11 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
+                const int iconWidth( menuItemOption->maxIconWidth );
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
-                leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
+                if( iconWidth ) leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
 
                 // add checkbox indicator width
                 if( menuItemOption->menuHasCheckableItems )
@@ -2306,7 +2306,7 @@ namespace Breeze
                     const QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
 
                     // make sure height is large enough for icon
-                    const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
+                    const int iconWidth( menuItemOption->maxIconWidth );
                     size.setHeight( qMax( size.height(), (int) iconWidth ) );
 
                     // return size from CT_ToolButton
@@ -3820,16 +3820,19 @@ namespace Breeze
         }
 
         // icon
-        const int iconWidth( qMax( menuItemOption->maxIconWidth, pixelMetric( PM_SmallIconSize, option, widget ) ) );
-        QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
-        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+        const int iconWidth( menuItemOption->maxIconWidth );
 
-        const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
-        iconRect = centerRect( iconRect, iconSize );
+        QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
+
+        if( iconWidth > 0 )
+        { contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 ); }
+
 
         if( !menuItemOption->icon.isNull() )
         {
 
+            const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
+            iconRect = centerRect( iconRect, iconSize );
             iconRect = visualRect( option, iconRect );
 
             // icon mode
