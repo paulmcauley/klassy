@@ -3011,7 +3011,6 @@ namespace Breeze
     {
 
         // cast option and check
-        // const QStyleOptionViewItem *viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
         const QStyleOptionViewItemV4 *viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
         if( !viewItemOption ) return false;
 
