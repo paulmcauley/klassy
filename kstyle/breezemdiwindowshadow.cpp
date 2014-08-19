@@ -30,6 +30,8 @@
 #include "breezemdiwindowshadow.h"
 #include "breezemdiwindowshadow.moc"
 
+#include "breeze.h"
+
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QPainter>
@@ -44,7 +46,8 @@ namespace Breeze
         if( !_widget ) return;
 
         // get tileSet rect
-        _shadowTilesRect = _widget->frameGeometry().adjusted( -ShadowSize, -ShadowSize, ShadowSize, ShadowSize );
+        const int shadowSize = Metrics::Shadow_Size - Metrics::Shadow_Overlap;
+        _shadowTilesRect = _widget->frameGeometry().adjusted( -shadowSize, -shadowSize, shadowSize, shadowSize );
 
         // get parent MDI area's viewport
         QWidget *parent( parentWidget() );

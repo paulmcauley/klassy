@@ -51,9 +51,6 @@ namespace Breeze
 
         public:
 
-        //* shadow size (hard coded)
-        enum { ShadowSize = 10 };
-
         //* constructor
         explicit MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
           QWidget( parent ),

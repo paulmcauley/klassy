@@ -27,6 +27,7 @@
 #include "breezeshadowhelper.h"
 #include "breezeshadowhelper.moc"
 
+#include "breeze.h"
 #include "breezehelper.h"
 #include "breezestyleconfigdata.h"
 
@@ -49,15 +50,6 @@ namespace Breeze
     const char* const ShadowHelper::netWMShadowAtomName( "_KDE_NET_WM_SHADOW" );
     const char* const ShadowHelper::netWMForceShadowPropertyName( "_KDE_NET_WM_FORCE_SHADOW" );
     const char* const ShadowHelper::netWMSkipShadowPropertyName( "_KDE_NET_WM_SKIP_SHADOW" );
-
-    // shadow dimensions
-    enum
-    {
-        Shadow_InternalSize = 10,
-        Shadow_InternalOffset = 4,
-        Shadow_Size = (3*Shadow_InternalSize + Shadow_InternalOffset)/2,
-        Shadow_Overlap = Shadow_Size - Shadow_InternalSize + 2
-    };
 
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
@@ -161,7 +153,7 @@ namespace Breeze
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
             // create pixmap
-            QPixmap pixmap = QPixmap( Shadow_Size*2, Shadow_Size*2 );
+            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*2, Metrics::Shadow_Size*2 );
             pixmap.fill( Qt::transparent );
 
             // paint
@@ -172,9 +164,9 @@ namespace Breeze
 
             switch( StyleConfigData::lightSource() )
             {
-                case StyleConfigData::LS_TOP: painter.translate( Shadow_InternalOffset/2, Shadow_InternalOffset ); break;
-                case StyleConfigData::LS_TOPLEFT: painter.translate( Shadow_InternalOffset, Shadow_InternalOffset ); break;
-                case StyleConfigData::LS_TOPRIGHT: painter.translate( 0, Shadow_InternalOffset ); break;
+                case StyleConfigData::LS_TOP: painter.translate( Metrics::Shadow_InternalOffset/2, Metrics::Shadow_InternalOffset ); break;
+                case StyleConfigData::LS_TOPLEFT: painter.translate( Metrics::Shadow_InternalOffset, Metrics::Shadow_InternalOffset ); break;
+                case StyleConfigData::LS_TOPRIGHT: painter.translate( 0, Metrics::Shadow_InternalOffset ); break;
             }
 
             auto gradientStopColor = [](QColor color, qreal alpha) {
@@ -182,7 +174,7 @@ namespace Breeze
                 return color;
             };
 
-            QRadialGradient radialGradient(Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize);
+            QRadialGradient radialGradient(Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize);
             radialGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
             radialGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
             radialGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
@@ -197,46 +189,55 @@ namespace Breeze
             linearGradient.setColorAt(1.0,  gradientStopColor( shadowColor, 0.0) );
 
             // topLeft
-            painter.fillRect(QRect(0, 0, Shadow_InternalSize, Shadow_InternalSize), radialGradient);
+            QRect rect( 0, 0, Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize );
+            painter.fillRect(rect, radialGradient);
 
             // top
-            linearGradient.setStart(Shadow_InternalSize, Shadow_InternalSize);
-            linearGradient.setFinalStop(Shadow_InternalSize, 0);
-            painter.fillRect(QRect(Shadow_InternalSize, 0, Shadow_InternalSize, Shadow_InternalSize), linearGradient);
+            rect.translate( Metrics::Shadow_InternalSize, 0 );
+            linearGradient.setStart( rect.bottomLeft() );
+            linearGradient.setFinalStop( rect.topLeft() );
+            painter.fillRect( rect, linearGradient );
 
             // topRight
-            radialGradient.setCenter(2*Shadow_InternalSize, Shadow_InternalSize);
-            radialGradient.setFocalPoint(2*Shadow_InternalSize, Shadow_InternalSize);
-            painter.fillRect(QRect(2*Shadow_InternalSize, 0, Shadow_InternalSize, Shadow_InternalSize), radialGradient);
-
-            // left
-            linearGradient.setStart(Shadow_InternalSize, Shadow_InternalSize);
-            linearGradient.setFinalStop(0, Shadow_InternalSize);
-            painter.fillRect(QRect(0, Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize), linearGradient);
-
-            // bottom left
-            radialGradient.setCenter(Shadow_InternalSize, 2*Shadow_InternalSize);
-            radialGradient.setFocalPoint(Shadow_InternalSize, 2*Shadow_InternalSize);
-            painter.fillRect(QRect(0, 2*Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize), radialGradient);
-
-            // bottom
-            linearGradient.setStart(Shadow_InternalSize, 2*Shadow_InternalSize);
-            linearGradient.setFinalStop(Shadow_InternalSize, 3*Shadow_InternalSize);
-            painter.fillRect(QRect(Shadow_InternalSize, 2*Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize), linearGradient);
-
-            // bottom right
-            radialGradient.setCenter(2*Shadow_InternalSize, 2*Shadow_InternalSize);
-            radialGradient.setFocalPoint(2*Shadow_InternalSize, 2*Shadow_InternalSize);
-            painter.fillRect(QRect(2*Shadow_InternalSize, 2*Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize), radialGradient);
+            rect.translate( Metrics::Shadow_InternalSize, 0 );
+            radialGradient.setCenter( rect.bottomLeft() );
+            radialGradient.setFocalPoint( rect.bottomLeft() );
+            painter.fillRect( rect, radialGradient );
 
             // right
-            linearGradient.setStart(2*Shadow_InternalSize, Shadow_InternalSize);
-            linearGradient.setFinalStop(3*Shadow_InternalSize, Shadow_InternalSize);
-            painter.fillRect(QRect(2*Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize, Shadow_InternalSize), linearGradient);
+            rect.translate( 0, Metrics::Shadow_InternalSize );
+            linearGradient.setStart( rect.topLeft() );
+            linearGradient.setFinalStop( rect.topRight() );
+            painter.fillRect( rect, linearGradient);
+
+            // bottom right
+            rect.translate( 0, Metrics::Shadow_InternalSize );
+            radialGradient.setCenter( rect.topLeft() );
+            radialGradient.setFocalPoint( rect.topLeft() );
+            painter.fillRect( rect, radialGradient );
+
+            // bottom
+            rect.translate( -Metrics::Shadow_InternalSize, 0 );
+            linearGradient.setStart( rect.topLeft() );
+            linearGradient.setFinalStop( rect.bottomLeft() );
+            painter.fillRect( rect, linearGradient);
+
+            // bottom left
+            rect.translate( -Metrics::Shadow_InternalSize, 0 );
+            radialGradient.setCenter( rect.topRight() );
+            radialGradient.setFocalPoint( rect.topRight() );
+            painter.fillRect( rect, radialGradient );
+
+            // left
+            rect.translate( 0, -Metrics::Shadow_InternalSize );
+            linearGradient.setStart( rect.topRight() );
+            linearGradient.setFinalStop( rect.topLeft() );
+            painter.fillRect( rect, linearGradient);
+
             painter.end();
 
             // create tiles from pixmap
-            _shadowTiles = TileSet( pixmap, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, 1, 1 );
+            _shadowTiles = TileSet( pixmap, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, 1, 1 );
 
         }
 
@@ -462,7 +463,7 @@ namespace Breeze
         */
 
         // also need to decrement default size further due to extra hard coded round corner
-        int size = Shadow_Size - Shadow_Overlap;
+        int size = Metrics::Shadow_Size - Metrics::Shadow_Overlap;
         if( isToolTip( widget ) )
         {
             if( widget->inherits( "QBalloonTip" ) )
