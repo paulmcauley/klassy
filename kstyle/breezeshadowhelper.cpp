@@ -238,8 +238,6 @@ namespace Breeze
             // create tiles from pixmap
             _shadowTiles = TileSet( pixmap, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, Shadow_Size, 1, 1 );
 
-            pixmap.save( "shadow.png" );
-
         }
 
         return _shadowTiles;
