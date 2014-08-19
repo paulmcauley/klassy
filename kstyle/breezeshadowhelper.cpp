@@ -53,8 +53,8 @@ namespace Breeze
     // shadow dimensions
     enum
     {
-        Shadow_InternalSize = 15,
-        Shadow_InternalOffset = 7,
+        Shadow_InternalSize = 10,
+        Shadow_InternalOffset = 4,
         Shadow_Size = (3*Shadow_InternalSize + Shadow_InternalOffset)/2,
         Shadow_Overlap = Shadow_Size - Shadow_InternalSize + 2
     };
