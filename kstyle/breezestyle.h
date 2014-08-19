@@ -145,10 +145,14 @@ namespace Breeze
         //* update breeze configuration
         void configurationChanged( void );
 
+        //* standard icons
+        virtual QIcon standardIconImplementation( StandardPixmap, const QStyleOption*, const QWidget* ) const;
+
         protected:
 
         //* standard icons
-        virtual QIcon standardIcon( StandardPixmap, const QStyleOption* = 0, const QWidget* = 0) const;
+        virtual QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = 0, const QWidget* widget = 0) const
+        { return standardIconImplementation( pixmap, option, widget ); }
 
         //* load configuration
         void loadConfiguration();

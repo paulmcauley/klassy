@@ -295,9 +295,8 @@ namespace Breeze
 
     }
 
-
     //____________________________________________________________________
-    QIcon Style::standardIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
+    QIcon Style::standardIconImplementation( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
     {
 
         // lookup cache
