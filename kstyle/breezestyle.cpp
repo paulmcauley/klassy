@@ -320,13 +320,24 @@ namespace Breeze
             break;
 
             default:
-            icon = ParentStyleClass::standardIcon( standardPixmap, option, widget );
             break;
 
         }
 
-        const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
-        return icon;
+        if( icon.isNull() )
+        {
+
+            // do not cache parent style icon, since it may change at runtime
+            #if QT_VERSION >= 0x050000
+            return  ParentStyleClass::standardIcon( standardPixmap, option, widget );
+            #else
+            return  ParentStyleClass::standardIconImplementation( standardPixmap, option, widget );
+            #endif
+
+        } else {
+            const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
+            return icon;
+        }
 
     }
 
