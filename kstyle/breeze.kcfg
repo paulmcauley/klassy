@@ -47,7 +47,7 @@
           <choice name="MN_AUTO" />
           <choice name="MN_ALWAYS" />
       </choices>
-      <default>MN_NEVER</default>
+      <default>MN_AUTO</default>
     </entry>
 
     <!-- toolbars -->
