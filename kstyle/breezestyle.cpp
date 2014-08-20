@@ -3448,11 +3448,16 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // do nothing if disabled from options
-        if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
+        /*
+        do nothing if disabled from options
+        also need to check if widget is a combobox, because of Qt hack using 'toolbar' separator primitive
+        for rendering separators in comboboxes
+        */
+        if( !( StyleConfigData::toolBarDrawItemSeparator() || qobject_cast<const QComboBox*>( widget ) ) )
+        { return true; }
 
         // store rect and palette
         const QRect& rect( option->rect );
