@@ -72,7 +72,11 @@ namespace Breeze
         StyleConfigData::setAnimationsDuration( _animationsDuration->value() );
         StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex()  );
 
+        #if USE_KDE4
         StyleConfigData::self()->writeConfig();
+        #else
+        StyleConfigData::self()->save();
+        #endif
 
         // emit dbus signal
         QDBusMessage message( QDBusMessage::createSignal( QStringLiteral( "/BreezeStyle" ),  QStringLiteral( "org.kde.Breeze.Style" ), QStringLiteral( "reparseConfiguration" ) ) );
