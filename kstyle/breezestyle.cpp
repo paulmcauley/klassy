@@ -2322,6 +2322,9 @@ namespace Breeze
 
         }
 
+        // make sure buttons have a minimum width
+        size.rwidth() = qMax( size.rwidth(), int( Metrics::Button_MinWidth ) );
+
         // finally add margins
         return flat ? size : expandSize( size, Metrics::Frame_FrameWidth );
 
