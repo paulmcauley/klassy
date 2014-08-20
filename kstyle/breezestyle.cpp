@@ -1180,10 +1180,15 @@ namespace Breeze
     {
 
         // reparse breezerc
+        #if USE_KDE4
         StyleConfigData::self()->readConfig();
+        #else
+        StyleConfigData::self()->load();
+        #endif
 
         // reload configuration
         loadConfiguration();
+
     }
 
     //_____________________________________________________________________

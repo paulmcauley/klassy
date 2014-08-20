@@ -90,7 +90,13 @@ namespace Breeze
     //__________________________________________________________________
     void StyleConfig::reset( void )
     {
+        // reparse breezerc
+        #if USE_KDE4
         StyleConfigData::self()->readConfig();
+        #else
+        StyleConfigData::self()->load();
+        #endif
+
         load();
     }
 
