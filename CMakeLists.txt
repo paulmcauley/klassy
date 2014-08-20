@@ -14,10 +14,10 @@ include(GenerateExportHeader)
 
 add_subdirectory(cursors)
 add_subdirectory(icons)
-add_subdirectory(windec)
-add_subdirectory(widgetstyles)
-add_subdirectory(kde4breeze)
+add_subdirectory(misc)
+add_subdirectory(qtquickcontrols)
 add_subdirectory(wallpapers)
+add_subdirectory(windec)
 
 INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 
