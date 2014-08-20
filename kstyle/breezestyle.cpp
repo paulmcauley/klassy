@@ -5327,7 +5327,7 @@ namespace Breeze
         const bool horizontal( sliderOption->orientation == Qt::Horizontal );
 
         // tickmarks
-        if( sliderOption->subControls & SC_SliderTickmarks )
+        if( StyleConfigData::sliderDrawTickMarks() && ( sliderOption->subControls & SC_SliderTickmarks ) )
         {
             const bool upsideDown( sliderOption->upsideDown );
             const int tickPosition( sliderOption->tickPosition );
