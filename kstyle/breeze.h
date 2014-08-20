@@ -90,7 +90,6 @@ namespace Breeze
         Button_MarginWidth = 6,
         Button_BoxTextSpace = 4,
 
-
         // tool buttons
         ToolButton_MarginWidth = 6,
         ToolButton_BoxTextSpace = 12,
