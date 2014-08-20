@@ -717,6 +717,7 @@ namespace Breeze
             case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
             case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
             case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
+            case CT_Slider: return sliderSizeFromContents( option, size, widget );
             case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
             case CT_ToolButton: return toolButtonSizeFromContents( option, size, widget );
             case CT_MenuBar: return defaultSizeFromContents( option, size, widget );
@@ -2090,7 +2091,7 @@ namespace Breeze
 
         switch( subControl )
         {
-            case QStyle::SC_DialGroove: return insideMargin( rect, (Metrics::Slider_ControlThickness - Metrics::Slider_Thickness)/2 );
+            case QStyle::SC_DialGroove: return insideMargin( rect, (Metrics::Slider_ControlThickness - Metrics::Slider_GrooveThickness)/2 );
             case QStyle::SC_DialHandle:
             {
 
@@ -2138,8 +2139,8 @@ namespace Breeze
                 grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
 
                 // centering
-                if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_Thickness );
-                else grooveRect = centerRect( grooveRect, Metrics::Slider_Thickness, grooveRect.height() );
+                if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_GrooveThickness );
+                else grooveRect = centerRect( grooveRect, Metrics::Slider_GrooveThickness, grooveRect.height() );
                 return grooveRect;
 
             }
@@ -2231,6 +2232,48 @@ namespace Breeze
 
         // add button width and spacing
         size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
+
+        return size;
+
+    }
+
+    //______________________________________________________________
+    QSize Style::sliderSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        if( !sliderOption ) return contentsSize;
+
+        // store tick position and orientation
+        const QSlider::TickPosition& tickPosition( sliderOption->tickPosition );
+        const bool horizontal( sliderOption->orientation == Qt::Horizontal );
+        const bool disableTicks( !StyleConfigData::sliderDrawTickMarks() );
+
+        /*
+        Qt adds its own tick length directly inside QSlider.
+        Take it out and replace by ours, if needed
+        */
+        const int tickLength( disableTicks ? 0 : (
+            Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth +
+            (Metrics::Slider_GrooveThickness - Slider_ControlThickness)/2 ) );
+
+        const int builtInTickLength( 5 );
+        if( tickPosition == QSlider::NoTicks ) return contentsSize;
+
+        QSize size( contentsSize );
+        if( horizontal )
+        {
+
+            if(tickPosition & QSlider::TicksAbove) size.rheight() += tickLength - builtInTickLength;
+            if(tickPosition & QSlider::TicksBelow) size.rheight() += tickLength - builtInTickLength;
+
+        } else {
+
+            if(tickPosition & QSlider::TicksAbove) size.rwidth() += tickLength - builtInTickLength;
+            if(tickPosition & QSlider::TicksBelow) size.rwidth() += tickLength - builtInTickLength;
+
+        }
 
         return size;
 
@@ -5337,7 +5380,6 @@ namespace Breeze
             if( interval >= 1 )
             {
                 const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
-                const int tickSize( ( horizontal ? (rect.height() - Metrics::Slider_Thickness)/2 : (rect.width()-Metrics::Slider_Thickness)/2 ) - 1 );
                 int current( sliderOption->minimum );
 
                 // store tick lines
@@ -5346,13 +5388,13 @@ namespace Breeze
                 if( horizontal )
                 {
 
-                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), grooveRect.top() - 2, rect.left(), grooveRect.top() - tickSize - 2 ) );
-                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( rect.left(), grooveRect.bottom() + 2, rect.left(), grooveRect.bottom() + tickSize + 2 ) );
+                    if( tickPosition & QSlider::TicksAbove ) tickLines.append( QLine( rect.left(), grooveRect.top() - Metrics::Slider_TickMarginWidth, rect.left(), grooveRect.top() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength ) );
+                    if( tickPosition & QSlider::TicksBelow ) tickLines.append( QLine( rect.left(), grooveRect.bottom() + Metrics::Slider_TickMarginWidth, rect.left(), grooveRect.bottom() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength ) );
 
                 } else {
 
-                    if( tickPosition == QSlider::TicksAbove || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( grooveRect.left() - 2, rect.top(), grooveRect.left() - tickSize - 2, rect.top() ) );
-                    if( tickPosition == QSlider::TicksBelow || tickPosition == QSlider::TicksBothSides ) tickLines.append( QLine( grooveRect.right() + 2, rect.top(), grooveRect.right() + tickSize + 2, rect.top() ) );
+                    if( tickPosition & QSlider::TicksAbove ) tickLines.append( QLine( grooveRect.left() - Metrics::Slider_TickMarginWidth, rect.top(), grooveRect.left() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength, rect.top() ) );
+                    if( tickPosition & QSlider::TicksBelow ) tickLines.append( QLine( grooveRect.right() + Metrics::Slider_TickMarginWidth, rect.top(), grooveRect.right() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength, rect.top() ) );
 
                 }
 

@@ -127,7 +127,9 @@ namespace Breeze
         TitleBar_MarginWidth = 4,
 
         // sliders
-        Slider_Thickness = 6,
+        Slider_TickLength = 8,
+        Slider_TickMarginWidth = 2,
+        Slider_GrooveThickness = 6,
         Slider_ControlThickness = 20,
 
         // tabbar

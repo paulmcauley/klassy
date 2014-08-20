@@ -804,7 +804,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         const QRectF baseRect( rect );
-        const qreal radius( 0.5*Metrics::Slider_Thickness );
+        const qreal radius( 0.5*Metrics::Slider_GrooveThickness );
 
         // content
         if( color.isValid() )
@@ -832,7 +832,7 @@ namespace Breeze
         // content
         if( color.isValid() )
         {
-            const qreal penWidth( Metrics::Slider_Thickness );
+            const qreal penWidth( Metrics::Slider_GrooveThickness );
             const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
 
             painter->setPen( QPen( color, penWidth ) );
@@ -861,7 +861,7 @@ namespace Breeze
         {
 
             // setup groove rect
-            const qreal penWidth( Metrics::Slider_Thickness );
+            const qreal penWidth( Metrics::Slider_GrooveThickness );
             const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
 
             // setup angles

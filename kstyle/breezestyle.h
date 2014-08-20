@@ -218,6 +218,7 @@ namespace Breeze
         QSize lineEditSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize comboBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize sliderSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
         QSize menuItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
