@@ -14,6 +14,7 @@ include(GenerateExportHeader)
 
 add_subdirectory(cursors)
 add_subdirectory(icons)
+add_subdirectory(kstyle)
 add_subdirectory(misc)
 add_subdirectory(qtquickcontrols)
 add_subdirectory(wallpapers)

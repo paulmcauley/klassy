@@ -1,7 +1,5 @@
 project(kstyle-breeze)
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
 if( USE_KDE4 )
@@ -18,8 +16,6 @@ if( USE_KDE4 )
 
 else()
 
-  find_package(ECM 0.0.9 REQUIRED NO_MODULE)
-  set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
   add_definitions( -DUSE_KDE4=0 )
 
 endif()
@@ -65,12 +61,6 @@ else()
     find_package(XCB REQUIRED COMPONENTS XCB)
     find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
   endif()
-
-  ### includes
-  include(KDEInstallDirs)
-  include(KDECMakeSettings)
-  include(KDECompilerSettings)
-  include(GenerateExportHeader)
 
 endif()
 
