@@ -104,7 +104,7 @@ namespace Breeze
     void WindowManager::initialize( void )
     {
 
-        setEnabled( StyleConfigData::windowDragEnabled() );
+        setEnabled( StyleConfigData::windowDragMode() != StyleConfigData::WD_NONE );
         setDragMode( StyleConfigData::windowDragMode() );
         setUseWMMoveResize( StyleConfigData::useWMMoveResize() );
 

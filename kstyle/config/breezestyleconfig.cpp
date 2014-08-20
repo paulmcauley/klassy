@@ -44,9 +44,6 @@ namespace Breeze
     {
         setupUi(this);
 
-        // connections
-        connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(windowDragModeChanged(int)) );
-
         // load setup from configData
         load();
 
@@ -58,9 +55,7 @@ namespace Breeze
         connect( _animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _lightSource, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _useWMMoveResize, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
 
     }
 
@@ -73,22 +68,9 @@ namespace Breeze
         StyleConfigData::setMnemonicsMode( _mnemonicsMode->currentIndex() );
         StyleConfigData::setScrollBarAddLineButtons( _scrollBarAddLineButtons->currentIndex() );
         StyleConfigData::setScrollBarSubLineButtons( _scrollBarSubLineButtons->currentIndex() );
-        StyleConfigData::setLightSource( _lightSource->currentIndex() );
         StyleConfigData::setAnimationsEnabled( _animationsEnabled->isChecked() );
         StyleConfigData::setAnimationsDuration( _animationsDuration->value() );
-
-        StyleConfigData::setUseWMMoveResize( _useWMMoveResize->isChecked() );
-        if( _windowDragMode->currentIndex() == 0 )
-        {
-
-            StyleConfigData::setWindowDragEnabled( false  );
-
-        } else {
-
-            StyleConfigData::setWindowDragEnabled( true  );
-            StyleConfigData::setWindowDragMode( windowDragMode()  );
-
-        }
+        StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex()  );
 
         StyleConfigData::self()->writeConfig();
 
@@ -124,32 +106,10 @@ namespace Breeze
         else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
         else if( _scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons() ) modified = true;
         else if( _scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons() ) modified = true;
-        else if( _lightSource->currentIndex() != StyleConfigData::lightSource() ) modified = true;
         else if( _splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled() ) modified = true;
         else if( _animationsEnabled->isChecked() != StyleConfigData::animationsEnabled() ) modified = true;
         else if( _animationsDuration->value() != StyleConfigData::animationsDuration() ) modified = true;
-        else if( _useWMMoveResize->isChecked() != StyleConfigData::useWMMoveResize() ) modified = true;
-        if( !modified )
-        {
-            switch( _windowDragMode->currentIndex() )
-            {
-                case 0:
-                {
-                    if( StyleConfigData::windowDragEnabled() ) modified = true;
-                    break;
-                }
-
-                case 1:
-                case 2:
-                default:
-                {
-                    if( !StyleConfigData::windowDragEnabled() || windowDragMode() != StyleConfigData::windowDragMode() )
-                    { modified = true; }
-                    break;
-                }
-
-            }
-        }
+        else if( _windowDragMode->currentIndex() != StyleConfigData::windowDragMode() ) modified = true;
 
         emit changed(modified);
 
@@ -165,28 +125,10 @@ namespace Breeze
         _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
         _scrollBarAddLineButtons->setCurrentIndex( StyleConfigData::scrollBarAddLineButtons() );
         _scrollBarSubLineButtons->setCurrentIndex( StyleConfigData::scrollBarSubLineButtons() );
-        _lightSource->setCurrentIndex( StyleConfigData::lightSource() );
         _animationsEnabled->setChecked( StyleConfigData::animationsEnabled() );
         _animationsDuration->setValue( StyleConfigData::animationsDuration() );
-        if( !StyleConfigData::windowDragEnabled() ) _windowDragMode->setCurrentIndex(0);
-        else if( StyleConfigData::windowDragMode() == StyleConfigData::WD_MINIMAL ) _windowDragMode->setCurrentIndex(1);
-        else _windowDragMode->setCurrentIndex(2);
-        _useWMMoveResize->setChecked( StyleConfigData::useWMMoveResize() );
+        _windowDragMode->setCurrentIndex( StyleConfigData::windowDragMode() );
 
-    }
-
-    //__________________________________________________________________
-    void StyleConfig::windowDragModeChanged( int value )
-    { _useWMMoveResize->setEnabled( value != 0 ); }
-
-    //____________________________________________________________
-    int StyleConfig::windowDragMode( void ) const
-    {
-        switch( _windowDragMode->currentIndex() )
-        {
-            case 1: return StyleConfigData::WD_MINIMAL;
-            case 2: default: return StyleConfigData::WD_FULL;
-        }
     }
 
 }

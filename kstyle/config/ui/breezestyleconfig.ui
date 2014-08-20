@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>671</width>
-    <height>557</height>
+    <width>464</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -164,13 +164,6 @@
       <string>Advanced</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="7" column="1" colspan="2">
-       <widget class="QCheckBox" name="_useWMMoveResize">
-        <property name="text">
-         <string>Use window manager to perform windows' drag</string>
-        </property>
-       </widget>
-      </item>
       <item row="5" column="0">
        <widget class="QLabel" name="_mnemonicsLabel">
         <property name="text">
@@ -255,39 +248,14 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="_lightSourceLabel">
+      <item row="1" column="1" colspan="2">
+       <widget class="QCheckBox" name="_sliderDrawTickMarks">
         <property name="text">
-         <string>&amp;Light source:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="buddy">
-         <cstring>_lightSource</cstring>
+         <string>Draw slider tick marks</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QComboBox" name="_lightSource">
-        <item>
-         <property name="text">
-          <string>Top-Left</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Top</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Top-Right</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="4" column="3">
+      <item row="5" column="3">
        <spacer name="horizontalSpacer_3">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -299,13 +267,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QCheckBox" name="_sliderDrawTickMarks">
-        <property name="text">
-         <string>Draw slider tick marks</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>
@@ -339,10 +300,8 @@
   <tabstop>_scrollBarAddLineButtons</tabstop>
   <tabstop>_toolBarDrawItemSeparator</tabstop>
   <tabstop>_splitterProxyEnabled</tabstop>
-  <tabstop>_lightSource</tabstop>
   <tabstop>_mnemonicsMode</tabstop>
   <tabstop>_windowDragMode</tabstop>
-  <tabstop>_useWMMoveResize</tabstop>
  </tabstops>
  <resources/>
  <connections/>

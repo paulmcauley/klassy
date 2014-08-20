@@ -62,15 +62,10 @@ namespace Breeze
         //* update modified state when option is checked/unchecked
         void updateChanged( void );
 
-        //* update options enable state based on selected drag mode
-        void windowDragModeChanged( int );
-
         protected:
 
         //* load setup from config data
         void load( void );
-
-        int windowDragMode( void ) const;
 
     };
 

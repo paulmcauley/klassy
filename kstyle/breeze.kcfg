@@ -66,12 +66,9 @@
     </entry>
 
     <!-- window dragging -->
-    <entry name="WindowDragEnabled" type="Bool">
-      <default>true</default>
-    </entry>
-
     <entry name="WindowDragMode" type="Enum">
       <choices>
+          <choice name="WD_NONE" />
           <choice name="WD_MINIMAL" />
           <choice name="WD_FULL" />
       </choices>
