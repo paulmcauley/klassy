@@ -56,6 +56,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QScrollBar>
+#include <QItemDelegate>
 #include <QSplitterHandle>
 #include <QTextEdit>
 #include <QToolBox>
@@ -63,6 +64,7 @@
 
 namespace BreezePrivate
 {
+
     // needed to keep track of tabbars when being dragged
     class TabBarData: public QObject
     {
@@ -94,6 +96,56 @@ namespace BreezePrivate
 
         //* pointer to target tabBar
         Breeze::WeakPointer<const QWidget> _tabBar;
+
+    };
+
+    //! needed to have spacing added to items in combobox
+    class ComboBoxItemDelegate: public QItemDelegate
+    {
+
+        public:
+
+        //! constructor
+        ComboBoxItemDelegate( QAbstractItemView* parent ):
+            QItemDelegate( parent ),
+            _proxy( parent->itemDelegate() ),
+            _itemMargin( Breeze::Metrics::ItemView_ItemMarginWidth )
+        {}
+
+        //! destructor
+        virtual ~ComboBoxItemDelegate( void )
+        {}
+
+        //! paint
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+        {
+            // call either proxy or parent class
+            if( _proxy ) _proxy.data()->paint( painter, option, index );
+            else QItemDelegate::paint( painter, option, index );
+        }
+
+        //! size hint for index
+        virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+        {
+
+            // get size from either proxy or parent class
+            QSize size( _proxy ?
+                _proxy.data()->sizeHint( option, index ):
+                QItemDelegate::sizeHint( option, index ) );
+
+            // adjust and return
+            if( size.isValid() ) { size.rheight() += _itemMargin*2; }
+            return size;
+
+        }
+
+        private:
+
+        //! proxy
+        Breeze::WeakPointer<QAbstractItemDelegate> _proxy;
+
+        //! margin
+        int _itemMargin;
 
     };
 
@@ -253,6 +305,12 @@ namespace Breeze
         } else if( qobject_cast<QMenu*>( widget ) ) {
 
             setTranslucentBackground( widget );
+
+        } else if( QComboBox *comboBox = qobject_cast<QComboBox*>( widget ) ) {
+
+            QAbstractItemView *itemView( comboBox->view() );
+            if( itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits( "QComboBoxDelegate" ) )
+            { itemView->setItemDelegate( new BreezePrivate::ComboBoxItemDelegate( itemView ) ); }
 
         } else if( widget->inherits( "QComboBoxPrivateContainer" ) ) {
 
