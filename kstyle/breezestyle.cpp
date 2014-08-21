@@ -2837,8 +2837,9 @@ namespace Breeze
         bool mouseOver( enabled && ( state & State_MouseOver ) );
         bool hasFocus( enabled && ( state & State_HasFocus ) );
 
-        // detect buttons in tabbar, for which special rendering is needed
+        // detect special buttons
         const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
+        const bool inToolButton( qstyleoption_cast<const QStyleOptionToolButton *>( option ) );
 
         // get animation state
         /* there is no need to update the engine since this was already done when rendering the frame */
@@ -2847,9 +2848,19 @@ namespace Breeze
 
         // color
         QColor color;
-        if( mouseOver ) color = _helper->hoverColor( palette );
+        if( mouseOver && !inToolButton ) color = _helper->hoverColor( palette );
         else if( inTabBar && hasFocus ) color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
-        else color = palette.color( QPalette::WindowText );
+        else if( inToolButton ) {
+
+            QPalette::ColorRole colorRole;
+            const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+            const bool flat( state & State_AutoRaise );
+            if( flat ) colorRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
+            else colorRole = (hasFocus&&!mouseOver) ? QPalette::HighlightedText:QPalette::ButtonText;
+
+            color = palette.color( colorRole );
+
+        } else color = palette.color( QPalette::WindowText );
 
         // render
         _helper->renderArrow( painter, rect, color, orientation );
@@ -3897,8 +3908,8 @@ namespace Breeze
         {
 
             QPalette::ColorRole textRole( QPalette::ButtonText );
-            if( flat ) textRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::Text;
-            else if( hasFocus ) textRole = QPalette::HighlightedText;
+            if( flat ) textRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
+            else if( hasFocus&&!mouseOver ) textRole = QPalette::HighlightedText;
 
             painter->setFont(toolButtonOption->font);
             drawItemText( painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole );
@@ -5165,7 +5176,6 @@ namespace Breeze
         // need to alter palette for focused buttons
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & State_HasFocus) );
         const bool autoRaise( state & State_AutoRaise );
@@ -5198,19 +5208,15 @@ namespace Breeze
         // arrow
         if( toolButtonOption->subControls & SC_ToolButtonMenu )
         {
-            copy.rect = menuRect;
-            if( !autoRaise )
-            { drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget ); }
 
-            if( !( autoRaise && ( toolButtonOption->activeSubControls & SC_ToolButtonMenu ) ) )
-            { copy.state &= ~State_MouseOver; }
+            copy.rect = menuRect;
+            if( !autoRaise ) drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
 
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         } else if( hasInlineIndicator ) {
 
             copy.rect = menuRect;
-            copy.state &= ~State_MouseOver;
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         }
@@ -5245,10 +5251,6 @@ namespace Breeze
                     contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
                     contentsRect = visualRect( option, contentsRect );
                 }
-
-                // adjust state
-                if( toolButtonOption->features & QStyleOptionToolButton::Arrow )
-                { copy.state &= ~State_MouseOver; }
 
             }
 
