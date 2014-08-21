@@ -285,6 +285,7 @@ namespace Breeze
         bool emptyControl( const QStyleOption*, QPainter*, const QWidget* ) const
         { return true; }
 
+        virtual bool drawToolButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -308,8 +309,12 @@ namespace Breeze
         //* tabbar tabs.
         virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+
+        //* toolbox
         virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+
+        //* dock
         virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //*@}

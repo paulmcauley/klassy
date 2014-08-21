@@ -882,6 +882,9 @@ namespace Breeze
             case CE_CheckBoxLabel: fcn = &Style::drawCheckBoxLabelControl; break;
             case CE_RadioButtonLabel: fcn = &Style::drawCheckBoxLabelControl; break;
 
+            // tool button
+            case CE_ToolButtonLabel: fcn = &Style::drawToolButtonLabelControl; break;
+
             // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
 
@@ -3608,11 +3611,8 @@ namespace Breeze
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return true;
 
-        // rect
-        const QRect rect( option->rect );
-        QRect contentsRect( insideMargin( rect, Metrics::Frame_FrameWidth ) );
-
-        // palette
+        // copy rect and palette
+        const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
         // state
@@ -3625,6 +3625,9 @@ namespace Breeze
 
         // alignment
         const int alignment = _mnemonics->textFlags() | Qt::AlignCenter;
+
+        // contents
+        QRect contentsRect( rect );
 
         // color role
         QPalette::ColorRole textRole;
@@ -3790,9 +3793,125 @@ namespace Breeze
 
 
     //___________________________________________________________________________________
-    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    bool Style::drawToolButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // cast option and check
+        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>(option) );
+
+        // copy rect and palette
+        const QRect& rect = option->rect;
+        const QPalette& palette = option->palette;
+
+        // state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool mouseOver( enabled && (option->state & State_MouseOver) );
+        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
+        const bool flat( state & State_AutoRaise );
+
+        const bool hasArrow( toolButtonOption->features & QStyleOptionToolButton::Arrow );
+        const bool hasIcon( !( hasArrow || toolButtonOption->icon.isNull() ) );
+        const bool hasText( !toolButtonOption->text.isEmpty() );
+
+        // icon pixmap
+        QPixmap pixmap;
+        QSize iconSize( toolButtonOption->iconSize );
+        if( hasIcon )
+        {
+
+            // icon state and mode
+            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
+            QIcon::Mode iconMode;
+            if( !enabled ) iconMode = QIcon::Disabled;
+            else if( mouseOver && flat ) iconMode = QIcon::Active;
+            else iconMode = QIcon::Normal;
+
+            pixmap = toolButtonOption->icon.pixmap( rect.size().boundedTo( iconSize ), iconMode, iconState );
+            iconSize = pixmap.size() / pixmap.devicePixelRatio();
+
+        }
+
+        // adjust text and icon rect based on options
+        QRect iconRect;
+        QRect textRect;
+        int textFlags( _mnemonics->textFlags() );
+
+        if( hasText && ( !(hasArrow||hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly ) )
+        {
+
+            // text only
+            textRect = rect;
+            textFlags |= Qt::AlignCenter;
+
+        } else if( (hasArrow||hasIcon) && (!hasText || toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly ) ) {
+
+            // icon only
+            iconRect = rect;
+
+        } else if( toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon ) {
+
+            iconRect = rect;
+            iconRect.setHeight( iconSize.height() + 10 );
+
+            textRect = rect;
+            textRect.adjust( 0, iconRect.height() - 1, 0, -1 );
+            textFlags |= Qt::AlignCenter;
+
+        } else {
+
+            iconRect = rect;
+            iconRect.setWidth( iconSize.width() + 8 );
+
+            textRect = rect;
+            textRect.adjust( iconRect.width(), 0, 0, 0);
+
+            // handle right to left layouts
+            iconRect = visualRect( option, iconRect );
+            textRect = visualRect( option, textRect );
+
+            textFlags |= Qt::AlignLeft | Qt::AlignVCenter;
+
+        }
+
+        // render arrow or icon
+        if( hasArrow && iconRect.isValid() )
+        {
+
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.rect = iconRect;
+            switch( toolButtonOption->arrowType )
+            {
+                case Qt::LeftArrow: drawPrimitive( PE_IndicatorArrowLeft, &copy, painter, widget ); break;
+                case Qt::RightArrow: drawPrimitive( PE_IndicatorArrowRight, &copy, painter, widget ); break;
+                case Qt::UpArrow: drawPrimitive( PE_IndicatorArrowUp, &copy, painter, widget ); break;
+                case Qt::DownArrow: drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget ); break;
+                default: break;
+            }
+
+        } else if( hasIcon && iconRect.isValid() ) drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+
+        // render text
+        if( hasText && textRect.isValid() )
+        {
+
+            QPalette::ColorRole textRole( QPalette::ButtonText );
+            if( flat ) textRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::Text;
+            else if( hasFocus ) textRole = QPalette::HighlightedText;
+
+            painter->setFont(toolButtonOption->font);
+            drawItemText( painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole );
+
+        }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
         const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return false;
         if( comboBoxOption->editable ) return false;
@@ -5038,6 +5157,7 @@ namespace Breeze
     //______________________________________________________________
     bool Style::drawToolButtonComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
+
         // cast option and check
         const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
         if( !toolButtonOption ) return true;
@@ -5058,25 +5178,8 @@ namespace Breeze
         // detect buttons in tabbar, for which special rendering is needed
         const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
 
-        // define text role for label and arrow
-        QPalette::ColorRole textRole;
-        if( inTabBar )
-        {
-
-            textRole = QPalette::WindowText;
-
-        } else if( autoRaise ) {
-
-            if( sunken && !mouseOver ) textRole = QPalette::HighlightedText;
-            else textRole = QPalette::WindowText;
-
-        } else if( hasFocus && !mouseOver ) textRole = QPalette::HighlightedText;
-        else textRole = QPalette::ButtonText;
-
         // copy option and alter palette
         QStyleOptionToolButton copy( *toolButtonOption );
-        copy.palette.setColor( QPalette::WindowText, option->palette.color( textRole ) );
-        copy.palette.setColor( QPalette::ButtonText, option->palette.color( textRole ) );
 
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
@@ -5132,7 +5235,7 @@ namespace Breeze
                 const QAbstractButton* button( qobject_cast<const QAbstractButton*>( widget ) );
                 if( button->isChecked() || button->isDown() ) copy.state |= State_On;
 
-            } else {
+            } else if( !inTabBar ) {
 
                 // take out margins
                 const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
@@ -5144,7 +5247,7 @@ namespace Breeze
                 }
 
                 // adjust state
-                if( (toolButtonOption->features & QStyleOptionToolButton::Arrow) && !inTabBar )
+                if( toolButtonOption->features & QStyleOptionToolButton::Arrow )
                 { copy.state &= ~State_MouseOver; }
 
             }
