@@ -2425,12 +2425,13 @@ namespace Breeze
                     // build toolbutton option
                     const QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
 
-                    // make sure height is large enough for icon
+                    // make sure height is large enough for icon and text
                     const int iconWidth( menuItemOption->maxIconWidth );
-                    size.setHeight( qMax( size.height(), (int) iconWidth ) );
+                    const int textHeight( menuItemOption->fontMetrics.height() );
+                    if( !menuItemOption->icon.isNull() ) size.setHeight( qMax( size.height(), (int) iconWidth ) );
+                    if( !menuItemOption->text.isEmpty() ) size.setHeight( qMax( size.height(), (int) textHeight ) );
 
-                    // return size from CT_ToolButton
-                    return expandSize( size, Metrics::MenuItem_MarginWidth );
+                    return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
 
                 }
 
