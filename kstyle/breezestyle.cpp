@@ -3850,10 +3850,13 @@ namespace Breeze
 
         }
 
+        // text size
+        int textFlags( _mnemonics->textFlags() );
+        const QSize textSize( option->fontMetrics.size( textFlags, toolButtonOption->text ) );
+
         // adjust text and icon rect based on options
         QRect iconRect;
         QRect textRect;
-        int textFlags( _mnemonics->textFlags() );
 
         if( hasText && ( !(hasArrow||hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly ) )
         {
@@ -3869,20 +3872,16 @@ namespace Breeze
 
         } else if( toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon ) {
 
-            iconRect = rect;
-            iconRect.setHeight( iconSize.height() + 10 );
-
-            textRect = rect;
-            textRect.adjust( 0, iconRect.height() - 1, 0, -1 );
+            const int contentsHeight( iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing );
+            iconRect = QRect( QPoint( rect.left() + (rect.width() - iconSize.width())/2, rect.top() + (rect.height() - contentsHeight)/2 ), iconSize );
+            textRect = QRect( QPoint( rect.left() + (rect.width() - textSize.width())/2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1 ), textSize );
             textFlags |= Qt::AlignCenter;
 
         } else {
 
-            iconRect = rect;
-            iconRect.setWidth( iconSize.width() + 8 );
-
-            textRect = rect;
-            textRect.adjust( iconRect.width(), 0, 0, 0);
+            const int contentsWidth( iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing );
+            iconRect = QRect( QPoint( rect.left() + (rect.width() - contentsWidth )/2, rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, rect.top() + (rect.height() - textSize.height())/2 ), textSize );
 
             // handle right to left layouts
             iconRect = visualRect( option, iconRect );
