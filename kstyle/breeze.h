@@ -165,10 +165,9 @@ namespace Breeze
         Splitter_SplitterWidth = 1,
 
         // shadow dimensions
-        Shadow_InternalSize = 10,
-        Shadow_InternalOffset = 4,
-        Shadow_Size = (3*Shadow_InternalSize + Shadow_InternalOffset)/2,
-        Shadow_Overlap = Shadow_Size - Shadow_InternalSize + 2
+        Shadow_Size = 10,
+        Shadow_Offset = 4,
+        Shadow_Overlap = 2
 
     };
 

@@ -153,7 +153,7 @@ namespace Breeze
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
             // create pixmap
-            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*2, Metrics::Shadow_Size*2 );
+            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*3, Metrics::Shadow_Size*3 );
             pixmap.fill( Qt::transparent );
 
             // paint
@@ -162,19 +162,12 @@ namespace Breeze
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.setPen( Qt::NoPen );
 
-            switch( StyleConfigData::lightSource() )
-            {
-                case StyleConfigData::LS_TOP: painter.translate( Metrics::Shadow_InternalOffset/2, Metrics::Shadow_InternalOffset ); break;
-                case StyleConfigData::LS_TOPLEFT: painter.translate( Metrics::Shadow_InternalOffset, Metrics::Shadow_InternalOffset ); break;
-                case StyleConfigData::LS_TOPRIGHT: painter.translate( 0, Metrics::Shadow_InternalOffset ); break;
-            }
-
             auto gradientStopColor = [](QColor color, qreal alpha) {
                 color.setAlphaF(alpha);
                 return color;
             };
 
-            QRadialGradient radialGradient(Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize);
+            QRadialGradient radialGradient(Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
             radialGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
             radialGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
             radialGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
@@ -189,47 +182,47 @@ namespace Breeze
             linearGradient.setColorAt(1.0,  gradientStopColor( shadowColor, 0.0) );
 
             // topLeft
-            QRect rect( 0, 0, Metrics::Shadow_InternalSize, Metrics::Shadow_InternalSize );
+            QRect rect( 0, 0, Metrics::Shadow_Size, Metrics::Shadow_Size );
             painter.fillRect(rect, radialGradient);
 
             // top
-            rect.translate( Metrics::Shadow_InternalSize, 0 );
+            rect.translate( Metrics::Shadow_Size, 0 );
             linearGradient.setStart( rect.bottomLeft() );
             linearGradient.setFinalStop( rect.topLeft() );
             painter.fillRect( rect, linearGradient );
 
             // topRight
-            rect.translate( Metrics::Shadow_InternalSize, 0 );
+            rect.translate( Metrics::Shadow_Size, 0 );
             radialGradient.setCenter( rect.bottomLeft() );
             radialGradient.setFocalPoint( rect.bottomLeft() );
             painter.fillRect( rect, radialGradient );
 
             // right
-            rect.translate( 0, Metrics::Shadow_InternalSize );
+            rect.translate( 0, Metrics::Shadow_Size );
             linearGradient.setStart( rect.topLeft() );
             linearGradient.setFinalStop( rect.topRight() );
             painter.fillRect( rect, linearGradient);
 
             // bottom right
-            rect.translate( 0, Metrics::Shadow_InternalSize );
+            rect.translate( 0, Metrics::Shadow_Size );
             radialGradient.setCenter( rect.topLeft() );
             radialGradient.setFocalPoint( rect.topLeft() );
             painter.fillRect( rect, radialGradient );
 
             // bottom
-            rect.translate( -Metrics::Shadow_InternalSize, 0 );
+            rect.translate( -Metrics::Shadow_Size, 0 );
             linearGradient.setStart( rect.topLeft() );
             linearGradient.setFinalStop( rect.bottomLeft() );
             painter.fillRect( rect, linearGradient);
 
             // bottom left
-            rect.translate( -Metrics::Shadow_InternalSize, 0 );
+            rect.translate( -Metrics::Shadow_Size, 0 );
             radialGradient.setCenter( rect.topRight() );
             radialGradient.setFocalPoint( rect.topRight() );
             painter.fillRect( rect, radialGradient );
 
             // left
-            rect.translate( 0, -Metrics::Shadow_InternalSize );
+            rect.translate( 0, -Metrics::Shadow_Size );
             linearGradient.setStart( rect.topRight() );
             linearGradient.setFinalStop( rect.topLeft() );
             painter.fillRect( rect, linearGradient);
@@ -464,32 +457,25 @@ namespace Breeze
 
         // also need to decrement default size further due to extra hard coded round corner
         int size = Metrics::Shadow_Size - Metrics::Shadow_Overlap;
-        if( isToolTip( widget ) )
+        if( widget->inherits( "QBalloonTip" ) )
         {
-            if( widget->inherits( "QBalloonTip" ) )
-            {
 
-                // balloon tip needs special margins to deal with the arrow
-                int top = 0;
-                int bottom = 0;
-                widget->getContentsMargins(NULL, &top, NULL, &bottom );
+            // balloon tip needs special margins to deal with the arrow
+            int top = 0;
+            int bottom = 0;
+            widget->getContentsMargins(NULL, &top, NULL, &bottom );
 
-                // also need to decrement default size further due to extra hard coded round corner
-                size -= 2;
+            // also need to decrement default size further due to extra hard coded round corner
+            size -= 2;
 
-                // it seems arrow can be either to the top or the bottom. Adjust margins accordingly
-                if( top > bottom ) data << size - (top - bottom) << size << size << size;
-                else data << size << size << size - (bottom - top) << size;
-
-            } else {
-
-                data << size << size << size << size;
-
-            }
+            // it seems arrow can be either to the top or the bottom. Adjust margins accordingly
+            if( top > bottom ) data << size - (top - bottom) << size << size << size;
+            else data << size << size << size - (bottom - top) << size;
 
         } else {
 
-            data << size << size << size << size;
+            // data << size << size << size << size;
+            data << size - Metrics::Shadow_Offset << size << size << size - Metrics::Shadow_Offset;
 
         }
 
