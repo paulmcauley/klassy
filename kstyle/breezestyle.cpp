@@ -327,10 +327,14 @@ namespace Breeze
         const QPalette palette( _helper->framePalette( QApplication::palette() ) );
         if( qobject_cast<QDockWidget*>( widget ) ||
             qobject_cast<QGroupBox*>( widget ) ||
-            qobject_cast<QTabWidget*>( widget ) ||
             qobject_cast<QMenu*>( widget ) ||
             widget->inherits( "QComboBoxPrivateContainer" ) )
-            { widget->setPalette( palette ); }
+        { widget->setPalette( palette ); }
+
+        // also for tab widgets
+        if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) )
+        { if( !tabWidget->documentMode() ) widget->setPalette( palette ); }
+
 
         // base class polishing
         ParentStyleClass::polish( widget );
