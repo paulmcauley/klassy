@@ -3882,7 +3882,7 @@ namespace Breeze
             iconRect.setWidth( iconSize.width() + 8 );
 
             textRect = rect;
-            textRect.adjust( iconRect.width() + 8, 0, 0, 0);
+            textRect.adjust( iconRect.width(), 0, 0, 0);
 
             // handle right to left layouts
             iconRect = visualRect( option, iconRect );
