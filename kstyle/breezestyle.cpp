@@ -3641,8 +3641,9 @@ namespace Breeze
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
 
-        // alignment
-        const int alignment = _mnemonics->textFlags() | Qt::AlignCenter;
+        // content
+        const bool hasIcon( !buttonOption->icon.isNull() );
+        const bool hasText( !buttonOption->text.isEmpty() );
 
         // contents
         QRect contentsRect( rect );
@@ -3680,66 +3681,54 @@ namespace Breeze
 
         } else contentsRect.adjust( Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth, 0 );
 
-        // text size
-        QSize contentsSize;
-        if( !buttonOption->text.isEmpty() )
-        {
-            contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), buttonOption->text );
-            if( !buttonOption->icon.isNull() ) contentsSize.rwidth() += Metrics::Button_ItemSpacing;
-        }
-
         // icon size
-        QSize iconSize;
-        if( !buttonOption->icon.isNull() )
+        QSize iconSize( buttonOption->iconSize );
+        if( !iconSize.isValid() )
         {
-            iconSize = buttonOption->iconSize;
-            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize ), pixelMetric( PM_SmallIconSize, option, widget ) );
-
-            contentsSize.setHeight( qMax( contentsSize.height(), iconSize.height() ) );
-            contentsSize.rwidth() += iconSize.width();
+            const int metric( pixelMetric( PM_SmallIconSize, option, widget ) );
+            iconSize = QSize( metric, metric );
         }
 
-        // adjust contents rect
-        contentsRect = centerRect( contentsRect, contentsSize );
+        // text size
+        const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
+        const QSize textSize( option->fontMetrics.size( textFlags, buttonOption->text ) );
 
-        if( !buttonOption->icon.isNull() )
-        {
+        // adjust text and icon rect based on options
+        QRect iconRect;
+        QRect textRect;
 
-            // icon rect
-            QRect iconRect;
-            if( buttonOption->text.isEmpty() ) iconRect = centerRect( contentsRect, iconSize );
-            else {
+        if( hasText && !hasIcon ) textRect = contentsRect;
+        else if( hasIcon && !hasText ) iconRect = contentsRect;
+        else {
 
-                iconRect = contentsRect;
-                iconRect.setWidth( iconSize.width() );
-                iconRect = centerRect( iconRect, iconSize );
-                contentsRect.setLeft( iconRect.right() + 1 + Metrics::Button_ItemSpacing );
-
-            }
-
-            iconRect = visualRect( option, iconRect );
-
-            // icon mode
-            QIcon::Mode mode;
-            if( hasFocus ) mode = QIcon::Active;
-            else if( enabled ) mode = QIcon::Normal;
-            else mode = QIcon::Disabled;
-
-            // icon state
-            QIcon::State iconState = sunken ? QIcon::On : QIcon::Off;
-
-            // icon
-            QPixmap pixmap = buttonOption->icon.pixmap( iconSize, mode, iconState );
-            drawItemPixmap( painter, iconRect, alignment, pixmap );
+            const int contentsWidth( iconSize.width() + textSize.width() + Metrics::Button_ItemSpacing );
+            iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - contentsWidth )/2, contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
+            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height())/2 ), textSize );
 
         }
 
-        // text
-        if( !buttonOption->text.isEmpty() )
-        {
-            contentsRect = visualRect( option, contentsRect );
-            drawItemText( painter, contentsRect, alignment, palette, enabled, buttonOption->text, textRole );
+        // handle right to left
+        if( iconRect.isValid() ) iconRect = visualRect( option, iconRect );
+        if( textRect.isValid() ) textRect = visualRect( option, textRect );
+
+        // render icon
+        if( hasIcon && iconRect.isValid() ) {
+
+            // icon state and mode
+            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
+            QIcon::Mode iconMode;
+            if( !enabled ) iconMode = QIcon::Disabled;
+            else if( mouseOver && flat ) iconMode = QIcon::Active;
+            else iconMode = QIcon::Normal;
+
+            const QPixmap pixmap = buttonOption->icon.pixmap( iconSize, iconMode, iconState );
+            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+
         }
+
+        // render text
+        if( hasText && textRect.isValid() )
+        { drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, textRole ); }
 
         return true;
 
@@ -3833,22 +3822,8 @@ namespace Breeze
         const bool hasIcon( !( hasArrow || toolButtonOption->icon.isNull() ) );
         const bool hasText( !toolButtonOption->text.isEmpty() );
 
-        // icon pixmap
-        QPixmap pixmap;
+        // icon size
         const QSize iconSize( toolButtonOption->iconSize );
-        if( hasIcon )
-        {
-
-            // icon state and mode
-            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
-            QIcon::Mode iconMode;
-            if( !enabled ) iconMode = QIcon::Disabled;
-            else if( mouseOver && flat ) iconMode = QIcon::Active;
-            else iconMode = QIcon::Normal;
-
-            pixmap = toolButtonOption->icon.pixmap( iconSize, iconMode, iconState );
-
-        }
 
         // text size
         int textFlags( _mnemonics->textFlags() );
@@ -3906,7 +3881,19 @@ namespace Breeze
                 default: break;
             }
 
-        } else if( hasIcon && iconRect.isValid() ) drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+        } else if( hasIcon && iconRect.isValid() ) {
+
+            // icon state and mode
+            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
+            QIcon::Mode iconMode;
+            if( !enabled ) iconMode = QIcon::Disabled;
+            else if( mouseOver && flat ) iconMode = QIcon::Active;
+            else iconMode = QIcon::Normal;
+
+            const QPixmap pixmap = toolButtonOption->icon.pixmap( iconSize, iconMode, iconState );
+            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+
+        }
 
         // render text
         if( hasText && textRect.isValid() )
