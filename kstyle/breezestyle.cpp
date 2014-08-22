@@ -3870,19 +3870,19 @@ namespace Breeze
         } else if( toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon ) {
 
             iconRect = rect;
-            iconRect.setHeight( iconSize.height() );
+            iconRect.setHeight( iconSize.height() + 10 );
 
             textRect = rect;
-            textRect.setTop( rect.bottom() - toolButtonOption->fontMetrics.height() );
+            textRect.adjust( 0, iconRect.height() - 1, 0, -1 );
             textFlags |= Qt::AlignCenter;
 
         } else {
 
             iconRect = rect;
-            iconRect.setWidth( iconSize.width() );
+            iconRect.setWidth( iconSize.width() + 8 );
 
             textRect = rect;
-            textRect.adjust( iconRect.width() + Metrics::ToolButton_ItemSpacing, 0, 0, 0);
+            textRect.adjust( iconRect.width() + 8, 0, 0, 0);
 
             // handle right to left layouts
             iconRect = visualRect( option, iconRect );
@@ -5251,7 +5251,7 @@ namespace Breeze
 
                 // take out margins
                 const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-                contentsRect= insideMargin( contentsRect, marginWidth );
+                contentsRect.adjust( marginWidth, 0, -marginWidth, 0 );
                 if( hasInlineIndicator )
                 {
                     contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_InlineIndicatorWidth );
