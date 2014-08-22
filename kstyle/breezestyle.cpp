@@ -2506,8 +2506,7 @@ namespace Breeze
         }
 
         // contents height
-        int contentsHeight( 0 );
-        if( hasText ) contentsHeight = textSize.height();
+        int contentsHeight( headerOption->fontMetrics.height() );
         if( hasIcon ) contentsHeight = qMax( contentsHeight, iconSize.height() );
 
         if( horizontal )
