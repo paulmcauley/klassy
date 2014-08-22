@@ -165,8 +165,7 @@ namespace Breeze
         { return option->rect; }
 
         //* checkbox contents
-        QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
-        { return visualRect( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 ) ); }
+        QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const;
 
         //* line edit contents
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;

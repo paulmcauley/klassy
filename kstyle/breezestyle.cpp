@@ -1247,6 +1247,10 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________________________________________
+    QRect Style::checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
+    { return visualRect( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0 ) ); }
+
+    //___________________________________________________________________________________________________________________
     QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
     {
         // cast option and check
@@ -2355,7 +2359,7 @@ namespace Breeze
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
         const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
 
-        if( hasInlineIndicator ) size.rwidth() += Metrics::ToolButton_ItemSpacing;
+        if( hasInlineIndicator ) size.rwidth() += Metrics::ToolButton_InlineIndicatorWidth;
         size = expandSize( size, marginWidth );
 
         return size;
@@ -3879,7 +3883,7 @@ namespace Breeze
             iconRect.setWidth( iconSize.width() );
 
             textRect = rect;
-            textRect.adjust( iconRect.width() + 8, 0, 0, 0);
+            textRect.adjust( iconRect.width() + Metrics::ToolButton_ItemSpacing, 0, 0, 0);
 
             // handle right to left layouts
             iconRect = visualRect( option, iconRect );
@@ -5251,7 +5255,7 @@ namespace Breeze
                 contentsRect= insideMargin( contentsRect, marginWidth );
                 if( hasInlineIndicator )
                 {
-                    contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_ItemSpacing );
+                    contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_InlineIndicatorWidth );
                     contentsRect = visualRect( option, contentsRect );
                 }
 

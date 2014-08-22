@@ -92,7 +92,8 @@ namespace Breeze
 
         // tool buttons
         ToolButton_MarginWidth = 6,
-        ToolButton_ItemSpacing = 12,
+        ToolButton_ItemSpacing = 4,
+        ToolButton_InlineIndicatorWidth = 12,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,
