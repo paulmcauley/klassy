@@ -237,7 +237,7 @@ namespace Breeze
             painter.end();
 
             // create tiles from pixmap
-            _shadowTiles = TileSet( pixmap, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size, 1, 1 );
+            _shadowTiles = TileSet( pixmap, Metrics::Shadow_Size, Metrics::Shadow_Size, 1, 1 );
 
         }
 

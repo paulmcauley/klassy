@@ -47,24 +47,6 @@ namespace Breeze
         */
         TileSet(const QPixmap&, int w1, int h1, int w2, int h2, bool stretch = false );
 
-        /**
-        Create a TileSet from a pixmap. The size of the top/left and bottom/right
-        chunks is specified, with the middle chunks created from the specified
-        portion of the pixmap. This allows the middle chunks to overlap the outer
-        chunks (or to not use all pixels). The top/left and bottom/right chunks
-        are carved out of the corners of the pixmap.
-
-        @param w1 width of the left chunks
-        @param h1 height of the top chunks
-        @param w3 width of the right chunks
-        @param h3 height of bottom chunks
-        @param x2 x-coordinate of the top of the not-left-or-right chunks
-        @param y2 y-coordinate of the left of the not-top-or-bottom chunks
-        @param w2 width of the not-left-or-right chunks
-        @param h2 height of the not-top-or-bottom chunks
-        */
-        TileSet(const QPixmap &pix, int w1, int h1, int w3, int h3, int x2, int y2, int w2, int h2, bool stretch = false );
-
         //* empty constructor
         TileSet();
 

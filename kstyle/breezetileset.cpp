@@ -93,40 +93,6 @@ namespace Breeze
         initPixmap( _pixmaps, pix, _w3, _h3, QRect(_w1+w2, _h1+h2, _w3, _h3) );
     }
 
-    //______________________________________________________________
-    TileSet::TileSet(const QPixmap &pix, int w1, int h1, int w3, int h3, int x1, int y1, int w2, int h2, bool stretch ):
-        _stretch( stretch ),
-        _w1(w1),
-        _h1(h1),
-        _w3(w3),
-        _h3(h3)
-    {
-        _pixmaps.reserve(9);
-        if (pix.isNull()) return;
-
-        int x2 = pix.width() - _w3;
-        int y2 = pix.height() - _h3;
-        int w = w2;
-        int h = h2;
-        if( !_stretch )
-        {
-            while (w < _sideExtent && w2 > 0) w += w2;
-            while (h < _sideExtent && h2 > 0) h += h2;
-        }
-
-        // initialise pixmap array
-        initPixmap( _pixmaps, pix, _w1, _h1, QRect(0, 0, _w1, _h1) );
-        initPixmap( _pixmaps, pix, w, _h1, QRect(x1, 0, w2, _h1) );
-        initPixmap( _pixmaps, pix, _w3, _h1, QRect(x2, 0, _w3, _h1) );
-        initPixmap( _pixmaps, pix, _w1, h, QRect(0, y1, _w1, h2) );
-        initPixmap( _pixmaps, pix, w, h, QRect(x1, y1, w2, h2) );
-        initPixmap( _pixmaps, pix, _w3, h, QRect(x2, y1, _w3, h2) );
-        initPixmap( _pixmaps, pix, _w1, _h3, QRect(0, y2, _w1, _h3) );
-        initPixmap( _pixmaps, pix, w, _h3, QRect(x1, y2, w2, _h3) );
-        initPixmap( _pixmaps, pix, _w3, _h3, QRect(x2, y2, _w3, _h3) );
-
-    }
-
     //___________________________________________________________
     inline bool bits(TileSet::Tiles flags, TileSet::Tiles testFlags)
     { return (flags & testFlags) == testFlags; }
