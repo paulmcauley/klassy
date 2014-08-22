@@ -701,7 +701,7 @@ namespace Breeze
             pen.setJoinStyle( Qt::MiterJoin );
             painter->setPen( pen );
 
-            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            const QRectF markerRect( frameRect.adjusted( 5, 5, -5, -5 ) );
             painter->drawRect( markerRect );
 
             painter->setPen( Qt::NoPen );
