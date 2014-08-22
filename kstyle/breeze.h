@@ -71,7 +71,7 @@ namespace Breeze
 
         // menu items
         MenuItem_MarginWidth = 4,
-        MenuItem_BoxTextSpace = 4,
+        MenuItem_ItemSpacing = 4,
         MenuItem_AcceleratorSpace = 16,
         MenuButton_IndicatorWidth = 20,
 
@@ -88,16 +88,16 @@ namespace Breeze
         // buttons
         Button_MinWidth = 80,
         Button_MarginWidth = 6,
-        Button_BoxTextSpace = 4,
+        Button_ItemSpacing = 4,
 
         // tool buttons
         ToolButton_MarginWidth = 6,
-        ToolButton_BoxTextSpace = 12,
+        ToolButton_ItemSpacing = 12,
 
         // checkboxes and radio buttons
         CheckBox_Size = 22,
         CheckBox_FocusMarginWidth = 2,
-        CheckBox_BoxTextSpace = 8,
+        CheckBox_ItemSpacing = 8,
 
         // menubar items
         MenuBarItem_MarginWidth = 10,
@@ -122,7 +122,7 @@ namespace Breeze
         // progressbars
         ProgressBar_BusyIndicatorSize = 14,
         ProgressBar_Thickness = 6,
-        ProgressBar_BoxTextSpace = 4,
+        ProgressBar_ItemSpacing = 4,
 
         // mdi title bar
         TitleBar_MarginWidth = 4,
@@ -146,14 +146,14 @@ namespace Breeze
 
         // toolbox
         ToolBox_TabMinWidth = 80,
-        ToolBox_TabBoxTextSpace = 4,
+        ToolBox_TabItemSpacing = 4,
 
         // tooltips
         ToolTip_FrameWidth = 3,
 
         // list headers
         Header_MarginWidth = 8,
-        Header_BoxTextSpace = 4,
+        Header_ItemSpacing = 4,
         Header_ArrowSize = 10,
 
         // tree view

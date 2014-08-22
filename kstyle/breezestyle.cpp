@@ -1292,7 +1292,7 @@ namespace Breeze
 
             QRect textRect( subElementRect( SE_ProgressBarLabel, option, widget ) );
             textRect = visualRect( option, textRect );
-            rect.setRight( textRect.left() - 1 - Metrics::ProgressBar_BoxTextSpace );
+            rect.setRight( textRect.left() - 1 - Metrics::ProgressBar_ItemSpacing );
             rect = visualRect( option, rect );
             rect = centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
 
@@ -1419,7 +1419,7 @@ namespace Breeze
         QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
 
-        labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_BoxTextSpace, 0 );
+        labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_ItemSpacing, 0 );
         return visualRect( option, labelRect );
 
     }
@@ -1644,7 +1644,7 @@ namespace Breeze
             const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
             contentsWidth += iconSize;
 
-            if( !toolBoxOption->text.isEmpty() ) contentsWidth += Metrics::ToolBox_TabBoxTextSpace;
+            if( !toolBoxOption->text.isEmpty() ) contentsWidth += Metrics::ToolBox_TabItemSpacing;
         }
 
         if( !toolBoxOption->text.isEmpty() )
@@ -1726,7 +1726,7 @@ namespace Breeze
                 {
                     titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
                     titleWidth += Metrics::CheckBox_Size;
-                    if( !emptyText ) titleWidth += Metrics::CheckBox_BoxTextSpace;
+                    if( !emptyText ) titleWidth += Metrics::CheckBox_ItemSpacing;
                 }
 
                 // adjust height
@@ -1755,7 +1755,7 @@ namespace Breeze
 
                     // horizontal positioning
                     QRect subRect( titleRect );
-                    if( checkable ) subRect.adjust( Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace, 0, 0, 0 );
+                    if( checkable ) subRect.adjust( Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0 );
                     return visualRect( option->direction, titleRect, subRect );
 
                 }
@@ -2175,10 +2175,10 @@ namespace Breeze
         size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
 
         // Add space for the indicator and the icon
-        size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_BoxTextSpace;
+        size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing;
 
         // also add extra space, to leave room to the right of the label
-        size.rwidth() += Metrics::CheckBox_BoxTextSpace;
+        size.rwidth() += Metrics::CheckBox_ItemSpacing;
 
         return size;
 
@@ -2311,7 +2311,7 @@ namespace Breeze
             size.rwidth() += Metrics::Button_MarginWidth;
 
             if( !( buttonOption->icon.isNull() && buttonOption->text.isEmpty() ) )
-            { size.rwidth() += Metrics::Button_BoxTextSpace; }
+            { size.rwidth() += Metrics::Button_ItemSpacing; }
 
         }  else size = expandSize( size, Metrics::Button_MarginWidth );
 
@@ -2325,7 +2325,7 @@ namespace Breeze
             size.setHeight( qMax( size.height(), iconSize.height() ) );
 
             if( !buttonOption->text.isEmpty() )
-            { size.rwidth() += Metrics::Button_BoxTextSpace; }
+            { size.rwidth() += Metrics::Button_ItemSpacing; }
 
         }
 
@@ -2355,7 +2355,7 @@ namespace Breeze
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
         const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
 
-        if( hasInlineIndicator ) size.rwidth() += Metrics::ToolButton_BoxTextSpace;
+        if( hasInlineIndicator ) size.rwidth() += Metrics::ToolButton_ItemSpacing;
         size = expandSize( size, marginWidth );
 
         return size;
@@ -2389,11 +2389,11 @@ namespace Breeze
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
-                leftColumnWidth += Metrics::MenuItem_BoxTextSpace;
+                leftColumnWidth += Metrics::MenuItem_ItemSpacing;
 
                 // add checkbox indicator width
                 if( menuItemOption->menuHasCheckableItems )
-                { leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_BoxTextSpace; }
+                { leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_ItemSpacing; }
 
                 // add spacing for accelerator
                 /*
@@ -2407,7 +2407,7 @@ namespace Breeze
                 if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
 
                 // right column
-                const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_BoxTextSpace;
+                const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_ItemSpacing;
                 size.rwidth() += leftColumnWidth + rightColumnWidth;
 
                 // make sure height is large enough for icon and arrow
@@ -2506,7 +2506,7 @@ namespace Breeze
         if( hasIcon )
         {
             contentsWidth += iconSize.width();
-            if( hasText ) contentsWidth += Metrics::Header_BoxTextSpace;
+            if( hasText ) contentsWidth += Metrics::Header_ItemSpacing;
         }
 
         // contents height
@@ -2516,7 +2516,7 @@ namespace Breeze
         if( horizontal )
         {
             // also add space for icon
-            contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_BoxTextSpace;
+            contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_ItemSpacing;
             contentsHeight = qMax( contentsHeight, (int) Metrics::Header_ArrowSize );
         }
 
@@ -3663,7 +3663,7 @@ namespace Breeze
             arrowRect.setLeft( contentsRect.right() - Metrics::MenuButton_IndicatorWidth );
             arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
 
-            contentsRect.setRight( arrowRect.left() - Metrics::Button_BoxTextSpace - 1  );
+            contentsRect.setRight( arrowRect.left() - Metrics::Button_ItemSpacing - 1  );
             contentsRect.adjust( Metrics::Button_MarginWidth, Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth );
 
             arrowRect = visualRect( option, arrowRect );
@@ -3681,7 +3681,7 @@ namespace Breeze
         if( !buttonOption->text.isEmpty() )
         {
             contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), buttonOption->text );
-            if( !buttonOption->icon.isNull() ) contentsSize.rwidth() += Metrics::Button_BoxTextSpace;
+            if( !buttonOption->icon.isNull() ) contentsSize.rwidth() += Metrics::Button_ItemSpacing;
         }
 
         // icon size
@@ -3709,7 +3709,7 @@ namespace Breeze
                 iconRect = contentsRect;
                 iconRect.setWidth( iconSize.width() );
                 iconRect = centerRect( iconRect, iconSize );
-                contentsRect.setLeft( iconRect.right() + 1 + Metrics::Button_BoxTextSpace );
+                contentsRect.setLeft( iconRect.right() + 1 + Metrics::Button_ItemSpacing );
 
             }
 
@@ -4051,7 +4051,7 @@ namespace Breeze
         if( menuItemOption->menuHasCheckableItems )
         {
             checkBoxRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-Metrics::CheckBox_Size)/2, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
-            contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+            contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
         }
 
         // render checkbox indicator
@@ -4082,7 +4082,7 @@ namespace Breeze
         const int iconWidth( menuItemOption->maxIconWidth );
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
-        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_BoxTextSpace + 1 );
+        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
 
 
         if( !menuItemOption->icon.isNull() )
@@ -4107,7 +4107,7 @@ namespace Breeze
 
         // arrow
         QRect arrowRect( contentsRect.right() - Metrics::MenuButton_IndicatorWidth, contentsRect.top() + (contentsRect.height()-Metrics::MenuButton_IndicatorWidth)/2, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
-        contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_BoxTextSpace - 1 );
+        contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_ItemSpacing - 1 );
 
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
         {
@@ -4952,7 +4952,7 @@ namespace Breeze
         if( !toolBoxOption->text.isEmpty() )
         {
             contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), toolBoxOption->text );
-            if( !toolBoxOption->icon.isNull() ) contentsSize.rwidth() += Metrics::ToolBox_TabBoxTextSpace;
+            if( !toolBoxOption->icon.isNull() ) contentsSize.rwidth() += Metrics::ToolBox_TabItemSpacing;
         }
 
         // icon size
@@ -4979,7 +4979,7 @@ namespace Breeze
                 iconRect = contentsRect;
                 iconRect.setWidth( iconSize );
                 iconRect = centerRect( iconRect, iconSize, iconSize );
-                contentsRect.setLeft( iconRect.right() + 1 + Metrics::ToolBox_TabBoxTextSpace );
+                contentsRect.setLeft( iconRect.right() + 1 + Metrics::ToolBox_TabItemSpacing );
 
             }
 
@@ -5251,7 +5251,7 @@ namespace Breeze
                 contentsRect= insideMargin( contentsRect, marginWidth );
                 if( hasInlineIndicator )
                 {
-                    contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_BoxTextSpace );
+                    contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_ItemSpacing );
                     contentsRect = visualRect( option, contentsRect );
                 }
 
