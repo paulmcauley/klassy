@@ -3835,7 +3835,7 @@ namespace Breeze
 
         // icon pixmap
         QPixmap pixmap;
-        QSize iconSize( toolButtonOption->iconSize );
+        const QSize iconSize( toolButtonOption->iconSize );
         if( hasIcon )
         {
 
@@ -3846,8 +3846,7 @@ namespace Breeze
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
-            pixmap = toolButtonOption->icon.pixmap( rect.size().boundedTo( iconSize ), iconMode, iconState );
-            iconSize = pixmap.size() / pixmap.devicePixelRatio();
+            pixmap = toolButtonOption->icon.pixmap( iconSize, iconMode, iconState );
 
         }
 
