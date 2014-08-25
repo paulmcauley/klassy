@@ -62,11 +62,11 @@ void updateKdeGlobals()
     KConfig config(migration.saveLocation("config") + "kdeglobals");
 
     //use QtCurve only if installed
-    const bool hasQtCurve = QStyleFactory::keys().contains("QtCurve");
+    const bool hasBreeze = QStyleFactory::keys().contains("Breeze");
     KConfigGroup group(&config, "General");
     group.writeEntry("ColorScheme", "Breeze");
-    if (hasQtCurve) {
-        group.writeEntry("widgetStyle", "qtcurve");
+    if (hasBreeze) {
+        group.writeEntry("widgetStyle", "Breeze");
     }
     applyColorScheme(&config);
     group.sync();
@@ -79,16 +79,16 @@ void updateKdeGlobals()
     KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
     KConfigGroup kf5Group(kf5Config, "General");
     kf5Group.writeEntry("ColorScheme", "Breeze");
-    if (hasQtCurve) {
-        kf5Group.writeEntry("widgetStyle", "qtcurve");
+    if (hasBreeze) {
+        kf5Group.writeEntry("widgetStyle", "Breeze");
     }
     applyColorScheme(kf5Group.config());
     kf5Group.sync();
 
     KConfigGroup kf52Group(kf5Config, "KDE");
     kf52Group.writeEntry("ColorScheme", "Breeze");
-    if (hasQtCurve) {
-        kf52Group.writeEntry("widgetStyle", "qtcurve");
+    if (hasBreeze) {
+        kf52Group.writeEntry("widgetStyle", "Breeze");
     }
     applyColorScheme(kf52Group.config());
     kf52Group.sync();
@@ -98,20 +98,6 @@ void updateKdeGlobals()
     kf5IconGroup.sync();
 }
 
-void applyQtCurveConfig()
-{
-    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "QtCurve/Breeze.qtcurve");
-    QString dest = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + "/qtcurve/stylerc";
-
-    //create target directory otherwise copy fails
-    QDir dir(QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation));
-    dir.mkpath("qtcurve");
-
-    QFile::remove(dest);
-    QFile::copy(src, dest);
-}
-
-
 int main(int argc, char **argv)
 {
 
@@ -120,7 +106,6 @@ int main(int argc, char **argv)
 
     cloneColorScheme();
     updateKdeGlobals();
-    applyQtCurveConfig();
 
     return 0;
 }
