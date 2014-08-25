@@ -403,8 +403,8 @@ namespace Breeze
         int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
         int topSize( size - Metrics::Shadow_Offset );
         int bottomSize( size );
-        int rightSize;
-        int leftSize;
+        int rightSize(0);
+        int leftSize(0);
 
         switch( StyleConfigData::lightSource() )
         {
