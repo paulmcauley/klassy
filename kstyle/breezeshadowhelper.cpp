@@ -152,80 +152,32 @@ namespace Breeze
             const QPalette palette( QApplication::palette() );
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
-            // create pixmap
-            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*3, Metrics::Shadow_Size*3 );
+            // pixmap
+            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*2, Metrics::Shadow_Size*2 );
             pixmap.fill( Qt::transparent );
 
-            // paint
-            QPainter painter( &pixmap );
-            painter.setRenderHint( QPainter::Antialiasing );
-            painter.setCompositionMode(QPainter::CompositionMode_Source);
-            painter.setPen( Qt::NoPen );
-
+            // gradient
             auto gradientStopColor = [](QColor color, qreal alpha) {
                 color.setAlphaF(alpha);
                 return color;
             };
 
-            QRadialGradient radialGradient(Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
+            QRadialGradient radialGradient( QPointF(0,0), Metrics::Shadow_Size);
             radialGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
             radialGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
             radialGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
             radialGradient.setColorAt(0.75, gradientStopColor( shadowColor, 0.04 ) );
             radialGradient.setColorAt(1.0,  gradientStopColor( shadowColor, 0.0 ) );
 
-            QLinearGradient linearGradient;
-            linearGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
-            linearGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
-            linearGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
-            linearGradient.setColorAt(0.75, gradientStopColor( shadowColor, 0.04 ) );
-            linearGradient.setColorAt(1.0,  gradientStopColor( shadowColor, 0.0) );
+            // render
+            QPainter painter( &pixmap );
+            painter.setRenderHint( QPainter::Antialiasing );
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+            painter.setPen( Qt::NoPen );
 
-            // topLeft
-            QRect rect( 0, 0, Metrics::Shadow_Size, Metrics::Shadow_Size );
-            painter.fillRect(rect, radialGradient);
-
-            // top
-            rect.translate( Metrics::Shadow_Size, 0 );
-            linearGradient.setStart( rect.bottomLeft() );
-            linearGradient.setFinalStop( rect.topLeft() );
-            painter.fillRect( rect, linearGradient );
-
-            // topRight
-            rect.translate( Metrics::Shadow_Size, 0 );
-            radialGradient.setCenter( rect.bottomLeft() );
-            radialGradient.setFocalPoint( rect.bottomLeft() );
-            painter.fillRect( rect, radialGradient );
-
-            // right
-            rect.translate( 0, Metrics::Shadow_Size );
-            linearGradient.setStart( rect.topLeft() );
-            linearGradient.setFinalStop( rect.topRight() );
-            painter.fillRect( rect, linearGradient);
-
-            // bottom right
-            rect.translate( 0, Metrics::Shadow_Size );
-            radialGradient.setCenter( rect.topLeft() );
-            radialGradient.setFocalPoint( rect.topLeft() );
-            painter.fillRect( rect, radialGradient );
-
-            // bottom
-            rect.translate( -Metrics::Shadow_Size, 0 );
-            linearGradient.setStart( rect.topLeft() );
-            linearGradient.setFinalStop( rect.bottomLeft() );
-            painter.fillRect( rect, linearGradient);
-
-            // bottom left
-            rect.translate( -Metrics::Shadow_Size, 0 );
-            radialGradient.setCenter( rect.topRight() );
-            radialGradient.setFocalPoint( rect.topRight() );
-            painter.fillRect( rect, radialGradient );
-
-            // left
-            rect.translate( 0, -Metrics::Shadow_Size );
-            linearGradient.setStart( rect.topRight() );
-            linearGradient.setFinalStop( rect.topLeft() );
-            painter.fillRect( rect, linearGradient);
+            const QRectF rect( pixmap.rect() );
+            painter.translate( rect.center() );
+            painter.fillRect( rect.translated( -rect.center() ), radialGradient );
 
             painter.end();
 
