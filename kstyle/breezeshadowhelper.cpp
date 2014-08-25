@@ -447,38 +447,51 @@ namespace Breeze
         foreach( const uint32_t& value, pixmaps )
         { data.push_back( value ); }
 
-        // add padding
-        /*
-        in most cases all 4 paddings are identical, since offsets are handled when generating the pixmaps.
-        There is one extra pixel needed with respect to actual shadow size, to deal with how
-        menu backgrounds are rendered.
-        Some special care is needed for QBalloonTip, since the later have an arrow
-        */
+        // define shadows padding
+        int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
+        int topSize( size - Metrics::Shadow_Offset );
+        int bottomSize( size );
+        int rightSize;
+        int leftSize;
 
-        // also need to decrement default size further due to extra hard coded round corner
-        int size = Metrics::Shadow_Size - Metrics::Shadow_Overlap;
+        switch( StyleConfigData::lightSource() )
+        {
+            case StyleConfigData::LS_TOPLEFT:
+            leftSize = size - Metrics::Shadow_Offset;
+            rightSize = size;
+            break;
+
+            case StyleConfigData::LS_TOPRIGHT:
+            rightSize = size - Metrics::Shadow_Offset;
+            leftSize = size;
+            break;
+
+            case StyleConfigData::LS_TOP:
+            leftSize = size - Metrics::Shadow_Offset/2;
+            rightSize = size - Metrics::Shadow_Offset/2;
+            break;
+
+        }
+
         if( widget->inherits( "QBalloonTip" ) )
         {
 
             // balloon tip needs special margins to deal with the arrow
             int top = 0;
             int bottom = 0;
-            widget->getContentsMargins(NULL, &top, NULL, &bottom );
+            widget->getContentsMargins( nullptr, &top, nullptr, &bottom );
 
             // also need to decrement default size further due to extra hard coded round corner
             size -= 2;
 
             // it seems arrow can be either to the top or the bottom. Adjust margins accordingly
-            if( top > bottom ) data << size - (top - bottom) << size << size << size;
-            else data << size << size << size - (bottom - top) << size;
-
-        } else {
-
-            // data << size << size << size << size;
-            data << size - Metrics::Shadow_Offset << size << size << size - Metrics::Shadow_Offset;
+            if( top > bottom ) topSize -= (top - bottom);
+            else bottomSize -= (bottom - top );
 
         }
 
+        // assign to data and xcb property
+        data << topSize << rightSize << bottomSize << leftSize;
         xcb_change_property( Helper::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
         xcb_flush( Helper::connection() );
 
