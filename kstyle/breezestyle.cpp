@@ -5691,7 +5691,7 @@ namespace Breeze
     {
 
         // render full groove directly, rather than using the addPage and subPage control element methods
-        if( option->subControls && SC_ScrollBarGroove )
+        if( option->subControls & SC_ScrollBarGroove )
         {
             // retrieve groove rectangle
             QRect grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
