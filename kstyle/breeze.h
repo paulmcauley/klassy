@@ -166,7 +166,7 @@ namespace Breeze
 
         // shadow dimensions
         Shadow_Size = 10,
-        Shadow_Offset = 4,
+        Shadow_Offset = 5,
         Shadow_Overlap = 2
 
     };
