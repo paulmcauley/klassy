@@ -100,7 +100,7 @@
 
     <!-- splitter proxy -->
     <entry name="SplitterProxyEnabled" type="Bool">
-      <default>false</default>
+      <default>true</default>
     </entry>
 
     <entry name="SplitterProxyWidth" type="Int">
