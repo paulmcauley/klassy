@@ -176,6 +176,7 @@ namespace Breeze
         , _tabBarData( new BreezePrivate::TabBarData( this ) )
         #if !USE_KDE4
         , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
+        , CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
         #endif
     {
 
@@ -873,8 +874,17 @@ namespace Breeze
     {
 
         StyleControl fcn( nullptr );
-        switch( element )
+
+
+        #if !USE_KDE4
+        if( element == CE_CapacityBar )
         {
+            fcn = &Style::drawProgressBarControl;
+
+        } else
+        #endif
+
+        switch( element ) {
 
             /*
             for CE_PushButtonBevel the only thing that is done is draw the PanelButtonCommand primitive
@@ -1660,7 +1670,7 @@ namespace Breeze
         }
 
         contentsWidth = qMin( contentsWidth, rect.width() );
-        contentsWidth = qMax( contentsWidth, (int)Metrics::ToolBox_TabMinWidth );
+        contentsWidth = qMax( contentsWidth, int(Metrics::ToolBox_TabMinWidth) );
         return centerRect( rect, contentsWidth, rect.height() );
 
     }
@@ -1692,7 +1702,7 @@ namespace Breeze
                 // calculate title height
                 int titleHeight( 0 );
                 if( !emptyText ) titleHeight = groupBoxOption->fontMetrics.height();
-                if( checkable ) titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
+                if( checkable ) titleHeight = qMax( titleHeight, int(Metrics::CheckBox_Size) );
 
                 // add margin
                 if( titleHeight > 0 ) titleHeight += 2*Metrics::GroupBox_TitleMarginWidth;
@@ -1728,7 +1738,7 @@ namespace Breeze
 
                 if( checkable )
                 {
-                    titleHeight = qMax( titleHeight, (int) Metrics::CheckBox_Size );
+                    titleHeight = qMax( titleHeight, int(Metrics::CheckBox_Size) );
                     titleWidth += Metrics::CheckBox_Size;
                     if( !emptyText ) titleWidth += Metrics::CheckBox_ItemSpacing;
                 }
@@ -2176,7 +2186,7 @@ namespace Breeze
         size = expandSize( size, 0, Metrics::CheckBox_FocusMarginWidth );
 
         // make sure there is enough height for indicator
-        size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
+        size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
 
         // Add space for the indicator and the icon
         size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing;
@@ -2217,7 +2227,7 @@ namespace Breeze
         if( !flat ) size = expandSize( size, frameWidth );
 
         // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), (int)Metrics::MenuButton_IndicatorWidth ) );
+        size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
 
         // add button width and spacing
         size.rwidth() += Metrics::MenuButton_IndicatorWidth;
@@ -2244,7 +2254,7 @@ namespace Breeze
         if( !flat ) size = expandSize( size, frameWidth );
 
         // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), (int)Metrics::SpinBox_ArrowButtonWidth ) );
+        size.setHeight( qMax( size.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
 
         // add button width and spacing
         size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
@@ -2416,9 +2426,9 @@ namespace Breeze
                 size.rwidth() += leftColumnWidth + rightColumnWidth;
 
                 // make sure height is large enough for icon and arrow
-                size.setHeight( qMax( size.height(), (int) Metrics::MenuButton_IndicatorWidth ) );
-                size.setHeight( qMax( size.height(), (int) Metrics::CheckBox_Size ) );
-                size.setHeight( qMax( size.height(), (int) iconWidth ) );
+                size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
+                size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
+                size.setHeight( qMax( size.height(), iconWidth ) );
                 return expandSize( size, Metrics::MenuItem_MarginWidth );
 
             }
@@ -2440,8 +2450,8 @@ namespace Breeze
                     // make sure height is large enough for icon and text
                     const int iconWidth( menuItemOption->maxIconWidth );
                     const int textHeight( menuItemOption->fontMetrics.height() );
-                    if( !menuItemOption->icon.isNull() ) size.setHeight( qMax( size.height(), (int) iconWidth ) );
-                    if( !menuItemOption->text.isEmpty() ) size.setHeight( qMax( size.height(), (int) textHeight ) );
+                    if( !menuItemOption->icon.isNull() ) size.setHeight( qMax( size.height(), iconWidth ) );
+                    if( !menuItemOption->text.isEmpty() ) size.setHeight( qMax( size.height(), textHeight ) );
 
                     return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
 
@@ -2474,14 +2484,14 @@ namespace Breeze
             // check text visibility
             const bool textVisible( progressBarOption->textVisible );
 
-            size.setWidth( qMax( size.width(), (int) Metrics::ProgressBar_Thickness ) );
-            size.setHeight( qMax( size.height(), (int) Metrics::ProgressBar_Thickness ) );
+            size.setWidth( qMax( size.width(), int(Metrics::ProgressBar_Thickness) ) );
+            size.setHeight( qMax( size.height(), int(Metrics::ProgressBar_Thickness) ) );
             if( textVisible ) size.setHeight( qMax( size.height(), option->fontMetrics.height() ) );
 
         } else {
 
-            size.setHeight( qMax( size.height(), (int) Metrics::ProgressBar_Thickness ) );
-            size.setWidth( qMax( size.width(), (int) Metrics::ProgressBar_Thickness ) );
+            size.setHeight( qMax( size.height(), int(Metrics::ProgressBar_Thickness) ) );
+            size.setWidth( qMax( size.width(), int(Metrics::ProgressBar_Thickness) ) );
 
         }
 
@@ -2522,7 +2532,7 @@ namespace Breeze
         {
             // also add space for icon
             contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_ItemSpacing;
-            contentsHeight = qMax( contentsHeight, (int) Metrics::Header_ArrowSize );
+            contentsHeight = qMax( contentsHeight, int(Metrics::Header_ArrowSize) );
         }
 
         // update contents size, add margins and return
@@ -3571,7 +3581,7 @@ namespace Breeze
 
             // expander rect
             int expanderSize = qMin( rect.width(), rect.height() );
-            expanderSize = qMin( expanderSize, (int) Metrics::ItemView_ArrowSize );
+            expanderSize = qMin( expanderSize, int(Metrics::ItemView_ArrowSize) );
             expanderAdjust = expanderSize/2 + 1;
             const QRect arrowRect = centerRect( rect, expanderSize, expanderSize );
 
