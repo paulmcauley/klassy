@@ -371,6 +371,13 @@ namespace Breeze
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
 
+        // remove event filter
+        if( qobject_cast<QAbstractScrollArea*>( widget ) ||
+            qobject_cast<QDockWidget*>( widget ) ||
+            qobject_cast<QMdiSubWindow*>( widget ) ||
+            widget->inherits( "QComboBoxPrivateContainer" ) )
+            { widget->removeEventFilter( this ); }
+
         ParentStyleClass::unpolish( widget );
 
     }
