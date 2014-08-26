@@ -1351,7 +1351,7 @@ namespace Breeze
         const int steps( qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 ) );
 
         //Calculate width fraction
-        const qreal widthFrac = qMin( 1.0, progress/steps );
+        const qreal widthFrac = qMin( qreal(1.0), progress/steps );
 
         // convert the pixel width
         const int indicatorSize( widthFrac*( horizontal ? rect.width():rect.height() ) );
