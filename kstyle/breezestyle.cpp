@@ -5767,7 +5767,7 @@ namespace Breeze
         };
 
         // loop over supported buttons
-        foreach( const SubControl subControl, subControls )
+        foreach( const SubControl& subControl, subControls )
         {
 
             // skip if not requested
