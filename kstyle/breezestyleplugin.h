@@ -40,7 +40,7 @@ namespace Breeze
         public:
 
         //* constructor
-        StylePlugin(QObject *parent = 0):
+        explicit StylePlugin(QObject *parent = 0):
             QStylePlugin(parent)
         {}
 

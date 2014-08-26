@@ -107,7 +107,7 @@ namespace Breeze
         public:
 
         //* constructor
-        MdiWindowShadowFactory( QObject* );
+        explicit MdiWindowShadowFactory( QObject* );
 
         //* destructor
         virtual ~MdiWindowShadowFactory( void )

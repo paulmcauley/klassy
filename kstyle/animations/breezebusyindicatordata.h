@@ -38,7 +38,7 @@ namespace Breeze
         public:
 
         //* constructor
-        BusyIndicatorData( QObject* parent ):
+        explicit BusyIndicatorData( QObject* parent ):
             QObject( parent ),
             _animated( false )
         {}
