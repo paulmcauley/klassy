@@ -40,8 +40,6 @@
 namespace Breeze
 {
 
-    class AppEventFilter;
-
     class WindowManager: public QObject
     {
 
@@ -262,7 +260,7 @@ namespace Breeze
         bool _cursorOverride;
 
         //* application event filter
-        AppEventFilter* _appEventFilter;
+        QObject* _appEventFilter;
 
         #if HAVE_X11
         xcb_atom_t _moveResizeAtom;
