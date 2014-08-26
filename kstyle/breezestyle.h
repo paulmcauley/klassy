@@ -87,10 +87,10 @@ namespace Breeze
         using  ParentStyleClass::unpolish;
 
         //* pixel metrics
-        virtual int pixelMetric(PixelMetric, const QStyleOption* = 0, const QWidget* = 0) const;
+        virtual int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const;
 
         //* style hints
-        virtual int styleHint(StyleHint, const QStyleOption* = 0, const QWidget* = 0, QStyleHintReturn* = 0) const;
+        virtual int styleHint(StyleHint, const QStyleOption* = nullptr, const QWidget* = nullptr, QStyleHintReturn* = nullptr) const;
 
         //* returns rect corresponding to one widget's subelement
         virtual QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const;
@@ -148,7 +148,7 @@ namespace Breeze
         protected:
 
         //* standard icons
-        virtual QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = 0, const QWidget* widget = 0) const
+        virtual QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const
         { return standardIconImplementation( pixmap, option, widget ); }
 
         //* load configuration
