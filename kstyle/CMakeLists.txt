@@ -76,6 +76,7 @@ set(breeze_PART_SRCS
     animations/breezeanimations.cpp
     animations/breezeanimationdata.cpp
     animations/breezebaseengine.cpp
+    animations/breezebusyindicatordata.cpp
     animations/breezebusyindicatorengine.cpp
     animations/breezedialdata.cpp
     animations/breezedialengine.cpp
@@ -95,6 +96,7 @@ set(breeze_PART_SRCS
     animations/breezewidgetstateengine.cpp
     animations/breezewidgetstatedata.cpp
     debug/breezewidgetexplorer.cpp
+    breezeaddeventfilter.cpp
     breezeframeshadow.cpp
     breezehelper.cpp
     breezemdiwindowshadow.cpp

@@ -1,8 +1,5 @@
-#ifndef breezebusyindicatordata_h
-#define breezebusyindicatordata_h
-
 //////////////////////////////////////////////////////////////////////////////
-// breezebusyindicatordata.h
+// breezebusyindicatordata.cpp
 // data container for progressbar busy indicator
 // -------------------
 //
@@ -27,61 +24,5 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <QObject>
-
-namespace Breeze
-{
-
-    class BusyIndicatorData: public QObject
-    {
-
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        explicit BusyIndicatorData( QObject* parent ):
-            QObject( parent ),
-            _animated( false )
-        {}
-
-        //* destructor
-        virtual ~BusyIndicatorData( void )
-        {}
-
-        //*@name accessors
-        //@{
-
-        //* animated
-        bool isAnimated( void ) const
-        { return _animated; }
-
-        //@}
-
-        //*@name modifiers
-        //@{
-
-        //* enabled
-        void setEnabled( bool )
-        {}
-
-        //* enabled
-        void setDuration( int )
-        {}
-
-        //* animated
-        void setAnimated( bool value )
-        { _animated = value; }
-
-        //@}
-
-        private:
-
-        //* animated
-        bool _animated;
-
-    };
-
-}
-
-#endif
+#include "breezebusyindicatordata.h"
+#include "breezebusyindicatordata.moc"

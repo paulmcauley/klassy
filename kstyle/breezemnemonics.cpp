@@ -21,6 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezemnemonics.h"
+#include "breezemnemonics.moc"
 
 #include <QKeyEvent>
 #include <QWidget>

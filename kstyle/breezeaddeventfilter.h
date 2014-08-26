@@ -39,6 +39,8 @@ namespace Breeze
     class AddEventFilter: public QObject
     {
 
+        Q_OBJECT
+
         public:
 
         //* constructor
@@ -49,7 +51,6 @@ namespace Breeze
         //* destructor
         virtual ~AddEventFilter( void )
         {}
-
 
         //* event filter
         /** blocks all AddChild events */

@@ -40,6 +40,8 @@
 namespace Breeze
 {
 
+    class AppEventFilter;
+
     class WindowManager: public QObject
     {
 
@@ -258,38 +260,6 @@ namespace Breeze
         //* cursor override
         /** used to keep track of application cursor being overridden when dragging in non-WM mode */
         bool _cursorOverride;
-
-        //* provide application-wise event filter
-        /**
-        it us used to unlock dragging and make sure event look is properly restored
-        after a drag has occurred
-        */
-        class AppEventFilter: public QObject
-        {
-
-            public:
-
-            //* constructor
-            explicit AppEventFilter( WindowManager* parent ):
-                QObject( parent ),
-                _parent( parent )
-            {}
-
-            //* event filter
-            virtual bool eventFilter( QObject*, QEvent* );
-
-            protected:
-
-            //* application-wise event.
-            /** needed to catch end of XMoveResize events */
-            bool appMouseEvent( QObject*, QEvent* );
-
-            private:
-
-            //* parent
-            WindowManager* _parent;
-
-        };
 
         //* application event filter
         AppEventFilter* _appEventFilter;

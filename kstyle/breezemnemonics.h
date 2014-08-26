@@ -35,6 +35,8 @@ namespace Breeze
     class Mnemonics: public QObject
     {
 
+        Q_OBJECT
+
         public:
 
         //* constructor

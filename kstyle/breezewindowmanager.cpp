@@ -67,6 +67,94 @@
 namespace Breeze
 {
 
+    //* provide application-wise event filter
+    /**
+    it us used to unlock dragging and make sure event look is properly restored
+    after a drag has occurred
+    */
+    class AppEventFilter: public QObject
+    {
+
+        public:
+
+        //* constructor
+        explicit AppEventFilter( WindowManager* parent ):
+            QObject( parent ),
+            _parent( parent )
+        {}
+
+        //* event filter
+        virtual bool eventFilter( QObject* object, QEvent* event )
+        {
+
+            if( event->type() == QEvent::MouseButtonRelease )
+            {
+
+                // stop drag timer
+                if( _parent->_dragTimer.isActive() )
+                { _parent->resetDrag(); }
+
+                // unlock
+                if( _parent->isLocked() )
+                { _parent->setLocked( false ); }
+
+            }
+
+            if( !_parent->enabled() ) return false;
+
+            /*
+            if a drag is in progress, the widget will not receive any event
+            we trigger on the first MouseMove or MousePress events that are received
+            by any widget in the application to detect that the drag is finished
+            */
+            if( _parent->useWMMoveResize() && _parent->_dragInProgress && _parent->_target && ( event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonPress ) )
+            { return appMouseEvent( object, event ); }
+
+            return false;
+
+        }
+
+        protected:
+
+        //* application-wise event.
+        /** needed to catch end of XMoveResize events */
+        bool appMouseEvent( QObject*, QEvent* event )
+        {
+
+            // store target window (see later)
+            QWidget* window( _parent->_target.data()->window() );
+
+            /*
+            post some mouseRelease event to the target, in order to counter balance
+            the mouse press that triggered the drag. Note that it triggers a resetDrag
+            */
+            QMouseEvent mouseEvent( QEvent::MouseButtonRelease, _parent->_dragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+            qApp->sendEvent( _parent->_target.data(), &mouseEvent );
+
+            if( event->type() == QEvent::MouseMove )
+            {
+                /*
+                HACK: quickly move the main cursor out of the window and back
+                this is needed to get the focus right for the window children
+                the origin of this issue is unknown at the moment
+                */
+                const QPoint cursor = QCursor::pos();
+                QCursor::setPos(window->mapToGlobal( window->rect().topRight() ) + QPoint(1, 0) );
+                QCursor::setPos(cursor);
+
+            }
+
+            return false;
+
+        }
+
+        private:
+
+        //* parent
+        WindowManager* _parent;
+
+    };
+
     //_____________________________________________________________
     WindowManager::WindowManager( QObject* parent ):
         QObject( parent ),
@@ -718,70 +806,5 @@ namespace Breeze
         } else return false;
 
     }
-
-    //____________________________________________________________
-    bool WindowManager::AppEventFilter::eventFilter( QObject* object, QEvent* event )
-    {
-
-        if( event->type() == QEvent::MouseButtonRelease )
-        {
-
-            // stop drag timer
-            if( _parent->_dragTimer.isActive() )
-            { _parent->resetDrag(); }
-
-            // unlock
-            if( _parent->isLocked() )
-            { _parent->setLocked( false ); }
-
-        }
-
-        if( !_parent->enabled() ) return false;
-
-        /*
-        if a drag is in progress, the widget will not receive any event
-        we trigger on the first MouseMove or MousePress events that are received
-        by any widget in the application to detect that the drag is finished
-        */
-        if( _parent->useWMMoveResize() && _parent->_dragInProgress && _parent->_target && ( event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonPress ) )
-        { return appMouseEvent( object, event ); }
-
-        return false;
-
-    }
-
-    //_____________________________________________________________
-    bool WindowManager::AppEventFilter::appMouseEvent( QObject* object, QEvent* event )
-    {
-
-        Q_UNUSED( object );
-
-        // store target window (see later)
-        QWidget* window( _parent->_target.data()->window() );
-
-        /*
-        post some mouseRelease event to the target, in order to counter balance
-        the mouse press that triggered the drag. Note that it triggers a resetDrag
-        */
-        QMouseEvent mouseEvent( QEvent::MouseButtonRelease, _parent->_dragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-        qApp->sendEvent( _parent->_target.data(), &mouseEvent );
-
-        if( event->type() == QEvent::MouseMove )
-        {
-            /*
-            HACK: quickly move the main cursor out of the window and back
-            this is needed to get the focus right for the window children
-            the origin of this issue is unknown at the moment
-            */
-            const QPoint cursor = QCursor::pos();
-            QCursor::setPos(window->mapToGlobal( window->rect().topRight() ) + QPoint(1, 0) );
-            QCursor::setPos(cursor);
-
-        }
-
-        return false;
-
-    }
-
 
 }

@@ -1,12 +1,12 @@
-#ifndef breezebusyindicatordata_h
-#define breezebusyindicatordata_h
-
 //////////////////////////////////////////////////////////////////////////////
-// breezebusyindicatordata.h
-// data container for progressbar busy indicator
+// breezeaddeventfilter.cpp
+// used to block add a child to a widget, blocking AddChild parent events
 // -------------------
 //
-// Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// Copyright (c) 2010 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+//
+// Largely inspired from BeSpin style
+// Copyright (C) 2007 Thomas Luebking <thomas.luebking@web.de>
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -27,61 +27,5 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include <QObject>
-
-namespace Breeze
-{
-
-    class BusyIndicatorData: public QObject
-    {
-
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        explicit BusyIndicatorData( QObject* parent ):
-            QObject( parent ),
-            _animated( false )
-        {}
-
-        //* destructor
-        virtual ~BusyIndicatorData( void )
-        {}
-
-        //*@name accessors
-        //@{
-
-        //* animated
-        bool isAnimated( void ) const
-        { return _animated; }
-
-        //@}
-
-        //*@name modifiers
-        //@{
-
-        //* enabled
-        void setEnabled( bool )
-        {}
-
-        //* enabled
-        void setDuration( int )
-        {}
-
-        //* animated
-        void setAnimated( bool value )
-        { _animated = value; }
-
-        //@}
-
-        private:
-
-        //* animated
-        bool _animated;
-
-    };
-
-}
-
-#endif
+#include "breezeaddeventfilter.h"
+#include "breezeaddeventfilter.moc"
