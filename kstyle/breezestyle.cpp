@@ -1482,7 +1482,7 @@ namespace Breeze
         if( verticalTabs )
         {
 
-            tabBarRect.setHeight( qMin( tabBarRect.height(), rect.height() - 2 ) );
+            tabBarRect.setHeight( rect.height() - 2 );
             tabBarRect.moveTop( rect.top() + ( rect.height() - tabBarRect.height() )/2 );
 
         } else {
@@ -1504,7 +1504,7 @@ namespace Breeze
                 else rect.setRight( buttonRect.left() );
             }
 
-            tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
+            tabBarRect.setWidth( rect.width() - 2 );
             tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
 
         }
