@@ -65,6 +65,11 @@
       <default>true</default>
     </entry>
 
+    <!-- tab base -->
+    <entry name="TabBarDrawCenteredTabs" type="Bool">
+      <default>true</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragMode" type="Enum">
       <choices>

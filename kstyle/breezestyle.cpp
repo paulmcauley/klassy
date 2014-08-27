@@ -637,7 +637,7 @@ namespace Breeze
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
 
             // tabbar
-            case SH_TabBar_Alignment: return Qt::AlignCenter;
+            case SH_TabBar_Alignment: return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter:Qt::AlignLeft;
 
             // toolbox
             case SH_ToolBox_SelectedPageTitleBold: return false;
