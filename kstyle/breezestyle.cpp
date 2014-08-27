@@ -2745,7 +2745,7 @@ namespace Breeze
 
         // tabwidget frame
         // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
+        const QStyleOptionTabWidgetFrameV2* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
         if( !tabOption ) return true;
 
         // do nothing if tabbar is hidden
