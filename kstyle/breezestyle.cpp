@@ -1484,13 +1484,16 @@ namespace Breeze
         QRect rect( option->rect );
         QRect tabBarRect( QPoint(0, 0), tabBarSize );
 
+        Qt::Alignment tabBarAlignment( styleHint( SH_TabBar_Alignment, option, widget ) );
+
         // horizontal positioning
         const bool verticalTabs( isVerticalTab( tabOption->shape ) );
         if( verticalTabs )
         {
 
             tabBarRect.setHeight( qMin( tabBarRect.height(), rect.height() - 2 ) );
-            tabBarRect.moveTop( rect.top() + ( rect.height() - tabBarRect.height() )/2 );
+            if( tabBarAlignment == Qt::AlignCenter ) tabBarRect.moveTop( rect.top() + ( rect.height() - tabBarRect.height() )/2 );
+            else tabBarRect.moveTop( rect.top()+1 );
 
         } else {
 
@@ -1512,8 +1515,12 @@ namespace Breeze
             }
 
             tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
-            tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
+            if( tabBarAlignment == Qt::AlignCenter ) tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
+            else {
 
+                tabBarRect.moveLeft( rect.left() + 1 );
+                tabBarRect = visualRect( option, tabBarRect );
+            }
         }
 
         // vertical positioning
@@ -2747,6 +2754,7 @@ namespace Breeze
         // adjust rect to handle overlaps
         QRect rect( option->rect );
 
+        const QRect tabBarRect( tabOption->tabBarRect );
         const QSize tabBarSize( tabOption->tabBarSize );
         Corners corners = CornersAll;
 
@@ -2756,21 +2764,29 @@ namespace Breeze
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
+            if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
+            if( tabBarRect.right() < rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
+            if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
+            if( tabBarRect.right() < rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersLeft;
+            if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
+            if( tabBarRect.bottom() < rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersRight;
+            if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
+            if( tabBarRect.bottom() < rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
             break;
 
             default: break;
