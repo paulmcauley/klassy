@@ -362,11 +362,11 @@ namespace Breeze
         { return ParentStyleClass::visualRect(opt->direction, opt->rect, subRect); }
 
         //* centering
-        QRect centerRect(const QRect &in, const QSize& s ) const
-        { return centerRect( in, s.width(), s.height() ); }
+        QRect centerRect(const QRect &rect, const QSize& size ) const
+        { return centerRect( rect, size.width(), size.height() ); }
 
-        QRect centerRect(const QRect &in, int w, int h) const
-        { return QRect(in.x() + (in.width() - w)/2, in.y() + (in.height() - h)/2, w, h); }
+        QRect centerRect(const QRect &rect, int width, int height) const
+        { return QRect(rect.left() + (rect.width() - width)/2, rect.top() + (rect.height() - height)/2, width, height); }
 
         //* return dial angle based on option and value
         qreal dialAngle( const QStyleOptionSlider*, int ) const;
