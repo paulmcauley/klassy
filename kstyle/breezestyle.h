@@ -161,6 +161,9 @@ namespace Breeze
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
+        //* push button contents
+        QRect pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const;
+
         //* checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const;
 

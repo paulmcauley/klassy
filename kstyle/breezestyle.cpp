@@ -681,6 +681,9 @@ namespace Breeze
         switch( element )
         {
 
+            // push buttons
+            case SE_PushButtonContents: return pushButtonContentsRect( option, widget );
+
             // checkboxes and radio buttons
             case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
             case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
@@ -1279,6 +1282,10 @@ namespace Breeze
         _widgetExplorer->setDrawWidgetRects( StyleConfigData::drawWidgetRects() );
 
     }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const
+    { return insideMargin( option->rect, Metrics::Frame_FrameWidth ); }
 
     //___________________________________________________________________________________________________________________
     QRect Style::checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
