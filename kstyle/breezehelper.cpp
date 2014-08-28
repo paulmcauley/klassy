@@ -1081,10 +1081,10 @@ namespace Breeze
         QPolygonF arrow;
         switch( orientation )
         {
-            case ArrowUp: arrow << QPointF( -4,2 ) << QPointF( 0, -2 ) << QPointF( 4,2 ); break;
-            case ArrowDown: arrow << QPointF( -4,-2 ) << QPointF( 0, 2 ) << QPointF( 4,-2 ); break;
+            case ArrowUp: arrow << QPointF( -4, 2 ) << QPointF( 0, -2 ) << QPointF( 4, 2 ); break;
+            case ArrowDown: arrow << QPointF( -4, -2 ) << QPointF( 0, 2 ) << QPointF( 4, -2 ); break;
             case ArrowLeft: arrow << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 ); break;
-            case ArrowRight: arrow << QPointF( -2,-4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 ); break;
+            case ArrowRight: arrow << QPointF( -2, -4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 ); break;
             default: break;
         }
 

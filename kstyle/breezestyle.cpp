@@ -1038,7 +1038,7 @@ namespace Breeze
     {
 
         // hide mnemonics if requested
-        if( !_mnemonics->enabled() && ( flags & Qt::TextShowMnemonic ) && !( flags&Qt::TextHideMnemonic ) )
+        if( !_mnemonics->enabled() && ( flags&Qt::TextShowMnemonic ) && !( flags&Qt::TextHideMnemonic ) )
         {
             flags &= ~Qt::TextShowMnemonic;
             flags |= Qt::TextHideMnemonic;
@@ -4389,7 +4389,7 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
-        QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
+        const QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
@@ -4466,7 +4466,7 @@ namespace Breeze
         const QColor background( palette.color( QPalette::Window ) );
 
         // adjust rect, based on number of buttons to be drawn
-        QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
+        const QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
