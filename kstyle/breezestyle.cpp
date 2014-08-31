@@ -571,6 +571,7 @@ namespace Breeze
             case PM_DockWidgetTitleBarButtonMargin: return Metrics::ToolButton_MarginWidth;
 
             case PM_SplitterWidth: return Metrics::Splitter_SplitterWidth;
+            case PM_DockWidgetSeparatorExtent: return Metrics::Splitter_SplitterWidth;
 
             // fallback
             default: return ParentStyleClass::pixelMetric( metric, option, widget );
@@ -2403,7 +2404,6 @@ namespace Breeze
     QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
     { return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight ); }
 
-
     //______________________________________________________________
     QSize Style::menuItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
@@ -4122,7 +4122,6 @@ namespace Breeze
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
 
-
         if( !menuItemOption->icon.isNull() )
         {
 
@@ -5109,7 +5108,7 @@ namespace Breeze
         const QRect buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
 
         // get rectangle and adjust to properly accounts for buttons
-        QRect rect( insideMargin( dockWidgetOption->rect, Frame_FrameWidth ) );
+        QRect rect( insideMargin( dockWidgetOption->rect, Metrics::Frame_FrameWidth ) );
         if( verticalTitleBar )
         {
 
