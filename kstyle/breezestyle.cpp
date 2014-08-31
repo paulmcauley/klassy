@@ -3754,6 +3754,9 @@ namespace Breeze
         if( iconRect.isValid() ) iconRect = visualRect( option, iconRect );
         if( textRect.isValid() ) textRect = visualRect( option, textRect );
 
+        // make sure there is enough room for icon
+        if( iconRect.isValid() ) iconRect = centerRect( iconRect, iconSize );
+
         // render icon
         if( hasIcon && iconRect.isValid() ) {
 
@@ -3908,6 +3911,9 @@ namespace Breeze
             textFlags |= Qt::AlignLeft | Qt::AlignVCenter;
 
         }
+
+        // make sure there is enough room for icon
+        if( iconRect.isValid() ) iconRect = centerRect( iconRect, iconSize );
 
         // render arrow or icon
         if( hasArrow && iconRect.isValid() )
