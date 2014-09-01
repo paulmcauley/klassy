@@ -438,19 +438,19 @@ namespace Breeze
 
             // frame width
             case PM_DefaultFrameWidth:
-            if( qobject_cast<const QLineEdit*>( widget ) ) return LineEdit_FrameWidth;
+            if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
             #if QT_VERSION >= 0x050000
             else if( option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" ) )
             {
                 const QString &elementType = option->styleObject->property( "elementType" ).toString();
-                if ( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
+                if( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
                 {
 
-                    return LineEdit_FrameWidth;
+                    return Metrics::LineEdit_FrameWidth;
 
-                } else if ( elementType == QLatin1String( "combobox" ) ) {
+                } else if( elementType == QLatin1String( "combobox" ) ) {
 
-                    return ComboBox_FrameWidth;
+                    return Metrics::ComboBox_FrameWidth;
                 }
 
             }
@@ -525,12 +525,9 @@ namespace Breeze
             // toolbars
             case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleExtent;
             case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
-
-            // need to make sure there is enough room to draw the icon
             case PM_ToolBarExtensionExtent:
             return pixelMetric( PM_SmallIconSize, option, widget ) + 2*Metrics::ToolButton_MarginWidth;
 
-            // toolbar items
             case PM_ToolBarItemMargin: return 0;
             case PM_ToolBarItemSpacing: return Metrics::ToolBar_ItemSpacing;
 
@@ -555,10 +552,10 @@ namespace Breeze
             case PM_SliderLength: return Metrics::Slider_ControlThickness;
 
             // checkboxes and radio buttons
-            case PM_IndicatorWidth: return CheckBox_Size;
-            case PM_IndicatorHeight: return CheckBox_Size;
-            case PM_ExclusiveIndicatorWidth: return CheckBox_Size;
-            case PM_ExclusiveIndicatorHeight: return CheckBox_Size;
+            case PM_IndicatorWidth: return Metrics::CheckBox_Size;
+            case PM_IndicatorHeight: return Metrics::CheckBox_Size;
+            case PM_ExclusiveIndicatorWidth: return Metrics::CheckBox_Size;
+            case PM_ExclusiveIndicatorHeight: return Metrics::CheckBox_Size;
 
             // list heaaders
             case PM_HeaderMarkSize: return Metrics::Header_ArrowSize;
@@ -720,6 +717,7 @@ namespace Breeze
     //______________________________________________________________
     QRect Style::subControlRect( ComplexControl element, const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
+
         switch( element )
         {
 
@@ -2308,7 +2306,7 @@ namespace Breeze
         */
         const int tickLength( disableTicks ? 0 : (
             Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth +
-            (Metrics::Slider_GrooveThickness - Slider_ControlThickness)/2 ) );
+            (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness)/2 ) );
 
         const int builtInTickLength( 5 );
         if( tickPosition == QSlider::NoTicks ) return contentsSize;
@@ -5507,6 +5505,7 @@ namespace Breeze
     bool Style::drawSliderComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
+        // cast option and check
         const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 

@@ -161,35 +161,18 @@ namespace Breeze
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
-        //* push button contents
         QRect pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* checkbox contents
         QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* line edit contents
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
-
-        //* progressbar groove
         QRect progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* progressbar groove
         QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* progressbar label
         QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* view headers
         QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
         QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
-
-        //* tab widgets
         QRect tabWidgetTabBarRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetCornerRect( SubElement, const QStyleOption* option, const QWidget* widget ) const;
-
-        //* toolbox tab
         QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
 
         //@}
@@ -219,11 +202,11 @@ namespace Breeze
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize sliderSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
-        QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-        QSize menuItemSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
+        QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
-        QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
-        QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize& size, const QWidget* ) const;
+        QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize itemViewItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
@@ -408,8 +391,8 @@ namespace Breeze
             switch( type )
             {
                 case NoButton: return Metrics::ScrollBar_NoButtonHeight;
-                case SingleButton: return ScrollBar_SingleButtonHeight;
-                case DoubleButton: return ScrollBar_DoubleButtonHeight;
+                case SingleButton: return Metrics::ScrollBar_SingleButtonHeight;
+                case DoubleButton: return Metrics::ScrollBar_DoubleButtonHeight;
                 default: return 0;
             }
         }
