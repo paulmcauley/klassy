@@ -2761,10 +2761,7 @@ namespace Breeze
     bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        /*
-        tabbar frame
-        used either for 'separate' tabbar, or in 'document mode'
-        */
+        // tabbar frame used either for 'separate' tabbar, or in 'document mode'
 
         // cast option and check
         const QStyleOptionTabBarBase* tabOption( qstyleoption_cast<const QStyleOptionTabBarBase*>( option ) );
@@ -3333,48 +3330,45 @@ namespace Breeze
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
 
-        // for toolbuttons, need to render the relevant part of the frame
-        if( (toolButtonOption->subControls & SC_ToolButtonMenu) && !autoRaise )
-        {
+        // do nothing for autoraise buttons
+        if( autoRaise || !(toolButtonOption->subControls & SC_ToolButtonMenu) ) return true;
 
-            // store palette and rect
-            const QPalette& palette( option->palette );
-            const QRect& rect( option->rect );
+        // store palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
 
-            // store state
-            const bool enabled( state & State_Enabled );
-            const bool hasFocus( enabled && ( state & State_HasFocus ) );
-            const bool mouseOver( enabled && ( state & State_MouseOver ) );
-            const bool sunken( enabled && ( state & State_Sunken ) );
+        // store state
+        const bool enabled( state & State_Enabled );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
+        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+        const bool sunken( enabled && ( state & State_Sunken ) );
 
-            // update animation state
-            // mouse over takes precedence over focus
-            _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+        // update animation state
+        // mouse over takes precedence over focus
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
 
-            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
-            // render as push button
-            const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        // render as push button
+        const QColor shadow( _helper->shadowColor( palette ) );
+        const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
 
-            QRect frameRect( rect );
-            painter->setClipRect( rect );
-            frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-            frameRect = visualRect( option, frameRect );
+        QRect frameRect( rect );
+        painter->setClipRect( rect );
+        frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+        frameRect = visualRect( option, frameRect );
 
-            // render
-            _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
+        // render
+        _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
 
-            // also render separator
-            QRect separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
-            separatorRect.setWidth( 1 );
-            separatorRect = visualRect( option, separatorRect );
-            _helper->renderSeparator( painter, separatorRect, outline, true );
-
-        }
+        // also render separator
+        QRect separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
+        separatorRect.setWidth( 1 );
+        separatorRect = visualRect( option, separatorRect );
+        _helper->renderSeparator( painter, separatorRect, outline, true );
 
         return true;
 
@@ -5203,7 +5197,7 @@ namespace Breeze
         }
 
         // arrow
-        if( toolButtonOption->subControls & SC_ToolButtonMenu )
+        if( hasPopupMenu )
         {
 
             copy.rect = menuRect;
