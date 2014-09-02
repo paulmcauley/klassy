@@ -25,11 +25,6 @@
 #include "breezebusyindicatordata.h"
 #include "breezedatamap.h"
 
-#include <QBasicTimer>
-#include <QSet>
-#include <QWidget>
-#include <QTimerEvent>
-
 namespace Breeze
 {
 

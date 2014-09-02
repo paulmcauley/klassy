@@ -382,52 +382,6 @@ namespace Breeze
 
     }
 
-    //____________________________________________________________________
-    QIcon Style::standardIconImplementation( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // lookup cache
-        if( _iconCache.contains( standardPixmap ) ) return _iconCache.value( standardPixmap );
-
-        QIcon icon;
-        switch( standardPixmap )
-        {
-
-            case SP_TitleBarNormalButton:
-            case SP_TitleBarMinButton:
-            case SP_TitleBarMaxButton:
-            case SP_TitleBarCloseButton:
-            case SP_DockWidgetCloseButton:
-            icon = titleBarButtonIcon( standardPixmap, option, widget );
-            break;
-
-            case SP_ToolBarHorizontalExtensionButton:
-            case SP_ToolBarVerticalExtensionButton:
-            icon = toolBarExtensionIcon( standardPixmap, option, widget );
-            break;
-
-            default:
-            break;
-
-        }
-
-        if( icon.isNull() )
-        {
-
-            // do not cache parent style icon, since it may change at runtime
-            #if QT_VERSION >= 0x050000
-            return  ParentStyleClass::standardIcon( standardPixmap, option, widget );
-            #else
-            return  ParentStyleClass::standardIconImplementation( standardPixmap, option, widget );
-            #endif
-
-        } else {
-            const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
-            return icon;
-        }
-
-    }
-
     //______________________________________________________________
     int Style::pixelMetric( PixelMetric metric, const QStyleOption* option, const QWidget* widget ) const
     {
@@ -616,14 +570,12 @@ namespace Breeze
                 return false;
             }
 
-            // combobox
+            // mouse tracking
             case SH_ComboBox_ListMouseTracking: return true;
-
-            // menubar
             case SH_MenuBar_MouseTracking: return true;
-
-            // menu
             case SH_Menu_MouseTracking: return true;
+
+            // menus
             case SH_Menu_SubMenuPopupDelay: return 150;
             case SH_Menu_SloppySubMenus: return true;
 
@@ -679,33 +631,20 @@ namespace Breeze
         switch( element )
         {
 
-            // push buttons
             case SE_PushButtonContents: return pushButtonContentsRect( option, widget );
-
-            // checkboxes and radio buttons
             case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
             case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
-
-            // line edit content
             case SE_LineEditContents: return lineEditContentsRect( option, widget );
-
-            // progress bars
             case SE_ProgressBarGroove: return progressBarGrooveRect( option, widget );
             case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
             case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
-
-            // headers
             case SE_HeaderArrow: return headerArrowRect( option, widget );
             case SE_HeaderLabel: return headerLabelRect( option, widget );
-
-            // tabbars
             case SE_TabWidgetTabBar: return tabWidgetTabBarRect( option, widget );
             case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
             case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
             case SE_TabWidgetLeftCorner: return tabWidgetCornerRect( SE_TabWidgetLeftCorner, option, widget );
             case SE_TabWidgetRightCorner: return tabWidgetCornerRect( SE_TabWidgetRightCorner, option, widget );
-
-            // toolbox
             case SE_ToolBoxTabContents: return toolBoxTabContentsRect( option, widget );
 
             // fallback
@@ -742,7 +681,6 @@ namespace Breeze
 
         switch( element )
         {
-
             case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
             case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
             case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
@@ -755,18 +693,13 @@ namespace Breeze
             case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
             case CT_MenuItem: return menuItemSizeFromContents( option, size, widget );
             case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
-
-            // tabbars
             case CT_TabWidget: return tabWidgetSizeFromContents( option, size, widget );
             case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
-
-            // item views
             case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
             case CT_ItemViewItem: return itemViewItemSizeFromContents( option, size, widget );
 
             // fallback
             default: return ParentStyleClass::sizeFromContents( element, option, size, widget );
-
         }
 
     }
@@ -779,21 +712,21 @@ namespace Breeze
             case CC_ScrollBar:
             {
 
-                QRect groove = scrollBarSubControlRect( option, SC_ScrollBarGroove, widget );
-                if ( groove.contains( point ) )
+                QRect grooveRect = scrollBarSubControlRect( option, SC_ScrollBarGroove, widget );
+                if( grooveRect.contains( point ) )
                 {
                     //Must be either page up/page down, or just click on the slider.
                     //Grab the slider to compare
-                    QRect slider = scrollBarSubControlRect( option, SC_ScrollBarSlider, widget );
+                    QRect sliderRect = scrollBarSubControlRect( option, SC_ScrollBarSlider, widget );
 
-                    if( slider.contains( point ) ) return SC_ScrollBarSlider;
-                    else if( preceeds( point, slider, option ) ) return SC_ScrollBarSubPage;
+                    if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
+                    else if( preceeds( point, sliderRect, option ) ) return SC_ScrollBarSubPage;
                     else return SC_ScrollBarAddPage;
 
                 }
 
                 //This is one of the up/down buttons. First, decide which one it is.
-                if( preceeds( point, groove, option ) )
+                if( preceeds( point, grooveRect, option ) )
                 {
 
                     if( _subLineButtons == DoubleButton )
@@ -828,35 +761,17 @@ namespace Breeze
         switch( element )
         {
 
-            // buttons
             case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
-
-            // scroll areas
             case PE_PanelScrollAreaCorner: fcn = &Style::drawPanelScrollAreaCornerPrimitive; break;
-
-
-            // menus
             case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
-
-            // tooltips
             case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
-
-            // item view
             case PE_PanelItemViewItem: fcn = &Style::drawPanelItemViewItemPrimitive; break;
-
-            // checkboxes and radio buttons
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
             case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
-
-            // menu indicator
             case PE_IndicatorButtonDropDown: fcn = &Style::drawIndicatorButtonDropDownPrimitive; break;
-
-            // tabwidget tebs
             case PE_IndicatorTabClose: fcn = &Style::drawIndicatorTabClosePrimitive; break;
             case PE_IndicatorTabTear: fcn = &Style::drawIndicatorTabTearPrimitive; break;
-
-            // arrows
             case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
             case PE_IndicatorArrowDown: fcn = &Style::drawIndicatorArrowDownPrimitive; break;
             case PE_IndicatorArrowLeft: fcn = &Style::drawIndicatorArrowLeftPrimitive; break;
@@ -865,8 +780,6 @@ namespace Breeze
             case PE_IndicatorToolBarHandle: fcn = &Style::drawIndicatorToolBarHandlePrimitive; break;
             case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
             case PE_IndicatorBranch: fcn = &Style::drawIndicatorBranchPrimitive; break;
-
-            // frames
             case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameLineEdit: fcn = &Style::drawFrameLineEditPrimitive; break;
@@ -900,7 +813,6 @@ namespace Breeze
     {
 
         StyleControl fcn( nullptr );
-
 
         #if !USE_KDE4
         if( element == CE_CapacityBar )
@@ -1002,7 +914,6 @@ namespace Breeze
         StyleComplexControl fcn( nullptr );
         switch( element )
         {
-
             case CC_GroupBox: fcn = &Style::drawGroupBoxComplexControl; break;
             case CC_ToolButton: fcn = &Style::drawToolButtonComplexControl; break;
             case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
@@ -1014,7 +925,6 @@ namespace Breeze
 
             // fallback
             default: break;
-
         }
 
 
@@ -1032,7 +942,7 @@ namespace Breeze
 
     //___________________________________________________________________________________
     void Style::drawItemText(
-        QPainter* painter, const QRect& r, int flags, const QPalette& palette, bool enabled,
+        QPainter* painter, const QRect& rect, int flags, const QPalette& palette, bool enabled,
         const QString &text, QPalette::ColorRole textRole ) const
     {
 
@@ -1055,15 +965,15 @@ namespace Breeze
             if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
             {
 
-                const QPalette copy = _helper->disabledPalette( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable )  );
-                return ParentStyleClass::drawItemText( painter, r, flags, copy, enabled, text, textRole );
+                const QPalette copy( _helper->disabledPalette( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable ) ) );
+                return ParentStyleClass::drawItemText( painter, rect, flags, copy, enabled, text, textRole );
 
             }
 
         }
 
         // fallback
-        return ParentStyleClass::drawItemText( painter, r, flags, palette, enabled, text, textRole );
+        return ParentStyleClass::drawItemText( painter, rect, flags, palette, enabled, text, textRole );
 
     }
 
@@ -1082,33 +992,6 @@ namespace Breeze
 
         // fallback
         return ParentStyleClass::eventFilter( object, event );
-    }
-
-    //____________________________________________________________________________
-    bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
-    {
-        if( event->type() == QEvent::Paint )
-        {
-            // create painter and clip
-            QPainter painter( dockWidget );
-            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
-            painter.setClipRegion( paintEvent->region() );
-
-            // store palette and set colors
-            const QPalette& palette( dockWidget->palette() );
-            const QColor background( palette.color( QPalette::Window ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
-
-            // store rect
-            const QRect rect( dockWidget->rect() );
-
-            // render
-            if( dockWidget->isWindow() ) _helper->renderMenuFrame( &painter, rect, background, outline, false );
-            else _helper->renderFrame( &painter, rect, background, outline );
-
-        }
-
-        return false;
 
     }
 
@@ -1149,6 +1032,68 @@ namespace Breeze
         return false;
     }
 
+    //_________________________________________________________
+    bool Style::eventFilterComboBoxContainer( QWidget* widget, QEvent* event )
+    {
+        if( event->type() == QEvent::Paint )
+        {
+
+            QPainter painter( widget );
+            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+            painter.setClipRegion( paintEvent->region() );
+
+            const QRect rect( widget->rect() );
+            const QPalette& palette( widget->palette() );
+            const QColor background( palette.color( QPalette::Window ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
+
+            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+            if( hasAlpha )
+            {
+
+                painter.setCompositionMode( QPainter::CompositionMode_Source );
+                _helper->renderMenuFrame( &painter, rect, background, outline, true );
+
+            } else {
+
+                _helper->renderMenuFrame( &painter, rect, background, outline, false );
+
+            }
+
+        }
+
+        return false;
+
+    }
+
+    //____________________________________________________________________________
+    bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
+    {
+        if( event->type() == QEvent::Paint )
+        {
+            // create painter and clip
+            QPainter painter( dockWidget );
+            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+            painter.setClipRegion( paintEvent->region() );
+
+            // store palette and set colors
+            const QPalette& palette( dockWidget->palette() );
+            const QColor background( palette.color( QPalette::Window ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
+
+            // store rect
+            const QRect rect( dockWidget->rect() );
+
+            // render
+            if( dockWidget->isWindow() ) _helper->renderMenuFrame( &painter, rect, background, outline, false );
+            else _helper->renderFrame( &painter, rect, background, outline );
+
+        }
+
+        return false;
+
+    }
+
     //____________________________________________________________________________
     bool Style::eventFilterMdiSubWindow( QMdiSubWindow* subWindow, QEvent* event )
     {
@@ -1184,42 +1129,8 @@ namespace Breeze
 
     }
 
-    //_________________________________________________________
-    bool Style::eventFilterComboBoxContainer( QWidget* widget, QEvent* event )
-    {
-        if( event->type() == QEvent::Paint )
-        {
-
-            QPainter painter( widget );
-            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
-            painter.setClipRegion( paintEvent->region() );
-
-            const QRect rect( widget->rect() );
-            const QPalette& palette( widget->palette() );
-            const QColor background( palette.color( QPalette::Window ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
-
-            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-            if( hasAlpha )
-            {
-
-                painter.setCompositionMode( QPainter::CompositionMode_Source );
-                _helper->renderMenuFrame( &painter, rect, background, outline, true );
-
-            } else {
-
-                _helper->renderMenuFrame( &painter, rect, background, outline, false );
-
-            }
-
-        }
-
-        return false;
-
-    }
-
     //_____________________________________________________________________
-    void Style::configurationChanged()
+    void Style::configurationChanged( void )
     {
 
         // reparse breezerc
@@ -1231,6 +1142,52 @@ namespace Breeze
 
         // reload configuration
         loadConfiguration();
+
+    }
+
+    //____________________________________________________________________
+    QIcon Style::standardIconImplementation( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
+    {
+
+        // lookup cache
+        if( _iconCache.contains( standardPixmap ) ) return _iconCache.value( standardPixmap );
+
+        QIcon icon;
+        switch( standardPixmap )
+        {
+
+            case SP_TitleBarNormalButton:
+            case SP_TitleBarMinButton:
+            case SP_TitleBarMaxButton:
+            case SP_TitleBarCloseButton:
+            case SP_DockWidgetCloseButton:
+            icon = titleBarButtonIcon( standardPixmap, option, widget );
+            break;
+
+            case SP_ToolBarHorizontalExtensionButton:
+            case SP_ToolBarVerticalExtensionButton:
+            icon = toolBarExtensionIcon( standardPixmap, option, widget );
+            break;
+
+            default:
+            break;
+
+        }
+
+        if( icon.isNull() )
+        {
+
+            // do not cache parent style icon, since it may change at runtime
+            #if QT_VERSION >= 0x050000
+            return  ParentStyleClass::standardIcon( standardPixmap, option, widget );
+            #else
+            return  ParentStyleClass::standardIconImplementation( standardPixmap, option, widget );
+            #endif
+
+        } else {
+            const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
+            return icon;
+        }
 
     }
 
@@ -1596,6 +1553,46 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QRect Style::tabWidgetTabPaneRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
+
+        const int overlap = Metrics::TabBar_BaseOverlap - 1;
+        const QSize tabBarSize( tabOption->tabBarSize - QSize( overlap, overlap ) );
+
+        QRect rect( option->rect );
+        switch( tabOption->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+            rect.adjust( 0, tabBarSize.height(), 0, 0 );
+            break;
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            rect.adjust( 0, 0, 0, -tabBarSize.height() );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            rect.adjust( tabBarSize.width(), 0, 0, 0 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            rect.adjust( 0, 0, -tabBarSize.width(), 0 );
+            break;
+
+            default: break;
+        }
+
+        return rect;
+
+    }
+
+    //____________________________________________________________________
     QRect Style::tabWidgetCornerRect( SubElement element, const QStyleOption* option, const QWidget* ) const
     {
 
@@ -1635,46 +1632,6 @@ namespace Breeze
         // return cornerRect;
         cornerRect = visualRect( option, cornerRect );
         return cornerRect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabWidgetTabPaneRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
-
-        const int overlap = Metrics::TabBar_BaseOverlap - 1;
-        const QSize tabBarSize( tabOption->tabBarSize - QSize( overlap, overlap ) );
-
-        QRect rect( option->rect );
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            rect.adjust( 0, tabBarSize.height(), 0, 0 );
-            break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            rect.adjust( 0, 0, 0, -tabBarSize.height() );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            rect.adjust( tabBarSize.width(), 0, 0, 0 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            rect.adjust( 0, 0, -tabBarSize.width(), 0 );
-            break;
-
-            default: break;
-        }
-
-        return rect;
 
     }
 
@@ -2006,7 +1963,7 @@ namespace Breeze
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
 
-        switch ( subControl )
+        switch( subControl )
         {
 
             case SC_ScrollBarSubLine:
@@ -2041,7 +1998,7 @@ namespace Breeze
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
 
-        switch ( subControl )
+        switch( subControl )
         {
 
             case SC_ScrollBarSubLine:
@@ -2080,7 +2037,7 @@ namespace Breeze
                 // We handle RTL here to unreflect things if need be
                 QRect groove = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
 
-                if ( sliderOption->minimum == sliderOption->maximum ) return groove;
+                if( sliderOption->minimum == sliderOption->maximum ) return groove;
 
                 //Figure out how much room we have..
                 int space( horizontal ? groove.width() : groove.height() );
@@ -2396,6 +2353,7 @@ namespace Breeze
         size = expandSize( size, marginWidth );
 
         return size;
+
     }
 
     //______________________________________________________________
@@ -2413,7 +2371,7 @@ namespace Breeze
         // First, we calculate the intrinsic size of the item.
         // this must be kept consistent with what's in drawMenuItemControl
         QSize size( contentsSize );
-        switch ( menuItemOption->menuItemType )
+        switch( menuItemOption->menuItemType )
         {
 
             case QStyleOptionMenuItem::Normal:
@@ -2521,6 +2479,51 @@ namespace Breeze
     }
 
     //______________________________________________________________
+    QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return expandSize( contentsSize, Metrics::Frame_FrameWidth );
+
+        // tab orientation
+        const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
+
+        // need to reduce the size in the tabbar direction, due to a bug in QTabWidget::minimumSize
+        return verticalTabs ?
+            expandSize( contentsSize, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
+            expandSize( contentsSize, Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth );
+
+    }
+
+    //______________________________________________________________
+    QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    {
+        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+
+        // add margins
+        QSize size( contentsSize );
+
+        // compare to minimum size
+        const bool verticalTabs( tabOption && isVerticalTab( tabOption ) );
+        if( verticalTabs )
+        {
+
+            size = expandSize( size, Metrics::TabBar_TabMarginHeight, Metrics::TabBar_TabMarginWidth );
+            size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
+
+        } else {
+
+            size = expandSize( size, Metrics::TabBar_TabMarginWidth, Metrics::TabBar_TabMarginHeight );
+            size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+
+        }
+
+        return size;
+
+    }
+
+    //______________________________________________________________
     QSize Style::headerSectionSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
 
@@ -2570,51 +2573,6 @@ namespace Breeze
 
         // add margins
         return expandSize( size, Metrics::ItemView_ItemMarginWidth );
-
-    }
-
-    //______________________________________________________________
-    QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
-
-        // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return expandSize( contentsSize, Metrics::Frame_FrameWidth );
-
-        // tab orientation
-        const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
-
-        // need to reduce the size in the tabbar direction, due to a bug in QTabWidget::minimumSize
-        return verticalTabs ?
-            expandSize( contentsSize, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth - 1 ):
-            expandSize( contentsSize, Metrics::Frame_FrameWidth - 1, Metrics::Frame_FrameWidth );
-
-    }
-
-    //______________________________________________________________
-    QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
-        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-
-        // add margins
-        QSize size( contentsSize );
-
-        // compare to minimum size
-        const bool verticalTabs( tabOption && isVerticalTab( tabOption ) );
-        if( verticalTabs )
-        {
-
-            size = expandSize( size, Metrics::TabBar_TabMarginHeight, Metrics::TabBar_TabMarginWidth );
-            size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
-
-        } else {
-
-            size = expandSize( size, Metrics::TabBar_TabMarginWidth, Metrics::TabBar_TabMarginHeight );
-            size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
-
-        }
-
-        return size;
 
     }
 
@@ -3593,10 +3551,12 @@ namespace Breeze
     bool Style::drawIndicatorBranchPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const State& state( option->state );
+        // copy rect and palette
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
+        // state
+        const State& state( option->state );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         //draw expander
@@ -3636,14 +3596,14 @@ namespace Breeze
         const QColor lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( lineColor );
-        if ( state & ( State_Item | State_Children | State_Sibling ) )
+        if( state & ( State_Item | State_Children | State_Sibling ) )
         {
             const QLine line( QPoint( center.x(), rect.top() ), QPoint( center.x(), center.y() - expanderAdjust ) );
             painter->drawLine( line );
         }
 
         //The right/left (depending on direction ) line gets drawn if we have an item
-        if ( state & State_Item )
+        if( state & State_Item )
         {
             const QLine line = reverseLayout ?
                 QLine( QPoint( rect.left(), center.y() ), QPoint( center.x() - expanderAdjust, center.y() ) ):
@@ -3653,7 +3613,7 @@ namespace Breeze
         }
 
         //The bottom if we have a sibling
-        if ( state & State_Sibling )
+        if( state & State_Sibling )
         {
             const QLine line( QPoint( center.x(), center.y() + expanderAdjust ), QPoint( center.x(), rect.bottom() ) );
             painter->drawLine( line );
@@ -3998,7 +3958,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
-        if ( !menuItemOption ) return true;
+        if( !menuItemOption ) return true;
 
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
@@ -4066,7 +4026,6 @@ namespace Breeze
                 // in that case they are rendered as sunken flat toolbuttons
                 QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
                 toolButtonOption.state = State_On|State_Sunken|State_Enabled;
-
                 drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
                 return true;
 
@@ -4280,8 +4239,8 @@ namespace Breeze
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
 
         // check if anything is to be drawn
-        const bool busyIndicator = ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        if( busyIndicator )
+        const bool busy( ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 ) );
+        if( busy )
         {
 
             const qreal progress( _animations->busyIndicatorEngine().value() );
@@ -4401,7 +4360,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if ( !sliderOption ) return true;
+        if( !sliderOption ) return true;
 
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
@@ -4474,7 +4433,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if ( !sliderOption ) return true;
+        if( !sliderOption ) return true;
 
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
@@ -4589,7 +4548,7 @@ namespace Breeze
         color.setAlpha( 50 );
         painter->setBrush( color );
         painter->setClipRegion( rect );
-        painter->drawRect( rect.adjusted( 0,0,-1,-1 ) );
+        painter->drawRect( rect.adjusted( 0, 0, -1, -1 ) );
         return true;
 
     }
@@ -5092,7 +5051,7 @@ namespace Breeze
 
         // cast option and check
         const QStyleOptionDockWidget* dockWidgetOption = ::qstyleoption_cast<const QStyleOptionDockWidget*>( option );
-        if ( !dockWidgetOption ) return true;
+        if( !dockWidgetOption ) return true;
 
         const QPalette& palette( option->palette );
         const State& state( option->state );
@@ -5702,7 +5661,7 @@ namespace Breeze
         }
 
         // handle
-        if ( sliderOption->subControls & SC_DialHandle )
+        if( sliderOption->subControls & SC_DialHandle )
         {
 
             // get handle rect

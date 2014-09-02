@@ -202,12 +202,12 @@ namespace Breeze
         QSize spinBoxSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize sliderSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize pushButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize menuBarItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize menuItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize progressBarSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize tabWidgetSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize tabBarTabSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
-        QSize toolButtonSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize headerSectionSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
         QSize itemViewItemSizeFromContents( const QStyleOption*, const QSize&, const QWidget* ) const;
 
@@ -226,7 +226,6 @@ namespace Breeze
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabBarBasePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameWindowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawIndicatorTabClosePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
 
         bool drawIndicatorArrowUpPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
         { return drawIndicatorArrowPrimitive( ArrowUp, option, painter, widget ); }
@@ -244,20 +243,19 @@ namespace Breeze
         bool drawIndicatorHeaderArrowPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelButtonCommandPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawTabBarPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPanelScrollAreaCornerPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelTipLabelPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawPanelScrollAreaCornerPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawPanelItemViewItemPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorCheckBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorButtonDropDownPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawIndicatorTabClosePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-
-        //* special primitive to deal with arrow tool buttons in tabbars
-        bool drawTabBarPanelButtonToolPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //@}
 
