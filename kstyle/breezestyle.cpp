@@ -1285,8 +1285,8 @@ namespace Breeze
         // copy rectangle and adjust
         QRect rect( option->rect );
         const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-        if( horizontal ) rect.adjust( frameWidth, 0, -frameWidth, 0 );
-        else rect.adjust( 0, frameWidth, 0, -frameWidth );
+        if( horizontal ) rect = insideMargin( rect, frameWidth, 0 );
+        else rect = insideMargin( rect, 0, frameWidth );
 
         if( textVisible && !busy && horizontal )
         {
@@ -1381,8 +1381,7 @@ namespace Breeze
             option->fontMetrics.size( _mnemonics->textFlags(), progressBarOption->text ).width(),
             option->fontMetrics.size( _mnemonics->textFlags(), QStringLiteral( "100%" ) ).width() );
 
-        QRect rect( option->rect );
-        rect.adjust( Metrics::Frame_FrameWidth, 0, -Metrics::Frame_FrameWidth, 0 );
+        QRect rect( insideMargin( option->rect, Metrics::Frame_FrameWidth, 0 ) );
         rect.setLeft( rect.right() - textWidth + 1 );
         rect = visualRect( option, rect );
 
@@ -3674,7 +3673,7 @@ namespace Breeze
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
-        } else contentsRect.adjust( Metrics::Button_MarginWidth, 0, -Metrics::Button_MarginWidth, 0 );
+        } else contentsRect = insideMargin( contentsRect, Metrics::Button_MarginWidth, 0 );
 
         // icon size
         QSize iconSize( buttonOption->iconSize );
@@ -5068,12 +5067,12 @@ namespace Breeze
         } else if( reverseLayout ) {
 
             if( buttonRect.isValid() ) rect.setLeft( buttonRect.right() + 1 );
-            rect.adjust( 0,0,-4,0 );
+            rect.adjust( 0, 0, -4, 0 );
 
         } else {
 
             if( buttonRect.isValid() ) rect.setRight( buttonRect.left() - 1 );
-            rect.adjust( 4,0,0,0 );
+            rect.adjust( 4, 0, 0, 0 );
 
         }
 
@@ -5236,7 +5235,7 @@ namespace Breeze
 
                 // take out margins
                 const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-                contentsRect.adjust( marginWidth, 0, -marginWidth, 0 );
+                contentsRect = insideMargin( contentsRect, marginWidth, 0 );
                 if( hasInlineIndicator )
                 {
                     contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_InlineIndicatorWidth );
