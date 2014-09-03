@@ -534,6 +534,11 @@ namespace Breeze
         const qreal radius( frameRadius() );
         const QSizeF cornerSize( 2*radius, 2*radius );
 
+        // if rect - tabwidth is even, need to increase tabWidth by 1 unit
+        // for anti aliasing
+        if( !((rect.width() - tabWidth)%2) ) ++tabWidth;
+
+        // adjust rect for antialiasing
         QRectF baseRect( rect );
         baseRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
