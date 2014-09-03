@@ -76,15 +76,15 @@ namespace Breeze
         //* destructor
         virtual ~Style( void );
 
+        //* needed to avoid warnings at compilation time
+        using  ParentStyleClass::polish;
+        using  ParentStyleClass::unpolish;
+
         //* widget polishing
         virtual void polish( QWidget* );
 
         //* widget unpolishing
         virtual void unpolish( QWidget* );
-
-        //* needed to avoid warnings at compilation time
-        using  ParentStyleClass::polish;
-        using  ParentStyleClass::unpolish;
 
         //* pixel metrics
         virtual int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const;
@@ -265,7 +265,9 @@ namespace Breeze
         bool emptyControl( const QStyleOption*, QPainter*, const QWidget* ) const
         { return true; }
 
+        virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawToolButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        virtual bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -273,8 +275,6 @@ namespace Breeze
         virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         virtual bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -302,59 +302,11 @@ namespace Breeze
         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
 
-        //* adjust rect based on provided margins
-        QRect insideMargin( const QRect& r, int margin ) const
-        { return insideMargin( r, margin, margin ); }
-
-        //* adjust rect based on provided margins
-        QRect insideMargin( const QRect& r, int marginWidth, int marginHeight ) const
-        { return r.adjusted( marginWidth, marginHeight, -marginWidth, -marginHeight ); }
-
-        //* expand size based on margins
-        QSize expandSize( const QSize& size, int margin ) const
-        { return expandSize( size, margin, margin ); }
-
-        //* expand size based on margins
-        QSize expandSize( const QSize& size, int marginWidth, int marginHeight ) const
-        { return size + 2*QSize( marginWidth, marginHeight ); }
-
-        //* returns true for vertical tabs
-        bool isVerticalTab( const QStyleOptionTab* option ) const
-        { return isVerticalTab( option->shape ); }
-
-        bool isVerticalTab( const QTabBar::Shape& shape ) const
-        {
-            return shape == QTabBar::RoundedEast
-                || shape == QTabBar::RoundedWest
-                || shape == QTabBar::TriangularEast
-                || shape == QTabBar::TriangularWest;
-
-        }
-
-        //* right to left alignment handling
-        using ParentStyleClass::visualRect;
-        QRect visualRect(const QStyleOption* opt, const QRect& subRect) const
-        { return ParentStyleClass::visualRect(opt->direction, opt->rect, subRect); }
-
-        //* centering
-        QRect centerRect(const QRect &rect, const QSize& size ) const
-        { return centerRect( rect, size.width(), size.height() ); }
-
-        QRect centerRect(const QRect &rect, int width, int height) const
-        { return QRect(rect.left() + (rect.width() - width)/2, rect.top() + (rect.height() - height)/2, width, height); }
+        //* spinbox arrows
+        void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
 
         //* return dial angle based on option and value
         qreal dialAngle( const QStyleOptionSlider*, int ) const;
-
-        /*
-        Checks whether the point is before the bound rect for bound of given orientation.
-        This is needed to implement custom number of buttons in scrollbars,
-        as well as proper mouse-hover
-        */
-        inline bool preceeds( const QPoint&, const QRect&, const QStyleOption* ) const;
-
-        //* return which arrow button is hit by point for scrollbar double buttons
-        inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
         //* returns relevant scrollbar parent
         /** needed to detect parent focus */
@@ -362,9 +314,6 @@ namespace Breeze
 
         //* returns true if given scrollbar arrow is animated
         QColor scrollBarArrowColor( const QStyleOptionSlider*, const SubControl&, const QWidget* ) const;
-
-        //* spinbox arrows
-        void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
 
         //* scrollbar buttons
         enum ScrollBarButtonType
@@ -415,6 +364,57 @@ namespace Breeze
         @param position Used to find the relevant QModelIndex
         */
         bool isSelectedItem( const QWidget*, const QPoint& ) const;
+
+        //* adjust rect based on provided margins
+        QRect insideMargin( const QRect& r, int margin ) const
+        { return insideMargin( r, margin, margin ); }
+
+        //* adjust rect based on provided margins
+        QRect insideMargin( const QRect& r, int marginWidth, int marginHeight ) const
+        { return r.adjusted( marginWidth, marginHeight, -marginWidth, -marginHeight ); }
+
+        //* expand size based on margins
+        QSize expandSize( const QSize& size, int margin ) const
+        { return expandSize( size, margin, margin ); }
+
+        //* expand size based on margins
+        QSize expandSize( const QSize& size, int marginWidth, int marginHeight ) const
+        { return size + 2*QSize( marginWidth, marginHeight ); }
+
+        //* returns true for vertical tabs
+        bool isVerticalTab( const QStyleOptionTab* option ) const
+        { return isVerticalTab( option->shape ); }
+
+        bool isVerticalTab( const QTabBar::Shape& shape ) const
+        {
+            return shape == QTabBar::RoundedEast
+                || shape == QTabBar::RoundedWest
+                || shape == QTabBar::TriangularEast
+                || shape == QTabBar::TriangularWest;
+
+        }
+
+        //* right to left alignment handling
+        using ParentStyleClass::visualRect;
+        QRect visualRect(const QStyleOption* opt, const QRect& subRect) const
+        { return ParentStyleClass::visualRect(opt->direction, opt->rect, subRect); }
+
+        //* centering
+        QRect centerRect(const QRect &rect, const QSize& size ) const
+        { return centerRect( rect, size.width(), size.height() ); }
+
+        QRect centerRect(const QRect &rect, int width, int height) const
+        { return QRect(rect.left() + (rect.width() - width)/2, rect.top() + (rect.height() - height)/2, width, height); }
+
+        /*
+        Checks whether the point is before the bound rect for bound of given orientation.
+        This is needed to implement custom number of buttons in scrollbars,
+        as well as proper mouse-hover
+        */
+        inline bool preceeds( const QPoint&, const QRect&, const QStyleOption* ) const;
+
+        //* return which arrow button is hit by point for scrollbar double buttons
+        inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
         private:
 

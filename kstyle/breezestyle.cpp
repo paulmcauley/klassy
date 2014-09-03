@@ -788,9 +788,6 @@ namespace Breeze
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
             case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
             case PE_FrameWindow: fcn = &Style::drawFrameWindowPrimitive; break;
-
-            // disable all focus rect rendering
-            // it is handled directly in the relevant primitives
             case PE_FrameFocusRect: fcn = &Style::emptyPrimitive; break;
 
             // fallback
@@ -824,72 +821,34 @@ namespace Breeze
 
         switch( element ) {
 
-            /*
-            for CE_PushButtonBevel the only thing that is done is draw the PanelButtonCommand primitive
-            since the prototypes are identical we register the second directly in the control map: fcn = without
-            using an intermediate function
-            */
             case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
             case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
             case CE_CheckBoxLabel: fcn = &Style::drawCheckBoxLabelControl; break;
             case CE_RadioButtonLabel: fcn = &Style::drawCheckBoxLabelControl; break;
-
-            // tool button
             case CE_ToolButtonLabel: fcn = &Style::drawToolButtonLabelControl; break;
-
-            // combobox
             case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
-
-            // menu bars
             case CE_MenuBarEmptyArea: fcn = &Style::emptyControl; break;
-
-            // menubar items
             case CE_MenuBarItem: fcn = &Style::drawMenuBarItemControl; break;
-
-            // menu items
             case CE_MenuItem: fcn = &Style::drawMenuItemControl; break;
-
-            // toolbar
             case CE_ToolBar: fcn = &Style::emptyControl; break;
-
-            // progress bars
             case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
             case CE_ProgressBarContents: fcn = &Style::drawProgressBarContentsControl; break;
             case CE_ProgressBarGroove: fcn = &Style::drawProgressBarGrooveControl; break;
             case CE_ProgressBarLabel: fcn = &Style::drawProgressBarLabelControl; break;
-
-            // scrollbars
             case CE_ScrollBarSlider: fcn = &Style::drawScrollBarSliderControl; break;
             case CE_ScrollBarAddLine: fcn = &Style::drawScrollBarAddLineControl; break;
             case CE_ScrollBarSubLine: fcn = &Style::drawScrollBarSubLineControl; break;
-
-            // these two are handled directly in CC_ScrollBar
             case CE_ScrollBarAddPage: fcn = &Style::emptyControl; break;
             case CE_ScrollBarSubPage: fcn = &Style::emptyControl; break;
-
-            // frame
             case CE_ShapedFrame: fcn = &Style::drawShapedFrameControl; break;
-
-            // rubber band
             case CE_RubberBand: fcn = &Style::drawRubberBandControl; break;
-
-            // size grip
-            // no size grip is rendered, since its usage is discouraged
             case CE_SizeGrip: fcn = &Style::emptyControl; break;
-
-            // list headers
             case CE_HeaderSection: fcn = &Style::drawHeaderSectionControl; break;
             case CE_HeaderEmptyArea: fcn = &Style::drawHeaderEmptyAreaControl; break;
-
-            // tabbar
             case CE_TabBarTabLabel: fcn = &Style::drawTabBarTabLabelControl; break;
             case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
-
-            // toolbox
             case CE_ToolBoxTabLabel: fcn = &Style::drawToolBoxTabLabelControl; break;
             case CE_ToolBoxTabShape: fcn = &Style::drawToolBoxTabShapeControl; break;
-
-            // dock widget titlebar
             case CE_DockWidgetTitle: fcn = &Style::drawDockWidgetTitleControl; break;
 
             // fallback
@@ -3732,71 +3691,6 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawCheckBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
-        if( !buttonOption ) return true;
-
-        // copy palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
-
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-
-        // text alignment
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-        const int textFlags( _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft ) );
-
-        // text rect
-        QRect textRect( rect );
-
-        // render icon
-        if( !buttonOption->icon.isNull() )
-        {
-            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
-            const QPixmap pixmap( buttonOption->icon.pixmap(  buttonOption->iconSize, mode ) );
-            drawItemPixmap( painter, rect, textFlags, pixmap );
-
-            // adjust rect (copied from QCommonStyle)
-            textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
-            textRect = visualRect( option, textRect );
-
-        }
-
-        // render text
-        if( !buttonOption->text.isEmpty() )
-        {
-            textRect = option->fontMetrics.boundingRect( textRect, textFlags, buttonOption->text );
-            drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText );
-
-            // check focus state
-            const bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-            // update animation state
-            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
-            const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
-            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
-
-            // focus color
-            QColor focusColor;
-            if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
-            else if( hasFocus ) focusColor =  _helper->focusColor( palette );
-
-            // render focus
-            _helper->renderFocusLine( painter, textRect, focusColor );
-
-        }
-
-        return true;
-
-    }
-
-
-    //___________________________________________________________________________________
     bool Style::drawToolButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
@@ -3911,6 +3805,71 @@ namespace Breeze
         return true;
 
     }
+    
+    //___________________________________________________________________________________
+    bool Style::drawCheckBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        // cast option and check
+        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
+        if( !buttonOption ) return true;
+
+        // copy palette and rect
+        const QPalette& palette( option->palette );
+        const QRect& rect( option->rect );
+
+        // store state
+        const State& state( option->state );
+        const bool enabled( state & State_Enabled );
+
+        // text alignment
+        const bool reverseLayout( option->direction == Qt::RightToLeft );
+        const int textFlags( _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft ) );
+
+        // text rect
+        QRect textRect( rect );
+
+        // render icon
+        if( !buttonOption->icon.isNull() )
+        {
+            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
+            const QPixmap pixmap( buttonOption->icon.pixmap(  buttonOption->iconSize, mode ) );
+            drawItemPixmap( painter, rect, textFlags, pixmap );
+
+            // adjust rect (copied from QCommonStyle)
+            textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
+            textRect = visualRect( option, textRect );
+
+        }
+
+        // render text
+        if( !buttonOption->text.isEmpty() )
+        {
+            textRect = option->fontMetrics.boundingRect( textRect, textFlags, buttonOption->text );
+            drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText );
+
+            // check focus state
+            const bool hasFocus( enabled && ( state & State_HasFocus ) );
+
+            // update animation state
+            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+            const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
+            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
+
+            // focus color
+            QColor focusColor;
+            if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
+            else if( hasFocus ) focusColor =  _helper->focusColor( palette );
+
+            // render focus
+            _helper->renderFocusLine( painter, textRect, focusColor );
+
+        }
+
+        return true;
+
+    }
+
 
     //___________________________________________________________________________________
     bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
