@@ -1338,7 +1338,7 @@ namespace Breeze
         const int steps( qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 ) );
 
         //Calculate width fraction
-        const qreal widthFrac = qMin( qreal(1.0), progress/steps );
+        const qreal widthFrac = qMin( qreal(1), progress/steps );
 
         // convert the pixel width
         const int indicatorSize( widthFrac*( horizontal ? rect.width():rect.height() ) );
@@ -3749,7 +3749,7 @@ namespace Breeze
 
         // text alignment
         const bool reverseLayout( option->direction == Qt::RightToLeft );
-        const int alignment = _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft );
+        const int textFlags( _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft ) );
 
         // text rect
         QRect textRect( rect );
@@ -3759,7 +3759,7 @@ namespace Breeze
         {
             const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
             const QPixmap pixmap( buttonOption->icon.pixmap(  buttonOption->iconSize, mode ) );
-            drawItemPixmap( painter, rect, alignment, pixmap );
+            drawItemPixmap( painter, rect, textFlags, pixmap );
 
             // adjust rect (copied from QCommonStyle)
             textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
@@ -3770,8 +3770,8 @@ namespace Breeze
         // render text
         if( !buttonOption->text.isEmpty() )
         {
-            textRect = option->fontMetrics.boundingRect( textRect, alignment, buttonOption->text );
-            drawItemText( painter, textRect, alignment, palette, enabled, buttonOption->text, QPalette::WindowText );
+            textRect = option->fontMetrics.boundingRect( textRect, textFlags, buttonOption->text );
+            drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText );
 
             // check focus state
             const bool hasFocus( enabled && ( state & State_HasFocus ) );
@@ -3953,20 +3953,22 @@ namespace Breeze
         const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if( !menuItemOption ) return true;
 
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
+
+        // store state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool selected( enabled && (state & State_Selected) );
         const bool sunken( enabled && (state & State_Sunken) );
 
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
-
         // get text rect
-        const int alignment( Qt::AlignCenter|_mnemonics->textFlags() );
-        const QRect textRect = option->fontMetrics.boundingRect( rect, alignment, menuItemOption->text );
+        const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
+        const QRect textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
 
         // render text
-        drawItemText( painter, textRect, alignment, palette, enabled, menuItemOption->text, QPalette::WindowText );
+        drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, QPalette::WindowText );
 
         // render outline
         if( selected || sunken )
@@ -4699,7 +4701,7 @@ namespace Breeze
 
         // tab option rect
         const bool verticalTabs( isVerticalTab( tabOption ) );
-        const int alignment = Qt::AlignCenter | _mnemonics->textFlags();
+        const int textFlags( Qt::AlignCenter | _mnemonics->textFlags() );
 
         // text rect
         QRect textRect( subElementRect(SE_TabBarTabText, option, widget) );
@@ -4733,7 +4735,7 @@ namespace Breeze
         }
 
         // adjust text rect based on font metrics
-        textRect = option->fontMetrics.boundingRect( textRect, alignment, tabOption->text );
+        textRect = option->fontMetrics.boundingRect( textRect, textFlags, tabOption->text );
 
         // focus color
         QColor focusColor;
@@ -4925,7 +4927,7 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
 
         // text alignment
-        const int alignment = _mnemonics->textFlags() | Qt::AlignCenter;
+        const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
 
         // contents rect
         const QRect rect( toolBoxTabContentsRect( option, widget ) );
@@ -4973,7 +4975,7 @@ namespace Breeze
             iconRect = visualRect( option, iconRect );
             const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
             const QPixmap pixmap( toolBoxOption->icon.pixmap( iconSize, mode ) );
-            drawItemPixmap( painter, iconRect, alignment, pixmap );
+            drawItemPixmap( painter, iconRect, textFlags, pixmap );
 
         }
 
@@ -4981,7 +4983,7 @@ namespace Breeze
         if( !toolBoxOption->text.isEmpty() )
         {
             contentsRect = visualRect( option, contentsRect );
-            drawItemText( painter, contentsRect, alignment, palette, enabled, toolBoxOption->text, QPalette::WindowText );
+            drawItemText( painter, contentsRect, textFlags, palette, enabled, toolBoxOption->text, QPalette::WindowText );
         }
 
         return true;
@@ -5132,7 +5134,7 @@ namespace Breeze
         if( !hasFocus ) return true;
 
         // alignment
-        const int alignment = groupBoxOption->textAlignment | _mnemonics->textFlags();
+        const int textFlags( groupBoxOption->textAlignment | _mnemonics->textFlags() );
 
         // update animation state
         _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
@@ -5141,7 +5143,7 @@ namespace Breeze
 
         // get relevant rect
         QRect textRect = subControlRect( CC_GroupBox, option, SC_GroupBoxLabel, widget );
-        textRect = option->fontMetrics.boundingRect( textRect, alignment, groupBoxOption->text );
+        textRect = option->fontMetrics.boundingRect( textRect, textFlags, groupBoxOption->text );
 
         // focus color
         QColor focusColor;
@@ -5895,7 +5897,7 @@ namespace Breeze
         else {
 
             qreal fraction( qreal( value - sliderOption->minimum )/qreal( sliderOption->maximum - sliderOption->minimum ) );
-            if( !sliderOption->upsideDown ) fraction = 1.0 - fraction;
+            if( !sliderOption->upsideDown ) fraction = 1 - fraction;
 
             if( sliderOption->dialWrapping ) angle = 1.5*M_PI - fraction*2*M_PI;
             else  angle = ( M_PI*8 - fraction*10*M_PI )/6;
