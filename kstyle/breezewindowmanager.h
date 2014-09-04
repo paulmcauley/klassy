@@ -52,7 +52,7 @@ namespace Breeze
         {}
 
         //* initialize
-        /** read relevant options from BreezeStyleConfigData */
+        /** read relevant options from config */
         void initialize( void );
 
         //* register widget

@@ -419,14 +419,9 @@ namespace Breeze
                 return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
             }
 
-            case PM_SpinBoxFrameWidth:
-            return Metrics::SpinBox_FrameWidth;
-
-            case PM_ToolBarFrameWidth:
-            return Metrics::ToolBar_FrameWidth;
-
-            case PM_ToolTipLabelFrameWidth:
-            return Metrics::ToolTip_FrameWidth;
+            case PM_SpinBoxFrameWidth: return Metrics::SpinBox_FrameWidth;
+            case PM_ToolBarFrameWidth: return Metrics::ToolBar_FrameWidth;
+            case PM_ToolTipLabelFrameWidth: return Metrics::ToolTip_FrameWidth;
 
             // layout
             case PM_LayoutLeftMargin:
@@ -570,12 +565,9 @@ namespace Breeze
                 return false;
             }
 
-            // mouse tracking
             case SH_ComboBox_ListMouseTracking: return true;
             case SH_MenuBar_MouseTracking: return true;
             case SH_Menu_MouseTracking: return true;
-
-            // menus
             case SH_Menu_SubMenuPopupDelay: return 150;
             case SH_Menu_SloppySubMenus: return true;
 
@@ -583,42 +575,22 @@ namespace Breeze
             case SH_Menu_SupportsSections: return true;
             #endif
 
-            // groupboxes
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
-
-            // tabbar
             case SH_TabBar_Alignment: return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter:Qt::AlignLeft;
-
-            // toolbox
             case SH_ToolBox_SelectedPageTitleBold: return false;
-
-            // scrollbars
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
-
-            // forms
             case SH_FormLayoutFormAlignment: return Qt::AlignLeft | Qt::AlignTop;
             case SH_FormLayoutLabelAlignment: return Qt::AlignRight;
             case SH_FormLayoutFieldGrowthPolicy: return QFormLayout::ExpandingFieldsGrow;
             case SH_FormLayoutWrapPolicy: return QFormLayout::DontWrapRows;
-
-            // message box
             case SH_MessageBox_TextInteractionFlags: return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
-
-            // dialog buttons
             case SH_ProgressDialog_CenterCancelButton:
             case SH_MessageBox_CenterButtons:
             return false;
 
-            // input panel
             case SH_RequestSoftwareInputPanel: return RSIP_OnMouseClick;
-
-            // title bars
             case SH_TitleBar_NoBorder: return true;
-
-            // dock widget buttons
             case SH_DockWidget_ButtonsHaveFrame: return false;
-
-            // fallback
             default: return ParentStyleClass::styleHint( hint, option, widget, returnData );
 
         }
@@ -1092,7 +1064,7 @@ namespace Breeze
     void Style::configurationChanged( void )
     {
 
-        // reparse breezerc
+        // reload
         #if USE_KDE4
         StyleConfigData::self()->readConfig();
         #else
@@ -3805,7 +3777,7 @@ namespace Breeze
         return true;
 
     }
-    
+
     //___________________________________________________________________________________
     bool Style::drawCheckBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {

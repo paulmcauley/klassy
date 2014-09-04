@@ -1309,8 +1309,8 @@ namespace Breeze
         if( isX11() )
         {
             // direct call to X
-            xcb_get_selection_owner_cookie_t cookie( xcb_get_selection_owner( Helper::connection(), _compositingManagerAtom ) );
-            ScopedPointer<xcb_get_selection_owner_reply_t> reply( xcb_get_selection_owner_reply( Helper::connection(), cookie, nullptr ) );
+            xcb_get_selection_owner_cookie_t cookie( xcb_get_selection_owner( connection(), _compositingManagerAtom ) );
+            ScopedPointer<xcb_get_selection_owner_reply_t> reply( xcb_get_selection_owner_reply( connection(), cookie, nullptr ) );
             return reply && reply->owner;
 
         }

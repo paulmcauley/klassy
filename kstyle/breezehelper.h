@@ -222,7 +222,7 @@ namespace Breeze
         //@{
 
         //* true if style was compiled for and is running on X11
-        static bool isX11();
+        static bool isX11( void );
 
         //* returns true if compositing is active
         bool compositingActive( void ) const;

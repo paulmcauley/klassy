@@ -136,10 +136,9 @@ namespace Breeze
 
         //@}
 
-
         protected Q_SLOTS:
 
-        //* update breeze configuration
+        //* update configuration
         void configurationChanged( void );
 
         //* standard icons
@@ -302,6 +301,9 @@ namespace Breeze
         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
 
+        //!*@name various utilty functions
+        //@{
+
         //* spinbox arrows
         void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
 
@@ -364,6 +366,8 @@ namespace Breeze
         @param position Used to find the relevant QModelIndex
         */
         bool isSelectedItem( const QWidget*, const QPoint& ) const;
+
+        //@}
 
         //* adjust rect based on provided margins
         QRect insideMargin( const QRect& r, int margin ) const
