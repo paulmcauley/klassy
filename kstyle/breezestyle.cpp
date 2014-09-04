@@ -5203,7 +5203,7 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( state & State_HasFocus );
+        const bool hasFocus( enabled && ( state & State_HasFocus ) );
         const bool editable( comboBoxOption->editable );
         const bool sunken( state & (State_On|State_Sunken) );
         bool flat( !comboBoxOption->frame );
@@ -5215,13 +5215,13 @@ namespace Breeze
             if( editable )
             {
 
-                const QColor color( palette.color( QPalette::Base ) );
+                const QColor background( palette.color( QPalette::Base ) );
                 flat |= ( rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
                 flat |= ( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() );
                 if( flat )
                 {
 
-                    painter->setBrush( color );
+                    painter->setBrush( background );
                     painter->setPen( Qt::NoPen );
                     painter->drawRect( rect );
 
@@ -5235,11 +5235,11 @@ namespace Breeze
 
                     // outline color
                     const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
-                    _animations->lineEditEngine().frameOpacity( widget ),
-                    _animations->lineEditEngine().frameAnimationMode( widget ) ) );
+                        _animations->lineEditEngine().frameOpacity( widget ),
+                        _animations->lineEditEngine().frameAnimationMode( widget ) ) );
 
                     // render
-                    _helper->renderFrame( painter, rect, color, outline, hasFocus );
+                    _helper->renderFrame( painter, rect, background, outline, hasFocus );
                 }
 
             } else {
