@@ -2771,24 +2771,47 @@ namespace Breeze
         const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
         const bool inToolButton( qstyleoption_cast<const QStyleOptionToolButton *>( option ) );
 
-        // get animation state
-        /* there is no need to update the engine since this was already done when rendering the frame */
-        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
-
         // color
         QColor color;
         if( mouseOver && !inToolButton ) color = _helper->hoverColor( palette );
-        else if( inTabBar && hasFocus ) color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
-        else if( inToolButton ) {
+        else if( inTabBar && hasFocus ) {
 
-            QPalette::ColorRole colorRole;
+            // for tabbar arrows one uses animations to get the arrow color
+            // get animation state
+            /* there is no need to update the engine since this was already done when rendering the frame */
+            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+            color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
+
+        } else if( inToolButton ) {
+
             const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
             const bool flat( state & State_AutoRaise );
-            if( flat ) colorRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
-            else colorRole = (hasFocus&&!mouseOver) ? QPalette::HighlightedText:QPalette::ButtonText;
 
-            color = palette.color( colorRole );
+            // cast option
+            const QStyleOptionToolButton* toolButtonOption( static_cast<const QStyleOptionToolButton*>( option ) );
+            const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
+            if( flat && hasPopupMenu )
+            {
+
+                // handle arrow over animation
+                const bool arrowHover( mouseOver && ( toolButtonOption->activeSubControls & SC_ToolButtonMenu ) );
+                _animations->toolButtonEngine().updateState( widget, AnimationHover, arrowHover );
+
+                const bool animated( _animations->toolButtonEngine().isAnimated( widget, AnimationHover ) );
+                const qreal opacity( _animations->toolButtonEngine().opacity( widget, AnimationHover ) );
+
+                // for menu arrows in flat toolbutton one uses animations to get the arrow color
+                color = _helper->arrowColor( palette, arrowHover, false, opacity, animated ? AnimationHover:AnimationNone );
+
+            } else {
+
+                QPalette::ColorRole colorRole;
+                if( flat ) colorRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
+                else colorRole = (hasFocus&&!mouseOver) ? QPalette::HighlightedText:QPalette::ButtonText;
+                color = palette.color( colorRole );
+
+            }
 
         } else color = palette.color( QPalette::WindowText );
 

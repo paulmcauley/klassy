@@ -69,6 +69,10 @@ namespace Breeze
         WidgetStateEngine& comboBoxEngine( void ) const
         { return *_comboBoxEngine; }
 
+        //! Tool buttons arrow hover engine
+        WidgetStateEngine& toolButtonEngine( void ) const
+        { return *_toolButtonEngine; }
+
         //* lineEdit engine
         WidgetStateEngine& lineEditEngine( void ) const
         { return *_lineEditEngine; }
@@ -134,6 +138,9 @@ namespace Breeze
 
         //* editable combobox arrow hover effect
         WidgetStateEngine* _comboBoxEngine;
+
+        //! mennu toolbutton arrow hover effect
+        WidgetStateEngine* _toolButtonEngine;
 
         //* scrollbar engine
         ScrollBarEngine* _scrollBarEngine;

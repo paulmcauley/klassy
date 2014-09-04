@@ -47,6 +47,7 @@ namespace Breeze
         _widgetEnabilityEngine = new WidgetStateEngine( this );
         _busyIndicatorEngine = new BusyIndicatorEngine( this );
         _comboBoxEngine = new WidgetStateEngine( this );
+        _toolButtonEngine = new WidgetStateEngine( this );
         _spinBoxEngine = new SpinBoxEngine( this );
         _toolBoxEngine = new ToolBoxEngine( this );
 
@@ -72,11 +73,13 @@ namespace Breeze
 
         _widgetEnabilityEngine->setEnabled( animationsEnabled );
         _comboBoxEngine->setEnabled( animationsEnabled );
+        _toolButtonEngine->setEnabled( animationsEnabled );
         _spinBoxEngine->setEnabled( animationsEnabled );
         _toolBoxEngine->setEnabled( animationsEnabled );
 
         _widgetEnabilityEngine->setDuration( animationsDuration );
         _comboBoxEngine->setDuration( animationsDuration );
+        _toolButtonEngine->setDuration( animationsDuration );
         _spinBoxEngine->setDuration( animationsDuration );
         _toolBoxEngine->setDuration( animationsDuration );
 
@@ -113,6 +116,7 @@ namespace Breeze
         if( qobject_cast<QToolButton*>(widget) )
         {
 
+            _toolButtonEngine->registerWidget( widget, AnimationHover|AnimationFocus );
             _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
 
         } else if( qobject_cast<QCheckBox*>(widget) || qobject_cast<QRadioButton*>(widget) ) {
