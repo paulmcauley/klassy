@@ -5206,7 +5206,7 @@ namespace Breeze
         const bool hasFocus( state & State_HasFocus );
         const bool editable( comboBoxOption->editable );
         const bool sunken( state & (State_On|State_Sunken) );
-        const bool flat( !comboBoxOption->frame );
+        bool flat( !comboBoxOption->frame );
 
         // frame
         if( option->subControls & SC_ComboBoxFrame )
@@ -5216,7 +5216,9 @@ namespace Breeze
             {
 
                 const QColor color( palette.color( QPalette::Base ) );
-                if( flat || rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth )
+                flat |= ( rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
+                flat |= ( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() );
+                if( flat )
                 {
 
                     painter->setBrush( color );
@@ -5348,13 +5350,15 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool hasFocus( enabled && ( state & State_HasFocus ) );
-        const bool flat( !spinBoxOption->frame );
+        bool flat( !spinBoxOption->frame );
 
         if( option->subControls & SC_SpinBoxFrame )
         {
 
             const QColor background( palette.color( QPalette::Base ) );
-            if( flat || rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth )
+            flat |= ( rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth );
+            flat |= ( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() );
+            if( flat )
             {
 
                 painter->setBrush( background );
