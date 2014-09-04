@@ -329,37 +329,37 @@ namespace Breeze
         QWidget *widget = parentWidget();
         if( !widget ) return;
 
-        QRect cr = widget->contentsRect();
+        QRect contentsRect = widget->contentsRect();
         switch (shadowArea())
         {
 
             case ShadowAreaTop:
-            cr.setHeight( ShadowSizeTop );
-            cr.adjust( -1, -1, 1, 0 );
+            contentsRect.setHeight( ShadowSizeTop );
+            contentsRect.adjust( -1, -1, 1, 0 );
             break;
 
 
             case ShadowAreaBottom:
-            cr.setTop(cr.bottom() - ShadowSizeBottom + 1);
-            cr.adjust( -1, 0, 1, 1 );
+            contentsRect.setTop(contentsRect.bottom() - ShadowSizeBottom + 1);
+            contentsRect.adjust( -1, 0, 1, 1 );
             break;
 
             case ShadowAreaLeft:
-            cr.setWidth(ShadowSizeLeft);
-            cr.adjust(-1, ShadowSizeTop, 0, -ShadowSizeBottom);
+            contentsRect.setWidth(ShadowSizeLeft);
+            contentsRect.adjust(-1, ShadowSizeTop, 0, -ShadowSizeBottom);
             break;
 
 
             case ShadowAreaRight:
-            cr.setLeft(cr.right() - ShadowSizeRight + 1);
-            cr.adjust(0, ShadowSizeTop, 1, -ShadowSizeBottom);
+            contentsRect.setLeft(contentsRect.right() - ShadowSizeRight + 1);
+            contentsRect.adjust(0, ShadowSizeTop, 1, -ShadowSizeBottom);
             break;
 
             default:
             return;
         }
 
-        setGeometry(cr);
+        setGeometry(contentsRect);
     }
 
     //____________________________________________________________________________________
