@@ -2558,24 +2558,39 @@ namespace Breeze
         const QPalette& palette( option->palette );
         const QRect& rect( option->rect );
 
-        // copy state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
+        // make sure there is enough room to render frame
+        if( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() )
+        {
 
-        // focus takes precedence over mouse over
-        _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-        _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+            const QColor background( palette.color( QPalette::Base ) );
 
-        // retrieve animation mode and opacity
-        const AnimationMode mode( _animations->lineEditEngine().frameAnimationMode( widget ) );
-        const qreal opacity( _animations->lineEditEngine().frameOpacity( widget ) );
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( background );
+            painter->drawRect( rect );
+            return true;
 
-        // render
-        const QColor background( palette.color( QPalette::Base ) );
-        const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        _helper->renderFrame( painter, rect, background, outline, hasFocus );
+        } else {
+
+            // copy state
+            const State& state( option->state );
+            const bool enabled( state & State_Enabled );
+            const bool mouseOver( enabled && ( state & State_MouseOver ) );
+            const bool hasFocus( enabled && ( state & State_HasFocus ) );
+
+            // focus takes precedence over mouse over
+            _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
+            _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+
+            // retrieve animation mode and opacity
+            const AnimationMode mode( _animations->lineEditEngine().frameAnimationMode( widget ) );
+            const qreal opacity( _animations->lineEditEngine().frameOpacity( widget ) );
+
+            // render
+            const QColor background( palette.color( QPalette::Base ) );
+            const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            _helper->renderFrame( painter, rect, background, outline, hasFocus );
+
+        }
 
         return true;
 
@@ -5235,11 +5250,11 @@ namespace Breeze
             if( editable )
             {
 
-                const QColor background( palette.color( QPalette::Base ) );
                 flat |= ( rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
-                flat |= ( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() );
                 if( flat )
                 {
+
+                    const QColor background( palette.color( QPalette::Base ) );
 
                     painter->setBrush( background );
                     painter->setPen( Qt::NoPen );
@@ -5247,19 +5262,8 @@ namespace Breeze
 
                 } else {
 
-                    // editable combobox. Make it look like a LineEdit
-                    // update animation state
-                    // focus takes precedence over hover
-                    _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-                    _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+                    drawPrimitive( PE_FrameLineEdit, option, painter, widget );
 
-                    // outline color
-                    const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
-                        _animations->lineEditEngine().frameOpacity( widget ),
-                        _animations->lineEditEngine().frameAnimationMode( widget ) ) );
-
-                    // render
-                    _helper->renderFrame( painter, rect, background, outline, hasFocus );
                 }
 
             } else {
@@ -5365,21 +5369,17 @@ namespace Breeze
         const QPalette& palette( option->palette );
         const QRect& rect( option->rect );
 
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
-        bool flat( !spinBoxOption->frame );
 
         if( option->subControls & SC_SpinBoxFrame )
         {
 
-            const QColor background( palette.color( QPalette::Base ) );
+            // detect flat spinboxes
+            bool flat( !spinBoxOption->frame );
             flat |= ( rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth );
-            flat |= ( rect.height() <= 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height() );
             if( flat )
             {
+
+                const QColor background( palette.color( QPalette::Base ) );
 
                 painter->setBrush( background );
                 painter->setPen( Qt::NoPen );
@@ -5387,18 +5387,8 @@ namespace Breeze
 
             } else {
 
-                // update animation state
-                // focus takes precedence over hover
-                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+                drawPrimitive( PE_FrameLineEdit, option, painter, widget );
 
-                // outline color
-                const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus,
-                    _animations->lineEditEngine().frameOpacity( widget ),
-                    _animations->lineEditEngine().frameAnimationMode( widget ) ) );
-
-                // render
-                _helper->renderFrame( painter, rect, background, outline, hasFocus );
             }
 
         }
