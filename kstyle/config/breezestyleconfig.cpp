@@ -22,6 +22,7 @@
 #include "breezestyleconfig.moc"
 
 #include "../breeze.h"
+#include "../breezeconfig.h"
 #include "breezestyleconfigdata.h"
 
 #include <QDBusMessage>
@@ -70,7 +71,7 @@ namespace Breeze
         StyleConfigData::setAnimationsDuration( _animationsDuration->value() );
         StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex()  );
 
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         StyleConfigData::self()->writeConfig();
         #else
         StyleConfigData::self()->save();
@@ -93,7 +94,7 @@ namespace Breeze
     void StyleConfig::reset( void )
     {
         // reparse configuration
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         StyleConfigData::self()->readConfig();
         #else
         StyleConfigData::self()->load();

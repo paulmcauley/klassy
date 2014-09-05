@@ -21,6 +21,7 @@
  *************************************************************************/
 
 #include "breeze.h"
+#include "breezeconfig.h"
 
 #include <KStyle>
 
@@ -53,7 +54,7 @@ namespace Breeze
     class WindowManager;
 
     //* convenience typedef for base class
-    #if USE_KDE4
+    #if BREEZE_USE_KDE4
     using ParentStyleClass = QCommonStyle;
     #else
     using ParentStyleClass = KStyle;

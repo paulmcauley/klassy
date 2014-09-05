@@ -23,18 +23,19 @@
 
 #include "breeze.h"
 #include "breezeanimationdata.h"
+#include "breezeconfig.h"
 
 #include <KColorScheme>
 #include <KSharedConfig>
 
-#if USE_KDE4
+#if BREEZE_USE_KDE4
 #include <KComponentData>
 #endif
 
 #include <QPainterPath>
 #include <QWidget>
 
-#if HAVE_X11
+#if BREEZE_HAVE_X11
 #include <QX11Info>
 #include <xcb/xcb.h>
 #endif
@@ -51,7 +52,7 @@ namespace Breeze
         //* constructor
         explicit Helper( KSharedConfig::Ptr );
 
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         //* constructor
         explicit Helper( const QByteArray& );
         #endif
@@ -235,7 +236,7 @@ namespace Breeze
         //*@name X11 utilities
         //@{
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         //* get xcb connection
         static xcb_connection_t* connection( void );
@@ -264,7 +265,7 @@ namespace Breeze
 
         private:
 
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         //* component data
         KComponentData _componentData;
         #endif
@@ -287,7 +288,7 @@ namespace Breeze
         QColor _inactiveTitleBarTextColor;
         //@}
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         //* atom used for compositing manager
         xcb_atom_t _compositingManagerAtom;

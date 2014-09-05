@@ -28,7 +28,7 @@
 #include <QApplication>
 #include <QPainter>
 
-#if HAVE_X11 && QT_VERSION < 0x050000
+#if BREEZE_HAVE_X11 && QT_VERSION < 0x050000
 #include <X11/Xlib-xcb.h>
 #endif
 
@@ -40,7 +40,7 @@ namespace Breeze
     { init(); }
 
     //____________________________________________________________________
-    #if USE_KDE4
+    #if BREEZE_USE_KDE4
     Helper::Helper( const QByteArray& name ):
         _componentData( name, 0, KComponentData::SkipMainComponentRegistration ),
         _config( _componentData.config() )
@@ -1210,7 +1210,7 @@ namespace Breeze
     //______________________________________________________________________________
     bool Helper::isX11( void )
     {
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         #if QT_VERSION >= 0x050000
         static bool isX11 = QApplication::platformName() == QStringLiteral("xcb");
         return isX11;
@@ -1305,7 +1305,7 @@ namespace Breeze
     bool Helper::compositingActive( void ) const
     {
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         if( isX11() )
         {
             // direct call to X
@@ -1325,7 +1325,7 @@ namespace Breeze
     bool Helper::hasAlphaChannel( const QWidget* widget ) const
     { return compositingActive() && widget && widget->testAttribute( Qt::WA_TranslucentBackground ); }
 
-    #if HAVE_X11
+    #if BREEZE_HAVE_X11
 
     //____________________________________________________________________
     xcb_connection_t* Helper::connection( void )
@@ -1364,7 +1364,7 @@ namespace Breeze
     //____________________________________________________________________
     void Helper::init( void )
     {
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         if( isX11() )
         {

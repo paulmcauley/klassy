@@ -21,11 +21,12 @@
  *************************************************************************/
 
 #include "breezetileset.h"
+#include "breezeconfig.h"
 
 #include <QObject>
 #include <QMap>
 
-#if HAVE_X11
+#if BREEZE_HAVE_X11
 #include <xcb/xcb.h>
 #endif
 
@@ -137,7 +138,7 @@ namespace Breeze
         //* pixmaps
         QVector<uint32_t> _pixmaps;
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         //* graphical context
         xcb_gcontext_t _gc;

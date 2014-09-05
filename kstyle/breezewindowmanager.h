@@ -21,6 +21,7 @@
  *************************************************************************/
 
 #include "breeze.h"
+#include "breezeconfig.h"
 
 #include <QEvent>
 
@@ -30,7 +31,7 @@
 #include <QString>
 #include <QWidget>
 
-#if HAVE_X11
+#if BREEZE_HAVE_X11
 #include <xcb/xcb.h>
 #endif
 
@@ -259,7 +260,7 @@ namespace Breeze
         //* application event filter
         QObject* _appEventFilter;
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         xcb_atom_t _moveResizeAtom;
         #endif
 

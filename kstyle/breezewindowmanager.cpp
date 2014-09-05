@@ -77,7 +77,7 @@
 
 #include <QTextStream>
 
-#if HAVE_X11
+#if BREEZE_HAVE_X11
 #include <QX11Info>
 #endif
 
@@ -190,7 +190,7 @@ namespace Breeze
         _appEventFilter = new AppEventFilter( this );
         qApp->installEventFilter( _appEventFilter );
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         _moveResizeAtom = 0;
         if( Helper::isX11() )
         {
@@ -734,7 +734,7 @@ namespace Breeze
         if( useWMMoveResize() )
         {
 
-            #if HAVE_X11
+            #if BREEZE_HAVE_X11
             // connection
             xcb_connection_t* connection( Helper::connection() );
 
@@ -802,7 +802,7 @@ namespace Breeze
     bool WindowManager::supportWMMoveResize( void ) const
     {
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         return Helper::isX11();
         #else
         return false;

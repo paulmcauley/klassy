@@ -1,8 +1,8 @@
 project(kstyle-breeze)
 
-include(FeatureSummary)
+if(USE_KDE4)
 
-if( USE_KDE4 )
+  set(BREEZE_USE_KDE4 ${USE_KDE4})
 
   ############ Language and toolchain features
   ############ copied from ECM
@@ -12,26 +12,10 @@ if( USE_KDE4 )
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
   endif()
 
-  add_definitions( -DUSE_KDE4=1 )
-
-else()
-
-  add_definitions( -DUSE_KDE4=0 )
-
 endif()
 
-################# X11 #################
-find_package(X11)
-set_package_properties(X11 PROPERTIES DESCRIPTION "X11 libraries"
-    URL "http://www.x.org"
-    TYPE OPTIONAL
-    PURPOSE "Required for building the X11 based workspace"
-)
-
-add_definitions( -DHAVE_X11=${X11_FOUND} )
-
 ################# Qt/KDE #################
-if( USE_KDE4 )
+if(USE_KDE4)
 
   find_package(KDE4 REQUIRED)
   include(KDE4Defaults)
@@ -40,11 +24,9 @@ if( USE_KDE4 )
   add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
   include_directories(${KDE4_INCLUDES})
 
-  if( X11_FOUND )
-    ### XCB
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules( XCB REQUIRED xcb x11-xcb)
-  endif()
+  ### XCB
+  pkg_check_modules(XCB xcb x11-xcb)
+  set(BREEZE_HAVE_X11 ${XCB_FOUND})
 
 else()
 
@@ -56,11 +38,23 @@ else()
       FrameworkIntegration
       WindowSystem)
 
-  if(X11_FOUND)
-    ### XCB
-    find_package(XCB REQUIRED COMPONENTS XCB)
-    find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
+  find_package(XCB COMPONENTS XCB)
+  set_package_properties(XCB PROPERTIES
+      DESCRIPTION "X protocol C-language Binding"
+      URL "http://xcb.freedesktop.org"
+      TYPE OPTIONAL
+      PURPOSE "Required to pass style properties to native Windows on X11 Platform"
+  )
+
+  if(NOT APPLE)
+
+    set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
+    if (XCB_XCB_FOUND)
+      find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
+    endif()
+
   endif()
+
 
 endif()
 
@@ -69,6 +63,10 @@ include_directories(
   animations
   debug
 )
+
+################# configuration #################
+configure_file(breezeconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/breezeconfig.h )
+
 
 ########### next target ###############
 set(breeze_PART_SRCS
@@ -110,19 +108,18 @@ set(breeze_PART_SRCS
     breezewindowmanager.cpp
 )
 
-if( USE_KDE4 )
+if(USE_KDE4)
 
   kde4_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
   kde4_add_plugin(breeze ${breeze_PART_SRCS})
-  target_link_libraries(breeze  ${KDE4_KDEUI_LIBS} )
+  target_link_libraries(breeze  ${KDE4_KDEUI_LIBS})
 
-  if( X11_FOUND )
-    target_link_libraries( breeze ${X11_X11_LIB} )
-    target_link_libraries( breeze ${X11_XCB_LIBRARIES} )
-    target_link_libraries( breeze ${XCB_LIBRARIES} )
+  if(XCB_FOUND)
+    target_link_libraries(breeze ${X11_XCB_LIBRARIES})
+    target_link_libraries(breeze ${XCB_LIBRARIES})
   endif()
 
-  install(TARGETS breeze  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/ )
+  install(TARGETS breeze  DESTINATION ${PLUGIN_INSTALL_DIR}/plugins/styles/)
 
 else()
 
@@ -131,20 +128,17 @@ else()
   target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::Style KF5::WindowSystem)
 
-  if(X11_FOUND)
+  if(XCB_XCB_FOUND)
     target_link_libraries(breeze ${XCB_LIBRARIES})
     target_link_libraries(breeze Qt5::X11Extras)
   endif()
 
-  install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/ )
+  install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/)
 
 endif()
 
 ########### install files ###############
-install( FILES breeze.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes )
-
-########### summary ###############
-feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
+install(FILES breeze.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes)
 
 ########### subdirectories ###############
-add_subdirectory( config )
+add_subdirectory(config)

@@ -176,7 +176,7 @@ namespace Breeze
         _addLineButtons( SingleButton )
         , _subLineButtons( SingleButton )
 
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         , _helper( new Helper( "breeze" ) )
         #else
         , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
@@ -191,7 +191,7 @@ namespace Breeze
         , _splitterFactory( new SplitterFactory( this ) )
         , _widgetExplorer( new WidgetExplorer( this ) )
         , _tabBarData( new BreezePrivate::TabBarData( this ) )
-        #if !USE_KDE4
+        #if !BREEZE_USE_KDE4
         , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
         , CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
         #endif
@@ -784,7 +784,7 @@ namespace Breeze
 
         StyleControl fcn( nullptr );
 
-        #if !USE_KDE4
+        #if !BREEZE_USE_KDE4
         if( element == CE_CapacityBar )
         {
             fcn = &Style::drawProgressBarControl;
@@ -1066,7 +1066,7 @@ namespace Breeze
     {
 
         // reload
-        #if USE_KDE4
+        #if BREEZE_USE_KDE4
         StyleConfigData::self()->readConfig();
         #else
         StyleConfigData::self()->load();

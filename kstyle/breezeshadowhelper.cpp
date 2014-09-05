@@ -33,7 +33,7 @@
 #include <QToolBar>
 #include <QTextStream>
 
-#if HAVE_X11
+#if BREEZE_HAVE_X11
 #include <QX11Info>
 #endif
 
@@ -49,7 +49,7 @@ namespace Breeze
         QObject( parent ),
         _helper( helper ),
         _supported( checkSupported() )
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         ,_gc( 0 ),
         _atom( 0 )
         #endif
@@ -59,7 +59,7 @@ namespace Breeze
     ShadowHelper::~ShadowHelper( void )
     {
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         if( Helper::isX11() )
         { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
@@ -69,7 +69,7 @@ namespace Breeze
     //______________________________________________
     void ShadowHelper::reset( void )
     {
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         if( Helper::isX11() )
         { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
@@ -193,7 +193,7 @@ namespace Breeze
     {
 
         // create atom
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         // make sure we are on X11
         if( !Helper::isX11() ) return false;
@@ -291,7 +291,7 @@ namespace Breeze
         */
 
         // create atom
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         if( !_atom && Helper::isX11() ) _atom = _helper.createAtom( QLatin1String( netWMShadowAtomName ) );
         #endif
 
@@ -331,7 +331,7 @@ namespace Breeze
         explicitly and draw the source pixmap on it.
         */
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
 
         const int width( source.width() );
         const int height( source.height() );
@@ -370,7 +370,7 @@ namespace Breeze
         if( !widget ) return false;
         if( !Helper::isX11() ) return false;
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         #ifndef QT_NO_XRENDER
 
         // TODO: also check for NET_WM_SUPPORTED atom, before installing shadow
@@ -453,7 +453,7 @@ namespace Breeze
     void ShadowHelper::uninstallX11Shadows( QWidget* widget ) const
     {
 
-        #if HAVE_X11
+        #if BREEZE_HAVE_X11
         if( !_supported ) return;
         if( !Helper::isX11() ) return;
         if( !( widget && widget->testAttribute(Qt::WA_WState_Created) ) ) return;
