@@ -2785,7 +2785,6 @@ namespace Breeze
 
         } else if( inToolButton ) {
 
-            const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
             const bool flat( state & State_AutoRaise );
 
             // cast option
@@ -2794,6 +2793,7 @@ namespace Breeze
             if( flat && hasPopupMenu )
             {
 
+                // for menu arrows in flat toolbutton one uses animations to get the arrow color
                 // handle arrow over animation
                 const bool arrowHover( mouseOver && ( toolButtonOption->activeSubControls & SC_ToolButtonMenu ) );
                 _animations->toolButtonEngine().updateState( widget, AnimationHover, arrowHover );
@@ -2801,14 +2801,14 @@ namespace Breeze
                 const bool animated( _animations->toolButtonEngine().isAnimated( widget, AnimationHover ) );
                 const qreal opacity( _animations->toolButtonEngine().opacity( widget, AnimationHover ) );
 
-                // for menu arrows in flat toolbutton one uses animations to get the arrow color
                 color = _helper->arrowColor( palette, arrowHover, false, opacity, animated ? AnimationHover:AnimationNone );
 
             } else {
 
+                const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
                 QPalette::ColorRole colorRole;
-                if( flat ) colorRole = (sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
-                else colorRole = (hasFocus&&!mouseOver) ? QPalette::HighlightedText:QPalette::ButtonText;
+                if( flat ) colorRole = ( sunken && !mouseOver ) ? QPalette::HighlightedText: QPalette::WindowText;
+                else colorRole = ( hasFocus &&! mouseOver ) ? QPalette::HighlightedText:QPalette::ButtonText;
                 color = palette.color( colorRole );
 
             }
