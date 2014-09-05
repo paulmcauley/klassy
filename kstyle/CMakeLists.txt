@@ -1,8 +1,7 @@
 project(kstyle-breeze)
 
-if(USE_KDE4)
-
-  set(BREEZE_USE_KDE4 ${USE_KDE4})
+set(BREEZE_USE_KDE4 ${USE_KDE4})
+if(BREEZE_USE_KDE4)
 
   ############ Language and toolchain features
   ############ copied from ECM
@@ -15,7 +14,7 @@ if(USE_KDE4)
 endif()
 
 ################# Qt/KDE #################
-if(USE_KDE4)
+if(BREEZE_USE_KDE4)
 
   find_package(KDE4 REQUIRED)
   include(KDE4Defaults)
@@ -108,7 +107,7 @@ set(breeze_PART_SRCS
     breezewindowmanager.cpp
 )
 
-if(USE_KDE4)
+if(BREEZE_USE_KDE4)
 
   kde4_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
   kde4_add_plugin(breeze ${breeze_PART_SRCS})

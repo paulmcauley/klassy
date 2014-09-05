@@ -2,7 +2,7 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"breeze_style_config\")
 set(kstyle_breeze_config_PART_SRCS breezestyleconfig.cpp)
 
-if(USE_KDE4)
+if(BREEZE_USE_KDE4)
 
   kde4_add_kcfg_files(kstyle_breeze_config_PART_SRCS ../breezestyleconfigdata.kcfgc)
   kde4_add_ui_files(kstyle_breeze_config_PART_SRCS ui/breezestyleconfig.ui)
