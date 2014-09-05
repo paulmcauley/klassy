@@ -685,12 +685,12 @@ namespace Breeze
             case CC_ScrollBar:
             {
 
-                QRect grooveRect = scrollBarSubControlRect( option, SC_ScrollBarGroove, widget );
+                QRect grooveRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget );
                 if( grooveRect.contains( point ) )
                 {
                     //Must be either page up/page down, or just click on the slider.
                     //Grab the slider to compare
-                    QRect sliderRect = scrollBarSubControlRect( option, SC_ScrollBarSlider, widget );
+                    QRect sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
 
                     if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
                     else if( preceeds( point, sliderRect, option ) ) return SC_ScrollBarSubPage;
@@ -1966,7 +1966,7 @@ namespace Breeze
             {
 
                 // We handle RTL here to unreflect things if need be
-                QRect groove = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( sliderOption->minimum == sliderOption->maximum ) return groove;
 
@@ -1991,8 +1991,8 @@ namespace Breeze
             {
 
                 //We do visualRect here to unreflect things if need be
-                QRect slider = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
-                QRect groove = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
+                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( horizontal ) return visualRect( option, QRect( groove.left(), groove.top(), slider.left() - groove.left(), groove.height() ) );
                 else return visualRect( option, QRect( groove.left(), groove.top(), groove.width(), slider.top() - groove.top() ) );
@@ -2002,8 +2002,8 @@ namespace Breeze
             {
 
                 //We do visualRect here to unreflect things if need be
-                QRect slider = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarSlider, widget ) );
-                QRect groove = visualRect( option, scrollBarSubControlRect( option, SC_ScrollBarGroove, widget ) );
+                QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
+                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( horizontal ) return visualRect( option, QRect( slider.right() + 1, groove.top(), groove.right() - slider.right(), groove.height() ) );
                 else return visualRect( option, QRect( groove.left(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom() ) );
@@ -4125,7 +4125,7 @@ namespace Breeze
         // render groove
         QStyleOptionProgressBarV2 progressBarOption2 = *progressBarOption;
         progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
-        drawProgressBarGrooveControl( &progressBarOption2, painter, widget );
+        drawControl( CE_ProgressBarGroove, &progressBarOption2, painter, widget );
 
         #if QT_VERSION >= 0x050000
         const QObject* styleObject( widget ? widget:progressBarOption->styleObject );
@@ -4154,7 +4154,7 @@ namespace Breeze
 
         // render contents
         progressBarOption2.rect = subElementRect( SE_ProgressBarContents, progressBarOption, widget );
-        drawProgressBarContentsControl( &progressBarOption2, painter, widget );
+        drawControl( CE_ProgressBarContents, &progressBarOption2, painter, widget );
 
         // render text
         const bool textVisible( progressBarOption->textVisible );
@@ -4162,7 +4162,7 @@ namespace Breeze
         if( textVisible && !busy )
         {
             progressBarOption2.rect = subElementRect( SE_ProgressBarLabel, progressBarOption, widget );
-            drawProgressBarLabelControl( &progressBarOption2, painter, widget );
+            drawControl( CE_ProgressBarLabel, &progressBarOption2, painter, widget );
         }
 
         return true;
@@ -4881,7 +4881,7 @@ namespace Breeze
         const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
 
         // contents rect
-        const QRect rect( toolBoxTabContentsRect( option, widget ) );
+        const QRect rect( subElementRect( SE_ToolBoxTabContents, option, widget ) );
 
         // store icon size
         const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
