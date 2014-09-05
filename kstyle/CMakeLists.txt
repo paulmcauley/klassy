@@ -65,7 +65,7 @@ include_directories(
 )
 
 ################# configuration #################
-configure_file(breezeconfig.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/breezeconfig.h )
+configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
 
 ########### next target ###############

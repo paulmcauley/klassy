@@ -23,7 +23,7 @@
 
 #include "breeze.h"
 #include "breezeanimationdata.h"
-#include "breezeconfig.h"
+#include "config-breeze.h"
 
 #include <KColorScheme>
 #include <KSharedConfig>

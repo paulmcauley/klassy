@@ -21,7 +21,7 @@
  *************************************************************************/
 
 #include "breeze.h"
-#include "breezeconfig.h"
+#include "config-breeze.h"
 
 #include <QEvent>
 

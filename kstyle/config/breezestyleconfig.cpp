@@ -22,7 +22,7 @@
 #include "breezestyleconfig.moc"
 
 #include "../breeze.h"
-#include "../breezeconfig.h"
+#include "../config-breeze.h"
 #include "breezestyleconfigdata.h"
 
 #include <QDBusMessage>

@@ -21,7 +21,7 @@
  *************************************************************************/
 
 #include "breezetileset.h"
-#include "breezeconfig.h"
+#include "config-breeze.h"
 
 #include <QObject>
 #include <QMap>
