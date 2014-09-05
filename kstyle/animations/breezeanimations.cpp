@@ -53,7 +53,6 @@ namespace Breeze
 
         registerEngine( _headerViewEngine = new HeaderViewEngine( this ) );
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
-        registerEngine( _lineEditEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
         registerEngine( _sliderEngine = new SliderEngine( this ) );
         registerEngine( _tabBarEngine = new TabBarEngine( this ) );
@@ -151,19 +150,19 @@ namespace Breeze
         // combo box
         else if( qobject_cast<QComboBox*>( widget ) ) {
             _comboBoxEngine->registerWidget( widget, AnimationHover );
-            _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
 
         }
 
         // spinbox
         else if( qobject_cast<QSpinBox*>( widget ) ) {
             _spinBoxEngine->registerWidget( widget );
-            _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus );
+            _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus );
         }
 
         // editors
-        else if( qobject_cast<QLineEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
-        else if( qobject_cast<QTextEdit*>( widget ) ) { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        else if( qobject_cast<QLineEdit*>( widget ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        else if( qobject_cast<QTextEdit*>( widget ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // header views
         // need to come before abstract item view, otherwise is skipped
@@ -171,7 +170,7 @@ namespace Breeze
 
         // lists
         else if( qobject_cast<QAbstractItemView*>( widget ) || widget->inherits("Q3ListView") )
-        { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // tabbar
         else if( qobject_cast<QTabBar*>( widget ) ) { _tabBarEngine->registerWidget( widget ); }
@@ -180,7 +179,7 @@ namespace Breeze
         else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
             if( scrollArea->frameShadow() == QFrame::Sunken && (widget->focusPolicy()&Qt::StrongFocus) )
-            { _lineEditEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+            { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         }
 

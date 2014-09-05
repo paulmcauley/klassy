@@ -2532,12 +2532,12 @@ namespace Breeze
         const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
         // focus takes precedence over mouse over
-        _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-        _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
 
         // retrieve animation mode and opacity
-        const AnimationMode mode( _animations->lineEditEngine().frameAnimationMode( widget ) );
-        const qreal opacity( _animations->lineEditEngine().frameOpacity( widget ) );
+        const AnimationMode mode( _animations->widgetStateEngine().frameAnimationMode( widget ) );
+        const qreal opacity( _animations->widgetStateEngine().frameOpacity( widget ) );
 
         // update frame shadow factory
         if( _frameShadowFactory->isRegistered( widget ) )
@@ -2578,12 +2578,12 @@ namespace Breeze
             const bool hasFocus( enabled && ( state & State_HasFocus ) );
 
             // focus takes precedence over mouse over
-            _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus );
-            _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+            _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
 
             // retrieve animation mode and opacity
-            const AnimationMode mode( _animations->lineEditEngine().frameAnimationMode( widget ) );
-            const qreal opacity( _animations->lineEditEngine().frameOpacity( widget ) );
+            const AnimationMode mode( _animations->widgetStateEngine().frameAnimationMode( widget ) );
+            const qreal opacity( _animations->widgetStateEngine().frameOpacity( widget ) );
 
             // render
             const QColor background( palette.color( QPalette::Base ) );
@@ -5270,10 +5270,10 @@ namespace Breeze
 
                 // update animation state
                 // hover takes precedence over focus
-                _animations->lineEditEngine().updateState( widget, AnimationHover, mouseOver );
-                _animations->lineEditEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
-                const AnimationMode mode( _animations->lineEditEngine().buttonAnimationMode( widget ) );
-                const qreal opacity( _animations->lineEditEngine().buttonOpacity( widget ) );
+                _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
+                _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+                const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+                const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
                 if( flat ) {
 
