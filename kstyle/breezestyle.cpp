@@ -343,16 +343,30 @@ namespace Breeze
         }
 
         // alter palette for relevant framed widgets
-        const QPalette palette( _helper->framePalette( QApplication::palette() ) );
-        if( qobject_cast<QDockWidget*>( widget ) ||
-            qobject_cast<QGroupBox*>( widget ) ||
+        if( qobject_cast<QGroupBox*>( widget ) ||
             qobject_cast<QMenu*>( widget ) ||
             widget->inherits( "QComboBoxPrivateContainer" ) )
-        { widget->setPalette( palette ); }
+        {
+            const QPalette palette( _helper->framePalette( QApplication::palette() ) );
+            widget->setPalette( palette );
+        }
 
-        // also for tab widgets
+        // alter palette for non document mode tab widgets
         if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) )
-        { if( !tabWidget->documentMode() ) widget->setPalette( palette ); }
+        {
+            if( !tabWidget->documentMode() )
+            {
+                const QPalette palette( _helper->framePalette( QApplication::palette() ) );
+                widget->setPalette( palette );
+            }
+        }
+
+        // alter palette for dock widgets
+        if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
+        {
+            const QPalette palette( _helper->framePalette( QApplication::palette() ) );
+            widget->setPalette( palette );
+        }
 
 
         // base class polishing
@@ -1017,8 +1031,15 @@ namespace Breeze
             const QRect rect( dockWidget->rect() );
 
             // render
-            if( dockWidget->isWindow() ) _helper->renderMenuFrame( &painter, rect, background, outline, false );
-            else _helper->renderFrame( &painter, rect, background, outline );
+            if( dockWidget->isFloating() )
+            {
+                _helper->renderMenuFrame( &painter, rect, background, outline, false );
+
+            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
+
+                _helper->renderFrame( &painter, rect, background, outline );
+
+            }
 
         }
 
