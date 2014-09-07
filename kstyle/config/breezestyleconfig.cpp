@@ -47,6 +47,7 @@ namespace Breeze
         load();
 
         connect( _toolBarDrawItemSeparator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _dockWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _sliderDrawTickMarks, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _splitterProxyEnabled, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _mnemonicsMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -62,6 +63,7 @@ namespace Breeze
     void StyleConfig::save( void )
     {
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
+        StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
         StyleConfigData::setSliderDrawTickMarks( _sliderDrawTickMarks->isChecked() );
         StyleConfigData::setSplitterProxyEnabled( _splitterProxyEnabled->isChecked() );
         StyleConfigData::setMnemonicsMode( _mnemonicsMode->currentIndex() );
@@ -111,6 +113,7 @@ namespace Breeze
 
         // check if any value was modified
         if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
+        else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
         else if( _sliderDrawTickMarks->isChecked() != StyleConfigData::sliderDrawTickMarks() ) modified = true;
         else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
         else if( _scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons() ) modified = true;
@@ -129,6 +132,7 @@ namespace Breeze
     {
 
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
+        _dockWidgetDrawFrame->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
         _sliderDrawTickMarks->setChecked( StyleConfigData::sliderDrawTickMarks() );
         _mnemonicsMode->setCurrentIndex( StyleConfigData::mnemonicsMode() );
         _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
