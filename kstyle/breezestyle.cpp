@@ -296,9 +296,24 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
-        } else if( qobject_cast<QAbstractScrollArea*>( widget ) ) {
+        } else if(QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
             addEventFilter( widget );
+
+            // force KPageListView flat
+            if( widget->inherits( "KDEPrivate::KPageListView" ) )
+            {
+                scrollArea->setFrameStyle( QFrame::NoFrame );
+                scrollArea->setBackgroundRole( QPalette::Window );
+                scrollArea->setForegroundRole( QPalette::WindowText );
+
+                if( QWidget *viewport = scrollArea->viewport() )
+                {
+                    viewport->setBackgroundRole( QPalette::Window );
+                    viewport->setForegroundRole( QPalette::WindowText );
+                }
+
+            }
 
         } else if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) ) {
 
