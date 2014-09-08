@@ -301,7 +301,7 @@ namespace Breeze
             addEventFilter( widget );
 
             // force KPageListView flat
-            if( widget->inherits( "KDEPrivate::KPageListView" ) )
+            if( widget->inherits( "KDEPrivate::KPageListView" ) || widget->property( PropertyNames::sidePanelView ).toBool() )
             {
                 scrollArea->setFrameStyle( QFrame::NoFrame );
                 scrollArea->setBackgroundRole( QPalette::Window );
