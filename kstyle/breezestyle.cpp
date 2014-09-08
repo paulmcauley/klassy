@@ -3779,9 +3779,7 @@ namespace Breeze
 
         } else {
 
-            const QVariant alignmentProperty( widget ? widget->property( PropertyNames::toolButtonAlignment ) : QVariant() );
-            const bool leftAlign = alignmentProperty.isValid() && alignmentProperty.toInt() == Qt::AlignLeft;
-
+            const bool leftAlign( widget && widget->property( PropertyNames::toolButtonAlignment ).toInt() == Qt::AlignLeft );
             if( leftAlign ) iconRect = QRect( QPoint( rect.left(), rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
             else {
 
