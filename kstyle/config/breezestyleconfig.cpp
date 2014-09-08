@@ -132,7 +132,7 @@ namespace Breeze
     {
 
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
-        _dockWidgetDrawFrame->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
+        _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
         _sliderDrawTickMarks->setChecked( StyleConfigData::sliderDrawTickMarks() );
         _mnemonicsMode->setCurrentIndex( StyleConfigData::mnemonicsMode() );
         _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
