@@ -24,6 +24,7 @@ if(BREEZE_USE_KDE4)
   include_directories(${KDE4_INCLUDES})
 
   ### XCB
+  find_package(PkgConfig REQUIRED)
   pkg_check_modules(XCB xcb x11-xcb)
   set(BREEZE_HAVE_X11 ${XCB_FOUND})
 
