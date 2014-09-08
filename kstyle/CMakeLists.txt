@@ -66,7 +66,6 @@ include_directories(
 ################# configuration #################
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
-
 ########### next target ###############
 set(breeze_PART_SRCS
     animations/breezeanimation.cpp
@@ -126,7 +125,7 @@ else()
   add_library(breeze MODULE ${breeze_PART_SRCS})
   target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::Style KF5::WindowSystem)
-  
+
   if (WIN32)
     # As stated in http://msdn.microsoft.com/en-us/library/4hwaceh6.aspx M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
