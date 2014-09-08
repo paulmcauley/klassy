@@ -48,6 +48,7 @@
 #include "breezehelper.h"
 #include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
+#include "breezepropertynames.h"
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
 #include "breezestyleconfigdata.h"
@@ -308,6 +309,11 @@ namespace Breeze
                 widget->setForegroundRole( QPalette::WindowText );
             }
 
+            if( widget->parentWidget() &&
+                widget->parentWidget()->parentWidget() &&
+                widget->parentWidget()->parentWidget()->inherits( "Gwenview::SideBarGroup" ) )
+            { widget->setProperty( PropertyNames::toolButtonAlignment, Qt::AlignLeft ); }
+
         } else if( qobject_cast<QDockWidget*>( widget ) ) {
 
             // add event filter on dock widgets
@@ -352,7 +358,7 @@ namespace Breeze
         }
 
         // alter palette for non document mode tab widgets
-        if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) )
+        else if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) )
         {
             if( !tabWidget->documentMode() )
             {
@@ -362,7 +368,7 @@ namespace Breeze
         }
 
         // alter palette for dock widgets
-        if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
+        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
         {
             const QPalette palette( _helper->framePalette( QApplication::palette() ) );
             widget->setPalette( palette );
@@ -3773,8 +3779,17 @@ namespace Breeze
 
         } else {
 
-            const int contentsWidth( iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing );
-            iconRect = QRect( QPoint( rect.left() + (rect.width() - contentsWidth )/2, rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+            const QVariant alignmentProperty( widget ? widget->property( PropertyNames::toolButtonAlignment ) : QVariant() );
+            const bool leftAlign = alignmentProperty.isValid() && alignmentProperty.toInt() == Qt::AlignLeft;
+
+            if( leftAlign ) iconRect = QRect( QPoint( rect.left(), rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+            else {
+
+                const int contentsWidth( iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing );
+                iconRect = QRect( QPoint( rect.left() + (rect.width() - contentsWidth )/2, rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+
+            }
+
             textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, rect.top() + (rect.height() - textSize.height())/2 ), textSize );
 
             // handle right to left layouts

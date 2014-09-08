@@ -29,6 +29,7 @@ namespace Breeze
 
         static const char* const noAnimations;
         static const char* const noWindowGrab;
+        static const char* const toolButtonAlignment;
 
     };
 
