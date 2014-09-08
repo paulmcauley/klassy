@@ -157,6 +157,7 @@ namespace Breeze
         // tree view
         ItemView_ArrowSize = 10,
         ItemView_ItemMarginWidth = 4,
+        SidePanel_ItemMarginWidth = 4,
 
         // splitter
         Splitter_SplitterWidth = 1,

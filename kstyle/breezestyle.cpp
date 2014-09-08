@@ -306,11 +306,14 @@ namespace Breeze
                 scrollArea->setFrameStyle( QFrame::NoFrame );
                 scrollArea->setBackgroundRole( QPalette::Window );
                 scrollArea->setForegroundRole( QPalette::WindowText );
+                scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
+                scrollArea->setProperty( PropertyNames::sidePanelView, true );
 
                 if( QWidget *viewport = scrollArea->viewport() )
                 {
                     viewport->setBackgroundRole( QPalette::Window );
                     viewport->setForegroundRole( QPalette::WindowText );
+                    viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) );
                 }
 
             }
@@ -3155,7 +3158,7 @@ namespace Breeze
 
         // store palette and rect
         const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        QRect rect( option->rect );
 
         // store flags
         const State& state( option->state );
@@ -3236,6 +3239,13 @@ namespace Breeze
 
             }
 
+        }
+
+        const bool isSidePanel( widget && widget->property( PropertyNames::sidePanelView ).toBool() );
+        if( isSidePanel )
+        {
+            rect.setWidth( Metrics::SidePanel_ItemMarginWidth );
+            rect = visualRect( option, rect );
         }
 
         // render

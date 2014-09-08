@@ -110,6 +110,9 @@ namespace Breeze
         //* return altered palette suitable for tinted frames
         QPalette framePalette( const QPalette& ) const;
 
+        //* return altered palette suitable for tinted frames
+        QPalette sideViewPalette( const QPalette& ) const;
+
         //* arrow outline color, using animations
         QColor arrowColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 

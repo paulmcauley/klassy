@@ -117,6 +117,15 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QPalette Helper::sideViewPalette( const QPalette& palette ) const
+    {
+        QPalette copy( palette );
+        copy.setColor( QPalette::Active, QPalette::HighlightedText, palette.color( QPalette::Active, QPalette::Highlight ) );
+        copy.setColor( QPalette::Inactive, QPalette::HighlightedText, palette.color( QPalette::Active, QPalette::Highlight ) );
+        return copy;
+    }
+
+    //____________________________________________________________________
     QColor Helper::arrowColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
