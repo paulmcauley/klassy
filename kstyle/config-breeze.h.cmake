@@ -22,7 +22,7 @@
 #ifndef config_breeze_h
 #define config_breeze_h
 
-/* Define to 1 if you compile against X11*/
+/* Define to 1 if you compile against KDE4*/
 #cmakedefine01 BREEZE_USE_KDE4
 
 /* Define to 1 if you have XCB libraries */
