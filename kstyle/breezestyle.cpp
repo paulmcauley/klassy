@@ -1554,7 +1554,7 @@ namespace Breeze
             rect.adjust( 0, 0, -tabBarSize.width(), 0 );
             break;
 
-            default: break;
+            default: return QRect();
         }
 
         return rect;
