@@ -71,8 +71,8 @@
     </entry>
 
     <!-- dock widdgets -->
-    <entry name="DockWidgetDrawFrame" type="Bool">
-      <default>true</default>
+    <entry name="SidePanelDrawFrame" type="Bool">
+      <default>false</default>
     </entry>
 
     <!-- window dragging -->

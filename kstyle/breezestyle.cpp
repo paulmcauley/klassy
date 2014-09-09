@@ -368,7 +368,7 @@ namespace Breeze
         }
 
         // alter palette for dock widgets
-        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
+        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::sidePanelDrawFrame() )
         {
             const QPalette palette( _helper->framePalette( QApplication::palette() ) );
             widget->setPalette( palette );
@@ -1041,7 +1041,7 @@ namespace Breeze
             {
                 _helper->renderMenuFrame( &painter, rect, background, outline, false );
 
-            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
+            } else if( StyleConfigData::sidePanelDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
 
                 _helper->renderFrame( &painter, rect, background, outline );
 
