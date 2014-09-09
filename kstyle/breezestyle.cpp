@@ -3224,7 +3224,7 @@ namespace Breeze
         // get selection path
         Corners corners;
         const bool hasSingleSelection( abstractItemView && abstractItemView->selectionMode() == QAbstractItemView::SingleSelection );
-        if( hasSingleSelection )
+        if( hasSingleSelection && !isSidePanel )
         {
 
             // round relevant corners
