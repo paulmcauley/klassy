@@ -327,6 +327,17 @@ namespace Breeze
             widget->setAutoFillBackground( false );
             addEventFilter( widget );
 
+        } else if( qobject_cast<QToolBox*>( widget ) ) {
+
+            widget->setBackgroundRole( QPalette::NoRole );
+            widget->setAutoFillBackground( false );
+
+        } else if( widget->parentWidget() && widget->parentWidget()->parentWidget() && qobject_cast<QToolBox*>( widget->parentWidget()->parentWidget()->parentWidget() ) ) {
+
+            widget->setBackgroundRole( QPalette::NoRole );
+            widget->setAutoFillBackground( false );
+            widget->parentWidget()->setAutoFillBackground( false );
+
         } else if( qobject_cast<QMenu*>( widget ) ) {
 
             setTranslucentBackground( widget );
