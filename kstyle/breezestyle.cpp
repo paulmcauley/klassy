@@ -3248,7 +3248,7 @@ namespace Breeze
         // adjust rect
         if( isSidePanel )
         {
-            rect.setWidth( Metrics::SidePanel_ItemMarginWidth );
+            rect.setLeft( rect.right() - Metrics::SidePanel_ItemMarginWidth + 1 );
             rect = visualRect( option, rect );
         }
 
