@@ -303,15 +303,20 @@ namespace Breeze
         // check if changed
         if( _splitter.data() == widget ) return;
 
-        _splitter = widget;
-        _hook = _splitter.data()->mapFromGlobal(QCursor::pos());
+        // get cursor position
+        const QPoint position( QCursor::pos() );
 
-        //
-        QRect r( 0, 0, 2*StyleConfigData::splitterProxyWidth(), 2*StyleConfigData::splitterProxyWidth() );
-        r.moveCenter( _hook );
-        setGeometry(r);
+        // store splitter and hook
+        _splitter = widget;
+        _hook = _splitter.data()->mapFromGlobal( position );
+
+        // adjust rect
+        QRect rect( 0, 0, 2*StyleConfigData::splitterProxyWidth(), 2*StyleConfigData::splitterProxyWidth() );
+        rect.moveCenter( parentWidget()->mapFromGlobal( position ) );
+        setGeometry( rect );
         setCursor( _splitter.data()->cursor().shape() );
 
+        // show
         raise();
         show();
 
