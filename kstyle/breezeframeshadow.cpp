@@ -59,7 +59,6 @@ namespace Breeze
 
             // further checks on frame shape, and parent
             if( frame->frameStyle() == (QFrame::StyledPanel | QFrame::Sunken) ) accepted = true;
-            else if( widget->parent() && widget->parent()->inherits( "QComboBoxPrivateContainer" ) ) accepted = true;
 
         } else if( widget->inherits( "KTextEditor::View" ) ) accepted = true;
 
