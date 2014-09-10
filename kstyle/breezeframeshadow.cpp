@@ -47,18 +47,21 @@ namespace Breeze
 
         // cast to frame and check
         QFrame* frame( qobject_cast<QFrame*>( widget ) );
-        if( !frame ) return false;
+        if( frame )
+        {
 
-        // also do not install on QSplitter
-        /*
-        due to Qt, splitters are set with a frame style that matches the condition below,
-        though no shadow should be installed, obviously
-        */
-        if( qobject_cast<QSplitter*>( widget ) ) return false;
+            // also do not install on QSplitter
+            /*
+            due to Qt, splitters are set with a frame style that matches the condition below,
+            though no shadow should be installed, obviously
+            */
+            if( qobject_cast<QSplitter*>( widget ) ) return false;
 
-        // further checks on frame shape, and parent
-        if( frame->frameStyle() == (QFrame::StyledPanel | QFrame::Sunken) ) accepted = true;
-        else if( widget->parent() && widget->parent()->inherits( "QComboBoxPrivateContainer" ) ) accepted = true;
+            // further checks on frame shape, and parent
+            if( frame->frameStyle() == (QFrame::StyledPanel | QFrame::Sunken) ) accepted = true;
+            else if( widget->parent() && widget->parent()->inherits( "QComboBoxPrivateContainer" ) ) accepted = true;
+
+        } else if( widget->inherits( "KTextEditor::View" ) ) accepted = true;
 
         if( !accepted ) return false;
 

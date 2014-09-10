@@ -5952,10 +5952,19 @@ namespace Breeze
         if( !(scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget() ) ) )
         { scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget()->parentWidget() ); }
 
+        // check scrollarea
         if( scrollArea &&
             (widget == scrollArea->verticalScrollBar() ||
-            widget == scrollArea->horizontalScrollBar() ) ) return scrollArea;
-        else return nullptr;
+            widget == scrollArea->horizontalScrollBar() ) )
+        {
+
+            return scrollArea;
+
+        } else if( widget->parentWidget()->inherits( "KTextEditor::View" ) ) {
+
+            return widget->parentWidget();
+
+        } else return nullptr;
 
     }
 

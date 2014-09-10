@@ -163,6 +163,7 @@ namespace Breeze
         // editors
         else if( qobject_cast<QLineEdit*>( widget ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
         else if( qobject_cast<QTextEdit*>( widget ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
+        else if( widget->inherits( "KTextEditor::View" ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // header views
         // need to come before abstract item view, otherwise is skipped
