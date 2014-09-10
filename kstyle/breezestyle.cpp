@@ -286,7 +286,8 @@ namespace Breeze
         } else if( qobject_cast<QFrame*>( widget ) && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) ) {
 
             widget->setAutoFillBackground( false );
-            widget->setBackgroundRole( QPalette::Window );
+            if( !StyleConfigData::titleWidgetDrawFrame() )
+            { widget->setBackgroundRole( QPalette::Window ); }
 
         }
 
@@ -400,7 +401,7 @@ namespace Breeze
         }
 
         // alter palette for dock widgets
-        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::sidePanelDrawFrame() )
+        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
         {
             const QPalette palette( _helper->framePalette( QApplication::palette() ) );
             widget->setPalette( palette );
@@ -1073,7 +1074,7 @@ namespace Breeze
             {
                 _helper->renderMenuFrame( &painter, rect, background, outline, false );
 
-            } else if( StyleConfigData::sidePanelDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
+            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
 
                 _helper->renderFrame( &painter, rect, background, outline );
 
@@ -2574,9 +2575,16 @@ namespace Breeze
         const QPalette& palette( option->palette );
         const QRect& rect( option->rect );
 
+        // detect title widgets
+        const bool isTitleWidget(
+            StyleConfigData::titleWidgetDrawFrame() &&
+            widget &&
+            widget->parent() &&
+            widget->parent()->inherits( "KTitleWidget" ) );
+
         // copy state
         const State& state( option->state );
-        if( !( state & ( State_Sunken | State_Raised ) ) ) return true;
+        if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
 
         #if QT_VERSION >= 0x050000
         const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
@@ -2603,7 +2611,9 @@ namespace Breeze
         { _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode ); }
 
         // render
+        const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
         const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        _helper->renderFrame( painter, rect, background, outline, hasFocus );
         _helper->renderFrame( painter, rect, QColor(), outline, hasFocus );
 
         return true;

@@ -47,6 +47,8 @@ namespace Breeze
         load();
 
         connect( _toolBarDrawItemSeparator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _dockWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _titleWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _sidePanelDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _sliderDrawTickMarks, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _splitterProxyEnabled, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
@@ -63,6 +65,8 @@ namespace Breeze
     void StyleConfig::save( void )
     {
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
+        StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
+        StyleConfigData::setTitleWidgetDrawFrame( _titleWidgetDrawFrame->isChecked() );
         StyleConfigData::setSidePanelDrawFrame( _sidePanelDrawFrame->isChecked() );
         StyleConfigData::setSliderDrawTickMarks( _sliderDrawTickMarks->isChecked() );
         StyleConfigData::setSplitterProxyEnabled( _splitterProxyEnabled->isChecked() );
@@ -113,6 +117,8 @@ namespace Breeze
 
         // check if any value was modified
         if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
+        else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
+        else if( _titleWidgetDrawFrame->isChecked() != StyleConfigData::titleWidgetDrawFrame() ) modified = true;
         else if( _sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame() ) modified = true;
         else if( _sliderDrawTickMarks->isChecked() != StyleConfigData::sliderDrawTickMarks() ) modified = true;
         else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
@@ -132,6 +138,8 @@ namespace Breeze
     {
 
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
+        _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
+        _titleWidgetDrawFrame->setChecked( StyleConfigData::titleWidgetDrawFrame() );
         _sidePanelDrawFrame->setChecked( StyleConfigData::sidePanelDrawFrame() );
         _sliderDrawTickMarks->setChecked( StyleConfigData::sliderDrawTickMarks() );
         _mnemonicsMode->setCurrentIndex( StyleConfigData::mnemonicsMode() );
