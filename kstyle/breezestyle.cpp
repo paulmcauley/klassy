@@ -117,24 +117,24 @@ namespace BreezePrivate
 
     };
 
-    //! needed to have spacing added to items in combobox
+    //* needed to have spacing added to items in combobox
     class ComboBoxItemDelegate: public QItemDelegate
     {
 
         public:
 
-        //! constructor
+        //* constructor
         ComboBoxItemDelegate( QAbstractItemView* parent ):
             QItemDelegate( parent ),
             _proxy( parent->itemDelegate() ),
             _itemMargin( Breeze::Metrics::ItemView_ItemMarginWidth )
         {}
 
-        //! destructor
+        //* destructor
         virtual ~ComboBoxItemDelegate( void )
         {}
 
-        //! paint
+        //* paint
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
         {
             // call either proxy or parent class
@@ -142,7 +142,7 @@ namespace BreezePrivate
             else QItemDelegate::paint( painter, option, index );
         }
 
-        //! size hint for index
+        //* size hint for index
         virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
         {
 
@@ -159,10 +159,10 @@ namespace BreezePrivate
 
         private:
 
-        //! proxy
+        //* proxy
         Breeze::WeakPointer<QAbstractItemDelegate> _proxy;
 
-        //! margin
+        //* margin
         int _itemMargin;
 
     };
@@ -2608,7 +2608,10 @@ namespace Breeze
 
         // update frame shadow factory
         if( _frameShadowFactory->isRegistered( widget ) )
-        { _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode ); }
+        {
+            _frameShadowFactory->updateShadowsGeometry( widget, rect );
+            _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode );
+        }
 
         // render
         const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );

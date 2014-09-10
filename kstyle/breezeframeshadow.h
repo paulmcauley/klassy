@@ -68,6 +68,9 @@ namespace Breeze
         //* update state
         void updateState( const QWidget*, bool focus, bool hover, qreal opacity, AnimationMode ) const;
 
+        //* update shadows geometry
+        void updateShadowsGeometry( const QObject*, QRect ) const;
+
         protected:
 
         //* install shadows on given widget
@@ -75,9 +78,6 @@ namespace Breeze
 
         //* remove shadows from widget
         void removeShadows( QWidget* );
-
-        //* update shadows geometry
-        void updateShadowsGeometry( QObject* ) const;
 
         //* raise shadows
         void raiseShadows( QObject* ) const;
@@ -105,102 +105,46 @@ namespace Breeze
 
     //* frame shadow
     /** this allows the shadow to be painted over the widgets viewport */
-    class FrameShadowBase: public QWidget
-    {
-
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        explicit FrameShadowBase( ShadowArea area ):
-            _area( area )
-        {}
-
-        //* destructor
-        virtual ~FrameShadowBase( void )
-        {}
-
-        //* shadow area
-        void setShadowArea(ShadowArea area)
-        { _area = area; }
-
-        //* shadow area
-        const ShadowArea& shadowArea() const
-        { return _area; }
-
-        //* update geometry
-        virtual void updateGeometry( void ) = 0;
-
-        //* update state
-        virtual void updateState( bool, bool, qreal, AnimationMode )
-        {}
-
-        protected:
-
-        //* event handler
-        virtual bool event(QEvent *e);
-
-        //* initialization
-        virtual void init();
-
-        //* return viewport associated to parent widget
-        virtual QWidget* viewport( void ) const;
-
-        private:
-
-        //* shadow area
-        ShadowArea _area;
-
-    };
-
-    //* frame shadow
-    /** this allows the shadow to be painted over the widgets viewport */
-    class SunkenFrameShadow : public FrameShadowBase
+    class FrameShadow : public QWidget
     {
         Q_OBJECT
 
         public:
 
         //* constructor
-        SunkenFrameShadow( ShadowArea area, Helper& helper ):
-            FrameShadowBase( area ),
-            _helper( helper ),
-            _hasFocus( false ),
-            _mouseOver( false ),
-            _opacity( -1 ),
-            _mode( AnimationNone )
-        { init(); }
-
+        FrameShadow( ShadowArea, Helper& );
 
         //* destructor
-        virtual ~SunkenFrameShadow()
+        virtual ~FrameShadow()
         {}
 
         //* update geometry
-        virtual void updateGeometry( void );
+        virtual void updateGeometry( QRect );
 
         //* update state
         void updateState( bool focus, bool hover, qreal opacity, AnimationMode );
 
         protected:
 
+        //* event handler
+        virtual bool event(QEvent *e);
+
         //* painting
         virtual void paintEvent(QPaintEvent *);
 
-        private:
+        //* return viewport associated to parent widget
+        virtual QWidget* viewport( void ) const;
 
-        //* shadow sizes
-        enum
-        {
-            ShadowSizeTop = 3,
-            ShadowSizeBottom = 3,
-            ShadowSizeLeft = 3,
-            ShadowSizeRight = 3
-        };
+        private:
 
         //* helper
         Helper& _helper;
+
+        //* shadow area
+        ShadowArea _area;
+
+        //* parent rect
+        QRect _parentRect;
 
         //*@name widget state
         //@{
@@ -208,6 +152,8 @@ namespace Breeze
         bool _mouseOver;
         qreal _opacity;
         AnimationMode _mode;
+        //@}
+
     };
 }
 

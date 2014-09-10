@@ -105,15 +105,6 @@ namespace Breeze
                 break;
             }
 
-            case QEvent::Show:
-            updateShadowsGeometry( object );
-            update( object );
-            break;
-
-            case QEvent::Resize:
-            updateShadowsGeometry( object );
-            break;
-
             default: break;
         }
 
@@ -147,7 +138,7 @@ namespace Breeze
         const QList<QObject* > children = widget->children();
         foreach( QObject *child, children )
         {
-            if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase*>(child) )
+            if( FrameShadow* shadow = qobject_cast<FrameShadow*>(child) )
             {
                 shadow->hide();
                 shadow->setParent(0);
@@ -158,14 +149,14 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    void FrameShadowFactory::updateShadowsGeometry( QObject* object ) const
+    void FrameShadowFactory::updateShadowsGeometry( const QObject* object, QRect rect ) const
     {
 
         const QList<QObject *> children = object->children();
         foreach( QObject *child, children )
         {
-            if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase *>(child) )
-            { shadow->updateGeometry(); }
+            if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
+            { shadow->updateGeometry( rect ); }
         }
 
     }
@@ -177,7 +168,7 @@ namespace Breeze
         const QList<QObject *> children = object->children();
         foreach( QObject *child, children )
         {
-            if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase *>(child) )
+            if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
             { shadow->raise(); }
         }
 
@@ -190,7 +181,7 @@ namespace Breeze
         const QList<QObject* > children = object->children();
         foreach( QObject *child, children )
         {
-            if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase *>(child) )
+            if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
             { shadow->update();}
         }
 
@@ -203,7 +194,7 @@ namespace Breeze
         const QList<QObject *> children = widget->children();
         foreach( QObject *child, children )
         {
-            if( FrameShadowBase* shadow = qobject_cast<FrameShadowBase *>(child) )
+            if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
             { shadow->updateState( focus, hover, opacity, mode ); }
         }
 
@@ -212,10 +203,9 @@ namespace Breeze
     //____________________________________________________________________________________
     void FrameShadowFactory::installShadow( QWidget* widget, Helper& helper, ShadowArea area ) const
     {
-        FrameShadowBase *shadow(0);
-        shadow = new SunkenFrameShadow( area, helper );
+        FrameShadow *shadow(0);
+        shadow = new FrameShadow( area, helper );
         shadow->setParent(widget);
-        shadow->updateGeometry();
         shadow->show();
     }
 
@@ -224,7 +214,13 @@ namespace Breeze
     { _registeredWidgets.remove( object ); }
 
     //____________________________________________________________________________________
-    void FrameShadowBase::init()
+    FrameShadow::FrameShadow( ShadowArea area, Helper& helper ):
+        _helper( helper ),
+        _area( area ),
+        _hasFocus( false ),
+        _mouseOver( false ),
+        _opacity( -1 ),
+        _mode( AnimationNone )
     {
 
         setAttribute(Qt::WA_OpaquePaintEvent, false);
@@ -234,7 +230,7 @@ namespace Breeze
         setContextMenuPolicy(Qt::NoContextMenu);
 
         // grab viewport widget
-        QWidget *viewport( FrameShadowBase::viewport() );
+        QWidget *viewport( this->viewport() );
         if( !viewport && parentWidget() && parentWidget()->inherits( "Q3ListView" ) )
         { viewport = parentWidget(); }
 
@@ -243,127 +239,50 @@ namespace Breeze
 
     }
 
-     //____________________________________________________________________________________
-    QWidget* FrameShadowBase::viewport( void ) const
-    {
-
-        if( !parentWidget() )  return NULL;
-
-        if( QAbstractScrollArea *widget = qobject_cast<QAbstractScrollArea *>(parentWidget()) )
-        {
-
-            return widget->viewport();
-
-        } else return NULL;
-
-    }
-
     //____________________________________________________________________________________
-    bool FrameShadowBase::event(QEvent *e)
+    void FrameShadow::updateGeometry( QRect rect )
     {
 
-        // paintEvents are handled separately
-        if (e->type() == QEvent::Paint) return QWidget::event(e);
+        // store parent rect
+        _parentRect = rect.translated( mapFromParent( QPoint(0,0) ) );
 
-        QWidget *viewport( FrameShadowBase::viewport() );
+        // for efficiency, take out the part for which nothing is rendered
+        rect.adjust( 1, 1, -1, -1 );
 
-        switch (e->type())
-        {
-
-            case QEvent::DragEnter:
-            case QEvent::DragMove:
-            case QEvent::DragLeave:
-            case QEvent::Drop:
-            if( viewport )
-            {
-                setAcceptDrops(viewport->acceptDrops());
-                return viewport->QObject::event(e);
-            }
-            break;
-
-            case QEvent::Enter:
-            if( viewport ) {
-                setCursor(viewport->cursor());
-                setAcceptDrops(viewport->acceptDrops());
-            }
-            break;
-
-            case QEvent::ContextMenu:
-            if( viewport )
-            {
-
-                QContextMenuEvent *me = static_cast<QContextMenuEvent *>(e);
-                QContextMenuEvent *ne = new QContextMenuEvent(me->reason(), parentWidget()->mapFromGlobal(me->globalPos()), me->globalPos());
-                QApplication::sendEvent(viewport, ne);
-                e->accept();
-                return true;
-            }
-            break;
-
-            case QEvent::MouseButtonPress: releaseMouse();
-            case QEvent::MouseMove:
-            case QEvent::MouseButtonRelease:
-            if( viewport )
-            {
-                QMouseEvent *me = static_cast<QMouseEvent *>(e);
-                QMouseEvent *ne = new QMouseEvent(e->type(), parentWidget()->mapFromGlobal(me->globalPos()), me->globalPos(), me->button(), me->buttons(), me->modifiers());
-                QApplication::sendEvent(viewport, ne);
-                e->accept();
-                return true;
-            }
-            break;
-
-            default:
-            break;
-        }
-
-        e->ignore();
-        return false;
-
-    }
-
-    //____________________________________________________________________________________
-    void SunkenFrameShadow::updateGeometry()
-    {
-
-        QWidget *widget = parentWidget();
-        if( !widget ) return;
-
-        QRect contentsRect = widget->contentsRect();
-        switch (shadowArea())
+        // adjust geometry
+        const int shadowSize( Metrics::Frame_FrameRadius );
+        switch( _area )
         {
 
             case ShadowAreaTop:
-            contentsRect.setHeight( ShadowSizeTop );
-            contentsRect.adjust( -1, -1, 1, 0 );
+            rect.setHeight( shadowSize );
             break;
 
-
             case ShadowAreaBottom:
-            contentsRect.setTop(contentsRect.bottom() - ShadowSizeBottom + 1);
-            contentsRect.adjust( -1, 0, 1, 1 );
+            rect.setTop( rect.bottom() - shadowSize + 1 );
             break;
 
             case ShadowAreaLeft:
-            contentsRect.setWidth(ShadowSizeLeft);
-            contentsRect.adjust(-1, ShadowSizeTop, 0, -ShadowSizeBottom);
+            rect.setWidth(shadowSize);
+            rect.adjust(0, shadowSize, 0, -shadowSize );
             break;
 
 
             case ShadowAreaRight:
-            contentsRect.setLeft(contentsRect.right() - ShadowSizeRight + 1);
-            contentsRect.adjust(0, ShadowSizeTop, 1, -ShadowSizeBottom);
+            rect.setLeft(rect.right() - shadowSize + 1 );
+            rect.adjust(0, shadowSize, 0, -shadowSize );
             break;
 
             default:
             return;
         }
 
-        setGeometry(contentsRect);
+        setGeometry(rect);
+
     }
 
     //____________________________________________________________________________________
-    void SunkenFrameShadow::updateState( bool focus, bool hover, qreal opacity, AnimationMode mode )
+    void FrameShadow::updateState( bool focus, bool hover, qreal opacity, AnimationMode mode )
     {
         bool changed( false );
         if( _hasFocus != focus ) { _hasFocus = focus; changed |= true; }
@@ -398,42 +317,103 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    void SunkenFrameShadow::paintEvent(QPaintEvent *event )
+    bool FrameShadow::event( QEvent *event )
+    {
+
+        // paintEvents are handled separately
+        if( event->type() == QEvent::Paint ) return QWidget::event( event );
+
+        QWidget *viewport( this->viewport() );
+
+        switch( event->type() )
+        {
+
+            case QEvent::DragEnter:
+            case QEvent::DragMove:
+            case QEvent::DragLeave:
+            case QEvent::Drop:
+            if( viewport )
+            {
+                setAcceptDrops( viewport->acceptDrops() );
+                return viewport->QObject::event( event );
+            }
+            break;
+
+            case QEvent::Enter:
+            if( viewport )
+            {
+                setCursor(viewport->cursor());
+                setAcceptDrops(viewport->acceptDrops());
+            }
+            break;
+
+            case QEvent::ContextMenu:
+            if( viewport )
+            {
+
+                QContextMenuEvent *contectMenuEvent = static_cast<QContextMenuEvent *>( event );
+                QContextMenuEvent *copy = new QContextMenuEvent( contectMenuEvent->reason(), parentWidget()->mapFromGlobal( contectMenuEvent->globalPos() ), contectMenuEvent->globalPos() );
+                QApplication::sendEvent( viewport, copy );
+                event->accept();
+                return true;
+            }
+            break;
+
+            case QEvent::MouseButtonPress: releaseMouse();
+            case QEvent::MouseMove:
+            case QEvent::MouseButtonRelease:
+            if( viewport )
+            {
+                QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+                QMouseEvent *copy = new QMouseEvent( event->type(), parentWidget()->mapFromGlobal( mouseEvent->globalPos()), mouseEvent->globalPos(), mouseEvent->button(), mouseEvent->buttons(), mouseEvent->modifiers() );
+                QApplication::sendEvent( viewport, copy );
+                event->accept();
+                return true;
+            }
+            break;
+
+            default:
+            break;
+        }
+
+        event->ignore();
+        return false;
+
+    }
+
+    //____________________________________________________________________________________
+    void FrameShadow::paintEvent(QPaintEvent *event )
     {
 
         // this fixes shadows in frames that change frameStyle() after polish()
-        if (QFrame *frame = qobject_cast<QFrame *>(parentWidget()))
+        if( QFrame *frame = qobject_cast<QFrame *>( parentWidget() ) )
         { if (frame->frameStyle() != (QFrame::StyledPanel | QFrame::Sunken)) return; }
 
-        QWidget *parent = parentWidget();
-        if(!parent) return;
-
-        QRect rect = parent->contentsRect();
-        rect.translate(mapFromParent(QPoint(0, 0)));
-
-        const int frameWidth( Metrics::Frame_FrameWidth );
-        switch( shadowArea() )
-        {
-            case ShadowAreaTop: rect.adjust( -frameWidth, -frameWidth, frameWidth, -1 ); break;
-            case ShadowAreaBottom: rect.adjust( -frameWidth, 1, frameWidth, frameWidth ); break;
-            case ShadowAreaLeft: rect.adjust( -frameWidth, -2*frameWidth, -1, 2*frameWidth ); break;
-            case ShadowAreaRight: rect.adjust( -1, -2*frameWidth, frameWidth, 2*frameWidth ); break;
-            default: return;
-        }
+        const QRect rect( _parentRect );
 
         // render
         QPainter painter(this);
         painter.setClipRegion( event->region() );
         painter.setRenderHint( QPainter::Antialiasing );
 
-        {
-            // render frame
-            const QColor outline( _helper.frameOutlineColor( palette(), _mouseOver, _hasFocus, _opacity, _mode ) );
-            painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
-            _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
-        }
+        const QColor outline( _helper.frameOutlineColor( palette(), _mouseOver, _hasFocus, _opacity, _mode ) );
+        painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
+        _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
 
         return;
+
+    }
+
+    //____________________________________________________________________________________
+    QWidget* FrameShadow::viewport( void ) const
+    {
+
+        if( !parentWidget() ) return nullptr;
+        else if( QAbstractScrollArea *widget = qobject_cast<QAbstractScrollArea *>(parentWidget()) ) {
+
+            return widget->viewport();
+
+        } else return nullptr;
 
     }
 
