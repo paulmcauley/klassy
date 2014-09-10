@@ -247,6 +247,7 @@ namespace Breeze
             || qobject_cast<QTabBar*>( widget )
             || qobject_cast<QTextEdit*>( widget )
             || qobject_cast<QToolButton*>( widget )
+            || widget->inherits( "KTextEditor::View" )
             )
         { widget->setAttribute( Qt::WA_Hover ); }
 
@@ -2596,7 +2597,7 @@ namespace Breeze
 
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && isInputWidget && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
+        const bool hasFocus( enabled && isInputWidget && ( state & State_HasFocus ) );
 
         // focus takes precedence over mouse over
         _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
