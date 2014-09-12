@@ -126,9 +126,6 @@ namespace Breeze
 
         protected:
 
-        //* event handler
-        virtual bool event(QEvent *e);
-
         //* painting
         virtual void paintEvent(QPaintEvent *);
 
