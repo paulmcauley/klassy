@@ -4358,14 +4358,16 @@ namespace Breeze
         const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
-        painter->setClipRect( option->rect );
+        // copy rect and palette
+        const QRect& rect( option->rect );
+        const QPalette& palette( option->palette );
 
         // define handle rect
         QRect handleRect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
-        if( horizontal ) handleRect = centerRect( option->rect, option->rect.width(), Metrics::ScrollBar_SliderWidth );
-        else handleRect = centerRect( option->rect, Metrics::ScrollBar_SliderWidth, option->rect.height() );
+        if( horizontal ) handleRect = centerRect( rect, rect.width(), Metrics::ScrollBar_SliderWidth );
+        else handleRect = centerRect( rect, Metrics::ScrollBar_SliderWidth, rect.height() );
 
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
@@ -4377,25 +4379,20 @@ namespace Breeze
         // enable animation state
         _animations->scrollBarEngine().updateState( widget, enabled && ( sliderOption->activeSubControls & SC_ScrollBarSlider ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
-        {
-            // render handle
-            // define colors
-            QColor color;
-            const QPalette& palette( option->palette );
 
-            const QColor base( focus ?
-                _helper->focusColor( palette ):
-                _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
+        // define colors
+        QColor color;
+        const QColor base( focus ?
+            _helper->focusColor( palette ):
+            _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
 
-            const QColor highlight( _helper->hoverColor( palette ) );
-            if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
-            else if( mouseOver ) color = highlight;
-            else color = base;
+        const QColor highlight( _helper->hoverColor( palette ) );
+        if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
+        else if( mouseOver ) color = highlight;
+        else color = base;
 
-            // render
-            _helper->renderScrollBarHandle( painter, handleRect, color );
-
-        }
+        // render
+        _helper->renderScrollBarHandle( painter, handleRect, color );
 
         return true;
     }
