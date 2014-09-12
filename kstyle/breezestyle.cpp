@@ -634,6 +634,7 @@ namespace Breeze
             case SH_TabBar_Alignment: return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter:Qt::AlignLeft;
             case SH_ToolBox_SelectedPageTitleBold: return false;
             case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
+            case SH_ScrollView_FrameOnlyAroundContents: return false;
             case SH_FormLayoutFormAlignment: return Qt::AlignLeft | Qt::AlignTop;
             case SH_FormLayoutLabelAlignment: return Qt::AlignRight;
             case SH_FormLayoutFieldGrowthPolicy: return QFormLayout::ExpandingFieldsGrow;
@@ -962,7 +963,6 @@ namespace Breeze
         return ParentStyleClass::drawItemText( painter, rect, flags, palette, enabled, text, textRole );
 
     }
-
 
     //_____________________________________________________________________
     bool Style::eventFilter( QObject *object, QEvent *event )
