@@ -234,26 +234,26 @@ namespace Breeze
                 {
 
                     // use hook, to make sure splitter is properly dragged
-                    QMouseEvent mouseEvent2(
+                    QMouseEvent copy(
                         mouseEvent->type(),
                         _hook,
                         _splitter.data()->mapToGlobal(_hook),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
-                    QCoreApplication::sendEvent( _splitter.data(), &mouseEvent2 );
+                    QCoreApplication::sendEvent( _splitter.data(), &copy );
 
                 } else {
 
                     // map event position to current splitter and post.
-                   QMouseEvent mouseEvent2(
+                   QMouseEvent copy(
                         mouseEvent->type(),
                         _splitter.data()->mapFromGlobal( mouseEvent->globalPos() ),
                         mouseEvent->globalPos(),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
-                    QCoreApplication::sendEvent( _splitter.data(), &mouseEvent2 );
+                    QCoreApplication::sendEvent( _splitter.data(), &copy );
 
 
                 }
