@@ -744,7 +744,6 @@ namespace Breeze
                 if( grooveRect.contains( point ) )
                 {
                     //Must be either page up/page down, or just click on the slider.
-                    //Grab the slider to compare
                     QRect sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
 
                     if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
