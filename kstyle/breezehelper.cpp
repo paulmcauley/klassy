@@ -121,10 +121,6 @@ namespace Breeze
     {
         QPalette copy( palette );
 
-        // alter highlighted text color
-        copy.setColor( QPalette::Active, QPalette::HighlightedText, palette.color( QPalette::Active, QPalette::Highlight ) );
-        copy.setColor( QPalette::Inactive, QPalette::HighlightedText, palette.color( QPalette::Active, QPalette::Highlight ) );
-
         // alter default text color
         copy.setColor( QPalette::Disabled, QPalette::Text, palette.color( QPalette::Disabled, QPalette::WindowText ) );
         copy.setColor( QPalette::Active, QPalette::Text, palette.color( QPalette::Active, QPalette::WindowText ) );

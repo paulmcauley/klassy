@@ -3186,7 +3186,6 @@ namespace Breeze
         const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !( state & State_Selected );
         const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
         const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItemV2::Alternate );
-        const bool isSidePanel( !StyleConfigData::sidePanelDrawFrame() && widget && widget->property( PropertyNames::sidePanelView ).toBool() );
 
         // do nothing if no background is to be rendered
         if( !( mouseOver || selected || hasCustomBackground || hasAlternateBackground ) )
@@ -3194,7 +3193,7 @@ namespace Breeze
 
         // define color group
         QPalette::ColorGroup colorGroup;
-        if( enabled ) colorGroup = ( active || isSidePanel ) ? QPalette::Active : QPalette::Inactive;
+        if( enabled ) colorGroup = active ? QPalette::Active : QPalette::Inactive;
         else colorGroup = QPalette::Disabled;
 
         // render alternate background
@@ -3237,7 +3236,7 @@ namespace Breeze
         // get selection path
         Corners corners;
         const bool hasSingleSelection( abstractItemView && abstractItemView->selectionMode() == QAbstractItemView::SingleSelection );
-        if( hasSingleSelection && !isSidePanel )
+        if( hasSingleSelection )
         {
 
             // round relevant corners
@@ -3256,13 +3255,6 @@ namespace Breeze
 
             }
 
-        }
-
-        // adjust rect
-        if( isSidePanel )
-        {
-            rect.setLeft( rect.right() - Metrics::SidePanel_ItemMarginWidth + 1 );
-            rect = visualRect( option, rect );
         }
 
         // render
