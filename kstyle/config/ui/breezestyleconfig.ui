@@ -304,6 +304,13 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="0" colspan="4">
+       <widget class="QCheckBox" name="_tabBarDrawCenteredTabs">
+        <property name="text">
+         <string>Center tabbar tabs</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

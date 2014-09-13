@@ -46,6 +46,7 @@ namespace Breeze
         // load setup from configData
         load();
 
+        connect( _tabBarDrawCenteredTabs, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _toolBarDrawItemSeparator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _dockWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _titleWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
@@ -64,6 +65,7 @@ namespace Breeze
     //__________________________________________________________________
     void StyleConfig::save( void )
     {
+        StyleConfigData::setTabBarDrawCenteredTabs( _tabBarDrawCenteredTabs->isChecked() );
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
         StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
         StyleConfigData::setTitleWidgetDrawFrame( _titleWidgetDrawFrame->isChecked() );
@@ -116,7 +118,8 @@ namespace Breeze
         bool modified( false );
 
         // check if any value was modified
-        if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
+        if( _tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs() ) modified = true;
+        else if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
         else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
         else if( _titleWidgetDrawFrame->isChecked() != StyleConfigData::titleWidgetDrawFrame() ) modified = true;
         else if( _sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame() ) modified = true;
@@ -137,6 +140,7 @@ namespace Breeze
     void StyleConfig::load( void )
     {
 
+        _tabBarDrawCenteredTabs->setChecked( StyleConfigData::tabBarDrawCenteredTabs() );
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
         _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
         _titleWidgetDrawFrame->setChecked( StyleConfigData::titleWidgetDrawFrame() );
