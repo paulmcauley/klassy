@@ -302,11 +302,18 @@ namespace Breeze
 
             addEventFilter( widget );
 
-            // force KPageListView flat
+            // force side panels as flat and change font to not-bold
             if(
                 !StyleConfigData::sidePanelDrawFrame() &&
                 ( widget->inherits( "KDEPrivate::KPageListView" ) || widget->property( PropertyNames::sidePanelView ).toBool() ) )
             {
+
+                // upbold list font
+                QFont font( widget->font() );
+                font.setBold( false );
+                widget->setFont( font );
+
+                // force flat
                 scrollArea->setFrameStyle( QFrame::NoFrame );
                 scrollArea->setBackgroundRole( QPalette::Window );
                 scrollArea->setForegroundRole( QPalette::WindowText );
