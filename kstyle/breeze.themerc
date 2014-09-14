@@ -29,6 +29,7 @@ Name[tr]=Breeze
 Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
+Name[zh_TW]=微風
 ConfigPage=kstyle_breeze_config
 Comment=Widget style for KDE Frameworks
 Comment[ca]=Estil dels estris pel KDE Frameworks
@@ -52,5 +53,6 @@ Comment[sr@latin]=Stil vidžetâ̂ za Radne okvire KDE‑a
 Comment[sv]=Grafisk komponentstil för KDE Ramverk
 Comment[uk]=Стиль віджетів KDE Frameworks
 Comment[x-test]=xxWidget style for KDE Frameworksxx
+Comment[zh_TW]=KDE Frameworks 的元件樣式
 [KDE]
 WidgetStyle=Breeze
