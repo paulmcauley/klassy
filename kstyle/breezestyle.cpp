@@ -2377,7 +2377,7 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                const int iconWidth( menuItemOption->maxIconWidth );
+                const int iconWidth( qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) );
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
@@ -4121,7 +4121,7 @@ namespace Breeze
         }
 
         // icon
-        const int iconWidth( menuItemOption->maxIconWidth );
+        const int iconWidth( qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) );
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
