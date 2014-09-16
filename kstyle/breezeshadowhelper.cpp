@@ -22,6 +22,7 @@
 
 #include "breeze.h"
 #include "breezehelper.h"
+#include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 
 #include <QDockWidget>
@@ -41,8 +42,6 @@ namespace Breeze
 {
 
     const char* const ShadowHelper::netWMShadowAtomName( "_KDE_NET_WM_SHADOW" );
-    const char* const ShadowHelper::netWMForceShadowPropertyName( "_KDE_NET_WM_FORCE_SHADOW" );
-    const char* const ShadowHelper::netWMSkipShadowPropertyName( "_KDE_NET_WM_SKIP_SHADOW" );
 
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
@@ -260,8 +259,8 @@ namespace Breeze
     {
 
         // flags
-        if( widget->property( netWMSkipShadowPropertyName ).toBool() ) return false;
-        if( widget->property( netWMForceShadowPropertyName ).toBool() ) return true;
+        if( widget->property( PropertyNames::netWMSkipShadow ).toBool() ) return false;
+        if( widget->property( PropertyNames::netWMForceShadow ).toBool() ) return true;
 
         // menus
         if( isMenu( widget ) ) return true;

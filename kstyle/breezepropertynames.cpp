@@ -25,6 +25,8 @@ namespace Breeze
 
     const char* const PropertyNames::noAnimations = "_kde_no_animations";
     const char* const PropertyNames::noWindowGrab = "_kde_no_window_grab";
+    const char* const PropertyNames::netWMForceShadow( "_KDE_NET_WM_FORCE_SHADOW" );
+    const char* const PropertyNames::netWMSkipShadow( "_KDE_NET_WM_SKIP_SHADOW" );
     const char* const PropertyNames::sidePanelView = "_kde_side_panel_view";
     const char* const PropertyNames::toolButtonAlignment = "_kde_toolButton_alignment";
 
