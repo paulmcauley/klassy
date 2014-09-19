@@ -217,7 +217,7 @@ namespace Breeze
     //_______________________________________________________________
     void Animations::registerEngine( BaseEngine* engine )
     {
-        _engines.push_back( engine );
+        _engines.append( engine );
         connect( engine, SIGNAL(destroyed(QObject*)), this, SLOT(unregisterEngine(QObject*)) );
     }
 

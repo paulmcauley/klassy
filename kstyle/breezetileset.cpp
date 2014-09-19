@@ -34,7 +34,7 @@ namespace Breeze
         QSize size( w, h );
         if( !( size.isValid() && rect.isValid() ) )
         {
-            pixmaps.push_back( QPixmap() );
+            pixmaps.append( QPixmap() );
 
         } else if( size != rect.size() ) {
 
@@ -45,9 +45,9 @@ namespace Breeze
             QPainter p(&pixmap);
             p.drawTiledPixmap(0, 0, w, h, tile);
 
-            pixmaps.push_back( pixmap );
+            pixmaps.append( pixmap );
 
-        } else pixmaps.push_back( pix.copy(rect) );
+        } else pixmaps.append( pix.copy(rect) );
 
     }
 

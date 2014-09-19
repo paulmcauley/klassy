@@ -300,14 +300,14 @@ namespace Breeze
         if( _pixmaps.empty() && _shadowTiles.isValid() )
         {
 
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 1 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 2 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 5 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 8 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 7 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 6 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 3 ) ) );
-            _pixmaps.push_back( createPixmap( _shadowTiles.pixmap( 0 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 1 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 2 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 5 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 8 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 7 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 6 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 3 ) ) );
+            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 0 ) ) );
 
         }
 
@@ -389,7 +389,7 @@ namespace Breeze
         // add pixmap handles
         QVector<uint32_t> data;
         foreach( const uint32_t& value, pixmaps )
-        { data.push_back( value ); }
+        { data.append( value ); }
 
         // define shadows padding
         int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
