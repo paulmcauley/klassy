@@ -3631,20 +3631,21 @@ namespace Breeze
 
         const QPoint center( rect.center() );
         const QColor lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setPen( lineColor );
+        painter->setRenderHint( QPainter::Antialiasing, true );
+        painter->translate( 0.5, 0.5 );
+        painter->setPen( QPen( lineColor, 1 ) );
         if( state & ( State_Item | State_Children | State_Sibling ) )
         {
-            const QLine line( QPoint( center.x(), rect.top() ), QPoint( center.x(), center.y() - expanderAdjust ) );
+            const QLineF line( QPointF( center.x(), rect.top() ), QPointF( center.x(), center.y() - expanderAdjust - 1 ) );
             painter->drawLine( line );
         }
 
         //The right/left (depending on direction ) line gets drawn if we have an item
         if( state & State_Item )
         {
-            const QLine line = reverseLayout ?
-                QLine( QPoint( rect.left(), center.y() ), QPoint( center.x() - expanderAdjust, center.y() ) ):
-                QLine( QPoint( center.x() + expanderAdjust, center.y() ), QPoint( rect.right(), center.y() ) );
+            const QLineF line = reverseLayout ?
+                QLineF( QPointF( rect.left(), center.y() ), QPointF( center.x() - expanderAdjust, center.y() ) ):
+                QLineF( QPointF( center.x() + expanderAdjust, center.y() ), QPointF( rect.right(), center.y() ) );
             painter->drawLine( line );
 
         }
@@ -3652,7 +3653,7 @@ namespace Breeze
         //The bottom if we have a sibling
         if( state & State_Sibling )
         {
-            const QLine line( QPoint( center.x(), center.y() + expanderAdjust ), QPoint( center.x(), rect.bottom() ) );
+            const QLineF line( QPointF( center.x(), center.y() + expanderAdjust ), QPointF( center.x(), rect.bottom() ) );
             painter->drawLine( line );
         }
 
