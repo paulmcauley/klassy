@@ -469,7 +469,7 @@ namespace Breeze
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( shadowRect( frameRect ), radius, radius );
+            painter->drawRoundedRect( shadowRect( frameRect ), radius - 1, radius - 1 );
 
         }
 
