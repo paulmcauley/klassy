@@ -549,6 +549,9 @@ namespace Breeze
             case PM_TabBarBaseOverlap: return Metrics::TabBar_BaseOverlap;
             case PM_TabBarTabHSpace: return 2*Metrics::TabBar_TabMarginWidth;
             case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginHeight;
+            case PM_TabCloseIndicatorWidth:
+            case PM_TabCloseIndicatorHeight:
+            return pixelMetric( PM_SmallIconSize, option, widget );
 
             // scrollbars
             case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
