@@ -1339,6 +1339,29 @@ namespace Breeze
     bool Helper::hasAlphaChannel( const QWidget* widget ) const
     { return compositingActive() && widget && widget->testAttribute( Qt::WA_TranslucentBackground ); }
 
+    //______________________________________________________________________________________
+    QPixmap Helper::highDpiPixmap( int width, int height ) const
+    {
+        #if QT_VERSION >= 0x050300
+        const qreal dpiRatio( qApp->devicePixelRatio() );
+        QPixmap pixmap( width*dpiRatio, height*dpiRatio );
+        pixmap.setDevicePixelRatio( dpiRatio );
+        return pixmap;
+        #else
+        return QPixmap( width, height );
+        #endif
+    }
+
+    //______________________________________________________________________________________
+    qreal Helper::devicePixelRatio( const QPixmap& pixmap ) const
+    {
+        #if QT_VERSION >= 0x050300
+        return pixmap.devicePixelRatio();
+        #else
+        return 1;
+        #endif
+    }
+
     #if BREEZE_HAVE_X11
 
     //____________________________________________________________________

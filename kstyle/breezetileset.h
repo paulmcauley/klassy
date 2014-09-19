@@ -45,7 +45,7 @@ namespace Breeze
         @param w2 width of the not-left-or-right chunks
         @param h2 height of the not-top-or-bottom chunks
         */
-        TileSet(const QPixmap&, int w1, int h1, int w2, int h2, bool stretch = false );
+        TileSet(const QPixmap&, int w1, int h1, int w2, int h2 );
 
         //* empty constructor
         TileSet();
@@ -124,9 +124,6 @@ namespace Breeze
 
         //* pixmap arry
         PixmapList _pixmaps;
-
-        // stretch pixmaps
-        bool _stretch;
 
         // dimensions
         int _w1;

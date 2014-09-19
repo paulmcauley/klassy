@@ -68,6 +68,7 @@ namespace Breeze
         QWidget *parent( parentWidget() );
         if (parent && !qobject_cast<QMdiArea *>(parent) && qobject_cast<QMdiArea*>(parent->parentWidget()))
         { parent = parent->parentWidget(); }
+
         if( qobject_cast<QAbstractScrollArea *>( parent ) )
         { parent = qobject_cast<QAbstractScrollArea *>( parent )->viewport(); }
 
@@ -91,10 +92,10 @@ namespace Breeze
 
         if( !_shadowTiles.isValid() ) return;
 
-        QPainter p( this );
-        p.setRenderHints( QPainter::Antialiasing );
-        p.setClipRegion( event->region() );
-        _shadowTiles.render( _shadowTilesRect, &p );
+        QPainter painter( this );
+        painter.setRenderHints( QPainter::Antialiasing );
+        painter.setClipRegion( event->region() );
+        _shadowTiles.render( _shadowTilesRect, &painter );
 
     }
 

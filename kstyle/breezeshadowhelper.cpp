@@ -145,7 +145,7 @@ namespace Breeze
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
             // pixmap
-            QPixmap pixmap = QPixmap( Metrics::Shadow_Size*2, Metrics::Shadow_Size*2 );
+            QPixmap pixmap = _helper.highDpiPixmap( Metrics::Shadow_Size*2 );
             pixmap.fill( Qt::transparent );
 
             // gradient
@@ -167,7 +167,7 @@ namespace Breeze
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.setPen( Qt::NoPen );
 
-            const QRectF rect( pixmap.rect() );
+            const QRectF rect( QPoint( 0, 0 ), pixmap.size()/_helper.devicePixelRatio( pixmap ) );
             painter.translate( rect.center() );
             painter.fillRect( rect.translated( -rect.center() ), radialGradient );
 
