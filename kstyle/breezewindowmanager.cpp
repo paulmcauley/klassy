@@ -661,7 +661,7 @@ namespace Breeze
         { if( label->textInteractionFlags().testFlag( Qt::TextSelectableByMouse ) ) return false; }
 
         // abstract item views
-        QAbstractItemView* itemView( NULL );
+        QAbstractItemView* itemView( nullptr );
         if(
             ( itemView = qobject_cast<QListView*>( widget->parentWidget() ) ) ||
             ( itemView = qobject_cast<QTreeView*>( widget->parentWidget() ) ) )
