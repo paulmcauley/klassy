@@ -372,8 +372,6 @@ namespace Breeze
         #if BREEZE_HAVE_X11
         #ifndef QT_NO_XRENDER
 
-        // TODO: also check for NET_WM_SUPPORTED atom, before installing shadow
-
         /*
         From bespin code. Supposibly prevent playing with some 'pseudo-widgets'
         that have winId matching some other -random- window
@@ -391,28 +389,34 @@ namespace Breeze
         foreach( const uint32_t& value, pixmaps )
         { data.append( value ); }
 
+
+        // get devicePixelRatio
+        // for testing purposes only
+        const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
+        // const qreal devicePixelRatio( 1.0 );
+
         // define shadows padding
         int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
-        int topSize( size - Metrics::Shadow_Offset );
-        int bottomSize( size );
+        int topSize = ( size - Metrics::Shadow_Offset ) * devicePixelRatio;
+        int bottomSize = size * devicePixelRatio;
         int rightSize(0);
         int leftSize(0);
 
         switch( StyleConfigData::lightSource() )
         {
             case StyleConfigData::LS_TOPLEFT:
-            leftSize = size - Metrics::Shadow_Offset;
-            rightSize = size;
+            leftSize = (size - Metrics::Shadow_Offset) * devicePixelRatio;
+            rightSize = size * devicePixelRatio;
             break;
 
             case StyleConfigData::LS_TOPRIGHT:
-            rightSize = size - Metrics::Shadow_Offset;
-            leftSize = size;
+            rightSize = (size - Metrics::Shadow_Offset) * devicePixelRatio;
+            leftSize = size * devicePixelRatio;
             break;
 
             case StyleConfigData::LS_TOP:
-            leftSize = size - Metrics::Shadow_Offset/2;
-            rightSize = size - Metrics::Shadow_Offset/2;
+            leftSize = (size - Metrics::Shadow_Offset/2) * devicePixelRatio;
+            rightSize = (size - Metrics::Shadow_Offset/2) * devicePixelRatio;
             break;
 
         }
@@ -426,7 +430,7 @@ namespace Breeze
             widget->getContentsMargins( nullptr, &top, nullptr, &bottom );
 
             // also need to decrement default size further due to extra hard coded round corner
-            size -= 2;
+            size -= 2 * devicePixelRatio;
 
             // it seems arrow can be either to the top or the bottom. Adjust margins accordingly
             if( top > bottom ) topSize -= (top - bottom);
