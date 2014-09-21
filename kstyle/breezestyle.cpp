@@ -6092,29 +6092,40 @@ namespace Breeze
             { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::On }
         };
 
+        // default icon sizes
+        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
+
         // decide arrow orientation
         const ArrowOrientation orientation( standardPixmap == SP_ToolBarHorizontalExtensionButton ? ArrowRight : ArrowDown );
-
-        // icon size
-        const int iconWidth( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
 
         // create icon and fill
         QIcon icon;
         foreach( const IconData& iconData, iconTypes )
         {
-            // create pixmap
-            QPixmap pixmap( iconWidth, iconWidth );
-            pixmap.fill( Qt::transparent );
 
-            // render
+            foreach( const int& iconSize, iconSizes )
             {
-                QPainter painter( &pixmap );
-                painter.translate( standardPixmap == SP_ToolBarHorizontalExtensionButton ? QPoint( 1, 0 ) : QPoint( 0, 1 ) );
-                _helper->renderArrow( &painter, pixmap.rect(), iconData._color, orientation );
-            }
 
-            // add to icon
-            icon.addPixmap( pixmap, iconData._mode, iconData._state );
+                // create pixmap
+                QPixmap pixmap( iconSize, iconSize );
+                pixmap.fill( Qt::transparent );
+
+                // render
+                QPainter painter( &pixmap );
+
+                // icon size
+                const int fixedIconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
+                const QRect fixedRect( 0, 0, fixedIconSize, fixedIconSize );
+
+                painter.setWindow( fixedRect );
+                painter.translate( standardPixmap == SP_ToolBarHorizontalExtensionButton ? QPoint( 1, 0 ) : QPoint( 0, 1 ) );
+                _helper->renderArrow( &painter, fixedRect, iconData._color, orientation );
+                painter.end();
+
+                // add to icon
+                icon.addPixmap( pixmap, iconData._mode, iconData._state );
+
+            }
 
         }
 
