@@ -2,6 +2,7 @@
 Name=Breeze
 Name[ca]=Brisa
 Name[cs]=Breeze
+Name[da]=Breeze
 Name[de]=Breeze
 Name[en_GB]=Breeze
 Name[es]=Brisa
@@ -33,6 +34,7 @@ Name[zh_TW]=微風
 Comment=Breeze icon theme by the KDE Visual Design Group
 Comment[ca]=Tema d'icones Brisa, pel Grup de disseny visual del KDE
 Comment[cs]=Motiv ikon Breeze od KDE Visual Design Group
+Comment[da]=Breeze ikontema af KDE's visuelle designgruppe
 Comment[de]=Breeze-Symboldesign der KDE Visual Design Group
 Comment[en_GB]=Breeze icon theme by the KDE Visual Design Group
 Comment[es]=Tema de iconos Brisa, por el Grupo de diseño visual de KDE
