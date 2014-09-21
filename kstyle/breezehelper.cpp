@@ -1264,7 +1264,7 @@ namespace Breeze
 
         }
 
-        if( corners == CornersAll ) {
+        if( corners == AllCorners ) {
 
             path.addRoundedRect( rect, radius, radius );
             return path;

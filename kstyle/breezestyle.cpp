@@ -2735,7 +2735,7 @@ namespace Breeze
 
         const QRect tabBarRect( tabOption->tabBarRect );
         const QSize tabBarSize( tabOption->tabBarSize );
-        Corners corners = CornersAll;
+        Corners corners = AllCorners;
 
         // adjust corners to deal with oversized tabbars
         switch( tabOption->shape )
@@ -3255,7 +3255,7 @@ namespace Breeze
                 ( abstractItemView && abstractItemView->selectionBehavior() != QAbstractItemView::SelectRows ) )
             {
 
-                corners = CornersAll;
+                corners = AllCorners;
 
             } else {
 

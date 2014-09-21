@@ -192,7 +192,7 @@ namespace Breeze
         CornersBottom = CornerBottomLeft|CornerBottomRight,
         CornersLeft = CornerTopLeft|CornerBottomLeft,
         CornersRight = CornerTopRight|CornerBottomRight,
-        CornersAll = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
+        AllCorners = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
     };
 
     Q_DECLARE_FLAGS( Corners, Corner );
