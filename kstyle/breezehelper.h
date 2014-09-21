@@ -283,7 +283,7 @@ namespace Breeze
         QRectF shadowRect( const QRectF& ) const;
 
         //* return rounded path in a given rect, with only selected corners rounded, and for a given radius
-        QPainterPath roundedPath( const QRectF&, qreal, Corners ) const;
+        QPainterPath roundedPath( const QRectF&, Corners, qreal ) const;
 
         private:
 

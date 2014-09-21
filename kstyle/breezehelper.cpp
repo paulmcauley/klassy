@@ -606,7 +606,7 @@ namespace Breeze
         else painter->setBrush( Qt::NoBrush );
 
         // render
-        QPainterPath path( roundedPath( frameRect, radius, corners ) );
+        QPainterPath path( roundedPath( frameRect, corners, radius ) );
         painter->drawPath( path );
 
     }
@@ -627,7 +627,7 @@ namespace Breeze
             // content
             const qreal radius( frameRadius() );
             const QRectF contentRect( baseRect );
-            QPainterPath path( roundedPath( contentRect, radius, corners ) );
+            QPainterPath path( roundedPath( contentRect, corners, radius ) );
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
             painter->drawPath( path );
@@ -1087,7 +1087,7 @@ namespace Breeze
         else painter->setBrush( Qt::NoBrush );
 
         // render
-        QPainterPath path( roundedPath( frameRect, radius, corners ) );
+        QPainterPath path( roundedPath( frameRect, corners, radius ) );
         painter->drawPath( path );
 
     }
@@ -1250,7 +1250,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    QPainterPath Helper::roundedPath( const QRectF& rect, qreal radius, Corners corners ) const
+    QPainterPath Helper::roundedPath( const QRectF& rect, Corners corners, qreal radius ) const
     {
 
         QPainterPath path;
