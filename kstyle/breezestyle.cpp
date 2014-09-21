@@ -280,10 +280,8 @@ namespace Breeze
 
             addEventFilter( widget );
 
-            // force side panels as flat and change font to not-bold
-            if(
-                !StyleConfigData::sidePanelDrawFrame() &&
-                ( widget->inherits( "KDEPrivate::KPageListView" ) || widget->property( PropertyNames::sidePanelView ).toBool() ) )
+            // force side panels as flat, on option, and change font to not-bold
+            if( ( widget->inherits( "KDEPrivate::KPageListView" ) || widget->property( PropertyNames::sidePanelView ).toBool() ) )
             {
 
                 // upbold list font
@@ -291,19 +289,23 @@ namespace Breeze
                 font.setBold( false );
                 widget->setFont( font );
 
-                // force flat
-                scrollArea->setFrameStyle( QFrame::NoFrame );
-                scrollArea->setBackgroundRole( QPalette::Window );
-                scrollArea->setForegroundRole( QPalette::WindowText );
-                scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
-                scrollArea->setProperty( PropertyNames::sidePanelView, true );
-
-                if( QWidget *viewport = scrollArea->viewport() )
+                if( !StyleConfigData::sidePanelDrawFrame() )
                 {
-                    viewport->setBackgroundRole( QPalette::Window );
-                    viewport->setForegroundRole( QPalette::WindowText );
-                    viewport->setAutoFillBackground( false );
-                    viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) );
+                    // force flat
+                    scrollArea->setFrameStyle( QFrame::NoFrame );
+                    scrollArea->setBackgroundRole( QPalette::Window );
+                    scrollArea->setForegroundRole( QPalette::WindowText );
+                    scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
+                    scrollArea->setProperty( PropertyNames::sidePanelView, true );
+
+                    if( QWidget *viewport = scrollArea->viewport() )
+                    {
+                        viewport->setBackgroundRole( QPalette::Window );
+                        viewport->setForegroundRole( QPalette::WindowText );
+                        viewport->setAutoFillBackground( false );
+                        viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) );
+                    }
+
                 }
 
             }
