@@ -167,7 +167,7 @@ namespace Breeze
         void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners corners ) const;
 
         //* selection frame
-        void renderSelection( QPainter*, const QRect&, const QColor&, Corners ) const;
+        void renderSelection( QPainter*, const QRect&, const QColor& ) const;
 
         //* separator
         void renderSeparator( QPainter*, const QRect&, const QColor&, bool vertical = false ) const;

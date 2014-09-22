@@ -3222,32 +3222,8 @@ namespace Breeze
             else color = color.lighter( 110 );
         }
 
-        // get selection path
-        Corners corners;
-        const bool hasSingleSelection( abstractItemView && abstractItemView->selectionMode() == QAbstractItemView::SingleSelection );
-        if( hasSingleSelection )
-        {
-
-            // round relevant corners
-            if(
-                viewItemOption->viewItemPosition == QStyleOptionViewItemV4::OnlyOne ||
-                viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Invalid ||
-                ( abstractItemView && abstractItemView->selectionBehavior() != QAbstractItemView::SelectRows ) )
-            {
-
-                corners = AllCorners;
-
-            } else {
-
-                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::Beginning ) corners |= CornersLeft;
-                if( viewItemOption->viewItemPosition == QStyleOptionViewItemV4::End ) corners |= CornersRight;
-
-            }
-
-        }
-
         // render
-        _helper->renderSelection( painter, rect, color, corners );
+        _helper->renderSelection( painter, rect, color );
 
         return true;
     }

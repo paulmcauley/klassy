@@ -615,23 +615,13 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderSelection(
         QPainter* painter, const QRect& rect,
-        const QColor& color, Corners corners ) const
+        const QColor& color ) const
     {
 
         painter->setRenderHint( QPainter::Antialiasing );
-
-        const QRectF baseRect( rect );
-
-        if( color.isValid() )
-        {
-            // content
-            const qreal radius( frameRadius() );
-            const QRectF contentRect( baseRect );
-            QPainterPath path( roundedPath( contentRect, corners, radius ) );
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->drawPath( path );
-        }
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( color );
+        painter->drawRect( rect );
 
     }
 
