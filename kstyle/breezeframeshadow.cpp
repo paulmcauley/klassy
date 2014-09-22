@@ -125,8 +125,6 @@ namespace Breeze
         widget->installEventFilter( &_addEventFilter );
         installShadow( widget, helper, ShadowAreaTop );
         installShadow( widget, helper, ShadowAreaBottom );
-        installShadow( widget, helper, ShadowAreaLeft );
-        installShadow( widget, helper, ShadowAreaRight );
         widget->removeEventFilter( &_addEventFilter );
 
     }
@@ -335,7 +333,7 @@ namespace Breeze
 
         const QColor outline( _helper.frameOutlineColor( palette(), _mouseOver, _hasFocus, _opacity, _mode ) );
         painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
-        _helper.renderFrame( &painter, rect, QColor(), outline, _hasFocus );
+        _helper.renderFrame( &painter, rect, QColor(), outline );
 
         return;
 

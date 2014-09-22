@@ -2606,7 +2606,7 @@ namespace Breeze
         // render
         const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
         const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        _helper->renderFrame( painter, rect, background, outline, hasFocus );
+        _helper->renderFrame( painter, rect, background, outline );
 
         return true;
 
@@ -2649,7 +2649,7 @@ namespace Breeze
             // render
             const QColor background( palette.color( QPalette::Base ) );
             const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            _helper->renderFrame( painter, rect, background, outline, hasFocus );
+            _helper->renderFrame( painter, rect, background, outline );
 
         }
 

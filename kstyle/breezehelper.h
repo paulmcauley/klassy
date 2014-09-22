@@ -149,7 +149,7 @@ namespace Breeze
         void renderFocusLine( QPainter*, const QRect&, const QColor& ) const;
 
         //* generic frame
-        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor(), bool focus = false ) const;
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor() ) const;
 
         //* menu frame
         void renderMenuFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool roundCorners = true ) const;
