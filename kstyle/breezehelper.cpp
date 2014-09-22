@@ -226,7 +226,8 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    // QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
     {
 
         QColor outline;
@@ -237,7 +238,7 @@ namespace Breeze
 
             const QColor hover( hoverColor( palette ) );
             const QColor focus( focusColor( palette ) );
-            if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
+            if( hasFocus || sunken ) outline = KColorUtils::mix( focus, hover, opacity );
             else outline = alphaColor( hover, opacity );
 
         } else if( mouseOver ) {
@@ -247,9 +248,10 @@ namespace Breeze
         } else if( mode == AnimationFocus ) {
 
             const QColor focus( focusColor( palette ) );
-            outline = alphaColor( focus, opacity );
+            if( sunken ) outline = focus;
+            else outline = alphaColor( focus, opacity );
 
-        } else if( hasFocus ) {
+        } else if( hasFocus || sunken ) {
 
             outline = focusColor( palette );
 

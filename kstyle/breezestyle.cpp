@@ -2954,7 +2954,7 @@ namespace Breeze
 
             // define colors and render
             const QPalette& palette( option->palette );
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
+            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         } else {
@@ -3027,7 +3027,7 @@ namespace Breeze
 
         } else {
 
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
+            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         }
@@ -5320,7 +5320,7 @@ namespace Breeze
                 if( flat ) {
 
                     // define colors and render
-                    const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus || sunken, opacity, mode ) );
+                    const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
                     _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
                 } else {
