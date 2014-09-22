@@ -2724,28 +2724,28 @@ namespace Breeze
             case QTabBar::TriangularNorth:
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
-            if( tabBarRect.right() < rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
+            if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
-            if( tabBarRect.right() < rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
+            if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersLeft;
             if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
-            if( tabBarRect.bottom() < rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
+            if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersRight;
             if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
-            if( tabBarRect.bottom() < rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
+            if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
             break;
 
             default: break;
