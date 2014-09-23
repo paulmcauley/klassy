@@ -206,7 +206,7 @@ namespace Breeze
         FrameShadow *shadow(0);
         shadow = new FrameShadow( area, helper );
         shadow->setParent(widget);
-        shadow->show();
+        shadow->hide();
     }
 
     //____________________________________________________________________________________
@@ -242,6 +242,9 @@ namespace Breeze
     //____________________________________________________________________________________
     void FrameShadow::updateGeometry( QRect rect )
     {
+
+        // show on first call
+        if( !_parentRect.isValid() ) show();
 
         // store parent rect
         _parentRect = rect.translated( mapFromParent( QPoint(0,0) ) );
