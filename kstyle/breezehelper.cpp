@@ -130,6 +130,10 @@ namespace Breeze
     { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.3 ); }
 
     //____________________________________________________________________
+    QColor Helper::sidePanelBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
+    { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.6 ); }
+
+    //____________________________________________________________________
     QPalette Helper::framePalette( const QPalette& palette ) const
     {
         QPalette copy( palette );
@@ -143,11 +147,14 @@ namespace Breeze
     QPalette Helper::sideViewPalette( const QPalette& palette ) const
     {
         QPalette copy( palette );
+        copy.setColor( QPalette::Disabled, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Disabled ) );
+        copy.setColor( QPalette::Active, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Active ) );
+        copy.setColor( QPalette::Inactive, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Inactive ) );
 
-        // alter default text color
-        copy.setColor( QPalette::Disabled, QPalette::Text, palette.color( QPalette::Disabled, QPalette::WindowText ) );
-        copy.setColor( QPalette::Active, QPalette::Text, palette.color( QPalette::Active, QPalette::WindowText ) );
-        copy.setColor( QPalette::Inactive, QPalette::Text, palette.color( QPalette::Inactive, QPalette::WindowText ) );
+//         // alter default text color
+//         copy.setColor( QPalette::Disabled, QPalette::Text, palette.color( QPalette::Disabled, QPalette::WindowText ) );
+//         copy.setColor( QPalette::Active, QPalette::Text, palette.color( QPalette::Active, QPalette::WindowText ) );
+//         copy.setColor( QPalette::Inactive, QPalette::Text, palette.color( QPalette::Inactive, QPalette::WindowText ) );
 
 
         return copy;

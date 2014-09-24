@@ -296,16 +296,16 @@ namespace Breeze
                 {
                     // force flat
                     // scrollArea->setFrameStyle( QFrame::NoFrame );
-                    scrollArea->setBackgroundRole( QPalette::Window );
-                    scrollArea->setForegroundRole( QPalette::WindowText );
+                    // scrollArea->setBackgroundRole( QPalette::Window );
+                    // scrollArea->setForegroundRole( QPalette::WindowText );
                     scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
                     scrollArea->setProperty( PropertyNames::sidePanelView, true );
 
                     if( QWidget *viewport = scrollArea->viewport() )
                     {
-                        viewport->setBackgroundRole( QPalette::Window );
-                        viewport->setForegroundRole( QPalette::WindowText );
-                        viewport->setAutoFillBackground( false );
+                        // viewport->setBackgroundRole( QPalette::Window );
+                        // viewport->setForegroundRole( QPalette::WindowText );
+                        // viewport->setAutoFillBackground( false );
                         viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) );
                     }
 
