@@ -20,13 +20,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "breezesliderdata.h"
+#include "breezewidgetstatedata.h"
+
+#include <QStyle>
 
 namespace Breeze
 {
 
     //* scrollbar data
-    class ScrollBarData: public SliderData
+    class ScrollBarData: public WidgetStateData
     {
 
         Q_OBJECT
@@ -46,8 +48,8 @@ namespace Breeze
         virtual bool eventFilter( QObject*, QEvent* );
 
         //* needed to avoid warning about virtual function being hidden
-        using SliderData::animation;
-        using SliderData::opacity;
+        using WidgetStateData::animation;
+        using WidgetStateData::opacity;
 
         //* return animation for a given subcontrol
         virtual const Animation::Pointer& animation( QStyle::SubControl ) const;
@@ -100,7 +102,7 @@ namespace Breeze
         //* duration
         virtual void setDuration( int duration )
         {
-            SliderData::setDuration( duration );
+            WidgetStateData::setDuration( duration );
             addLineAnimation().data()->setDuration( duration );
             subLineAnimation().data()->setDuration( duration );
         }
