@@ -244,10 +244,15 @@ namespace Breeze
     {
 
         // show on first call
-        if( !_parentRect.isValid() ) show();
+        if( isHidden() ) show();
 
-        // store parent rect
-        _parentRect = rect.translated( mapFromParent( QPoint(0,0) ) );
+        // store offsets between passed rect and parent widget rect
+        QRect parentRect( parentWidget()->contentsRect() );
+        _margins = QMargins(
+            rect.left() - parentRect.left(),
+            rect.top() - parentRect.top(),
+            rect.right() - parentRect.right(),
+            rect.bottom() - parentRect.bottom() );
 
         // for efficiency, take out the part for which nothing is rendered
         rect.adjust( 1, 1, -1, -1 );
@@ -327,7 +332,8 @@ namespace Breeze
         if( QFrame *frame = qobject_cast<QFrame *>( parentWidget() ) )
         { if (frame->frameStyle() != (QFrame::StyledPanel | QFrame::Sunken)) return; }
 
-        const QRect rect( _parentRect );
+        const QRect parentRect( parentWidget()->contentsRect().translated( mapFromParent( QPoint( 0, 0 ) ) ) );
+        const QRect rect( parentRect.adjusted( _margins.left(), _margins.top(), _margins.right(), _margins.bottom() ) );
 
         // render
         QPainter painter(this);

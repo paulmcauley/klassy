@@ -140,8 +140,9 @@ namespace Breeze
         //* shadow area
         ShadowArea _area;
 
-        //* parent rect
-        QRect _parentRect;
+        //* margins
+        /** offsets between update rect and parent widget rect. It is set via updateGeometry */
+        QMargins _margins;
 
         //*@name widget state
         //@{
