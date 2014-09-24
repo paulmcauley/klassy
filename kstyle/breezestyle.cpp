@@ -5577,9 +5577,10 @@ namespace Breeze
             const bool sunken( state & (State_On|State_Sunken) );
 
             // animation state
-            _animations->sliderEngine().updateState( widget, enabled && handleActive );
-            const AnimationMode mode( _animations->sliderEngine().isAnimated( widget ) ? AnimationHover:AnimationNone );
-            const qreal opacity( _animations->sliderEngine().opacity( widget ) );
+            _animations->widgetStateEngine().updateState( widget, AnimationHover, handleActive && mouseOver );
+            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
+            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
+            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
             // define colors
             const QColor background( palette.color( QPalette::Button ) );

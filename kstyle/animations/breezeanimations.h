@@ -24,7 +24,6 @@
 #include "breezedialengine.h"
 #include "breezeheaderviewengine.h"
 #include "breezescrollbarengine.h"
-#include "breezesliderengine.h"
 #include "breezespinboxengine.h"
 #include "breezetabbarengine.h"
 #include "breezetoolboxengine.h"
@@ -85,10 +84,6 @@ namespace Breeze
         ScrollBarEngine& scrollBarEngine( void ) const
         { return *_scrollBarEngine; }
 
-        //* slider engine
-        SliderEngine& sliderEngine( void ) const
-        { return *_sliderEngine; }
-
         //* dial engine
         DialEngine& dialEngine( void ) const
         { return *_dialEngine; }
@@ -137,9 +132,6 @@ namespace Breeze
 
         //* scrollbar engine
         ScrollBarEngine* _scrollBarEngine;
-
-        //* slider engine
-        SliderEngine* _sliderEngine;
 
         //* dial engine
         DialEngine* _dialEngine;
