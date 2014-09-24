@@ -20,15 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "breezebaseengine.h"
-#include "breezedatamap.h"
 #include "breezescrollbardata.h"
+#include "breezewidgetstateengine.h"
 
 namespace Breeze
 {
 
     //* stores scrollbar hovered action and timeLine
-    class ScrollBarEngine: public BaseEngine
+    class ScrollBarEngine: public WidgetStateEngine
     {
 
         Q_OBJECT
@@ -37,7 +36,7 @@ namespace Breeze
 
         //* constructor
         explicit ScrollBarEngine( QObject* parent ):
-            BaseEngine( parent )
+            WidgetStateEngine( parent )
         {}
 
         //* destructor
@@ -45,81 +44,69 @@ namespace Breeze
         {}
 
         //* register scrollbar
-        virtual bool registerWidget( QWidget* );
+        virtual bool registerWidget( QWidget*, AnimationModes );
+
+        //*@name accessors
+        //@{
+
+        using WidgetStateEngine::isAnimated;
+        using WidgetStateEngine::opacity;
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject* object, QStyle::SubControl control );
+        virtual bool isAnimated( const QObject*, AnimationMode, QStyle::SubControl control );
+
+        //* true if widget is animated
+        virtual AnimationMode animationMode( const QObject* object, QStyle::SubControl control );
 
         //* animation opacity
-        virtual qreal opacity( const QObject* object, QStyle::SubControl control )
-        { return isAnimated( object, control ) ? _data.find( object ).data()->opacity( control ):AnimationData::OpacityInvalid; }
+        virtual qreal opacity( const QObject* object, QStyle::SubControl control );
 
         //* return true if given subcontrol is hovered
         virtual bool isHovered( const QObject* object, QStyle::SubControl control )
         {
-            if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->isHovered( control );
-            else return false;
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            {
+
+                return static_cast<const ScrollBarData*>( data.data() )->isHovered( control );
+
+            } else return false;
         }
 
         //* control rect associated to object
         virtual QRect subControlRect( const QObject* object, QStyle::SubControl control )
         {
-            if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->subControlRect( control );
-            else return QRect();
-        }
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            {
 
-        //* control rect
-        virtual void setSubControlRect( const QObject* object, QStyle::SubControl control, const QRect& rect )
-        {
-            if( DataMap<ScrollBarData>::Value data = _data.find( object ) )
-            { data.data()->setSubControlRect( control, rect ); }
-        }
+                return static_cast<const ScrollBarData*>( data.data() )->subControlRect( control );
 
-        //* control rect
-        virtual void updateState( const QObject* object, bool state )
-        {
-            if( DataMap<ScrollBarData>::Value data = _data.find( object ) )
-            { data.data()->updateState( state ); }
+            } else return QRect();
         }
 
         //* mouse position
         virtual QPoint position( const QObject* object )
         {
-            if( DataMap<ScrollBarData>::Value data = _data.find( object ) ) return data.data()->position();
-            else return QPoint( -1, -1 );
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            {
+
+                return static_cast<const ScrollBarData*>( data.data() )->position();
+
+            } else return QPoint( -1, -1 );
         }
 
-        //* enability
-        virtual void setEnabled( bool value )
+        //@}
+
+        //*@name modifiers
+        //@{
+
+        //* control rect
+        virtual void setSubControlRect( const QObject* object, QStyle::SubControl control, const QRect& rect )
         {
-            BaseEngine::setEnabled( value );
-            /*
-            do not disable the map directly, because the contained BreezeScrollbarData
-            are also used in non animated mode to store scrollbar arrows rect. However
-            do disable all contains DATA object, in order to prevent actual animations
-            */
-            foreach( const DataMap<ScrollBarData>::Value data, _data )
-            { if( data ) data.data()->setEnabled( value ); }
-
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            { static_cast<ScrollBarData*>( data.data() )->setSubControlRect( control, rect ); }
         }
 
-        //* duration
-        virtual void setDuration( int value )
-        {
-            BaseEngine::setDuration( value );
-            _data.setDuration( value );
-        }
-
-        public Q_SLOTS:
-
-        //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
-        { return _data.unregisterWidget( object ); }
-
-        private:
-
-        //* data map
-        DataMap<ScrollBarData> _data;
+        //@}
 
     };
 

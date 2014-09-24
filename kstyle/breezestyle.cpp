@@ -4331,24 +4331,16 @@ namespace Breeze
 
         // check focus from relevant parent
         const QWidget* parent( scrollBarParent( widget ) );
-        const bool focus( enabled && parent && parent->hasFocus() );
+        const bool hasFocus( enabled && parent && parent->hasFocus() );
 
         // enable animation state
-        _animations->scrollBarEngine().updateState( widget, enabled && ( sliderOption->activeSubControls & SC_ScrollBarSlider ) );
+        const bool handleActive( sliderOption->activeSubControls & SC_ScrollBarSlider );
+        _animations->scrollBarEngine().updateState( widget, AnimationFocus, hasFocus );
+        _animations->scrollBarEngine().updateState( widget, AnimationHover, mouseOver && handleActive );
+        const AnimationMode mode( _animations->scrollBarEngine().animationMode( widget, SC_ScrollBarSlider ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
 
-        // define colors
-        QColor color;
-        const QColor base( focus ?
-            _helper->focusColor( palette ):
-            _helper->alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
-
-        const QColor highlight( _helper->hoverColor( palette ) );
-        if( opacity >= 0 ) color = KColorUtils::mix( base, highlight, opacity );
-        else if( mouseOver ) color = highlight;
-        else color = base;
-
-        // render
+        const QColor color( _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode ) );
         _helper->renderScrollBarHandle( painter, handleRect, color );
 
         return true;
@@ -5948,7 +5940,7 @@ namespace Breeze
         }
 
         const bool mouseOver( _animations->scrollBarEngine().isHovered( widget, control ) );
-        const bool animated( _animations->scrollBarEngine().isAnimated( widget, control ) );
+        const bool animated( _animations->scrollBarEngine().isAnimated( widget, AnimationHover, control ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, control ) );
 
         // retrieve mouse position from engine
