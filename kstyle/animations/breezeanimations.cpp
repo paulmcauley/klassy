@@ -141,7 +141,7 @@ namespace Breeze
         // sliders
         else if( qobject_cast<QScrollBar*>( widget ) ) { _scrollBarEngine->registerWidget( widget ); }
         else if( qobject_cast<QSlider*>( widget ) ) { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
-        else if( qobject_cast<QDial*>( widget ) ) { _dialEngine->registerWidget( widget ); }
+        else if( qobject_cast<QDial*>( widget ) ) { _dialEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // progress bar
         else if( qobject_cast<QProgressBar*>( widget ) ) { _busyIndicatorEngine->registerWidget( widget ); }

@@ -20,15 +20,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "breezebaseengine.h"
-#include "breezedatamap.h"
 #include "breezedialdata.h"
+#include "breezewidgetstateengine.h"
 
 namespace Breeze
 {
 
     //* stores dial hovered action and timeLine
-    class DialEngine: public BaseEngine
+    class DialEngine: public WidgetStateEngine
     {
 
         Q_OBJECT
@@ -37,7 +36,7 @@ namespace Breeze
 
         //* constructor
         explicit DialEngine( QObject* parent ):
-            BaseEngine( parent )
+            WidgetStateEngine( parent )
         {}
 
         //* destructor
@@ -45,82 +44,25 @@ namespace Breeze
         {}
 
         //* register dial
-        virtual bool registerWidget( QWidget* );
-
-        //* true if widget is animated
-        virtual bool isAnimated( const QObject* object )
-        {
-            if( DataMap<DialData>::Value data = _data.find( object ) )
-            {
-
-                return data.data()->animation().data()->isRunning();
-
-            } else return false;
-
-        }
-
-        //* update state
-        virtual bool updateState( const QObject* object, bool state )
-        {
-
-            if( DataMap<DialData>::Value data = _data.find( object ) )
-            {
-
-                return data.data()->updateState( state );
-
-            } else return false;
-
-        }
-
-        //* animation opacity
-        virtual qreal opacity( const QObject* object )
-        { return isAnimated( object ) ? _data.find( object ).data()->opacity() : AnimationData::OpacityInvalid; }
+        virtual bool registerWidget( QWidget*, AnimationModes );
 
         //* control rect
         virtual void setHandleRect( const QObject* object, const QRect& rect )
         {
-            if( DataMap<DialData>::Value data = _data.find( object ) )
-            { data.data()->setHandleRect( rect ); }
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            { static_cast<DialData*>(data.data())->setHandleRect( rect ); }
         }
 
         //* mouse position
         virtual QPoint position( const QObject* object )
         {
-            if( DataMap<DialData>::Value data = _data.find( object ) ) return data.data()->position();
-            else return QPoint( -1, -1 );
+            if( DataMap<WidgetStateData>::Value data = this->data( object, AnimationHover ) )
+            {
+
+                return static_cast<const DialData*>(data.data())->position();
+
+            } else return QPoint( -1, -1 );
         }
-
-        //* enability
-        virtual void setEnabled( bool value )
-        {
-            BaseEngine::setEnabled( value );
-            /*
-            do not disable the map directly, because the contained BreezeScrollbarData
-            are also used in non animated mode to store dial handle rect. However
-            do disable all contains DATA object, in order to prevent actual animations
-            */
-            foreach( const DataMap<DialData>::Value data, _data )
-            { if( data ) data.data()->setEnabled( value ); }
-
-        }
-
-        //* duration
-        virtual void setDuration( int value )
-        {
-            BaseEngine::setDuration( value );
-            _data.setDuration( value );
-        }
-
-        public Q_SLOTS:
-
-        //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
-        { return _data.unregisterWidget( object ); }
-
-        private:
-
-        //* data map
-        DataMap<DialData> _data;
 
     };
 

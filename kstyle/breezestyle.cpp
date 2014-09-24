@@ -5657,9 +5657,10 @@ namespace Breeze
 
             // animation state
             _animations->dialEngine().setHandleRect( widget, handleRect );
-            _animations->dialEngine().updateState( widget, enabled && handleActive );
-            const AnimationMode mode( _animations->dialEngine().isAnimated( widget ) ? AnimationHover:AnimationNone );
-            const qreal opacity( _animations->dialEngine().opacity( widget ) );
+            _animations->dialEngine().updateState( widget, AnimationHover, handleActive && mouseOver );
+            _animations->dialEngine().updateState( widget, AnimationFocus, hasFocus );
+            const AnimationMode mode( _animations->dialEngine().buttonAnimationMode( widget ) );
+            const qreal opacity( _animations->dialEngine().buttonOpacity( widget ) );
 
             // define colors
             const QColor background( palette.color( QPalette::Button ) );
