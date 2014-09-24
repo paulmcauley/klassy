@@ -99,7 +99,7 @@ void updateKdeGlobals()
         lnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + defaultLookAndFeelPackage + "/contents/defaults"));
     }
 
-    const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "General", "widgetStyle", "Breeze").toString();
+    const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "KDE", "widgetStyle", "breeze").toString();
     const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "Breeze").toString();
     const QString icons = readConfigValue(lnfConfig, defaultLnfConfig, "Icons", "Theme", "breeze").toString();
 
