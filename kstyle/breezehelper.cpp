@@ -295,6 +295,40 @@ namespace Breeze
 
     }
 
+    //____________________________________________________________________
+    QColor Helper::scrollBarHandleColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor color( alphaColor( palette.color( QPalette::WindowText ), 0.5 ) );
+
+        // hover takes precedence over focus
+        if( mode == AnimationHover )
+        {
+
+            const QColor hover( hoverColor( palette ) );
+            const QColor focus( focusColor( palette ) );
+            if( hasFocus ) color = KColorUtils::mix( focus, hover, opacity );
+            else color = KColorUtils::mix( color, hover, opacity );
+
+        } else if( mouseOver ) {
+
+            color = hoverColor( palette );
+
+        } else if( mode == AnimationFocus ) {
+
+            const QColor focus( focusColor( palette ) );
+            color = KColorUtils::mix( color, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            color = focusColor( palette );
+
+        }
+
+        return color;
+
+    }
+
     //______________________________________________________________________________
     QColor Helper::checkBoxIndicatorColor( const QPalette& palette, bool mouseOver, bool active, qreal opacity, AnimationMode mode ) const
     {
