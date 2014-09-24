@@ -295,7 +295,7 @@ namespace Breeze
                 if( !StyleConfigData::sidePanelDrawFrame() )
                 {
                     // force flat
-                    scrollArea->setFrameStyle( QFrame::NoFrame );
+                    // scrollArea->setFrameStyle( QFrame::NoFrame );
                     scrollArea->setBackgroundRole( QPalette::Window );
                     scrollArea->setForegroundRole( QPalette::WindowText );
                     scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
@@ -2599,17 +2599,29 @@ namespace Breeze
         const AnimationMode mode( _animations->widgetStateEngine().frameAnimationMode( widget ) );
         const qreal opacity( _animations->widgetStateEngine().frameOpacity( widget ) );
 
-        // update frame shadow factory
-        if( _frameShadowFactory->isRegistered( widget ) )
-        {
-            _frameShadowFactory->updateShadowsGeometry( widget, rect );
-            _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode );
-        }
-
         // render
-        const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
-        const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        _helper->renderFrame( painter, rect, background, outline );
+        if( !StyleConfigData::sidePanelDrawFrame() && widget && widget->property( PropertyNames::sidePanelView ).toBool() )
+        {
+
+            const QColor outline( _helper->sidePanelOutlineColor( palette, hasFocus, opacity, mode ) );
+            _helper->renderSidePanelFrame( painter, rect, outline );
+
+        } else {
+
+            if( _frameShadowFactory->isRegistered( widget ) )
+            {
+
+                // update frame shadow factory
+                _frameShadowFactory->updateShadowsGeometry( widget, rect );
+                _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode );
+
+            }
+
+            const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
+            const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            _helper->renderFrame( painter, rect, background, outline );
+
+        }
 
         return true;
 

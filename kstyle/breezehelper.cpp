@@ -102,6 +102,29 @@ namespace Breeze
 
     }
 
+
+    //____________________________________________________________________
+    QColor Helper::sidePanelOutlineColor( const QPalette& palette, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    {
+
+        QColor outline( palette.color( QPalette::Inactive, QPalette::Highlight ) );
+        QColor focus( palette.color( QPalette::Active, QPalette::Highlight ) );
+
+        if( mode == AnimationFocus )
+        {
+
+            outline = KColorUtils::mix( outline, focus, opacity );
+
+        } else if( hasFocus ) {
+
+            outline = focus;
+
+        }
+
+        return outline;
+
+    }
+
     //____________________________________________________________________
     QColor Helper::frameBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
     { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.3 ); }
@@ -440,6 +463,27 @@ namespace Breeze
 
         // render
         painter->drawRoundedRect( frameRect, radius, radius );
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderSidePanelFrame( QPainter* painter, const QRect& rect, const QColor& outline ) const
+    {
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        QRectF frameRect( rect.adjusted( 1, 2, -1, -2 ) );
+
+        // set pen
+        if( outline.isValid() )
+        {
+
+            painter->setPen( outline );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+
+            painter->drawLine( frameRect.topRight(), frameRect.bottomRight() );
+
+        }
 
     }
 

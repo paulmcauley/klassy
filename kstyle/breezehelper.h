@@ -100,6 +100,9 @@ namespace Breeze
         //* frame outline color, using animations
         QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
+        //* side panel outline color, using animations
+        QColor sidePanelOutlineColor( const QPalette&, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
+
         //* frame background color
         QColor frameBackgroundColor( const QPalette& palette ) const
         { return frameBackgroundColor( palette, palette.currentColorGroup() ); }
@@ -153,6 +156,9 @@ namespace Breeze
 
         //* generic frame
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor() ) const;
+
+        //* side panel frame
+        void renderSidePanelFrame( QPainter*, const QRect&, const QColor& outline = QColor() ) const;
 
         //* menu frame
         void renderMenuFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool roundCorners = true ) const;
