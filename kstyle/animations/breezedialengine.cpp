@@ -32,10 +32,9 @@ namespace Breeze
         // check widget
         if( !widget ) return false;
 
+        // only handle hover and focus
         if( mode&AnimationHover && !dataMap(AnimationHover).contains( widget ) ) { dataMap(AnimationHover).insert( widget, new DialData( this, widget, duration() ), enabled() ); }
         if( mode&AnimationFocus && !dataMap(AnimationFocus).contains( widget ) ) { dataMap(AnimationFocus).insert( widget, new WidgetStateData( this, widget, duration() ), enabled() ); }
-        if( mode&AnimationEnable && !dataMap(AnimationEnable).contains( widget ) ) { dataMap(AnimationEnable).insert( widget, new WidgetStateData( this, widget, duration() ), enabled() ); }
-        if( mode&AnimationPressed && !dataMap(AnimationPressed).contains( widget ) ) { dataMap(AnimationPressed).insert( widget, new WidgetStateData( this, widget, duration() ), enabled() ); }
 
         // connect destruction signal
         connect( widget, SIGNAL(destroyed(QObject*)), this, SLOT(unregisterWidget(QObject*)), Qt::UniqueConnection );
