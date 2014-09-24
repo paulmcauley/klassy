@@ -141,6 +141,9 @@ namespace Breeze
         //* returns data associated to widget
         DataMap<WidgetStateData>::Value data( const QObject*, AnimationMode );
 
+        //* returns data map associated to animation mode
+        DataMap<WidgetStateData>& dataMap( AnimationMode );
+
         private:
 
         //* maps

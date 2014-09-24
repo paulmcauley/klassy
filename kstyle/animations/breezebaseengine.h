@@ -70,7 +70,7 @@ namespace Breeze
         virtual bool unregisterWidget( QObject* object ) = 0;
 
         //* list of widgets
-        typedef QSet<QWidget*> WidgetList;
+        using WidgetList = QSet<QWidget*>;
 
         //* returns registered widgets
         virtual WidgetList registeredWidgets( void ) const

@@ -20,13 +20,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "breezesliderdata.h"
+#include "breezewidgetstatedata.h"
 
 namespace Breeze
 {
 
     //* dial data
-    class DialData: public SliderData
+    class DialData: public WidgetStateData
     {
 
         Q_OBJECT

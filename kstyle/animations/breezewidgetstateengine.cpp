@@ -49,8 +49,7 @@ namespace Breeze
 
         WidgetList out;
 
-        // the typedef is needed to make Krazy happy
-        typedef DataMap<WidgetStateData>::Value Value;
+        using Value = DataMap<WidgetStateData>::Value;
 
         if( mode&AnimationHover )
         {
@@ -107,6 +106,22 @@ namespace Breeze
             case AnimationEnable: return _enableData.find( object ).data();
             case AnimationPressed: return _pressedData.find( object ).data();
             default: return DataMap<WidgetStateData>::Value();
+        }
+
+    }
+
+    //____________________________________________________________
+    DataMap<WidgetStateData>& WidgetStateEngine::dataMap( AnimationMode mode )
+    {
+
+        switch( mode )
+        {
+            default:
+            case AnimationHover: return _hoverData;
+            case AnimationFocus: return _focusData;
+            case AnimationEnable: return _enableData;
+            case AnimationPressed: return _pressedData;
+
         }
 
     }
