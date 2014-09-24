@@ -31,9 +31,9 @@
 
 static const QString defaultLookAndFeelPackage = "org.kde.breeze.desktop";
 
-void applyColorScheme(KConfig *other)
+void applyColorScheme(const QString &colorScheme, KConfig *other)
 {
-    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/Breeze.colors");
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/" + colorScheme + ".colors");
 
     KSharedConfigPtr config = KSharedConfig::openConfig(src);
 
@@ -44,11 +44,11 @@ void applyColorScheme(KConfig *other)
     }
 }
 
-void cloneColorScheme()
+void cloneColorScheme(const QString &colorScheme)
 {
     Kdelibs4Migration migration;
-    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/Breeze.colors");
-    QString dest = migration.saveLocation("data", "color-schemes") + "Breeze.colors";
+    QString src = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "color-schemes/" + colorScheme + ".colors");
+    QString dest = migration.saveLocation("data", "color-schemes") + colorScheme + ".colors";
 
     QDir dir;
     dir.mkpath(migration.saveLocation("data", "color-schemes"));
@@ -84,7 +84,7 @@ QVariant readConfigValue(KSharedConfigPtr lnfConfig, KSharedConfigPtr defaultLnf
 void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
-    //Apply Breeze color scheme
+    //Apply the color scheme
     KConfig config(migration.saveLocation("config") + "kdeglobals");
 
     KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
@@ -94,44 +94,48 @@ void updateKdeGlobals()
     const QString looknfeel = kf52Group.readEntry("LookAndFeelPackage", defaultLookAndFeelPackage);
 
     KSharedConfigPtr lnfConfig;
-    KSharedConfigPtr defaultLnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + looknfeel + "/contents/defaults"));
+    KSharedConfigPtr defaultLnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + defaultLookAndFeelPackage + "/contents/defaults"));
     if (looknfeel != defaultLookAndFeelPackage) {
-        lnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + defaultLookAndFeelPackage + "/contents/defaults"));
+        lnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + looknfeel + "/contents/defaults"));
     }
 
     const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "KDE", "widgetStyle", "breeze").toString();
     const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "Breeze").toString();
     const QString icons = readConfigValue(lnfConfig, defaultLnfConfig, "Icons", "Theme", "breeze").toString();
 
+    cloneColorScheme(colorScheme);
+
     //use QtCurve only if installed
-    const bool hasBreeze = QStyleFactory::keys().contains("Breeze");
+    const bool hasWidgetStyle = QStyleFactory::keys().contains(widgetStyle);
     KConfigGroup group(&config, "General");
     group.writeEntry("ColorScheme", colorScheme);
-    if (hasBreeze) {
+    group.sync();
+    if (hasWidgetStyle) {
         group.writeEntry("widgetStyle", widgetStyle);
     }
-    applyColorScheme(&config);
+    applyColorScheme(colorScheme, &config);
     group.sync();
 
     KConfigGroup iconGroup(&config, "Icons");
     iconGroup.writeEntry("Theme", icons);
-    applyColorScheme(&config);
+    applyColorScheme(colorScheme, &config);
     iconGroup.sync();
 
 
     kf5Group.writeEntry("ColorScheme", colorScheme);
-    if (hasBreeze) {
+    kf5Group.sync();
+    if (hasWidgetStyle) {
         kf5Group.writeEntry("widgetStyle", widgetStyle);
     }
-    applyColorScheme(kf5Group.config());
+    applyColorScheme(colorScheme, kf5Group.config());
     kf5Group.sync();
 
 
     kf52Group.writeEntry("ColorScheme", colorScheme);
-    if (hasBreeze) {
+    if (hasWidgetStyle) {
         kf52Group.writeEntry("widgetStyle", widgetStyle);
     }
-    applyColorScheme(kf52Group.config());
+    applyColorScheme(colorScheme, kf52Group.config());
     kf52Group.sync();
 
     KConfigGroup kf5IconGroup(kf5Config, "Icons");
@@ -144,8 +148,6 @@ int main(int argc, char **argv)
 
     QCoreApplication app(argc, argv);
 
-
-    cloneColorScheme();
     updateKdeGlobals();
 
     return 0;
