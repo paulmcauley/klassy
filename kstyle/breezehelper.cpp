@@ -226,7 +226,6 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    // QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
     {
 
