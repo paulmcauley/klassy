@@ -29,6 +29,7 @@
 #include <KConfigGroup>
 #include <kconfig.h>
 
+static const QString defaultLookAndFeelPackage = "org.kde.breeze.desktop";
 
 void applyColorScheme(KConfig *other)
 {
@@ -55,46 +56,86 @@ void cloneColorScheme()
     QFile::copy(src, dest);
 }
 
+QVariant readConfigValue(KSharedConfigPtr lnfConfig, KSharedConfigPtr defaultLnfConfig,
+                         const QString &group, const QString &key, const QVariant &defaultValue)
+{
+    QVariant value;
+
+    if (lnfConfig) {
+        KConfigGroup lnfCg(lnfConfig, "kdeglobals");
+        lnfCg = KConfigGroup(&lnfCg, group);
+        if (lnfCg.isValid()) {
+            value = lnfCg.readEntry(key, defaultValue);
+
+            if (!value.isNull()) {
+                return value;
+            }
+        }
+    }
+
+    KConfigGroup lnfCg(defaultLnfConfig, group);
+    if (lnfCg.isValid()) {
+        return lnfCg.readEntry(key, defaultValue);
+    }
+
+    return defaultValue;
+}
+
 void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
     //Apply Breeze color scheme
     KConfig config(migration.saveLocation("config") + "kdeglobals");
 
+    KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
+    KConfigGroup kf5Group(kf5Config, "General");
+    KConfigGroup kf52Group(kf5Config, "KDE");
+
+    const QString looknfeel = kf52Group.readEntry("LookAndFeelPackage", defaultLookAndFeelPackage);
+
+    KSharedConfigPtr lnfConfig;
+    KSharedConfigPtr defaultLnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + looknfeel + "/contents/defaults"));
+    if (looknfeel != defaultLookAndFeelPackage) {
+        lnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + defaultLookAndFeelPackage + "/contents/defaults"));
+    }
+
+    const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "General", "widgetStyle", "Breeze").toString();
+    const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "Breeze").toString();
+    const QString icons = readConfigValue(lnfConfig, defaultLnfConfig, "Icons", "Theme", "breeze").toString();
+
     //use QtCurve only if installed
     const bool hasBreeze = QStyleFactory::keys().contains("Breeze");
     KConfigGroup group(&config, "General");
-    group.writeEntry("ColorScheme", "Breeze");
+    group.writeEntry("ColorScheme", colorScheme);
     if (hasBreeze) {
-        group.writeEntry("widgetStyle", "Breeze");
+        group.writeEntry("widgetStyle", widgetStyle);
     }
     applyColorScheme(&config);
     group.sync();
 
     KConfigGroup iconGroup(&config, "Icons");
-    iconGroup.writeEntry("Theme", "breeze");
+    iconGroup.writeEntry("Theme", icons);
     applyColorScheme(&config);
     iconGroup.sync();
 
-    KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
-    KConfigGroup kf5Group(kf5Config, "General");
-    kf5Group.writeEntry("ColorScheme", "Breeze");
+
+    kf5Group.writeEntry("ColorScheme", colorScheme);
     if (hasBreeze) {
-        kf5Group.writeEntry("widgetStyle", "Breeze");
+        kf5Group.writeEntry("widgetStyle", widgetStyle);
     }
     applyColorScheme(kf5Group.config());
     kf5Group.sync();
 
-    KConfigGroup kf52Group(kf5Config, "KDE");
-    kf52Group.writeEntry("ColorScheme", "Breeze");
+
+    kf52Group.writeEntry("ColorScheme", colorScheme);
     if (hasBreeze) {
-        kf52Group.writeEntry("widgetStyle", "Breeze");
+        kf52Group.writeEntry("widgetStyle", widgetStyle);
     }
     applyColorScheme(kf52Group.config());
     kf52Group.sync();
 
     KConfigGroup kf5IconGroup(kf5Config, "Icons");
-    kf5IconGroup.writeEntry("Theme", "breeze");
+    kf5IconGroup.writeEntry("Theme", icons);
     kf5IconGroup.sync();
 }
 
