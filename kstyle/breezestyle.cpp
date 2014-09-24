@@ -996,14 +996,14 @@ namespace Breeze
             if( widgets.empty() ) return false;
 
             // make sure proper background is rendered behind the containers
-            QPainter p( scrollArea );
-            p.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+            QPainter painter( scrollArea );
+            painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
 
-            p.setPen( Qt::NoPen );
-            p.setBrush( widget->palette().color( viewport->backgroundRole() ) );
+            painter.setPen( Qt::NoPen );
+            painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
 
             foreach( QWidget* widget, widgets )
-            { p.drawRect( widget->geometry() ); }
+            { painter.drawRect( widget->geometry() ); }
 
         }
 
