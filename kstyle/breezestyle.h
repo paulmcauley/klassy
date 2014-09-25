@@ -161,19 +161,19 @@ namespace Breeze
         QRect defaultSubElementRect( const QStyleOption* option, const QWidget* ) const
         { return option->rect; }
 
-        QRect pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const;
-        QRect checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const;
+        QRect pushButtonContentsRect( const QStyleOption*, const QWidget* ) const;
+        QRect checkBoxContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect lineEditContentsRect( const QStyleOption*, const QWidget* ) const;
-        QRect progressBarGrooveRect( const QStyleOption* option, const QWidget* ) const;
-        QRect progressBarContentsRect( const QStyleOption* option, const QWidget* ) const;
-        QRect progressBarLabelRect( const QStyleOption* option, const QWidget* ) const;
-        QRect headerArrowRect( const QStyleOption* option, const QWidget* ) const;
-        QRect headerLabelRect( const QStyleOption* option, const QWidget* ) const;
+        QRect progressBarGrooveRect( const QStyleOption*, const QWidget* ) const;
+        QRect progressBarContentsRect( const QStyleOption*, const QWidget* ) const;
+        QRect progressBarLabelRect( const QStyleOption*, const QWidget* ) const;
+        QRect headerArrowRect( const QStyleOption*, const QWidget* ) const;
+        QRect headerLabelRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabBarRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
-        QRect tabWidgetCornerRect( SubElement, const QStyleOption* option, const QWidget* widget ) const;
-        QRect toolBoxTabContentsRect( const QStyleOption* option, const QWidget* ) const;
+        QRect tabWidgetCornerRect( SubElement, const QStyleOption*, const QWidget* widget ) const;
+        QRect toolBoxTabContentsRect( const QStyleOption*, const QWidget* ) const;
 
         //@}
 
@@ -251,7 +251,7 @@ namespace Breeze
         bool drawIndicatorCheckBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorRadioButtonPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorButtonDropDownPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
-        bool drawIndicatorTabClosePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const;
+        bool drawIndicatorTabClosePrimitive( const QStyleOption*, QPainter* painter, const QWidget* widget ) const;
         bool drawIndicatorTabTearPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
