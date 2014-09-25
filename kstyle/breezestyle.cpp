@@ -483,6 +483,10 @@ namespace Breeze
 
                     return Metrics::Layout_TopLevelMarginWidth;
 
+                } else if( widget && widget->inherits( "KPageView" ) ) {
+
+                    return 0;
+
                 } else {
 
                     return Metrics::Layout_ChildMarginWidth;
