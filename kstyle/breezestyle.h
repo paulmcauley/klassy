@@ -174,6 +174,7 @@ namespace Breeze
         QRect tabWidgetTabPaneRect( const QStyleOption*, const QWidget* ) const;
         QRect tabWidgetCornerRect( SubElement, const QStyleOption*, const QWidget* widget ) const;
         QRect toolBoxTabContentsRect( const QStyleOption*, const QWidget* ) const;
+        QRect genericLayoutItemRect( const QStyleOption*, const QWidget* ) const;
 
         //@}
 

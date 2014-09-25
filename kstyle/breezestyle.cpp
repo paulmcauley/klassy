@@ -668,6 +668,8 @@ namespace Breeze
             case SE_TabWidgetRightCorner: return tabWidgetCornerRect( SE_TabWidgetRightCorner, option, widget );
             case SE_ToolBoxTabContents: return toolBoxTabContentsRect( option, widget );
 
+            case SE_PushButtonLayoutItem: return genericLayoutItemRect( option, widget );
+
             // fallback
             default: return ParentStyleClass::subElementRect( element, option, widget );
 
@@ -1652,6 +1654,10 @@ namespace Breeze
         return centerRect( rect, contentsWidth, rect.height() );
 
     }
+
+    //____________________________________________________________________
+    QRect Style::genericLayoutItemRect( const QStyleOption* option, const QWidget* ) const
+    { return insideMargin( option->rect, -Metrics::Frame_FrameWidth ); }
 
     //______________________________________________________________
     QRect Style::groupBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
