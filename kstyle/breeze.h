@@ -50,7 +50,6 @@ namespace Breeze
     //@}
 
     //* metrics
-    /** these are copied from the old KStyle WidgetProperties */
     enum Metrics
     {
 
