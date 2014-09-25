@@ -58,7 +58,7 @@ namespace Breeze
         Frame_FrameRadius = 3,
 
         // layout
-        Layout_TopLevelMarginWidth = 10,
+        Layout_TopLevelMarginWidth = 0,
         Layout_ChildMarginWidth = 6,
         Layout_DefaultSpacing = 6,
 
