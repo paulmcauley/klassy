@@ -161,7 +161,7 @@ namespace Breeze
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor() ) const;
 
         //* side panel frame
-        void renderSidePanelFrame( QPainter*, const QRect&, const QColor& outline = QColor() ) const;
+        void renderSidePanelFrame( QPainter*, const QRect&, const QColor& outline, Side ) const;
 
         //* menu frame
         void renderMenuFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool roundCorners = true ) const;

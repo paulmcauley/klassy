@@ -2604,7 +2604,9 @@ namespace Breeze
         {
 
             const QColor outline( _helper->sidePanelOutlineColor( palette, hasFocus, opacity, mode ) );
-            _helper->renderSidePanelFrame( painter, rect, outline );
+            const bool reverseLayout( option->direction == Qt::RightToLeft );
+            const Side side( reverseLayout ? SideRight : SideLeft );
+            _helper->renderSidePanelFrame( painter, rect, outline, side );
 
         } else {
 

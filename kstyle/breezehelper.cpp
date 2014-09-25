@@ -474,21 +474,51 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderSidePanelFrame( QPainter* painter, const QRect& rect, const QColor& outline ) const
+    void Helper::renderSidePanelFrame( QPainter* painter, const QRect& rect, const QColor& outline, Side side ) const
     {
 
+        // check color
+        if( !outline.isValid() ) return;
+
+        // adjust rect
+        QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
+        frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+
+        // setup painter
         painter->setRenderHint( QPainter::Antialiasing );
+        painter->setPen( outline );
 
-        QRectF frameRect( rect.adjusted( 1, 2, -1, -2 ) );
-
-        // set pen
-        if( outline.isValid() )
+        // render
+        switch( side )
         {
-
-            painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-
+            default:
+            case SideLeft:
+            frameRect.adjust( 0, 1, 0, -1 );
             painter->drawLine( frameRect.topRight(), frameRect.bottomRight() );
+            break;
+
+            case SideTop:
+            frameRect.adjust( 1, 0, -1, 0 );
+            painter->drawLine( frameRect.topLeft(), frameRect.topRight() );
+            break;
+
+            case SideRight:
+            frameRect.adjust( 0, 1, 0, -1 );
+            painter->drawLine( frameRect.topLeft(), frameRect.bottomLeft() );
+            break;
+
+            case SideBottom:
+            frameRect.adjust( 1, 0, -1, 0 );
+            painter->drawLine( frameRect.bottomLeft(), frameRect.bottomRight() );
+            break;
+
+            case AllSides:
+            {
+                qreal radius( frameRadius() );
+                radius -= 1.0;
+                painter->drawRoundedRect( frameRect, radius, radius );
+                break;
+            }
 
         }
 
