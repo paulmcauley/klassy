@@ -86,7 +86,7 @@ namespace Breeze
         void update( QObject* ) const;
 
         //* install shadow on given side
-        void installShadow( QWidget*, Helper&, ShadowArea ) const;
+        void installShadow( QWidget*, Helper&, Side ) const;
 
         protected Q_SLOTS:
 
@@ -112,7 +112,7 @@ namespace Breeze
         public:
 
         //* constructor
-        FrameShadow( ShadowArea, Helper& );
+        FrameShadow( Side, Helper& );
 
         //* destructor
         virtual ~FrameShadow()
@@ -138,7 +138,7 @@ namespace Breeze
         Helper& _helper;
 
         //* shadow area
-        ShadowArea _area;
+        Side _area;
 
         //* margins
         /** offsets between update rect and parent widget rect. It is set via updateGeometry */

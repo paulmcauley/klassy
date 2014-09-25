@@ -123,8 +123,8 @@ namespace Breeze
         widget->installEventFilter(this);
 
         widget->installEventFilter( &_addEventFilter );
-        installShadow( widget, helper, ShadowAreaTop );
-        installShadow( widget, helper, ShadowAreaBottom );
+        installShadow( widget, helper, SideTop );
+        installShadow( widget, helper, SideBottom );
         widget->removeEventFilter( &_addEventFilter );
 
     }
@@ -201,7 +201,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    void FrameShadowFactory::installShadow( QWidget* widget, Helper& helper, ShadowArea area ) const
+    void FrameShadowFactory::installShadow( QWidget* widget, Helper& helper, Side area ) const
     {
         FrameShadow *shadow(0);
         shadow = new FrameShadow( area, helper );
@@ -214,7 +214,7 @@ namespace Breeze
     { _registeredWidgets.remove( object ); }
 
     //____________________________________________________________________________________
-    FrameShadow::FrameShadow( ShadowArea area, Helper& helper ):
+    FrameShadow::FrameShadow( Side area, Helper& helper ):
         _helper( helper ),
         _area( area ),
         _hasFocus( false ),
@@ -262,21 +262,21 @@ namespace Breeze
         switch( _area )
         {
 
-            case ShadowAreaTop:
+            case SideTop:
             rect.setHeight( shadowSize );
             break;
 
-            case ShadowAreaBottom:
+            case SideBottom:
             rect.setTop( rect.bottom() - shadowSize + 1 );
             break;
 
-            case ShadowAreaLeft:
+            case SideLeft:
             rect.setWidth(shadowSize);
             rect.adjust(0, shadowSize, 0, -shadowSize );
             break;
 
 
-            case ShadowAreaRight:
+            case SideRight:
             rect.setLeft(rect.right() - shadowSize + 1 );
             rect.adjust(0, shadowSize, 0, -shadowSize );
             break;

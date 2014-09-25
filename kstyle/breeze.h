@@ -196,6 +196,18 @@ namespace Breeze
 
     Q_DECLARE_FLAGS( Corners, Corner );
 
+    //* sides
+    enum Side
+    {
+        SideLeft = 0x1,
+        SideTop = 0x2,
+        SideRight = 0x4,
+        SideBottom = 0x8,
+        AllSides = SideLeft|SideTop|SideRight|SideBottom
+    };
+
+    Q_DECLARE_FLAGS( Sides, Side );
+
     //* checkbox state
     enum CheckBoxState
     {
@@ -232,18 +244,10 @@ namespace Breeze
         ButtonRestore
     };
 
-    //* shadow area
-    enum ShadowArea
-    {
-        ShadowAreaTop,
-        ShadowAreaBottom,
-        ShadowAreaLeft,
-        ShadowAreaRight
-    };
-
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::AnimationModes );
 Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::Corners );
+Q_DECLARE_OPERATORS_FOR_FLAGS( Breeze::Sides );
 
 #endif
