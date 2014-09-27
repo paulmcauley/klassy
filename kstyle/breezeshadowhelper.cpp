@@ -41,7 +41,7 @@
 namespace Breeze
 {
 
-    const char* const ShadowHelper::netWMShadowAtomName( "_KDE_NET_WM_SHADOW" );
+    const char ShadowHelper::netWMShadowAtomName[] ="_KDE_NET_WM_SHADOW";
 
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
