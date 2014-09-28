@@ -2,6 +2,7 @@
 Name=Breeze
 Name[ca]=Brisa
 Name[cs]=Breeze
+Name[da]=Breeze
 Name[de]=Breeze
 Name[en_GB]=Breeze
 Name[es]=Brisa
@@ -29,9 +30,11 @@ Name[tr]=Breeze
 Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
+Name[zh_TW]=微風
 Comment=Breeze icon theme by the KDE Visual Design Group
 Comment[ca]=Tema d'icones Brisa, pel Grup de disseny visual del KDE
 Comment[cs]=Motiv ikon Breeze od KDE Visual Design Group
+Comment[da]=Breeze ikontema af KDE's visuelle designgruppe
 Comment[de]=Breeze-Symboldesign der KDE Visual Design Group
 Comment[en_GB]=Breeze icon theme by the KDE Visual Design Group
 Comment[es]=Tema de iconos Brisa, por el Grupo de diseño visual de KDE
@@ -56,6 +59,7 @@ Comment[sv]=Breeze ikontema av KDE:s visuella designgrupp
 Comment[uk]=Свіжа тема піктограм, створена групою дизайнерів KDE
 Comment[x-test]=xxBreeze icon theme by the KDE Visual Design Groupxx
 Comment[zh_CN]=KDE 视觉设计组制作的 Breeze 图标主题
+Comment[zh_TW]=KDE 視覺設計組製作的微風圖示主題
 Inherits=oxygen
 
 Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,mimetypes/scalable,places/scalable,places/small
