@@ -115,14 +115,10 @@ void updateKdeGlobals()
 
     cloneColorScheme(colorScheme);
 
-    //use QtCurve only if installed
-    const bool hasWidgetStyle = QStyleFactory::keys().contains(widgetStyle);
     KConfigGroup group(&config, "General");
     group.writeEntry("ColorScheme", colorScheme);
     group.sync();
-    if (hasWidgetStyle) {
-        group.writeEntry("widgetStyle", widgetStyle);
-    }
+    group.writeEntry("widgetStyle", widgetStyle);
     applyColorScheme(colorScheme, &config);
     group.sync();
 
@@ -134,17 +130,13 @@ void updateKdeGlobals()
 
     kf5Group.writeEntry("ColorScheme", colorScheme);
     kf5Group.sync();
-    if (hasWidgetStyle) {
-        kf5Group.writeEntry("widgetStyle", widgetStyle);
-    }
+    kf5Group.writeEntry("widgetStyle", widgetStyle);
     applyColorScheme(colorScheme, kf5Group.config());
     kf5Group.sync();
 
 
     kf52Group.writeEntry("ColorScheme", colorScheme);
-    if (hasWidgetStyle) {
-        kf52Group.writeEntry("widgetStyle", widgetStyle);
-    }
+    kf52Group.writeEntry("widgetStyle", widgetStyle);
     applyColorScheme(colorScheme, kf52Group.config());
     kf52Group.sync();
 
