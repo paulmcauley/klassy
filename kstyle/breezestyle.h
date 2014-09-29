@@ -421,6 +421,12 @@ namespace Breeze
         //* return which arrow button is hit by point for scrollbar double buttons
         inline QStyle::SubControl scrollBarHitTest( const QRect&, const QPoint&, const QStyleOption* ) const;
 
+        //! return true if one of the widget's parent inherits requested type
+        inline bool hasParent( const QWidget*, const char* ) const;
+
+        //* return true if one of the widget's parent inherits requested type
+        template<typename T> bool hasParent( const QWidget* ) const;
+
         private:
 
         //*@name scrollbar button types (for addLine and subLine )
@@ -510,6 +516,33 @@ namespace Breeze
         } else return point.y() < rect.center().y() ? QStyle::SC_ScrollBarSubLine : QStyle::SC_ScrollBarAddLine;
 
     }
+
+    //_________________________________________________________________________
+    bool Style::hasParent( const QWidget* widget, const char* className ) const
+    {
+
+        if( !widget ) return false;
+
+        while( (widget = widget->parentWidget()) )
+        { if( widget->inherits( className ) ) return true; }
+
+        return false;
+
+    }
+
+    //_________________________________________________________________________
+    template< typename T > bool Style::hasParent( const QWidget* widget ) const
+    {
+
+        if( !widget ) return false;
+
+        while( (widget = widget->parentWidget()) )
+        { if( qobject_cast<const T*>( widget ) ) return true; }
+
+        return false;
+
+    }
+
 
 }
 
