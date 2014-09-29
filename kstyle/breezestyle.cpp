@@ -984,37 +984,97 @@ namespace Breeze
     bool Style::eventFilterScrollArea( QAbstractScrollArea* scrollArea, QEvent* event )
     {
 
-        if( event->type() == QEvent::Paint )
+        switch( event->type() )
         {
+            case QEvent::Paint:
+            {
 
-            // get scrollarea viewport
-            QWidget* viewport( scrollArea->viewport() );
-            if( !viewport ) return false;
+                // get scrollarea viewport
+                QWidget* viewport( scrollArea->viewport() );
+                if( !viewport ) return false;
 
-            // get scrollarea horizontal and vertical containers
-            QWidget* widget( nullptr );
-            QList<QWidget*> widgets;
-            if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && widget->isVisible() )
-            { widgets.append( widget ); }
+                // get scrollarea horizontal and vertical containers
+                QWidget* widget( nullptr );
+                QList<QWidget*> widgets;
+                if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && widget->isVisible() )
+                { widgets.append( widget ); }
 
-            if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && widget->isVisible() )
-            { widgets.append( widget ); }
+                if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && widget->isVisible() )
+                { widgets.append( widget ); }
 
-            if( widgets.empty() ) return false;
+                if( widgets.empty() ) return false;
 
-            // make sure proper background is rendered behind the containers
-            QPainter painter( scrollArea );
-            painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+                // make sure proper background is rendered behind the containers
+                QPainter painter( scrollArea );
+                painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
 
-            painter.setPen( Qt::NoPen );
-            painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
+                painter.setPen( Qt::NoPen );
+                painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
 
-            foreach( QWidget* widget, widgets )
-            { painter.drawRect( widget->geometry() ); }
+                foreach( QWidget* widget, widgets )
+                { painter.drawRect( widget->geometry() ); }
+
+            }
+            break;
+
+            case QEvent::MouseButtonPress:
+            case QEvent::MouseButtonRelease:
+            case QEvent::MouseMove:
+            {
+
+                // case event
+                QMouseEvent* mouseEvent( static_cast<QMouseEvent*>( event ) );
+
+                // get frame framewidth
+                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, scrollArea ) );
+
+                // loop over scrollbars
+                struct Data
+                {
+                    QScrollBar* scrollBar;
+                    QPoint offset;
+                };
+
+                const QList<Data> dataList = {
+                    { scrollArea->horizontalScrollBar(), QPoint( 0, frameWidth ) },
+                    { scrollArea->verticalScrollBar(), QPoint( frameWidth, 0 ) }
+                };
+
+                foreach( const Data& data, dataList )
+                {
+
+                    if( !( data.scrollBar && data.scrollBar->isVisible() ) ) continue;
+
+                    // map position to scrollarea
+                    QPoint position( data.scrollBar->mapFrom( scrollArea, mouseEvent->pos() - data.offset ) );
+
+                    // check if contains
+                    if( !data.scrollBar->rect().contains( position ) ) continue;
+
+                    // copy event, send and return
+                    QMouseEvent copy(
+                        mouseEvent->type(),
+                        position,
+                        data.scrollBar->mapToGlobal( position ),
+                        mouseEvent->button(),
+                        mouseEvent->buttons(), mouseEvent->modifiers());
+
+                    QCoreApplication::sendEvent( data.scrollBar, &copy );
+                    event->setAccepted( true );
+                    return true;
+
+                }
+
+                break;
+
+            }
+
+            default: break;
 
         }
 
-        return false;
+        return  ParentStyleClass::eventFilter( scrollArea, event );
+
     }
 
     //_________________________________________________________
@@ -3128,7 +3188,8 @@ namespace Breeze
         {
 
             // need to adjust clipRect in order not to render outside of frame
-            painter->setClipRect( insideMargin( scrollArea->rect(), Metrics::Frame_FrameWidth ) );
+            const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, scrollArea ) );
+            painter->setClipRect( insideMargin( scrollArea->rect(), frameWidth ) );
             painter->setBrush( scrollArea->viewport()->palette().color( scrollArea->viewport()->backgroundRole() ) );
             painter->setPen( Qt::NoPen );
             painter->drawRect( option->rect );
