@@ -110,8 +110,11 @@ namespace Breeze
         //* frame background color
         QColor frameBackgroundColor( const QPalette&, QPalette::ColorGroup ) const;
 
-        //* frame background color
+        //* side panel background color
         QColor sidePanelBackgroundColor( const QPalette&, QPalette::ColorGroup ) const;
+
+        //* side panel foreground color
+        QColor sidePanelForegroundColor( const QPalette&, QPalette::ColorGroup ) const;
 
         //* return altered palette suitable for tinted frames
         QPalette framePalette( const QPalette& ) const;

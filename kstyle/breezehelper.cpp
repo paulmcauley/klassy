@@ -134,12 +134,18 @@ namespace Breeze
     { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.6 ); }
 
     //____________________________________________________________________
+    QColor Helper::sidePanelForegroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
+    { return palette.color( role, QPalette::WindowText ); }
+
+    //____________________________________________________________________
     QPalette Helper::framePalette( const QPalette& palette ) const
     {
         QPalette copy( palette );
-        copy.setColor( QPalette::Disabled, QPalette::Window, frameBackgroundColor( palette, QPalette::Disabled ) );
-        copy.setColor( QPalette::Active, QPalette::Window, frameBackgroundColor( palette, QPalette::Active ) );
-        copy.setColor( QPalette::Inactive, QPalette::Window, frameBackgroundColor( palette, QPalette::Inactive ) );
+
+        const QList<QPalette::ColorGroup> groups = { QPalette::Disabled, QPalette::Active, QPalette::Inactive };
+        foreach( const QPalette::ColorGroup& group, groups )
+        { copy.setColor( group, QPalette::Window, frameBackgroundColor( palette, group ) ); }
+
         return copy;
     }
 
@@ -147,15 +153,13 @@ namespace Breeze
     QPalette Helper::sideViewPalette( const QPalette& palette ) const
     {
         QPalette copy( palette );
-        copy.setColor( QPalette::Disabled, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Disabled ) );
-        copy.setColor( QPalette::Active, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Active ) );
-        copy.setColor( QPalette::Inactive, QPalette::Base, sidePanelBackgroundColor( palette, QPalette::Inactive ) );
 
-//         // alter default text color
-//         copy.setColor( QPalette::Disabled, QPalette::Text, palette.color( QPalette::Disabled, QPalette::WindowText ) );
-//         copy.setColor( QPalette::Active, QPalette::Text, palette.color( QPalette::Active, QPalette::WindowText ) );
-//         copy.setColor( QPalette::Inactive, QPalette::Text, palette.color( QPalette::Inactive, QPalette::WindowText ) );
-
+        const QList<QPalette::ColorGroup> groups = { QPalette::Disabled, QPalette::Active, QPalette::Inactive };
+        foreach( const QPalette::ColorGroup& group, groups )
+        {
+            copy.setColor( group, QPalette::Base, sidePanelBackgroundColor( palette, group ) );
+            copy.setColor( group, QPalette::Text, sidePanelForegroundColor( palette, group ) );
+        }
 
         return copy;
     }
@@ -393,14 +397,13 @@ namespace Breeze
     QPalette Helper::disabledPalette( const QPalette& source, qreal ratio ) const
     {
 
-        QPalette out( source );
-        out.setColor( QPalette::Background, KColorUtils::mix( source.color( QPalette::Active, QPalette::Background ), source.color( QPalette::Disabled, QPalette::Background ), 1.0-ratio ) );
-        out.setColor( QPalette::Highlight, KColorUtils::mix( source.color( QPalette::Active, QPalette::Highlight ), source.color( QPalette::Disabled, QPalette::Highlight ), 1.0-ratio ) );
-        out.setColor( QPalette::WindowText, KColorUtils::mix( source.color( QPalette::Active, QPalette::WindowText ), source.color( QPalette::Disabled, QPalette::WindowText ), 1.0-ratio ) );
-        out.setColor( QPalette::ButtonText, KColorUtils::mix( source.color( QPalette::Active, QPalette::ButtonText ), source.color( QPalette::Disabled, QPalette::ButtonText ), 1.0-ratio ) );
-        out.setColor( QPalette::Text, KColorUtils::mix( source.color( QPalette::Active, QPalette::Text ), source.color( QPalette::Disabled, QPalette::Text ), 1.0-ratio ) );
-        out.setColor( QPalette::Button, KColorUtils::mix( source.color( QPalette::Active, QPalette::Button ), source.color( QPalette::Disabled, QPalette::Button ), 1.0-ratio ) );
-        return out;
+        QPalette copy( source );
+
+        const QList<QPalette::ColorRole> roles = { QPalette::Background, QPalette::Highlight, QPalette::WindowText, QPalette::ButtonText, QPalette::Text, QPalette::Button };
+        foreach( const QPalette::ColorRole& role, roles )
+        { copy.setColor( role, KColorUtils::mix( source.color( QPalette::Active, role ), source.color( QPalette::Disabled, QPalette::Background ), 1.0-ratio ) ); }
+
+        return copy;
     }
 
     //____________________________________________________________________
