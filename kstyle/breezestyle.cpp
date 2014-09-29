@@ -357,9 +357,12 @@ namespace Breeze
 
         } else if( QComboBox *comboBox = qobject_cast<QComboBox*>( widget ) ) {
 
-            QAbstractItemView *itemView( comboBox->view() );
-            if( itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits( "QComboBoxDelegate" ) )
-            { itemView->setItemDelegate( new BreezePrivate::ComboBoxItemDelegate( itemView ) ); }
+            if( !hasParent( widget, "QWebView" ) )
+            {
+                QAbstractItemView *itemView( comboBox->view() );
+                if( itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits( "QComboBoxDelegate" ) )
+                { itemView->setItemDelegate( new BreezePrivate::ComboBoxItemDelegate( itemView ) ); }
+            }
 
         } else if( widget->inherits( "QComboBoxPrivateContainer" ) ) {
 
