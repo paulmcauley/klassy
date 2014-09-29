@@ -110,6 +110,7 @@ namespace Breeze
             _hoverData.setEnabled( value );
             _focusData.setEnabled( value );
             _enableData.setEnabled( value );
+            _pressedData.setEnabled( value );
         }
 
         //* duration
