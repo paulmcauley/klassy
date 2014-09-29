@@ -84,8 +84,18 @@ QVariant readConfigValue(KSharedConfigPtr lnfConfig, KSharedConfigPtr defaultLnf
 void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
-    //Apply the color scheme
-    KConfig config(migration.saveLocation("config") + "kdeglobals");
+    QString kde4ConfigPath;
+    kde4ConfigPath = migration.saveLocation("config");
+
+    //if there is no KDE4 directory present Kdelibs4Migration returns an empty path
+    //for most usecases this is fine as it means there is nothing to import
+    //however in our unusual case we are writing data so we should manually create it
+
+    if (kde4ConfigPath.isEmpty()) {
+        kde4ConfigPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation)+"/.kde4/share/config";
+    }
+
+    KConfig config(kde4ConfigPath + "/kdeglobals");
 
     KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
     KConfigGroup kf5Group(kf5Config, "General");
