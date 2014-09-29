@@ -115,7 +115,7 @@ void updateKdeGlobals()
 
     cloneColorScheme(colorScheme);
 
-    //use QtCurve only if installed
+    //use only if the style from the look and feel package is installed
     const bool hasWidgetStyle = QStyleFactory::keys().contains(widgetStyle);
     KConfigGroup group(&config, "General");
     group.writeEntry("ColorScheme", colorScheme);
