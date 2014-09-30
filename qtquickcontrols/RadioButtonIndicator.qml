@@ -16,20 +16,20 @@ Item {
     Rectangle {
         visible: control.enabled
         anchors.centerIn: parent
-        height: 20
-        width: 20
+        height: 18
+        width: 18
         radius: 11
         color: ColorUtils.adjustAlpha(sysPalette.shadow, 0.15)
         transform: Translate { x: 1; y: 1 }
     }
     Rectangle {
         anchors.centerIn: parent
-        height: 20
-        width: 20
+        height: 18
+        width: 18
         radius: 10
         color: sysPalette.window
         border {
-            width: 2
+            width: 1
             color: control.checked ? (control.enabled ? enabledCheckedColor : disabledColor) : enabledNotCheckedColor
         }
         transform: Translate {x: control.pressed ? 1 : 0; y: control.pressed ? 1 : 0}
@@ -37,8 +37,8 @@ Item {
     Rectangle {
         visible: control.hovered
         anchors.centerIn: parent
-        height: 20
-        width: 20
+        height: 18
+        width: 18
         radius: 10
         color: sysPalette.window
         border {

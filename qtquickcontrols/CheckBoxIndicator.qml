@@ -16,30 +16,30 @@ Item {
     Rectangle {
         visible: control.enabled
         anchors.centerIn: parent
-        implicitHeight: parent.height - 8
-        implicitWidth: parent.width - 8
-        radius: 3
+        implicitHeight: parent.height - 10
+        implicitWidth: parent.width - 10
+        radius: 2
         color: ColorUtils.adjustAlpha(sysPalette.shadow, 0.15)
         transform: Translate {x: 1; y: 1}
     }
     Rectangle {
         anchors.centerIn: parent
-        implicitWidth: parent.width - 8
-        implicitHeight: parent.height - 8
-        border.width: 2
+        implicitWidth: parent.width - 10
+        implicitHeight: parent.height - 10
+        border.width: 1
         border.color: control.enabled ? ((control.checked  || control.checkedState === Qt.PartiallyChecked) ? enabledCheckedColor : enabledNotCheckedColor) : disabledColor
-        radius: 3
+        radius: 2
         color: sysPalette.window
         transform: Translate {x: control.pressed ? 1 : 0; y: control.pressed ? 1 : 0}
     }
     Rectangle {
         visible: control.hovered
         anchors.centerIn: parent
-        implicitWidth: parent.width - 8
-        implicitHeight: parent.height - 8
-        border.width: 2
+        implicitWidth: parent.width - 10
+        implicitHeight: parent.height - 10
+        border.width: 1
         border.color: hoveredColor
-        radius: 3
+        radius: 2
         color: sysPalette.window
         transform: Translate {x: control.pressed ? 1 : 0; y: control.pressed ? 1 : 0}
     }
