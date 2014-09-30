@@ -366,7 +366,7 @@ namespace Breeze
     QColor Helper::checkBoxIndicatorColor( const QPalette& palette, bool mouseOver, bool active, qreal opacity, AnimationMode mode ) const
     {
 
-        QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.5 ) );
+        QColor color( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.6 ) );
         if( mode == AnimationHover )
         {
 
@@ -782,22 +782,22 @@ namespace Breeze
         if( !sunken )
         {
 
-            painter->setPen( QPen( shadow, 2 ) );
+            painter->setPen( QPen( shadow, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
             const qreal shadowRadius( radius + 0.5 );
-            painter->drawRoundedRect( shadowRect( frameRect ), shadowRadius, shadowRadius );
+            painter->drawRoundedRect( shadowRect( frameRect ).adjusted( -0.5, -0.5, 0.5, 0.5 ), shadowRadius, shadowRadius );
 
         }
 
         // content
         {
 
-            painter->setPen( QPen( color, 2 ) );
+            painter->setPen( QPen( color, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawRoundedRect( contentRect, radius, radius );
+            const QRectF contentRect( frameRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+            painter->drawRoundedRect( contentRect, radius - 1.0, radius - 1.0 );
 
         }
 
@@ -808,7 +808,7 @@ namespace Breeze
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
 
-            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
             painter->drawRect( markerRect );
 
         } else if( state == CheckPartial ) {
@@ -817,7 +817,7 @@ namespace Breeze
             pen.setJoinStyle( Qt::MiterJoin );
             painter->setPen( pen );
 
-            const QRectF markerRect( frameRect.adjusted( 5, 5, -5, -5 ) );
+            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
             painter->drawRect( markerRect );
 
             painter->setPen( Qt::NoPen );
@@ -825,9 +825,9 @@ namespace Breeze
             painter->setRenderHint( QPainter::Antialiasing, false );
 
             QPainterPath path;
-            path.moveTo( 5, 5 );
-            path.lineTo( qreal( Metrics::CheckBox_Size ) -6, 5 );
-            path.lineTo( 5, qreal( Metrics::CheckBox_Size ) - 6 );
+            path.moveTo( 4, 4 );
+            path.lineTo( qreal( Metrics::CheckBox_Size ) -5, 4 );
+            path.lineTo( 4, qreal( Metrics::CheckBox_Size ) - 5 );
             painter->drawPath( path.translated( rect.topLeft() ) );
 
         } else if( state == CheckAnimated ) {
@@ -866,19 +866,19 @@ namespace Breeze
         if( !sunken )
         {
 
-            painter->setPen( QPen( shadow, 2 ) );
+            painter->setPen( QPen( shadow, 1 ) );
             painter->setBrush( Qt::NoBrush );
-            painter->drawEllipse( shadowRect( frameRect ) );
+            painter->drawEllipse( shadowRect( frameRect ).adjusted( -0.5, -0.5, 0.5, 0.5 ) );
 
         }
 
         // content
         {
 
-            painter->setPen( QPen( color, 2 ) );
+            painter->setPen( QPen( color, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ) );
+            const QRectF contentRect( frameRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
             painter->drawEllipse( contentRect );
 
         }
@@ -890,14 +890,14 @@ namespace Breeze
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
 
-            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
             painter->drawEllipse( markerRect );
 
         } else if( state == RadioAnimated ) {
 
             painter->setBrush( color );
             painter->setPen( Qt::NoPen );
-            QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
 
             painter->translate( markerRect.center() );
             painter->rotate( 45 );
