@@ -260,29 +260,35 @@ namespace Breeze
     {
 
         QColor outline;
+        const QColor hoverColor( this->hoverColor( palette ) );
+        const QColor focusColor( this->focusColor( palette ) );
+        // const QColor sunkenColor = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 );
+        const QColor sunkenColor = alphaColor( palette.color( QPalette::WindowText ), 0.2 );
 
         // hover takes precedence over focus
         if( mode == AnimationHover )
         {
 
-            const QColor hover( hoverColor( palette ) );
-            const QColor focus( focusColor( palette ) );
-            if( hasFocus || sunken ) outline = KColorUtils::mix( focus, hover, opacity );
-            else outline = alphaColor( hover, opacity );
+            if( hasFocus ) outline = KColorUtils::mix( focusColor, hoverColor, opacity );
+            else if( sunken ) outline = sunkenColor;
+            else outline = alphaColor( hoverColor, opacity );
 
         } else if( mouseOver ) {
 
-            outline = hoverColor( palette );
+            outline = hoverColor;
 
         } else if( mode == AnimationFocus ) {
 
-            const QColor focus( focusColor( palette ) );
-            if( sunken ) outline = focus;
-            else outline = alphaColor( focus, opacity );
+            if( sunken ) outline = KColorUtils::mix( sunkenColor, focusColor, opacity );
+            else outline = alphaColor( focusColor, opacity );
 
-        } else if( hasFocus || sunken ) {
+        } else if( hasFocus ) {
 
-            outline = focusColor( palette );
+            outline = focusColor;
+
+        } else if( sunken ) {
+
+            outline = sunkenColor;
 
         }
 
