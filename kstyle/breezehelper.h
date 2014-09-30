@@ -87,7 +87,7 @@ namespace Breeze
 
         //* shadow
         QColor shadowColor( const QPalette& palette ) const
-        { return alphaColor( palette.color( QPalette::Shadow ), 0.2 ); }
+        { return alphaColor( palette.color( QPalette::Shadow ), 0.15 ); }
 
         //* titlebar color
         const QColor& titleBarColor( bool active ) const
