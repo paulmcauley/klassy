@@ -156,7 +156,10 @@ namespace Breeze
         QTextStream( &out ) << widget << " (" << className << ")"
             << " position: " << r.x() << "," << r.y()
             << " size: " << r.width() << "," << r.height()
+            << " sizeHint: " << widget->sizeHint().width() << "," << widget->sizeHint().height()
+            << " minimumSizeHint: " << widget->minimumSizeHint().width() << "," << widget->minimumSizeHint().height()
             << " hover: " << widget->testAttribute( Qt::WA_Hover );
+
         return out;
     }
 
