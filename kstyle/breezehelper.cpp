@@ -262,7 +262,6 @@ namespace Breeze
         QColor outline;
         const QColor hoverColor( this->hoverColor( palette ) );
         const QColor focusColor( this->focusColor( palette ) );
-        // const QColor sunkenColor = KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 );
         const QColor sunkenColor = alphaColor( palette.color( QPalette::WindowText ), 0.2 );
 
         // hover takes precedence over focus
@@ -429,9 +428,20 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderFocusRect( QPainter* painter, const QRect& rect, const QColor& color ) const
+    {
+        if( !color.isValid() ) return;
+
+        painter->save();
+        painter->setBrush( color );
+        painter->setPen( Qt::NoPen );
+        painter->drawRect( rect );
+        painter->restore();
+    }
+
+    //______________________________________________________________________________
     void Helper::renderFocusLine( QPainter* painter, const QRect& rect, const QColor& color ) const
     {
-
         if( !color.isValid() ) return;
 
         painter->save();
@@ -442,7 +452,6 @@ namespace Breeze
         painter->translate( 0, 2 );
         painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
         painter->restore();
-
     }
 
     //______________________________________________________________________________

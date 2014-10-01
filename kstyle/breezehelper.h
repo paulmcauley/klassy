@@ -154,6 +154,9 @@ namespace Breeze
         //* debug frame
         void renderDebugFrame( QPainter*, const QRect& ) const;
 
+        //* focus rect
+        void renderFocusRect( QPainter*, const QRect&, const QColor& ) const;
+
         //* focus line
         void renderFocusLine( QPainter*, const QRect&, const QColor& ) const;
 
