@@ -2804,22 +2804,22 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+            painter->drawLine( rect.bottomLeft() - QPoint( 1, 0 ), rect.bottomRight() + QPoint( 1, 0 ) );
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            painter->drawLine( rect.topLeft(), rect.topRight() );
+            painter->drawLine( rect.topLeft() - QPoint( 1, 0 ), rect.topRight() + QPoint( 1, 0 ) );
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            painter->drawLine( rect.topRight(), rect.bottomRight() );
+            painter->drawLine( rect.topRight() - QPoint( 0, 1 ), rect.bottomRight() + QPoint( 1, 0 ) );
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            painter->drawLine( rect.topLeft(), rect.bottomLeft() );
+            painter->drawLine( rect.topLeft() - QPoint( 0, 1 ), rect.bottomLeft() + QPoint( 1, 0 ) );
             break;
 
             default:
