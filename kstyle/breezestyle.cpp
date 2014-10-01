@@ -3769,7 +3769,7 @@ namespace Breeze
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
-        } else contentsRect = insideMargin( contentsRect, Metrics::Button_MarginWidth, 0 );
+        }
 
         // icon size
         QSize iconSize( buttonOption->iconSize );
