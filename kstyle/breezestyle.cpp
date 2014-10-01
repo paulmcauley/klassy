@@ -4062,16 +4062,29 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool selected( enabled && (state & State_Selected) );
         const bool sunken( enabled && (state & State_Sunken) );
+        const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
+
+        // render hover and focus
+        if( useStrongFocus && ( selected || sunken ) )
+        {
+
+            QColor outlineColor;
+            if( sunken ) outlineColor = _helper->focusColor( palette );
+            else if( selected ) outlineColor = _helper->hoverColor( palette );
+            _helper->renderFocusRect( painter, rect, outlineColor );
+
+        }
 
         // get text rect
         const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
         const QRect textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
 
         // render text
-        drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, QPalette::WindowText );
+        const QPalette::ColorRole role = (useStrongFocus && sunken ) ? QPalette::HighlightedText : QPalette::WindowText;
+        drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, role );
 
         // render outline
-        if( selected || sunken )
+        if( !useStrongFocus && ( selected || sunken ) )
         {
 
             QColor outlineColor;
@@ -4134,6 +4147,16 @@ namespace Breeze
         const bool selected( enabled && (state & State_Selected) );
         const bool sunken( enabled && (state & (State_On|State_Sunken) ) );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
+        const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
+
+        // render hover and focus
+        if( useStrongFocus && ( selected || sunken ) )
+        {
+
+            QColor outlineColor = _helper->focusColor( palette );
+            _helper->renderFocusRect( painter, rect, outlineColor );
+
+        }
 
         // define relevant rectangles
         // checkbox
@@ -4152,18 +4175,41 @@ namespace Breeze
 
             // checkbox state
             CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
-            const bool active( menuItemOption->checked );
-            const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
+
             const QColor shadow( _helper->shadowColor( palette ) );
+            QColor color;
+            if( useStrongFocus && ( selected || sunken ) )
+            {
+
+                color = palette.color( QPalette::HighlightedText );
+
+            } else {
+
+                const bool active( menuItemOption->checked );
+                color = _helper->checkBoxIndicatorColor( palette, selected, enabled && active );
+
+            }
+
             _helper->renderCheckBox( painter, checkBoxRect, color, shadow, sunken, state );
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
 
             checkBoxRect = visualRect( option, checkBoxRect );
 
-            const bool active( menuItemOption->checked );
-            const QColor color( _helper->checkBoxIndicatorColor( palette, enabled && selected, enabled && active ) );
+            const bool active( enabled && menuItemOption->checked );
             const QColor shadow( _helper->shadowColor( palette ) );
+            QColor color;
+            if( useStrongFocus && ( selected || sunken ) )
+            {
+
+                color = palette.color( QPalette::HighlightedText );
+
+            } else {
+
+                color = _helper->checkBoxIndicatorColor( palette, selected, enabled && active );
+
+            }
+
             _helper->renderRadioButton( painter, checkBoxRect, color, shadow, sunken, active ? RadioOn:RadioOff );
 
         }
@@ -4209,7 +4255,8 @@ namespace Breeze
 
             // color
             QColor arrowColor;
-            if( sunken ) arrowColor = _helper->focusColor( palette );
+            if( useStrongFocus && ( selected || sunken ) ) arrowColor = palette.color( QPalette::HighlightedText );
+            else if( sunken ) arrowColor = _helper->focusColor( palette );
             else if( selected ) arrowColor = _helper->hoverColor( palette );
             else arrowColor = palette.color( QPalette::WindowText );
 
@@ -4244,11 +4291,14 @@ namespace Breeze
             // render text
             const int textFlags( Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft ) | _mnemonics->textFlags() );
 
+            // color role
+            const QPalette::ColorRole role = (useStrongFocus && ( selected || sunken )) ? QPalette::HighlightedText : QPalette::WindowText;
+
             textRect = option->fontMetrics.boundingRect( textRect, textFlags, text );
-            drawItemText( painter, textRect, textFlags, palette, enabled, text, QPalette::WindowText );
+            drawItemText( painter, textRect, textFlags, palette, enabled, text, role );
 
             // render hover and focus
-            if( selected || sunken )
+            if( !useStrongFocus && ( selected || sunken ) )
             {
 
                 QColor outlineColor;
