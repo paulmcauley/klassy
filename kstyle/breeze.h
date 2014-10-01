@@ -63,7 +63,7 @@ namespace Breeze
         Layout_DefaultSpacing = 6,
 
         // line editors
-        LineEdit_FrameWidth = 8,
+        LineEdit_FrameWidth = 6,
 
         // menu items
         MenuItem_MarginWidth = 4,
