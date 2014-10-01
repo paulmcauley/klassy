@@ -1037,7 +1037,7 @@ namespace Breeze
 
                 const QList<Data> dataList = {
                     { scrollArea->horizontalScrollBar(), QPoint( 0, frameWidth ) },
-                    { scrollArea->verticalScrollBar(), QPoint( frameWidth, 0 ) }
+                    { scrollArea->verticalScrollBar(), QPoint( QApplication::isLeftToRight() ? frameWidth : -frameWidth, 0 ) }
                 };
 
                 foreach( const Data& data, dataList )
