@@ -123,7 +123,7 @@ namespace Breeze
         //@{
 
         virtual bool eventFilter(QObject *, QEvent *);
-        bool eventFilterScrollArea( QAbstractScrollArea*, QEvent* );
+        bool eventFilterScrollArea( QWidget*, QEvent* );
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );

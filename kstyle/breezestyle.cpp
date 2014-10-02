@@ -295,23 +295,19 @@ namespace Breeze
                 if( !StyleConfigData::sidePanelDrawFrame() )
                 {
                     // force flat
-                    // scrollArea->setFrameStyle( QFrame::NoFrame );
-                    // scrollArea->setBackgroundRole( QPalette::Window );
-                    // scrollArea->setForegroundRole( QPalette::WindowText );
                     scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
                     scrollArea->setProperty( PropertyNames::sidePanelView, true );
 
                     if( QWidget *viewport = scrollArea->viewport() )
-                    {
-                        // viewport->setBackgroundRole( QPalette::Window );
-                        // viewport->setForegroundRole( QPalette::WindowText );
-                        // viewport->setAutoFillBackground( false );
-                        viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) );
-                    }
+                    { viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) ); }
 
                 }
 
             }
+
+        } else if( widget->inherits( "KTextEditor::View" ) ) {
+
+            addEventFilter( widget );
 
         } else if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) ) {
 
@@ -968,12 +964,12 @@ namespace Breeze
     {
 
         if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
-        else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( object ) ) { return eventFilterScrollArea( scrollArea, event ); }
         else if( QMdiSubWindow* subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
 
         // cast to QWidget
         QWidget *widget = static_cast<QWidget*>( object );
-        if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
+        if( widget->inherits( "QAbstractScrollArea" ) || widget->inherits( "KTextEditor::View" ) ) { return eventFilterScrollArea( widget, event ); }
+        else if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
 
         // fallback
         return ParentStyleClass::eventFilter( object, event );
@@ -981,7 +977,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________________
-    bool Style::eventFilterScrollArea( QAbstractScrollArea* scrollArea, QEvent* event )
+    bool Style::eventFilterScrollArea( QWidget* widget, QEvent* event )
     {
 
         switch( event->type() )
@@ -990,19 +986,20 @@ namespace Breeze
             {
 
                 // get scrollarea viewport
-                QWidget* viewport( scrollArea->viewport() );
-                if( !viewport ) return false;
+                QAbstractScrollArea* scrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
+                QWidget* viewport;
+                if( !( scrollArea && (viewport = scrollArea->viewport()) ) ) return false;
 
                 // get scrollarea horizontal and vertical containers
-                QWidget* widget( nullptr );
-                QList<QWidget*> widgets;
-                if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && widget->isVisible() )
-                { widgets.append( widget ); }
+                QWidget* child( nullptr );
+                QList<QWidget*> children;
+                if( viewport && ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && child->isVisible() )
+                { children.append( child ); }
 
-                if( viewport && ( widget = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && widget->isVisible() )
-                { widgets.append( widget ); }
+                if( viewport && ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && child->isVisible() )
+                { children.append( child ); }
 
-                if( widgets.empty() ) return false;
+                if( children.empty() ) return false;
 
                 // make sure proper background is rendered behind the containers
                 QPainter painter( scrollArea );
@@ -1011,8 +1008,8 @@ namespace Breeze
                 painter.setPen( Qt::NoPen );
                 painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
 
-                foreach( QWidget* widget, widgets )
-                { painter.drawRect( widget->geometry() ); }
+                foreach( QWidget* child, children )
+                { painter.drawRect( child->geometry() ); }
 
             }
             break;
@@ -1026,40 +1023,46 @@ namespace Breeze
                 QMouseEvent* mouseEvent( static_cast<QMouseEvent*>( event ) );
 
                 // get frame framewidth
-                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, scrollArea ) );
+                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, widget ) );
 
-                // loop over scrollbars
-                struct Data
+                // find list of scrollbars
+                QList<QScrollBar*> scrollBars;
+                if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
                 {
-                    QScrollBar* scrollBar;
+                    scrollBars.append( scrollArea->horizontalScrollBar() );
+                    scrollBars.append( scrollArea->verticalScrollBar() );
+
+                } else if( widget->inherits( "KTextEditor::View" ) ) {
+
+                    scrollBars = widget->findChildren<QScrollBar*>();
+
+                }
+
+                // loop over found scrollbars
+                foreach( QScrollBar* scrollBar, scrollBars )
+                {
+
+                    if( !( scrollBar && scrollBar->isVisible() ) ) continue;
+
                     QPoint offset;
-                };
-
-                const QList<Data> dataList = {
-                    { scrollArea->horizontalScrollBar(), QPoint( 0, frameWidth ) },
-                    { scrollArea->verticalScrollBar(), QPoint( QApplication::isLeftToRight() ? frameWidth : -frameWidth, 0 ) }
-                };
-
-                foreach( const Data& data, dataList )
-                {
-
-                    if( !( data.scrollBar && data.scrollBar->isVisible() ) ) continue;
+                    if( scrollBar->orientation() == Qt::Horizontal ) offset = QPoint( 0, frameWidth );
+                    else offset = QPoint( QApplication::isLeftToRight() ? frameWidth : -frameWidth, 0 );
 
                     // map position to scrollarea
-                    QPoint position( data.scrollBar->mapFrom( scrollArea, mouseEvent->pos() - data.offset ) );
+                    QPoint position( scrollBar->mapFrom( widget, mouseEvent->pos() - offset ) );
 
                     // check if contains
-                    if( !data.scrollBar->rect().contains( position ) ) continue;
+                    if( !scrollBar->rect().contains( position ) ) continue;
 
                     // copy event, send and return
                     QMouseEvent copy(
                         mouseEvent->type(),
                         position,
-                        data.scrollBar->mapToGlobal( position ),
+                        scrollBar->mapToGlobal( position ),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
-                    QCoreApplication::sendEvent( data.scrollBar, &copy );
+                    QCoreApplication::sendEvent( scrollBar, &copy );
                     event->setAccepted( true );
                     return true;
 
@@ -1073,7 +1076,7 @@ namespace Breeze
 
         }
 
-        return  ParentStyleClass::eventFilter( scrollArea, event );
+        return  ParentStyleClass::eventFilter( widget, event );
 
     }
 
