@@ -6303,7 +6303,7 @@ namespace Breeze
 
                 // create painter and render
                 QPainter painter( &pixmap );
-                _helper->renderButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
+                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
 
                 painter.end();
 

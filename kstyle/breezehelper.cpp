@@ -1234,7 +1234,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted ) const
+    void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted ) const
     {
 
         painter->save();

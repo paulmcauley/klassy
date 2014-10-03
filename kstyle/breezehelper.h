@@ -236,7 +236,7 @@ namespace Breeze
         void renderArrow( QPainter*, const QRect&, const QColor&, ArrowOrientation ) const;
 
         //* generic button (for mdi decorations, tabs and dock widgets)
-        void renderButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted ) const;
+        void renderDecorationButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted ) const;
 
         //@}
 
