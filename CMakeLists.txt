@@ -24,6 +24,7 @@ else()
   add_subdirectory(windec)
 
   INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
+  INSTALL(FILES colors/Breeze-Dark.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 endif()
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
