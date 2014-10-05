@@ -2901,7 +2901,7 @@ namespace Breeze
 
             } else {
 
-                const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+                const bool sunken( state & (State_On | State_Sunken) );
                 QPalette::ColorRole colorRole;
                 if( flat ) colorRole = ( sunken && !mouseOver ) ? QPalette::HighlightedText: QPalette::WindowText;
                 else colorRole = ( hasFocus &&! mouseOver ) ? QPalette::HighlightedText:QPalette::ButtonText;
@@ -3013,7 +3013,7 @@ namespace Breeze
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
         const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool sunken( state & (State_On | State_Sunken) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & (State_HasFocus | State_Sunken)) );
 
@@ -3654,7 +3654,7 @@ namespace Breeze
         // state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool sunken( state & (State_On | State_Sunken) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
@@ -3769,7 +3769,7 @@ namespace Breeze
         // state
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool sunken( state & (State_On | State_Sunken) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( state & State_AutoRaise );
@@ -3867,7 +3867,7 @@ namespace Breeze
 
             QPalette::ColorRole textRole( QPalette::ButtonText );
             if( flat ) textRole = (hasFocus&&sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
-            else if( (hasFocus||sunken)&&!mouseOver ) textRole = QPalette::HighlightedText;
+            else if( hasFocus&&!mouseOver ) textRole = QPalette::HighlightedText;
 
             painter->setFont(toolButtonOption->font);
             drawItemText( painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole );
@@ -3953,7 +3953,7 @@ namespace Breeze
         // need to alter palette for focused buttons
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
-        const bool sunken( ( state & State_On ) || ( state & State_Sunken ) );
+        const bool sunken( state & (State_On | State_Sunken) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( !comboBoxOption->frame );
@@ -4064,7 +4064,7 @@ namespace Breeze
                 // separator can have a title and an icon
                 // in that case they are rendered as sunken flat toolbuttons
                 QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
-                toolButtonOption.state = State_On|State_Sunken|State_Enabled;
+                toolButtonOption.state = State_On|State_Sunken|State_HasFocus|State_Enabled;
                 drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
                 return true;
 
