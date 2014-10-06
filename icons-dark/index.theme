@@ -1,7 +1,7 @@
 [Icon Theme]
 Name=Breeze Dark
 Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
-Inherits=oxygen
+Inherits=breeze,oxygen
 Version=0.8
 
 Example=folder

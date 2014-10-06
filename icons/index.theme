@@ -62,7 +62,7 @@ Comment[zh_CN]=KDE 视觉设计组制作的 Breeze 图标主题
 Comment[zh_TW]=KDE 視覺設計組製作的微風圖示主題
 Inherits=oxygen
 
-Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,mimetypes/scalable,places/scalable,places/small
+Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,devices/scalable,mimetypes/scalable,places/scalable,places/small
 
 [actions/scalable]	#22x22
 Size=22
@@ -109,10 +109,10 @@ Context=Categories
 Type=Fixed
 
 [mimetypes/scalable]
-Size=54
-Context=Places
+Size=22
+Context=MimeTypes
 Type=Scalable
-MinSize=24
+MinSize=22
 MaxSize=512
 
 [places/scalable]
