@@ -474,9 +474,9 @@ namespace Breeze
             case PM_LayoutBottomMargin:
             {
                 /*
-                use either Child margin or TopLevel margin,
-                depending on  widget type
-                */
+                 * use either Child margin or TopLevel margin,
+                 * depending on  widget type
+                 */
                 if( ( option && ( option->state & QStyle::State_Window ) ) || ( widget && widget->isWindow() ) )
                 {
 
@@ -500,7 +500,7 @@ namespace Breeze
             // buttons
             case PM_ButtonMargin:
             {
-                /* HACK: needs special case for kcalc buttons, to prevent the application to set too small margins */
+                // needs special case for kcalc buttons, to prevent the application to set too small margins
                 if( widget && widget->inherits( "KCalcButton" ) ) return Metrics::Button_MarginWidth + 4;
                 else return Metrics::Button_MarginWidth;
             }
@@ -592,10 +592,12 @@ namespace Breeze
 
                     mask->region = option->rect;
 
-                    // need to check on widget before removing inner region
-                    // in order to still preserve rubberband in MainWindow and QGraphicsView
-                    // in QMainWindow because it looks better
-                    // in QGraphicsView because the painting fails completely otherwise
+                    /*
+                     * need to check on widget before removing inner region
+                     * in order to still preserve rubberband in MainWindow and QGraphicsView
+                     * in QMainWindow because it looks better
+                     * in QGraphicsView because the painting fails completely otherwise
+                     */
                     if( widget && (
                         qobject_cast<const QAbstractItemView*>( widget->parent() ) ||
                         qobject_cast<const QGraphicsView*>( widget->parent() ) ||
@@ -739,7 +741,7 @@ namespace Breeze
                 QRect grooveRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget );
                 if( grooveRect.contains( point ) )
                 {
-                    //Must be either page up/page down, or just click on the slider.
+                    // Must be either page up/page down, or just click on the slider.
                     QRect sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
 
                     if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
@@ -748,14 +750,16 @@ namespace Breeze
 
                 }
 
-                //This is one of the up/down buttons. First, decide which one it is.
+                // This is one of the up/down buttons. First, decide which one it is.
                 if( preceeds( point, grooveRect, option ) )
                 {
 
                     if( _subLineButtons == DoubleButton )
                     {
+
                         QRect buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine );
                         return scrollBarHitTest( buttonRect, point, option );
+
                     } else return SC_ScrollBarSubLine;
 
                 }
@@ -939,10 +943,10 @@ namespace Breeze
         {
 
             /*
-            check if painter engine is registered to WidgetEnabilityEngine, and animated
-            if yes, merge the palettes. Note: a static_cast is safe here, since only the address
-            of the pointer is used, not the actual content.
-            */
+             * check if painter engine is registered to WidgetEnabilityEngine, and animated
+             * if yes, merge the palettes. Note: a static_cast is safe here, since only the address
+             * of the pointer is used, not the actual content.
+             */
             const QWidget* widget( static_cast<const QWidget*>( painter->device() ) );
             if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
             {
@@ -1507,8 +1511,7 @@ namespace Breeze
 
         } else {
 
-            // adjust rect to deal with corner buttons
-            // need to properly deal with reverse layout
+            // adjust rect to deal with corner buttons and reverse layout
             const bool reverseLayout( option->direction == Qt::RightToLeft );
             if( !tabOption->leftCornerWidgetSize.isEmpty() )
             {
@@ -2092,15 +2095,15 @@ namespace Breeze
             case SC_ScrollBarSlider:
             {
 
-                // We handle RTL here to unreflect things if need be
+                // handle RTL here to unreflect things if need be
                 QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( sliderOption->minimum == sliderOption->maximum ) return groove;
 
-                //Figure out how much room we have..
+                // Figure out how much room there is
                 int space( horizontal ? groove.width() : groove.height() );
 
-                //Calculate the portion of this space that the slider should take up.
+                // Calculate the portion of this space that the slider should occupy
                 int sliderSize = space * qreal( sliderOption->pageStep ) / ( sliderOption->maximum - sliderOption->minimum + sliderOption->pageStep );
                 sliderSize = qMax( sliderSize, static_cast<int>(Metrics::ScrollBar_MinSliderHeight ) );
                 sliderSize = qMin( sliderSize, space );
@@ -2117,7 +2120,7 @@ namespace Breeze
             case SC_ScrollBarSubPage:
             {
 
-                //We do visualRect here to unreflect things if need be
+                // handle RTL here to unreflect things if need be
                 QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
                 QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
@@ -2128,7 +2131,7 @@ namespace Breeze
             case SC_ScrollBarAddPage:
             {
 
-                //We do visualRect here to unreflect things if need be
+                // handle RTL here to unreflect things if need be
                 QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
                 QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
@@ -2315,16 +2318,18 @@ namespace Breeze
         const bool horizontal( sliderOption->orientation == Qt::Horizontal );
         const bool disableTicks( !StyleConfigData::sliderDrawTickMarks() );
 
+        // do nothing if no ticks are requested
+        if( tickPosition == QSlider::NoTicks ) return contentsSize;
+
         /*
-        Qt adds its own tick length directly inside QSlider.
-        Take it out and replace by ours, if needed
-        */
+         * Qt adds its own tick length directly inside QSlider.
+         * Take it out and replace by ours, if needed
+         */
         const int tickLength( disableTicks ? 0 : (
             Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth +
             (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness)/2 ) );
 
         const int builtInTickLength( 5 );
-        if( tickPosition == QSlider::NoTicks ) return contentsSize;
 
         QSize size( contentsSize );
         if( horizontal )
@@ -2426,8 +2431,10 @@ namespace Breeze
         const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if( !menuItemOption ) return contentsSize;
 
-        // First, we calculate the intrinsic size of the item.
-        // this must be kept consistent with what's in drawMenuItemControl
+        /*
+         * First calculate the intrinsic size of the item.
+         * this must be kept consistent with what's in drawMenuItemControl
+         */
         QSize size( contentsSize );
         switch( menuItemOption->menuItemType )
         {
@@ -2449,12 +2456,12 @@ namespace Breeze
 
                 // add spacing for accelerator
                 /*
-                Note:
-                The width of the accelerator itself is not included here since
-                Qt will add that on separately after obtaining the
-                sizeFromContents() for each menu item in the menu to be shown
-                ( see QMenuPrivate::calcActionRects() )
-                */
+                 * Note:
+                 * The width of the accelerator itself is not included here since
+                 * Qt will add that on separately after obtaining the
+                 * sizeFromContents() for each menu item in the menu to be shown
+                 * ( see QMenuPrivate::calcActionRects() )
+                 */
                 const bool hasAccelerator( menuItemOption->text.indexOf( QLatin1Char( '\t' ) ) >= 0 );
                 if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
 
@@ -2516,7 +2523,8 @@ namespace Breeze
         // make local copy
         QSize size( contentsSize );
 
-        if( horizontal ) {
+        if( horizontal )
+        {
 
             // check text visibility
             const bool textVisible( progressBarOption->textVisible );
@@ -2780,8 +2788,11 @@ namespace Breeze
         const QColor background( palette.color( QPalette::Window ) );
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
-        // need to reset painter's clip region in order to paint behind textbox label
-        // (was taken out in QCommonStyle)
+        /*
+         * need to reset painter's clip region in order to paint behind textbox label
+         * (was taken out in QCommonStyle)
+         */
+
         painter->setClipRegion( option->rect );
         _helper->renderFrame( painter, option->rect, background, outline );
 
@@ -2793,7 +2804,6 @@ namespace Breeze
     bool Style::drawFrameTabWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        // tabwidget frame
         // cast option and check
         const QStyleOptionTabWidgetFrameV2* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
         if( !tabOption ) return true;
@@ -2944,8 +2954,10 @@ namespace Breeze
         else if( inTabBar && hasFocus ) {
 
             // for tabbar arrows one uses animations to get the arrow color
-            // get animation state
-            /* there is no need to update the engine since this was already done when rendering the frame */
+            /*
+             * get animation state
+             * there is no need to update the engine since this was already done when rendering the frame
+             */
             const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
             const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
             color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
@@ -3088,15 +3100,17 @@ namespace Breeze
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & (State_HasFocus | State_Sunken)) );
 
-        // get animation state
-        // no need to update, this was already done in drawToolButtonComplexControl
+        /*
+         * get animation state
+         * no need to update, this was already done in drawToolButtonComplexControl
+         */
         const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
         const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
         if( !autoRaise )
         {
 
-            /* need to check widget for popup mode, because option is not set properly */
+            // need to check widget for popup mode, because option is not set properly
             const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
             const bool hasPopupMenu( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
 
@@ -3133,7 +3147,7 @@ namespace Breeze
         // copy palette and rect
         QRect rect( option->rect );
 
-        /* static_cast is safe here since check was already performed in calling function */
+        // static_cast is safe here since check was already performed in calling function
         const QTabBar* tabBar( static_cast<QTabBar*>( widget->parentWidget() ) );
 
         // overlap.
@@ -3209,8 +3223,10 @@ namespace Breeze
     bool Style::drawPanelMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // do nothing if menu is embedded in another widget
-        // this corresponds to having a transparent background
+        /*
+         * do nothing if menu is embedded in another widget
+         * this corresponds to having a transparent background
+         */
         if( widget && !widget->isWindow() ) return true;
 
         const QPalette& palette( option->palette );
@@ -3612,10 +3628,10 @@ namespace Breeze
     {
 
         /*
-        do nothing if disabled from options
-        also need to check if widget is a combobox, because of Qt hack using 'toolbar' separator primitive
-        for rendering separators in comboboxes
-        */
+         * do nothing if disabled from options
+         * also need to check if widget is a combobox, because of Qt hack using 'toolbar' separator primitive
+         * for rendering separators in comboboxes
+         */
         if( !( StyleConfigData::toolBarDrawItemSeparator() || qobject_cast<const QComboBox*>( widget ) ) )
         { return true; }
 
@@ -3691,7 +3707,7 @@ namespace Breeze
             painter->drawLine( line );
         }
 
-        //The right/left (depending on direction ) line gets drawn if we have an item
+        // The right/left (depending on direction) line gets drawn if we have an item
         if( state & State_Item )
         {
             const QLineF line = reverseLayout ?
@@ -3701,7 +3717,7 @@ namespace Breeze
 
         }
 
-        //The bottom if we have a sibling
+        // The bottom if we have a sibling
         if( state & State_Sibling )
         {
             const QLineF line( QPointF( center.x(), center.y() + expanderAdjust ), QPointF( center.x(), rect.bottom() ) );
@@ -4133,8 +4149,10 @@ namespace Breeze
 
             } else {
 
-                // separator can have a title and an icon
-                // in that case they are rendered as sunken flat toolbuttons
+                /*
+                 * separator can have a title and an icon
+                 * in that case they are rendered as sunken flat toolbuttons
+                 */
                 QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
                 toolButtonOption.state = State_On|State_Sunken|State_HasFocus|State_Enabled;
                 drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
@@ -4336,7 +4354,7 @@ namespace Breeze
         #endif
 
         // enable busy animations
-        /* need to check both widget and passed styleObject, used for QML */
+        // need to check both widget and passed styleObject, used for QML
         if( styleObject && _animations->busyIndicatorEngine().enabled() )
         {
 
@@ -4932,7 +4950,7 @@ namespace Breeze
         bool isRightOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
 
         // true if widget is aligned to the frame
-        /* need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved */
+        // need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved
         isFirst &= !isRightOfSelected;
         isLast &= !isLeftOfSelected;
 
@@ -4951,7 +4969,8 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( selected ) {
+            if( selected )
+            {
 
                 corners = CornerTopLeft|CornerTopRight;
                 rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
@@ -4970,7 +4989,8 @@ namespace Breeze
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            if( selected ) {
+            if( selected )
+            {
 
                 corners = CornerBottomLeft|CornerBottomRight;
                 rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
@@ -5057,7 +5077,6 @@ namespace Breeze
     {
 
         // rendering is similar to drawPushButtonLabelControl
-
         // cast option and check
         const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
         if( !toolBoxOption ) return true;
@@ -5144,9 +5163,9 @@ namespace Breeze
         const QRect tabRect( toolBoxTabContentsRect( option, widget ) );
 
         /*
-        important: option returns the wrong palette.
-        we use the widget palette instead, when set
-        */
+         * important: option returns the wrong palette.
+         * we use the widget palette instead, when set
+         */
         const QPalette palette( widget ? widget->palette() : option->palette );
 
         // store flags
@@ -5157,10 +5176,10 @@ namespace Breeze
 
         // update animation state
         /*
-        the proper widget ( the toolbox tab ) is not passed as argument by Qt.
-        What is passed is the toolbox directly. To implement animations properly,
-        the painter->device() is used instead
-        */
+         * the proper widget ( the toolbox tab ) is not passed as argument by Qt.
+         * What is passed is the toolbox directly. To implement animations properly,
+         *the painter->device() is used instead
+         */
         bool isAnimated( false );
         qreal opacity( AnimationData::OpacityInvalid );
         QPaintDevice* device = painter->device();
@@ -5365,7 +5384,7 @@ namespace Breeze
             QRect contentsRect( buttonRect );
 
             // detect dock widget title button
-            /* for dockwidget title buttons, do not take out margins, so that icon do not get scaled down */
+            // for dockwidget title buttons, do not take out margins, so that icon do not get scaled down
             const bool isDockWidgetTitleButton( widget && widget->inherits( "QDockWidgetTitleButton" ) );
             if( isDockWidgetTitleButton )
             {
@@ -6089,8 +6108,10 @@ namespace Breeze
         QPoint position( mouseOver ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
         if( mouseOver && rect.contains( position ) )
         {
-            // need to update the arrow controlRect on fly because there is no
-            // way to get it from the styles directly, outside of repaint events
+            /*
+             * need to update the arrow controlRect on fly because there is no
+             * way to get it from the styles directly, outside of repaint events
+             */
             _animations->scrollBarEngine().setSubControlRect( widget, control, rect );
         }
 
@@ -6156,7 +6177,7 @@ namespace Breeze
     {
 
         // store palette
-        /* due to Qt, it is not always safe to assume that either option, nor widget are defined */
+        // due to Qt, it is not always safe to assume that either option, nor widget are defined
         QPalette palette;
         if( option ) palette = option->palette;
         else if( widget ) palette = widget->palette();
@@ -6245,7 +6266,7 @@ namespace Breeze
         }
 
         // store palette
-        /* due to Qt, it is not always safe to assume that either option, nor widget are defined */
+        // due to Qt, it is not always safe to assume that either option, nor widget are defined
         QPalette palette;
         if( option ) palette = option->palette;
         else if( widget ) palette = widget->palette();
