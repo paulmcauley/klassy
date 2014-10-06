@@ -1,6 +1,24 @@
 [Icon Theme]
 Name=Breeze Dark
+Name[es]=Brisa oscuro
+Name[hu]=Breeze Dark
+Name[nl]=Breeze Dark
+Name[pt]=Brisa Escura
+Name[pt_BR]=Breeze Dark
+Name[sk]=Tmavý vánok
+Name[sv]=Breeze mörk
+Name[uk]=Breeze Dark
+Name[x-test]=xxBreeze Darkxx
 Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
+Comment[es]=Tema de iconos Brisa para esquemas de colores oscuros, por el Grupo de diseño visual de KDE
+Comment[hu]=Breeze ikontéma sötét színsémákhoz a KDE Visual Desing Grouptól
+Comment[nl]=Pictogramthema Breeze voor donkere schema's door de groep KDE Visual Design
+Comment[pt]=Tema de ícones Brisa, para esquemas de cores escuros, do Grupo de Desenho Visual do KDE
+Comment[pt_BR]=Tema de ícones Breeze para esquemas de cores escuros, do KDE Visual Design Group
+Comment[sk]=Téma ikon Breeze pre tmavé farebné schémy od dizajnovej skupiny KDE Visual
+Comment[sv]=Breeze ikontema för mörka färgscheman av KDE:s visuella designgrupp
+Comment[uk]=Тема піктограм Breeze для темних схем кольорів, створена групою дизайнерів KDE
+Comment[x-test]=xxBreeze icon theme for dark color schemes by the KDE Visual Design Groupxx
 Inherits=breeze,oxygen
 Version=0.8
 
