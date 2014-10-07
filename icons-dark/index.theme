@@ -1,5 +1,7 @@
 [Icon Theme]
 Name=Breeze Dark
+Name[cs]=Breeze Tmavé
+Name[de]=Breeze-Dunkel
 Name[es]=Brisa oscuro
 Name[hu]=Breeze Dark
 Name[nl]=Breeze Dark
@@ -10,6 +12,7 @@ Name[sv]=Breeze mörk
 Name[uk]=Breeze Dark
 Name[x-test]=xxBreeze Darkxx
 Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
+Comment[cs]=Motiv ikon Breeze pro tmavá barevná schémata od KDE Visual Design Group
 Comment[es]=Tema de iconos Brisa para esquemas de colores oscuros, por el Grupo de diseño visual de KDE
 Comment[hu]=Breeze ikontéma sötét színsémákhoz a KDE Visual Desing Grouptól
 Comment[nl]=Pictogramthema Breeze voor donkere schema's door de groep KDE Visual Design
