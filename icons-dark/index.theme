@@ -1,0 +1,96 @@
+[Icon Theme]
+Name=Breeze Dark
+Name[cs]=Breeze Tmavé
+Name[de]=Breeze-Dunkel
+Name[es]=Brisa oscuro
+Name[hu]=Breeze Dark
+Name[nl]=Breeze Dark
+Name[pt]=Brisa Escura
+Name[pt_BR]=Breeze Dark
+Name[sk]=Tmavý vánok
+Name[sv]=Breeze mörk
+Name[uk]=Breeze Dark
+Name[x-test]=xxBreeze Darkxx
+Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
+Comment[cs]=Motiv ikon Breeze pro tmavá barevná schémata od KDE Visual Design Group
+Comment[es]=Tema de iconos Brisa para esquemas de colores oscuros, por el Grupo de diseño visual de KDE
+Comment[hu]=Breeze ikontéma sötét színsémákhoz a KDE Visual Desing Grouptól
+Comment[nl]=Pictogramthema Breeze voor donkere schema's door de groep KDE Visual Design
+Comment[pt]=Tema de ícones Brisa, para esquemas de cores escuros, do Grupo de Desenho Visual do KDE
+Comment[pt_BR]=Tema de ícones Breeze para esquemas de cores escuros, do KDE Visual Design Group
+Comment[sk]=Téma ikon Breeze pre tmavé farebné schémy od dizajnovej skupiny KDE Visual
+Comment[sv]=Breeze ikontema för mörka färgscheman av KDE:s visuella designgrupp
+Comment[uk]=Тема піктограм Breeze для темних схем кольорів, створена групою дизайнерів KDE
+Comment[x-test]=xxBreeze icon theme for dark color schemes by the KDE Visual Design Groupxx
+Inherits=breeze,oxygen
+Version=0.8
+
+Example=folder
+
+
+Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,mimetypes/scalable,places/scalable,places/small
+
+[actions/scalable]	#22x22
+Size=22
+Context=Actions
+Type=Fixed
+
+[actions/small]		#16x16
+Size=16
+Context=Actions
+Type=Fixed
+
+[apps/scalable]
+Size=48
+Context=Applications
+Type=Scalable
+MinSize=48
+MaxSize=256
+
+[apps/preferences]
+Size=32
+Context=Applications
+Type=Fixed
+
+[apps/small]
+Size=16
+Context=Applications
+Type=Fixed
+
+[categories/scalable]
+Size=22
+Context=Categories
+Type=Scalable
+MinSize=16
+MaxSize=22
+
+[categories/preferences]
+Size=32
+Context=Categories
+Type=Fixed
+
+[categories/small]
+Size=16
+Context=Categories
+Type=Fixed
+
+[mimetypes/scalable]
+Size=54
+Context=Places
+Type=Scalable
+MinSize=24
+MaxSize=512
+
+[places/scalable]
+Size=64
+Context=Places
+Type=Scalable
+MinSize=24
+MaxSize=512
+
+[places/small]
+Size=16
+Context=Places
+Type=Scalable
+MinSize=16
+MaxSize=22
