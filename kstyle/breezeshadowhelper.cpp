@@ -60,7 +60,7 @@ namespace Breeze
 
         #if BREEZE_HAVE_X11
         if( Helper::isX11() )
-        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
+        { foreach( const quint32& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
     }
@@ -70,7 +70,7 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         if( Helper::isX11() )
-        { foreach( const uint32_t& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
+        { foreach( const quint32& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
         _pixmaps.clear();
@@ -205,7 +205,7 @@ namespace Breeze
         xcb_connection_t* connection( Helper::connection() );
 
         // get property
-        const uint32_t maxLength = std::string().max_size();
+        const quint32 maxLength = std::string().max_size();
         xcb_get_property_cookie_t cookie( xcb_get_property( connection, 0, QX11Info::appRootWindow(), netSupportedAtom, XCB_ATOM_ATOM, 0, (maxLength+3) / 4 ) );
         ScopedPointer<xcb_get_property_reply_t> reply( xcb_get_property_reply( connection, cookie, nullptr ) );
         if( !reply ) return false;
@@ -281,7 +281,7 @@ namespace Breeze
     }
 
     //______________________________________________
-    const QVector<uint32_t>& ShadowHelper::createPixmapHandles( void )
+    const QVector<quint32>& ShadowHelper::createPixmapHandles( void )
     {
 
         /**
@@ -317,7 +317,7 @@ namespace Breeze
     }
 
     //______________________________________________
-    uint32_t ShadowHelper::createPixmap( const QPixmap& source )
+    quint32 ShadowHelper::createPixmap( const QPixmap& source )
     {
 
         // do nothing for invalid pixmaps
@@ -380,13 +380,13 @@ namespace Breeze
         { return false; }
 
         // create pixmap handles if needed
-        const QVector<uint32_t>& pixmaps( createPixmapHandles() );
+        const QVector<quint32>& pixmaps( createPixmapHandles() );
         if( pixmaps.size() != numPixmaps ) return false;
 
         // create data
         // add pixmap handles
-        QVector<uint32_t> data;
-        foreach( const uint32_t& value, pixmaps )
+        QVector<quint32> data;
+        foreach( const quint32& value, pixmaps )
         { data.append( value ); }
 
 

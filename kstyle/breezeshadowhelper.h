@@ -101,10 +101,10 @@ namespace Breeze
         bool acceptWidget( QWidget* ) const;
 
         // create pixmap handles from tileset
-        const QVector<uint32_t>& createPixmapHandles( void );
+        const QVector<quint32>& createPixmapHandles( void );
 
         // create pixmap handle from pixmap
-        uint32_t createPixmap( const QPixmap& );
+        quint32 createPixmap( const QPixmap& );
 
         //* install shadow X11 property on given widget
         /**
@@ -134,7 +134,7 @@ namespace Breeze
         enum { numPixmaps = 8 };
 
         //* pixmaps
-        QVector<uint32_t> _pixmaps;
+        QVector<quint32> _pixmaps;
 
         #if BREEZE_HAVE_X11
 
