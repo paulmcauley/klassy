@@ -3859,8 +3859,12 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool sunken( state & (State_On | State_Sunken) );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
         const bool flat( state & State_AutoRaise );
+
+        // focus flag is set to match the background color in either renderButtonFrame or renderToolButtonFrame
+        bool hasFocus( false );
+        if( flat ) hasFocus = enabled && !mouseOver && (option->state & State_HasFocus);
+        else hasFocus = enabled && !mouseOver && (option->state & (State_HasFocus|State_Sunken) );
 
         const bool hasArrow( toolButtonOption->features & QStyleOptionToolButton::Arrow );
         const bool hasIcon( !( hasArrow || toolButtonOption->icon.isNull() ) );
