@@ -25,7 +25,7 @@ else()
   add_subdirectory(windec)
 
   INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
-  INSTALL(FILES colors/Breeze-Dark.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
+  INSTALL(FILES colors/BreezeDark.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
   if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
     find_package(KF5I18n CONFIG REQUIRED)
     ki18n_install(po)
