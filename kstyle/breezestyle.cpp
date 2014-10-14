@@ -2986,7 +2986,7 @@ namespace Breeze
 
                 const bool sunken( state & (State_On | State_Sunken) );
                 QPalette::ColorRole colorRole;
-                if( flat ) colorRole = ( sunken && !mouseOver ) ? QPalette::HighlightedText: QPalette::WindowText;
+                if( flat ) colorRole = ( sunken && hasFocus && !mouseOver ) ? QPalette::HighlightedText: QPalette::WindowText;
                 else colorRole = ( hasFocus &&! mouseOver ) ? QPalette::HighlightedText:QPalette::ButtonText;
                 color = palette.color( colorRole );
 
