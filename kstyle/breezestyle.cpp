@@ -1666,10 +1666,22 @@ namespace Breeze
         if( verticalTabs ) return QRect();
 
         const QRect rect( option->rect );
-        QRect cornerRect( QPoint( 0, 0 ), QSize( tabBarSize.height(), tabBarSize.height() + 1 ) );
+        QRect cornerRect;
+        switch( element )
+        {
+            case SE_TabWidgetLeftCorner:
+            cornerRect = QRect( QPoint(0,0), tabOption->leftCornerWidgetSize );
+            cornerRect.moveLeft( rect.left() );
+            break;
 
-        if( element == SE_TabWidgetRightCorner ) cornerRect.moveRight( rect.right() );
-        else cornerRect.moveLeft( rect.left() );
+            case SE_TabWidgetRightCorner:
+            cornerRect = QRect( QPoint(0,0), tabOption->rightCornerWidgetSize );
+            cornerRect.moveRight( rect.right() );
+            break;
+
+            default: break;
+
+        }
 
         switch( tabOption->shape )
         {
