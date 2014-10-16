@@ -18,6 +18,7 @@ Name[sr@latin]=Povetarac tamni
 Name[sv]=Breeze mörk
 Name[uk]=Breeze Dark
 Name[x-test]=xxBreeze Darkxx
+Name[zh_TW]=微風暗
 Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
 Comment[ca]=Tema d'icones Brisa amb un esquema de color fosc pel Grup de disseny visual del KDE
 Comment[cs]=Motiv ikon Breeze pro tmavá barevná schémata od KDE Visual Design Group
@@ -37,6 +38,7 @@ Comment[sr@latin]=Tema ikona Povetarac za tamne šeme boja KDE‑ove grupe za vi
 Comment[sv]=Breeze ikontema för mörka färgscheman av KDE:s visuella designgrupp
 Comment[uk]=Тема піктограм Breeze для темних схем кольорів, створена групою дизайнерів KDE
 Comment[x-test]=xxBreeze icon theme for dark color schemes by the KDE Visual Design Groupxx
+Comment[zh_TW]=KDE 視覺設計組製作的微風暗色系圖示主題
 Inherits=breeze,oxygen
 Version=0.8
 
