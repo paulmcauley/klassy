@@ -1683,6 +1683,9 @@ namespace Breeze
 
         }
 
+        // expend height to tabBarSize, if needed, to make sure base is properly rendered
+        cornerRect.setHeight( qMax( cornerRect.height(), tabBarSize.height() + 1 ) );
+
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
