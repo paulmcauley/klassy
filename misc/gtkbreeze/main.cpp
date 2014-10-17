@@ -37,11 +37,67 @@ Q_LOGGING_CATEGORY(GTKBREEZE, "gtkbreeze")
  */
 void setGtk2()
 {
-    QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
-    qCDebug(GTKBREEZE) << "updateGtk2()";
     QString gtk2Theme = "Orion"; // Orion looks kindae like breeze
 
-    // check if qtcurve gtk2 engine is installed by looking for /usr/share/themes/QtCurve/
+    // check if gtk engine is installed by looking in /usr/share/themes/
+    QFileInfoList availableThemes;
+    QString gtkThemeDirectory;
+    foreach(const QString& themesDir, QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, "themes", QStandardPaths::LocateDirectory)) {
+        if (QFile::exists(themesDir+ "/" + gtk2Theme + "/gtk-2.0/gtkrc")) {
+            gtkThemeDirectory = themesDir + "/" + gtk2Theme;
+            qCDebug(GTKBREEZE) << "setting gtkThemeDirectory: " << gtkThemeDirectory;
+            break;
+        }
+    }
+    if (gtkThemeDirectory.isEmpty()) {
+        qCDebug(GTKBREEZE) << "not found, quitting";
+        return;
+    }
+    qCDebug(GTKBREEZE) << "found gtktheme";
+
+    QString gtkrc2path = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + QString("/.gtkrc-2.0");
+    qCDebug(GTKBREEZE) << "looking for" << gtkrc2path;
+    if (QFile::exists(gtkrc2path)) {
+        //check for oxygen
+        qCDebug(GTKBREEZE) << "found ~/.gtkrc-2.0";
+        QSettings gtkrc2settings(gtkrc2path, QSettings::IniFormat);
+        if (gtkrc2settings.value("gtk-theme-name") != "oxygen-gtk") {
+            qCDebug(GTKBREEZE) << "gtkrc2 already exist and is not using oxygen, quitting";
+            return;
+        }
+    }
+    qCDebug(GTKBREEZE) << "no gtkrc2 file or oxygen being used, setting to new theme";
+    QFile gtkrc2writer(gtkrc2path);
+    gtkrc2writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&gtkrc2writer);
+    out << "include \"" << gtkThemeDirectory << "/gtk-2.0/gtkrc\"\n";
+    out << "style \"user-font\"\n";
+    out << "{\n";
+    out << "    font_name=\"Oxygen-Sans Sans-Book\"\n";
+    out << "}\n";
+    out << "widget_class \"*\" style \"user-font\"\n";
+    out << "gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n";  // matches plasma-workspace:startkde/startkde.cmake
+    out << "gtk-theme-name=\"Orion\"\n";
+    out << "gtk-icon-theme-name=\"breeze\"\n";
+    out << "gtk-fallback-icon-theme=\"oxygen\"\n";
+    out << "gtk-toolbar-style=GTK_TOOLBAR_ICONS\n";
+    out << "gtk-menu-images=1\n";
+    out << "gtk-button-images=1\n";
+
+    gtkrc2writer.close();
+    qCDebug(GTKBREEZE) << "gtk2rc written";
+}
+
+/*
+ * Set gtk3 theme if no theme is set or if oxygen is set and gtk theme is installed
+ */
+void setGtk3()
+{
+    qCDebug(GTKBREEZE) << "setGtk3()";
+
+    QString gtk3Theme = "Orion"; // Orion looks kindae like breeze
+/*
+    // check if gtk engine is installed by looking in /usr/share/themes/
     QFileInfoList availableThemes;
     QString gtkThemeDirectory;
     foreach(const QString& themesDir, QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, "themes", QStandardPaths::LocateDirectory)) {
@@ -54,7 +110,7 @@ void setGtk2()
                 gtkThemeDirectory = themeDir.filePath();
                 qCDebug(GTKBREEZE) << "setting gtkThemeDirectory: " << gtkThemeDirectory;
                 break;
-            }                
+            }
         }
     }
     if (gtkThemeDirectory.isEmpty()) {
@@ -84,7 +140,7 @@ void setGtk2()
     out << "    font_name=\"Oxygen-Sans Sans-Book\"\n";
     out << "}\n";
     out << "widget_class \"*\" style \"user-font\"\n";
-    out << "gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n";
+    out << "gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n";  // matches plasma-workspace:startkde/startkde.cmake
     out << "gtk-theme-name=\"Orion\"\n";
     out << "gtk-icon-theme-name=\"breeze\"\n";
     out << "gtk-fallback-icon-theme=\"oxygen\"\n";
@@ -94,19 +150,14 @@ void setGtk2()
 
     gtkrc2writer.close();
     qCDebug(GTKBREEZE) << "gtk2rc written";
-}
-
-/*
- * Set gtk2 theme if no theme is set or if oxygen is set and gtk theme is installed
- */
-void setGtk3()
-{
-    qCDebug(GTKBREEZE) << "setGtk3()";
+    */
 }
 
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
+    QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
+    qCDebug(GTKBREEZE) << "updateGtk2()";
 
     setGtk2();
     setGtk3();
