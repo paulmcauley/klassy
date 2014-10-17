@@ -1,37 +1,33 @@
 /*
  Copyright 2014 Jonathan Riddell <jriddell@ubuntu.com>
 
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License as
-published by the Free Software Foundation; either version 2 of 
-the License, or (at your option) any later version.
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as
+ published by the Free Software Foundation; either version 2 of 
+ the License, or (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+// Wee program to be run at login by kconf_update
+// checks if gtk theme is set
+// if not or if it is set to oxygen, update to new theme which matches breeze theme
 
 #include <QCoreApplication>
 #include <QStandardPaths>
 #include <QDebug>
 #include <QFile>
-#include <QFileInfo>
-#include <QDir>
-#include <QStyleFactory>
 #include <QLoggingCategory>
 #include <QSettings>
 
-#include <KSharedConfig>
-#include <KConfigGroup>
-#include <kconfig.h>
-
 Q_DECLARE_LOGGING_CATEGORY(GTKBREEZE)
 Q_LOGGING_CATEGORY(GTKBREEZE, "gtkbreeze")
-
 
 /*
  * returns a path to the installed gtk if it can be found
