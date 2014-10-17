@@ -23,7 +23,7 @@ else()
  )
 
   target_link_libraries(kstyle_breeze_config Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
-  target_link_libraries(kstyle_breeze_config KF5::ConfigCore KF5::ConfigWidgets KF5::Completion KF5::I18n)
+  target_link_libraries(kstyle_breeze_config KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
   install(TARGETS kstyle_breeze_config DESTINATION ${QT_PLUGIN_INSTALL_DIR})
 
 endif()
