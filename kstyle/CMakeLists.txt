@@ -40,8 +40,8 @@ else()
 
   find_package( KF5FrameworkIntegration CONFIG )
   set_package_properties(KF5FrameworkIntegration PROPERTIES
-      DESCRIPTION "KF4 FrameworkIntegration framework"
-      URL "http://xcb.freedesktop.org"
+      DESCRIPTION "KF5 Framework Integration"
+      URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
       TYPE OPTIONAL
       PURPOSE "Required to use KStyle convenience functionalities in style"
   )
