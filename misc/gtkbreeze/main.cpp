@@ -33,9 +33,9 @@ Q_DECLARE_LOGGING_CATEGORY(GTKBREEZE)
 Q_LOGGING_CATEGORY(GTKBREEZE, "gtkbreeze")
 
 /*
- * Set gtk2 theme to qtcurve if no theme is set or if oxygen is set and qtcurve is installed
+ * Set gtk2 theme if no theme is set or if oxygen is set and gtk theme is installed
  */
-void updateGtk2()
+void setGtk2()
 {
     QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
     qCDebug(GTKBREEZE) << "updateGtk2()";
@@ -94,74 +94,22 @@ void updateGtk2()
 
     gtkrc2writer.close();
     qCDebug(GTKBREEZE) << "gtk2rc written";
+}
 
-    /*
-    Kdelibs4Migration migration;
-    //Apply the color scheme
-    KConfig config(migration.saveLocation("config") + "kdeglobals");
-
-    KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
-    KConfigGroup kf5Group(kf5Config, "General");
-    KConfigGroup kf52Group(kf5Config, "KDE");
-
-    const QString looknfeel = kf52Group.readEntry("LookAndFeelPackage", defaultLookAndFeelPackage);
-
-    KSharedConfigPtr lnfConfig;
-    KSharedConfigPtr defaultLnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + defaultLookAndFeelPackage + "/contents/defaults"));
-    if (looknfeel != defaultLookAndFeelPackage) {
-        lnfConfig = KSharedConfig::openConfig(QStandardPaths::locate(QStandardPaths::GenericDataLocation, "plasma/look-and-feel/" + looknfeel + "/contents/defaults"));
-    }
-
-    const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "KDE", "widgetStyle", "breeze").toString();
-    const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "Breeze").toString();
-    const QString icons = readConfigValue(lnfConfig, defaultLnfConfig, "Icons", "Theme", "breeze").toString();
-
-    cloneColorScheme(colorScheme);
-
-    //use only if the style from the look and feel package is installed
-    const bool hasWidgetStyle = QStyleFactory::keys().contains(widgetStyle);
-    KConfigGroup group(&config, "General");
-    group.writeEntry("ColorScheme", colorScheme);
-    group.sync();
-    if (hasWidgetStyle) {
-        group.writeEntry("widgetStyle", widgetStyle);
-    }
-    applyColorScheme(colorScheme, &config);
-    group.sync();
-
-    KConfigGroup iconGroup(&config, "Icons");
-    iconGroup.writeEntry("Theme", icons);
-    applyColorScheme(colorScheme, &config);
-    iconGroup.sync();
-
-
-    kf5Group.writeEntry("ColorScheme", colorScheme);
-    kf5Group.sync();
-    if (hasWidgetStyle) {
-        kf5Group.writeEntry("widgetStyle", widgetStyle);
-    }
-    applyColorScheme(colorScheme, kf5Group.config());
-    kf5Group.sync();
-
-
-    kf52Group.writeEntry("ColorScheme", colorScheme);
-    if (hasWidgetStyle) {
-        kf52Group.writeEntry("widgetStyle", widgetStyle);
-    }
-    applyColorScheme(colorScheme, kf52Group.config());
-    kf52Group.sync();
-
-    KConfigGroup kf5IconGroup(kf5Config, "Icons");
-    kf5IconGroup.writeEntry("Theme", icons);
-    kf5IconGroup.sync();
-    */
+/*
+ * Set gtk2 theme if no theme is set or if oxygen is set and gtk theme is installed
+ */
+void setGtk3()
+{
+    qCDebug(GTKBREEZE) << "setGtk3()";
 }
 
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
 
-    updateGtk2();
+    setGtk2();
+    setGtk3();
 
     return 0;
 }
