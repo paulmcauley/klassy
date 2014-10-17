@@ -181,7 +181,7 @@ int setGtk3()
 
 int main(/*int argc, char **argv*/)
 {
-    QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
+    QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = false"));
     qCDebug(GTKBREEZE) << "updateGtk2()";
 
     int result = 0;
