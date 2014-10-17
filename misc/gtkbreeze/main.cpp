@@ -39,40 +39,62 @@ void updateGtk2()
 {
     QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
     qCDebug(GTKBREEZE) << "updateGtk2()";
+    QString gtk2Theme = "Orion"; // Orion looks kindae like breeze
 
     // check if qtcurve gtk2 engine is installed by looking for /usr/share/themes/QtCurve/
     QFileInfoList availableThemes;
-    bool foundQtCurve = false;
+    QString gtkThemeDirectory;
     foreach(const QString& themesDir, QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, "themes", QStandardPaths::LocateDirectory)) {
         QDir root(themesDir);
         qCDebug(GTKBREEZE) << "found: " << root.dirName();
         availableThemes = root.entryInfoList(QDir::NoDotAndDotDot|QDir::AllDirs);
         foreach(const QFileInfo& themeDir, availableThemes) {
             qCDebug(GTKBREEZE) << "found: " << themeDir.fileName();
-            if (themeDir.fileName() == "QtCurve") {
-                foundQtCurve = true;
+            if (themeDir.fileName() == gtk2Theme) {
+                gtkThemeDirectory = themeDir.filePath();
+                qCDebug(GTKBREEZE) << "setting gtkThemeDirectory: " << gtkThemeDirectory;
                 break;
             }                
         }
     }
-    if (!foundQtCurve) {
+    if (gtkThemeDirectory.isEmpty()) {
         qCDebug(GTKBREEZE) << "not found, quitting";
         return;
     }
-    qCDebug(GTKBREEZE) << "found qtcurve";
+    qCDebug(GTKBREEZE) << "found gtktheme";
     
     QString gtkrc2path = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + QString("/.gtkrc-2.0");
     qCDebug(GTKBREEZE) << "looking for" << gtkrc2path;
     if (QFile::exists(gtkrc2path)) {
         //check for oxygen
         qCDebug(GTKBREEZE) << "found ~/.gtkrc-2.0";
-        QSettings gtkrc2(gtkrc2path, QSettings::IniFormat);
-        if (gtkrc2.value("gtk-theme-name") != "oxygen-gtk") {
+        QSettings gtkrc2settings(gtkrc2path, QSettings::IniFormat);
+        if (gtkrc2settings.value("gtk-theme-name") != "oxygen-gtk") {
             qCDebug(GTKBREEZE) << "gtkrc2 already exist and is not using oxygen, quitting";
             return;            
         }
     }
     qCDebug(GTKBREEZE) << "no gtkrc2 file or oxygen being used, setting to qtcurve";
+    QFile gtkrc2writer(gtkrc2path);
+    gtkrc2writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&gtkrc2writer);
+    out << "include \"" << gtkThemeDirectory << "/gtk-2.0/gtkrc\"\n";
+    out << "style \"user-font\"\n";
+    out << "{\n";
+    out << "    font_name=\"Oxygen-Sans Sans-Book\"\n";
+    out << "}\n";
+    out << "widget_class \"*\" style \"user-font\"\n";
+    out << "gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n";
+    out << "gtk-theme-name=\"Orion\"\n";
+    out << "gtk-icon-theme-name=\"breeze\"\n";
+    out << "gtk-fallback-icon-theme=\"oxygen\"\n";
+    out << "gtk-toolbar-style=GTK_TOOLBAR_ICONS\n";
+    out << "gtk-menu-images=1\n";
+    out << "gtk-button-images=1\n";
+
+    gtkrc2writer.close();
+    qCDebug(GTKBREEZE) << "gtk2rc written";
+
     /*
     Kdelibs4Migration migration;
     //Apply the color scheme
