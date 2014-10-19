@@ -131,7 +131,8 @@ namespace Breeze
 
     //____________________________________________________________________
     QColor Helper::sidePanelBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
-    { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.6 ); }
+    // { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.6 ); }
+    { return palette.color( role, QPalette::Window ); }
 
     //____________________________________________________________________
     QColor Helper::sidePanelForegroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
