@@ -85,7 +85,7 @@ void setGtk2()
     qCDebug(GTKBREEZE) << "found gtktheme: " << gtkThemeDirectory;
 
     QString gtkrc2path = isGtkThemeSetToOxygen(".gtkrc-2.0", QString());
-    if ( gtkrc2path.isEmpty() ) {
+    if (gtkrc2path.isEmpty()) {
         qCDebug(GTKBREEZE) << "gtkrc2 already exists and is not using oxygen, quitting";
         return;
     }
