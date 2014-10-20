@@ -98,19 +98,19 @@ void setGtk2()
         return;
     }
     QTextStream out(&gtkrc2writer);
-    out << "include \"" << gtkThemeDirectory << "/gtk-2.0/gtkrc\"\n";
-    out << "style \"user-font\"\n";
-    out << "{\n";
-    out << "    font_name=\"Oxygen-Sans Sans-Book\"\n";
-    out << "}\n";
-    out << "widget_class \"*\" style \"user-font\"\n";
-    out << "gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n"; // matches plasma-workspace:startkde/startkde.cmake
-    out << "gtk-theme-name=\"Orion\"\n";
-    out << "gtk-icon-theme-name=\"oxygen\"\n"; // breeze icons don't seem to work with gtk
-    out << "gtk-fallback-icon-theme=\"gnome\"\n";
-    out << "gtk-toolbar-style=GTK_TOOLBAR_ICONS\n";
-    out << "gtk-menu-images=1\n";
-    out << "gtk-button-images=1\n";
+    out << QStringLiteral("include \"") << gtkThemeDirectory << QStringLiteral("/gtk-2.0/gtkrc\"\n");
+    out << QStringLiteral("style \"user-font\"\n");
+    out << QStringLiteral("{\n");
+    out << QStringLiteral("    font_name=\"Oxygen-Sans Sans-Book\"\n");
+    out << QStringLiteral("}\n");
+    out << QStringLiteral("widget_class \"*\" style \"user-font\"\n");
+    out << QStringLiteral("gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n"); // matches plasma-workspace:startkde/startkde.cmake
+    out << QStringLiteral("gtk-theme-name=\"Orion\"\n");
+    out << QStringLiteral("gtk-icon-theme-name=\"oxygen\"\n"); // breeze icons don't seem to work with gtk
+    out << QStringLiteral("gtk-fallback-icon-theme=\"gnome\"\n");
+    out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
+    out << QStringLiteral("gtk-menu-images=1\n");
+    out << QStringLiteral("gtk-button-images=1\n");
 
     gtkrc2writer.close();
     qCDebug(GTKBREEZE) << "gtk2rc written";
