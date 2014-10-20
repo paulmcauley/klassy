@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QLoggingCategory>
 #include <QSettings>
+#include <QDir>
 
 Q_DECLARE_LOGGING_CATEGORY(GTKBREEZE)
 Q_LOGGING_CATEGORY(GTKBREEZE, "gtkbreeze")
@@ -52,7 +53,7 @@ QString isGtkThemeInstalled(QString themeName, QString settingsFile)
  */
 QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
 {
-    QString gtkSettingsPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + "/" + gtkSettingsFile;
+    QString gtkSettingsPath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() + QDir::separator() + gtkSettingsFile;
     qCDebug(GTKBREEZE) << "looking for" << gtkSettingsPath;
     if (QFile::exists(gtkSettingsPath)) {
         qCDebug(GTKBREEZE) << "found settings file" << gtkSettingsPath;
@@ -60,7 +61,7 @@ QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
         if (!settingsKey.isNull()) {
             gtkrcSettings.beginGroup(settingsKey);
         }
-        if (gtkrcSettings.value("gtk-theme-name") != "oxygen-gtk") {
+        if (gtkrcSettings.value("gtk-theme-name") != QStringLiteral("oxygen-gtk")) {
             qCDebug(GTKBREEZE) << "gtk settings file " + gtkSettingsFile + " already exist and is not using oxygen, will not change";
             return QString();
         }
