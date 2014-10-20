@@ -1512,21 +1512,13 @@ namespace Breeze
 
         } else {
 
-            // adjust rect to deal with corner buttons and reverse layout
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-            if( !tabOption->leftCornerWidgetSize.isEmpty() )
-            {
-                const QRect buttonRect( subElementRect( SE_TabWidgetLeftCorner, option, widget ) );
-                if( reverseLayout ) rect.setRight( buttonRect.left() - 1 );
-                else rect.setLeft( buttonRect.width() );
-            }
+            // account for corner rects
+            // need to re-run visualRect to remove right-to-left handling, since it is re-added on tabBarRect at the end
+            const QRect leftButtonRect( visualRect( option, subElementRect( SE_TabWidgetLeftCorner, option, widget ) ) );
+            const QRect rightButtonRect( visualRect( option, subElementRect( SE_TabWidgetRightCorner, option, widget ) ) );
 
-            if( !tabOption->rightCornerWidgetSize.isEmpty() )
-            {
-                const QRect buttonRect( subElementRect( SE_TabWidgetRightCorner, option, widget ) );
-                if( reverseLayout ) rect.setLeft( buttonRect.width() );
-                else rect.setRight( buttonRect.left() - 1 );
-            }
+            rect.setLeft( leftButtonRect.width() );
+            rect.setRight( rightButtonRect.left() - 1 );
 
             tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
             if( tabBarAlignment == Qt::AlignCenter ) tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
