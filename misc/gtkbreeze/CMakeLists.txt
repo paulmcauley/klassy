@@ -1,13 +1,7 @@
-project(gtkbreeze)
-
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
 
-set(gtkbreeze_SRCS
-   main.cpp
- )
-
-add_executable(gtkbreeze ${gtkbreeze_SRCS})
+add_executable(gtkbreeze main.cpp)
 
 target_link_libraries(gtkbreeze Qt5::Widgets KF5::CoreAddons KF5::ConfigCore)
 
