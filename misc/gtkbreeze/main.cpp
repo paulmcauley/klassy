@@ -36,8 +36,8 @@ Q_LOGGING_CATEGORY(GTKBREEZE, "gtkbreeze")
  */
 QString isGtkThemeInstalled(QString themeName, QString settingsFile)
 {
-    foreach(const QString& themesDir, QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, "themes", QStandardPaths::LocateDirectory)) {
-        if (QFile::exists(themesDir+ "/" + themeName + "/" + settingsFile)) {
+    foreach (const QString& themesDir, QStandardPaths::locateAll(QStandardPaths::GenericDataLocation, "themes", QStandardPaths::LocateDirectory)) {
+        if (QFile::exists(themesDir + QDir::separator() + themeName + QDir::separator() + settingsFile)) {
             return themesDir + "/" + themeName;
         }
     }
