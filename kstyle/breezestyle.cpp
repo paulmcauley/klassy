@@ -1475,7 +1475,8 @@ namespace Breeze
         if( !headerOption ) return option->rect;
 
         // check if arrow is necessary
-        QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
+        // QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
+        QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth, 0 ) );
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
 
         labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_ItemSpacing, 0 );
