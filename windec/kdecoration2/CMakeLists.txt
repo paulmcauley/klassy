@@ -1,5 +1,6 @@
 find_package(KDecoration2 REQUIRED)
-find_package(KF5 CONFIG REQUIRED COMPONENTS CoreAddons Config)
+find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
+
 
 set(breezedecoration_SRCS
     breezedeco.cpp
