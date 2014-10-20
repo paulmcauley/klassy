@@ -72,22 +72,22 @@ QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
 /*
  * Set gtk2 theme if no theme is set or if oxygen is set and gtk theme is installed
  */
-void setGtk2()
+int setGtk2()
 {
-    QString gtk2Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
-    QString gtk2ThemeSettings = QStringLiteral("gtk-2.0/gtkrc"); // file to check for
-    QString gtkThemeDirectory = isGtkThemeInstalled(gtk2Theme, gtk2ThemeSettings);
+    const QString gtk2Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
+    const QString gtk2ThemeSettings = QStringLiteral("gtk-2.0/gtkrc"); // file to check for
+    const QString gtkThemeDirectory = isGtkThemeInstalled(gtk2Theme, gtk2ThemeSettings);
 
     if (gtkThemeDirectory == 0) {
         qCDebug(GTKBREEZE) << "not found, quitting";
-        return;
+        return 0;
     }
     qCDebug(GTKBREEZE) << "found gtktheme: " << gtkThemeDirectory;
 
     QString gtkrc2path = isGtkThemeSetToOxygen(".gtkrc-2.0", QString());
     if (gtkrc2path.isEmpty()) {
         qCDebug(GTKBREEZE) << "gtkrc2 already exists and is not using oxygen, quitting";
-        return;
+        return 0;
     }
 
     qCDebug(GTKBREEZE) << "no gtkrc2 file or oxygen being used, setting to new theme";
@@ -95,7 +95,7 @@ void setGtk2()
     bool opened = gtkrc2writer.open(QIODevice::WriteOnly | QIODevice::Text);
     if (!opened) {
         qCWarning(GTKBREEZE) << "failed to open " << gtkrc2path;
-        return;
+        return 1;
     }
     QTextStream out(&gtkrc2writer);
     out << QStringLiteral("include \"") << gtkThemeDirectory << QStringLiteral("/gtk-2.0/gtkrc\"\n");
@@ -112,29 +112,30 @@ void setGtk2()
     out << QStringLiteral("gtk-menu-images=1\n");
     out << QStringLiteral("gtk-button-images=1\n");
     qCDebug(GTKBREEZE) << "gtk2rc written";
+    return 0;
 }
 
 /*
  * Set gtk3 theme if no theme is set or if oxygen is set and gtk theme is installed
  */
-void setGtk3()
+int setGtk3()
 {
     qCDebug(GTKBREEZE) << "setGtk3()";
 
-    QString gtk3Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
-    QString gtk3ThemeSettings = QStringLiteral("gtk-3.0/settings.ini"); // Orion looks kindae like breeze
+    const QString gtk3Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
+    const QString gtk3ThemeSettings = QStringLiteral("gtk-3.0/settings.ini"); // Orion looks kindae like breeze
 
-    QString gtkThemeDirectory = isGtkThemeInstalled(gtk3Theme, gtk3ThemeSettings);
+    const QString gtkThemeDirectory = isGtkThemeInstalled(gtk3Theme, gtk3ThemeSettings);
     if (gtkThemeDirectory == 0) {
         qCDebug(GTKBREEZE) << "not found, quitting";
-        return;
+        return 0;
     }
     qCDebug(GTKBREEZE) << "found gtk3theme:" << gtkThemeDirectory;
 
     QString gtkrc3path = isGtkThemeSetToOxygen(".config/gtk-3.0/settings.ini", "Settings");
     if ( gtkrc3path.isEmpty() ) {
         qCDebug(GTKBREEZE) << "gtkrc3 already exists and is not using oxygen, quitting";
-        return;
+        return 0;
     }
 
     qCDebug(GTKBREEZE) << "no gtkrc3 file or oxygen being used, setting to new theme";
@@ -142,11 +143,11 @@ void setGtk3()
     bool opened = gtkrc3writer.open(QIODevice::WriteOnly | QIODevice::Text);
     if (!opened) {
         qCWarning(GTKBREEZE) << "failed to open " << gtkrc3path;
-        return;
+        return 1;
     }
     QTextStream out(&gtkrc3writer);
     out << QStringLiteral("[Settings]\n");
-    out << QStringLiteral("gtk-font-name=Ubuntu 10\n"); // matches plasma-workspace:startkde/startkde.cmake
+    out << QStringLiteral("gtk-font-name=Oxygen-Sans 10\n"); // matches plasma-workspace:startkde/startkde.cmake
     out << QStringLiteral("gtk-theme-name=")+gtk3Theme+QStringLiteral("\n");
     out << QStringLiteral("gtk-icon-theme-name=oxygen\n"); // breeze icons don't seem to work with gtk
     out << QStringLiteral("gtk-fallback-icon-theme=gnome\n");
@@ -154,6 +155,7 @@ void setGtk3()
     out << QStringLiteral("gtk-menu-images=1\n");
     out << QStringLiteral("gtk-button-images=1\n");
     qCDebug(GTKBREEZE) << "gtk3rc written";
+    return 0;
 }
 
 int main(int argc, char **argv)
@@ -162,8 +164,9 @@ int main(int argc, char **argv)
     QLoggingCategory::setFilterRules(QStringLiteral("gtkbreeze.debug = true"));
     qCDebug(GTKBREEZE) << "updateGtk2()";
 
-    setGtk2();
-    setGtk3();
+    int result = 0;
+    result = setGtk2();
+    result = setGtk3();
 
-    return 0;
+    return result;
 }
