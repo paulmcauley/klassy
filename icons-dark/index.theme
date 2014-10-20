@@ -1,0 +1,119 @@
+[Icon Theme]
+Name=Breeze Dark
+Name[ca]=Brisa fosca
+Name[cs]=Breeze Tmavé
+Name[de]=Breeze-Dunkel
+Name[el]=Σκοτεινό Breeze
+Name[es]=Brisa oscuro
+Name[fi]=Breeze Dark
+Name[hu]=Breeze Dark
+Name[nl]=Breeze Dark
+Name[pl]=Ciemna bryza
+Name[pt]=Brisa Escura
+Name[pt_BR]=Breeze Dark
+Name[ru]=Breeze, тёмный вариант
+Name[sk]=Tmavý vánok
+Name[sr]=Поветарац тамни
+Name[sr@ijekavian]=Поветарац тамни
+Name[sr@ijekavianlatin]=Povetarac tamni
+Name[sr@latin]=Povetarac tamni
+Name[sv]=Breeze mörk
+Name[uk]=Breeze Dark
+Name[x-test]=xxBreeze Darkxx
+Name[zh_CN]=暗色微风
+Name[zh_TW]=微風暗
+Comment=Breeze icon theme for dark color schemes by the KDE Visual Design Group
+Comment[ca]=Tema d'icones Brisa amb un esquema de color fosc pel Grup de disseny visual del KDE
+Comment[cs]=Motiv ikon Breeze pro tmavá barevná schémata od KDE Visual Design Group
+Comment[de]=Breeze-Symboldesign für dunkles Farbschema der KDE Visual Design Group
+Comment[el]=Θέμα εικονιδίων Breeze για σκοτεινά χρωματικά σχέδια από το KDE Visual Design Group
+Comment[es]=Tema de iconos Brisa para esquemas de colores oscuros, por el Grupo de diseño visual de KDE
+Comment[fi]=KDE:n graafisen suunnittelun ryhmän tekemä Breeze-kuvaketeema tummia väriteemoja varten
+Comment[hu]=Breeze ikontéma sötét színsémákhoz a KDE Visual Desing Grouptól
+Comment[nl]=Pictogramthema Breeze voor donkere schema's door de groep KDE Visual Design
+Comment[pl]=Zestaw ikon Bryzy dla pulpitów o ciemnych barwach dzięki Grupie Projektu Wizualnego KDE
+Comment[pt]=Tema de ícones Brisa, para esquemas de cores escuros, do Grupo de Desenho Visual do KDE
+Comment[pt_BR]=Tema de ícones Breeze para esquemas de cores escuros, do KDE Visual Design Group
+Comment[ru]=Набор тёмных значков Breeze от Группы графического дизайна (VDG) KDE
+Comment[sk]=Téma ikon Breeze pre tmavé farebné schémy od dizajnovej skupiny KDE Visual
+Comment[sr]=Тема икона Поветарац за тамне шеме боја КДЕ‑ове групе за визуелни дизајн
+Comment[sr@ijekavian]=Тема икона Поветарац за тамне шеме боја КДЕ‑ове групе за визуелни дизајн
+Comment[sr@ijekavianlatin]=Tema ikona Povetarac za tamne šeme boja KDE‑ove grupe za vizuelni dizajn
+Comment[sr@latin]=Tema ikona Povetarac za tamne šeme boja KDE‑ove grupe za vizuelni dizajn
+Comment[sv]=Breeze ikontema för mörka färgscheman av KDE:s visuella designgrupp
+Comment[uk]=Тема піктограм Breeze для темних схем кольорів, створена групою дизайнерів KDE
+Comment[x-test]=xxBreeze icon theme for dark color schemes by the KDE Visual Design Groupxx
+Comment[zh_CN]=KDE 视觉设计组制作的用于暗色主题的 Breeze 图标主题
+Comment[zh_TW]=KDE 視覺設計組製作的微風暗色系圖示主題
+Inherits=breeze,oxygen
+Version=0.8
+
+Example=folder
+
+
+Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,mimetypes/scalable,places/scalable,places/small
+
+[actions/scalable]	#22x22
+Size=22
+Context=Actions
+Type=Fixed
+
+[actions/small]		#16x16
+Size=16
+Context=Actions
+Type=Fixed
+
+[apps/scalable]
+Size=48
+Context=Applications
+Type=Scalable
+MinSize=48
+MaxSize=256
+
+[apps/preferences]
+Size=32
+Context=Applications
+Type=Fixed
+
+[apps/small]
+Size=16
+Context=Applications
+Type=Fixed
+
+[categories/scalable]
+Size=22
+Context=Categories
+Type=Scalable
+MinSize=16
+MaxSize=22
+
+[categories/preferences]
+Size=32
+Context=Categories
+Type=Fixed
+
+[categories/small]
+Size=16
+Context=Categories
+Type=Fixed
+
+[mimetypes/scalable]
+Size=54
+Context=Places
+Type=Scalable
+MinSize=24
+MaxSize=512
+
+[places/scalable]
+Size=64
+Context=Places
+Type=Scalable
+MinSize=24
+MaxSize=512
+
+[places/small]
+Size=16
+Context=Places
+Type=Scalable
+MinSize=16
+MaxSize=22

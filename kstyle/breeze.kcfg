@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+
+  <kcfgfile name="breezerc"/>
+
+  <!-- widget style -->
+  <group name="Style">
+    
+    <!-- animations -->
+    <entry name="AnimationsEnabled" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="AnimationSteps" type = "Int">
+       <default>10</default>
+    </entry>
+
+    <entry name="AnimationsDuration" type="Int">
+      <default>100</default>
+    </entry>
+
+    <!-- busy progress bars -->
+    <entry name="ProgressBarAnimated" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- progress bar animation durations -->
+    <entry name="ProgressBarBusyStepDuration" type="Int">
+      <default>800</default>
+    </entry>
+
+    <!-- scrollbar buttons -->
+    <entry name="ScrollBarAddLineButtons" type="Int">
+      <default>1</default>
+    </entry>
+
+    <entry name="ScrollBarSubLineButtons" type="Int">
+      <default>1</default>
+    </entry>
+
+    <!-- mnemonics -->
+    <entry name="MnemonicsMode" type="Enum">
+      <choices>
+          <choice name="MN_NEVER" />
+          <choice name="MN_AUTO" />
+          <choice name="MN_ALWAYS" />
+      </choices>
+      <default>MN_AUTO</default>
+    </entry>
+
+    <!-- toolbars -->
+    <entry name="ToolBarDrawItemSeparator" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- sliders -->
+    <entry name="SliderDrawTickMarks" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- tree views -->
+    <entry name="ViewDrawTreeBranchLines" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- tab bars -->
+    <entry name="TabBarDrawCenteredTabs" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <!-- frames -->
+    <entry name="TitleWidgetDrawFrame" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <entry name="DockWidgetDrawFrame" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <entry name="SidePanelDrawFrame" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="MenuItemDrawStrongFocus" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- window dragging -->
+    <entry name="WindowDragMode" type="Enum">
+      <choices>
+          <choice name="WD_NONE" />
+          <choice name="WD_MINIMAL" />
+          <choice name="WD_FULL" />
+      </choices>
+      <default>WD_FULL</default>
+    </entry>
+
+    <!--
+        this is the comma separated list of special per-app widgets on which
+        window dragging can be installed (in addition to the build-in list of
+        standard widgets. They are reference by the widget class name.
+    -->
+    <entry name="WindowDragWhiteList" type="StringList">
+       <default></default>
+    </entry>
+
+    <!--
+        this is the comma separated list of special per-app widgets on which
+        window dragging must be disabled (in addition to the build-in list of
+        standard widgets). They are reference by the widget class name.
+    -->
+    <entry name="WindowDragBlackList" type="StringList">
+       <default></default>
+    </entry>
+
+    <!-- if true, move events are passed to the window manager (e.g. KWin) -->
+    <entry name="UseWMMoveResize" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <!-- splitter proxy -->
+    <entry name="SplitterProxyEnabled" type="Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="SplitterProxyWidth" type="Int">
+      <default>12</default>
+    </entry>
+
+    <!-- light source -->
+    <entry name="LightSource" type="Enum">
+      <choices>
+          <choice name="LS_TOPLEFT" />
+          <choice name="LS_TOP" />
+          <choice name="LS_TOPRIGHT" />
+      </choices>
+      <default>LS_TOPLEFT</default>
+    </entry>
+
+    <!-- debugging -->
+    <entry name="WidgetExplorerEnabled" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <entry name="DrawWidgetRects" type="Bool">
+      <default>false</default>
+    </entry>
+
+  </group>
+
+</kcfg>
