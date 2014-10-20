@@ -62,7 +62,7 @@ QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
             gtkrcSettings.beginGroup(settingsKey);
         }
         if (gtkrcSettings.value("gtk-theme-name") != QStringLiteral("oxygen-gtk")) {
-            qCDebug(GTKBREEZE) << "gtk settings file " + gtkSettingsFile + " already exist and is not using oxygen, will not change";
+            qCDebug(GTKBREEZE) << "gtk settings file " + gtkSettingsFile + " already exists and is not using oxygen, will not change";
             return QString();
         }
     }
@@ -74,8 +74,8 @@ QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
  */
 void setGtk2()
 {
-    QString gtk2Theme = "Orion"; // Orion looks kindae like breeze
-    QString gtk2ThemeSettings = "gtk-2.0/gtkrc"; // file to check for
+    QString gtk2Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
+    QString gtk2ThemeSettings = QStringLiteral("gtk-2.0/gtkrc"); // file to check for
     QString gtkThemeDirectory = isGtkThemeInstalled(gtk2Theme, gtk2ThemeSettings);
 
     if (gtkThemeDirectory == 0) {
@@ -119,8 +119,8 @@ void setGtk3()
 {
     qCDebug(GTKBREEZE) << "setGtk3()";
 
-    QString gtk3Theme = "Orion"; // Orion looks kindae like breeze
-    QString gtk3ThemeSettings = "gtk-3.0/settings.ini"; // Orion looks kindae like breeze
+    QString gtk3Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
+    QString gtk3ThemeSettings = QStringLiteral("gtk-3.0/settings.ini"); // Orion looks kindae like breeze
 
     QString gtkThemeDirectory = isGtkThemeInstalled(gtk3Theme, gtk3ThemeSettings);
     if (gtkThemeDirectory == 0) {
