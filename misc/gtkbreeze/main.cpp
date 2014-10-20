@@ -147,14 +147,14 @@ void setGtk3()
         return;
     }
     QTextStream out(&gtkrc3writer);
-    out << "[Settings]\n";
-    out << "gtk-font-name=Ubuntu 10\n"; // matches plasma-workspace:startkde/startkde.cmake
-    out << "gtk-theme-name="+gtk3Theme+"\n";
-    out << "gtk-icon-theme-name=oxygen\n"; // breeze icons don't seem to work with gtk
-    out << "gtk-fallback-icon-theme=gnome\n";
-    out << "gtk-toolbar-style=GTK_TOOLBAR_ICONS\n";
-    out << "gtk-menu-images=1\n";
-    out << "gtk-button-images=1\n";
+    out << QStringLiteral("[Settings]\n");
+    out << QStringLiteral("gtk-font-name=Ubuntu 10\n"); // matches plasma-workspace:startkde/startkde.cmake
+    out << QStringLiteral("gtk-theme-name=")+gtk3Theme+QStringLiteral("\n");
+    out << QStringLiteral("gtk-icon-theme-name=oxygen\n"); // breeze icons don't seem to work with gtk
+    out << QStringLiteral("gtk-fallback-icon-theme=gnome\n");
+    out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
+    out << QStringLiteral("gtk-menu-images=1\n");
+    out << QStringLiteral("gtk-button-images=1\n");
     gtkrc3writer.close();
     qCDebug(GTKBREEZE) << "gtk3rc written";
 }
