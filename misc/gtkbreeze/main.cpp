@@ -111,8 +111,6 @@ void setGtk2()
     out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
     out << QStringLiteral("gtk-menu-images=1\n");
     out << QStringLiteral("gtk-button-images=1\n");
-
-    gtkrc2writer.close();
     qCDebug(GTKBREEZE) << "gtk2rc written";
 }
 
@@ -155,7 +153,6 @@ void setGtk3()
     out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
     out << QStringLiteral("gtk-menu-images=1\n");
     out << QStringLiteral("gtk-button-images=1\n");
-    gtkrc3writer.close();
     qCDebug(GTKBREEZE) << "gtk3rc written";
 }
 
