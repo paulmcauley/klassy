@@ -92,7 +92,11 @@ void setGtk2()
 
     qCDebug(GTKBREEZE) << "no gtkrc2 file or oxygen being used, setting to new theme";
     QFile gtkrc2writer(gtkrc2path);
-    gtkrc2writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    bool opened = gtkrc2writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (!opened) {
+        qCWarning(GTKBREEZE) << "failed to open " << gtkrc2path;
+        return;
+    }
     QTextStream out(&gtkrc2writer);
     out << "include \"" << gtkThemeDirectory << "/gtk-2.0/gtkrc\"\n";
     out << "style \"user-font\"\n";
@@ -137,7 +141,11 @@ void setGtk3()
 
     qCDebug(GTKBREEZE) << "no gtkrc3 file or oxygen being used, setting to new theme";
     QFile gtkrc3writer(gtkrc3path);
-    gtkrc3writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    bool opened = gtkrc3writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (!opened) {
+        qCWarning(GTKBREEZE) << "failed to open " << gtkrc3path;
+        return;
+    }
     QTextStream out(&gtkrc3writer);
     out << "[Settings]\n";
     out << "gtk-font-name=Ubuntu 10\n"; // matches plasma-workspace:startkde/startkde.cmake
