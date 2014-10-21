@@ -75,7 +75,8 @@ QString isGtkThemeSetToOxygen(QString gtkSettingsFile, QString settingsKey)
 int setGtk2()
 {
     const QString gtk2Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
-    const QString gtk2ThemeSettings = QStringLiteral("gtk-2.0/gtkrc"); // file to check for
+    const QString gtk2ThemeSettings = QStringLiteral("gtk-2.0/gtkrc"); // system installed file to check for
+
     const QString gtkThemeDirectory = isGtkThemeInstalled(gtk2Theme, gtk2ThemeSettings);
 
     if (gtkThemeDirectory == 0) {
@@ -123,7 +124,7 @@ int setGtk3()
     qCDebug(GTKBREEZE) << "setGtk3()";
 
     const QString gtk3Theme = QStringLiteral("Orion"); // Orion looks kindae like breeze
-    const QString gtk3ThemeSettings = QStringLiteral("gtk-3.0/settings.ini"); // Orion looks kindae like breeze
+    const QString gtk3ThemeSettings = QStringLiteral("gtk-3.0/settings.ini"); // check for installed /usr/share/themes/Orion/gtk-3.0/settings.ini
 
     const QString gtkThemeDirectory = isGtkThemeInstalled(gtk3Theme, gtk3ThemeSettings);
     if (gtkThemeDirectory == 0) {
@@ -155,6 +156,26 @@ int setGtk3()
     out << QStringLiteral("gtk-menu-images=1\n");
     out << QStringLiteral("gtk-button-images=1\n");
     qCDebug(GTKBREEZE) << "gtk3rc written";
+
+    QString cssFile = QStandardPaths::standardLocations(QStandardPaths::HomeLocation).first() +
+                      QDir::separator() + ".config/gtk-3.0/gtk.css";
+    QFile gtkcss3writer(cssFile);
+    opened = gtkcss3writer.open(QIODevice::WriteOnly | QIODevice::Text);
+    if (!opened) {
+        qCWarning(GTKBREEZE) << "failed to open " << cssFile;
+        return 1;
+    }
+    QTextStream outcss(&gtkcss3writer);
+    outcss << QStringLiteral(".window-frame, .window-frame:backdrop {\n");
+    outcss << QStringLiteral("box-shadow: 0 0 0 black;\n");
+    outcss << QStringLiteral("border-style: none;\n");
+    outcss << QStringLiteral("margin: 0;\n");
+    outcss << QStringLiteral("border-radius: 0;\n");
+    outcss << QStringLiteral("}\n");
+    outcss << QStringLiteral(".titlebar {\n");
+    outcss << QStringLiteral("border-radius: 0;\n");
+    outcss << QStringLiteral("}\n");
+    qCDebug(GTKBREEZE) << ".config/gtk-3.0/gtk.css written";
     return 0;
 }
 
