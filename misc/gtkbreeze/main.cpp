@@ -167,13 +167,13 @@ int setGtk3()
     }
     QTextStream outcss(&gtkcss3writer);
     outcss << QStringLiteral(".window-frame, .window-frame:backdrop {\n");
-    outcss << QStringLiteral("box-shadow: 0 0 0 black;\n");
-    outcss << QStringLiteral("border-style: none;\n");
-    outcss << QStringLiteral("margin: 0;\n");
-    outcss << QStringLiteral("border-radius: 0;\n");
-    outcss << QStringLiteral("}\n");
+    outcss << QStringLiteral("  box-shadow: 0 0 0 black;\n");
+    outcss << QStringLiteral("  border-style: none;\n");
+    outcss << QStringLiteral("  margin: 0;\n");
+    outcss << QStringLiteral("  border-radius: 0;\n");
+    outcss << QStringLiteral("}\n\n");
     outcss << QStringLiteral(".titlebar {\n");
-    outcss << QStringLiteral("border-radius: 0;\n");
+    outcss << QStringLiteral("  border-radius: 0;\n");
     outcss << QStringLiteral("}\n");
     qCDebug(GTKBREEZE) << ".config/gtk-3.0/gtk.css written";
     return 0;
