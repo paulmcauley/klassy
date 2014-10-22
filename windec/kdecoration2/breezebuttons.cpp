@@ -369,7 +369,7 @@ Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::De
     if (Decoration *d = qobject_cast<Decoration*>(decoration)) {
         Button *b = new Button(type, d, parent);
         if (type == KDecoration2::DecorationButtonType::Menu) {
-            QObject::connect(d->client(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
+            QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
         }
         return b;
     }

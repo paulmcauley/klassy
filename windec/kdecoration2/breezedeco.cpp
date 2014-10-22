@@ -72,29 +72,29 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     // a change in font might cause the borders to change
     connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
     connect(KDecoration2::DecorationSettings::self(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
-    connect(client(), &KDecoration2::DecoratedClient::borderingScreenEdgesChanged, this, &Decoration::recalculateBorders);
-    connect(client(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
-    connect(client(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
-    connect(client(), &KDecoration2::DecoratedClient::captionChanged, this,
+    connect(client().data(), &KDecoration2::DecoratedClient::borderingScreenEdgesChanged, this, &Decoration::recalculateBorders);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
+    connect(client().data(), &KDecoration2::DecoratedClient::captionChanged, this,
         [this]() {
             // update the caption area
             update(captionRect());
         }
     );
-    connect(client(), &KDecoration2::DecoratedClient::activeChanged,    this, [this]() { update(); });
-    connect(client(), &KDecoration2::DecoratedClient::paletteChanged,   this,
+    connect(client().data(), &KDecoration2::DecoratedClient::activeChanged,    this, [this]() { update(); });
+    connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged,   this,
         [this]() {
             m_colorSettings.update(client()->palette());
             update();
         }
     );
-    connect(client(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleRect);
-    connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleRect);
-    connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
+    connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleRect);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleRect);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
-    connect(client(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonPositions);
-    connect(client(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonPositions);
-    connect(client(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::updateButtonPositions);
+    connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonPositions);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonPositions);
+    connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::updateButtonPositions);
 
     createButtons();
     createShadow();
