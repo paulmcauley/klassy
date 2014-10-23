@@ -80,7 +80,7 @@
     </entry>
 
     <entry name="SidePanelDrawFrame" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
 
     <entry name="MenuItemDrawStrongFocus" type="Bool">
