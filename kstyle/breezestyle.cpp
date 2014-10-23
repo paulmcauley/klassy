@@ -666,6 +666,8 @@ namespace Breeze
             case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
             case SE_HeaderArrow: return headerArrowRect( option, widget );
             case SE_HeaderLabel: return headerLabelRect( option, widget );
+            case SE_TabBarTabLeftButton: return tabBarTabLeftButtonRect( option, widget );
+            case SE_TabBarTabRightButton: return tabBarTabRightButtonRect( option, widget );
             case SE_TabWidgetTabBar: return tabWidgetTabBarRect( option, widget );
             case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
             case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
@@ -1481,6 +1483,94 @@ namespace Breeze
 
         labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_ItemSpacing, 0 );
         return visualRect( option, labelRect );
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::tabBarTabLeftButtonRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        if( !tabOptionV3 || tabOptionV3->leftButtonSize.isEmpty() ) return QRect();
+
+        const QRect rect( option->rect );
+        const QSize size( tabOptionV3->leftButtonSize );
+        QRect buttonRect( QPoint(0,0), size );
+
+        // vertical positioning
+        switch( tabOptionV3->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            buttonRect.moveLeft( rect.left() + Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveTop( ( rect.height() - buttonRect.height() )/2 );
+            buttonRect = visualRect( option, buttonRect );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            buttonRect.moveBottom( rect.bottom() - Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            buttonRect.moveTop( rect.top() + Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
+            break;
+
+            default: break;
+        }
+
+        return buttonRect;
+
+    }
+
+    //____________________________________________________________________
+    QRect Style::tabBarTabRightButtonRect( const QStyleOption* option, const QWidget* ) const
+    {
+
+        // cast option and check
+        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        if( !tabOptionV3 || tabOptionV3->rightButtonSize.isEmpty() ) return QRect();
+
+        const QRect rect( option->rect );
+        const QSize size( tabOptionV3->rightButtonSize );
+        QRect buttonRect( QPoint(0,0), size );
+
+        // vertical positioning
+        switch( tabOptionV3->shape )
+        {
+            case QTabBar::RoundedNorth:
+            case QTabBar::TriangularNorth:
+
+            case QTabBar::RoundedSouth:
+            case QTabBar::TriangularSouth:
+            buttonRect.moveRight( rect.right() - Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveTop( ( rect.height() - buttonRect.height() )/2 );
+            buttonRect = visualRect( option, buttonRect );
+            break;
+
+            case QTabBar::RoundedWest:
+            case QTabBar::TriangularWest:
+            buttonRect.moveTop( rect.top() + Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
+            break;
+
+            case QTabBar::RoundedEast:
+            case QTabBar::TriangularEast:
+            buttonRect.moveBottom( rect.bottom() - Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
+            break;
+
+            default: break;
+        }
+
+        return buttonRect;
 
     }
 
@@ -2573,6 +2663,18 @@ namespace Breeze
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
         const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        const bool hasText( tabOption && !tabOption->text.isEmpty() );
+        const bool hasIcon( tabOption && !tabOption->icon.isNull() );
+        const bool hasLeftButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
+        const bool hasRightButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
+
+        // calculate width increment for horizontal tabs
+        int widthIncrement = 0;
+        if( hasIcon && !( hasText || hasLeftButton || hasRightButton ) ) widthIncrement -= 4;
+        if( hasText && hasIcon ) widthIncrement += Metrics::TabBar_TabItemSpacing;
+        if( hasLeftButton && ( hasText || hasIcon ) )  widthIncrement += Metrics::TabBar_TabItemSpacing;
+        if( hasRightButton && ( hasText || hasIcon || hasLeftButton ) )  widthIncrement += Metrics::TabBar_TabItemSpacing;
 
         // add margins
         QSize size( contentsSize );
@@ -2582,13 +2684,15 @@ namespace Breeze
         if( verticalTabs )
         {
 
-            size = expandSize( size, Metrics::TabBar_TabMarginHeight, Metrics::TabBar_TabMarginWidth );
-            size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
+            size.rheight() += widthIncrement;
+            if( hasIcon && !hasText ) size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, 0 ) );
+            else size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
 
         } else {
 
-            size = expandSize( size, Metrics::TabBar_TabMarginWidth, Metrics::TabBar_TabMarginHeight );
-            size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+            size.rwidth() += widthIncrement;
+            if( hasIcon && !hasText ) size = size.expandedTo( QSize( 0, Metrics::TabBar_TabMinHeight ) );
+            else size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
 
         }
 
