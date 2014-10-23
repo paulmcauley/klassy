@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
-    <height>551</height>
+    <width>471</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -188,10 +188,18 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="_menuItemDrawThinFocus">
+        <property name="text">
+         <string>Draw a thin line to indicate focus in menus and menubars</string>
+        </property>
+       </widget>
+      </item>
      </layout>
      <zorder>_sidePanelDrawFrame</zorder>
      <zorder>_dockWidgetDrawFrame</zorder>
      <zorder>_titleWidgetDrawFrame</zorder>
+     <zorder>_menuItemDrawThinFocus</zorder>
     </widget>
    </item>
    <item>
