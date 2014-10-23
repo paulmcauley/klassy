@@ -24,9 +24,15 @@ if(BREEZE_USE_KDE4)
   include_directories(${KDE4_INCLUDES})
 
   ### XCB
-  find_package(PkgConfig REQUIRED)
-  pkg_check_modules(XCB xcb x11-xcb)
-  set(BREEZE_HAVE_X11 ${XCB_FOUND})
+  if(UNIX AND NOT APPLE)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(XCB xcb x11-xcb)
+    set(BREEZE_HAVE_X11 ${XCB_FOUND})
+  else()
+    set(BREEZE_HAVE_X11 FALSE)
+  endif()
+
+  ### KStyle
   set(BREEZE_HAVE_KSTYLE FALSE)
 
 else()
@@ -57,12 +63,16 @@ else()
       PURPOSE "Required to pass style properties to native Windows on X11 Platform"
   )
 
-  if(NOT APPLE)
+  if(UNIX AND NOT APPLE)
 
     set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
     if (XCB_XCB_FOUND)
       find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
     endif()
+
+  else()
+
+    set(BREEZE_HAVE_X11 FALSE)
 
   endif()
 
@@ -122,7 +132,7 @@ if(BREEZE_USE_KDE4)
   kde4_add_plugin(breeze ${breeze_PART_SRCS})
   target_link_libraries(breeze  ${KDE4_KDEUI_LIBS})
 
-  if(XCB_FOUND)
+  if(BREEZE_HAVE_X11)
     target_link_libraries(breeze ${X11_XCB_LIBRARIES})
     target_link_libraries(breeze ${XCB_LIBRARIES})
   endif()
@@ -144,9 +154,9 @@ else()
     # As stated in http://msdn.microsoft.com/en-us/library/4hwaceh6.aspx M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
     target_compile_definitions(breeze PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
-    endif()
+  endif()
 
-  if(XCB_XCB_FOUND)
+  if(BREEZE_HAVE_X11)
     target_link_libraries(breeze ${XCB_LIBRARIES})
     target_link_libraries(breeze Qt5::X11Extras)
   endif()
