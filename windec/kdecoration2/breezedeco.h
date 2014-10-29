@@ -99,6 +99,9 @@ public:
 
     int captionHeight() const;
 
+public Q_SLOTS:
+    void init() override;
+
 private Q_SLOTS:
     void recalculateBorders();
     void updateButtonPositions();
