@@ -60,12 +60,11 @@ void ColorSettings::init(const QPalette &pal)
 }
 
 Decoration::Decoration(QObject *parent, const QVariantList &args)
-    : KDecoration2::Decoration(parent)
+    : KDecoration2::Decoration(parent, args)
     , m_colorSettings(client()->palette())
     , m_leftButtons(nullptr)
     , m_rightButtons(nullptr)
 {
-    Q_UNUSED(args)
 }
 
 Decoration::~Decoration() = default;
