@@ -29,6 +29,8 @@ uint qHash(const QPalette &pal);
 namespace Breeze
 {
 
+class Button;
+
 enum class ButtonState : uint {
     Normal,
     Disabled,
@@ -48,24 +50,24 @@ class ImageProvider final
 public:
     ~ImageProvider();
     static ImageProvider *self();
-    const QImage &button(KDecoration2::DecorationButton *decorationButton);
-    void clearCache(KDecoration2::DecorationButton *decorationButton);
+    const QImage &button(Button *decorationButton);
+    void clearCache(Button *decorationButton);
 
     void invalidate();
 
 private:
     ImageProvider();
-    QImage renderButton(KDecoration2::DecorationButton *decorationButton) const;
-    void renderCloseButton(QPainter *p, KDecoration2::DecorationButton *decorationButton) const;
-    void renderShadeButton(QPainter *p, KDecoration2::DecorationButton *decorationButton) const;
-    void renderMaximizeButton(QPainter *p, KDecoration2::DecorationButton *decorationButton) const;
-    void renderOnAllDesktopsButton(QPainter *p, KDecoration2::DecorationButton *decorationButton) const;
-    void drawGenericButtonBackground(QPainter *painter, KDecoration2::DecorationButton *decorationButton) const;
-    void drawBackground(QPainter *painter, KDecoration2::DecorationButton *decorationButton, const QColor &color) const;
-    void drawDownArrow(QPainter *painter, KDecoration2::DecorationButton *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-    void drawUpArrow(QPainter *painter, KDecoration2::DecorationButton *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-    QColor foregroundColor(KDecoration2::DecorationButton *decorationButton) const;
-    const ColorSettings &colorSettings(KDecoration2::DecorationButton *decorationButton) const;
+    QImage renderButton(Button *decorationButton) const;
+    void renderCloseButton(QPainter *p, Button *decorationButton) const;
+    void renderShadeButton(QPainter *p, Button *decorationButton) const;
+    void renderMaximizeButton(QPainter *p, Button *decorationButton) const;
+    void renderOnAllDesktopsButton(QPainter *p, Button *decorationButton) const;
+    void drawGenericButtonBackground(QPainter *painter, Button *decorationButton) const;
+    void drawBackground(QPainter *painter, Button *decorationButton, const QColor &color) const;
+    void drawDownArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
+    void drawUpArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
+    QColor foregroundColor(Button *decorationButton) const;
+    const ColorSettings &colorSettings(Button *decorationButton) const;
     const ColorSettings &colorSettings(const QPalette &pal) const;
     static ImageProvider *s_self;
     typedef QHash<ButtonState, QImage> ImagesForButtonState;
