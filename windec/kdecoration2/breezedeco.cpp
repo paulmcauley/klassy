@@ -32,7 +32,9 @@
 
 K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory,
                            "breeze.json",
-                           registerPlugin<Breeze::Decoration>();)
+                           registerPlugin<Breeze::Decoration>();
+                           registerPlugin<Breeze::Button>(QStringLiteral("button"));
+                          )
 
 namespace Breeze
 {

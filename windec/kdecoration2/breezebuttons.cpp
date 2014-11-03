@@ -287,14 +287,15 @@ void ImageProvider::renderShadeButton(QPainter *painter, Breeze::Button *decorat
 
 void ImageProvider::drawGenericButtonBackground(QPainter *painter, Breeze::Button *decorationButton) const
 {
-    if (!decorationButton->isPressed() && !decorationButton->isHovered()) {
+    const bool standAlone = decorationButton->isStandAlone();
+    if (!decorationButton->isPressed() && !decorationButton->isHovered() && !standAlone) {
         return;
     }
     const QColor baseBackgroundColor = colorSettings(decorationButton).font(decorationButton->decoration()->client()->isActive());
     drawBackground(painter, decorationButton, QColor(baseBackgroundColor.red(),
                                                      baseBackgroundColor.green(),
                                                      baseBackgroundColor.blue(),
-                                                     decorationButton->isPressed() ? 50 : 127));
+                                                     decorationButton->isPressed() ? 50 : standAlone ? 255 : 127));
 }
 
 void ImageProvider::drawBackground(QPainter *painter, Breeze::Button *decorationButton, const QColor &color) const
@@ -342,6 +343,9 @@ QColor ImageProvider::foregroundColor(Breeze::Button *decorationButton) const
 {
     const ColorSettings &colors = colorSettings(decorationButton->decoration()->client()->palette());
     const bool active = decorationButton->decoration()->client()->isActive();
+    if (decorationButton->isStandAlone()) {
+        return colors.titleBarColor(active);
+    }
     if (decorationButton->isHovered()) {
         return colors.titleBarColor(active);
     }
@@ -365,6 +369,12 @@ Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, 
         ImageProvider::self()->clearCache(this);
         setGeometry(QRect(geometry().topLeft(), QSize(height, height)));
     });
+}
+
+Button::Button(QObject *parent, const QVariantList &args)
+    : DecorationButton(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
+    , m_standalone(true)
+{
 }
 
 Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)

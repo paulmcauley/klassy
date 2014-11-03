@@ -38,7 +38,8 @@ enum class ButtonState : uint {
     Pressed,
     Checked,
     CheckedHovered,
-    CheckedPressed
+    CheckedPressed,
+    Preview
 };
 
 inline uint qHash(const ButtonState &state) {
@@ -81,13 +82,19 @@ class Button : public KDecoration2::DecorationButton
 {
     Q_OBJECT
 public:
+    explicit Button(QObject *parent, const QVariantList &args);
 
     virtual ~Button();
     void paint(QPainter *painter) override;
     static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
 
+    bool isStandAlone() const {
+        return m_standalone;
+    }
+
 private:
     explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
+    bool m_standalone = false;
 };
 
 } // namespace
