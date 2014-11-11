@@ -166,7 +166,7 @@ void Decoration::recalculateBorders()
     }
 
     int bottom = client()->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
-    setBorders(left, right, top, bottom);
+    setBorders(QMargins(left, top, right, bottom));
 
     const int extSize = s->largeSpacing() / 2;
     int extSides = 0;
