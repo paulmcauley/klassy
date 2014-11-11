@@ -177,7 +177,7 @@ void Decoration::recalculateBorders()
     } else if (s->borderSize() == KDecoration2::BorderSize::NoSides) {
         extSides = extSize;
     }
-    setExtendedBorders(extSides, extSides, 0, extBottom);
+    setResizeOnlyBorders(QMargins(extSides, 0, extSides, extBottom));
 }
 
 void Decoration::createButtons()
