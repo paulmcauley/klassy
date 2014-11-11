@@ -74,7 +74,7 @@ Decoration::~Decoration() = default;
 void Decoration::init()
 {
     recalculateBorders();
-    updateTitleRect();
+    updateTitleBar();
     auto s = settings();
     connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
     // a change in font might cause the borders to change
@@ -96,8 +96,8 @@ void Decoration::init()
             update();
         }
     );
-    connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleRect);
-    connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleRect);
+    connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleBar);
+    connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
     connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
     connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonPositions);
@@ -108,7 +108,7 @@ void Decoration::init()
     createShadow();
 }
 
-void Decoration::updateTitleRect()
+void Decoration::updateTitleBar()
 {
     auto s = settings();
     const bool maximized = client()->isMaximized();
@@ -116,7 +116,7 @@ void Decoration::updateTitleRect()
     const int height = maximized ? borderTop() : borderTop() - s->smallSpacing();
     const int x = maximized ? 0 : s->largeSpacing() / 2;
     const int y = maximized ? 0 : s->smallSpacing();
-    setTitleRect(QRect(x, y, width, height));
+    setTitleBar(QRect(x, y, width, height));
 }
 
 static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &settings, bool bottom) {

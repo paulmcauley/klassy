@@ -105,7 +105,7 @@ public Q_SLOTS:
 private Q_SLOTS:
     void recalculateBorders();
     void updateButtonPositions();
-    void updateTitleRect();
+    void updateTitleBar();
 
 private:
     QRect captionRect() const;
