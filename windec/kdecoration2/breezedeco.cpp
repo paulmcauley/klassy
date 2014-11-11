@@ -283,15 +283,7 @@ void Decoration::createShadow()
 {
     KDecoration2::DecorationShadow *decorationShadow = new KDecoration2::DecorationShadow(this);
     decorationShadow->setPadding(QMargins(10, 10, 20, 20));
-
-    decorationShadow->setTopLeft(QSize(20, 20));
-    decorationShadow->setTop(QSize(20, 20));
-    decorationShadow->setTopRight(QSize(20, 20));
-    decorationShadow->setRight(QSize(20, 20));
-    decorationShadow->setBottomRight(QSize(20, 20));
-    decorationShadow->setBottom(QSize(20, 20));
-    decorationShadow->setBottomLeft(QSize(20, 20));
-    decorationShadow->setLeft(QSize(20, 20));
+    decorationShadow->setInnerShadowRect(QRect(20, 20, 20, 20));
 
     QImage image(60, 60, QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
