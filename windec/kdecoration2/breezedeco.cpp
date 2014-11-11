@@ -80,7 +80,7 @@ void Decoration::init()
     // a change in font might cause the borders to change
     connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
     connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
-    connect(client().data(), &KDecoration2::DecoratedClient::borderingScreenEdgesChanged, this, &Decoration::recalculateBorders);
+    connect(client().data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
     connect(client().data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(client().data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(client().data(), &KDecoration2::DecoratedClient::captionChanged, this,
@@ -152,7 +152,7 @@ static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &se
 void Decoration::recalculateBorders()
 {
     auto s = settings();
-    const Qt::Edges edges = client()->borderingScreenEdges();
+    const Qt::Edges edges = client()->adjacentScreenEdges();
     int left   = client()->isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
     int right  = client()->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
 
