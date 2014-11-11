@@ -197,8 +197,9 @@ void Decoration::updateButtonPositions()
     m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - padding, padding));
 }
 
-void Decoration::paint(QPainter *painter)
+void Decoration::paint(QPainter *painter, const QRegion &repaintRegion)
 {
+    // TODO: optimize based on repaintRegion
     // paint background
     painter->fillRect(rect(), Qt::transparent);
     painter->save();
@@ -211,12 +212,12 @@ void Decoration::paint(QPainter *painter)
     painter->drawRoundedRect(rect(), 5.0, 5.0);
     painter->restore();
 
-    paintTitleBar(painter);
+    paintTitleBar(painter, repaintRegion);
 
     painter->restore();
 }
 
-void Decoration::paintTitleBar(QPainter *painter)
+void Decoration::paintTitleBar(QPainter *painter, const QRegion &repaintRegion)
 {
     const bool active = client()->isActive();
     const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
@@ -259,8 +260,8 @@ void Decoration::paintTitleBar(QPainter *painter)
     painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
 
     // draw all buttons
-    m_leftButtons->paint(painter);
-    m_rightButtons->paint(painter);
+    m_leftButtons->paint(painter, repaintRegion);
+    m_rightButtons->paint(painter, repaintRegion);
 }
 
 int Decoration::captionHeight() const

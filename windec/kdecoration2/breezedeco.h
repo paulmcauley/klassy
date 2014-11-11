@@ -91,7 +91,7 @@ public:
     explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
     virtual ~Decoration();
 
-    void paint(QPainter *painter) override;
+    void paint(QPainter *painter, const QRegion &repaintRegion) override;
 
     const ColorSettings &colorSettings() {
         return m_colorSettings;
@@ -110,7 +110,7 @@ private Q_SLOTS:
 private:
     QRect captionRect() const;
     void createButtons();
-    void paintTitleBar(QPainter *painter);
+    void paintTitleBar(QPainter *painter, const QRegion &repaintRegion);
     void createShadow();
     ColorSettings m_colorSettings;
     QList<KDecoration2::DecorationButton*> m_buttons;

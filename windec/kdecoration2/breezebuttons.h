@@ -85,7 +85,7 @@ public:
     explicit Button(QObject *parent, const QVariantList &args);
 
     virtual ~Button();
-    void paint(QPainter *painter) override;
+    void paint(QPainter *painter, const QRegion &repaintRegion) override;
     static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
 
     bool isStandAlone() const {

@@ -391,8 +391,10 @@ Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::De
 
 Button::~Button() = default;
 
-void Button::paint(QPainter *painter)
+void Button::paint(QPainter *painter, const QRegion &repaintRegion)
 {
+    Q_UNUSED(repaintRegion)
+    // TODO: optimize based on repaintRegion
     if (type() == KDecoration2::DecorationButtonType::Menu) {
         const QPixmap pixmap = decoration()->client()->icon().pixmap(size());
         painter->drawPixmap(geometry().center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
