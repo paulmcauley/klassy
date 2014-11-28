@@ -63,7 +63,7 @@ void ColorSettings::init(const QPalette &pal)
 
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args)
-    , m_colorSettings(client()->palette())
+    , m_colorSettings(client().data()->palette())
     , m_leftButtons(nullptr)
     , m_rightButtons(nullptr)
 {
@@ -92,7 +92,7 @@ void Decoration::init()
     connect(client().data(), &KDecoration2::DecoratedClient::activeChanged,    this, [this]() { update(); });
     connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged,   this,
         [this]() {
-            m_colorSettings.update(client()->palette());
+            m_colorSettings.update(client().data()->palette());
             update();
         }
     );
@@ -111,8 +111,8 @@ void Decoration::init()
 void Decoration::updateTitleBar()
 {
     auto s = settings();
-    const bool maximized = client()->isMaximized();
-    const int width = client()->width();
+    const bool maximized = client().data()->isMaximized();
+    const int width = client().data()->width();
     const int height = maximized ? borderTop() : borderTop() - s->smallSpacing();
     const int x = maximized ? 0 : s->largeSpacing() / 2;
     const int y = maximized ? 0 : s->smallSpacing();
@@ -152,20 +152,21 @@ static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &se
 void Decoration::recalculateBorders()
 {
     auto s = settings();
-    const Qt::Edges edges = client()->adjacentScreenEdges();
-    int left   = client()->isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
-    int right  = client()->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
+    const auto c = client().data();
+    const Qt::Edges edges = c->adjacentScreenEdges();
+    int left   = c->isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
+    int right  = c->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
 
     QFontMetrics fm(s->font());
-    int top = qMax(fm.boundingRect(client()->caption()).height(), s->gridUnit() * 2);
+    int top = qMax(fm.boundingRect(c->caption()).height(), s->gridUnit() * 2);
     // padding below
     top += s->smallSpacing() * 2 + 1;
-    if (!client()->isMaximized()) {
+    if (!c->isMaximized()) {
         // padding above only on maximized
         top += s->smallSpacing();
     }
 
-    int bottom = client()->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
+    int bottom = c->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
     setBorders(QMargins(left, top, right, bottom));
 
     const int extSize = s->largeSpacing() / 2;
@@ -190,7 +191,7 @@ void Decoration::createButtons()
 void Decoration::updateButtonPositions()
 {
     auto s = settings();
-    const int padding = client()->isMaximized() ? 0 : s->smallSpacing();
+    const int padding = client().data()->isMaximized() ? 0 : s->smallSpacing();
     m_rightButtons->setSpacing(s->smallSpacing());
     m_leftButtons->setSpacing(s->smallSpacing());
     m_leftButtons->setPos(QPointF(padding, padding));
@@ -205,7 +206,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
     painter->save();
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(Qt::NoPen);
-    painter->setBrush(m_colorSettings.frame(client()->isActive()));
+    painter->setBrush(m_colorSettings.frame(client().data()->isActive()));
     // clip away the top part
     painter->save();
     painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
@@ -219,21 +220,22 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 
 void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 {
-    const bool active = client()->isActive();
+    const auto c = client().data();
+    const bool active = c->isActive();
     const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
-    const QColor titleBarColor(m_colorSettings.titleBarColor(client()->isActive()));
+    const QColor titleBarColor(m_colorSettings.titleBarColor(c->isActive()));
     // render a linear gradient on title area
     QLinearGradient gradient;
     gradient.setStart(0.0, 0.0);
     gradient.setFinalStop(0.0, titleRect.height());
-    gradient.setColorAt(0.0, titleBarColor.lighter(client()->isActive() ? 120.0 : 100.0));
+    gradient.setColorAt(0.0, titleBarColor.lighter(c->isActive() ? 120.0 : 100.0));
     gradient.setColorAt(0.8, titleBarColor);
     gradient.setColorAt(1.0, titleBarColor);
     gradient.setFinalStop(0.0, titleRect.height());
     painter->save();
     painter->setBrush(gradient);
     painter->setPen(Qt::NoPen);
-    if (client()->isMaximized()) {
+    if (c->isMaximized()) {
         painter->drawRect(titleRect);
     } else {
         painter->setClipRect(titleRect, Qt::IntersectClip);
@@ -247,16 +249,16 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
         // TODO: should be config option
         painter->fillRect(0, borderTop() - titleBarSpacer - 1,
                           size().width(), 1,
-                          client()->palette().color(active ?  QPalette::Highlight: QPalette::Background));
+                          c->palette().color(active ?  QPalette::Highlight: QPalette::Background));
     }
     // draw title bar spacer
-    painter->fillRect(0, borderTop() - titleBarSpacer, size().width(), titleBarSpacer, client()->palette().color(QPalette::Background));
+    painter->fillRect(0, borderTop() - titleBarSpacer, size().width(), titleBarSpacer, c->palette().color(QPalette::Background));
 
     // draw caption
     painter->setFont(s->font());
     const QRect cR = captionRect();
-    const QString caption = painter->fontMetrics().elidedText(client()->caption(), Qt::ElideMiddle, cR.width());
-    painter->setPen(m_colorSettings.font(client()->isActive()));
+    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.width());
+    painter->setPen(m_colorSettings.font(c->isActive()));
     painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
 
     // draw all buttons
@@ -266,7 +268,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 
 int Decoration::captionHeight() const
 {
-    return borderTop() - settings()->smallSpacing() * (client()->isMaximized() ? 2 : 3) - 1;
+    return borderTop() - settings()->smallSpacing() * (client().data()->isMaximized() ? 2 : 3) - 1;
 }
 
 QRect Decoration::captionRect() const
@@ -274,7 +276,7 @@ QRect Decoration::captionRect() const
     const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width();
     const int rightOffset = size().width() - m_rightButtons->geometry().x();
     const int offset = qMax(leftOffset, rightOffset);
-    const int yOffset = client()->isMaximized() ? 0 : settings()->smallSpacing();
+    const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing();
     // below is the spacer
     return QRect(offset, yOffset, size().width() - offset * 2, captionHeight());
 }

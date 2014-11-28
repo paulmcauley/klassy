@@ -84,17 +84,21 @@ static ButtonState stateForButton(Button *decorationButton)
     return ButtonState::Normal;
 }
 
-const QImage &ImageProvider::button(Breeze::Button *decorationButton)
+QImage ImageProvider::button(Breeze::Button *decorationButton)
 {
     auto paletteIt = m_images.begin();
-    if (paletteIt == m_images.end() || paletteIt.key() != decorationButton->decoration()->client()->palette()) {
-        paletteIt = m_images.find(decorationButton->decoration()->client()->palette());
+    if (!decorationButton->decoration()) {
+        return QImage();
+    }
+    auto client = decorationButton->decoration()->client().data();
+    if (paletteIt == m_images.end() || paletteIt.key() != client->palette()) {
+        paletteIt = m_images.find(client->palette());
     }
     if (paletteIt == m_images.end()) {
-        const QPalette pal = decorationButton->decoration()->client()->palette();
+        const QPalette pal = client->palette();
         m_images.insert(pal, ImagesForButton());
         m_colorSettings.append(ColorSettings(pal));
-        paletteIt = m_images.find(decorationButton->decoration()->client()->palette());
+        paletteIt = m_images.find(client->palette());
     }
     Q_ASSERT(paletteIt != m_images.end());
 
@@ -108,7 +112,7 @@ const QImage &ImageProvider::button(Breeze::Button *decorationButton)
     }
     Q_ASSERT(it != paletteIt.value().end());
 
-    auto it2 = it.value().find(decorationButton->decoration()->client()->isActive());
+    auto it2 = it.value().find(client->isActive());
     Q_ASSERT(it2 != it.value().end());
 
     const ButtonState state = stateForButton(decorationButton);
@@ -125,8 +129,12 @@ const QImage &ImageProvider::button(Breeze::Button *decorationButton)
 void ImageProvider::clearCache(Breeze::Button *decorationButton)
 {
     auto paletteIt = m_images.begin();
-    if (paletteIt == m_images.end() || paletteIt.key() != decorationButton->decoration()->client()->palette()) {
-        paletteIt = m_images.find(decorationButton->decoration()->client()->palette());
+    if (!decorationButton->decoration()) {
+        return;
+    }
+    const QPalette &palette = decorationButton->decoration()->client().data()->palette();
+    if (paletteIt == m_images.end() || paletteIt.key() != palette) {
+        paletteIt = m_images.find(palette);
     }
     if (paletteIt == m_images.end()) {
         return;
@@ -139,7 +147,7 @@ void ImageProvider::clearCache(Breeze::Button *decorationButton)
     paletteIt.value().erase(it);
 }
 
-const ColorSettings &ImageProvider::colorSettings(const QPalette &pal) const
+ColorSettings ImageProvider::colorSettings(const QPalette &pal) const
 {
     for (const ColorSettings &colorSettings : m_colorSettings) {
         if (colorSettings.palette() == pal) {
@@ -150,9 +158,12 @@ const ColorSettings &ImageProvider::colorSettings(const QPalette &pal) const
     return ColorSettings(pal);
 }
 
-const ColorSettings &ImageProvider::colorSettings(Breeze::Button *decorationButton) const
+ColorSettings ImageProvider::colorSettings(Breeze::Button *decorationButton) const
 {
-    return colorSettings(decorationButton->decoration()->client()->palette());
+    if (!decorationButton->decoration()) {
+        return colorSettings(QPalette());
+    }
+    return colorSettings(decorationButton->decoration()->client().data()->palette());
 }
 
 
@@ -201,8 +212,12 @@ QImage ImageProvider::renderButton(Breeze::Button *decorationButton) const
 
 void ImageProvider::renderCloseButton(QPainter *painter, Breeze::Button *decorationButton) const
 {
-    const bool active   = decorationButton->decoration()->client()->isActive();
-    const QPalette &pal = decorationButton->decoration()->client()->palette();
+    if (!decorationButton->decoration()) {
+        return;
+    }
+    auto client = decorationButton->decoration()->client().data();
+    const bool active   = client->isActive();
+    const QPalette &pal = client->palette();
     const bool pressed  = decorationButton->isPressed();
     const bool hovered  = decorationButton->isHovered();
     const QSize &size   = decorationButton->size().toSize();
@@ -246,7 +261,10 @@ void ImageProvider::renderMaximizeButton(QPainter *painter, Breeze::Button *deco
 
 void ImageProvider::renderOnAllDesktopsButton(QPainter *painter, Breeze::Button *decorationButton) const
 {
-    const bool active = decorationButton->decoration()->client()->isActive();
+    if (!decorationButton->decoration()) {
+        return;
+    }
+    const bool active = decorationButton->decoration()->client().data()->isActive();
     painter->save();
     drawGenericButtonBackground(painter, decorationButton);
 
@@ -287,11 +305,14 @@ void ImageProvider::renderShadeButton(QPainter *painter, Breeze::Button *decorat
 
 void ImageProvider::drawGenericButtonBackground(QPainter *painter, Breeze::Button *decorationButton) const
 {
+    if (!decorationButton->decoration()) {
+        return;
+    }
     const bool standAlone = decorationButton->isStandAlone();
     if (!decorationButton->isPressed() && !decorationButton->isHovered() && !standAlone) {
         return;
     }
-    const QColor baseBackgroundColor = colorSettings(decorationButton).font(decorationButton->decoration()->client()->isActive());
+    const QColor baseBackgroundColor = colorSettings(decorationButton).font(decorationButton->decoration()->client().data()->isActive());
     drawBackground(painter, decorationButton, QColor(baseBackgroundColor.red(),
                                                      baseBackgroundColor.green(),
                                                      baseBackgroundColor.blue(),
@@ -341,8 +362,12 @@ void ImageProvider::drawUpArrow(QPainter *painter, Breeze::Button *decorationBut
 
 QColor ImageProvider::foregroundColor(Breeze::Button *decorationButton) const
 {
-    const ColorSettings &colors = colorSettings(decorationButton->decoration()->client()->palette());
-    const bool active = decorationButton->decoration()->client()->isActive();
+    if (!decorationButton->decoration()) {
+        return QColor();
+    }
+    const auto client = decorationButton->decoration()->client().data();
+    const ColorSettings &colors = colorSettings(client->palette());
+    const bool active = client->isActive();
     if (decorationButton->isStandAlone()) {
         return colors.titleBarColor(active);
     }
@@ -394,9 +419,12 @@ Button::~Button() = default;
 void Button::paint(QPainter *painter, const QRect &repaintRegion)
 {
     Q_UNUSED(repaintRegion)
+    if (!decoration()) {
+        return;
+    }
     // TODO: optimize based on repaintRegion
     if (type() == KDecoration2::DecorationButtonType::Menu) {
-        const QPixmap pixmap = decoration()->client()->icon().pixmap(size().toSize());
+        const QPixmap pixmap = decoration()->client().data()->icon().pixmap(size().toSize());
         painter->drawPixmap(geometry().center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
     } else {
         painter->drawImage(geometry().topLeft(), ImageProvider::self()->button(this));

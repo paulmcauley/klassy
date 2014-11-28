@@ -51,7 +51,7 @@ class ImageProvider final
 public:
     ~ImageProvider();
     static ImageProvider *self();
-    const QImage &button(Button *decorationButton);
+    QImage button(Button *decorationButton);
     void clearCache(Button *decorationButton);
 
     void invalidate();
@@ -68,8 +68,8 @@ private:
     void drawDownArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
     void drawUpArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
     QColor foregroundColor(Button *decorationButton) const;
-    const ColorSettings &colorSettings(Button *decorationButton) const;
-    const ColorSettings &colorSettings(const QPalette &pal) const;
+    ColorSettings colorSettings(Button *decorationButton) const;
+    ColorSettings colorSettings(const QPalette &pal) const;
     static ImageProvider *s_self;
     typedef QHash<ButtonState, QImage> ImagesForButtonState;
     typedef QHash<bool, ImagesForButtonState> ImagesForDecoState;
