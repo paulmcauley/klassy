@@ -197,7 +197,7 @@ void Decoration::updateButtonPositions()
     m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - padding, padding));
 }
 
-void Decoration::paint(QPainter *painter, const QRegion &repaintRegion)
+void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 {
     // TODO: optimize based on repaintRegion
     // paint background
@@ -217,7 +217,7 @@ void Decoration::paint(QPainter *painter, const QRegion &repaintRegion)
     painter->restore();
 }
 
-void Decoration::paintTitleBar(QPainter *painter, const QRegion &repaintRegion)
+void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 {
     const bool active = client()->isActive();
     const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));

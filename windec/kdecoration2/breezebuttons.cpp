@@ -391,7 +391,7 @@ Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::De
 
 Button::~Button() = default;
 
-void Button::paint(QPainter *painter, const QRegion &repaintRegion)
+void Button::paint(QPainter *painter, const QRect &repaintRegion)
 {
     Q_UNUSED(repaintRegion)
     // TODO: optimize based on repaintRegion
