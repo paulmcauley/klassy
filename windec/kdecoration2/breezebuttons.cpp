@@ -158,7 +158,7 @@ const ColorSettings &ImageProvider::colorSettings(Breeze::Button *decorationButt
 
 QImage ImageProvider::renderButton(Breeze::Button *decorationButton) const
 {
-    QImage image(decorationButton->size(), QImage::Format_ARGB32_Premultiplied);
+    QImage image(decorationButton->size().toSize(), QImage::Format_ARGB32_Premultiplied);
     image.fill(Qt::transparent);
 
     QPainter p(&image);
@@ -205,7 +205,7 @@ void ImageProvider::renderCloseButton(QPainter *painter, Breeze::Button *decorat
     const QPalette &pal = decorationButton->decoration()->client()->palette();
     const bool pressed  = decorationButton->isPressed();
     const bool hovered  = decorationButton->isHovered();
-    const QSize &size   = decorationButton->size();
+    const QSize &size   = decorationButton->size().toSize();
 
     const QColor pressedColor = QColor(237, 21, 21);
     const QColor backgroundColor = pressed ? pressedColor : hovered ? pressedColor.lighter() : colorSettings(pal).font(active);
@@ -303,7 +303,7 @@ void ImageProvider::drawBackground(QPainter *painter, Breeze::Button *decoration
     painter->save();
     painter->setPen(Qt::NoPen);
     painter->setBrush(decorationButton->isEnabled() ? color : QColor(color.red(), color.green(), color.blue(), color.alpha() * 0.6));
-    painter->drawEllipse(QRect(QPoint(0, 0), decorationButton->size()));
+    painter->drawEllipse(QRectF(QPointF(0, 0), decorationButton->size()));
     painter->restore();
 }
 
@@ -367,7 +367,7 @@ Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, 
             return;
         }
         ImageProvider::self()->clearCache(this);
-        setGeometry(QRect(geometry().topLeft(), QSize(height, height)));
+        setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));
     });
 }
 
@@ -396,7 +396,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     Q_UNUSED(repaintRegion)
     // TODO: optimize based on repaintRegion
     if (type() == KDecoration2::DecorationButtonType::Menu) {
-        const QPixmap pixmap = decoration()->client()->icon().pixmap(size());
+        const QPixmap pixmap = decoration()->client()->icon().pixmap(size().toSize());
         painter->drawPixmap(geometry().center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
     } else {
         painter->drawImage(geometry().topLeft(), ImageProvider::self()->button(this));
