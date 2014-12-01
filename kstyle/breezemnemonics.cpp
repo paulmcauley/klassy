@@ -72,6 +72,10 @@ namespace Breeze
             { setEnabled( false ); }
             break;
 
+            case QEvent::ApplicationStateChange:
+            { setEnabled( false ); }
+            break;
+
             default: break;
 
         }
