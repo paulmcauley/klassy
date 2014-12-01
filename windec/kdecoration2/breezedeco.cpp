@@ -283,7 +283,7 @@ QRect Decoration::captionRect() const
 
 void Decoration::createShadow()
 {
-    KDecoration2::DecorationShadow *decorationShadow = new KDecoration2::DecorationShadow(this);
+    auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
     decorationShadow->setPadding(QMargins(10, 10, 20, 20));
     decorationShadow->setInnerShadowRect(QRect(20, 20, 20, 20));
 
