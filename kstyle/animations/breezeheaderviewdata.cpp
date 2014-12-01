@@ -47,6 +47,7 @@
 #include "breezeheaderviewdata.moc"
 
 #include <QHoverEvent>
+#include <QTextStream>
 
 namespace Breeze
 {
@@ -55,8 +56,6 @@ namespace Breeze
     HeaderViewData::HeaderViewData( QObject* parent, QWidget* target, int duration ):
         AnimationData( parent, target )
     {
-
-        target->installEventFilter( this );
 
         _current._animation = new Animation( duration, this );
         setupAnimation( currentIndexAnimation(), "currentOpacity" );
@@ -77,7 +76,7 @@ namespace Breeze
         const QHeaderView* local( qobject_cast<const QHeaderView*>( target().data() ) );
         if( !local ) return false;
 
-        int index( local->logicalIndexAt( position ) );
+        const int index( local->logicalIndexAt( position ) );
         if( index < 0 ) return false;
 
         if( hovered )
@@ -143,6 +142,31 @@ namespace Breeze
         else if( index == currentIndex() ) return currentOpacity();
         else if( index == previousIndex() ) return previousOpacity();
         else return OpacityInvalid;
+
+    }
+
+
+    //__________________________________________________________
+    void HeaderViewData::setDirty( void ) const
+    {
+        QHeaderView* header = qobject_cast<QHeaderView*>( target().data() );
+        if( !header ) return;
+
+        // get first and last index, sorted
+        const int lastIndex( qMax( previousIndex(), currentIndex() ) );
+        if( lastIndex < 0 ) return;
+
+        int firstIndex( qMin( previousIndex(), currentIndex() ) );
+        if( firstIndex < 0 ) firstIndex = lastIndex;
+
+        // find relevant rectangle to be updated, in viewport coordinate
+        QWidget* viewport( header->viewport() );
+        const int left = header->sectionViewportPosition( firstIndex );
+        const int right = header->sectionViewportPosition( lastIndex ) + header->sectionSize( lastIndex );
+
+        // trigger update
+        if( header->orientation() == Qt::Horizontal ) viewport->update( left, 0, right-left, header->height() );
+        else viewport->update( 0, left, header->width(), right-left );
 
     }
 
