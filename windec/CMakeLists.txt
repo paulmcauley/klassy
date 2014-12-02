@@ -13,12 +13,11 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 include(KDEInstallDirs)
 include(KDECompilerSettings)
 include(KDECMakeSettings)
-#find_package(KDecorations REQUIRED)
 #find_package(KF5ConfigWidgets REQUIRED)
 
 #find_package(Qt5 CONFIG REQUIRED COMPONENTS Core DBus Quick Widgets Concurrent X11Extras Test UiTools)
 
-#add_subdirectory(code)
+add_subdirectory(kdecoration2)
 
 install(DIRECTORY package/
         DESTINATION ${DATA_INSTALL_DIR}/${KWIN_NAME}/decorations/kwin4_decoration_qml_breeze)
