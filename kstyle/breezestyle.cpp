@@ -4415,21 +4415,23 @@ namespace Breeze
             // set font
             painter->setFont( menuItemOption->font );
 
+            // color role
+            const QPalette::ColorRole role = (useStrongFocus && ( selected || sunken )) ? QPalette::HighlightedText : QPalette::WindowText;
+
             // locate accelerator and render
             const int tabPosition( text.indexOf( QLatin1Char( '\t' ) ) );
             if( tabPosition >= 0 )
             {
+
+                const int textFlags( Qt::AlignVCenter | Qt::AlignRight );
                 QString accelerator( text.mid( tabPosition + 1 ) );
                 text = text.left( tabPosition );
-                drawItemText( painter, textRect, Qt::AlignRight | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, accelerator, QPalette::WindowText );
+                drawItemText( painter, textRect, textFlags, palette, enabled, accelerator, role );
+
             }
 
             // render text
             const int textFlags( Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft ) | _mnemonics->textFlags() );
-
-            // color role
-            const QPalette::ColorRole role = (useStrongFocus && ( selected || sunken )) ? QPalette::HighlightedText : QPalette::WindowText;
-
             textRect = option->fontMetrics.boundingRect( textRect, textFlags, text );
             drawItemText( painter, textRect, textFlags, palette, enabled, text, role );
 
