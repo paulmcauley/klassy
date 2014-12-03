@@ -61,15 +61,26 @@ void ColorSettings::init(const QPalette &pal)
     m_inactiveFontColor     = wmConfig.readEntry("inactiveForeground", m_activeFontColor.dark());
 }
 
+static int g_sDecoCount = 0;
+static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
+
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args)
     , m_colorSettings(client().data()->palette())
     , m_leftButtons(nullptr)
     , m_rightButtons(nullptr)
 {
+    g_sDecoCount++;
 }
 
-Decoration::~Decoration() = default;
+Decoration::~Decoration()
+{
+    g_sDecoCount--;
+    if (g_sDecoCount == 0) {
+        // last deco destroyed, clean up shadow
+        g_sShadow.clear();
+    }
+}
 
 void Decoration::init()
 {
@@ -283,6 +294,10 @@ QRect Decoration::captionRect() const
 
 void Decoration::createShadow()
 {
+    if (g_sShadow) {
+        setShadow(g_sShadow);
+        return;
+    }
     auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
     decorationShadow->setPadding(QMargins(10, 10, 20, 20));
     decorationShadow->setInnerShadowRect(QRect(20, 20, 20, 20));
@@ -344,6 +359,7 @@ void Decoration::createShadow()
 
     decorationShadow->setShadow(image);
 
+    g_sShadow = decorationShadow;
     setShadow(decorationShadow);
 }
 
