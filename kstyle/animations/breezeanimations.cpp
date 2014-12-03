@@ -169,7 +169,7 @@ namespace Breeze
         else if( qobject_cast<QHeaderView*>( widget ) ) { _headerViewEngine->registerWidget( widget ); }
 
         // lists
-        else if( qobject_cast<QAbstractItemView*>( widget ) || widget->inherits("Q3ListView") )
+        else if( qobject_cast<QAbstractItemView*>( widget ) )
         { _widgetStateEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         // tabbar
