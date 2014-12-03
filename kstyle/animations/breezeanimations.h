@@ -72,6 +72,10 @@ namespace Breeze
         WidgetStateEngine& toolButtonEngine( void ) const
         { return *_toolButtonEngine; }
 
+        //! item view engine
+        WidgetStateEngine& inputWidgetEngine( void ) const
+        { return *_inputWidgetEngine; }
+
         //* busy indicator
         BusyIndicatorEngine& busyIndicatorEngine( void ) const
         { return *_busyIndicatorEngine; }
@@ -129,6 +133,9 @@ namespace Breeze
 
         //! mennu toolbutton arrow hover effect
         WidgetStateEngine* _toolButtonEngine;
+
+        //! item view engine
+        WidgetStateEngine* _inputWidgetEngine;
 
         //* scrollbar engine
         ScrollBarEngine* _scrollBarEngine;
