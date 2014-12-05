@@ -73,7 +73,8 @@ QVariant readConfigValue(KSharedConfigPtr lnfConfig, KSharedConfigPtr defaultLnf
         }
     }
 
-    KConfigGroup lnfCg(defaultLnfConfig, group);
+    KConfigGroup lnfCg(defaultLnfConfig, "kdeglobals");
+    lnfCg = KConfigGroup(defaultLnfConfig, group);
     if (lnfCg.isValid()) {
         return lnfCg.readEntry(key, defaultValue);
     }
