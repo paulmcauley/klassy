@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "ui_breezeconfigurationui.h"
-#include "../breezesettings.h"
+#include "breezesettings.h"
 
 #include <QWidget>
 #include <QSharedPointer>

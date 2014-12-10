@@ -7,6 +7,7 @@
         "org.kde.kdecoration2"
     ],
     "org.kde.kdecoration2": {
-        "blur": false
+        "blur": false,
+        "kcmodule": true
     }
 }

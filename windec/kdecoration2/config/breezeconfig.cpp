@@ -28,7 +28,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfig.h"
-#include "../breezesettings.h"
+#include "breezesettings.h"
 
 #include <QTextStream>
 #include <QDBusConnection>
@@ -49,12 +49,6 @@ extern "C"
     { return ( new Breeze::Config( parent ) ); }
 }
 
-/** this is the new style/KF5 plugin declaration, used internally by KWin */
-K_PLUGIN_FACTORY_WITH_JSON(
-    BreezeConfigPlugin,
-    "config.json",
-    registerPlugin<Breeze::ConfigurationModule>(QStringLiteral("kcmodule"));
-)
 #include "breezeconfig.moc"
 
 namespace Breeze

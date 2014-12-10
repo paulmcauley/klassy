@@ -21,6 +21,7 @@
 #include "breezedecoration.h"
 
 #include "breeze.h"
+#include "config/breezeconfig.h"
 
 #include "breezebutton.h"
 #include <KDecoration2/DecoratedClient>
@@ -41,6 +42,7 @@ K_PLUGIN_FACTORY_WITH_JSON(
     "breeze.json",
     registerPlugin<Breeze::Decoration>();
     registerPlugin<Breeze::Button>(QStringLiteral("button"));
+    registerPlugin<Breeze::ConfigurationModule>(QStringLiteral("kcmodule"));
 )
 
 namespace Breeze
