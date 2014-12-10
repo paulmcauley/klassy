@@ -31,11 +31,11 @@ namespace Breeze
     Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
     {
-        const int height = decoration->captionHeight();
+        const int height = decoration->buttonHeight();
         setGeometry(QRect(0, 0, height, height));
         connect(decoration, &Decoration::bordersChanged, this, [this, decoration]
         {
-            const int height = decoration->captionHeight();
+            const int height = decoration->buttonHeight();
             if (height == geometry().height()) return;
             ImageProvider::self()->clearCache(this);
             setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));

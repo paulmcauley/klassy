@@ -22,6 +22,7 @@
  */
 
 #include "breezecolorsettings.h"
+#include "breeze.h"
 
 #include <KDecoration2/Decoration>
 
@@ -40,17 +41,27 @@ namespace Breeze
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
-            public:
-            explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
+
+        public:
+
+        //* constructor
+        explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
+
+        //* destructor
         virtual ~Decoration();
 
+        //* paint
         void paint(QPainter *painter, const QRect &repaintRegion) override;
 
-        const ColorSettings &colorSettings() {
-            return m_colorSettings;
-        }
+        //* color settings
+        const ColorSettings &colorSettings()
+        { return m_colorSettings; }
 
+        //* caption height
         int captionHeight() const;
+
+        //* button height
+        int buttonHeight() const;
 
         public Q_SLOTS:
         void init() override;
@@ -65,6 +76,8 @@ namespace Breeze
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
+
+        ButtonSize m_buttonSize;
         ColorSettings m_colorSettings;
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons;

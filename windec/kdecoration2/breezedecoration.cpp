@@ -33,6 +33,7 @@
 #include <KPluginFactory>
 
 #include <QPainter>
+#include <QTextStream>
 
 K_PLUGIN_FACTORY_WITH_JSON(
     BreezeDecoFactory,
@@ -51,6 +52,7 @@ namespace Breeze
 
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
+        , m_buttonSize(ButtonSize::ButtonLarge)
         , m_colorSettings(client().data()->palette())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
@@ -124,26 +126,26 @@ namespace Breeze
     //________________________________________________________________
     static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &settings, bool bottom)
     {
-        const int baseSize = settings->largeSpacing() / 2;
+        const int baseSize = settings->smallSpacing();
         switch (settings->borderSize()) {
             case KDecoration2::BorderSize::None:
             return 0;
             case KDecoration2::BorderSize::NoSides:
             return bottom ? baseSize : 0;
             case KDecoration2::BorderSize::Tiny:
-            return baseSize / 2;
-            case KDecoration2::BorderSize::Normal:
             return baseSize;
+            case KDecoration2::BorderSize::Normal:
+            return baseSize*2;
             case KDecoration2::BorderSize::Large:
-            return baseSize * 1.5;
-            case KDecoration2::BorderSize::VeryLarge:
-            return baseSize * 2;
-            case KDecoration2::BorderSize::Huge:
-            return baseSize * 2.5;
-            case KDecoration2::BorderSize::VeryHuge:
             return baseSize * 3;
-            case KDecoration2::BorderSize::Oversized:
+            case KDecoration2::BorderSize::VeryLarge:
+            return baseSize * 4;
+            case KDecoration2::BorderSize::Huge:
             return baseSize * 5;
+            case KDecoration2::BorderSize::VeryHuge:
+            return baseSize * 6;
+            case KDecoration2::BorderSize::Oversized:
+            return baseSize * 10;
             default:
             return baseSize;
         }
@@ -165,14 +167,20 @@ namespace Breeze
         int right  = c->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
 
         QFontMetrics fm(s->font());
-        int top = qMax(fm.boundingRect(c->caption()).height(), s->gridUnit() * 2);
+        int top = qMax(fm.boundingRect(c->caption()).height(), buttonHeight() );
+
+        QTextStream( stdout ) << "Breeze::Decoration::recalculateBorders -"
+            << " grid unit: " << settings()->gridUnit()
+            << " buttonHeight: " << buttonHeight()
+            << endl;
 
         // padding below
         // extra pixel is used for the active window outline
-        top += s->smallSpacing() + 1;
+        const int baseSize = settings()->smallSpacing();
+        top += baseSize*Metrics::TitleBar_TopMargin + 1;
 
         // padding above
-        if (!c->isMaximized()) top += s->smallSpacing();
+        if (!c->isMaximized()) top += baseSize*TitleBar_BottomMargin;
 
         int bottom = c->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
         setBorders(QMargins(left, top, right, bottom));
@@ -207,9 +215,10 @@ namespace Breeze
     void Decoration::updateButtonPositions()
     {
         auto s = settings();
-        const int padding = client().data()->isMaximized() ? 0 : s->smallSpacing();
-        m_rightButtons->setSpacing(s->smallSpacing());
-        m_leftButtons->setSpacing(s->smallSpacing());
+        const int padding = (client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin) + (captionHeight()-buttonHeight())/2;
+
+        m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
+        m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
         m_leftButtons->setPos(QPointF(padding, padding));
         m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - padding, padding));
     }
@@ -292,15 +301,37 @@ namespace Breeze
     }
 
     //________________________________________________________________
+    int Decoration::buttonHeight() const
+    {
+        const int baseSize = settings()->gridUnit();
+        switch( m_buttonSize )
+        {
+            case ButtonSize::ButtonSmall: return baseSize;
+
+            default:
+            case ButtonSize::ButtonDefault: return baseSize*1.5;
+            case ButtonSize::ButtonLarge: return baseSize*2;
+            case ButtonSize::ButtonVeryLarge: return baseSize*2.5;
+            case ButtonSize::ButtonHuge: return baseSize*3.5;
+        }
+
+    }
+
+    //________________________________________________________________
     int Decoration::captionHeight() const
-    { return borderTop() - settings()->smallSpacing() * (client().data()->isMaximized() ? 1 : 2) - 1; }
+    {
+
+        return client().data()->isMaximized() ?
+            borderTop() - settings()->smallSpacing()*Metrics::TitleBar_BottomMargin - 1:
+            borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1;
+    }
 
     //________________________________________________________________
     QRect Decoration::captionRect() const
     {
         const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width();
         const int rightOffset = size().width() - m_rightButtons->geometry().x();
-        const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing();
+        const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
 
         return QRect( leftOffset, yOffset, size().width() - rightOffset, captionHeight());
     }

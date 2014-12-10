@@ -31,10 +31,11 @@ namespace Breeze
         //* corner radius
         Frame_FrameRadius = 3,
 
-        //* titlebar margins, in units of small spacing
+        //* titlebar metrics, in units of small spacing
         TitleBar_TopMargin = 2,
         TitleBar_BottomMargin = 2,
         TitleBar_SideMargin = 2,
+        TitleBar_ButtonSpacing = 2,
 
         // shadow dimensions
         Shadow_Size = 20,
