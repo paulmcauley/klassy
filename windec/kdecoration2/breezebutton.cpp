@@ -33,11 +33,10 @@ namespace Breeze
     {
         const int height = decoration->captionHeight();
         setGeometry(QRect(0, 0, height, height));
-        connect(decoration, &Decoration::bordersChanged, this, [this, decoration] {
+        connect(decoration, &Decoration::bordersChanged, this, [this, decoration]
+        {
             const int height = decoration->captionHeight();
-            if (height == geometry().height()) {
-                return;
-            }
+            if (height == geometry().height()) return;
             ImageProvider::self()->clearCache(this);
             setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));
         });
@@ -52,9 +51,11 @@ namespace Breeze
     //__________________________________________________________________
     Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
     {
-        if (Decoration *d = qobject_cast<Decoration*>(decoration)) {
+        if (Decoration *d = qobject_cast<Decoration*>(decoration))
+        {
             Button *b = new Button(type, d, parent);
-            if (type == KDecoration2::DecorationButtonType::Menu) {
+            if (type == KDecoration2::DecorationButtonType::Menu)
+            {
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
             }
             return b;
