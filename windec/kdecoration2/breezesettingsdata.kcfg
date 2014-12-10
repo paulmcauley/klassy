@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kcfg SYSTEM "http://www.kde.org/standards/kcfg/1.0/kcfg.dtd">
+<kcfg>
+  <kcfgfile name="breezerc"/>
+
+  <group name="Windeco">
+
+    <entry name="TitleAlignment" type="Enum">
+      <choices>
+          <choice name="AlignLeft" />
+          <choice name="AlignCenter" />
+          <choice name="AlignCenterFullWidth" />
+          <choice name="AlignRight" />
+      </choices>
+      <default>AlignCenterFullWidth</default>
+    </entry>
+
+    <entry name="ButtonSize" type="Enum">
+      <choices>
+          <choice name="ButtonVerySmall" />
+          <choice name="ButtonSmall" />
+          <choice name="ButtonDefault" />
+          <choice name="ButtonLarge" />
+          <choice name="ButtonVeryLarge" />
+      </choices>
+      <default>ButtonDefault</default>
+    </entry>
+
+    <!-- maximized windows -->
+    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
+       <default>false</default>
+    </entry>
+
+    <!-- animations -->
+    <entry name="AnimationsEnabled" type = "Bool">
+       <default>true</default>
+    </entry>
+
+    <entry name="AnimationsDuration" type = "Int">
+       <default>150</default>
+    </entry>
+
+  </group>
+</kcfg>

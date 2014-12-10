@@ -52,7 +52,6 @@ namespace Breeze
 
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
-        , m_buttonSize(ButtonSize::ButtonLarge)
         , m_colorSettings(client().data()->palette())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
@@ -299,15 +298,15 @@ namespace Breeze
     int Decoration::buttonHeight() const
     {
         const int baseSize = settings()->gridUnit();
-        switch( m_buttonSize )
+        switch( m_internalSettings.buttonSize() )
         {
-            case ButtonSize::ButtonSmall: return baseSize;
+            case Breeze::InternalSettings::ButtonVerySmall: return baseSize;
 
             default:
-            case ButtonSize::ButtonDefault: return baseSize*1.5;
-            case ButtonSize::ButtonLarge: return baseSize*2;
-            case ButtonSize::ButtonVeryLarge: return baseSize*2.5;
-            case ButtonSize::ButtonHuge: return baseSize*3.5;
+            case Breeze::InternalSettings::ButtonSmall: return baseSize*1.5;
+            case Breeze::InternalSettings::ButtonDefault: return baseSize*2;
+            case Breeze::InternalSettings::ButtonLarge: return baseSize*2.5;
+            case Breeze::InternalSettings::ButtonVeryLarge: return baseSize*3.5;
         }
 
     }

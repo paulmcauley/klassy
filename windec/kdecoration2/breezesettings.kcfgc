@@ -1,0 +1,6 @@
+File=breezesettingsdata.kcfgc
+ClassName=InternalSettings
+NameSpace=Breeze
+Singleton=false
+Mutators=true
+GlobalEnums=true

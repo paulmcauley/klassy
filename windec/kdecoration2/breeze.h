@@ -44,16 +44,6 @@ namespace Breeze
 
     };
 
-    //* button size
-    enum class ButtonSize : uint
-    {
-        ButtonSmall,
-        ButtonDefault,
-        ButtonLarge,
-        ButtonVeryLarge,
-        ButtonHuge
-    };
-
     //* button state
     //* todo: should we used bits ?
     enum class ButtonState : uint

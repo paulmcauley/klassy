@@ -23,6 +23,7 @@
 
 #include "breezecolorsettings.h"
 #include "breeze.h"
+#include "breezesettings.h"
 
 #include <KDecoration2/Decoration>
 
@@ -57,6 +58,10 @@ namespace Breeze
         const ColorSettings &colorSettings()
         { return m_colorSettings; }
 
+        //* internal settings
+        const InternalSettings &internalSettings()
+        { return m_internalSettings; }
+
         //* caption height
         int captionHeight() const;
 
@@ -77,8 +82,9 @@ namespace Breeze
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
 
-        ButtonSize m_buttonSize;
         ColorSettings m_colorSettings;
+        InternalSettings m_internalSettings;
+
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons;
         KDecoration2::DecorationButtonGroup *m_rightButtons;
