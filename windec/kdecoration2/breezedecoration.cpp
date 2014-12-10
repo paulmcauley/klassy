@@ -341,7 +341,6 @@ namespace Breeze
 
         }
 
-
         auto s = settings();
 
         const QColor outlineColor( this->outlineColor() );
@@ -350,7 +349,7 @@ namespace Breeze
             // outline
             painter->setRenderHint( QPainter::Antialiasing, false );
             painter->setBrush( Qt::NoBrush );
-            painter->setPen( c->palette().color( QPalette::Highlight ) );
+            painter->setPen( outlineColor );
             painter->drawLine( titleRect.bottomLeft(), titleRect.bottomRight() );
         }
 
