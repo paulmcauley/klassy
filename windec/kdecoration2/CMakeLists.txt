@@ -25,3 +25,5 @@ target_link_libraries(breezedecoration
 )
 
 install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
+
+add_subdirectory(config)

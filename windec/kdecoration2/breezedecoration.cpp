@@ -80,6 +80,7 @@ namespace Breeze
         // a change in font might cause the borders to change
         connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
         connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
+        connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
         connect(client().data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
@@ -154,6 +155,13 @@ namespace Breeze
     static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &settings)
     {
         return borderSize(settings, false);
+    }
+
+    //________________________________________________________________
+    void Decoration::reconfigure()
+    {
+        m_internalSettings.read();
+        recalculateBorders();
     }
 
     //________________________________________________________________

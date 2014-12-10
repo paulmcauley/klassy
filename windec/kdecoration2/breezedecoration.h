@@ -72,6 +72,7 @@ namespace Breeze
         void init() override;
 
         private Q_SLOTS:
+        void reconfigure();
         void recalculateBorders();
         void updateButtonPositions();
         void updateTitleBar();

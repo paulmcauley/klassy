@@ -27,9 +27,11 @@
     </entry>
 
     <!-- maximized windows -->
-    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
-       <default>false</default>
-    </entry>
+<!--
+	    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
+	       <default>false</default>
+	    </entry>
+-->
 
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
