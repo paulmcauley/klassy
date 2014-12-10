@@ -327,7 +327,46 @@ namespace Breeze
         const int rightOffset = size().width() - m_rightButtons->geometry().x();
         const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
 
-        return QRect( leftOffset, yOffset, size().width() - rightOffset, captionHeight());
+        QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption() ).toRect() );
+        boundingRect.setTop( yOffset );
+        boundingRect.setHeight( captionHeight() );
+
+        switch( m_internalSettings.titleAlignment() )
+        {
+            case Breeze::InternalSettings::AlignLeft:
+            boundingRect.moveLeft( leftOffset );
+            break;
+
+            case Breeze::InternalSettings::AlignRight:
+            boundingRect.moveRight( size().width() - rightOffset - 1 );
+            break;
+
+            case Breeze::InternalSettings::AlignCenter:
+            boundingRect.moveLeft( leftOffset + (size().width() - leftOffset - rightOffset - boundingRect.width() )/2 );
+            break;
+
+            default:
+            case Breeze::InternalSettings::AlignCenterFullWidth:
+            boundingRect.moveLeft( ( size().width() - boundingRect.width() )/2 );
+            break;
+
+        }
+
+        // make sure there is no overlap with buttons
+        if( boundingRect.left() < leftOffset )
+        {
+
+            boundingRect.moveLeft( leftOffset );
+            boundingRect.setRight( qMin( boundingRect.right(), size().width() - rightOffset - 1 ) );
+
+        } else if( boundingRect.right() >  size().width() - rightOffset - 1 ) {
+
+            boundingRect.moveRight( size().width() - rightOffset - 1 );
+            boundingRect.setLeft( qMax( boundingRect.left(), leftOffset ) );
+        }
+
+        return boundingRect;
+
     }
 
     //________________________________________________________________
