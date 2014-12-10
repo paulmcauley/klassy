@@ -134,7 +134,7 @@ namespace Breeze
             [this]()
             {
                 // update the caption area
-                update(captionRect());
+                update(titleBar());
             }
         );
 
@@ -358,7 +358,7 @@ namespace Breeze
         const QRect cR = captionRect();
         const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.width());
         painter->setPen(m_colorSettings.font(c->isActive()));
-        painter->drawText(cR, Qt::AlignCenter | Qt::TextSingleLine, caption);
+        painter->drawText(cR, Qt::AlignVCenter| Qt::AlignLeft | Qt::TextSingleLine, caption);
 
         // draw all buttons
         m_leftButtons->paint(painter, repaintRegion);
@@ -398,9 +398,13 @@ namespace Breeze
         const int rightOffset = size().width() - m_rightButtons->geometry().x();
         const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
 
-        QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption() ).toRect() );
+        QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption()).toRect() );
         boundingRect.setTop( yOffset );
         boundingRect.setHeight( captionHeight() );
+
+        /* need to increase the bounding rect because it is sometime (font dependent)
+        too small, resulting in text being elided */
+        boundingRect.setWidth( boundingRect.width()+4 );
 
         switch( m_internalSettings.titleAlignment() )
         {
