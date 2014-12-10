@@ -262,7 +262,6 @@ namespace Breeze
 
         auto s = settings();
 
-        // TODO: should be config option
         if( active )
         {
             painter->setRenderHint( QPainter::Antialiasing, false );
