@@ -63,13 +63,11 @@ namespace Breeze
 
         void renderOnAllDesktopsButton(QPainter *p, Button *decorationButton) const;
 
-        void drawGenericButtonBackground(QPainter *painter, Button *decorationButton) const;
+        void renderMinimizeButton(QPainter *p, Button *decorationButton) const;
 
-        void drawBackground(QPainter *painter, Button *decorationButton, const QColor &color) const;
+        void renderKeepBelowButton(QPainter *p, Button *decorationButton) const;
 
-        void drawDownArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-
-        void drawUpArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
+        void renderKeepAboveButton(QPainter *p, Button *decorationButton) const;
 
         ColorSettings colorSettings(Button *decorationButton) const;
 

@@ -118,6 +118,10 @@ namespace Breeze
 
             return d->titleBarColor();
 
+        } else if( ( type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove ) && isChecked() ) {
+
+            return d->titleBarColor();
+
         } else if( m_animation->state() == QPropertyAnimation::Running ) {
 
             return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
@@ -144,6 +148,10 @@ namespace Breeze
 
             if( type() == KDecoration2::DecorationButtonType::Close ) return QColor(237, 21, 21);
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+
+        } else if( ( type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove ) && isChecked() ) {
+
+            return d->fontColor();
 
         } else if( m_animation->state() == QPropertyAnimation::Running ) {
 

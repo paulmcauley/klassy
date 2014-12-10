@@ -181,7 +181,32 @@ namespace Breeze
     //__________________________________________________________________
     void ImageProvider::renderButton(QPainter *painter, Breeze::Button *decorationButton) const
     {
-        switch (decorationButton->type()) {
+
+        // scale painter so that its window matches 18x18
+        // this makes all further rendering and painting simpler
+        painter->save();
+        painter->scale( decorationButton->geometry().width()/18, decorationButton->geometry().height()/18 );
+        painter->setRenderHints( QPainter::Antialiasing );
+
+        // render background
+        const QColor backgroundColor( decorationButton->backgroundColor() );
+        if( backgroundColor.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( backgroundColor );
+            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+        }
+
+        // setup pen for rendering the mark
+        QPen pen( decorationButton->foregroundColor() );
+        pen.setCapStyle( Qt::RoundCap );
+        pen.setJoinStyle( Qt::MiterJoin );
+        pen.setWidth(2);
+        painter->setPen( pen );
+        painter->setBrush( Qt::NoBrush );
+
+        switch (decorationButton->type())
+        {
             case KDecoration2::DecorationButtonType::Close:
             renderCloseButton(painter, decorationButton);
             break;
@@ -195,102 +220,93 @@ namespace Breeze
             renderShadeButton(painter, decorationButton);
             break;
             case KDecoration2::DecorationButtonType::Minimize:
-            drawGenericButtonBackground(painter, decorationButton);
-            drawDownArrow(painter, decorationButton);
+            renderMinimizeButton( painter, decorationButton );
             break;
             case KDecoration2::DecorationButtonType::KeepBelow:
-            // TODO: Needs a checked state
-            drawGenericButtonBackground(painter, decorationButton);
-            drawDownArrow(painter, decorationButton, QPointF(0.0, -2.0));
-            drawDownArrow(painter, decorationButton, QPointF(0.0,  2.0));
+            renderKeepBelowButton( painter, decorationButton );
             break;
             case KDecoration2::DecorationButtonType::KeepAbove:
-            // TODO: Needs a checked state
-            drawGenericButtonBackground(painter, decorationButton);
-            drawUpArrow(painter, decorationButton, QPointF(0.0, -2.0));
-            drawUpArrow(painter, decorationButton, QPointF(0.0,  2.0));
+            renderKeepAboveButton( painter, decorationButton );
             break;
             default:
             break;
         }
+
+        painter->restore();
+
         return;
     }
 
     //__________________________________________________________________
-    void ImageProvider::renderCloseButton(QPainter *painter, Breeze::Button *decorationButton) const
+    void ImageProvider::renderCloseButton(QPainter *painter, Breeze::Button* ) const
     {
-        if (!decorationButton->decoration()) {
-            return;
-        }
 
-        const QColor backgroundColor( decorationButton->backgroundColor() );
-        if( backgroundColor.isValid() ) drawBackground(painter, decorationButton, backgroundColor);
-
-        // draw the X
-        QPen pen( decorationButton->foregroundColor() );
-        pen.setWidth(2);
-        painter->setPen(pen);
-
-        const QSize &size   = decorationButton->size().toSize();
-        painter->translate(size.width() / 2.0, size.height() / 2.0);
-        painter->rotate(45.0);
-        painter->drawLine(0, -size.height() / 4, 0, size.height() / 4);
-        painter->drawLine(-size.width() / 4, 0, size.width() / 4, 0);
+        const qreal penWidth( painter->pen().width()/2 );
+        painter->drawLine( QPointF( 5 + penWidth, 5 + penWidth ), QPointF( 13 - penWidth, 13 - penWidth ) );
+        painter->drawLine( 13 - penWidth, 5 + penWidth, 5 + penWidth, 13 - penWidth );
 
     }
 
     //__________________________________________________________________
     void ImageProvider::renderMaximizeButton(QPainter *painter, Breeze::Button *decorationButton) const
     {
-        painter->save();
-        drawGenericButtonBackground(painter, decorationButton);
 
-        QPen pen( decorationButton->foregroundColor() );
-        if (decorationButton->isChecked()) {
-            // restore button
-            const qreal width = (decorationButton->size().height() - 5) / 4;
-            painter->translate(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0);
-            painter->rotate(45.0);
-            pen.setWidth(2);
-            painter->setPen(pen);
-            painter->setBrush(Qt::NoBrush);
-            painter->drawRect(-width, -width, width * 2, width * 2);
+        const qreal penWidth( painter->pen().width()/2 );
+        if (decorationButton->isChecked())
+        {
+
+            QPen pen( painter->pen() );
+            pen.setJoinStyle( Qt::RoundJoin );
+            painter->setPen( pen );
+
+            painter->drawPolygon( QPolygonF()
+                << QPointF( 3.5 + penWidth, 9 )
+                << QPointF( 9, 3.5 + penWidth )
+                << QPointF( 14.5 - penWidth, 9 )
+                << QPointF( 9, 14.5 - penWidth ) );
+
         } else {
-            // maximize button
-            drawUpArrow(painter, decorationButton);
+
+            painter->drawPolyline( QPolygonF()
+                << QPointF( 3.5 + penWidth, 11.5 - penWidth )
+                << QPointF( 9, 5.5 + penWidth )
+                << QPointF( 14.5 - penWidth, 11.5 - penWidth ) );
+
         }
 
-        painter->restore();
     }
 
     //__________________________________________________________________
     void ImageProvider::renderOnAllDesktopsButton(QPainter *painter, Breeze::Button *decorationButton) const
     {
 
-        drawGenericButtonBackground(painter, decorationButton);
+        // get foreground
         const QColor foregroundColor( decorationButton->foregroundColor() );
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( foregroundColor );
 
-        if( !decorationButton->isChecked())
+        if( decorationButton->isChecked())
         {
 
-            Decoration *d = qobject_cast<Decoration*>( decorationButton->decoration() );
-            if( !d ) return;
+            // outer ring
+            painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
 
+            // center dot
             QColor backgroundColor( decorationButton->backgroundColor() );
-            if( !backgroundColor.isValid() ) backgroundColor = d->titleBarColor();
+            Decoration *d = qobject_cast<Decoration*>( decorationButton->decoration() );
+            if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
 
-            // on all desktops
-            painter->setPen(Qt::NoPen);
-
-            painter->translate(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0);
-            const int radius = decorationButton->size().width() / 2 - 3;
-            painter->setBrush( foregroundColor );
-            painter->drawEllipse(-radius, -radius, radius * 2, radius * 2);
-
-            painter->setBrush( backgroundColor );
-            painter->drawEllipse(-1, -1, 2, 2);
+            if( backgroundColor.isValid() )
+            {
+                painter->setBrush( backgroundColor );
+                painter->drawEllipse( QRectF( 8, 8, 2, 2 ) );
+            }
 
         } else {
+
+            painter->drawRoundedRect( QRectF( 6, 2, 6, 9 ), 1.5, 1.5 );
+            painter->drawRect( QRectF( 4, 10, 10, 2 ) );
+            painter->drawRoundRect( QRectF( 8, 12, 2, 4 ) );
 
         }
 
@@ -299,71 +315,67 @@ namespace Breeze
     //__________________________________________________________________
     void ImageProvider::renderShadeButton(QPainter *painter, Breeze::Button *decorationButton) const
     {
-        drawGenericButtonBackground(painter, decorationButton);
-        painter->save();
-        QPen pen( decorationButton->foregroundColor() );
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->translate(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0);
-        const qreal width = decorationButton->size().width() /2.0 - 3.0;
-        painter->drawLine(-width, -4.0, width, -4.0);
-        painter->restore();
-        if (decorationButton->isChecked()) {
-            drawDownArrow(painter, decorationButton, QPointF(0.0, 2.0));
+
+        const qreal penWidth( painter->pen().width()/2 );
+        if (decorationButton->isChecked())
+        {
+
+            painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+            painter->drawPolyline( QPolygonF()
+                << QPointF( 3.5 + penWidth, 8.5 + penWidth )
+                << QPointF( 9, 14.5 - penWidth )
+                << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
+
         } else {
-            drawUpArrow(painter, decorationButton, QPointF(0.0, 2.0));
+
+            painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+            painter->drawPolyline( QPolygonF()
+                << QPointF( 3.5 + penWidth, 14.5 - penWidth )
+                << QPointF( 9, 8.5 + penWidth )
+                << QPointF( 14.5 - penWidth, 14.5 - penWidth ) );
+
         }
+
     }
 
     //__________________________________________________________________
-    void ImageProvider::drawGenericButtonBackground(QPainter *painter, Breeze::Button *decorationButton) const
+    void ImageProvider::renderMinimizeButton(QPainter *painter, Breeze::Button*) const
     {
-        const QColor backgroundColor( decorationButton->backgroundColor() );
-        if( backgroundColor.isValid() ) drawBackground(painter, decorationButton, backgroundColor );
-     }
-
-    //__________________________________________________________________
-    void ImageProvider::drawBackground(QPainter *painter, Breeze::Button *decorationButton, const QColor &color) const
-    {
-        painter->save();
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(decorationButton->isEnabled() ? color : QColor(color.red(), color.green(), color.blue(), color.alpha() * 0.6));
-        painter->drawEllipse(QRectF(QPointF(0, 0), decorationButton->size()));
-        painter->restore();
+        const qreal penWidth( painter->pen().width()/2 );
+        painter->drawPolyline( QPolygonF()
+            << QPointF( 3.5 + penWidth, 6.5 + penWidth )
+            << QPointF( 9, 12.5 - penWidth )
+            << QPointF( 14.5 - penWidth, 6.5 + penWidth ) );
     }
 
     //__________________________________________________________________
-    void ImageProvider::drawDownArrow(QPainter *painter, Breeze::Button *decorationButton, const QPointF &offset) const
+    void ImageProvider::renderKeepBelowButton(QPainter *painter, Breeze::Button *) const
     {
-        painter->save();
-        QPen pen(decorationButton->foregroundColor());
-        // TODO: where do the magic values come from?
-        const qreal width = (decorationButton->size().height() - 5) / 2;
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->translate(QPointF(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0) + offset + QPointF(0.0, 0.707*width/2.0));
-        painter->rotate(45.0);
-        painter->drawLine(0, -width, 0, 0);
-        painter->rotate(-90.0);
-        painter->drawLine(0, -width, 0, 0);
-        painter->restore();
+        const qreal penWidth( painter->pen().width()/2 );
+        painter->drawPolyline( QPolygonF()
+            << QPointF( 3.5 + penWidth, 4.5 + penWidth )
+            << QPointF( 9, 10.5 - penWidth )
+            << QPointF( 14.5 - penWidth, 4.5 + penWidth ) );
+
+        painter->drawPolyline( QPolygonF()
+            << QPointF( 3.5 + penWidth, 8.5 + penWidth )
+            << QPointF( 9, 14.5 - penWidth )
+            << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
     }
 
     //__________________________________________________________________
-    void ImageProvider::drawUpArrow(QPainter *painter, Breeze::Button *decorationButton, const QPointF &offset) const
+    void ImageProvider::renderKeepAboveButton(QPainter *painter, Breeze::Button *) const
     {
-        painter->save();
-        QPen pen(decorationButton->foregroundColor());
-        // TODO: where do the magic values come from?
-        const qreal width = (decorationButton->size().height() - 5) / 2;
-        pen.setWidth(2);
-        painter->setPen(pen);
-        painter->translate(QPointF(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0) + offset - QPointF(0.0, 0.707*width/2.0));
-        painter->rotate(225.0);
-        painter->drawLine(0, 0, 0, -width);
-        painter->rotate(-90.0);
-        painter->drawLine(0, 0, 0, -width);
-        painter->restore();
+        const qreal penWidth( painter->pen().width()/2 );
+        painter->drawPolyline( QPolygonF()
+            << QPointF( 3.5 + penWidth, 9.5 - penWidth )
+            << QPointF( 9, 3.5 + penWidth )
+            << QPointF( 14.5 - penWidth, 9.5 - penWidth ) );
+
+        painter->drawPolyline( QPolygonF()
+            << QPointF( 3.5 + penWidth, 13.5 - penWidth )
+            << QPointF( 9, 7.5 + penWidth )
+            << QPointF( 14.5 - penWidth, 13.5 - penWidth ) );
     }
 
 }
