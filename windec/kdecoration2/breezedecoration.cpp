@@ -72,6 +72,41 @@ namespace Breeze
     }
 
     //________________________________________________________________
+    QColor Decoration::titleBarColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            return KColorUtils::mix( m_colorSettings.inactiveTitleBar(), m_colorSettings.activeTitleBar(), m_opacity );
+        } else return m_colorSettings.titleBar( client().data()->isActive() );
+
+    }
+
+    //________________________________________________________________
+    QColor Decoration::outlineColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            QColor color( client().data()->palette().color( QPalette::Highlight ) );
+            color.setAlpha( color.alpha()*m_opacity );
+            return color;
+        } else if( client().data()->isActive() ) return client().data()->palette().color( QPalette::Highlight );
+        else return QColor();
+    }
+
+    //________________________________________________________________
+    QColor Decoration::fontColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            return KColorUtils::mix( m_colorSettings.inactiveFont(), m_colorSettings.activeFont(), m_opacity );
+        } else return m_colorSettings.font( client().data()->isActive() );
+
+    }
+
+    //________________________________________________________________
     void Decoration::init()
     {
 
@@ -253,32 +288,31 @@ namespace Breeze
         // TODO: optimize based on repaintRegion
 
         // paint background
-        painter->fillRect(rect(), Qt::transparent);
-        painter->save();
-        painter->setRenderHint(QPainter::Antialiasing);
-        painter->setPen(Qt::NoPen);
-        painter->setBrush(m_colorSettings.frame(client().data()->isActive()));
+        if( !client().data()->isShaded() )
+        {
+            painter->fillRect(rect(), Qt::transparent);
+            painter->save();
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(m_colorSettings.frame(client().data()->isActive()));
 
-        // clip away the top part
-        painter->save();
-        painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
-        painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
-        painter->restore();
+            // clip away the top part
+            painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
+            painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            painter->restore();
+        }
 
         paintTitleBar(painter, repaintRegion);
-
-        painter->restore();
     }
 
     //________________________________________________________________
     void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     {
         const auto c = client().data();
-        const bool active = c->isActive();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
-        const QColor titleBarColor( this->titleBarColor() );
 
         // render a linear gradient on title area
+        const QColor titleBarColor( this->titleBarColor() );
         QLinearGradient gradient( 0, 0, 0, titleRect.height() );
         gradient.setColorAt(0.0, titleBarColor.lighter(100.0));
         gradient.setColorAt(0.8, titleBarColor);
@@ -292,6 +326,10 @@ namespace Breeze
 
             painter->drawRect(titleRect);
 
+        } else if( c->isShaded() ) {
+
+            painter->drawRoundedRect(titleRect, Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+
         } else {
 
             // we make the rect a little bit larger to be able to clip away the rounded corners on bottom
@@ -300,9 +338,11 @@ namespace Breeze
 
         }
 
+
         auto s = settings();
 
-        if( active )
+        const QColor outlineColor( this->outlineColor() );
+        if( !c->isShaded() && outlineColor.isValid() )
         {
             // outline
             painter->setRenderHint( QPainter::Antialiasing, false );
@@ -437,41 +477,6 @@ namespace Breeze
 
         g_sShadow = decorationShadow;
         setShadow(decorationShadow);
-    }
-
-    //________________________________________________________________
-    QColor Decoration::titleBarColor() const
-    {
-
-        if( m_animation->state() == QPropertyAnimation::Running )
-        {
-            return KColorUtils::mix( m_colorSettings.inactiveTitleBar(), m_colorSettings.activeTitleBar(), m_opacity );
-        } else return m_colorSettings.titleBar( client().data()->isActive() );
-
-    }
-
-    //________________________________________________________________
-    QColor Decoration::outlineColor() const
-    {
-
-        if( m_animation->state() == QPropertyAnimation::Running )
-        {
-            QColor color( client().data()->palette().color( QPalette::Highlight ) );
-            color.setAlpha( color.alpha()*m_opacity );
-            return color;
-        } else if( client().data()->isActive() ) return client().data()->palette().color( QPalette::Highlight );
-        else return QColor();
-    }
-
-    //________________________________________________________________
-    QColor Decoration::fontColor() const
-    {
-
-        if( m_animation->state() == QPropertyAnimation::Running )
-        {
-            return KColorUtils::mix( m_colorSettings.inactiveFont(), m_colorSettings.activeFont(), m_opacity );
-        } else return m_colorSettings.font( client().data()->isActive() );
-
     }
 
 } // namespace
