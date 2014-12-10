@@ -68,17 +68,23 @@ namespace Breeze
 
         //@}
 
+        private Q_SLOTS:
+        void updateAnimationState(bool);
+
+        private:
+
+        //* private constructor
+        explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
+
+        //* draw button icon
+        void drawIcon( QPainter *) const;
+
         //*@name colors
         //@{
         QColor foregroundColor( void ) const;
         QColor backgroundColor( void ) const;
         //@}
 
-        private Q_SLOTS:
-        void updateAnimationState(bool);
-
-        private:
-        explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
         bool m_standalone = false;
 
         //* active state change animation

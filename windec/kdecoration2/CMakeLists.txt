@@ -7,10 +7,8 @@ set(breezedecoration_SRCS
     breezecolorsettings.cpp
     breezebutton.cpp
     breezedecoration.cpp
-    breezeimageprovider.cpp
     config/breezeconfig.cpp
-    config/breezeconfigwidget.cpp
-)
+    config/breezeconfigwidget.cpp)
 
 kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
 

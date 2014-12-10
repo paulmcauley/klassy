@@ -18,7 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "breezebutton.h"
-#include "breezeimageprovider.h"
 
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
@@ -49,7 +48,6 @@ namespace Breeze
         {
             const int height = decoration->buttonHeight();
             if (height == geometry().height()) return;
-            ImageProvider::self()->clearCache(this);
             setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));
         });
 
@@ -87,10 +85,8 @@ namespace Breeze
     {
         Q_UNUSED(repaintRegion)
 
-        if (!decoration())
-        { return; }
+        if (!decoration()) return;
 
-        // TODO: optimize based on repaintRegion
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
             const QPixmap pixmap = decoration()->client().data()->icon().pixmap(size().toSize());
@@ -98,13 +94,194 @@ namespace Breeze
 
         } else {
 
-            painter->save();
-            painter->setRenderHints( QPainter::Antialiasing );
-            painter->translate( geometry().topLeft() );
-            ImageProvider::self()->renderButton( painter, this );
-            painter->restore();
+            drawIcon( painter );
 
         }
+
+    }
+
+    //__________________________________________________________________
+    void Button::drawIcon( QPainter *painter ) const
+    {
+
+        painter->save();
+        painter->setRenderHints( QPainter::Antialiasing );
+
+        /*
+        scale painter so that its window matches QRect( -1, -1, 20, 20 )
+        this makes all further rendering and scaling simpler
+        all further rendering is preformed inside QRect( 0, 0, 18, 18 )
+        */
+        painter->translate( geometry().topLeft() );
+        painter->scale( geometry().width()/20, geometry().height()/20 );
+        painter->translate( 1, 1 );
+
+        // render background
+        const QColor backgroundColor( this->backgroundColor() );
+        if( backgroundColor.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( backgroundColor );
+            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+        }
+
+        // render mark
+        const QColor foregroundColor( this->foregroundColor() );
+        if( foregroundColor.isValid() )
+        {
+
+            // setup painter
+            QPen pen( foregroundColor );
+            pen.setCapStyle( Qt::RoundCap );
+            pen.setJoinStyle( Qt::MiterJoin );
+            const qreal penWidth( 1 );
+            pen.setWidth( penWidth*2 );
+
+            painter->setPen( pen );
+            painter->setBrush( Qt::NoBrush );
+
+            switch( type() )
+            {
+
+                case KDecoration2::DecorationButtonType::Close:
+                {
+                    painter->drawLine( QPointF( 5 + penWidth, 5 + penWidth ), QPointF( 13 - penWidth, 13 - penWidth ) );
+                    painter->drawLine( 13 - penWidth, 5 + penWidth, 5 + penWidth, 13 - penWidth );
+                    break;
+                }
+
+                case KDecoration2::DecorationButtonType::Maximize:
+                {
+                    if( isChecked() )
+                    {
+
+                        pen.setJoinStyle( Qt::RoundJoin );
+                        painter->setPen( pen );
+
+                        painter->drawPolygon( QPolygonF()
+                            << QPointF( 3.5 + penWidth, 9 )
+                            << QPointF( 9, 3.5 + penWidth )
+                            << QPointF( 14.5 - penWidth, 9 )
+                            << QPointF( 9, 14.5 - penWidth ) );
+
+                    } else {
+
+                        painter->drawPolyline( QPolygonF()
+                            << QPointF( 3.5 + penWidth, 11.5 - penWidth )
+                            << QPointF( 9, 5.5 + penWidth )
+                            << QPointF( 14.5 - penWidth, 11.5 - penWidth ) );
+                    }
+                    break;
+                }
+
+                case KDecoration2::DecorationButtonType::Minimize:
+                {
+
+                    painter->drawPolyline( QPolygonF()
+                        << QPointF( 3.5 + penWidth, 6.5 + penWidth )
+                        << QPointF( 9, 12.5 - penWidth )
+                        << QPointF( 14.5 - penWidth, 6.5 + penWidth ) );
+                    break;
+
+                }
+
+                case KDecoration2::DecorationButtonType::OnAllDesktops:
+                {
+                    painter->setPen( Qt::NoPen );
+                    painter->setBrush( foregroundColor );
+
+                    if( isChecked())
+                    {
+
+                        // outer ring
+                        painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
+
+                        // center dot
+                        QColor backgroundColor( this->backgroundColor() );
+                        Decoration *d = qobject_cast<Decoration*>( decoration() );
+                        if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
+
+                        if( backgroundColor.isValid() )
+                        {
+                            painter->setBrush( backgroundColor );
+                            painter->drawEllipse( QRectF( 8, 8, 2, 2 ) );
+                        }
+
+                    } else {
+
+                        painter->drawRoundedRect( QRectF( 6, 2, 6, 9 ), 1.5, 1.5 );
+                        painter->drawRect( QRectF( 4, 10, 10, 2 ) );
+                        painter->drawRoundRect( QRectF( 8, 12, 2, 4 ) );
+
+                    }
+                    break;
+                }
+
+                case KDecoration2::DecorationButtonType::Shade:
+                {
+
+                    if (isChecked())
+                    {
+
+                        painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+                        painter->drawPolyline( QPolygonF()
+                            << QPointF( 3.5 + penWidth, 8.5 + penWidth )
+                            << QPointF( 9, 14.5 - penWidth )
+                            << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
+
+                    } else {
+
+                        painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+                        painter->drawPolyline( QPolygonF()
+                            << QPointF( 3.5 + penWidth, 14.5 - penWidth )
+                            << QPointF( 9, 8.5 + penWidth )
+                            << QPointF( 14.5 - penWidth, 14.5 - penWidth ) );
+                    }
+
+                    break;
+
+                }
+
+                case KDecoration2::DecorationButtonType::KeepBelow:
+                {
+
+                    painter->drawPolyline( QPolygonF()
+                        << QPointF( 3.5 + penWidth, 4.5 + penWidth )
+                        << QPointF( 9, 10.5 - penWidth )
+                        << QPointF( 14.5 - penWidth, 4.5 + penWidth ) );
+
+                    painter->drawPolyline( QPolygonF()
+                        << QPointF( 3.5 + penWidth, 8.5 + penWidth )
+                        << QPointF( 9, 14.5 - penWidth )
+                        << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
+                    break;
+
+                }
+
+                case KDecoration2::DecorationButtonType::KeepAbove:
+                {
+                    painter->drawPolyline( QPolygonF()
+                        << QPointF( 3.5 + penWidth, 9.5 - penWidth )
+                        << QPointF( 9, 3.5 + penWidth )
+                        << QPointF( 14.5 - penWidth, 9.5 - penWidth ) );
+
+                    painter->drawPolyline( QPolygonF()
+                        << QPointF( 3.5 + penWidth, 13.5 - penWidth )
+                        << QPointF( 9, 7.5 + penWidth )
+                        << QPointF( 14.5 - penWidth, 13.5 - penWidth ) );
+                    break;
+                }
+
+                default: break;
+
+            }
+
+        }
+
+        painter->restore();
+
+
+
 
     }
 
