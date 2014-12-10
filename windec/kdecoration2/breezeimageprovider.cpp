@@ -20,7 +20,7 @@
  */
 
 #include "breezeimageprovider.h"
-#include "breezebuttons.h"
+#include "breezebutton.h"
 
 #include <QPainter>
 

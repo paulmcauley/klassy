@@ -22,7 +22,7 @@
 
 #include "breeze.h"
 
-#include "breezebuttons.h"
+#include "breezebutton.h"
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
 #include <KDecoration2/DecorationSettings>

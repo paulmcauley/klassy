@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "breezebuttons.h"
+#include "breezebutton.h"
 #include "breezeimageprovider.h"
 
 #include <KDecoration2/DecoratedClient>
