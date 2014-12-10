@@ -17,7 +17,11 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 #include "breezedeco.h"
+
+#include "breeze.h"
+
 #include "breezebuttons.h"
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
@@ -161,12 +165,13 @@ namespace Breeze
 
         QFontMetrics fm(s->font());
         int top = qMax(fm.boundingRect(c->caption()).height(), s->gridUnit() * 2);
+
         // padding below
-        top += s->smallSpacing() * 2 + 1;
-        if (!c->isMaximized()) {
-            // padding above only on maximized
-            top += s->smallSpacing();
-        }
+        // extra pixel is used for the active window outline
+        top += s->smallSpacing() + 1;
+
+        // padding above
+        if (!c->isMaximized()) top += s->smallSpacing();
 
         int bottom = c->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
         setBorders(QMargins(left, top, right, bottom));
@@ -206,16 +211,18 @@ namespace Breeze
     void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
     {
         // TODO: optimize based on repaintRegion
+
         // paint background
         painter->fillRect(rect(), Qt::transparent);
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing);
         painter->setPen(Qt::NoPen);
         painter->setBrush(m_colorSettings.frame(client().data()->isActive()));
+
         // clip away the top part
         painter->save();
         painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
-        painter->drawRoundedRect(rect(), 5.0, 5.0);
+        painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
         painter->restore();
 
         paintTitleBar(painter, repaintRegion);
@@ -230,35 +237,41 @@ namespace Breeze
         const bool active = c->isActive();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
         const QColor titleBarColor(m_colorSettings.titleBarColor(c->isActive()));
+
         // render a linear gradient on title area
-        QLinearGradient gradient;
-        gradient.setStart(0.0, 0.0);
-        gradient.setFinalStop(0.0, titleRect.height());
+        QLinearGradient gradient( 0, 0, 0, titleRect.height() );
         gradient.setColorAt(0.0, titleBarColor.lighter(c->isActive() ? 120.0 : 100.0));
         gradient.setColorAt(0.8, titleBarColor);
-        gradient.setColorAt(1.0, titleBarColor);
-        gradient.setFinalStop(0.0, titleRect.height());
+
         painter->save();
         painter->setBrush(gradient);
         painter->setPen(Qt::NoPen);
-        if (c->isMaximized()) {
+
+        if (c->isMaximized())
+        {
+
             painter->drawRect(titleRect);
+
         } else {
-            painter->setClipRect(titleRect, Qt::IntersectClip);
+
             // we make the rect a little bit larger to be able to clip away the rounded corners on bottom
-            painter->drawRoundedRect(titleRect.adjusted(0, 0, 0, 5), 5.0, 5.0);
+            painter->setClipRect(titleRect, Qt::IntersectClip);
+            painter->drawRoundedRect(titleRect.adjusted(0, 0, 0, Metrics::Frame_FrameRadius), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+
         }
-        painter->restore();
+
         auto s = settings();
-        const int titleBarSpacer = s->smallSpacing();
-        if (true) {
-            // TODO: should be config option
-            painter->fillRect(0, borderTop() - titleBarSpacer - 1,
-                size().width(), 1,
-                c->palette().color(active ?  QPalette::Highlight: QPalette::Background));
+
+        // TODO: should be config option
+        if( active )
+        {
+            painter->setRenderHint( QPainter::Antialiasing, false );
+            painter->setBrush( Qt::NoBrush );
+            painter->setPen( c->palette().color( QPalette::Highlight ) );
+            painter->drawLine( titleRect.bottomLeft(), titleRect.bottomRight() );
         }
-        // draw title bar spacer
-        painter->fillRect(0, borderTop() - titleBarSpacer, size().width(), titleBarSpacer, c->palette().color(QPalette::Background));
+
+        painter->restore();
 
         // draw caption
         painter->setFont(s->font());
@@ -362,5 +375,6 @@ namespace Breeze
     }
 
 } // namespace
+
 
 #include "breezedeco.moc"
