@@ -27,8 +27,8 @@
 
 #include <KDecoration2/Decoration>
 
-#include <QColor>
 #include <QPalette>
+#include <QPropertyAnimation>
 #include <QVariant>
 
 namespace KDecoration2
@@ -42,6 +42,9 @@ namespace Breeze
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
+
+        //* declare active state opacity
+        Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
         public:
 
@@ -68,6 +71,20 @@ namespace Breeze
         //* button height
         int buttonHeight() const;
 
+        //*@name active state change animation
+        //@{
+        void setOpacity( qreal value )
+        {
+            if( m_opacity == value ) return;
+            m_opacity = value;
+            update();
+        }
+
+        qreal opacity( void ) const
+        { return m_opacity; }
+
+        //@}
+
         public Q_SLOTS:
         void init() override;
 
@@ -76,6 +93,7 @@ namespace Breeze
         void recalculateBorders();
         void updateButtonPositions();
         void updateTitleBar();
+        void updateAnimationState();
 
         private:
         QRect captionRect() const;
@@ -83,12 +101,26 @@ namespace Breeze
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
 
+        //*@name colors
+        //@{
+        QColor titleBarColor( void ) const;
+        QColor outlineColor( void ) const;
+        QColor fontColor( void ) const;
+        //@}
+
         ColorSettings m_colorSettings;
         InternalSettings m_internalSettings;
 
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons;
         KDecoration2::DecorationButtonGroup *m_rightButtons;
+
+        //* active state change animation
+        QPropertyAnimation *m_animation;
+
+        //* active state change opacity
+        qreal m_opacity;
+
     };
 
 }

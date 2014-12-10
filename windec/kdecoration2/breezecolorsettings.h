@@ -35,13 +35,13 @@ namespace Breeze
 
         void update(const QPalette &pal);
 
-        const QColor &titleBarColor(bool active) const {
+        const QColor &titleBar(bool active) const {
             return active ? m_activeTitleBarColor : m_inactiveTitleBarColor;
         }
-        const QColor &activeTitleBarColor() const {
+        const QColor &activeTitleBar() const {
             return m_activeTitleBarColor;
         }
-        const QColor &inactiveTitleBarColor() const {
+        const QColor &inactiveTitleBar() const {
             return m_inactiveTitleBarColor;
         }
         const QColor &frame(bool active) const {

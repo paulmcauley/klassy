@@ -223,7 +223,7 @@ namespace Breeze
         drawBackground(painter, decorationButton, backgroundColor);
 
         // draw the X
-        QPen pen(hovered || pressed ? colorSettings(pal).font(active) : colorSettings(pal).titleBarColor(active));
+        QPen pen(hovered || pressed ? colorSettings(pal).font(active) : colorSettings(pal).titleBar(active));
         pen.setWidth(2);
         painter->setPen(pen);
         painter->translate(size.width() / 2.0, size.height() / 2.0);
@@ -273,7 +273,7 @@ namespace Breeze
             painter->translate(decorationButton->size().width() / 2.0, decorationButton->size().height() / 2.0);
             const int radius = decorationButton->size().width() / 2 - 3;
             painter->drawEllipse(-radius, -radius, radius * 2, radius * 2);
-            painter->setBrush(decorationButton->isHovered() ? colorSettings(decorationButton).font(active) :  colorSettings(decorationButton).titleBarColor(active));
+            painter->setBrush(decorationButton->isHovered() ? colorSettings(decorationButton).font(active) :  colorSettings(decorationButton).titleBar(active));
             painter->drawEllipse(-1, -1, 2, 2);
         } else {
             // not on all desktops
@@ -373,10 +373,10 @@ namespace Breeze
         const ColorSettings &colors = colorSettings(client->palette());
         const bool active = client->isActive();
         if (decorationButton->isStandAlone()) {
-            return colors.titleBarColor(active);
+            return colors.titleBar(active);
         }
         if (decorationButton->isHovered()) {
-            return colors.titleBarColor(active);
+            return colors.titleBar(active);
         }
         QColor c = colors.font(active);
         if (!decorationButton->isEnabled()) {

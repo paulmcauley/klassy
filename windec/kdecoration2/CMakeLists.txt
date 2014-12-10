@@ -22,6 +22,7 @@ target_link_libraries(breezedecoration
         KF5::ConfigCore
         KF5::CoreAddons
         KF5::ConfigWidgets
+        KF5::GuiAddons
 )
 
 install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)

@@ -29,6 +29,7 @@
 #include <KDecoration2/DecorationShadow>
 
 #include <KConfigGroup>
+#include <KColorUtils>
 #include <KSharedConfig>
 #include <KPluginFactory>
 
@@ -55,6 +56,7 @@ namespace Breeze
         , m_colorSettings(client().data()->palette())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
+        , m_animation( new QPropertyAnimation( this ) )
     {
         g_sDecoCount++;
     }
@@ -72,6 +74,15 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::init()
     {
+
+        // active state change animation
+        m_animation->setStartValue( 0 );
+        m_animation->setEndValue( 1.0 );
+        m_animation->setTargetObject( this );
+        m_animation->setPropertyName( "opacity" );
+        m_animation->setEasingCurve( QEasingCurve::InOutQuad );
+
+
         recalculateBorders();
         updateTitleBar();
         auto s = settings();
@@ -92,7 +103,7 @@ namespace Breeze
             }
         );
 
-        connect(client().data(), &KDecoration2::DecoratedClient::activeChanged,    this, [this]() { update(); });
+        connect(client().data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
         connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged,   this,
             [this]() {
                 m_colorSettings.update(client().data()->palette());
@@ -117,10 +128,20 @@ namespace Breeze
         auto s = settings();
         const bool maximized = client().data()->isMaximized();
         const int width = client().data()->width();
-        const int height = maximized ? borderTop() : borderTop() - s->smallSpacing();
-        const int x = maximized ? 0 : s->largeSpacing() / 2;
-        const int y = maximized ? 0 : s->smallSpacing();
+        const int height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
+        const int x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
+        const int y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
         setTitleBar(QRect(x, y, width, height));
+    }
+
+    //________________________________________________________________
+    void Decoration::updateAnimationState()
+    {
+        if( m_internalSettings.animationsEnabled() )
+        {
+            m_animation->setDirection( client().data()->isActive() ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
+            if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
+        }
     }
 
     //________________________________________________________________
@@ -161,6 +182,7 @@ namespace Breeze
     void Decoration::reconfigure()
     {
         m_internalSettings.read();
+        m_animation->setDuration( m_internalSettings.animationsDuration() );
         recalculateBorders();
     }
 
@@ -254,11 +276,11 @@ namespace Breeze
         const auto c = client().data();
         const bool active = c->isActive();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
-        const QColor titleBarColor(m_colorSettings.titleBarColor(c->isActive()));
+        const QColor titleBarColor( this->titleBarColor() );
 
         // render a linear gradient on title area
         QLinearGradient gradient( 0, 0, 0, titleRect.height() );
-        gradient.setColorAt(0.0, titleBarColor.lighter(c->isActive() ? 120.0 : 100.0));
+        gradient.setColorAt(0.0, titleBarColor.lighter(100.0));
         gradient.setColorAt(0.8, titleBarColor);
 
         painter->save();
@@ -282,6 +304,7 @@ namespace Breeze
 
         if( active )
         {
+            // outline
             painter->setRenderHint( QPainter::Antialiasing, false );
             painter->setBrush( Qt::NoBrush );
             painter->setPen( c->palette().color( QPalette::Highlight ) );
@@ -414,6 +437,41 @@ namespace Breeze
 
         g_sShadow = decorationShadow;
         setShadow(decorationShadow);
+    }
+
+    //________________________________________________________________
+    QColor Decoration::titleBarColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            return KColorUtils::mix( m_colorSettings.inactiveTitleBar(), m_colorSettings.activeTitleBar(), m_opacity );
+        } else return m_colorSettings.titleBar( client().data()->isActive() );
+
+    }
+
+    //________________________________________________________________
+    QColor Decoration::outlineColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            QColor color( client().data()->palette().color( QPalette::Highlight ) );
+            color.setAlpha( color.alpha()*m_opacity );
+            return color;
+        } else if( client().data()->isActive() ) return client().data()->palette().color( QPalette::Highlight );
+        else return QColor();
+    }
+
+    //________________________________________________________________
+    QColor Decoration::fontColor() const
+    {
+
+        if( m_animation->state() == QPropertyAnimation::Running )
+        {
+            return KColorUtils::mix( m_colorSettings.inactiveFont(), m_colorSettings.activeFont(), m_opacity );
+        } else return m_colorSettings.font( client().data()->isActive() );
+
     }
 
 } // namespace
