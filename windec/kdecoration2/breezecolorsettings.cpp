@@ -39,13 +39,22 @@ namespace Breeze
     void ColorSettings::init(const QPalette &palette)
     {
         m_palette = palette;
-        KConfigGroup wmConfig(KSharedConfig::openConfig(QStringLiteral("kdeglobals")), QStringLiteral("WM"));
-        m_activeFrameColor      = wmConfig.readEntry("frame", palette.color(QPalette::Active, QPalette::Background));
-        m_inactiveFrameColor    = wmConfig.readEntry("inactiveFrame", m_activeFrameColor);
-        m_activeTitleBarColor   = wmConfig.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
-        m_inactiveTitleBarColor = wmConfig.readEntry("inactiveBackground", m_inactiveFrameColor);
-        m_activeFontColor       = wmConfig.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
-        m_inactiveFontColor     = wmConfig.readEntry("inactiveForeground", m_activeFontColor.dark());
+
+        {
+            KConfigGroup wmConfig(KSharedConfig::openConfig(QStringLiteral("kdeglobals")), QStringLiteral("WM"));
+            m_activeFrameColor      = wmConfig.readEntry("frame", palette.color(QPalette::Active, QPalette::Background));
+            m_inactiveFrameColor    = wmConfig.readEntry("inactiveFrame", m_activeFrameColor);
+            m_activeTitleBarColor   = wmConfig.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
+            m_inactiveTitleBarColor = wmConfig.readEntry("inactiveBackground", m_inactiveFrameColor);
+            m_activeFontColor       = wmConfig.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
+            m_inactiveFontColor     = wmConfig.readEntry("inactiveForeground", m_activeFontColor.dark());
+        }
+
+        {
+            KConfigGroup wmConfig(KSharedConfig::openConfig(QStringLiteral("kdeglobals")), QStringLiteral("Colors:Window"));
+            m_closeButtonColor = wmConfig.readEntry("ForegroundNegative", QColor(237, 21, 2));
+        }
+
     }
 
 }

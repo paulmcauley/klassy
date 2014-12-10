@@ -146,7 +146,7 @@ namespace Breeze
         if( isPressed() )
         {
 
-            if( type() == KDecoration2::DecorationButtonType::Close ) return QColor(237, 21, 21);
+            if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor();
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
 
         } else if( ( type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove ) && isChecked() ) {
@@ -158,7 +158,7 @@ namespace Breeze
             if( type() == KDecoration2::DecorationButtonType::Close )
             {
 
-                return KColorUtils::mix( d->fontColor(), QColor(237, 21, 21).lighter(), m_opacity );
+                return KColorUtils::mix( d->fontColor(), d->colorSettings().closeButtonColor().lighter(), m_opacity );
 
             } else {
 
@@ -170,7 +170,7 @@ namespace Breeze
 
         } else if( isHovered() ) {
 
-            if( type() == KDecoration2::DecorationButtonType::Close ) return QColor(237, 21, 21).lighter();
+            if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor().lighter();
             else return d->fontColor();
 
         } else if( type() == KDecoration2::DecorationButtonType::Close ) {

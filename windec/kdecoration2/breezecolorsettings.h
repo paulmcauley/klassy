@@ -62,6 +62,9 @@ namespace Breeze
         const QColor &inactiveFont() const {
             return m_inactiveFontColor;
         }
+        const QColor &closeButtonColor() const {
+            return m_closeButtonColor;
+        }
         const QPalette &palette() const {
             return m_palette;
         }
@@ -73,6 +76,7 @@ namespace Breeze
         QColor m_inactiveFrameColor;
         QColor m_activeFontColor;
         QColor m_inactiveFontColor;
+        QColor m_closeButtonColor;
         QPalette m_palette;
     };
 
