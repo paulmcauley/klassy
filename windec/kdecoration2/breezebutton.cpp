@@ -73,6 +73,15 @@ namespace Breeze
         if (!decoration())
         { return; }
 
+        #if 0
+        painter->save();
+        painter->setPen( Qt::red );
+        painter->setBrush( Qt::NoBrush );
+        painter->setRenderHints( QPainter::Antialiasing );
+        painter->drawRect( QRectF( geometry() ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+        painter->restore();
+        #endif
+
         // TODO: optimize based on repaintRegion
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {

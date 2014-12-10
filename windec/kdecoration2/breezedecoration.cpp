@@ -18,7 +18,7 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "breezedeco.h"
+#include "breezedecoration.h"
 
 #include "breeze.h"
 
@@ -75,6 +75,7 @@ namespace Breeze
         updateTitleBar();
         auto s = settings();
         connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
+
         // a change in font might cause the borders to change
         connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
         connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
@@ -176,15 +177,21 @@ namespace Breeze
         int bottom = c->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
         setBorders(QMargins(left, top, right, bottom));
 
-        const int extSize = s->largeSpacing() / 2;
+        // extended sizes
+        const int extSize = s->largeSpacing();
         int extSides = 0;
         int extBottom = 0;
-        if (s->borderSize() == KDecoration2::BorderSize::None) {
+        if (s->borderSize() == KDecoration2::BorderSize::None)
+        {
             extSides = extSize;
             extBottom = extSize;
+
         } else if (s->borderSize() == KDecoration2::BorderSize::NoSides) {
+
             extSides = extSize;
+
         }
+
         setResizeOnlyBorders(QMargins(extSides, 0, extSides, extBottom));
     }
 
@@ -286,19 +293,16 @@ namespace Breeze
 
     //________________________________________________________________
     int Decoration::captionHeight() const
-    {
-        return borderTop() - settings()->smallSpacing() * (client().data()->isMaximized() ? 2 : 3) - 1;
-    }
+    { return borderTop() - settings()->smallSpacing() * (client().data()->isMaximized() ? 1 : 2) - 1; }
 
     //________________________________________________________________
     QRect Decoration::captionRect() const
     {
         const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width();
         const int rightOffset = size().width() - m_rightButtons->geometry().x();
-        const int offset = qMax(leftOffset, rightOffset);
         const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing();
-        // below is the spacer
-        return QRect(offset, yOffset, size().width() - offset * 2, captionHeight());
+
+        return QRect( leftOffset, yOffset, size().width() - rightOffset, captionHeight());
     }
 
     //________________________________________________________________
@@ -376,4 +380,4 @@ namespace Breeze
 } // namespace
 
 
-#include "breezedeco.moc"
+#include "breezedecoration.moc"

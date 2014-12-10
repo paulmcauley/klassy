@@ -21,7 +21,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <KDecoration2/DecorationButton>
-#include "breezedeco.h"
+#include "breezedecoration.h"
 
 #include <QHash>
 #include <QImage>
