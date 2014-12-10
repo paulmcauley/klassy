@@ -169,11 +169,6 @@ namespace Breeze
         QFontMetrics fm(s->font());
         int top = qMax(fm.boundingRect(c->caption()).height(), buttonHeight() );
 
-        QTextStream( stdout ) << "Breeze::Decoration::recalculateBorders -"
-            << " grid unit: " << settings()->gridUnit()
-            << " buttonHeight: " << buttonHeight()
-            << endl;
-
         // padding below
         // extra pixel is used for the active window outline
         const int baseSize = settings()->smallSpacing();
