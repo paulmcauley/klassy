@@ -31,17 +31,26 @@ namespace Breeze
         //* corner radius
         Frame_FrameRadius = 3,
 
-        //* top title bar edge
-        TitleBar_TopMargin = 4,
-        TitleBar_BottomMargin = 5,
-        TitleBar_SideMargin = 5,
-        TitleBar_ButtonSpacing = 3,
+        //* titlebar margins, in units of small spacing
+        TitleBar_TopMargin = 2,
+        TitleBar_BottomMargin = 2,
+        TitleBar_SideMargin = 2,
 
         // shadow dimensions
         Shadow_Size = 20,
         Shadow_Offset = 6,
         Shadow_Overlap = 2
 
+    };
+
+    //* button size
+    enum class ButtonSize : uint
+    {
+        ButtonSmall,
+        ButtonDefault,
+        ButtonLarge,
+        ButtonVeryLarge,
+        ButtonHuge
     };
 
     //* button state
