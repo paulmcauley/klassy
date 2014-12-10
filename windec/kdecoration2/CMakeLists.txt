@@ -3,6 +3,7 @@ find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
 
 
 set(breezedecoration_SRCS
+    breezecolorsettings.cpp
     breezedeco.cpp
     breezebuttons.cpp
 )

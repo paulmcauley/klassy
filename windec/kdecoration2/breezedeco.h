@@ -1,3 +1,6 @@
+#ifndef BREEZE_DECORATION_H
+#define BREEZE_DECORATION_H
+
 /*
  * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
  *
@@ -17,8 +20,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef BREEZE_DECORATION_H
-#define BREEZE_DECORATION_H
+
+#include "breezecolorsettings.h"
 
 #include <KDecoration2/Decoration>
 
@@ -34,90 +37,40 @@ namespace KDecoration2
 
 namespace Breeze
 {
+    class Decoration : public KDecoration2::Decoration
+    {
+        Q_OBJECT
+            public:
+            explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
+        virtual ~Decoration();
 
-// TODO: move to deco API
-class ColorSettings
-{
-public:
-    ColorSettings(const QPalette &pal);
+        void paint(QPainter *painter, const QRect &repaintRegion) override;
 
-    void update(const QPalette &pal);
+        const ColorSettings &colorSettings() {
+            return m_colorSettings;
+        }
 
-    const QColor &titleBarColor(bool active) const {
-        return active ? m_activeTitleBarColor : m_inactiveTitleBarColor;
-    }
-    const QColor &activeTitleBarColor() const {
-        return m_activeTitleBarColor;
-    }
-    const QColor &inactiveTitleBarColor() const {
-        return m_inactiveTitleBarColor;
-    }
-    const QColor &frame(bool active) const {
-        return active ? m_activeFrameColor : m_inactiveFrameColor;
-    }
-    const QColor &activeFrame() const {
-        return m_activeFrameColor;
-    }
-    const QColor &inactiveFrame() const {
-        return m_inactiveFrameColor;
-    }
-    const QColor &font(bool active) const {
-        return active ? m_activeFontColor : m_inactiveFontColor;
-    }
-    const QColor &activeFont() const {
-        return m_activeFontColor;
-    }
-    const QColor &inactiveFont() const {
-        return m_inactiveFontColor;
-    }
-    const QPalette &palette() const {
-        return m_palette;
-    }
-private:
-    void init(const QPalette &pal);
-    QColor m_activeTitleBarColor;
-    QColor m_inactiveTitleBarColor;
-    QColor m_activeFrameColor;
-    QColor m_inactiveFrameColor;
-    QColor m_activeFontColor;
-    QColor m_inactiveFontColor;
-    QPalette m_palette;
-};
+        int captionHeight() const;
 
-class Decoration : public KDecoration2::Decoration
-{
-    Q_OBJECT
-public:
-    explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
-    virtual ~Decoration();
+        public Q_SLOTS:
+        void init() override;
 
-    void paint(QPainter *painter, const QRect &repaintRegion) override;
+        private Q_SLOTS:
+        void recalculateBorders();
+        void updateButtonPositions();
+        void updateTitleBar();
 
-    const ColorSettings &colorSettings() {
-        return m_colorSettings;
-    }
+        private:
+        QRect captionRect() const;
+        void createButtons();
+        void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
+        void createShadow();
+        ColorSettings m_colorSettings;
+        QList<KDecoration2::DecorationButton*> m_buttons;
+        KDecoration2::DecorationButtonGroup *m_leftButtons;
+        KDecoration2::DecorationButtonGroup *m_rightButtons;
+    };
 
-    int captionHeight() const;
-
-public Q_SLOTS:
-    void init() override;
-
-private Q_SLOTS:
-    void recalculateBorders();
-    void updateButtonPositions();
-    void updateTitleBar();
-
-private:
-    QRect captionRect() const;
-    void createButtons();
-    void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-    void createShadow();
-    ColorSettings m_colorSettings;
-    QList<KDecoration2::DecorationButton*> m_buttons;
-    KDecoration2::DecorationButtonGroup *m_leftButtons;
-    KDecoration2::DecorationButtonGroup *m_rightButtons;
-};
-
-} // namespace
+}
 
 #endif
