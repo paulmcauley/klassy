@@ -21,6 +21,7 @@
 #include "breezeimageprovider.h"
 
 #include <KDecoration2/DecoratedClient>
+#include <KColorUtils>
 
 #include <QPainter>
 
@@ -30,7 +31,18 @@ namespace Breeze
     //__________________________________________________________________
     Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
+        ,m_animation( new QPropertyAnimation( this ) )
+        ,m_opacity(0)
     {
+
+        // setup animation
+        m_animation->setStartValue( 0 );
+        m_animation->setEndValue( 1.0 );
+        m_animation->setTargetObject( this );
+        m_animation->setPropertyName( "opacity" );
+        m_animation->setEasingCurve( QEasingCurve::InOutQuad );
+
+        // setup geometry
         const int height = decoration->buttonHeight();
         setGeometry(QRect(0, 0, height, height));
         connect(decoration, &Decoration::bordersChanged, this, [this, decoration]
@@ -40,6 +52,10 @@ namespace Breeze
             ImageProvider::self()->clearCache(this);
             setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));
         });
+
+        // connect hover state changed
+        connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
+
     }
 
     //__________________________________________________________________
@@ -74,15 +90,6 @@ namespace Breeze
         if (!decoration())
         { return; }
 
-        #if 0
-        painter->save();
-        painter->setPen( Qt::red );
-        painter->setBrush( Qt::NoBrush );
-        painter->setRenderHints( QPainter::Antialiasing );
-        painter->drawRect( QRectF( geometry() ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-        painter->restore();
-        #endif
-
         // TODO: optimize based on repaintRegion
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
@@ -91,10 +98,95 @@ namespace Breeze
 
         } else {
 
-            painter->drawImage(geometry().topLeft(), ImageProvider::self()->button(this));
+            painter->save();
+            painter->setRenderHints( QPainter::Antialiasing );
+            painter->translate( geometry().topLeft() );
+            ImageProvider::self()->renderButton( painter, this );
+            painter->restore();
 
         }
 
     }
+
+    //__________________________________________________________________
+    QColor Button::foregroundColor( void ) const
+    {
+
+        Decoration *d = qobject_cast<Decoration*>( decoration() );
+        if( !d ) return QColor();
+        if( type() == KDecoration2::DecorationButtonType::Close ) {
+
+            return d->titleBarColor();
+
+        } else if( m_animation->state() == QPropertyAnimation::Running ) {
+
+            return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
+
+        } else if( isHovered() ) {
+
+            return d->titleBarColor();
+
+        } else {
+
+            return d->fontColor();
+
+        }
+
+    }
+
+    //__________________________________________________________________
+    QColor Button::backgroundColor( void ) const
+    {
+        Decoration *d = qobject_cast<Decoration*>( decoration() );
+        if( !d ) return QColor();
+        if( isPressed() )
+        {
+
+            if( type() == KDecoration2::DecorationButtonType::Close ) return QColor(237, 21, 21);
+            else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+
+        } else if( m_animation->state() == QPropertyAnimation::Running ) {
+
+            if( type() == KDecoration2::DecorationButtonType::Close )
+            {
+
+                return KColorUtils::mix( d->fontColor(), QColor(237, 21, 21).lighter(), m_opacity );
+
+            } else {
+
+                QColor color( d->fontColor() );
+                color.setAlpha( color.alpha()*m_opacity );
+                return color;
+
+            }
+
+        } else if( isHovered() ) {
+
+            if( type() == KDecoration2::DecorationButtonType::Close ) return QColor(237, 21, 21).lighter();
+            else return d->fontColor();
+
+        } else if( type() == KDecoration2::DecorationButtonType::Close ) {
+
+            return d->fontColor();
+
+        } else {
+
+            return QColor();
+
+        }
+
+    }
+
+    //__________________________________________________________________
+    void Button::updateAnimationState( bool hovered )
+    {
+
+        Decoration *d = qobject_cast<Decoration*>(decoration());
+        if( !(d && d->internalSettings().animationsEnabled() ) ) return;
+
+        m_animation->setDirection( hovered ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
+        if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
+
+   }
 
 } // namespace

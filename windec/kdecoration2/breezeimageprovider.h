@@ -47,6 +47,8 @@ namespace Breeze
 
         void invalidate();
 
+        void renderButton(QPainter *p, Button *decorationButton) const;
+
         private:
 
         ImageProvider();
@@ -68,8 +70,6 @@ namespace Breeze
         void drawDownArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
 
         void drawUpArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-
-        QColor foregroundColor(Button *decorationButton) const;
 
         ColorSettings colorSettings(Button *decorationButton) const;
 
