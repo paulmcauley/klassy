@@ -276,12 +276,13 @@ namespace Breeze
     void Decoration::updateButtonPositions()
     {
         auto s = settings();
-        const int padding = (client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin) + (captionHeight()-buttonHeight())/2;
+        const int vPadding = (client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin) + (captionHeight()-buttonHeight())/2;
+        const int hPadding = client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_SideMargin;
 
         m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
         m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-        m_leftButtons->setPos(QPointF(padding, padding));
-        m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - padding, padding));
+        m_leftButtons->setPos(QPointF(hPadding, vPadding));
+        m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding, vPadding));
     }
 
     //________________________________________________________________
@@ -396,8 +397,8 @@ namespace Breeze
     //________________________________________________________________
     QRect Decoration::captionRect() const
     {
-        const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width();
-        const int rightOffset = size().width() - m_rightButtons->geometry().x();
+        const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
+        const int rightOffset = size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
         const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
 
         QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption()).toRect() );
