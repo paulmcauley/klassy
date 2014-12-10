@@ -1,3 +1,6 @@
+#ifndef BREEZE_BUTTONS_H
+#define BREEZE_BUTTONS_H
+
 /*
  * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
  *
@@ -17,66 +20,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef BREEZE_BUTTONS_H
-#define BREEZE_BUTTONS_H
 #include <KDecoration2/DecorationButton>
 #include "breezedeco.h"
 
 #include <QHash>
 #include <QImage>
-uint qHash(const QPalette &pal);
 
 namespace Breeze
 {
 
 class Button;
-
-enum class ButtonState : uint {
-    Normal,
-    Disabled,
-    Hovered,
-    Pressed,
-    Checked,
-    CheckedHovered,
-    CheckedPressed,
-    Preview
-};
-
-inline uint qHash(const ButtonState &state) {
-    return static_cast<uint>(state);
-}
-
-class ImageProvider final
-{
-public:
-    ~ImageProvider();
-    static ImageProvider *self();
-    QImage button(Button *decorationButton);
-    void clearCache(Button *decorationButton);
-
-    void invalidate();
-
-private:
-    ImageProvider();
-    QImage renderButton(Button *decorationButton) const;
-    void renderCloseButton(QPainter *p, Button *decorationButton) const;
-    void renderShadeButton(QPainter *p, Button *decorationButton) const;
-    void renderMaximizeButton(QPainter *p, Button *decorationButton) const;
-    void renderOnAllDesktopsButton(QPainter *p, Button *decorationButton) const;
-    void drawGenericButtonBackground(QPainter *painter, Button *decorationButton) const;
-    void drawBackground(QPainter *painter, Button *decorationButton, const QColor &color) const;
-    void drawDownArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-    void drawUpArrow(QPainter *painter, Button *decorationButton, const QPointF &offset = QPointF(0.0, 0.0)) const;
-    QColor foregroundColor(Button *decorationButton) const;
-    ColorSettings colorSettings(Button *decorationButton) const;
-    ColorSettings colorSettings(const QPalette &pal) const;
-    static ImageProvider *s_self;
-    typedef QHash<ButtonState, QImage> ImagesForButtonState;
-    typedef QHash<bool, ImagesForButtonState> ImagesForDecoState;
-    typedef QHash<KDecoration2::DecorationButtonType, ImagesForDecoState> ImagesForButton;
-    QHash<QPalette, ImagesForButton> m_images;
-    QList<ColorSettings> m_colorSettings;
-};
 
 class Button : public KDecoration2::DecorationButton
 {

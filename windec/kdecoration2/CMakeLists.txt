@@ -4,8 +4,9 @@ find_package(KF5 REQUIRED COMPONENTS CoreAddons Config)
 
 set(breezedecoration_SRCS
     breezecolorsettings.cpp
-    breezedeco.cpp
     breezebuttons.cpp
+    breezedeco.cpp
+    breezeimageprovider.cpp
 )
 
 add_library(breezedecoration MODULE ${breezedecoration_SRCS})
