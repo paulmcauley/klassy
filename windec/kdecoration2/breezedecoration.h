@@ -85,6 +85,14 @@ namespace Breeze
 
         //@}
 
+
+        //*@name colors
+        //@{
+        QColor titleBarColor( void ) const;
+        QColor outlineColor( void ) const;
+        QColor fontColor( void ) const;
+        //@}
+
         public Q_SLOTS:
         void init() override;
 
@@ -100,13 +108,6 @@ namespace Breeze
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
-
-        //*@name colors
-        //@{
-        QColor titleBarColor( void ) const;
-        QColor outlineColor( void ) const;
-        QColor fontColor( void ) const;
-        //@}
 
         ColorSettings m_colorSettings;
         InternalSettings m_internalSettings;
