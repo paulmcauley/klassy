@@ -409,7 +409,7 @@ namespace Breeze
         }
         auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
         decorationShadow->setPadding(QMargins(10, 10, 20, 20));
-        decorationShadow->setInnerShadowRect(QRect(19, 19, 1, 1));
+        decorationShadow->setInnerShadowRect(QRect( 12, 12, 6, 6 ) );
 
         // QImage image(60, 60, QImage::Format_ARGB32_Premultiplied);
         QImage image(40, 40, QImage::Format_ARGB32_Premultiplied);
