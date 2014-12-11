@@ -28,7 +28,7 @@ namespace Breeze
     enum Metrics
     {
 
-        //* corner radius
+        //* corner radius (pixels)
         Frame_FrameRadius = 3,
 
         //* titlebar metrics, in units of small spacing
