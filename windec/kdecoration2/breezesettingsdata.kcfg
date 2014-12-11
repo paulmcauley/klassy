@@ -27,11 +27,15 @@
     </entry>
 
     <!-- maximized windows -->
-<!--
 	    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
 	       <default>false</default>
 	    </entry>
--->
+
+    <!-- size grip -->
+    <entry name="DrawSizeGrip" type = "Bool">
+      <default>true</default>
+    </entry>
+
 
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
