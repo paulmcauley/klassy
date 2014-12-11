@@ -168,7 +168,7 @@ namespace Breeze
     void Decoration::updateTitleBar()
     {
         auto s = settings();
-        const bool maximized = client().data()->isMaximized();
+        const bool maximized = isMaximized();
         const int width = client().data()->width();
         const int height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
         const int x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
@@ -223,6 +223,8 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::reconfigure()
     {
+
+        // read internal settings
         m_internalSettings.read();
 
         // animation
@@ -232,7 +234,7 @@ namespace Breeze
         recalculateBorders();
 
         // size grip
-        if( settings()->borderSize() == KDecoration2::BorderSize::None ) createSizeGrip();
+        if( settings()->borderSize() == KDecoration2::BorderSize::None && m_internalSettings.drawSizeGrip() ) createSizeGrip();
         else deleteSizeGrip();
 
     }
@@ -243,8 +245,8 @@ namespace Breeze
         auto s = settings();
         const auto c = client().data();
         const Qt::Edges edges = c->adjacentScreenEdges();
-        int left   = c->isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
-        int right  = c->isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
+        int left   = isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
+        int right  = isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
 
         QFontMetrics fm(s->font());
         int top = qMax(fm.boundingRect(c->caption()).height(), buttonHeight() );
@@ -255,9 +257,9 @@ namespace Breeze
         top += baseSize*Metrics::TitleBar_TopMargin + 1;
 
         // padding above
-        if (!c->isMaximized()) top += baseSize*TitleBar_BottomMargin;
+        if (!isMaximized()) top += baseSize*TitleBar_BottomMargin;
 
-        int bottom = c->isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
+        int bottom = isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
         setBorders(QMargins(left, top, right, bottom));
 
         // extended sizes
@@ -290,8 +292,8 @@ namespace Breeze
     void Decoration::updateButtonPositions()
     {
         auto s = settings();
-        const int vPadding = (client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin) + (captionHeight()-buttonHeight())/2;
-        const int hPadding = client().data()->isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_SideMargin;
+        const int vPadding = (isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin) + (captionHeight()-buttonHeight())/2;
+        const int hPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_SideMargin;
 
         m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
         m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
@@ -338,7 +340,7 @@ namespace Breeze
         painter->setBrush(gradient);
         painter->setPen(Qt::NoPen);
 
-        if (c->isMaximized())
+        if (isMaximized())
         {
 
             painter->drawRect(titleRect);
@@ -402,7 +404,7 @@ namespace Breeze
     int Decoration::captionHeight() const
     {
 
-        return client().data()->isMaximized() ?
+        return isMaximized() ?
             borderTop() - settings()->smallSpacing()*Metrics::TitleBar_BottomMargin - 1:
             borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1;
     }
@@ -412,7 +414,7 @@ namespace Breeze
     {
         const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
         const int rightOffset = size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
-        const int yOffset = client().data()->isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
+        const int yOffset = isMaximized() ? 0 : settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
 
         QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption()).toRect() );
         boundingRect.setTop( yOffset );
@@ -531,7 +533,7 @@ namespace Breeze
         if( ( c->isResizeable() && c->windowId() != 0 ) )
         {
             m_sizeGrip = new SizeGrip( this );
-            m_sizeGrip->setVisible( !( c->isMaximized() || c->isShaded() ) );
+            m_sizeGrip->setVisible( !( isMaximized() || c->isShaded() ) );
         }
         #endif
 

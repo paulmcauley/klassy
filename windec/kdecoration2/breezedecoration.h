@@ -27,6 +27,7 @@
 #include "breezesettings.h"
 
 #include <KDecoration2/Decoration>
+#include <KDecoration2/DecoratedClient>
 
 #include <QPalette>
 #include <QPropertyAnimation>
@@ -112,6 +113,11 @@ namespace Breeze
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
 
+        //*@name maximization modes
+        inline bool isMaximized( void ) const;
+        inline bool isMaximizedHorizontally( void ) const;
+        inline bool isMaximizedVertically( void ) const;
+
         //*@name size grip
         //@{
 
@@ -139,6 +145,10 @@ namespace Breeze
         qreal m_opacity = 0;
 
     };
+
+    bool Decoration::isMaximized( void ) const { return client().data()->isMaximized() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
+    bool Decoration::isMaximizedHorizontally( void ) const { return client().data()->isMaximizedHorizontally() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
+    bool Decoration::isMaximizedVertically( void ) const { return client().data()->isMaximizedVertically() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
 
 }
 
