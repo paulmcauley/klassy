@@ -19,9 +19,13 @@
  */
 
 #include "breezesettingsprovider.h"
+#include "breezesettingsprovider.moc"
+
 #include "breezeexceptionlist.h"
 
 #include <KWindowInfo>
+
+#include <QTextStream>
 
 namespace Breeze
 {
@@ -50,7 +54,6 @@ namespace Breeze
     //__________________________________________________________________
     void SettingsProvider::reconfigure( void )
     {
-
         if( !m_defaultSettings )
         {
             m_defaultSettings = InternalSettingsPtr(new InternalSettings());

@@ -26,11 +26,15 @@
 
 #include <KSharedConfig>
 
+#include <QObject>
+
 namespace Breeze
 {
 
-    class SettingsProvider
+    class SettingsProvider: public QObject
     {
+
+        Q_OBJECT
 
         public:
 
@@ -42,6 +46,8 @@ namespace Breeze
 
         //* internal settings for given decoration
         InternalSettingsPtr internalSettings(Decoration *) const;
+
+        public Q_SLOTS:
 
         //* reconfigure
         void reconfigure( void );
