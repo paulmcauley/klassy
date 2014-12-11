@@ -21,8 +21,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "breezesettings.h"
+
+#include <QSharedPointer>
+
 namespace Breeze
 {
+    //* convenience typedefs
+    using InternalSettingsPtr = QSharedPointer<InternalSettings>;
 
     //* metrics
     enum Metrics

@@ -368,7 +368,7 @@ namespace Breeze
     {
 
         Decoration *d = qobject_cast<Decoration*>(decoration());
-        if( !(d && d->internalSettings().animationsEnabled() ) ) return;
+        if( !(d && d->internalSettings()->animationsEnabled() ) ) return;
 
         m_animation->setDirection( hovered ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
         if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();

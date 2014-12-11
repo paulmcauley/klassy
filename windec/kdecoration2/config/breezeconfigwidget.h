@@ -27,13 +27,13 @@
 
 #include "ui_breezeconfigurationui.h"
 #include "breezesettings.h"
+#include "breeze.h"
 
 #include <QWidget>
 #include <QSharedPointer>
 
 namespace Breeze
 {
-    typedef QSharedPointer<InternalSettings> InternalSettingsPtr;
 
     //_____________________________________________
     class ConfigWidget: public QWidget

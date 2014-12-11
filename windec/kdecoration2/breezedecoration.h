@@ -65,7 +65,7 @@ namespace Breeze
         { return m_colorSettings; }
 
         //* internal settings
-        const InternalSettings &internalSettings()
+        InternalSettingsPtr internalSettings() const
         { return m_internalSettings; }
 
         //* caption height
@@ -129,7 +129,7 @@ namespace Breeze
         //@}
 
         ColorSettings m_colorSettings;
-        InternalSettings m_internalSettings;
+        InternalSettingsPtr m_internalSettings;
 
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons;
@@ -146,9 +146,9 @@ namespace Breeze
 
     };
 
-    bool Decoration::isMaximized( void ) const { return client().data()->isMaximized() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
-    bool Decoration::isMaximizedHorizontally( void ) const { return client().data()->isMaximizedHorizontally() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
-    bool Decoration::isMaximizedVertically( void ) const { return client().data()->isMaximizedVertically() && !m_internalSettings.drawBorderOnMaximizedWindows(); }
+    bool Decoration::isMaximized( void ) const { return client().data()->isMaximized() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
+    bool Decoration::isMaximizedHorizontally( void ) const { return client().data()->isMaximizedHorizontally() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
+    bool Decoration::isMaximizedVertically( void ) const { return client().data()->isMaximizedVertically() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
 }
 

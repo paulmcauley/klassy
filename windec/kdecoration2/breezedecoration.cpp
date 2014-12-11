@@ -61,6 +61,7 @@ namespace Breeze
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_colorSettings(client().data()->palette())
+        , m_internalSettings(new InternalSettings())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
         , m_sizeGrip(nullptr)
@@ -179,7 +180,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateAnimationState()
     {
-        if( m_internalSettings.animationsEnabled() )
+        if( m_internalSettings->animationsEnabled() )
         {
             m_animation->setDirection( client().data()->isActive() ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
             if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
@@ -191,26 +192,16 @@ namespace Breeze
     {
         const int baseSize = settings->smallSpacing();
         switch (settings->borderSize()) {
-            case KDecoration2::BorderSize::None:
-            return 0;
-            case KDecoration2::BorderSize::NoSides:
-            return bottom ? baseSize : 0;
-            case KDecoration2::BorderSize::Tiny:
-            return baseSize;
-            case KDecoration2::BorderSize::Normal:
-            return baseSize*2;
-            case KDecoration2::BorderSize::Large:
-            return baseSize * 3;
-            case KDecoration2::BorderSize::VeryLarge:
-            return baseSize * 4;
-            case KDecoration2::BorderSize::Huge:
-            return baseSize * 5;
-            case KDecoration2::BorderSize::VeryHuge:
-            return baseSize * 6;
-            case KDecoration2::BorderSize::Oversized:
-            return baseSize * 10;
+            case KDecoration2::BorderSize::None: return 0;
+            case KDecoration2::BorderSize::NoSides: return bottom ? baseSize : 0;
             default:
-            return baseSize;
+            case KDecoration2::BorderSize::Tiny: return baseSize;
+            case KDecoration2::BorderSize::Normal: return baseSize*2;
+            case KDecoration2::BorderSize::Large: return baseSize * 3;
+            case KDecoration2::BorderSize::VeryLarge: return baseSize * 4;
+            case KDecoration2::BorderSize::Huge: return baseSize * 5;
+            case KDecoration2::BorderSize::VeryHuge: return baseSize * 6;
+            case KDecoration2::BorderSize::Oversized: return baseSize * 10;
         }
     }
 
@@ -225,16 +216,16 @@ namespace Breeze
     {
 
         // read internal settings
-        m_internalSettings.read();
+        m_internalSettings->read();
 
         // animation
-        m_animation->setDuration( m_internalSettings.animationsDuration() );
+        m_animation->setDuration( m_internalSettings->animationsDuration() );
 
         // borders
         recalculateBorders();
 
         // size grip
-        if( settings()->borderSize() == KDecoration2::BorderSize::None && m_internalSettings.drawSizeGrip() ) createSizeGrip();
+        if( settings()->borderSize() == KDecoration2::BorderSize::None && m_internalSettings->drawSizeGrip() ) createSizeGrip();
         else deleteSizeGrip();
 
     }
@@ -387,7 +378,7 @@ namespace Breeze
     int Decoration::buttonHeight() const
     {
         const int baseSize = settings()->gridUnit();
-        switch( m_internalSettings.buttonSize() )
+        switch( m_internalSettings->buttonSize() )
         {
             case Breeze::InternalSettings::ButtonVerySmall: return baseSize;
 
@@ -424,7 +415,7 @@ namespace Breeze
         too small, resulting in text being elided */
         boundingRect.setWidth( boundingRect.width()+4 );
 
-        switch( m_internalSettings.titleAlignment() )
+        switch( m_internalSettings->titleAlignment() )
         {
             case Breeze::InternalSettings::AlignLeft:
             boundingRect.moveLeft( leftOffset );
