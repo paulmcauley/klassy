@@ -49,11 +49,16 @@ else()
       DESCRIPTION "KF5 Framework Integration"
       URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
       TYPE OPTIONAL
-      PURPOSE "Required to use KStyle convenience functionalities in style"
-  )
+      PURPOSE "Required to use KStyle convenience functionalities in style")
 
   set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
 
+  find_package(KF5Service CONFIG)
+  set_package_properties(KF5Service PROPERTIES
+      DESCRIPTION "KF5 Service Framework"
+      URL "https://projects.kde.org/projects/frameworks/kservice"
+      TYPE OPTIONAL
+      PURPOSE "Required for breeze-settings5 application to build")
 
   find_package(XCB COMPONENTS XCB)
   set_package_properties(XCB PROPERTIES
