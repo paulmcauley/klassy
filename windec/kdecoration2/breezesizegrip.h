@@ -89,7 +89,7 @@ namespace Breeze
 
         //* move/resize atom
         #if BREEZE_HAVE_X11
-        xcb_atom_t m_moveResizeAtom;
+        xcb_atom_t m_moveResizeAtom = 0;
         #endif
 
     };

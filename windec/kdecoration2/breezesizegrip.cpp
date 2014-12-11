@@ -42,11 +42,6 @@ namespace Breeze
     //_____________________________________________
     SizeGrip::SizeGrip( Decoration* decoration ):QWidget(nullptr)
         ,m_decoration( decoration )
-
-        #if BREEZE_HAVE_X11
-        ,m_moveResizeAtom( 0 )
-        #endif
-
     {
 
         setAttribute(Qt::WA_NoSystemBackground );
