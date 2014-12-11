@@ -1,5 +1,6 @@
 /*
 * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
+* Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public License as
@@ -21,9 +22,13 @@
 #include "breezedecoration.h"
 
 #include "breeze.h"
+#include "breezehelper.h"
+#include "config-breeze.h"
 #include "config/breezeconfig.h"
 
 #include "breezebutton.h"
+#include "breezesizegrip.h"
+
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
 #include <KDecoration2/DecorationSettings>
@@ -58,6 +63,7 @@ namespace Breeze
         , m_colorSettings(client().data()->palette())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
+        , m_sizeGrip(nullptr)
         , m_animation( new QPropertyAnimation( this ) )
     {
         g_sDecoCount++;
@@ -119,8 +125,7 @@ namespace Breeze
         m_animation->setPropertyName( "opacity" );
         m_animation->setEasingCurve( QEasingCurve::InOutQuad );
 
-
-        recalculateBorders();
+        reconfigure();
         updateTitleBar();
         auto s = settings();
         connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
@@ -219,8 +224,17 @@ namespace Breeze
     void Decoration::reconfigure()
     {
         m_internalSettings.read();
+
+        // animation
         m_animation->setDuration( m_internalSettings.animationsDuration() );
+
+        // borders
         recalculateBorders();
+
+        // size grip
+        if( settings()->borderSize() == KDecoration2::BorderSize::None ) createSizeGrip();
+        else deleteSizeGrip();
+
     }
 
     //________________________________________________________________
@@ -483,6 +497,39 @@ namespace Breeze
 
         g_sShadow = decorationShadow;
         setShadow(decorationShadow);
+    }
+
+    //_________________________________________________________________
+    void Decoration::createSizeGrip( void )
+    {
+
+        // do nothing if size grip already exist
+        if( m_sizeGrip ) return;
+
+        #if BREEZE_HAVE_X11
+        if( !Helper::isX11() ) return;
+
+        // access client
+        KDecoration2::DecoratedClient *c( client().data() );
+        if( !c ) return;
+
+        if( ( c->isResizeable() && c->windowId() != 0 ) )
+        {
+            m_sizeGrip = new SizeGrip( this );
+            m_sizeGrip->setVisible( !( c->isMaximized() || c->isShaded() ) );
+        }
+        #endif
+
+    }
+
+    //_________________________________________________________________
+    void Decoration::deleteSizeGrip( void )
+    {
+        if( m_sizeGrip )
+        {
+            m_sizeGrip->deleteLater();
+            m_sizeGrip = nullptr;
+        }
     }
 
 } // namespace

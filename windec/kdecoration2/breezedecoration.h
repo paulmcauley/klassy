@@ -39,6 +39,7 @@ namespace KDecoration2
 
 namespace Breeze
 {
+    class SizeGrip;
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
@@ -105,9 +106,20 @@ namespace Breeze
 
         private:
         QRect captionRect() const;
+
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
+
+        //*@name size grip
+        //@{
+
+        void createSizeGrip( void );
+        void deleteSizeGrip( void );
+        SizeGrip* sizeGrip( void ) const
+        { return m_sizeGrip; }
+
+        //@}
 
         ColorSettings m_colorSettings;
         InternalSettings m_internalSettings;
@@ -115,6 +127,9 @@ namespace Breeze
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons;
         KDecoration2::DecorationButtonGroup *m_rightButtons;
+
+        //* size grip widget
+        SizeGrip *m_sizeGrip;
 
         //* active state change animation
         QPropertyAnimation *m_animation;

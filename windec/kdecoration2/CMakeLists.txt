@@ -1,12 +1,39 @@
 find_package(KDecoration2 REQUIRED)
 find_package(KF5 REQUIRED COMPONENTS CoreAddons ConfigWidgets)
-find_package(Qt5 CONFIG REQUIRED COMPONENTS DBus )
+find_package(Qt5 CONFIG REQUIRED COMPONENTS DBus)
 
+### XCB
+find_package(XCB COMPONENTS XCB)
+set_package_properties(XCB PROPERTIES
+  DESCRIPTION "X protocol C-language Binding"
+  URL "http://xcb.freedesktop.org"
+  TYPE OPTIONAL
+  PURPOSE "Required to pass style properties to native Windows on X11 Platform"
+)
 
+if(UNIX AND NOT APPLE)
+
+  set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
+  if (XCB_XCB_FOUND)
+    find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
+  endif()
+
+else()
+
+  set(BREEZE_HAVE_X11 FALSE)
+
+endif()
+
+################# configuration #################
+configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
+
+################# newt target #################
 set(breezedecoration_SRCS
     breezecolorsettings.cpp
     breezebutton.cpp
     breezedecoration.cpp
+    breezehelper.cpp
+    breezesizegrip.cpp
     config/breezeconfig.cpp
     config/breezeconfigwidget.cpp)
 
@@ -33,7 +60,14 @@ target_link_libraries(breezedecoration
         KF5::CoreAddons
         KF5::ConfigWidgets
         KF5::GuiAddons
-        KF5::I18n
-)
+        KF5::I18n)
+
+if(BREEZE_HAVE_X11)
+  target_link_libraries(breezedecoration
+    PUBLIC
+      Qt5::X11Extras
+      XCB::XCB)
+endif()
+
 
 install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
