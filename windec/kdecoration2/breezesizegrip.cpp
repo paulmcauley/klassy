@@ -67,7 +67,7 @@ namespace Breeze
         updatePosition();
 
         // connections
-        KDecoration2::DecoratedClient *c = decoration->client().data();
+        auto c = decoration->client().data();
         connect( c, &KDecoration2::DecoratedClient::widthChanged, this, &SizeGrip::updatePosition );
         connect( c, &KDecoration2::DecoratedClient::heightChanged, this, &SizeGrip::updatePosition );
         connect( c, &KDecoration2::DecoratedClient::activeChanged, this, &SizeGrip::updateActiveState );
@@ -104,7 +104,7 @@ namespace Breeze
         #if BREEZE_HAVE_X11
 
         if( !Helper::isX11() ) return;
-        KDecoration2::DecoratedClient *c = m_decoration.data()->client().data();
+        auto c = m_decoration.data()->client().data();
 
         xcb_window_t windowId = c->windowId();
         if( windowId )
@@ -115,7 +115,7 @@ namespace Breeze
             we want the size grip to be at the same level as the client in the stack
             */
             xcb_window_t current = windowId;
-            xcb_connection_t* connection = QX11Info::connection();
+            auto connection = QX11Info::connection();
             xcb_query_tree_cookie_t cookie = xcb_query_tree_unchecked( connection, current );
             ScopedPointer<xcb_query_tree_reply_t> tree(xcb_query_tree_reply( connection, cookie, nullptr ) );
             if( !tree.isNull() && tree->parent ) current = tree->parent;
@@ -138,7 +138,7 @@ namespace Breeze
     {
 
         if( !m_decoration ) return;
-        KDecoration2::DecoratedClient *c = m_decoration.data()->client().data();
+        auto c = m_decoration.data()->client().data();
 
         // get relevant colors
         const QColor backgroundColor( m_decoration.data()->colorSettings().titleBar( c->isActive() ) );
@@ -200,7 +200,7 @@ namespace Breeze
         #if BREEZE_HAVE_X11
         if( !Helper::isX11() ) return;
 
-        KDecoration2::DecoratedClient *c = m_decoration.data()->client().data();
+        auto c = m_decoration.data()->client().data();
         QPoint position(
             c->width() - GripSize - Offset,
             c->height() - GripSize - Offset );
@@ -219,10 +219,10 @@ namespace Breeze
         if( !Helper::isX11() ) return;
 
         // pointer to connection
-        xcb_connection_t* connection( QX11Info::connection() );
+        auto connection( QX11Info::connection() );
 
         // client
-        KDecoration2::DecoratedClient *c = m_decoration.data()->client().data();
+        auto c = m_decoration.data()->client().data();
 
         /*
         get root position matching position

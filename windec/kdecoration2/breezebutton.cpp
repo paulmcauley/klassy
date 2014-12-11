@@ -66,7 +66,7 @@ namespace Breeze
     //__________________________________________________________________
     Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
     {
-        if (Decoration *d = qobject_cast<Decoration*>(decoration))
+        if (auto d = qobject_cast<Decoration*>(decoration))
         {
             Button *b = new Button(type, d, parent);
             if (type == KDecoration2::DecorationButtonType::Menu)
@@ -199,7 +199,7 @@ namespace Breeze
 
                         // center dot
                         QColor backgroundColor( this->backgroundColor() );
-                        Decoration *d = qobject_cast<Decoration*>( decoration() );
+                        auto d = qobject_cast<Decoration*>( decoration() );
                         if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
 
                         if( backgroundColor.isValid() )
@@ -290,7 +290,7 @@ namespace Breeze
     QColor Button::foregroundColor( void ) const
     {
 
-        Decoration *d = qobject_cast<Decoration*>( decoration() );
+        auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         if( type() == KDecoration2::DecorationButtonType::Close ) {
 
@@ -319,7 +319,7 @@ namespace Breeze
     //__________________________________________________________________
     QColor Button::backgroundColor( void ) const
     {
-        Decoration *d = qobject_cast<Decoration*>( decoration() );
+        auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         if( isPressed() )
         {
@@ -367,7 +367,7 @@ namespace Breeze
     void Button::updateAnimationState( bool hovered )
     {
 
-        Decoration *d = qobject_cast<Decoration*>(decoration());
+        auto d = qobject_cast<Decoration*>(decoration());
         if( !(d && d->internalSettings()->animationsEnabled() ) ) return;
 
         m_animation->setDirection( hovered ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
