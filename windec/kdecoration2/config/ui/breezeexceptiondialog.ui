@@ -84,7 +84,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="frameBorderCheckBox">
+       <widget class="QCheckBox" name="borderSizeCheckBox">
         <property name="text">
          <string>Border size:</string>
         </property>
@@ -98,7 +98,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="frameBorderComboBox">
+       <widget class="QComboBox" name="borderSizeComboBox">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -212,9 +212,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>frameBorderCheckBox</sender>
+   <sender>borderSizeCheckBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>frameBorderComboBox</receiver>
+   <receiver>borderSizeComboBox</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">

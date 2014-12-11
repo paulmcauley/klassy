@@ -39,7 +39,7 @@ namespace Breeze
         connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
 
         // store checkboxes from ui into list
-        m_checkboxes.insert( FrameBorder, frameBorderCheckBox );
+        m_checkboxes.insert( BorderSize, borderSizeCheckBox );
 
         // detect window properties
         connect( detectDialogButton, SIGNAL(clicked()), SLOT(selectWindowProperties()) );
@@ -47,7 +47,7 @@ namespace Breeze
         // connections
         connect( exceptionType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( exceptionEditor, SIGNAL(textChanged(QString)), SLOT(updateChanged()) );
-        connect( frameBorderComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
 
         for( CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter )
         { connect( iter.value(), SIGNAL(clicked()), SLOT(updateChanged()) ); }
@@ -65,7 +65,7 @@ namespace Breeze
         // type
         exceptionType->setCurrentIndex(m_exception->exceptionType() );
         exceptionEditor->setText( m_exception->exceptionPattern() );
-        frameBorderComboBox->setCurrentIndex( m_exception->frameBorder() );
+        borderSizeComboBox->setCurrentIndex( m_exception->borderSize() );
         hideTitleBar->setChecked( m_exception->hideTitleBar() );
 
         // mask
@@ -81,7 +81,7 @@ namespace Breeze
     {
         m_exception->setExceptionType( exceptionType->currentIndex() );
         m_exception->setExceptionPattern( exceptionEditor->text() );
-        m_exception->setFrameBorder( frameBorderComboBox->currentIndex() );
+        m_exception->setBorderSize( borderSizeComboBox->currentIndex() );
         m_exception->setHideTitleBar( hideTitleBar->isChecked() );
 
         // mask
@@ -101,7 +101,7 @@ namespace Breeze
         bool modified( false );
         if( m_exception->exceptionType() != exceptionType->currentIndex() ) modified = true;
         else if( m_exception->exceptionPattern() != exceptionEditor->text() ) modified = true;
-        else if( m_exception->frameBorder() != frameBorderComboBox->currentIndex() ) modified = true;
+        else if( m_exception->borderSize() != borderSizeComboBox->currentIndex() ) modified = true;
         else if( m_exception->hideTitleBar() != hideTitleBar->isChecked() ) modified = true;
         else
         {

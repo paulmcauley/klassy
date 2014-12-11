@@ -10,19 +10,19 @@
       this one is used only for window specific settings, since the default is globally set by kwin 
       the enumeration must be kept in sync with kwin's global settings
     -->
-    <entry name="FrameBorder" type = "Enum">
+    <entry name="BorderSize" type = "Enum">
       <choices>
           <choice name="BorderNone" />
-          <choice name="BorderNoSide" />
+          <choice name="BorderNoSides" />
           <choice name="BorderTiny" />
-          <choice name="BorderDefault" />
+          <choice name="BorderNormal" />
           <choice name="BorderLarge" />
           <choice name="BorderVeryLarge" />
           <choice name="BorderHuge" />
           <choice name="BorderVeryHuge" />
           <choice name="BorderOversized" />
       </choices>
-      <default>BorderNoSide</default>
+      <default>BorderNoSides</default>
     </entry>
 
     <!-- title alignment -->

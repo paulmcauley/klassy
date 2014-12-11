@@ -28,6 +28,7 @@
 
 #include <KDecoration2/Decoration>
 #include <KDecoration2/DecoratedClient>
+#include <KDecoration2/DecorationSettings>
 
 #include <QPalette>
 #include <QPropertyAnimation>
@@ -113,19 +114,26 @@ namespace Breeze
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
 
+        //*@name border size
+        //@{
+        int borderSize(bool bottom = false) const;
+        inline bool hasNoBorders( void ) const;
+        inline bool hasNoSideBorders( void ) const;
+        //@}
+
         //*@name maximization modes
+        //@{
         inline bool isMaximized( void ) const;
         inline bool isMaximizedHorizontally( void ) const;
         inline bool isMaximizedVertically( void ) const;
+        //@}
 
         //*@name size grip
         //@{
-
         void createSizeGrip( void );
         void deleteSizeGrip( void );
         SizeGrip* sizeGrip( void ) const
         { return m_sizeGrip; }
-
         //@}
 
         ColorSettings m_colorSettings;
@@ -145,6 +153,18 @@ namespace Breeze
         qreal m_opacity = 0;
 
     };
+
+    bool Decoration::hasNoBorders( void ) const
+    {
+        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNone;
+        else return settings()->borderSize() == KDecoration2::BorderSize::None;
+    }
+
+    bool Decoration::hasNoSideBorders( void ) const
+    {
+        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
+        else return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
+    }
 
     bool Decoration::isMaximized( void ) const { return client().data()->isMaximized() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
     bool Decoration::isMaximizedHorizontally( void ) const { return client().data()->isMaximizedHorizontally() && !m_internalSettings->drawBorderOnMaximizedWindows(); }

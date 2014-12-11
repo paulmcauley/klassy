@@ -23,6 +23,7 @@
 
 #include "breeze.h"
 #include "breezehelper.h"
+#include "breezesettingsprovider.h"
 #include "config-breeze.h"
 #include "config/breezeconfig.h"
 
@@ -40,7 +41,6 @@
 #include <KPluginFactory>
 
 #include <QPainter>
-#include <QTextStream>
 
 K_PLUGIN_FACTORY_WITH_JSON(
     BreezeDecoFactory,
@@ -61,7 +61,6 @@ namespace Breeze
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_colorSettings(client().data()->palette())
-        , m_internalSettings(new InternalSettings())
         , m_leftButtons(nullptr)
         , m_rightButtons(nullptr)
         , m_sizeGrip(nullptr)
@@ -188,35 +187,52 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &settings, bool bottom)
+    int Decoration::borderSize(bool bottom) const
     {
-        const int baseSize = settings->smallSpacing();
-        switch (settings->borderSize()) {
-            case KDecoration2::BorderSize::None: return 0;
-            case KDecoration2::BorderSize::NoSides: return bottom ? baseSize : 0;
-            default:
-            case KDecoration2::BorderSize::Tiny: return baseSize;
-            case KDecoration2::BorderSize::Normal: return baseSize*2;
-            case KDecoration2::BorderSize::Large: return baseSize * 3;
-            case KDecoration2::BorderSize::VeryLarge: return baseSize * 4;
-            case KDecoration2::BorderSize::Huge: return baseSize * 5;
-            case KDecoration2::BorderSize::VeryHuge: return baseSize * 6;
-            case KDecoration2::BorderSize::Oversized: return baseSize * 10;
-        }
-    }
+        const int baseSize = settings()->smallSpacing();
 
-    //________________________________________________________________
-    static int borderSize(const QSharedPointer<KDecoration2::DecorationSettings> &settings)
-    {
-        return borderSize(settings, false);
+        if( m_internalSettings && (m_internalSettings->mask() & BorderSize ) )
+        {
+            switch (m_internalSettings->borderSize()) {
+                case InternalSettings::BorderNone: return 0;
+                case InternalSettings::BorderNoSides: return bottom ? baseSize : 0;
+                default:
+                case InternalSettings::BorderTiny: return baseSize;
+                case InternalSettings::BorderNormal: return baseSize*2;
+                case InternalSettings::BorderLarge: return baseSize * 3;
+                case InternalSettings::BorderVeryLarge: return baseSize * 4;
+                case InternalSettings::BorderHuge: return baseSize * 5;
+                case InternalSettings::BorderVeryHuge: return baseSize * 6;
+                case InternalSettings::BorderOversized: return baseSize * 10;
+            }
+
+        } else {
+
+            switch (settings()->borderSize()) {
+                case KDecoration2::BorderSize::None: return 0;
+                case KDecoration2::BorderSize::NoSides: return bottom ? baseSize : 0;
+                default:
+                case KDecoration2::BorderSize::Tiny: return baseSize;
+                case KDecoration2::BorderSize::Normal: return baseSize*2;
+                case KDecoration2::BorderSize::Large: return baseSize * 3;
+                case KDecoration2::BorderSize::VeryLarge: return baseSize * 4;
+                case KDecoration2::BorderSize::Huge: return baseSize * 5;
+                case KDecoration2::BorderSize::VeryHuge: return baseSize * 6;
+                case KDecoration2::BorderSize::Oversized: return baseSize * 10;
+
+            }
+
+        }
     }
 
     //________________________________________________________________
     void Decoration::reconfigure()
     {
 
+        m_internalSettings = SettingsProvider::self()->internalSettings( this );
+
         // read internal settings
-        m_internalSettings->read();
+        // m_internalSettings->read();
 
         // animation
         m_animation->setDuration( m_internalSettings->animationsDuration() );
@@ -225,7 +241,7 @@ namespace Breeze
         recalculateBorders();
 
         // size grip
-        if( settings()->borderSize() == KDecoration2::BorderSize::None && m_internalSettings->drawSizeGrip() ) createSizeGrip();
+        if( hasNoBorders() && m_internalSettings->drawSizeGrip() ) createSizeGrip();
         else deleteSizeGrip();
 
     }
@@ -236,8 +252,8 @@ namespace Breeze
         auto s = settings();
         const auto c = client().data();
         const Qt::Edges edges = c->adjacentScreenEdges();
-        int left   = isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize(s);
-        int right  = isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize(s);
+        int left   = isMaximizedHorizontally() || edges.testFlag(Qt::LeftEdge) ? 0 : borderSize();
+        int right  = isMaximizedHorizontally() || edges.testFlag(Qt::RightEdge) ? 0 : borderSize();
 
         QFontMetrics fm(s->font());
         int top = qMax(fm.boundingRect(c->caption()).height(), buttonHeight() );
@@ -250,19 +266,19 @@ namespace Breeze
         // padding above
         if (!isMaximized()) top += baseSize*TitleBar_BottomMargin;
 
-        int bottom = isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(s, true);
+        int bottom = isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(true);
         setBorders(QMargins(left, top, right, bottom));
 
         // extended sizes
         const int extSize = s->largeSpacing();
         int extSides = 0;
         int extBottom = 0;
-        if (s->borderSize() == KDecoration2::BorderSize::None)
+        if( hasNoBorders() )
         {
             extSides = extSize;
             extBottom = extSize;
 
-        } else if (s->borderSize() == KDecoration2::BorderSize::NoSides) {
+        } else if( hasNoSideBorders() ) {
 
             extSides = extSize;
 

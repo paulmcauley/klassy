@@ -57,7 +57,7 @@ namespace Breeze
             configuration->setMask( exception.mask() );
 
             // propagate all features found in mask to the output configuration
-            if( exception.mask() & FrameBorder ) configuration->setFrameBorder( exception.frameBorder() );
+            if( exception.mask() & BorderSize ) configuration->setBorderSize( exception.borderSize() );
             configuration->setHideTitleBar( exception.hideTitleBar() );
 
             // append to exceptions

@@ -58,7 +58,7 @@ namespace Breeze
     {
         None = 0,
         TitleAlignment = 1<<0,
-        FrameBorder = 1<<4
+        BorderSize = 1<<4
     };
 }
 
