@@ -44,23 +44,6 @@ namespace Breeze
 
     };
 
-    //* button state
-    //* todo: should we used bits ?
-    enum class ButtonState : uint
-    {
-        Normal,
-        Disabled,
-        Hovered,
-        Pressed,
-        Checked,
-        CheckedHovered,
-        CheckedPressed,
-        Preview
-    };
-
-    inline uint qHash(const ButtonState &state)
-    { return static_cast<uint>(state); }
-
 }
 
 #endif
