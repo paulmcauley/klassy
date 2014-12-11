@@ -28,26 +28,33 @@ endif()
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
 ################# newt target #################
+### plugin classes
 set(breezedecoration_SRCS
     breezecolorsettings.cpp
     breezebutton.cpp
     breezedecoration.cpp
     breezehelper.cpp
-    breezesizegrip.cpp
-    config/breezeconfig.cpp
-    config/breezeconfigwidget.cpp)
+    breezesizegrip.cpp)
 
 kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
 
-set(breezedecoration_PART_FORMS
+### config classes
+### they are kept separately because they might move in a separate library in the future
+set(breezedecoration_config_SRCS
+    config/breezeconfig.cpp
+    config/breezeconfigwidget.cpp)
+
+set(breezedecoration_config_PART_FORMS
    config/ui/breezeconfigurationui.ui
 )
 
-ki18n_wrap_ui(breezedecoration_PART_FORMS_HEADERS ${breezedecoration_PART_FORMS})
+ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
 
+### build library
 add_library(breezedecoration MODULE
     ${breezedecoration_SRCS}
-    ${breezedecoration_PART_FORMS_HEADERS})
+    ${breezedecoration_config_SRCS}
+    ${breezedecoration_config_PART_FORMS_HEADERS})
 
 target_link_libraries(breezedecoration
     PUBLIC
