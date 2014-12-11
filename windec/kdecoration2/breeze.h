@@ -24,11 +24,14 @@
 #include "breezesettings.h"
 
 #include <QSharedPointer>
+#include <QList>
 
 namespace Breeze
 {
     //* convenience typedefs
     using InternalSettingsPtr = QSharedPointer<InternalSettings>;
+    using InternalSettingsList = QList<InternalSettingsPtr>;
+    using InternalSettingsListIterator = QListIterator<InternalSettingsPtr>;
 
     //* metrics
     enum Metrics
@@ -50,6 +53,13 @@ namespace Breeze
 
     };
 
+    //* exception
+    enum ExceptionMask
+    {
+        None = 0,
+        TitleAlignment = 1<<0,
+        FrameBorder = 1<<4
+    };
 }
 
 #endif

@@ -1,7 +1,7 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
+#ifndef breezeexceptionmodel_h
+#define breezeexceptionmodel_h
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.h
+// breezeexceptionmodel.h
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -25,81 +25,57 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
-#include "breezeexceptionlistwidget.h"
+#include "breezelistmodel.h"
 #include "breezesettings.h"
 #include "breeze.h"
-
-#include <QWidget>
-#include <QSharedPointer>
 
 namespace Breeze
 {
 
-    //_____________________________________________
-    class ConfigWidget: public QWidget
+    //* qlistview for object counters
+    class ExceptionModel: public ListModel<InternalSettingsPtr>
     {
-
-        Q_OBJECT
 
         public:
 
-        //* constructor
-        explicit ConfigWidget( QWidget* );
+        //* number of columns
+        enum { nColumns = 3 };
 
-        //* destructor
-        virtual ~ConfigWidget( void )
-        {}
+        //* column type enumeration
+        enum ColumnType {
+            ColumnEnabled,
+            ColumnType,
+            ColumnRegExp
+        };
 
-        //* set configuration
-        void setInternalSettings( InternalSettingsPtr );
 
-        //* load configuration
-        void load( void );
+        //*@name methods reimplemented from base class
+        //@{
 
-        //* save configuration
-        void save( void );
+        //* return data for a given index
+        virtual QVariant data(const QModelIndex &index, int role) const;
 
-        //* true if changed
-        virtual bool isChanged( void ) const
-        { return m_changed; }
+        //* header data
+        virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-        //* exceptions
-        ExceptionListWidget* exceptionListWidget( void ) const
-        { return m_ui.exceptions; }
+        //* number of columns for a given index
+        virtual int columnCount(const QModelIndex& ) const
+        { return nColumns; }
 
-        Q_SIGNALS:
-
-        //* emmited when changed
-        void changed( bool );
-
-        protected Q_SLOTS:
-
-        //* update changed state
-        virtual void updateChanged();
+        //@}
 
         protected:
 
-        //* set changed state
-        virtual void setChanged( bool value )
-        {
-            m_changed = value;
-            emit changed( value );
-        }
+        //* sort
+        virtual void privateSort( int, Qt::SortOrder )
+        {}
 
         private:
 
-        //* ui
-        Ui_BreezeConfigurationUI m_ui;
-
-        //* internal exception
-        InternalSettingsPtr m_internalSettings;
-
-        //* changed state
-        bool m_changed;
+        //* column titles
+        static const QString m_columnTitles[ nColumns ];
 
     };
 
 }
-
 #endif

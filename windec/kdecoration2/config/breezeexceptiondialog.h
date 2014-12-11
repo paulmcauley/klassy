@@ -1,7 +1,7 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
+#ifndef breezeexceptiondialog_h
+#define breezeexceptiondialog_h
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.h
+// breezeexceptiondialog.h
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -25,19 +25,19 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
-#include "breezeexceptionlistwidget.h"
-#include "breezesettings.h"
-#include "breeze.h"
+#include "ui_breezeexceptiondialog.h"
+#include "../breeze.h"
 
-#include <QWidget>
-#include <QSharedPointer>
+#include <QCheckBox>
+#include <QMap>
 
 namespace Breeze
 {
 
-    //_____________________________________________
-    class ConfigWidget: public QWidget
+    class DetectDialog;
+
+    //* breeze exceptions list
+    class ExceptionDialog: public QDialog, Ui::BreezeExceptionDialog
     {
 
         Q_OBJECT
@@ -45,38 +45,26 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit ConfigWidget( QWidget* );
+        explicit ExceptionDialog( QWidget* parent );
 
         //* destructor
-        virtual ~ConfigWidget( void )
+        virtual ~ExceptionDialog( void )
         {}
 
-        //* set configuration
-        void setInternalSettings( InternalSettingsPtr );
+        //* set exception
+        void setException( InternalSettingsPtr );
 
-        //* load configuration
-        void load( void );
-
-        //* save configuration
+        //* save exception
         void save( void );
 
         //* true if changed
         virtual bool isChanged( void ) const
         { return m_changed; }
 
-        //* exceptions
-        ExceptionListWidget* exceptionListWidget( void ) const
-        { return m_ui.exceptions; }
-
         Q_SIGNALS:
 
         //* emmited when changed
         void changed( bool );
-
-        protected Q_SLOTS:
-
-        //* update changed state
-        virtual void updateChanged();
 
         protected:
 
@@ -87,16 +75,35 @@ namespace Breeze
             emit changed( value );
         }
 
+        protected Q_SLOTS:
+
+        //* check whether configuration is changed and emit appropriate signal if yes
+        virtual void updateChanged();
+
+        private Q_SLOTS:
+
+        //* select window properties from grabbed pointers
+        void selectWindowProperties( void );
+
+        //* read properties of selected window
+        void readWindowProperties( bool );
+
         private:
 
-        //* ui
-        Ui_BreezeConfigurationUI m_ui;
+        //* map mask and checkbox
+        using CheckBoxMap=QMap< ExceptionMask, QCheckBox*>;
+
+        //* map mask and checkbox
+        CheckBoxMap m_checkboxes;
 
         //* internal exception
-        InternalSettingsPtr m_internalSettings;
+        InternalSettingsPtr m_exception;
+
+        //* detection dialog
+        DetectDialog* m_detectDialog = nullptr;
 
         //* changed state
-        bool m_changed;
+        bool m_changed = false;
 
     };
 

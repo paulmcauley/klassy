@@ -5,6 +5,27 @@
 
   <group name="Windeco">
 
+    <!-- border size -->
+    <!-- 
+      this one is used only for window specific settings, since the default is globally set by kwin 
+      the enumeration must be kept in sync with kwin's global settings
+    -->
+    <entry name="FrameBorder" type = "Enum">
+      <choices>
+          <choice name="BorderNone" />
+          <choice name="BorderNoSide" />
+          <choice name="BorderTiny" />
+          <choice name="BorderDefault" />
+          <choice name="BorderLarge" />
+          <choice name="BorderVeryLarge" />
+          <choice name="BorderHuge" />
+          <choice name="BorderVeryHuge" />
+          <choice name="BorderOversized" />
+      </choices>
+      <default>BorderNoSide</default>
+    </entry>
+
+    <!-- title alignment -->
     <entry name="TitleAlignment" type="Enum">
       <choices>
           <choice name="AlignLeft" />
@@ -15,6 +36,7 @@
       <default>AlignCenterFullWidth</default>
     </entry>
 
+    <!-- button size -->
     <entry name="ButtonSize" type="Enum">
       <choices>
           <choice name="ButtonVerySmall" />
@@ -36,7 +58,6 @@
       <default>true</default>
     </entry>
 
-
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
        <default>true</default>
@@ -44,6 +65,30 @@
 
     <entry name="AnimationsDuration" type = "Int">
        <default>150</default>
+    </entry>
+
+    <!-- hide title bar -->
+    <entry name="HideTitleBar" type = "Bool">
+       <default>false</default>
+    </entry>
+
+    <!-- window specific settings -->
+    <entry name="ExceptionType" type="Enum">
+      <choices>
+          <choice name="ExceptionWindowClassName" />
+          <choice name="ExceptionWindowTitle" />
+      </choices>
+      <default>ExceptionWindowClassName</default>
+    </entry>
+
+    <entry name="ExceptionPattern" type = "String"/>
+
+    <entry name="Enabled" type = "Bool">
+      <default>true</default>
+    </entry>
+
+    <entry name="Mask" type = "Int">
+      <default>0</default>
     </entry>
 
   </group>

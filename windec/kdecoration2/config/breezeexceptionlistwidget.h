@@ -1,7 +1,7 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
+#ifndef breezeexceptionlistwidget_h
+#define breezeexceptionlistwidget_h
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.h
+// breezeexceptionlistwidget.h
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -25,60 +25,79 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
-#include "breezeexceptionlistwidget.h"
-#include "breezesettings.h"
-#include "breeze.h"
+#include "ui_breezeexceptionlistwidget.h"
+#include "breezeexceptionmodel.h"
 
-#include <QWidget>
-#include <QSharedPointer>
-
+//* QDialog used to commit selected files
 namespace Breeze
 {
 
-    //_____________________________________________
-    class ConfigWidget: public QWidget
+    class ExceptionListWidget: public QWidget
     {
 
+        //* Qt meta object
         Q_OBJECT
 
         public:
 
         //* constructor
-        explicit ConfigWidget( QWidget* );
+        explicit ExceptionListWidget( QWidget* = 0 );
 
-        //* destructor
-        virtual ~ConfigWidget( void )
-        {}
+        //* set exceptions
+        void setExceptions( const InternalSettingsList& );
 
-        //* set configuration
-        void setInternalSettings( InternalSettingsPtr );
-
-        //* load configuration
-        void load( void );
-
-        //* save configuration
-        void save( void );
+        //* get exceptions
+        InternalSettingsList exceptions( void );
 
         //* true if changed
         virtual bool isChanged( void ) const
         { return m_changed; }
 
-        //* exceptions
-        ExceptionListWidget* exceptionListWidget( void ) const
-        { return m_ui.exceptions; }
-
         Q_SIGNALS:
 
-        //* emmited when changed
+        //* emitted when changed
         void changed( bool );
+
+        protected:
+
+        //* model
+        const ExceptionModel& model() const
+        { return m_model; }
+
+        //* model
+        ExceptionModel& model()
+        { return m_model; }
 
         protected Q_SLOTS:
 
-        //* update changed state
-        virtual void updateChanged();
+        //* update button states
+        virtual void updateButtons( void );
+
+        //* add
+        virtual void add( void );
+
+        //* edit
+        virtual void edit( void );
+
+        //* remove
+        virtual void remove( void );
+
+        //* toggle
+        virtual void toggle( const QModelIndex& );
+
+        //* move up
+        virtual void up( void );
+
+        //* move down
+        virtual void down( void );
 
         protected:
+
+        //* resize columns
+        void resizeColumns( void ) const;
+
+        //* check exception
+        bool checkException( InternalSettingsPtr );
 
         //* set changed state
         virtual void setChanged( bool value )
@@ -89,14 +108,14 @@ namespace Breeze
 
         private:
 
-        //* ui
-        Ui_BreezeConfigurationUI m_ui;
+        //* model
+        ExceptionModel m_model;
 
-        //* internal exception
-        InternalSettingsPtr m_internalSettings;
+        //* ui
+        Ui_BreezeExceptionListWidget m_ui;
 
         //* changed state
-        bool m_changed;
+        bool m_changed = false;
 
     };
 

@@ -1,7 +1,9 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
+#ifndef breezeexceptionlist_h
+#define breezeexceptionlist_h
+
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.h
+// breezeexceptionlist.h
+// window decoration exceptions
 // -------------------
 //
 // Copyright (c) 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -25,78 +27,50 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
-#include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
 #include "breeze.h"
 
-#include <QWidget>
-#include <QSharedPointer>
+#include <KSharedConfig>
 
 namespace Breeze
 {
 
-    //_____________________________________________
-    class ConfigWidget: public QWidget
+    //! breeze exceptions list
+    class ExceptionList
     {
-
-        Q_OBJECT
 
         public:
 
-        //* constructor
-        explicit ConfigWidget( QWidget* );
-
-        //* destructor
-        virtual ~ConfigWidget( void )
+        //! constructor from list
+        explicit ExceptionList( const InternalSettingsList& exceptions = InternalSettingsList() ):
+            _exceptions( exceptions )
         {}
 
-        //* set configuration
-        void setInternalSettings( InternalSettingsPtr );
+        //! exceptions
+        const InternalSettingsList& get( void ) const
+        { return _exceptions; }
 
-        //* load configuration
-        void load( void );
+        //! read from KConfig
+        void readConfig( KSharedConfig::Ptr );
 
-        //* save configuration
-        void save( void );
+        //! write to kconfig
+        void writeConfig( KSharedConfig::Ptr );
 
-        //* true if changed
-        virtual bool isChanged( void ) const
-        { return m_changed; }
+        //! read configuration
+        static void readConfig( KCoreConfigSkeleton*, KConfig*, const QString& = QString() );
 
-        //* exceptions
-        ExceptionListWidget* exceptionListWidget( void ) const
-        { return m_ui.exceptions; }
-
-        Q_SIGNALS:
-
-        //* emmited when changed
-        void changed( bool );
-
-        protected Q_SLOTS:
-
-        //* update changed state
-        virtual void updateChanged();
+        //! write configuration
+        static void writeConfig( KCoreConfigSkeleton*, KConfig*, const QString& = QString() );
 
         protected:
 
-        //* set changed state
-        virtual void setChanged( bool value )
-        {
-            m_changed = value;
-            emit changed( value );
-        }
+        //! generate exception group name for given exception index
+        static QString exceptionGroupName( int index );
 
         private:
 
-        //* ui
-        Ui_BreezeConfigurationUI m_ui;
-
-        //* internal exception
-        InternalSettingsPtr m_internalSettings;
-
-        //* changed state
-        bool m_changed;
+        //! exceptions
+        InternalSettingsList _exceptions;
 
     };
 

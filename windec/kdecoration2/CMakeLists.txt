@@ -1,5 +1,5 @@
 find_package(KDecoration2 REQUIRED)
-find_package(KF5 REQUIRED COMPONENTS CoreAddons ConfigWidgets)
+find_package(KF5 REQUIRED COMPONENTS CoreAddons ConfigWidgets WindowSystem)
 find_package(Qt5 CONFIG REQUIRED COMPONENTS DBus)
 
 ### XCB
@@ -33,6 +33,7 @@ set(breezedecoration_SRCS
     breezecolorsettings.cpp
     breezebutton.cpp
     breezedecoration.cpp
+    breezeexceptionlist.cpp
     breezehelper.cpp
     breezesizegrip.cpp)
 
@@ -42,10 +43,19 @@ kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
 ### they are kept separately because they might move in a separate library in the future
 set(breezedecoration_config_SRCS
     config/breezeconfig.cpp
-    config/breezeconfigwidget.cpp)
+    config/breezeconfigwidget.cpp
+    config/breezedetectwidget.cpp
+    config/breezeexceptiondialog.cpp
+    config/breezeexceptionlistwidget.cpp
+    config/breezeexceptionmodel.cpp
+    config/breezeitemmodel.cpp
+)
 
 set(breezedecoration_config_PART_FORMS
    config/ui/breezeconfigurationui.ui
+   config/ui/breezedetectwidget.ui
+   config/ui/breezeexceptiondialog.ui
+   config/ui/breezeexceptionlistwidget.ui
 )
 
 ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
@@ -67,7 +77,8 @@ target_link_libraries(breezedecoration
         KF5::CoreAddons
         KF5::ConfigWidgets
         KF5::GuiAddons
-        KF5::I18n)
+        KF5::I18n
+        KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
   target_link_libraries(breezedecoration

@@ -29,6 +29,7 @@
 
 #include "breezeconfig.h"
 #include "breezesettings.h"
+#include "breezeexceptionlist.h"
 
 #include <QTextStream>
 #include <QDBusConnection>
@@ -89,6 +90,11 @@ namespace Breeze
         internalSettings->load();
         loadInternalSettings( internalSettings );
 
+        // load exceptions
+        ExceptionList exceptions;
+        exceptions.readConfig( m_configuration );
+        m_configWidget->exceptionListWidget()->setExceptions( exceptions.get() );
+
         updateChanged();
 
     }
@@ -122,6 +128,13 @@ namespace Breeze
 
         // save configuration
         internalSettings->save();
+
+        // save standard configuration
+        ExceptionList::writeConfig( internalSettings.data(), m_configuration.data() );
+
+        // get list of exceptions and write
+        InternalSettingsList exceptions( m_configWidget->exceptionListWidget()->exceptions() );
+        ExceptionList( exceptions ).writeConfig( m_configuration );
 
         // sync configuration
         m_configuration->sync();
