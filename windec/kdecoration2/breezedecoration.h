@@ -136,7 +136,7 @@ namespace Breeze
         QPropertyAnimation *m_animation;
 
         //* active state change opacity
-        qreal m_opacity;
+        qreal m_opacity = 0;
 
     };
 
