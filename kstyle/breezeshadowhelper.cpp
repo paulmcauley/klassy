@@ -154,7 +154,7 @@ namespace Breeze
                 return color;
             };
 
-            QRadialGradient radialGradient( QPointF(0,0), Metrics::Shadow_Size);
+            QRadialGradient radialGradient( Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
             radialGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
             radialGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
             radialGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
@@ -168,8 +168,7 @@ namespace Breeze
             painter.setPen( Qt::NoPen );
 
             const QRectF rect( QPoint( 0, 0 ), pixmap.size()/_helper.devicePixelRatio( pixmap ) );
-            painter.translate( rect.center() );
-            painter.fillRect( rect.translated( -rect.center() ), radialGradient );
+            painter.fillRect( rect, radialGradient );
 
             painter.end();
 
@@ -393,7 +392,6 @@ namespace Breeze
         // get devicePixelRatio
         // for testing purposes only
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
-        // const qreal devicePixelRatio( 1.0 );
 
         // define shadows padding
         int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );

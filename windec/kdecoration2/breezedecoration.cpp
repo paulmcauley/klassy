@@ -467,14 +467,29 @@ namespace Breeze
             setShadow(g_sShadow);
             return;
         }
-        auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
-        decorationShadow->setPadding(QMargins(10, 10, 20, 20));
-        decorationShadow->setInnerShadowRect(QRect( 12, 12, 6, 6 ) );
 
-        // QImage image(60, 60, QImage::Format_ARGB32_Premultiplied);
-        QImage image(40, 40, QImage::Format_ARGB32_Premultiplied);
+        // setup shadow
+        auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
+        decorationShadow->setPadding( QMargins(
+            Metrics::Shadow_Size-Metrics::Shadow_Offset,
+            Metrics::Shadow_Size-Metrics::Shadow_Offset,
+            Metrics::Shadow_Size,
+            Metrics::Shadow_Size ) );
+
+        decorationShadow->setInnerShadowRect(QRect(
+            Metrics::Shadow_Size-Metrics::Shadow_Offset+Metrics::Shadow_Overlap,
+            Metrics::Shadow_Size-Metrics::Shadow_Offset+Metrics::Shadow_Overlap,
+            Metrics::Shadow_Offset - 2*Metrics::Shadow_Overlap,
+            Metrics::Shadow_Offset - 2*Metrics::Shadow_Overlap ) );
+
+        // create image
+        QImage image(2*Metrics::Shadow_Size, 2*Metrics::Shadow_Size, QImage::Format_ARGB32_Premultiplied);
         image.fill(Qt::transparent);
 
+        QPainter p(&image);
+        p.setCompositionMode(QPainter::CompositionMode_Source);
+
+        // create gradient
         auto gradientStopColor = [](QColor color, qreal alpha) {
             color.setAlphaF(alpha);
             return color;
@@ -482,17 +497,17 @@ namespace Breeze
 
         const QColor shadowColor( client().data()->palette().color( QPalette::Shadow ) );
 
-        QRadialGradient radialGradient(20, 20, 20);
+        QRadialGradient radialGradient( Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
         radialGradient.setColorAt(0.0,  gradientStopColor(shadowColor, 0.35));
         radialGradient.setColorAt(0.25, gradientStopColor(shadowColor, 0.25));
         radialGradient.setColorAt(0.5,  gradientStopColor(shadowColor, 0.13));
         radialGradient.setColorAt(0.75, gradientStopColor(shadowColor, 0.04));
         radialGradient.setColorAt(1.0,  gradientStopColor(shadowColor, 0.0));
 
-        QPainter p(&image);
-        p.setCompositionMode(QPainter::CompositionMode_Source);
-        p.fillRect(QRect(0, 0, 40, 40), radialGradient);
+        // fill
+        p.fillRect( image.rect(), radialGradient);
 
+        // assign to shadow
         decorationShadow->setShadow(image);
 
         g_sShadow = decorationShadow;

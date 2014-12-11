@@ -37,8 +37,8 @@ namespace Breeze
         TitleBar_SideMargin = 2,
         TitleBar_ButtonSpacing = 2,
 
-        // shadow dimensions
-        Shadow_Size = 20,
+        // shadow dimensions (pixels)
+        Shadow_Size = 16,
         Shadow_Offset = 6,
         Shadow_Overlap = 2
 
