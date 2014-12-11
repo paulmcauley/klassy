@@ -36,11 +36,6 @@
 #include <QShortcut>
 #include <QTextStream>
 
-#if BREEZE_USE_KDE4
-#include <KIcon>
-#include <KLibrary>
-#endif
-
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KPluginLoader>
@@ -66,14 +61,8 @@ namespace Breeze
         // ui
         setupUi(this);
 
-        #if BREEZE_USE_KDE4
-        // install Quit shortcut
-        connect( new QShortcut( KStandardShortcut::quit().primary(), this ), SIGNAL(activated()), SLOT(close()) );
-        connect( new QShortcut( KStandardShortcut::quit().alternate(), this ), SIGNAL(activated()), SLOT(close()) );
-        #else
         foreach( const QKeySequence& sequence, KStandardShortcut::quit() )
         { connect( new QShortcut( sequence, this ), SIGNAL(activated()), SLOT(close()) ); }
-        #endif
 
         connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), SLOT(close()) );
 
@@ -87,11 +76,7 @@ namespace Breeze
         page = loadStyleConfig();
         page->setName( i18n("Widget Style") );
         page->setHeader( i18n("Modify the appearance of widgets") );
-        #if BREEZE_USE_KDE4
-        page->setIcon( KIcon( "preferences-desktop-theme" ) );
-        #else
         page->setIcon( QIcon::fromTheme( QStringLiteral( "preferences-desktop-theme" ) ) );
-        #endif
         pageWidget->addPage( page );
 
         if( _stylePluginObject )
@@ -109,11 +94,7 @@ namespace Breeze
         page = loadDecorationConfig();
         page->setName( i18n("Window Decorations") );
         page->setHeader( i18n("Modify the appearance of window decorations") );
-        #if BREEZE_USE_KDE4
-        page->setIcon( KIcon( "preferences-system-windows" ) );
-        #else
         page->setIcon( QIcon::fromTheme( QStringLiteral( "preferences-system-windows" ) ) );
-        #endif
         pageWidget->addPage( page );
 
         if( _decorationPluginObject )
@@ -187,20 +168,12 @@ namespace Breeze
     {
 
         // load style from plugin
-        #if BREEZE_USE_KDE4
-        KLibrary library( "kstyle_breeze_config" );
-        #else
         QLibrary library( KPluginLoader::findPlugin( QStringLiteral( "kstyle_breeze_config" ) ) );
-        #endif
 
         if( library.load() )
         {
 
-            #if BREEZE_USE_KDE4
-            KLibrary::void_function_ptr alloc_ptr = library.resolveFunction("allocate_kstyle_config");
-            #else
             QFunctionPointer alloc_ptr = library.resolve( "allocate_kstyle_config" );
-            #endif
             if( alloc_ptr != nullptr )
             {
 
@@ -237,21 +210,12 @@ namespace Breeze
     {
 
         // load style from plugin
-        #if BREEZE_USE_KDE4
-        KLibrary library( "kwin_breeze_config" );
-        #else
-        // QLibrary library( KPluginLoader::findPlugin( QStringLiteral( "kwin/kdecorations/config/kwin_breeze_config" ) ) );
-        QLibrary library( KPluginLoader::findPlugin( QStringLiteral( "org.kde.kdecoration2/breezedecoration_config.so" ) ) );
-        #endif
+        QLibrary library( KPluginLoader::findPlugin( QStringLiteral( "org.kde.kdecoration2/breezedecoration.so" ) ) );
 
         if( library.load() )
         {
 
-            #if BREEZE_USE_KDE4
-            KLibrary::void_function_ptr alloc_ptr = library.resolveFunction("allocate_config");
-            #else
             QFunctionPointer alloc_ptr = library.resolve( "allocate_config" );
-            #endif
 
             if( alloc_ptr != nullptr )
             {
