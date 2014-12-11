@@ -31,8 +31,8 @@ namespace Breeze
     //__________________________________________________________________
     Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
-        ,m_animation( new QPropertyAnimation( this ) )
-        ,m_opacity(0)
+        , m_animation( new QPropertyAnimation( this ) )
+        , m_opacity(0)
     {
 
         // setup animation
@@ -61,6 +61,8 @@ namespace Breeze
     Button::Button(QObject *parent, const QVariantList &args)
         : DecorationButton(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
         , m_standalone(true)
+        , m_animation( new QPropertyAnimation( this ) )
+        , m_opacity(0)
     {}
 
     //__________________________________________________________________
