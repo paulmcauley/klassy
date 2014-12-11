@@ -35,6 +35,7 @@ set(breezedecoration_SRCS
     breezedecoration.cpp
     breezeexceptionlist.cpp
     breezehelper.cpp
+    breezesettingsprovider.cpp
     breezesizegrip.cpp)
 
 kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
