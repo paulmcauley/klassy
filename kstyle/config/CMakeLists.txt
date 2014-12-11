@@ -28,3 +28,25 @@ else()
 
 endif()
 
+########### next target ###############
+if(KF5Service_FOUND AND NOT BREEZE_USE_KDE4)
+
+  set(breeze_settings_SOURCES
+    breezeconfigdialog.cpp
+    main.cpp)
+
+  set(breeze_settings_FORMS ui/breezeconfigdialog.ui)
+
+  ki18n_wrap_ui(breeze_settings_FORMS_HEADERS ${breeze_settings_FORMS})
+
+  add_executable(breeze-settings5
+      ${breeze_settings_SOURCES}
+      ${breeze_settings_FORMS_HEADERS}
+ )
+
+  target_link_libraries(breeze-settings5 Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
+  target_link_libraries(breeze-settings5 KF5::I18n KF5::WidgetsAddons KF5::ConfigCore KF5::ConfigGui KF5::Service)
+
+  install(TARGETS breeze-settings5 ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+endif()
