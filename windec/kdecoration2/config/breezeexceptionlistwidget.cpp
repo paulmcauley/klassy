@@ -27,10 +27,11 @@
 #include "breezeexceptionlistwidget.moc"
 #include "breezeexceptiondialog.h"
 
+#include <KLocalizedString>
+
 #include <QMessageBox>
 #include <QPointer>
 #include <QIcon>
-#include <KLocalizedString>
 
 //__________________________________________________________
 namespace Breeze
