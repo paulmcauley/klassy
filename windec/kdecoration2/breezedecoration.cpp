@@ -22,7 +22,6 @@
 #include "breezedecoration.h"
 
 #include "breeze.h"
-#include "breezehelper.h"
 #include "breezesettingsprovider.h"
 #include "config-breeze.h"
 #include "config/breezeconfig.h"
@@ -42,6 +41,10 @@
 
 #include <QPainter>
 #include <QTextStream>
+
+#if BREEZE_HAVE_X11
+#include <QX11Info>
+#endif
 
 K_PLUGIN_FACTORY_WITH_JSON(
     BreezeDecoFactory,
@@ -534,7 +537,7 @@ namespace Breeze
         if( m_sizeGrip ) return;
 
         #if BREEZE_HAVE_X11
-        if( !Helper::isX11() ) return;
+        if( !QX11Info::isPlatformX11() ) return;
 
         // access client
         KDecoration2::DecoratedClient *c( client().data() );

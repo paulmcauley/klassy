@@ -21,8 +21,6 @@
 #include "breezesizegrip.h"
 #include "breezesizegrip.moc"
 
-#include "breezehelper.h"
-
 #include <KDecoration2/DecoratedClient>
 
 #include <QPainter>
@@ -85,7 +83,7 @@ namespace Breeze
     void SizeGrip::updateActiveState( void )
     {
         #if BREEZE_HAVE_X11
-        if( Helper::isX11() )
+        if( QX11Info::isPlatformX11() )
         {
             const quint32 value = XCB_STACK_MODE_ABOVE;
             xcb_configure_window( QX11Info::connection(), winId(), XCB_CONFIG_WINDOW_STACK_MODE, &value );
@@ -103,7 +101,7 @@ namespace Breeze
 
         #if BREEZE_HAVE_X11
 
-        if( !Helper::isX11() ) return;
+        if( !QX11Info::isPlatformX11() ) return;
         auto c = m_decoration.data()->client().data();
 
         xcb_window_t windowId = c->windowId();
@@ -198,7 +196,7 @@ namespace Breeze
     {
 
         #if BREEZE_HAVE_X11
-        if( !Helper::isX11() ) return;
+        if( !QX11Info::isPlatformX11() ) return;
 
         auto c = m_decoration.data()->client().data();
         QPoint position(
@@ -216,7 +214,7 @@ namespace Breeze
     {
 
         #if BREEZE_HAVE_X11
-        if( !Helper::isX11() ) return;
+        if( !QX11Info::isPlatformX11() ) return;
 
         // pointer to connection
         auto connection( QX11Info::connection() );

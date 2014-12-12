@@ -34,7 +34,6 @@ set(breezedecoration_SRCS
     breezebutton.cpp
     breezedecoration.cpp
     breezeexceptionlist.cpp
-    breezehelper.cpp
     breezesettingsprovider.cpp
     breezesizegrip.cpp)
 
