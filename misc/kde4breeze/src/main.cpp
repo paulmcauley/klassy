@@ -114,6 +114,8 @@ void updateKdeGlobals()
     qDebug() << "setting widget style:" << widgetStyle << hasWidgetStyle;
     if (hasWidgetStyle) {
         group.writeEntry("widgetStyle", widgetStyle);
+        //for some reason this seems necessary
+        group.sync();
     }
     applyColorScheme(colorScheme, &config);
     group.sync();
