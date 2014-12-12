@@ -36,8 +36,11 @@
 
 #include <QPushButton>
 #include <QMouseEvent>
+#include <config-breeze.h>
+#if BREEZE_HAVE_X11
 #include <QX11Info>
 #include <xcb/xcb.h>
+#endif
 
 namespace Breeze
 {
@@ -53,12 +56,16 @@ namespace Breeze
         connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
         windowClassCheckBox->setChecked( true );
 
-        // create atom
-        xcb_connection_t* connection( QX11Info::connection() );
-        const QString atomName( QStringLiteral( "WM_STATE" ) );
-        xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
-        QScopedPointer<xcb_intern_atom_reply_t, QScopedPointerPodDeleter> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
-        m_wmStateAtom = reply ? reply->atom : 0;
+#if BREEZE_HAVE_X11
+        if (QX11Info::isPlatformX11()) {
+            // create atom
+            xcb_connection_t* connection( QX11Info::connection() );
+            const QString atomName( QStringLiteral( "WM_STATE" ) );
+            xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
+            QScopedPointer<xcb_intern_atom_reply_t, QScopedPointerPodDeleter> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
+            m_wmStateAtom = reply ? reply->atom : 0;
+        }
+#endif
 
     }
 
@@ -143,6 +150,10 @@ namespace Breeze
     WId DetectDialog::findWindow()
     {
 
+#if BREEZE_HAVE_X11
+        if (!QX11Info::isPlatformX11()) {
+            return 0;
+        }
         // check atom
         if( !m_wmStateAtom ) return 0;
 
@@ -165,6 +176,7 @@ namespace Breeze
             else parent = child;
 
         }
+#endif
 
         return 0;
 

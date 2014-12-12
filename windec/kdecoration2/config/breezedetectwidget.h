@@ -40,7 +40,6 @@
 #include <QLabel>
 
 #include <kwindowsystem.h>
-#include <xcb/xcb.h>
 
 namespace Breeze
 {
@@ -102,7 +101,7 @@ namespace Breeze
         QScopedPointer<KWindowInfo> _info;
 
         //* wm state atom
-        xcb_atom_t m_wmStateAtom = 0;
+        quint32 m_wmStateAtom = 0;
 
     };
 
