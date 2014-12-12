@@ -110,7 +110,8 @@ void updateKdeGlobals()
     const bool hasWidgetStyle = QStyleFactory::keys().contains(widgetStyle);
     KConfigGroup group(&config, "General");
     group.writeEntry("ColorScheme", colorScheme);
-    group.sync();
+
+    qDebug() << "setting widget style:" << widgetStyle << hasWidgetStyle;
     if (hasWidgetStyle) {
         group.writeEntry("widgetStyle", widgetStyle);
     }
