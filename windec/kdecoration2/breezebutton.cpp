@@ -273,6 +273,19 @@ namespace Breeze
                     break;
                 }
 
+                case KDecoration2::DecorationButtonType::ContextHelp:
+                {
+                    QPainterPath path;
+                    path.moveTo( 5, 6 );
+                    path.arcTo( QRectF( 5, 3.5, 8, 5 ), 180, -180 );
+                    path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
+                    painter->drawPath( path );
+
+                    painter->drawPoint( 9, 15 );
+
+                    break;
+                }
+
                 default: break;
 
             }
