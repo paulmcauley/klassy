@@ -1342,8 +1342,7 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         #if QT_VERSION >= 0x050000
-        static bool isX11 = QApplication::platformName() == QStringLiteral("xcb");
-        return isX11;
+        return QX11Info::isPlatformX11();
         #else
         return true;
         #endif
