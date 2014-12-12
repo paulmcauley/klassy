@@ -26,6 +26,11 @@
 #include "breezeexceptiondialog.h"
 #include "breezeexceptiondialog.moc"
 #include "breezedetectwidget.h"
+#include "config-breeze.h"
+
+#if BREEZE_HAVE_X11
+#include <QX11Info>
+#endif
 
 namespace Breeze
 {
@@ -53,6 +58,13 @@ namespace Breeze
         { connect( iter.value(), SIGNAL(clicked()), SLOT(updateChanged()) ); }
 
         connect( hideTitleBar, SIGNAL(clicked()), SLOT(updateChanged()) );
+
+        // hide detection dialog on non X11 platforms
+        #if BREEZE_HAVE_X11
+        if( !QX11Info::isPlatformX11() ) detectDialogButton->hide();
+        #else
+        detectDialogButton->hide();
+        #endif
     }
 
     //___________________________________________
