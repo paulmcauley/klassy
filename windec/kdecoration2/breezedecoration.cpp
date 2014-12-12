@@ -401,10 +401,8 @@ namespace Breeze
         const int baseSize = settings()->gridUnit();
         switch( m_internalSettings->buttonSize() )
         {
-            case Breeze::InternalSettings::ButtonVerySmall: return baseSize;
-
-            default:
             case Breeze::InternalSettings::ButtonSmall: return baseSize*1.5;
+            default:
             case Breeze::InternalSettings::ButtonDefault: return baseSize*2;
             case Breeze::InternalSettings::ButtonLarge: return baseSize*2.5;
             case Breeze::InternalSettings::ButtonVeryLarge: return baseSize*3.5;

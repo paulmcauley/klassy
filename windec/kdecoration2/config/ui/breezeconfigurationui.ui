@@ -94,11 +94,6 @@
        <widget class="QComboBox" name="buttonSize">
         <item>
          <property name="text">
-          <string comment="@item:inlistbox Button size:">Very Small</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
           <string comment="@item:inlistbox Button size:">Small</string>
          </property>
         </item>
