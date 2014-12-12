@@ -273,6 +273,14 @@ namespace Breeze
                     break;
                 }
 
+                case KDecoration2::DecorationButtonType::ApplicationMenu:
+                {
+                    painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
+                    painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
+                    painter->drawLine( QPointF( 3.5, 13 ), QPointF( 14.5, 13 ) );
+                    break;
+                }
+
                 case KDecoration2::DecorationButtonType::ContextHelp:
                 {
                     QPainterPath path;
