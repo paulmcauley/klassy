@@ -26,7 +26,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "ui_breezeexceptiondialog.h"
-#include "../breeze.h"
+#include "breeze.h"
 
 #include <QCheckBox>
 #include <QMap>
@@ -37,7 +37,7 @@ namespace Breeze
     class DetectDialog;
 
     //* breeze exceptions list
-    class ExceptionDialog: public QDialog, Ui::BreezeExceptionDialog
+    class ExceptionDialog: public QDialog
     {
 
         Q_OBJECT
@@ -92,6 +92,8 @@ namespace Breeze
 
         //* map mask and checkbox
         using CheckBoxMap=QMap< ExceptionMask, QCheckBox*>;
+
+        Ui::BreezeExceptionDialog m_ui;
 
         //* map mask and checkbox
         CheckBoxMap m_checkboxes;

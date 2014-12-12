@@ -44,7 +44,7 @@
 namespace Breeze
 {
 
-    class DetectDialog : public QDialog, Ui::BreezeDetectWidget
+    class DetectDialog : public QDialog
     {
 
         Q_OBJECT
@@ -62,13 +62,13 @@ namespace Breeze
 
         //* window information
         const KWindowInfo& windowInfo() const
-        { return *(_info.data()); }
+        { return *(m_info.data()); }
 
         //* exception type
         InternalSettings::EnumExceptionType exceptionType() const
         {
-            if( windowClassCheckBox->isChecked() ) return InternalSettings::ExceptionWindowClassName;
-            else if( windowTitleCheckBox->isChecked() ) return InternalSettings::ExceptionWindowTitle;
+            if( m_ui.windowClassCheckBox->isChecked() ) return InternalSettings::ExceptionWindowClassName;
+            else if( m_ui.windowTitleCheckBox->isChecked() ) return InternalSettings::ExceptionWindowTitle;
             else return InternalSettings::ExceptionWindowClassName;
         }
 
@@ -94,11 +94,14 @@ namespace Breeze
         //* execute
         void executeDialog( void );
 
+        //* ui
+        Ui::BreezeDetectWidget m_ui;
+
         //* invisible dialog used to grab mouse
         QDialog* m_grabber = nullptr;
 
         //* current window information
-        QScopedPointer<KWindowInfo> _info;
+        QScopedPointer<KWindowInfo> m_info;
 
         //* wm state atom
         quint32 m_wmStateAtom = 0;

@@ -51,10 +51,10 @@ namespace Breeze
     {
 
         // setup
-        setupUi( this );
+        m_ui.setupUi( this );
 
-        connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
-        windowClassCheckBox->setChecked( true );
+        connect( m_ui.buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
+        m_ui.windowClassCheckBox->setChecked( true );
 
 #if BREEZE_HAVE_X11
         if (QX11Info::isPlatformX11()) {
@@ -86,18 +86,18 @@ namespace Breeze
             return;
         }
 
-        _info.reset(new KWindowInfo( window, NET::WMAllProperties, NET::WM2AllProperties ));
-        if( !_info->valid())
+        m_info.reset(new KWindowInfo( window, NET::WMAllProperties, NET::WM2AllProperties ));
+        if( !m_info->valid())
         {
             emit detectionDone( false );
             return;
         }
 
-        const QString wmClassClass( QString::fromUtf8( _info->windowClassClass() ) );
-        const QString wmClassName( QString::fromUtf8( _info->windowClassName() ) );
+        const QString wmClassClass( QString::fromUtf8( m_info->windowClassClass() ) );
+        const QString wmClassName( QString::fromUtf8( m_info->windowClassName() ) );
 
-        windowClass->setText( QStringLiteral( "%1 (%2 %3)" ).arg( wmClassClass ).arg( wmClassName ).arg( wmClassClass ) );
-        Ui::BreezeDetectWidget::windowTitle->setText( _info->name() );
+        m_ui.windowClass->setText( QStringLiteral( "%1 (%2 %3)" ).arg( wmClassClass ).arg( wmClassName ).arg( wmClassClass ) );
+        m_ui.windowTitle->setText( m_info->name() );
         emit detectionDone( exec() == QDialog::Accepted );
 
         return;
@@ -150,7 +150,7 @@ namespace Breeze
     WId DetectDialog::findWindow()
     {
 
-#if BREEZE_HAVE_X11
+        #if BREEZE_HAVE_X11
         if (!QX11Info::isPlatformX11()) {
             return 0;
         }
@@ -176,7 +176,7 @@ namespace Breeze
             else parent = child;
 
         }
-#endif
+        #endif
 
         return 0;
 
