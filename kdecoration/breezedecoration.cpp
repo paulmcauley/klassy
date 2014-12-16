@@ -166,6 +166,7 @@ namespace Breeze
 
         connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonPositions);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonPositions);
+        connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::recalculateBorders);
         connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::updateButtonPositions);
 
         createButtons();
@@ -279,7 +280,7 @@ namespace Breeze
         // padding above
         if (!isMaximized()) top += baseSize*TitleBar_BottomMargin;
 
-        int bottom = isMaximizedVertically() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(true);
+        int bottom = isMaximizedVertically() || c->isShaded() || edges.testFlag(Qt::BottomEdge) ? 0 : borderSize(true);
         setBorders(QMargins(left, top, right, bottom));
 
         // extended sizes
