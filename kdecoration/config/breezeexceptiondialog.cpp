@@ -41,6 +41,8 @@ namespace Breeze
     {
 
         m_ui.setupUi( this );
+        m_ui.hideTitleBar->hide();
+
         connect( m_ui.buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
 
         // store checkboxes from ui into list
