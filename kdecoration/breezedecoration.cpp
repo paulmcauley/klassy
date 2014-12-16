@@ -177,7 +177,7 @@ namespace Breeze
     {
         auto s = settings();
         const bool maximized = isMaximized();
-        const int width = client().data()->width();
+        const int width =  maximized ? client().data()->width() : client().data()->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
         const int height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
         const int x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
         const int y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
