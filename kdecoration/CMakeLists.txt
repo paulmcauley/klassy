@@ -1,3 +1,5 @@
+add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
+
 find_package(KDecoration2 REQUIRED)
 find_package(KF5 REQUIRED COMPONENTS CoreAddons ConfigWidgets WindowSystem)
 find_package(Qt5 CONFIG REQUIRED COMPONENTS DBus)
