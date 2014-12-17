@@ -65,9 +65,6 @@ namespace Breeze
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_colorSettings(client().data()->palette())
-        , m_leftButtons(nullptr)
-        , m_rightButtons(nullptr)
-        , m_sizeGrip(nullptr)
         , m_animation( new QPropertyAnimation( this ) )
     {
         g_sDecoCount++;
@@ -81,6 +78,16 @@ namespace Breeze
             // last deco destroyed, clean up shadow
             g_sShadow.clear();
         }
+    }
+
+    //________________________________________________________________
+    void Decoration::setOpacity( qreal value )
+    {
+        if( m_opacity == value ) return;
+        m_opacity = value;
+        update();
+
+        if( m_sizeGrip ) m_sizeGrip->update();
     }
 
     //________________________________________________________________

@@ -136,10 +136,9 @@ namespace Breeze
     {
 
         if( !m_decoration ) return;
-        auto c = m_decoration.data()->client().data();
 
         // get relevant colors
-        const QColor backgroundColor( m_decoration.data()->colorSettings().titleBar( c->isActive() ) );
+        const QColor backgroundColor( m_decoration.data()->titleBarColor() );
 
         // create and configure painter
         QPainter painter(this);

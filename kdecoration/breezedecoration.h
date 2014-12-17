@@ -77,12 +77,7 @@ namespace Breeze
 
         //*@name active state change animation
         //@{
-        void setOpacity( qreal value )
-        {
-            if( m_opacity == value ) return;
-            m_opacity = value;
-            update();
-        }
+        void setOpacity( qreal );
 
         qreal opacity( void ) const
         { return m_opacity; }
@@ -140,11 +135,11 @@ namespace Breeze
         InternalSettingsPtr m_internalSettings;
 
         QList<KDecoration2::DecorationButton*> m_buttons;
-        KDecoration2::DecorationButtonGroup *m_leftButtons;
-        KDecoration2::DecorationButtonGroup *m_rightButtons;
+        KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
+        KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
 
         //* size grip widget
-        SizeGrip *m_sizeGrip;
+        SizeGrip *m_sizeGrip = nullptr;
 
         //* active state change animation
         QPropertyAnimation *m_animation;
