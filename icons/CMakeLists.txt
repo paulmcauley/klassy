@@ -13,7 +13,7 @@ endif(WIN32)
 
 ########### install files ###############
 
-set( breeze_icon_dirs  actions apps categories mimetypes places )
+set( breeze_icon_dirs  actions apps devices mimetypes places status )
 
 
 set(BREEZE_INSTALL_DIR ${ICON_INSTALL_DIR}/breeze)
