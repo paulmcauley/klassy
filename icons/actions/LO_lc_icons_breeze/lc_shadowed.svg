@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24"
+   height="24"
+   id="svg3760"
+   version="1.1"
+   inkscape:version="0.91+devel r"
+   sodipodi:docname="lc_shadowed.svg">
+  <defs
+     id="defs3762" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="17.289679"
+     inkscape:cx="9.6877018"
+     inkscape:cy="12.154202"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     showguides="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4106"
+       originx="2.7733594e-05px"
+       originy="-2.0646406e-05px" />
+    <sodipodi:guide
+       position="3.0000232,20.999974"
+       orientation="0,18"
+       id="guide4229" />
+    <sodipodi:guide
+       position="21.000022,20.999974"
+       orientation="18,0"
+       id="guide4231" />
+    <sodipodi:guide
+       position="21.000022,2.9999746"
+       orientation="0,-18"
+       id="guide4233" />
+    <sodipodi:guide
+       position="3.0000232,2.9999746"
+       orientation="-18,0"
+       id="guide4235" />
+    <sodipodi:guide
+       position="20.000022,3.9999746"
+       orientation="0,-16"
+       id="guide4241" />
+    <sodipodi:guide
+       position="4.0000088,19.999996"
+       orientation="6,0"
+       id="guide4155" />
+    <sodipodi:guide
+       position="20.000008,13.999996"
+       orientation="-6,0"
+       id="guide4167" />
+    <sodipodi:guide
+       position="20.000008,19.999996"
+       orientation="0,-6"
+       id="guide4169" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3765">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-550.28571,-606.64789)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path4149-0"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:125%;font-family:Oxygen;-inkscape-font-specification:Oxygen;letter-spacing:0px;word-spacing:0px;fill:#b3b3b3;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 562.01996,620.93281 2.35891,-6.67397 2.12876,6.67397 -4.48767,0 z m 6.57809,5.71507 1.68766,0 -4.92876,-14 -1.99453,0 -5.21643,14 1.68767,0 1.6685,-4.43013 5.56164,0 1.53425,4.43013 z" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4149"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:125%;font-family:Oxygen;-inkscape-font-specification:Oxygen;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 560.15968,618.93281 2.35891,-6.67397 2.12876,6.67397 -4.48767,0 z m 6.57809,5.71507 1.68766,0 -4.92876,-14 -1.99453,0 -5.21643,14 1.68767,0 1.6685,-4.43013 5.56164,0 1.53425,4.43013 z" />
+  </g>
+</svg>

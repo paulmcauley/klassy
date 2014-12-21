@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="22"
+   height="22"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48+devel r"
+   sodipodi:docname="help-donate.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="24.753055"
+     inkscape:cx="17.844787"
+     inkscape:cy="15.004374"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1366"
+     inkscape:window-height="668"
+     inkscape:window-x="-2"
+     inkscape:window-y="23"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     showguides="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4109" />
+    <sodipodi:guide
+       position="2,20.000017"
+       orientation="18,0"
+       id="guide4113" />
+    <sodipodi:guide
+       position="2,2.0000174"
+       orientation="0,18"
+       id="guide4115" />
+    <sodipodi:guide
+       position="20,2.0000174"
+       orientation="-18,0"
+       id="guide4117" />
+    <sodipodi:guide
+       position="20,20.000017"
+       orientation="0,-18"
+       id="guide4119" />
+    <sodipodi:guide
+       position="3,19.000017"
+       orientation="16,0"
+       id="guide4121" />
+    <sodipodi:guide
+       position="3,3.0000174"
+       orientation="0,16"
+       id="guide4123" />
+    <sodipodi:guide
+       position="19,3.0000174"
+       orientation="-16,0"
+       id="guide4125" />
+    <sodipodi:guide
+       position="19,19.000017"
+       orientation="0,-16"
+       id="guide4127" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1030.3622)">
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 11 3 C 6.568 3 3 6.568 3 11 C 3 15.432 6.568 19 11 19 C 15.432 19 19 15.432 19 11 C 19 6.568 15.432 3 11 3 z M 11 4 C 14.878 4 18 7.122 18 11 C 18 14.878 14.878 18 11 18 C 7.122 18 4 14.878 4 11 C 4 7.122 7.122 4 11 4 z M 10.771484 6 L 10.771484 6.9003906 C 9.0989704 6.9762906 8.0117188 7.6493969 8.0117188 9.0917969 C 8.0117188 10.143897 8.748401 10.7288 9.9296875 11 L 10.771484 11.195312 L 10.771484 14.275391 C 9.8241166 14.232091 8.9830271 13.994187 8.2929688 13.679688 L 8 14.4375 C 8.4912281 14.7086 9.4381516 15.046844 10.771484 15.089844 L 10.771484 16 L 11.322266 16 L 11.322266 15.089844 C 12.924605 15.013944 14 14.254341 14 12.681641 C 14 11.390941 13.181104 10.815103 11.90625 10.533203 L 11.322266 10.404297 L 11.322266 7.7128906 C 12.176067 7.7453906 12.971526 7.9842719 13.392578 8.2011719 L 13.683594 7.4648438 C 13.133886 7.1503437 12.293027 6.9106719 11.322266 6.8886719 L 11.322266 6 L 10.771484 6 z M 10.771484 7.7128906 L 10.771484 10.273438 L 10.304688 10.175781 C 9.4859744 9.9914813 9.0410156 9.6554094 9.0410156 9.0371094 C 9.0410156 8.2020094 9.6252861 7.7778906 10.771484 7.7128906 z M 11.322266 11.326172 L 11.613281 11.390625 C 12.701 11.640125 12.982422 12.072891 12.982422 12.712891 C 12.982422 13.721491 12.410007 14.221391 11.333984 14.275391 L 11.322266 14.275391 L 11.322266 11.326172 z "
+       transform="translate(0,1030.3622)"
+       id="rect4129" />
+  </g>
+</svg>

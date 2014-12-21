@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="22"
+   height="22"
+   id="svg3760"
+   version="1.1"
+   inkscape:version="0.48+devel r"
+   sodipodi:docname="office-chart-scatter.svg">
+  <defs
+     id="defs3762" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="24.075123"
+     inkscape:cx="18.258195"
+     inkscape:cy="13.217481"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="666"
+     inkscape:window-x="-2"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     showguides="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4106"
+       originx="-0.99998557px"
+       originy="-1.0000252px" />
+    <sodipodi:guide
+       position="2.00001,19.99997"
+       orientation="0,18"
+       id="guide4229" />
+    <sodipodi:guide
+       position="20.00001,19.99997"
+       orientation="18,0"
+       id="guide4231" />
+    <sodipodi:guide
+       position="20.00001,1.99997"
+       orientation="0,-18"
+       id="guide4233" />
+    <sodipodi:guide
+       position="2.00001,1.99997"
+       orientation="-18,0"
+       id="guide4235" />
+    <sodipodi:guide
+       position="3.00001,18.99997"
+       orientation="0,16"
+       id="guide4237" />
+    <sodipodi:guide
+       position="19.00001,18.99997"
+       orientation="16,0"
+       id="guide4239" />
+    <sodipodi:guide
+       position="19.00001,2.99997"
+       orientation="0,-16"
+       id="guide4241" />
+    <sodipodi:guide
+       position="3.00001,2.99997"
+       orientation="-16,0"
+       id="guide4243" />
+    <sodipodi:guide
+       position="19.199543,20.19237"
+       orientation="-0.70710678,-0.70710678"
+       id="guide4189" />
+    <sodipodi:guide
+       position="8.7999448,20.192472"
+       orientation="-0.70710678,0.70710678"
+       id="guide4193" />
+    <sodipodi:guide
+       position="18.69944,11.707191"
+       orientation="0.70710678,-0.70710678"
+       id="guide4197" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3765">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-551.28571,-607.64788)">
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
+       d="M 4 3 L 4 9 L 4 10 L 4 15 L 4 16 L 4 17 L 3 17 L 3 18 L 4 18 L 4 19 L 5 19 L 5 18 L 18.292969 18 L 19 18 L 19 17.292969 L 19 17 L 18.707031 17 L 17.292969 17 L 5 17 L 5 15.431641 L 5 15.423828 L 5 15 L 5 12.423828 L 5 11.423828 L 5 11 L 5 10 L 5 9 L 5 6 L 5 5.9921875 L 5 5 L 5 3 L 4 3 z M 17 3 L 17 4 L 18 4 L 18 3 L 17 3 z M 18 4 L 18 5 L 19 5 L 19 4 L 18 4 z M 18 5 L 17 5 L 17 6 L 18 6 L 18 5 z M 17 5 L 17 4 L 16 4 L 16 5 L 17 5 z M 6 4 L 6 5 L 7 5 L 7 4 L 6 4 z M 8 4 L 8 5 L 9 5 L 9 4 L 8 4 z M 6 6 L 6 7 L 7 7 L 7 6 L 6 6 z M 8 6 L 8 7 L 9 7 L 9 6 L 8 6 z M 11 7 L 11 8 L 12 8 L 12 7 L 11 7 z M 13 7 L 13 8 L 14 8 L 14 7 L 13 7 z M 11 9 L 11 10 L 12 10 L 12 9 L 11 9 z M 13 9 L 13 10 L 14 10 L 14 9 L 13 9 z M 7 13 L 7 14 L 8 14 L 8 13 L 7 13 z M 8 14 L 8 15 L 9 15 L 9 14 L 8 14 z M 8 15 L 7 15 L 7 16 L 8 16 L 8 15 z M 7 15 L 7 14 L 6 14 L 6 15 L 7 15 z "
+       transform="translate(551.28571,607.64788)"
+       id="path4154" />
+  </g>
+</svg>

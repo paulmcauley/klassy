@@ -1,137 +1,159 @@
 [Icon Theme]
 Name=Breeze
-Name[ca]=Brisa
-Name[cs]=Breeze
-Name[da]=Breeze
-Name[de]=Breeze
-Name[el]=Breeze
-Name[en_GB]=Breeze
-Name[es]=Brisa
-Name[fi]=Breeze
-Name[fr]=Brise
-Name[gl]=Breeze
-Name[hu]=Breeze
-Name[ia]=Brisa
-Name[it]=Brezza
-Name[ko]=Breeze
-Name[lt]=Breeze
-Name[nb]=Breeze
-Name[nds]=Breeze
-Name[nl]=Breeze
-Name[pl]=Bryza
-Name[pt]=Brisa
-Name[pt_BR]=Breeze
-Name[ru]=Breeze
-Name[sk]=Breeze
-Name[sl]=Sapica
-Name[sr]=Поветарац
-Name[sr@ijekavian]=Поветарац
-Name[sr@ijekavianlatin]=Povetarac
-Name[sr@latin]=Povetarac
-Name[sv]=Breeze
-Name[tr]=Breeze
-Name[uk]=Breeze
-Name[x-test]=xxBreezexx
-Name[zh_CN]=微风
-Name[zh_TW]=微風
-Comment=Breeze icon theme by the KDE Visual Design Group
-Comment[ca]=Tema d'icones Brisa, pel Grup de disseny visual del KDE
-Comment[cs]=Motiv ikon Breeze od KDE Visual Design Group
-Comment[da]=Breeze ikontema af KDE's visuelle designgruppe
-Comment[de]=Breeze-Symboldesign der KDE Visual Design Group
-Comment[el]=Θέμα εικονιδίων Breeze από το KDE Visual Design Group
-Comment[en_GB]=Breeze icon theme by the KDE Visual Design Group
-Comment[es]=Tema de iconos Brisa, por el Grupo de diseño visual de KDE
-Comment[fi]=KDE:n graafisen suunnittelun ryhmän tekemä Breeze-kuvaketeema
-Comment[fr]=Thème d'icônes Brise par l'équipe de design KDE
-Comment[hu]=Breeze ikontéma a KDE Visual Desing Grouptól
-Comment[it]=Tema di icone Brezza dal KDE Visual Design Group
-Comment[ko]=KDE 시각 디자인 그룹에서 제작한 Breeze 아이콘 테마
-Comment[lt]=Breeze piktogramų tema, kurią sukūrė KDE Vizualinio Dizaino Grupė
-Comment[nb]=Breeze ikontema fra KDE-gruppa for visuell design
-Comment[nds]=Lüttbildmuster „Breeze“ vun't KDE-Utsehnkoppel
-Comment[nl]=Pictogramthema Breeze door de groep KDE Visual Design
-Comment[pl]=Zestaw ikon Bryzy dzięki Grupie Projektu Wizualnego KDE
-Comment[pt]=Tema de ícones Brisa, do Grupo de Desenho Visual do KDE
-Comment[pt_BR]=Tema de ícones Breeze do KDE Visual Design Group
-Comment[ru]=Набор значков Breeze от Группы графического дизайна (VDG) KDE
-Comment[sk]=Téma ikon Breeze od dizajnovej skupiny KDE Visual
-Comment[sl]=Tema ikon Sapica s strani KDE Visual Design Group
-Comment[sr]=Тема икона Поветарац КДЕ‑ове групе за визуелни дизајн
-Comment[sr@ijekavian]=Тема икона Поветарац КДЕ‑ове групе за визуелни дизајн
-Comment[sr@ijekavianlatin]=Tema ikona Povetarac KDE‑ove grupe za vizuelni dizajn
-Comment[sr@latin]=Tema ikona Povetarac KDE‑ove grupe za vizuelni dizajn
-Comment[sv]=Breeze ikontema av KDE:s visuella designgrupp
-Comment[tr]=KDE Görsel Tasarım Grubundan Breeze simge teması
-Comment[uk]=Свіжа тема піктограм, створена групою дизайнерів KDE
-Comment[x-test]=xxBreeze icon theme by the KDE Visual Design Groupxx
-Comment[zh_CN]=KDE 视觉设计组制作的 Breeze 图标主题
-Comment[zh_TW]=KDE 視覺設計組製作的微風圖示主題
-Inherits=oxygen
+Comment=Default Plasma 5 Theme
+Inherits=
 
-Directories=actions/scalable,actions/small,apps/preferences,apps/scalable,apps/small,categories/scalable,categories/preferences,categories/small,devices/scalable,mimetypes/scalable,places/scalable,places/small
+Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
 
-[actions/scalable]	#22x22
+#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar]
 Size=22
 Context=Actions
 Type=Fixed
 
-[actions/small]		#16x16
+#16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-small]
 Size=16
 Context=Actions
 Type=Fixed
 
-[apps/scalable]
+#16x16 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
+[actions/categories]
+Size=16
+Context=Categories
+Type=Fixed
+
+#48x48 - Scalable - For application icons >!!!ONLY!!!< - Scalable to the following sizes: 48x48 (default), 96x96 and 24x24 (not recommended) - DO_NOT_USE_ANYWHERE_ELSE - Color
+[apps/software]
 Size=48
 Context=Applications
 Type=Scalable
-MinSize=48
+MinSize=32
 MaxSize=256
 
+#32x32 - Fixed size - For System Settings icons >!!!ONLY!!!< - Scalable to the following sizes: 32x32 (default), 64x64, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [apps/preferences]
 Size=32
 Context=Applications
 Type=Fixed
 
-[apps/small]
+#22x22 - Fixed size - Application icon(s) for task manager - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[apps/software-medium]
+Size=22
+Context=Applications
+Type=Fixed
+
+#16x16 - Fixed size - Application icon(s) for sidebars - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[apps/software-small]
 Size=16
 Context=Applications
 Type=Fixed
 
-[categories/scalable]
+#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Open Terminal/About Dolphin/About KDE buttons - WRONG_ICON_USAGE_BY_APP - Monochrome
+[apps/toolbar]
 Size=22
-Context=Categories
-Type=Scalable
-MinSize=16
-MaxSize=22
+Context=Applications
+Type=Fixed
 
-[categories/preferences]
+#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
+[apps/emotes]
+Size=32
+Context=Emotes
+Type=Fixed
+
+#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
+[apps/categories]
 Size=32
 Context=Categories
 Type=Fixed
 
-[categories/small]
+#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
+[apps/actions]
+Size=32
+Context=Actions
+Type=Fixed
+
+#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
+[apps/devices]
+Size=32
+Context=Actions
+Type=Fixed
+
+#32x32 - Fixed size - For categories icons >!!!ONLY!!!<  - Used in Kickoff (KDE 4.x.x) and Lancelot. Also used in MATE and Cinnamon (just FYI) - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[categories/start-menu]
+Size=32
+Context=Categories
+Type=Fixed
+
+#16x16 - Fixed size - NOT_IN_USE - Monochrome
+[categories/start-menu-small]
 Size=16
 Context=Categories
 Type=Fixed
 
-[mimetypes/scalable]
-Size=22
+#64x64 - Scalable - For device icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
+[devices/hardware]
+Size=64
+Context=Devices
+Type=Scalable
+MinSize=32
+MaxSize=256
+
+#16x16 - Fixed size - For small device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[devices/sidebars]
+Size=16
+Context=Devices
+Type=Fixed
+
+#64x64 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
+[mimetypes/file-types]
+Size=64
 Context=MimeTypes
 Type=Scalable
-MinSize=22
-MaxSize=512
+MinSize=32
+MaxSize=256
 
-[places/scalable]
+#16x16 - Fixed size - For small file type icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[mimetypes/file-types-small]
+Size=16
+Context=MimeTypes
+Type=Fixed
+
+#64x64 - Scalable - For folder icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
+[places/user-folders]
 Size=64
 Context=Places
 Type=Scalable
-MinSize=24
-MaxSize=512
+MinSize=32
+MaxSize=256
 
-[places/small]
+#16x16 - Fixed size - For small folder icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[places/user-folders-small]
 Size=16
 Context=Places
 Type=Scalable
-MinSize=16
-MaxSize=22
+Type=Fixed
+
+#64x64 - Fixed size - For dialog icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[status/dialogs]
+Size=64
+Context=Status
+Type=Fixed
+
+#16x16 - Fixed size - For IM status icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[status/im-status]
+Size=16
+Context=Status
+Type=Fixed
+
+#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[status/toolbar]
+Size=22
+Context=Status
+Type=Fixed
+
+#22x22 - Fixed size - Icon(s) for Plasma theme/System Tray. Not particularly used on Plasma. - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[status/panel]
+Size=22
+Context=Status
+Type=Fixed
