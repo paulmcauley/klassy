@@ -122,6 +122,7 @@ set(breeze_PART_SRCS
     breezehelper.cpp
     breezemdiwindowshadow.cpp
     breezemnemonics.cpp
+    breezepalettehelper.cpp
     breezepropertynames.cpp
     breezeshadowhelper.cpp
     breezesplitterproxy.cpp

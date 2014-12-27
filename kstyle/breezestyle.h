@@ -50,6 +50,7 @@ namespace Breeze
     class Helper;
     class MdiWindowShadowFactory;
     class Mnemonics;
+    class PaletteHelper;
     class ShadowHelper;
     class SplitterFactory;
     class WidgetExplorer;
@@ -442,6 +443,9 @@ namespace Breeze
 
         //* helper
         Helper* _helper;
+
+        //* palette helper
+        PaletteHelper* _paletteHelper;
 
         //* shadow helper
         ShadowHelper* _shadowHelper;

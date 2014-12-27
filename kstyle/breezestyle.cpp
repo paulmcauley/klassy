@@ -26,6 +26,7 @@
 #include "breezehelper.h"
 #include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
+#include "breezepalettehelper.h"
 #include "breezepropertynames.h"
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
@@ -161,6 +162,7 @@ namespace Breeze
         , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
         #endif
 
+        , _paletteHelper( new PaletteHelper( this, *_helper ) )
         , _shadowHelper( new ShadowHelper( this, *_helper ) )
         , _animations( new Animations( this ) )
         , _mnemonics( new Mnemonics( this ) )
@@ -192,6 +194,7 @@ namespace Breeze
     //______________________________________________________________
     Style::~Style( void )
     {
+        delete _paletteHelper;
         delete _shadowHelper;
         delete _helper;
     }
@@ -206,6 +209,7 @@ namespace Breeze
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
         _mdiWindowShadowFactory->registerWidget( widget );
+        _paletteHelper->registerWidget( widget );
         _shadowHelper->registerWidget( widget );
         _splitterFactory->registerWidget( widget );
 
@@ -276,7 +280,7 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
-        } else if(QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
+        } else if( qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
             addEventFilter( widget );
 
@@ -291,17 +295,6 @@ namespace Breeze
                 QFont font( widget->font() );
                 font.setBold( false );
                 widget->setFont( font );
-
-                if( !StyleConfigData::sidePanelDrawFrame() )
-                {
-                    // force flat
-                    scrollArea->setPalette( _helper->sideViewPalette( scrollArea->palette() ) );
-                    scrollArea->setProperty( PropertyNames::sidePanelView, true );
-
-                    if( QWidget *viewport = scrollArea->viewport() )
-                    { viewport->setPalette( _helper->sideViewPalette( viewport->palette() ) ); }
-
-                }
 
             }
 
@@ -371,33 +364,6 @@ namespace Breeze
 
         }
 
-        // alter palette for relevant framed widgets
-        if( qobject_cast<QGroupBox*>( widget ) ||
-            qobject_cast<QMenu*>( widget ) ||
-            widget->inherits( "QComboBoxPrivateContainer" ) )
-        {
-            const QPalette palette( _helper->framePalette( QApplication::palette() ) );
-            widget->setPalette( palette );
-        }
-
-        // alter palette for non document mode tab widgets
-        else if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) )
-        {
-            if( !tabWidget->documentMode() )
-            {
-                const QPalette palette( _helper->framePalette( QApplication::palette() ) );
-                widget->setPalette( palette );
-            }
-        }
-
-        // alter palette for dock widgets
-        else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() )
-        {
-            const QPalette palette( _helper->framePalette( QApplication::palette() ) );
-            widget->setPalette( palette );
-        }
-
-
         // base class polishing
         ParentStyleClass::polish( widget );
 
@@ -411,6 +377,7 @@ namespace Breeze
         _animations->unregisterWidget( widget );
         _frameShadowFactory->unregisterWidget( widget );
         _mdiWindowShadowFactory->unregisterWidget( widget );
+        _paletteHelper->unregisterWidget( widget );
         _shadowHelper->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
