@@ -9,13 +9,13 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="16"
-   height="16"
+   width="8"
+   height="8"
    id="svg2"
    version="1.1"
    inkscape:version="0.91+devel r"
-   viewBox="0 0 16 16"
-   sodipodi:docname="text-csv.svg">
+   viewBox="0 0 8 8"
+   sodipodi:docname="emblem-mounted.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,41 +25,31 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="31.625"
-     inkscape:cx="9.2177784"
-     inkscape:cy="7.504375"
+     inkscape:zoom="46"
+     inkscape:cx="1.4193689"
+     inkscape:cy="4.3122364"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      borderlayer="true"
+     units="px"
      inkscape:window-width="1366"
      inkscape:window-height="670"
      inkscape:window-x="-4"
      inkscape:window-y="29"
      inkscape:window-maximized="1"
-     units="px"
      inkscape:snap-bbox="true"
-     inkscape:snap-global="true">
+     showguides="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0">
     <inkscape:grid
        type="xygrid"
-       id="grid4101" />
-    <sodipodi:guide
-       position="2,14.000017"
-       orientation="12,0"
-       id="guide4071" />
-    <sodipodi:guide
-       position="2,2.0000174"
-       orientation="0,12"
-       id="guide4073" />
-    <sodipodi:guide
-       position="14,2.0000174"
-       orientation="-12,0"
-       id="guide4075" />
-    <sodipodi:guide
-       position="14,14.000017"
-       orientation="0,-12"
-       id="guide4077" />
+       id="grid4062"
+       originx="-7"
+       originy="-7.0000174" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -77,13 +67,30 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-1036.3622)">
-    <path
-       style="fill:#04896a;fill-opacity:1;stroke:none"
-       d="m 2,2 0,1 0,10 0,1 1,0 6,0 0,-1 -3,0 0,-3 3,0 0,-1 -3,0 0,-3 4,0 0,2 1,0 0,-2 2,0 0,2 1,0 L 14,2 3,2 Z M 3,3 13,3 13,5 3,5 Z M 3,6 5,6 5,9 3,9 Z m 8.5,3 C 10.668995,9 10,9.6379875 10,10.429688 c 0,0.7634 0.62316,1.376321 1.412109,1.419921 0.05749,0.2617 0.08693,0.528122 0.08789,0.794922 C 11.4978,13.107631 11.411159,13.5666 11.242188,14 12.342191,13.2657 12.998014,12.067109 13,10.787109 l 0,-0.357421 C 13,9.6378875 12.330999,9 11.5,9 Z m -8.5,1 2,0 0,3 -2,0 z"
-       transform="translate(0,1036.3622)"
-       id="rect4031"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccccccccccccccccccccccccccssccccssccccc" />
+     transform="translate(-7,-1037.3622)">
+    <rect
+       style="opacity:1;fill:#27ae60;fill-opacity:1;stroke:none"
+       id="rect4153"
+       width="8"
+       height="8"
+       x="7"
+       y="1037.3622"
+       ry="0.36364365" />
+    <rect
+       ry="0.27273273"
+       y="1038.3622"
+       x="8"
+       height="6"
+       width="6"
+       id="rect4145"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none" />
+    <rect
+       style="opacity:1;fill:#27ae60;fill-opacity:1;stroke:none"
+       id="rect4147"
+       width="4"
+       height="4"
+       x="9"
+       y="1039.3622"
+       ry="0.18182182" />
   </g>
 </svg>

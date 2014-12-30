@@ -1,59 +1,9 @@
 [Icon Theme]
 Name=Breeze
-Name[ca]=Brisa
-Name[cs]=Breeze
-Name[da]=Breeze
-Name[de]=Breeze
-Name[el]=Breeze
-Name[en_GB]=Breeze
-Name[es]=Brisa
-Name[fi]=Breeze
-Name[fr]=Brise
-Name[gl]=Breeze
-Name[hu]=Breeze
-Name[ia]=Brisa
-Name[it]=Brezza
-Name[ko]=Breeze
-Name[lt]=Breeze
-Name[nb]=Breeze
-Name[nds]=Breeze
-Name[nl]=Breeze
-Name[pl]=Bryza
-Name[pt]=Brisa
-Name[pt_BR]=Breeze
-Name[ru]=Breeze
-Name[sk]=Breeze
-Name[sl]=Sapica
-Name[sr]=Поветарац
-Name[sr@ijekavian]=Поветарац
-Name[sr@ijekavianlatin]=Povetarac
-Name[sr@latin]=Povetarac
-Name[sv]=Breeze
-Name[tr]=Breeze
-Name[uk]=Breeze
-Name[x-test]=xxBreezexx
-Name[zh_CN]=微风
-Name[zh_TW]=微風
 Comment=Default Plasma 5 Theme
-Comment[ca]=Tema del Plasma 5 per defecte
-Comment[de]=Standard-Arbeitsflächendesign für Plasma 5
-Comment[en_GB]=Default Plasma 5 Theme
-Comment[es]=Tema por omisión de Plasma 5
-Comment[nl]=Standaard thema van Plasma 5
-Comment[pl]=Domyślny wystrój Plazmy 5
-Comment[pt]=Tema por Omissão do Plasma 5
-Comment[pt_BR]=Tema padrão do Plasma 5
-Comment[sk]=Predvolená téma Plasma  5
-Comment[sl]=Privzeta tema za Plasma 5
-Comment[sr]=Подразумевана тема Плазме 5
-Comment[sr@ijekavian]=Подразумевана тема Плазме 5
-Comment[sr@ijekavianlatin]=Podrazumevana tema Plasme 5
-Comment[sr@latin]=Podrazumevana tema Plasme 5
-Comment[uk]=Тема тема Плазми 5
-Comment[x-test]=xxDefault Plasma 5 Themexx
 Inherits=
 
-Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,apps/devices-small,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,emblems/faces,emblems/small,emotes/medium,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
 
 #22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/toolbar]
@@ -129,6 +79,12 @@ Size=32
 Context=Actions
 Type=Fixed
 
+#16x16 - Fixed size - Devices icon(s) for sidebars - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[apps/devices-small]
+Size=16
+Context=Devices
+Type=Fixed
+
 #32x32 - Fixed size - For categories icons >!!!ONLY!!!<  - Used in Kickoff (KDE 4.x.x) and Lancelot. Also used in MATE and Cinnamon (just FYI) - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [categories/start-menu]
 Size=32
@@ -153,6 +109,24 @@ MaxSize=256
 [devices/sidebars]
 Size=16
 Context=Devices
+Type=Fixed
+
+#22x22 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[emblems/faces]
+Size=22
+Context=Emblems
+Type=Fixed
+
+#8x8 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[emblems/small]
+Size=8
+Context=Emblems
+Type=Fixed
+
+#22x22 - Fixed size - Emoticons - DO_NOT_USE_ANYWHERE_ELSE - Color
+[emotes/medium]
+Size=22
+Context=Emotes
 Type=Fixed
 
 #64x64 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
