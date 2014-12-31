@@ -52,6 +52,7 @@ Comment[sr@latin]=Podrazumevana tema Plasme 5
 Comment[sv]=Standardskrivbordstema för Plasma 5
 Comment[uk]=Тема тема Плазми 5
 Comment[x-test]=xxDefault Plasma 5 Themexx
+Comment[zh_CN]=默认 Plasma 5 主题
 Inherits=
 
 Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,apps/devices-small,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,emblems/faces,emblems/small,emotes/medium,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
