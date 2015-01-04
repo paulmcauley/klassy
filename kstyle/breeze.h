@@ -98,7 +98,8 @@ namespace Breeze
 
         // menubar items
         MenuBarItem_MarginWidth = 10,
-        MenuBarItem_MarginHeight = 8,
+        // MenuBarItem_MarginHeight = 8,
+        MenuBarItem_MarginHeight = 6,
 
         // scrollbars
         ScrollBar_Extend = 20,
@@ -150,7 +151,7 @@ namespace Breeze
         ToolTip_FrameWidth = 3,
 
         // list headers
-        Header_MarginWidth = 8,
+        Header_MarginWidth = 6,
         Header_ItemSpacing = 4,
         Header_ArrowSize = 10,
 
