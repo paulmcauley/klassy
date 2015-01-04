@@ -475,7 +475,7 @@ namespace Breeze
         BreezePrivate::TabBarData* _tabBarData;
 
         //* icon hash
-        typedef QHash<StandardPixmap, QIcon> IconCache;
+        using IconCache = QHash<StandardPixmap, QIcon>;
         IconCache _iconCache;
 
         //* pointer to primitive specialized function
