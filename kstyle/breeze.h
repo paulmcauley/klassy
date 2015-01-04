@@ -98,7 +98,6 @@ namespace Breeze
 
         // menubar items
         MenuBarItem_MarginWidth = 10,
-        // MenuBarItem_MarginHeight = 8,
         MenuBarItem_MarginHeight = 6,
 
         // scrollbars
