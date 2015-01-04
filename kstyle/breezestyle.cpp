@@ -3831,6 +3831,7 @@ namespace Breeze
 
         // contents
         QRect contentsRect( rect );
+        if( sunken && !flat ) contentsRect.translate( 1, 1 );
 
         // color role
         QPalette::ColorRole textRole;
@@ -3948,6 +3949,10 @@ namespace Breeze
         const bool hasIcon( !( hasArrow || toolButtonOption->icon.isNull() ) );
         const bool hasText( !toolButtonOption->text.isEmpty() );
 
+        // contents
+        QRect contentsRect( rect );
+        if( sunken && !flat ) contentsRect.translate( 1, 1 );
+
         // icon size
         const QSize iconSize( toolButtonOption->iconSize );
 
@@ -3963,33 +3968,33 @@ namespace Breeze
         {
 
             // text only
-            textRect = rect;
+            textRect = contentsRect;
             textFlags |= Qt::AlignCenter;
 
         } else if( (hasArrow||hasIcon) && (!hasText || toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly ) ) {
 
             // icon only
-            iconRect = rect;
+            iconRect = contentsRect;
 
         } else if( toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon ) {
 
             const int contentsHeight( iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing );
-            iconRect = QRect( QPoint( rect.left() + (rect.width() - iconSize.width())/2, rect.top() + (rect.height() - contentsHeight)/2 ), iconSize );
-            textRect = QRect( QPoint( rect.left() + (rect.width() - textSize.width())/2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1 ), textSize );
+            iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - iconSize.width())/2, contentsRect.top() + (contentsRect.height() - contentsHeight)/2 ), iconSize );
+            textRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - textSize.width())/2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1 ), textSize );
             textFlags |= Qt::AlignCenter;
 
         } else {
 
             const bool leftAlign( widget && widget->property( PropertyNames::toolButtonAlignment ).toInt() == Qt::AlignLeft );
-            if( leftAlign ) iconRect = QRect( QPoint( rect.left(), rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+            if( leftAlign ) iconRect = QRect( QPoint( contentsRect.left(), contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
             else {
 
                 const int contentsWidth( iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing );
-                iconRect = QRect( QPoint( rect.left() + (rect.width() - contentsWidth )/2, rect.top() + (rect.height() - iconSize.height())/2 ), iconSize );
+                iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - contentsWidth )/2, contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
 
             }
 
-            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, rect.top() + (rect.height() - textSize.height())/2 ), textSize );
+            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height())/2 ), textSize );
 
             // handle right to left layouts
             iconRect = visualRect( option, iconRect );
@@ -4139,6 +4144,10 @@ namespace Breeze
 
         // change pen color directly
         painter->setPen( QPen( option->palette.color( textRole ), 1 ) );
+
+        // translate painter for pressed down comboboxes
+        if( sunken && !flat )
+        { painter->translate( 1, 1 ); }
 
         // call base class method
         ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
@@ -5415,7 +5424,8 @@ namespace Breeze
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && (option->state & State_MouseOver) );
         const bool hasFocus( enabled && (option->state & State_HasFocus) );
-        const bool autoRaise( state & State_AutoRaise );
+        const bool sunken( state & (State_On | State_Sunken) );
+        const bool flat( state & State_AutoRaise );
 
         // update animation state
         // mouse over takes precedence over focus
@@ -5447,13 +5457,16 @@ namespace Breeze
         {
 
             copy.rect = menuRect;
-            if( !autoRaise ) drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
+            if( !flat ) drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
 
+            if( sunken && !flat ) copy.rect.translate( 1, 1 );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         } else if( hasInlineIndicator ) {
 
             copy.rect = menuRect;
+
+            if( sunken && !flat ) copy.rect.translate( 1, 1 );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         }
@@ -5480,7 +5493,7 @@ namespace Breeze
 
             } else if( !inTabBar && hasInlineIndicator ) {
 
-                const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
+                const int marginWidth( flat ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
                 contentsRect = insideMargin( contentsRect, marginWidth, 0 );
                 contentsRect.setRight( contentsRect.right() - Metrics::ToolButton_InlineIndicatorWidth );
                 contentsRect = visualRect( option, contentsRect );
@@ -5622,7 +5635,10 @@ namespace Breeze
             else arrowColor = palette.color( QPalette::ButtonText );
 
             // arrow rect
-            const QRect arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
+            QRect arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
+
+            // translate for non editable, non flat, sunken comboboxes
+            if( sunken && !flat && !editable ) arrowRect.translate( 1, 1 );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );

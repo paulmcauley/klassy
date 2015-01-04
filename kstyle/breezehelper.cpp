@@ -590,8 +590,11 @@ namespace Breeze
         qreal radius( frameRadius() );
 
         // shadow
-        if( shadow.isValid() && !sunken )
-        {
+        if( sunken ) {
+
+            frameRect.translate( 1, 1 );
+
+        } else if( shadow.isValid() ) {
 
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
@@ -795,8 +798,13 @@ namespace Breeze
         const qreal radius( frameRadius() );
 
         // shadow
-        if( !sunken )
+        if( sunken )
         {
+
+            frameRect.translate(1, 1);
+            // painter->translate( 1, 1 );
+
+        } else {
 
             painter->setPen( QPen( shadow, 1 ) );
             painter->setBrush( Qt::NoBrush );
@@ -879,8 +887,12 @@ namespace Breeze
         frameRect.adjust( 1, 1, -1, -1 );
 
         // shadow
-        if( !sunken )
+        if( sunken )
         {
+
+            frameRect.translate( 1, 1 );
+
+        } else {
 
             painter->setPen( QPen( shadow, 1 ) );
             painter->setBrush( Qt::NoBrush );
