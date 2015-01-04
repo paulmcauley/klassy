@@ -479,13 +479,13 @@ namespace Breeze
         IconCache _iconCache;
 
         //* pointer to primitive specialized function
-        typedef bool (Style::*StylePrimitive)( const QStyleOption*, QPainter*, const QWidget* ) const;
+        using StylePrimitive = bool(Style::*)(const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //* pointer to control specialized function
-        typedef bool (Style::*StyleControl)( const QStyleOption*, QPainter*, const QWidget* ) const;
+        using StyleControl = bool (Style::*)( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //* pointer to control specialized function
-        typedef bool (Style::*StyleComplexControl)( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        using StyleComplexControl = bool (Style::*)( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
 
         //*@name custom elements
         //@{
