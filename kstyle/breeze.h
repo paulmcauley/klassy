@@ -66,7 +66,7 @@ namespace Breeze
         LineEdit_FrameWidth = 6,
 
         // menu items
-        MenuItem_MarginWidth = 4,
+        MenuItem_MarginWidth = 3,
         MenuItem_ItemSpacing = 4,
         MenuItem_AcceleratorSpace = 16,
         MenuButton_IndicatorWidth = 20,
@@ -156,7 +156,7 @@ namespace Breeze
 
         // tree view
         ItemView_ArrowSize = 10,
-        ItemView_ItemMarginWidth = 4,
+        ItemView_ItemMarginWidth = 3,
         SidePanel_ItemMarginWidth = 4,
 
         // splitter
