@@ -94,7 +94,7 @@ namespace Breeze
         // checkboxes and radio buttons
         CheckBox_Size = 20,
         CheckBox_FocusMarginWidth = 2,
-        CheckBox_ItemSpacing = 8,
+        CheckBox_ItemSpacing = 6,
 
         // menubar items
         MenuBarItem_MarginWidth = 10,
