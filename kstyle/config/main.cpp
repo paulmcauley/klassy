@@ -40,7 +40,7 @@ namespace Breeze
     {
         QApplication app( argc, argv );
         app.setApplicationName( i18n( "Breeze Settings" ) );
-        app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "breeze" ) ) );
+        app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "breeze-settings" ) ) );
         Breeze::ConfigDialog dialog;
         dialog.show();
         bool result = app.exec();
