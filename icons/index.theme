@@ -37,7 +37,12 @@ Name[zh_CN]=微风
 Name[zh_TW]=微風
 Comment=Default Plasma 5 Theme
 Comment[ar]=سمة بلازما 5 الافتراضيّة
+Comment[de]=Standard-Arbeitsflächendesign für Plasma 5
+Comment[nl]=Standaard Plasma 5 thema
 Comment[pt_BR]=Tema padrão do Plasma 5
+Comment[sk]=Predvolená téma Plasma  5
+Comment[sv]=Standardtema för Plasma 5
+Comment[x-test]=xxDefault Plasma 5 Themexx
 Inherits=
 
 Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,apps/devices-small,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,emblems/faces,emblems/small,emotes/medium,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
