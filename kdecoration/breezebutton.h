@@ -55,6 +55,10 @@ namespace Breeze
         //* standalone buttons
         bool isStandAlone() const { return m_standalone; }
 
+        //* vertical offset, for rendering
+        void setVerticalOffset( int value )
+        { m_verticalOffset = value; }
+
         //*@name active state change animation
         //@{
         void setOpacity( qreal value )
@@ -70,6 +74,8 @@ namespace Breeze
         //@}
 
         private Q_SLOTS:
+
+        //* animation state
         void updateAnimationState(bool);
 
         private:
@@ -90,6 +96,9 @@ namespace Breeze
 
         //* active state change animation
         QPropertyAnimation *m_animation;
+
+        //* vertical offset (for rendering)
+        int m_verticalOffset = 0;
 
         //* active state change opacity
         qreal m_opacity = 0;
