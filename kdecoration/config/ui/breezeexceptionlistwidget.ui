@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>473</width>
-    <height>163</height>
+    <height>182</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,6 +23,18 @@
    </size>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item row="0" column="0" rowspan="6">
     <widget class="QTreeView" name="exceptionListView">
      <property name="sizePolicy">
