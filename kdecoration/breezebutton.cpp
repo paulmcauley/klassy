@@ -41,16 +41,6 @@ namespace Breeze
         m_animation->setPropertyName( "opacity" );
         m_animation->setEasingCurve( QEasingCurve::InOutQuad );
 
-        // setup geometry
-        const int height = decoration->buttonHeight();
-        setGeometry(QRect(0, 0, height, height));
-        connect(decoration, &Decoration::bordersChanged, this, [this, decoration]
-        {
-            const int height = decoration->buttonHeight();
-            if (height == geometry().height()) return;
-            setGeometry(QRectF(geometry().topLeft(), QSizeF(height, height)));
-        });
-
         // connect hover state changed
         connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
 
@@ -107,6 +97,7 @@ namespace Breeze
 
         painter->save();
         painter->setRenderHints( QPainter::Antialiasing );
+        painter->translate( 0, m_verticalOffset );
 
         /*
         scale painter so that its window matches QRect( -1, -1, 20, 20 )
@@ -114,7 +105,7 @@ namespace Breeze
         all further rendering is preformed inside QRect( 0, 0, 18, 18 )
         */
         painter->translate( geometry().topLeft() );
-        painter->scale( geometry().width()/20, geometry().height()/20 );
+        painter->scale( geometry().width()/20, geometry().width()/20 );
         painter->translate( 1, 1 );
 
         // render background
@@ -394,6 +385,6 @@ namespace Breeze
         m_animation->setDirection( hovered ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
         if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
 
-   }
+    }
 
 } // namespace

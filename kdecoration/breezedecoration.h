@@ -84,12 +84,18 @@ namespace Breeze
 
         //@}
 
-
         //*@name colors
         //@{
         QColor titleBarColor( void ) const;
         QColor outlineColor( void ) const;
         QColor fontColor( void ) const;
+        //@}
+
+        //*@name maximization modes
+        //@{
+        inline bool isMaximized( void ) const;
+        inline bool isMaximizedHorizontally( void ) const;
+        inline bool isMaximizedVertically( void ) const;
         //@}
 
         public Q_SLOTS:
@@ -98,7 +104,7 @@ namespace Breeze
         private Q_SLOTS:
         void reconfigure();
         void recalculateBorders();
-        void updateButtonPositions();
+        void updateButtonsGeometry();
         void updateTitleBar();
         void updateAnimationState();
 
@@ -114,13 +120,6 @@ namespace Breeze
         int borderSize(bool bottom = false) const;
         inline bool hasNoBorders( void ) const;
         inline bool hasNoSideBorders( void ) const;
-        //@}
-
-        //*@name maximization modes
-        //@{
-        inline bool isMaximized( void ) const;
-        inline bool isMaximizedHorizontally( void ) const;
-        inline bool isMaximizedVertically( void ) const;
         //@}
 
         //*@name size grip
