@@ -109,7 +109,9 @@ namespace Breeze
     {
 
         // check widget type
-        if( !( widget && qobject_cast<QMdiSubWindow*>( widget ) ) ) return false;
+        QMdiSubWindow* subwindow( qobject_cast<QMdiSubWindow*>( widget ) );
+        if( !subwindow ) return false;
+        if( subwindow->widget() && subwindow->widget()->inherits( "KMainWindow" ) ) return false;
 
         // make sure widget is not already registered
         if( isRegistered( widget ) ) return false;
