@@ -133,6 +133,7 @@ namespace Breeze
 
         ColorSettings m_colorSettings;
         InternalSettingsPtr m_internalSettings;
+        bool m_useSeparator = true;
 
         QList<KDecoration2::DecorationButton*> m_buttons;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
