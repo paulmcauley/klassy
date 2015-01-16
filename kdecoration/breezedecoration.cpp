@@ -68,6 +68,7 @@ namespace Breeze
         , m_animation( new QPropertyAnimation( this ) )
     {
         g_sDecoCount++;
+        m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
     }
 
     //________________________________________________________________
@@ -104,13 +105,13 @@ namespace Breeze
     //________________________________________________________________
     QColor Decoration::outlineColor() const
     {
-
+        if( !m_useSeparator ) return QColor();
         if( m_animation->state() == QPropertyAnimation::Running )
         {
-            QColor color( client().data()->palette().color( QPalette::Highlight ) );
+            QColor color( m_colorSettings.palette().color( QPalette::Highlight ) );
             color.setAlpha( color.alpha()*m_opacity );
             return color;
-        } else if( client().data()->isActive() ) return client().data()->palette().color( QPalette::Highlight );
+        } else if( client().data()->isActive() ) return m_colorSettings.palette().color( QPalette::Highlight );
         else return QColor();
     }
 
@@ -164,6 +165,7 @@ namespace Breeze
         connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged,   this,
             [this]() {
                 m_colorSettings.update(client().data()->palette());
+                m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
                 update();
             }
         );
@@ -523,7 +525,7 @@ namespace Breeze
             return color;
         };
 
-        const QColor shadowColor( client().data()->palette().color( QPalette::Shadow ) );
+        const QColor shadowColor( m_colorSettings.palette().color( QPalette::Shadow ) );
 
         QRadialGradient radialGradient( Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
         radialGradient.setColorAt(0.0,  gradientStopColor(shadowColor, 0.35));
