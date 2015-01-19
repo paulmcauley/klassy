@@ -78,6 +78,9 @@ namespace Breeze
 
         if (!decoration()) return;
 
+        painter->save();
+        painter->translate( 0, m_verticalOffset );
+
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
             const QPixmap pixmap = decoration()->client().data()->icon().pixmap(size().toSize());
@@ -89,15 +92,15 @@ namespace Breeze
 
         }
 
+        painter->restore();
+
     }
 
     //__________________________________________________________________
     void Button::drawIcon( QPainter *painter ) const
     {
 
-        painter->save();
         painter->setRenderHints( QPainter::Antialiasing );
-        painter->translate( 0, m_verticalOffset );
 
         /*
         scale painter so that its window matches QRect( -1, -1, 20, 20 )
@@ -290,11 +293,6 @@ namespace Breeze
             }
 
         }
-
-        painter->restore();
-
-
-
 
     }
 
