@@ -18,4 +18,3 @@
  *************************************************************************/
 
 #include "breezeaddeventfilter.h"
-#include "breezeaddeventfilter.moc"

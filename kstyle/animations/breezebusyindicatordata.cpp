@@ -18,4 +18,3 @@
  *************************************************************************/
 
 #include "breezebusyindicatordata.h"
-#include "breezebusyindicatordata.moc"

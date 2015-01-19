@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezetabbarengine.h"
-#include "breezetabbarengine.moc"
 
 #include <QEvent>
 

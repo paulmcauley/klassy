@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeshadowhelper.h"
-#include "breezeshadowhelper.moc"
 
 #include "breeze.h"
 #include "breezehelper.h"

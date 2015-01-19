@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeheaderviewengine.h"
-#include "breezeheaderviewengine.moc"
 
 #include <QEvent>
 

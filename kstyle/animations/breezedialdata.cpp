@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezedialdata.h"
-#include "breezedialdata.moc"
 
 #include <QHoverEvent>
 #include <QDial>

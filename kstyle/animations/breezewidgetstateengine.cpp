@@ -19,7 +19,6 @@
  *************************************************************************/
 
 #include "breezewidgetstateengine.h"
-#include "breezewidgetstateengine.moc"
 
 #include "breezeenabledata.h"
 

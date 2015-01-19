@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezespinboxdata.h"
-#include "breezespinboxdata.moc"
 
 namespace Breeze
 {

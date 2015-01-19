@@ -24,7 +24,6 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 #include "breezeconfigdialog.h"
-#include "breezeconfigdialog.moc"
 #include "../breeze.h"
 #include "../config-breeze.h"
 

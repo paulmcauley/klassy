@@ -24,7 +24,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeexceptiondialog.h"
-#include "breezeexceptiondialog.moc"
 #include "breezedetectwidget.h"
 #include "config-breeze.h"
 

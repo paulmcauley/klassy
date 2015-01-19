@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezemdiwindowshadow.h"
-#include "breezemdiwindowshadow.moc"
 
 #include "breeze.h"
 #include "breezestyleconfigdata.h"

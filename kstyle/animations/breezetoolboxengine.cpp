@@ -19,7 +19,6 @@
 
 
 #include "breezetoolboxengine.h"
-#include "breezetoolboxengine.moc"
 
 namespace Breeze
 {

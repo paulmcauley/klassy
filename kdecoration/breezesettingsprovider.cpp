@@ -19,7 +19,6 @@
  */
 
 #include "breezesettingsprovider.h"
-#include "breezesettingsprovider.moc"
 
 #include "breezeexceptionlist.h"
 

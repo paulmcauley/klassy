@@ -19,7 +19,6 @@
  *************************************************************************/
 
 #include "breezestyleplugin.h"
-#include "breezestyleplugin.moc"
 #include "breezestyle.h"
 
 #include <QApplication>

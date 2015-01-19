@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezegenericdata.h"
-#include "breezegenericdata.moc"
 
 #include <QTextStream>
 

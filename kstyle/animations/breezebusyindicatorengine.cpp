@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezebusyindicatorengine.h"
-#include "breezebusyindicatorengine.moc"
 
 #include "breeze.h"
 

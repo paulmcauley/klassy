@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezewidgetexplorer.h"
-#include "breezewidgetexplorer.moc"
 
 #include "breeze.h"
 

@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezedialengine.h"
-#include "breezedialengine.moc"
 
 #include <QEvent>
 

@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezescrollbarengine.h"
-#include "breezescrollbarengine.moc"
 
 #include <QEvent>
 

@@ -44,7 +44,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezetabbardata.h"
-#include "breezetabbardata.moc"
 
 #include <QHoverEvent>
 #include <QTabBar>

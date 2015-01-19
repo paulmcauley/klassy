@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeenabledata.h"
-#include "breezeenabledata.moc"
 
 namespace Breeze
 {

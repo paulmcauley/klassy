@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeframeshadow.h"
-#include "breezeframeshadow.moc"
 
 #include "breeze.h"
 

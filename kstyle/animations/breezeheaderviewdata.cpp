@@ -44,7 +44,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeheaderviewdata.h"
-#include "breezeheaderviewdata.moc"
 
 #include <QHoverEvent>
 #include <QTextStream>

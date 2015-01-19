@@ -19,7 +19,6 @@
 
 
 #include "breezesizegrip.h"
-#include "breezesizegrip.moc"
 
 #include <KDecoration2/DecoratedClient>
 

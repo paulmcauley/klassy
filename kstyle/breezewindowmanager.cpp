@@ -47,7 +47,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezewindowmanager.h"
-#include "breezewindowmanager.moc"
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 #include "breezehelper.h"

@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezepalettehelper.h"
-#include "breezepalettehelper.moc"
 
 #include "breezehelper.h"
 #include "breezepropertynames.h"

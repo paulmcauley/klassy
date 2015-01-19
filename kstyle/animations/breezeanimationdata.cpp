@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeanimationdata.h"
-#include "breezeanimationdata.moc"
 
 namespace Breeze
 {

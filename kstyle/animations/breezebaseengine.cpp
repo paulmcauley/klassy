@@ -18,4 +18,3 @@
  *************************************************************************/
 
 #include "breezebaseengine.h"
-#include "breezebaseengine.moc"

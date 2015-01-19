@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezescrollbardata.h"
-#include "breezescrollbardata.moc"
 
 #include <QHoverEvent>
 #include <QScrollBar>

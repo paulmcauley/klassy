@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezespinboxengine.h"
-#include "breezespinboxengine.moc"
 
 #include <QEvent>
 

@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezewidgetstatedata.h"
-#include "breezewidgetstatedata.moc"
 
 namespace Breeze
 {

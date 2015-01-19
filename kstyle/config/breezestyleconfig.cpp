@@ -19,7 +19,6 @@
  *************************************************************************/
 
 #include "breezestyleconfig.h"
-#include "breezestyleconfig.moc"
 
 #include "../breeze.h"
 #include "../config-breeze.h"

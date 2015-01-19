@@ -18,7 +18,6 @@
  *************************************************************************/
 
 #include "breezeanimations.h"
-#include "breezeanimations.moc"
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 

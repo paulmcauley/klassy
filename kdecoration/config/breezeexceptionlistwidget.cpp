@@ -24,7 +24,6 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeexceptionlistwidget.h"
-#include "breezeexceptionlistwidget.moc"
 #include "breezeexceptiondialog.h"
 
 #include <KLocalizedString>

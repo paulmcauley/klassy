@@ -50,7 +50,6 @@ extern "C"
     { return ( new Breeze::Config( parent ) ); }
 }
 
-#include "breezeconfig.moc"
 
 namespace Breeze
 {
