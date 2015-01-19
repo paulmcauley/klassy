@@ -41,6 +41,10 @@ namespace Breeze
         m_animation->setPropertyName( "opacity" );
         m_animation->setEasingCurve( QEasingCurve::InOutQuad );
 
+        // setup default geometry
+        const int height = decoration->buttonHeight();
+        setGeometry(QRect(0, 0, height, height));
+
         // connect hover state changed
         connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
 
