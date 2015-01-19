@@ -52,12 +52,33 @@ namespace Breeze
         //* create
         static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
 
+        //* flag
+        enum Flag
+        {
+            FlagNone,
+            FlagStandalone,
+            FlagFirstInList,
+            FlagLastInList
+        };
+
+        //* flag
+        void setFlag( Flag value )
+        { m_flag = value; }
+
         //* standalone buttons
-        bool isStandAlone() const { return m_standalone; }
+        bool isStandAlone() const { return m_flag == FlagStandalone; }
+
+        //* offset
+        void setOffset( const QPointF& value )
+        { m_offset = value; }
+
+        //* horizontal offset, for rendering
+        void setHorizontalOffset( qreal value )
+        { m_offset.setX( value ); }
 
         //* vertical offset, for rendering
-        void setVerticalOffset( int value )
-        { m_verticalOffset = value; }
+        void setVerticalOffset( qreal value )
+        { m_offset.setY( value ); }
 
         //*@name active state change animation
         //@{
@@ -92,13 +113,13 @@ namespace Breeze
         QColor backgroundColor( void ) const;
         //@}
 
-        bool m_standalone = false;
+        Flag m_flag = FlagNone;
 
         //* active state change animation
         QPropertyAnimation *m_animation;
 
         //* vertical offset (for rendering)
-        int m_verticalOffset = 0;
+        QPointF m_offset;
 
         //* active state change opacity
         qreal m_opacity = 0;

@@ -53,7 +53,7 @@ namespace Breeze
     //__________________________________________________________________
     Button::Button(QObject *parent, const QVariantList &args)
         : DecorationButton(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
-        , m_standalone(true)
+        , m_flag(FlagStandalone)
         , m_animation( new QPropertyAnimation( this ) )
     {}
 
@@ -83,7 +83,10 @@ namespace Breeze
         if (!decoration()) return;
 
         painter->save();
-        painter->translate( 0, m_verticalOffset );
+
+        // translate from offset
+        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
+        else painter->translate( 0, m_offset.y() );
 
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
@@ -112,7 +115,9 @@ namespace Breeze
         all further rendering is preformed inside QRect( 0, 0, 18, 18 )
         */
         painter->translate( geometry().topLeft() );
-        painter->scale( geometry().width()/20, geometry().width()/20 );
+
+        const int width( geometry().width() - m_offset.x() );
+        painter->scale( width/20, width/20 );
         painter->translate( 1, 1 );
 
         // render background
