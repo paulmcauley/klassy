@@ -330,7 +330,29 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() + m_rightButtons->buttons() )
         {
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
-            static_cast<Button*>( button.data() )->setVerticalOffset( verticalOffset );
+            static_cast<Button*>( button.data() )->setOffset( QPointF( 0, verticalOffset ) );
+        }
+
+        if( isMaximized() )
+        {
+            // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
+            const int hOffset = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            if( !m_leftButtons->buttons().isEmpty() )
+            {
+                auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hOffset, bHeight ) ) );
+                button->setFlag( Button::FlagFirstInList );
+                button->setHorizontalOffset( hOffset );
+            }
+
+            if( !m_rightButtons->buttons().isEmpty() )
+            {
+                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hOffset, bHeight ) ) );
+                button->setFlag( Button::FlagLastInList );
+                button->setHorizontalOffset( hOffset );
+            }
+
         }
 
         // adjust buttons position
