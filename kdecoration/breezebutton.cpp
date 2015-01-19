@@ -116,7 +116,7 @@ namespace Breeze
         */
         painter->translate( geometry().topLeft() );
 
-        const int width( geometry().width() - m_offset.x() );
+        const qreal width( geometry().width() - m_offset.x() );
         painter->scale( width/20, width/20 );
         painter->translate( 1, 1 );
 
