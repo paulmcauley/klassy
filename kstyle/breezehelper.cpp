@@ -1366,15 +1366,7 @@ namespace Breeze
 
     //______________________________________________________________________________
     QRectF Helper::shadowRect( const QRectF& rect ) const
-    {
-        switch( StyleConfigData::lightSource() )
-        {
-            case StyleConfigData::LS_TOP: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0, 0.5 );
-            case StyleConfigData::LS_TOPLEFT: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0.5, 0.5 );
-            case StyleConfigData::LS_TOPRIGHT: return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( -0.5, 0.5 );
-            default: return rect;
-        }
-    }
+    { return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0.5, 0.5 ); }
 
     //______________________________________________________________________________
     QPainterPath Helper::roundedPath( const QRectF& rect, Corners corners, qreal radius ) const

@@ -397,27 +397,8 @@ namespace Breeze
         int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
         int topSize = ( size - Metrics::Shadow_Offset ) * devicePixelRatio;
         int bottomSize = size * devicePixelRatio;
-        int rightSize(0);
-        int leftSize(0);
-
-        switch( StyleConfigData::lightSource() )
-        {
-            case StyleConfigData::LS_TOPLEFT:
-            leftSize = (size - Metrics::Shadow_Offset) * devicePixelRatio;
-            rightSize = size * devicePixelRatio;
-            break;
-
-            case StyleConfigData::LS_TOPRIGHT:
-            rightSize = (size - Metrics::Shadow_Offset) * devicePixelRatio;
-            leftSize = size * devicePixelRatio;
-            break;
-
-            case StyleConfigData::LS_TOP:
-            leftSize = (size - Metrics::Shadow_Offset/2) * devicePixelRatio;
-            rightSize = (size - Metrics::Shadow_Offset/2) * devicePixelRatio;
-            break;
-
-        }
+        const int leftSize( (size - Metrics::Shadow_Offset) * devicePixelRatio );
+        const int rightSize( size * devicePixelRatio );
 
         if( widget->inherits( "QBalloonTip" ) )
         {

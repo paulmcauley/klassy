@@ -129,16 +129,6 @@
       <default>12</default>
     </entry>
 
-    <!-- light source -->
-    <entry name="LightSource" type="Enum">
-      <choices>
-          <choice name="LS_TOPLEFT" />
-          <choice name="LS_TOP" />
-          <choice name="LS_TOPRIGHT" />
-      </choices>
-      <default>LS_TOPLEFT</default>
-    </entry>
-
     <!-- debugging -->
     <entry name="WidgetExplorerEnabled" type="Bool">
       <default>false</default>
