@@ -29,12 +29,15 @@
 
 #include <KLocalizedString>
 
+#include <QDBusConnection>
+#include <QDBusMessage>
+
 namespace Breeze
 {
 
     //_________________________________________________________
-    ConfigWidget::ConfigWidget( QWidget* parent ):
-        QWidget( parent ),
+    ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
+        KCModule(parent, args),
         m_configuration( KSharedConfig::openConfig( QStringLiteral( "breezerc" ) ) ),
         m_changed( false )
     {
@@ -109,8 +112,11 @@ namespace Breeze
 
         // sync configuration
         m_configuration->sync();
-
         setChanged( false );
+
+        // needed to tell kwin to reload when running from external kcmshell
+        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+        QDBusConnection::sessionBus().send(message);
 
     }
 

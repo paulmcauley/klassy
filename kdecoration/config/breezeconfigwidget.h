@@ -30,6 +30,7 @@
 #include "breezesettings.h"
 #include "breeze.h"
 
+#include <KCModule>
 #include <KSharedConfig>
 
 #include <QWidget>
@@ -39,7 +40,7 @@ namespace Breeze
 {
 
     //_____________________________________________
-    class ConfigWidget: public QWidget
+    class ConfigWidget: public KCModule
     {
 
         Q_OBJECT
@@ -47,32 +48,19 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit ConfigWidget( QWidget* );
+        explicit ConfigWidget( QWidget*, const QVariantList& );
 
         //* destructor
-        virtual ~ConfigWidget( void )
-        {}
+        virtual ~ConfigWidget( void ) = default;
 
         //* default
-        void defaults();
+        void defaults() override;
 
         //* load configuration
-        void load( void );
+        void load( void ) override;
 
         //* save configuration
-        void save( void );
-
-        //* true if changed
-        virtual bool isChanged( void ) const
-        { return m_changed; }
-
-        Q_SIGNALS:
-
-        //* emmited when changed
-        void changed( void );
-
-        //* emmited when changed
-        void changed( bool );
+        void save( void ) override;
 
         protected Q_SLOTS:
 

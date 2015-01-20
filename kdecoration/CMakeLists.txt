@@ -44,7 +44,6 @@ kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
 ### config classes
 ### they are kept separately because they might move in a separate library in the future
 set(breezedecoration_config_SRCS
-    config/breezeconfig.cpp
     config/breezeconfigwidget.cpp
     config/breezedetectwidget.cpp
     config/breezeexceptiondialog.cpp

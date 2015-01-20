@@ -24,7 +24,7 @@
 #include "breeze.h"
 #include "breezesettingsprovider.h"
 #include "config-breeze.h"
-#include "config/breezeconfig.h"
+#include "config/breezeconfigwidget.h"
 
 #include "breezebutton.h"
 #include "breezesizegrip.h"
@@ -51,7 +51,7 @@ K_PLUGIN_FACTORY_WITH_JSON(
     "breeze.json",
     registerPlugin<Breeze::Decoration>();
     registerPlugin<Breeze::Button>(QStringLiteral("button"));
-    registerPlugin<Breeze::ConfigurationModule>(QStringLiteral("kcmodule"));
+    registerPlugin<Breeze::ConfigWidget>(QStringLiteral("kcmodule"));
 )
 
 namespace Breeze
