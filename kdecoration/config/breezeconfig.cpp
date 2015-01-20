@@ -171,6 +171,7 @@ namespace Breeze
     {
         setLayout(new QVBoxLayout(this));
         m_config = new Config( this );
+        connect(m_config, static_cast<void (Config::*)(bool)>(&Config::changed), this, static_cast<void (KCModule::*)(bool)>(&KCModule::changed));
     }
 
     //_______________________________________________________________________
@@ -192,6 +193,8 @@ namespace Breeze
     {
         m_config->save();
         KCModule::save();
+        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+        QDBusConnection::sessionBus().send(message);
     }
 
 }

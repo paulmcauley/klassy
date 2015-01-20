@@ -1,5 +1,3 @@
-#ifndef breezestyleconfig_h
-#define breezestyleconfig_h
 
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
@@ -20,50 +18,49 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "ui_breezestyleconfig.h"
+#include "breezestyleconfigmodule.h"
+
+#include <KPluginFactory>
+
+
+K_PLUGIN_FACTORY(
+    BreezeStyleConfigFactory,
+    registerPlugin<Breeze::ConfigurationModule>(QStringLiteral("kcmodule"));
+)
+
+#include "breezestyleconfigmodule.moc"
 
 namespace Breeze
 {
 
-    class StyleConfig: public QWidget, Ui::BreezeStyleConfig
+    //_______________________________________________________________________
+    ConfigurationModule::ConfigurationModule(QWidget *parent, const QVariantList &args):
+        KCModule(parent, args)
     {
+        setLayout(new QVBoxLayout(this));
+        layout()->addWidget( m_config = new StyleConfig( this ) );
+        connect(m_config, static_cast<void (StyleConfig::*)(bool)>(&StyleConfig::changed), this, static_cast<void (KCModule::*)(bool)>(&KCModule::changed));
+    }
 
-        Q_OBJECT
+    //_______________________________________________________________________
+    void ConfigurationModule::defaults()
+    {
+        m_config->defaults();
+        KCModule::defaults();
+    }
 
-        public:
+    //_______________________________________________________________________
+    void ConfigurationModule::load()
+    {
+        m_config->load();
+        KCModule::load();
+    }
 
-        //* constructor
-        explicit StyleConfig(QWidget*);
-
-        //* destructor
-        virtual ~StyleConfig( void )
-        {}
-
-        Q_SIGNALS:
-
-        //* emmited whenever one option is changed.
-        void changed(bool);
-
-        public Q_SLOTS:
-
-        //* load setup from config data
-        void load( void );
-
-        //* save current state
-        void save( void );
-
-        //* restore all default values
-        void defaults( void );
-
-        //* reset to saved configuration
-        void reset( void );
-
-        protected Q_SLOTS:
-
-        //* update modified state when option is checked/unchecked
-        void updateChanged( void );
-
-    };
+    //_______________________________________________________________________
+    void ConfigurationModule::save()
+    {
+        m_config->save();
+        KCModule::save();
+    }
 
 }
-#endif

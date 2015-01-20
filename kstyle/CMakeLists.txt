@@ -53,13 +53,6 @@ else()
 
   set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
 
-  find_package(KF5Service CONFIG)
-  set_package_properties(KF5Service PROPERTIES
-      DESCRIPTION "KF5 Service Framework"
-      URL "https://projects.kde.org/projects/frameworks/kservice"
-      TYPE OPTIONAL
-      PURPOSE "Required for breeze-settings5 application to build")
-
   find_package(XCB COMPONENTS XCB)
   set_package_properties(XCB PROPERTIES
       DESCRIPTION "X protocol C-language Binding"

@@ -1,5 +1,5 @@
-#ifndef breezestyleconfig_h
-#define breezestyleconfig_h
+#ifndef breezestyleconfigmodule_h
+#define breezestyleconfigmodule_h
 
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
@@ -20,50 +20,35 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .        *
  *************************************************************************/
 
-#include "ui_breezestyleconfig.h"
+#include "breezestyleconfig.h"
+
+#include <KCModule>
 
 namespace Breeze
 {
 
-    class StyleConfig: public QWidget, Ui::BreezeStyleConfig
+    //* configuration module
+    class ConfigurationModule: public KCModule
     {
 
         Q_OBJECT
 
         public:
-
-        //* constructor
-        explicit StyleConfig(QWidget*);
-
-        //* destructor
-        virtual ~StyleConfig( void )
-        {}
-
-        Q_SIGNALS:
-
-        //* emmited whenever one option is changed.
-        void changed(bool);
+        ConfigurationModule(QWidget *parent, const QVariantList &args);
 
         public Q_SLOTS:
 
-        //* load setup from config data
-        void load( void );
+        void defaults() override;
+        void load() override;
+        void save() override;
 
-        //* save current state
-        void save( void );
+        private:
 
-        //* restore all default values
-        void defaults( void );
-
-        //* reset to saved configuration
-        void reset( void );
-
-        protected Q_SLOTS:
-
-        //* update modified state when option is checked/unchecked
-        void updateChanged( void );
+        //* configuration
+        StyleConfig* m_config;
 
     };
 
 }
+
 #endif
