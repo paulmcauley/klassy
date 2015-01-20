@@ -30,77 +30,13 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezeconfigwidget.h"
-
 #include <KSharedConfig>
 #include <KCModule>
 
 namespace Breeze {
 
     class Configuration;
-
-    // breeze configuration object
-    class Config: public QObject
-    {
-
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        Config( QWidget* parent );
-
-        //* destructor
-        ~Config();
-
-        static QObject *create(QWidget *parentWidget, QObject *parent, const QList<QVariant> &arguments);
-
-        Q_SIGNALS:
-
-        //* emmited whenever configuration is changed
-        void changed();
-
-        //* emmited whenever configuration is changed
-        void changed( bool );
-
-        public Q_SLOTS:
-
-        //* load configuration
-        /** although kconfiggroup argument is not used. It is required by KWin API */
-        void load( const KConfigGroup& )
-        { load(); }
-
-        //* save configuration
-        /** although kconfiggroup argument is not used. It is required by KWin API */
-        void save( KConfigGroup& )
-        { save(); }
-
-        //* load configuration
-        void load( void );
-
-        //* save configuration
-        void save( void );
-
-        //* restore defaults
-        void defaults( void );
-
-        private Q_SLOTS:
-
-        //* update change state
-        void updateChanged( void );
-
-        private:
-
-        //* load configuration
-        void loadInternalSettings( InternalSettingsPtr );
-
-        //* user interface
-        ConfigWidget* m_configWidget;
-
-        //* kconfiguration object
-        KSharedConfig::Ptr m_configuration;
-
-    };
+    class ConfigWidget;
 
     //* configuration module
     class ConfigurationModule: public KCModule
@@ -120,7 +56,7 @@ namespace Breeze {
         private:
 
         //* configuration
-        Config* m_config;
+        ConfigWidget* m_config;
 
     };
 

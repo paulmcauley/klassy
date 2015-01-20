@@ -24,11 +24,8 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfigwidget.h"
-
-#include <QGroupBox>
-#include <QIcon>
-#include <QLabel>
-#include <QLayout>
+#include "breezeexceptionlist.h"
+#include "breezesettings.h"
 
 #include <KLocalizedString>
 
@@ -38,9 +35,11 @@ namespace Breeze
     //_________________________________________________________
     ConfigWidget::ConfigWidget( QWidget* parent ):
         QWidget( parent ),
+        m_configuration( KSharedConfig::openConfig( QStringLiteral( "breezerc" ) ) ),
         m_changed( false )
     {
 
+        // configuration
         m_ui.setupUi( this );
 
         // track ui changes
@@ -59,19 +58,25 @@ namespace Breeze
     }
 
     //_________________________________________________________
-    void ConfigWidget::setInternalSettings( InternalSettingsPtr internalSettings )
-    { m_internalSettings = internalSettings; }
-
-    //_________________________________________________________
     void ConfigWidget::load( void )
     {
-        if( !m_internalSettings ) return;
+
+        // create internal settings and load from rc files
+        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings->load();
+
+        // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
+
+        // load exceptions
+        ExceptionList exceptions;
+        exceptions.readConfig( m_configuration );
+        m_ui.exceptions->setExceptions( exceptions.get() );
         setChanged( false );
 
     }
@@ -80,7 +85,9 @@ namespace Breeze
     void ConfigWidget::save( void )
     {
 
-        if( !m_internalSettings ) return;
+        // create internal settings and load from rc files
+        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings->load();
 
         // apply modifications from ui
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
@@ -89,6 +96,40 @@ namespace Breeze
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
         m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
+
+        // save configuration
+        m_internalSettings->save();
+
+        // save standard configuration
+        ExceptionList::writeConfig( m_internalSettings.data(), m_configuration.data() );
+
+        // get list of exceptions and write
+        InternalSettingsList exceptions( m_ui.exceptions->exceptions() );
+        ExceptionList( exceptions ).writeConfig( m_configuration );
+
+        // sync configuration
+        m_configuration->sync();
+
+        setChanged( false );
+
+    }
+
+    //_________________________________________________________
+    void ConfigWidget::defaults( void )
+    {
+
+        // create internal settings and load from rc files
+        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings->setDefaults();
+
+        // assign to ui
+        m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
+        m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
+        m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
+        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
+        m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
+
         setChanged( false );
 
     }
@@ -118,4 +159,13 @@ namespace Breeze
         setChanged( modified );
 
     }
+
+    //_______________________________________________
+    void ConfigWidget::setChanged( bool value )
+    {
+        m_changed = value;
+        if( m_changed ) emit changed();
+        emit changed( value );
+    }
+
 }

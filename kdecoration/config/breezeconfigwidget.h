@@ -30,6 +30,8 @@
 #include "breezesettings.h"
 #include "breeze.h"
 
+#include <KSharedConfig>
+
 #include <QWidget>
 #include <QSharedPointer>
 
@@ -51,8 +53,8 @@ namespace Breeze
         virtual ~ConfigWidget( void )
         {}
 
-        //* set configuration
-        void setInternalSettings( InternalSettingsPtr );
+        //* default
+        void defaults();
 
         //* load configuration
         void load( void );
@@ -64,11 +66,10 @@ namespace Breeze
         virtual bool isChanged( void ) const
         { return m_changed; }
 
-        //* exceptions
-        ExceptionListWidget* exceptionListWidget( void ) const
-        { return m_ui.exceptions; }
-
         Q_SIGNALS:
+
+        //* emmited when changed
+        void changed( void );
 
         //* emmited when changed
         void changed( bool );
@@ -81,16 +82,15 @@ namespace Breeze
         protected:
 
         //* set changed state
-        virtual void setChanged( bool value )
-        {
-            m_changed = value;
-            emit changed( value );
-        }
+        void setChanged( bool );
 
         private:
 
         //* ui
         Ui_BreezeConfigurationUI m_ui;
+
+        //* kconfiguration object
+        KSharedConfig::Ptr m_configuration;
 
         //* internal exception
         InternalSettingsPtr m_internalSettings;
