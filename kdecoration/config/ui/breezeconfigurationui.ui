@@ -11,16 +11,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -141,6 +132,9 @@
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="0">
        <widget class="QLabel" name="animationsDurationLabel">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>&amp;Animations duration:</string>
         </property>
@@ -151,6 +145,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QSpinBox" name="animationsDuration">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="suffix">
          <string>ms</string>
         </property>
@@ -212,5 +209,38 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>animationsEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>animationsDurationLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>34</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>84</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>animationsEnabled</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>animationsDuration</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>108</x>
+     <y>194</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>141</x>
+     <y>229</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
