@@ -30,15 +30,24 @@ namespace Breeze
     //_________________________________________________
     QStyle* StylePlugin::create( const QString &key )
     {
-        if( key.toLower() == QStringLiteral( "breeze" ) ) return new Style();
-        else return nullptr;
+        if( key.toLower() == QStringLiteral( "breeze" ) )
+        {
+            QStyle* style = new Style();
+            #if QT_VERSION >= 0x050000
+            // Delete style when using ::exit() otherwise it'll outlive the unloaded plugin and we'll get a crash
+            // (see 2ffe20e1bfe93c921c5372b4d21447b1de308d4b in oxygen repo)
+            connect(this, &QObject::destroyed, style, [style]() {
+                delete style;
+            });
+            #endif
+            return style;
+        }
+        return nullptr;
     }
 
     //_________________________________________________
     StylePlugin::~StylePlugin()
     {
-        // Delete style when using ::exit() otherwise it'll outlive the unloaded plugin and we'll get a crash
-        if (qApp) delete qApp->style();
     }
 
     //_________________________________________________
