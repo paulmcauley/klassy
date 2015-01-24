@@ -71,7 +71,7 @@ namespace Breeze
 
         //* dummy widget
         /** it is used to keep track of application palette changes */
-        QWidget* _widget;
+        QWidget* _widget = nullptr;
 
         //* widget set
         QSet<QObject*> _registeredWidgets;

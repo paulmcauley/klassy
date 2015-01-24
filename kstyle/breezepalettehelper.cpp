@@ -39,10 +39,7 @@ namespace Breeze
     PaletteHelper::PaletteHelper( QObject* parent, Helper& helper ):
         QObject( parent ),
         _helper( helper )
-    {
-        _widget = new QWidget();
-        _widget->installEventFilter( this );
-    }
+    {}
 
     //_____________________________________________________
     PaletteHelper::~PaletteHelper()
@@ -54,6 +51,13 @@ namespace Breeze
     {
         if( adjustPalette( widget, QApplication::palette() ) )
         {
+
+            if( !_widget )
+            {
+                _widget = new QWidget();
+                _widget->installEventFilter( this );
+            }
+
             _registeredWidgets.insert( widget );
             connect( widget, SIGNAL(destroyed(QObject*)), SLOT(unregisterWidget(QObject*)) );
             return true;
