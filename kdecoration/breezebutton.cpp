@@ -90,8 +90,11 @@ namespace Breeze
 
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
-            const QPixmap pixmap = decoration()->client().data()->icon().pixmap(size().toSize());
-            painter->drawPixmap(geometry().center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
+
+            const QSizeF iconSize( size().width()-m_offset.x(), size().height()-m_offset.y() );
+            const QRectF iconRect( geometry().topLeft(), iconSize );
+            const QPixmap pixmap = decoration()->client().data()->icon().pixmap( iconSize.toSize());
+            painter->drawPixmap(iconRect.center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
 
         } else {
 
