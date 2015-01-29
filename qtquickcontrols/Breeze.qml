@@ -6,10 +6,7 @@ ApplicationWindow {
     width: 640
     height: 300
     title: "Breeze Style Demo"
-
-    SystemPalette { id: myPalette; colorGroup: SystemPalette.Active }
-
-    color: myPalette.window
+    style: ApplicationWindowStyle{} //Commented out to see if works when QT_QUICK_CONTROLS_STYLE=Breeze is set
 
     TabView {
         id: tabView

@@ -1,5 +1,6 @@
 module QtQuick.Controls.Styles.Breeze
 
+ApplicationWindowStyle 1.0 ApplicationWindowStyle.qml
 BusyIndicatorStyle 1.0 BusyIndicatorStyle.qml
 ButtonStyle 1.0 ButtonStyle.qml
 CheckBoxStyle 1.0 CheckBoxStyle.qml
