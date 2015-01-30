@@ -169,8 +169,6 @@ namespace Breeze
     //_______________________________________________
     void ConfigWidget::setChanged( bool value )
     {
-        m_changed = value;
-        if( m_changed ) emit changed();
         emit changed( value );
     }
 
