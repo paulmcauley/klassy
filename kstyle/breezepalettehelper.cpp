@@ -43,7 +43,7 @@ namespace Breeze
 
     //_____________________________________________________
     PaletteHelper::~PaletteHelper()
-    { delete _widget; }
+    { _widget->deleteLater(); }
 
 
     //_____________________________________________________
