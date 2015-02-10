@@ -79,6 +79,9 @@ namespace Breeze
             // last deco destroyed, clean up shadow
             g_sShadow.clear();
         }
+
+        deleteSizeGrip();
+
     }
 
     //________________________________________________________________
