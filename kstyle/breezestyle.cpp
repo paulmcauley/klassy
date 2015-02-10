@@ -807,7 +807,7 @@ namespace Breeze
 
         StyleControl fcn( nullptr );
 
-        #if !BREEZE_USE_KDE4
+        #if BREEZE_HAVE_KSTYLE
         if( element == CE_CapacityBar )
         {
             fcn = &Style::drawProgressBarControl;
