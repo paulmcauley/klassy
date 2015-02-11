@@ -11,6 +11,7 @@ X-KDE-Weight=50
 
 Name=Widget Style
 Name[ca]=Estil dels estris
+Name[el]=Στιλ γραφικών συστατικών
 Name[en_GB]=Widget Style
 Name[es]=Estilo de los elementos gráficos
 Name[fi]=Elementtien tyyli
@@ -32,6 +33,7 @@ Name[x-test]=xxWidget Stylexx
 Name[zh_CN]=部件样式
 Comment=Modify the appearance of widgets
 Comment[ca]=Modifica l'aparença dels estris
+Comment[el]=Τροποποίηση εμφάνισης συστατικών
 Comment[en_GB]=Modify the appearance of widgets
 Comment[es]=Modificar el aspecto de los elementos gráficos
 Comment[fi]=Muuta elementtien ulkoasua
@@ -54,6 +56,7 @@ Comment[zh_CN]=修改部件外观
 
 X-KDE-Keywords=breeze,widget,style
 X-KDE-Keywords[ca]=breeze,brisa,estri,estil
+X-KDE-Keywords[el]=breeze,γραφικό συστατικό,στιλ
 X-KDE-Keywords[en_GB]=breeze,widget,style
 X-KDE-Keywords[es]=breeze,brisa,elemento gráfico,widget,estilo
 X-KDE-Keywords[fi]=breeze,widget,style,käyttöliittymäelementti,tyyli,elementti,kontrolli
