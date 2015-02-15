@@ -34,7 +34,7 @@ Name[tr]=Esinti
 Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
-Name[zh_TW]=微風
+Name[zh_TW]=Breeze
 Comment=Default Plasma 5 Theme
 Comment[ar]=سمة بلازما 5 الافتراضيّة
 Comment[ca]=Tema del Plasma 5 per defecte
@@ -62,6 +62,7 @@ Comment[tr]=Öntanımlı KDE Plasma 5 Teması
 Comment[uk]=Тема тема Плазми 5
 Comment[x-test]=xxDefault Plasma 5 Themexx
 Comment[zh_CN]=默认 Plasma 5 主题
+Comment[zh_TW]=預設 Plasma 5 主題
 Inherits=
 
 Directories=actions/toolbar,actions/toolbar-small,actions/categories,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/toolbar,apps/emotes,apps/categories,apps/actions,apps/devices,apps/devices-small,categories/start-menu,categories/start-menu-small,devices/hardware,devices/sidebars,emblems/faces,emblems/small,emotes/medium,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
