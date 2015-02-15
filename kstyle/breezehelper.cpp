@@ -1239,7 +1239,7 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         painter->translate( QRectF( rect ).center() );
         painter->setBrush( Qt::NoBrush );
-        painter->setPen( QPen( color, 1.5 ) );
+        painter->setPen( QPen( color, 1.1 ) );
         painter->drawPolyline( arrow );
         painter->restore();
 
