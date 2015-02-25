@@ -440,10 +440,13 @@ namespace Breeze
 
         // draw caption
         painter->setFont(s->font());
-        const QRect cR = captionRect();
-        const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.width());
+        const auto cR = captionRect();
+        const QString caption = cR.second ?
+            painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width()):
+            c->caption();
+
         painter->setPen(m_colorSettings.font(c->isActive()));
-        painter->drawText(cR, Qt::AlignVCenter| Qt::AlignLeft | Qt::TextSingleLine, caption);
+        painter->drawText(cR.first, Qt::AlignVCenter| Qt::AlignLeft | Qt::TextSingleLine, caption);
 
         // draw all buttons
         m_leftButtons->paint(painter, repaintRegion);
@@ -470,7 +473,7 @@ namespace Breeze
     { return borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1; }
 
     //________________________________________________________________
-    QRect Decoration::captionRect() const
+    QPair<QRect,bool> Decoration::captionRect() const
     {
         const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
         const int rightOffset = size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
@@ -480,9 +483,8 @@ namespace Breeze
         boundingRect.setTop( yOffset );
         boundingRect.setHeight( captionHeight() );
 
-        /* need to increase the bounding rect because it is sometime (font dependent)
-        too small, resulting in text being elided */
-        boundingRect.setWidth( boundingRect.width()+4 );
+        // store original width to detect when text ellision is needed
+        const int boundingRectWidth( boundingRect.width() );
 
         switch( m_internalSettings->titleAlignment() )
         {
@@ -518,7 +520,7 @@ namespace Breeze
             boundingRect.setLeft( qMax( boundingRect.left(), leftOffset ) );
         }
 
-        return boundingRect;
+        return qMakePair( boundingRect, boundingRect.width() < boundingRectWidth );
 
     }
 
