@@ -1002,8 +1002,9 @@ namespace Breeze
                 QList<QScrollBar*> scrollBars;
                 if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
                 {
-                    scrollBars.append( scrollArea->horizontalScrollBar() );
-                    scrollBars.append( scrollArea->verticalScrollBar() );
+
+                    if( scrollArea->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff ) scrollBars.append( scrollArea->horizontalScrollBar() );
+                    if( scrollArea->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff )scrollBars.append( scrollArea->verticalScrollBar() );
 
                 } else if( widget->inherits( "KTextEditor::View" ) ) {
 
@@ -5440,7 +5441,6 @@ namespace Breeze
 
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
         const bool hasInlineIndicator( toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu );
-
         const QRect buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
         const QRect menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
 
