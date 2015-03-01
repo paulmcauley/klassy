@@ -1001,8 +1001,9 @@ namespace Breeze
                 QList<QScrollBar*> scrollBars;
                 if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
                 {
-                    scrollBars.append( scrollArea->horizontalScrollBar() );
-                    scrollBars.append( scrollArea->verticalScrollBar() );
+
+                    if( scrollArea->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff ) scrollBars.append( scrollArea->horizontalScrollBar() );
+                    if( scrollArea->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff )scrollBars.append( scrollArea->verticalScrollBar() );
 
                 } else if( widget->inherits( "KTextEditor::View" ) ) {
 
@@ -1912,7 +1913,7 @@ namespace Breeze
 
         const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
         const bool hasInlineIndicator(
-            toolButtonOption->features&QStyleOptionToolButton::HasMenu 
+            toolButtonOption->features&QStyleOptionToolButton::HasMenu
             && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
             && !hasPopupMenu );
 
@@ -2475,8 +2476,8 @@ namespace Breeze
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
-        const bool hasInlineIndicator( 
-            toolButtonOption->features&QStyleOptionToolButton::HasMenu 
+        const bool hasInlineIndicator(
+            toolButtonOption->features&QStyleOptionToolButton::HasMenu
             && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
             && !hasPopupMenu );
 
@@ -5445,8 +5446,8 @@ namespace Breeze
         QStyleOptionToolButton copy( *toolButtonOption );
 
         const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
-        const bool hasInlineIndicator( 
-            toolButtonOption->features&QStyleOptionToolButton::HasMenu 
+        const bool hasInlineIndicator(
+            toolButtonOption->features&QStyleOptionToolButton::HasMenu
             && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
             && !hasPopupMenu );
 
