@@ -593,6 +593,12 @@ namespace Breeze
         // fill
         p.fillRect( image.rect(), radialGradient);
 
+        // contrast pixel
+        p.setBrush( Qt::NoBrush );
+        p.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
+        p.setRenderHints(QPainter::Antialiasing );
+        p.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
+
         // assign to shadow
         decorationShadow->setShadow(image);
 
