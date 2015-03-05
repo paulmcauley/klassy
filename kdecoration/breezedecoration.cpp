@@ -564,11 +564,7 @@ namespace Breeze
         QImage image(2*g_shadowSize, 2*g_shadowSize, QImage::Format_ARGB32_Premultiplied);
         image.fill(Qt::transparent);
 
-        QPainter p(&image);
-        p.setCompositionMode(QPainter::CompositionMode_Source);
-
         // create gradient
-
         // gaussian delta function
         auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
 
@@ -591,6 +587,8 @@ namespace Breeze
         radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
 
         // fill
+        QPainter p(&image);
+        p.setCompositionMode(QPainter::CompositionMode_Source);
         p.fillRect( image.rect(), radialGradient);
 
         // contrast pixel
