@@ -568,7 +568,13 @@ namespace Breeze
         p.setCompositionMode(QPainter::CompositionMode_Source);
 
         // create gradient
-        auto gradientStopColor = [](QColor color, int alpha) {
+
+        // gaussian delta function
+        auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
+
+        // color calculation delta function
+        auto gradientStopColor = [](QColor color, int alpha)
+        {
             color.setAlpha(alpha);
             return color;
         };
@@ -576,11 +582,13 @@ namespace Breeze
         const QColor shadowColor( m_colorSettings.palette().color( QPalette::Shadow ) );
 
         QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize);
-        radialGradient.setColorAt(0.0,  gradientStopColor(shadowColor, g_shadowStrength));
-        radialGradient.setColorAt(0.25, gradientStopColor(shadowColor, g_shadowStrength*0.25/0.35));
-        radialGradient.setColorAt(0.5,  gradientStopColor(shadowColor, g_shadowStrength*0.13/0.35));
-        radialGradient.setColorAt(0.75, gradientStopColor(shadowColor, g_shadowStrength*0.04/0.35));
-        radialGradient.setColorAt(1.0,  gradientStopColor(shadowColor, g_shadowStrength*0.0/0.35));
+        for( int i = 0; i < 10; ++i )
+        {
+            const qreal x( qreal( i )/9 );
+            radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*g_shadowStrength));
+        }
+
+        radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
 
         // fill
         p.fillRect( image.rect(), radialGradient);
