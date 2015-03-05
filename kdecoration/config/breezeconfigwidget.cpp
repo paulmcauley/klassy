@@ -126,8 +126,16 @@ namespace Breeze
         setChanged( false );
 
         // needed to tell kwin to reload when running from external kcmshell
-        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-        QDBusConnection::sessionBus().send(message);
+        {
+            QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+            QDBusConnection::sessionBus().send(message);
+        }
+
+        // needed for oxygen style to reload shadows
+        {
+            QDBusMessage message( QDBusMessage::createSignal("/BreezeDecoration",  "org.kde.Breeze.Style", "reparseConfiguration") );
+            QDBusConnection::sessionBus().send(message);
+        }
 
     }
 
