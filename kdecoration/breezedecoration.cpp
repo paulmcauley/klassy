@@ -60,14 +60,17 @@ namespace Breeze
 
     //________________________________________________________________
     static int g_sDecoCount = 0;
+    static int g_shadowSize = 0;
+    static int g_shadowStrength = 0;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 
+    //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_colorSettings(client().data()->palette())
         , m_animation( new QPropertyAnimation( this ) )
     {
-        g_sDecoCount++;
+        // g_sDecoCount++;
         m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
     }
 
@@ -265,6 +268,9 @@ namespace Breeze
 
         // borders
         recalculateBorders();
+
+        // shadow
+        createShadow();
 
         // size grip
         if( hasNoBorders() && m_internalSettings->drawSizeGrip() ) createSizeGrip();
@@ -527,46 +533,54 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::createShadow()
     {
-        if (g_sShadow) {
+
+        // assign global shadow if exists and parameters match
+        if( g_sShadow && g_shadowSize == m_internalSettings->shadowSize() && g_shadowStrength == m_internalSettings->shadowStrength() )
+        {
             setShadow(g_sShadow);
             return;
         }
 
+        // assign parameters
+        g_shadowSize = m_internalSettings->shadowSize();
+        g_shadowStrength = m_internalSettings->shadowStrength();
+
         // setup shadow
+        const int shadowOffset = qMax( 6*g_shadowSize/16, Metrics::Shadow_Overlap*2 );
         auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
         decorationShadow->setPadding( QMargins(
-            Metrics::Shadow_Size-Metrics::Shadow_Offset,
-            Metrics::Shadow_Size-Metrics::Shadow_Offset,
-            Metrics::Shadow_Size,
-            Metrics::Shadow_Size ) );
+            g_shadowSize-shadowOffset,
+            g_shadowSize-shadowOffset,
+            g_shadowSize,
+            g_shadowSize ) );
 
         decorationShadow->setInnerShadowRect(QRect(
-            Metrics::Shadow_Size-Metrics::Shadow_Offset+Metrics::Shadow_Overlap,
-            Metrics::Shadow_Size-Metrics::Shadow_Offset+Metrics::Shadow_Overlap,
-            Metrics::Shadow_Offset - 2*Metrics::Shadow_Overlap,
-            Metrics::Shadow_Offset - 2*Metrics::Shadow_Overlap ) );
+            g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+            g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+            shadowOffset - 2*Metrics::Shadow_Overlap,
+            shadowOffset - 2*Metrics::Shadow_Overlap ) );
 
         // create image
-        QImage image(2*Metrics::Shadow_Size, 2*Metrics::Shadow_Size, QImage::Format_ARGB32_Premultiplied);
+        QImage image(2*g_shadowSize, 2*g_shadowSize, QImage::Format_ARGB32_Premultiplied);
         image.fill(Qt::transparent);
 
         QPainter p(&image);
         p.setCompositionMode(QPainter::CompositionMode_Source);
 
         // create gradient
-        auto gradientStopColor = [](QColor color, qreal alpha) {
-            color.setAlphaF(alpha);
+        auto gradientStopColor = [](QColor color, int alpha) {
+            color.setAlpha(alpha);
             return color;
         };
 
         const QColor shadowColor( m_colorSettings.palette().color( QPalette::Shadow ) );
 
-        QRadialGradient radialGradient( Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
-        radialGradient.setColorAt(0.0,  gradientStopColor(shadowColor, 0.35));
-        radialGradient.setColorAt(0.25, gradientStopColor(shadowColor, 0.25));
-        radialGradient.setColorAt(0.5,  gradientStopColor(shadowColor, 0.13));
-        radialGradient.setColorAt(0.75, gradientStopColor(shadowColor, 0.04));
-        radialGradient.setColorAt(1.0,  gradientStopColor(shadowColor, 0.0));
+        QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize);
+        radialGradient.setColorAt(0.0,  gradientStopColor(shadowColor, g_shadowStrength));
+        radialGradient.setColorAt(0.25, gradientStopColor(shadowColor, g_shadowStrength*0.25/0.35));
+        radialGradient.setColorAt(0.5,  gradientStopColor(shadowColor, g_shadowStrength*0.13/0.35));
+        radialGradient.setColorAt(0.75, gradientStopColor(shadowColor, g_shadowStrength*0.04/0.35));
+        radialGradient.setColorAt(1.0,  gradientStopColor(shadowColor, g_shadowStrength*0.0/0.35));
 
         // fill
         p.fillRect( image.rect(), radialGradient);
@@ -574,7 +588,7 @@ namespace Breeze
         // assign to shadow
         decorationShadow->setShadow(image);
 
-        g_sShadow = decorationShadow;
+        // g_sShadow = decorationShadow;
         setShadow(decorationShadow);
     }
 

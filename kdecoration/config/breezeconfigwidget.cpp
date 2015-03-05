@@ -51,12 +51,16 @@ namespace Breeze
         connect( m_ui.drawBorderOnMaximizedWindows, SIGNAL(clicked()), SLOT(updateChanged()) );
         connect( m_ui.drawSizeGrip, SIGNAL(clicked()), SLOT(updateChanged()) );
 
-        // track exception changes
-        connect( m_ui.exceptions, SIGNAL(changed(bool)), SLOT(updateChanged()) );
-
         // track animations changes
         connect( m_ui.animationsEnabled, SIGNAL(clicked()), SLOT(updateChanged()) );
         connect( m_ui.animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+
+        // track shadows changes
+        connect( m_ui.shadowSize, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+
+        // track exception changes
+        connect( m_ui.exceptions, SIGNAL(changed(bool)), SLOT(updateChanged()) );
 
     }
 
@@ -75,6 +79,10 @@ namespace Breeze
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
+
+        // load shadows
+        m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
+        m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
 
         // load exceptions
         ExceptionList exceptions;
@@ -99,6 +107,9 @@ namespace Breeze
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
         m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
+
+        m_internalSettings->setShadowSize( m_ui.shadowSize->value() );
+        m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
 
         // save configuration
         m_internalSettings->save();
@@ -136,6 +147,9 @@ namespace Breeze
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
 
+        m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
+        m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
+
         setChanged( false );
 
     }
@@ -155,12 +169,16 @@ namespace Breeze
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
 
-        // exceptions
-        else if( m_ui.exceptions->isChanged() ) modified = true;
-
         // animations
         else if( m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled() ) modified = true;
         else if( m_ui.animationsDuration->value() != m_internalSettings->animationsDuration() ) modified = true;
+
+        // shadows
+        else if( m_ui.shadowSize->value() !=  m_internalSettings->shadowSize() ) modified = true;
+        else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
+
+        // exceptions
+        else if( m_ui.exceptions->isChanged() ) modified = true;
 
         setChanged( modified );
 
