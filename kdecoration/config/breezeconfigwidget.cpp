@@ -150,8 +150,6 @@ namespace Breeze
         m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
 
-        setChanged( false );
-
     }
 
     //_______________________________________________
