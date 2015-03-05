@@ -143,36 +143,50 @@ namespace Breeze
             const QPalette palette( QApplication::palette() );
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
+            // metrics
+            const int shadowSize = StyleConfigData::shadowSize()*10/16;
+            const int shadowStrength = StyleConfigData::shadowStrength();
+            const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
+
             // pixmap
-            QPixmap pixmap = _helper.highDpiPixmap( Metrics::Shadow_Size*2 );
+            QPixmap pixmap = _helper.highDpiPixmap( shadowSize*2 );
             pixmap.fill( Qt::transparent );
 
-            // gradient
-            auto gradientStopColor = [](QColor color, qreal alpha) {
-                color.setAlphaF(alpha);
+            // create gradient
+            // gaussian delta function
+            auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
+
+            // color calculation delta function
+            auto gradientStopColor = [](QColor color, int alpha)
+            {
+                color.setAlpha(alpha);
                 return color;
             };
 
-            QRadialGradient radialGradient( Metrics::Shadow_Size, Metrics::Shadow_Size, Metrics::Shadow_Size);
-            radialGradient.setColorAt(0.0,  gradientStopColor( shadowColor, 0.35 ) );
-            radialGradient.setColorAt(0.25, gradientStopColor( shadowColor, 0.25 ) );
-            radialGradient.setColorAt(0.5,  gradientStopColor( shadowColor, 0.13 ) );
-            radialGradient.setColorAt(0.75, gradientStopColor( shadowColor, 0.04 ) );
-            radialGradient.setColorAt(1.0,  gradientStopColor( shadowColor, 0.0 ) );
+            QRadialGradient radialGradient( shadowSize, shadowSize, shadowSize);
+            for( int i = 0; i < 10; ++i )
+            {
+                const qreal x( qreal( i )/9 );
+                radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*shadowStrength));
+            }
 
-            // render
-            QPainter painter( &pixmap );
-            painter.setRenderHint( QPainter::Antialiasing );
-            painter.setCompositionMode(QPainter::CompositionMode_Source);
-            painter.setPen( Qt::NoPen );
+            radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
 
-            const QRectF rect( QPoint( 0, 0 ), pixmap.size()/_helper.devicePixelRatio( pixmap ) );
-            painter.fillRect( rect, radialGradient );
+            // fill
+            QPainter p(&pixmap);
+            p.setCompositionMode(QPainter::CompositionMode_Source);
+            p.fillRect( pixmap.rect(), radialGradient);
 
-            painter.end();
+            // contrast pixel
+            p.setBrush( Qt::NoBrush );
+            p.setPen( gradientStopColor(shadowColor, shadowStrength) );
+            p.setRenderHints(QPainter::Antialiasing );
+            p.drawRoundedRect( QRect( shadowSize-shadowOffset, shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
+
+            p.end();
 
             // create tiles from pixmap
-            _shadowTiles = TileSet( pixmap, Metrics::Shadow_Size, Metrics::Shadow_Size, 1, 1 );
+            _shadowTiles = TileSet( pixmap, shadowSize, shadowSize, 1, 1 );
 
         }
 
@@ -392,11 +406,15 @@ namespace Breeze
         // for testing purposes only
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
 
+        // metrics
+        const int shadowSize = StyleConfigData::shadowSize()*10/16;
+        const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
+
         // define shadows padding
-        int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
-        int topSize = ( size - Metrics::Shadow_Offset ) * devicePixelRatio;
+        int size( shadowSize - Metrics::Shadow_Overlap );
+        int topSize = ( size - shadowOffset ) * devicePixelRatio;
         int bottomSize = size * devicePixelRatio;
-        const int leftSize( (size - Metrics::Shadow_Offset) * devicePixelRatio );
+        const int leftSize( (size - shadowOffset) * devicePixelRatio );
         const int rightSize( size * devicePixelRatio );
 
         if( widget->inherits( "QBalloonTip" ) )
