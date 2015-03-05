@@ -62,6 +62,9 @@ namespace Breeze
         //* reset
         void reset( void );
 
+        //* load config
+        void loadConfig( void );
+
         //* register widget
         bool registerWidget( QWidget*, bool force = false );
 

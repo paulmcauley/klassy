@@ -184,6 +184,11 @@ namespace Breeze
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
 
+        dbus.connect( QString(),
+            QStringLiteral( "/BreezeDecoration" ),
+            QStringLiteral( "org.kde.Breeze.Style" ),
+            QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
+
         // call the slot directly; this initial call will set up things that also
         // need to be reset when the system palette changes
         loadConfiguration();
@@ -1235,6 +1240,9 @@ namespace Breeze
 
         // splitter proxy
         _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
+
+        // reset shadow tiles
+        _shadowHelper->loadConfig();
 
         // set mdiwindow factory shadow tiles
         _mdiWindowShadowFactory->setShadowTiles( _shadowHelper->shadowTiles() );

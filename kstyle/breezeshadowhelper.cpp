@@ -117,6 +117,21 @@ namespace Breeze
     }
 
     //_______________________________________________________
+    void ShadowHelper::loadConfig( void )
+    {
+
+        QTextStream(stdout) << "ShadowHelper::loadConfig" << endl;
+
+        // reset
+        reset();
+
+        // update property for registered widgets
+        for( QMap<QWidget*,WId>::const_iterator iter = _widgets.constBegin(); iter != _widgets.constEnd(); ++iter )
+        { installX11Shadows( iter.key() ); }
+
+    }
+
+    //_______________________________________________________
     bool ShadowHelper::eventFilter( QObject* object, QEvent* event )
     {
 
@@ -400,7 +415,6 @@ namespace Breeze
         QVector<quint32> data;
         foreach( const quint32& value, pixmaps )
         { data.append( value ); }
-
 
         // get devicePixelRatio
         // for testing purposes only
