@@ -120,8 +120,6 @@ namespace Breeze
     void ShadowHelper::loadConfig( void )
     {
 
-        QTextStream(stdout) << "ShadowHelper::loadConfig" << endl;
-
         // reset
         reset();
 
