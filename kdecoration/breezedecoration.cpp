@@ -46,6 +46,8 @@
 #include <QX11Info>
 #endif
 
+#include <cmath>
+
 K_PLUGIN_FACTORY_WITH_JSON(
     BreezeDecoFactory,
     "breeze.json",
