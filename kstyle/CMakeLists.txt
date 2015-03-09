@@ -1,5 +1,3 @@
-project(kstyle-breeze)
-
 set(BREEZE_USE_KDE4 ${USE_KDE4})
 if(BREEZE_USE_KDE4)
 
