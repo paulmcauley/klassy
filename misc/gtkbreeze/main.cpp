@@ -138,6 +138,8 @@ int setGtk3()
         qCDebug(GTKBREEZE) << "gtkrc3 already exists and is not using oxygen, quitting";
         return 0;
     }
+    QDir dir = QFileInfo(gtkrc3path).dir();
+    dir.mkpath(dir.path());
 
     qCDebug(GTKBREEZE) << "no gtkrc3 file or oxygen being used, setting to new theme";
     QFile gtkrc3writer(gtkrc3path);
