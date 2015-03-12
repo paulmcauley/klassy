@@ -107,7 +107,7 @@ int setGtk2()
     out << QStringLiteral("widget_class \"*\" style \"user-font\"\n");
     out << QStringLiteral("gtk-font-name=\"Oxygen-Sans Sans-Book 10\"\n"); // matches plasma-workspace:startkde/startkde.cmake
     out << QStringLiteral("gtk-theme-name=\"Orion\"\n");
-    out << QStringLiteral("gtk-icon-theme-name=\"oxygen\"\n"); // breeze icons don't seem to work with gtk
+    out << QStringLiteral("gtk-icon-theme-name=\"breeze\"\n");
     out << QStringLiteral("gtk-fallback-icon-theme=\"gnome\"\n");
     out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
     out << QStringLiteral("gtk-menu-images=1\n");
@@ -152,7 +152,7 @@ int setGtk3()
     out << QStringLiteral("[Settings]\n");
     out << QStringLiteral("gtk-font-name=Oxygen-Sans 10\n"); // matches plasma-workspace:startkde/startkde.cmake
     out << QStringLiteral("gtk-theme-name=")+gtk3Theme+QStringLiteral("\n");
-    out << QStringLiteral("gtk-icon-theme-name=oxygen\n"); // breeze icons don't seem to work with gtk
+    out << QStringLiteral("gtk-icon-theme-name=breeze\n");
     out << QStringLiteral("gtk-fallback-icon-theme=gnome\n");
     out << QStringLiteral("gtk-toolbar-style=GTK_TOOLBAR_ICONS\n");
     out << QStringLiteral("gtk-menu-images=1\n");
