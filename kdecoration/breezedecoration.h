@@ -110,12 +110,8 @@ namespace Breeze
 
         private:
 
-        /**
-        return the smallest rect in which caption will be drawn,
-        properly positionned inside the title bar. Second return parameter
-        is set to true when text ellision is required
-        */
-        QPair<QRect,bool> captionRect() const;
+        //* return the rect in which caption will be drawn
+        QRect captionRect() const;
 
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
