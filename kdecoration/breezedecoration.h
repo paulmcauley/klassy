@@ -96,6 +96,7 @@ namespace Breeze
         inline bool isMaximized( void ) const;
         inline bool isMaximizedHorizontally( void ) const;
         inline bool isMaximizedVertically( void ) const;
+        inline bool hideTitleBar( void ) const;
         //@}
 
         public Q_SLOTS:
@@ -166,6 +167,7 @@ namespace Breeze
     bool Decoration::isMaximized( void ) const { return client().data()->isMaximized() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
     bool Decoration::isMaximizedHorizontally( void ) const { return client().data()->isMaximizedHorizontally() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
     bool Decoration::isMaximizedVertically( void ) const { return client().data()->isMaximizedVertically() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
+    bool Decoration::hideTitleBar( void ) const { return m_internalSettings->hideTitleBar() && !client().data()->isShaded(); }
 
 }
 
