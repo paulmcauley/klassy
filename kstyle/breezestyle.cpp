@@ -256,6 +256,9 @@ namespace Breeze
             if( scrollArea->frameShadow() == QFrame::Sunken && widget->focusPolicy()&Qt::StrongFocus )
             { widget->setAttribute( Qt::WA_Hover ); }
 
+            if( scrollArea->viewport() && scrollArea->inherits( "KItemListContainer" ) && scrollArea->frameShape() == QFrame::NoFrame )
+            { scrollArea->viewport()->setBackgroundRole( QPalette::Window ); }
+
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
             // checkable group boxes
