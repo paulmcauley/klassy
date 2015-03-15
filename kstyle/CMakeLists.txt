@@ -41,7 +41,8 @@ else()
       Config
       GuiAddons
       ConfigWidgets
-      WindowSystem)
+      WindowSystem
+      GuiAddons)
 
   find_package( KF5FrameworkIntegration CONFIG )
   set_package_properties(KF5FrameworkIntegration PROPERTIES
