@@ -141,8 +141,7 @@ namespace Breeze
             QPen pen( foregroundColor );
             pen.setCapStyle( Qt::RoundCap );
             pen.setJoinStyle( Qt::MiterJoin );
-            const qreal penWidth( 1 );
-            pen.setWidth( penWidth*2 );
+            pen.setWidth( 2 );
 
             painter->setPen( pen );
             painter->setBrush( Qt::NoBrush );
@@ -152,8 +151,9 @@ namespace Breeze
 
                 case KDecoration2::DecorationButtonType::Close:
                 {
-                    painter->drawLine( QPointF( 5 + penWidth, 5 + penWidth ), QPointF( 13 - penWidth, 13 - penWidth ) );
-                    painter->drawLine( 13 - penWidth, 5 + penWidth, 5 + penWidth, 13 - penWidth );
+                    painter->drawLine( QPointF( 6, 6 ), QPointF( 12, 12 ) );
+                    painter->drawLine( 12, 6, 6, 12 );
+
                     break;
                 }
 
@@ -166,17 +166,17 @@ namespace Breeze
                         painter->setPen( pen );
 
                         painter->drawPolygon( QPolygonF()
-                            << QPointF( 3.5 + penWidth, 9 )
-                            << QPointF( 9, 3.5 + penWidth )
-                            << QPointF( 14.5 - penWidth, 9 )
-                            << QPointF( 9, 14.5 - penWidth ) );
+                            << QPointF( 4.5, 9 )
+                            << QPointF( 9, 4.5 )
+                            << QPointF( 13.5, 9 )
+                            << QPointF( 9, 13.5 ) );
 
                     } else {
 
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 3.5 + penWidth, 11.5 - penWidth )
-                            << QPointF( 9, 5.5 + penWidth )
-                            << QPointF( 14.5 - penWidth, 11.5 - penWidth ) );
+                            << QPointF( 4.5, 10.5 )
+                            << QPointF( 9, 6.5 )
+                            << QPointF( 13.5, 10.5 ) );
                     }
                     break;
                 }
@@ -185,9 +185,9 @@ namespace Breeze
                 {
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 3.5 + penWidth, 6.5 + penWidth )
-                        << QPointF( 9, 12.5 - penWidth )
-                        << QPointF( 14.5 - penWidth, 6.5 + penWidth ) );
+                        << QPointF( 4.5, 7.5 )
+                        << QPointF( 9, 11.5 )
+                        << QPointF( 13.5, 7.5 ) );
                     break;
 
                 }
@@ -230,19 +230,19 @@ namespace Breeze
                     if (isChecked())
                     {
 
-                        painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+                        painter->drawLine( 4, 6.5, 14, 6.5 );
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 3.5 + penWidth, 8.5 + penWidth )
-                            << QPointF( 9, 14.5 - penWidth )
-                            << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
+                            << QPointF( 4.5, 9.5 )
+                            << QPointF( 9, 13.5 )
+                            << QPointF( 13.5, 9.5 ) );
 
                     } else {
 
-                        painter->drawLine( 3 + penWidth, 5.5 + penWidth, 15 - penWidth, 5.5+penWidth );
+                        painter->drawLine( 4, 6.5, 14, 6.5 );
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 3.5 + penWidth, 14.5 - penWidth )
-                            << QPointF( 9, 8.5 + penWidth )
-                            << QPointF( 14.5 - penWidth, 14.5 - penWidth ) );
+                            << QPointF( 4.5, 13.5 )
+                            << QPointF( 9, 9.5 )
+                            << QPointF( 13.5, 13.5 ) );
                     }
 
                     break;
@@ -253,14 +253,14 @@ namespace Breeze
                 {
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 3.5 + penWidth, 4.5 + penWidth )
-                        << QPointF( 9, 10.5 - penWidth )
-                        << QPointF( 14.5 - penWidth, 4.5 + penWidth ) );
+                        << QPointF( 4.5, 5.5 )
+                        << QPointF( 9, 9.5 )
+                        << QPointF( 13.5, 5.5 ) );
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 3.5 + penWidth, 8.5 + penWidth )
-                        << QPointF( 9, 14.5 - penWidth )
-                        << QPointF( 14.5 - penWidth, 8.5 + penWidth ) );
+                        << QPointF( 4.5, 9.5 )
+                        << QPointF( 9, 13.5 )
+                        << QPointF( 13.5, 9.5 ) );
                     break;
 
                 }
@@ -268,14 +268,14 @@ namespace Breeze
                 case KDecoration2::DecorationButtonType::KeepAbove:
                 {
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 3.5 + penWidth, 9.5 - penWidth )
-                        << QPointF( 9, 3.5 + penWidth )
-                        << QPointF( 14.5 - penWidth, 9.5 - penWidth ) );
+                        << QPointF( 4.5, 8.5 )
+                        << QPointF( 9, 4.5 )
+                        << QPointF( 13.5, 8.5 ) );
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 3.5 + penWidth, 13.5 - penWidth )
-                        << QPointF( 9, 7.5 + penWidth )
-                        << QPointF( 14.5 - penWidth, 13.5 - penWidth ) );
+                        << QPointF( 4.5, 12.5 )
+                        << QPointF( 9, 8.5 )
+                        << QPointF( 13.5, 12.5 ) );
                     break;
                 }
 
