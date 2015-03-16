@@ -141,7 +141,7 @@ namespace Breeze
             QPen pen( foregroundColor );
             pen.setCapStyle( Qt::RoundCap );
             pen.setJoinStyle( Qt::MiterJoin );
-            pen.setWidth( 2 );
+            pen.setWidthF( 2 );
 
             painter->setPen( pen );
             painter->setBrush( Qt::NoBrush );
