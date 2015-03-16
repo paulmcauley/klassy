@@ -112,7 +112,7 @@ namespace Breeze
         private:
 
         //* return the rect in which caption will be drawn
-        QRect captionRect() const;
+        QPair<QRect,Qt::Alignment> captionRect( void ) const;
 
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);

@@ -455,9 +455,10 @@ namespace Breeze
 
         // draw caption
         painter->setFont(s->font());
-        const auto cR = captionRect();
         painter->setPen(m_colorSettings.font(c->isActive()));
-        painter->drawText(cR, Qt::AlignCenter| Qt::AlignLeft | Qt::TextSingleLine | Qt::ElideMiddle, c->caption());
+        const auto cR = captionRect();
+        const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
+        painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
 
         // draw all buttons
         m_leftButtons->paint(painter, repaintRegion);
@@ -484,53 +485,47 @@ namespace Breeze
     { return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1; }
 
     //________________________________________________________________
-    QRect Decoration::captionRect() const
+    QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
-        if( hideTitleBar() ) return QRect();
+        if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
+
             const int leftOffset = m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
             const int rightOffset = size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
             const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
-
-            QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption()).toRect() );
-            boundingRect.setTop( yOffset );
-            boundingRect.setHeight( captionHeight() );
+            const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
 
             switch( m_internalSettings->titleAlignment() )
             {
                 case Breeze::InternalSettings::AlignLeft:
-                boundingRect.moveLeft( leftOffset );
-                break;
+                return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignLeft );
 
                 case Breeze::InternalSettings::AlignRight:
-                boundingRect.moveRight( size().width() - rightOffset - 1 );
-                break;
+                return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignRight );
 
                 case Breeze::InternalSettings::AlignCenter:
-                boundingRect.moveLeft( leftOffset + (size().width() - leftOffset - rightOffset - boundingRect.width() )/2 );
-                break;
+                return qMakePair( maxRect, Qt::AlignCenter );
 
                 default:
                 case Breeze::InternalSettings::AlignCenterFullWidth:
-                boundingRect.moveLeft( ( size().width() - boundingRect.width() )/2 );
-                break;
+                {
+
+                    // full caption rect
+                    const QRect fullRect = QRect( 0, yOffset, size().width(), captionHeight() );
+                    QRect boundingRect( settings()->fontMetrics().boundingRect( client().data()->caption()).toRect() );
+
+                    // text bounding rect
+                    boundingRect.setTop( yOffset );
+                    boundingRect.setHeight( captionHeight() );
+                    boundingRect.moveLeft( ( size().width() - boundingRect.width() )/2 );
+
+                    if( boundingRect.left() < leftOffset ) return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignLeft );
+                    else if( boundingRect.right() > size().width() - rightOffset ) return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignRight );
+                    else return qMakePair(fullRect, Qt::AlignCenter);
+
+                }
 
             }
-
-            // make sure there is no overlap with buttons
-            if( boundingRect.left() < leftOffset )
-            {
-
-                boundingRect.moveLeft( leftOffset );
-                boundingRect.setRight( qMin( boundingRect.right(), size().width() - rightOffset - 1 ) );
-
-            } else if( boundingRect.right() >  size().width() - rightOffset - 1 ) {
-
-                boundingRect.moveRight( size().width() - rightOffset - 1 );
-                boundingRect.setLeft( qMax( boundingRect.left(), leftOffset ) );
-            }
-
-            return boundingRect;
 
         }
 
