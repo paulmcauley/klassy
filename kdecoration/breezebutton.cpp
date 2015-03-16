@@ -141,7 +141,7 @@ namespace Breeze
             QPen pen( foregroundColor );
             pen.setCapStyle( Qt::RoundCap );
             pen.setJoinStyle( Qt::MiterJoin );
-            pen.setWidthF( 2 );
+            pen.setWidthF( 1.1 );
 
             painter->setPen( pen );
             painter->setBrush( Qt::NoBrush );
@@ -151,8 +151,8 @@ namespace Breeze
 
                 case KDecoration2::DecorationButtonType::Close:
                 {
-                    painter->drawLine( QPointF( 6, 6 ), QPointF( 12, 12 ) );
-                    painter->drawLine( 12, 6, 6, 12 );
+                    painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
+                    painter->drawLine( 13, 5, 5, 13 );
 
                     break;
                 }
