@@ -5993,9 +5993,22 @@ namespace Breeze
 
             // render background
             painter->setClipRect( rect );
-            const QColor outline( _helper->frameOutlineColor( palette, false, false ) );
+            const QColor outline( active ? QColor():_helper->frameOutlineColor( palette, false, false ) );
             const QColor background( _helper->titleBarColor( active ) );
             _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, CornersTop );
+
+            const bool useSeparator(
+                active &&
+                _helper->titleBarColor( active ) != palette.color( QPalette::Window ) &&
+                !( titleBarOption->titleBarState & Qt::WindowMinimized ) );
+
+            if( useSeparator )
+            {
+                painter->setRenderHint( QPainter::Antialiasing, false );
+                painter->setBrush( Qt::NoBrush );
+                painter->setPen( palette.color( QPalette::Highlight ) );
+                painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+            }
 
             // render text
             palette.setColor( QPalette::WindowText, _helper->titleBarTextColor( active ) );
