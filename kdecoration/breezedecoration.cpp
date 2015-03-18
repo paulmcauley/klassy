@@ -588,15 +588,16 @@ namespace Breeze
         radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
 
         // fill
-        QPainter p(&image);
-        p.setCompositionMode(QPainter::CompositionMode_Source);
-        p.fillRect( image.rect(), radialGradient);
+        QPainter painter(&image);
+        painter.setCompositionMode(QPainter::CompositionMode_Source);
+        painter.fillRect( image.rect(), radialGradient);
 
         // contrast pixel
-        p.setBrush( Qt::NoBrush );
-        p.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
-        p.setRenderHints(QPainter::Antialiasing );
-        p.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
+        painter.setBrush( Qt::NoBrush );
+        painter.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
+        painter.setRenderHints(QPainter::Antialiasing );
+        painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
+        painter.end();
 
         // assign to shadow
         decorationShadow->setShadow(image);
