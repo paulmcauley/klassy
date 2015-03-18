@@ -153,7 +153,6 @@ namespace Breeze
                 {
                     painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
                     painter->drawLine( 13, 5, 5, 13 );
-
                     break;
                 }
 
@@ -161,18 +160,14 @@ namespace Breeze
                 {
                     if( isChecked() )
                     {
-
                         pen.setJoinStyle( Qt::RoundJoin );
                         painter->setPen( pen );
-
                         painter->drawPolygon( QPolygonF()
                             << QPointF( 4.5, 9 )
                             << QPointF( 9, 4.5 )
                             << QPointF( 13.5, 9 )
                             << QPointF( 9, 13.5 ) );
-
                     } else {
-
                         painter->drawPolyline( QPolygonF()
                             << QPointF( 4.5, 10.5 )
                             << QPointF( 9, 6.5 )
@@ -183,13 +178,11 @@ namespace Breeze
 
                 case KDecoration2::DecorationButtonType::Minimize:
                 {
-
                     painter->drawPolyline( QPolygonF()
                         << QPointF( 4.5, 7.5 )
                         << QPointF( 9, 11.5 )
                         << QPointF( 13.5, 7.5 ) );
                     break;
-
                 }
 
                 case KDecoration2::DecorationButtonType::OnAllDesktops:
