@@ -209,10 +209,15 @@ namespace Breeze
 
                     } else {
 
-                        painter->drawRoundedRect( QRectF( 6, 2, 6, 9 ), 1.5, 1.5 );
-                        painter->drawRect( QRectF( 4, 10, 10, 2 ) );
-                        painter->drawRoundRect( QRectF( 8, 12, 2, 4 ) );
+                        painter->drawPolygon( QPolygonF()
+                            << QPointF( 6.5, 8.5 )
+                            << QPointF( 12, 3 )
+                            << QPointF( 15, 6 )
+                            << QPointF( 9.5, 11.5 ) );
 
+                        painter->setPen( pen );
+                        painter->drawLine( QPointF( 5, 7 ), QPointF( 11, 13 ) );
+                        painter->drawLine( QPointF( 12, 6 ), QPointF( 4.5, 13.5 ) );
                     }
                     break;
                 }
