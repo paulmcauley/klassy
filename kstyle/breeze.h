@@ -163,8 +163,6 @@ namespace Breeze
         Splitter_SplitterWidth = 1,
 
         // shadow dimensions
-        Shadow_Size = 10,
-        Shadow_Offset = 5,
         Shadow_Overlap = 2
 
     };

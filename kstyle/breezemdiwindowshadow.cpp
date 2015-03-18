@@ -35,10 +35,13 @@ namespace Breeze
     {
         if( !_widget ) return;
 
-        const int size( Metrics::Shadow_Size - Metrics::Shadow_Overlap );
-        const int topSize( size - Metrics::Shadow_Offset );
+        // metrics
+        const int shadowSize = StyleConfigData::shadowSize()*12/16;
+        const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
+        const int size( shadowSize - Metrics::Shadow_Overlap );
+        const int topSize( size - shadowOffset );
         const int bottomSize( size );
-        const int leftSize( size - Metrics::Shadow_Offset );
+        const int leftSize( size - shadowOffset );
         const int rightSize( size );
 
         // get tileSet rect

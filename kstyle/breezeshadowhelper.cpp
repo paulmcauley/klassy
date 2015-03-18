@@ -157,7 +157,7 @@ namespace Breeze
             const QColor shadowColor( palette.color( QPalette::Shadow ) );
 
             // metrics
-            const int shadowSize = StyleConfigData::shadowSize()*10/16;
+            const int shadowSize = StyleConfigData::shadowSize()*12/16;
             const int shadowStrength = StyleConfigData::shadowStrength();
             const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
 
@@ -199,7 +199,11 @@ namespace Breeze
             p.end();
 
             // create tiles from pixmap
-            _shadowTiles = TileSet( pixmap, shadowSize, shadowSize, 1, 1 );
+            _shadowTiles = TileSet( pixmap,
+                shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+                shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+                shadowOffset - 2*Metrics::Shadow_Overlap,
+                shadowOffset - 2*Metrics::Shadow_Overlap );
 
         }
 
@@ -419,7 +423,7 @@ namespace Breeze
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
 
         // metrics
-        const int shadowSize = StyleConfigData::shadowSize()*10/16;
+        const int shadowSize = StyleConfigData::shadowSize()*12/16;
         const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
 
         // define shadows padding
