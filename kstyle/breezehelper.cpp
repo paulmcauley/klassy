@@ -1279,65 +1279,47 @@ namespace Breeze
 
         }
 
+        pen.setCapStyle( Qt::RoundCap );
+        pen.setJoinStyle( Qt::MiterJoin );
+        pen.setWidthF( 1.1*qMax(1.0, 18.0/rect.width() ) );
+        painter->setPen( pen );
+
         switch( buttonType )
         {
             case ButtonClose:
             {
-
-                // adjust pen and assign
-                const qreal penWidth( 1 );
-                pen.setWidth( 2*penWidth );
-                painter->setPen( pen );
-
-                // render
-                painter->drawLine( QPointF( 5 + penWidth, 5 + penWidth ), QPointF( 13 - penWidth, 13 - penWidth ) );
-                painter->drawLine( 13 - penWidth, 5 + penWidth, 5 + penWidth, 13 - penWidth );
+                painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
+                painter->drawLine( 13, 5, 5, 13 );
                 break;
-
             }
 
             case ButtonMaximize:
             {
-                const qreal penWidth( 1 );
-                pen.setWidth( 2*penWidth );
-                painter->setPen( pen );
-
                 painter->drawPolyline( QPolygonF()
-                    << QPointF( 3.5 + penWidth, 11.5 - penWidth )
-                    << QPointF( 9, 5.5 + penWidth )
-                    << QPointF( 14.5 - penWidth, 11.5 - penWidth ) );
-
+                    << QPointF( 4.5, 10.5 )
+                    << QPointF( 9, 6.5 )
+                    << QPointF( 13.5, 10.5 ) );
                 break;
             }
 
             case ButtonMinimize:
             {
-                const qreal penWidth( 1 );
-                pen.setWidth( 2*penWidth );
-                painter->setPen( pen );
-
                 painter->drawPolyline( QPolygonF()
-                    << QPointF( 3.5 + penWidth, 6.5 + penWidth )
-                    << QPointF( 9, 12.5 - penWidth )
-                    << QPointF( 14.5 - penWidth, 6.5 + penWidth ) );
-
+                    << QPointF( 4.5, 7.5 )
+                    << QPointF( 9, 11.5 )
+                    << QPointF( 13.5, 7.5 ) );
                 break;
             }
 
             case ButtonRestore:
             {
-
-                const qreal penWidth( 1 );
-                pen.setWidth( 2*penWidth );
                 pen.setJoinStyle( Qt::RoundJoin );
                 painter->setPen( pen );
-
                 painter->drawPolygon( QPolygonF()
-                    << QPointF( 3.5 + penWidth, 9 )
-                    << QPointF( 9, 3.5 + penWidth )
-                    << QPointF( 14.5 - penWidth, 9 )
-                    << QPointF( 9, 14.5 - penWidth ) );
-
+                    << QPointF( 4.5, 9 )
+                    << QPointF( 9, 4.5 )
+                    << QPointF( 13.5, 9 )
+                    << QPointF( 9, 13.5 ) );
                 break;
             }
 
