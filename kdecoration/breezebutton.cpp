@@ -63,13 +63,47 @@ namespace Breeze
         if (auto d = qobject_cast<Decoration*>(decoration))
         {
             Button *b = new Button(type, d, parent);
-            if (type == KDecoration2::DecorationButtonType::Menu)
+            switch( type )
             {
+
+                case KDecoration2::DecorationButtonType::Close:
+                b->setVisible( d->client().data()->isCloseable() );
+                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
+                break;
+
+                case KDecoration2::DecorationButtonType::Maximize:
+                b->setVisible( d->client().data()->isMaximizeable() );
+                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
+                break;
+
+                case KDecoration2::DecorationButtonType::Minimize:
+                b->setVisible( d->client().data()->isMinimizeable() );
+                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
+                break;
+
+                case KDecoration2::DecorationButtonType::ContextHelp:
+                b->setVisible( d->client().data()->providesContextHelp() );
+                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
+                break;
+
+                case KDecoration2::DecorationButtonType::Shade:
+                b->setVisible( d->client().data()->isShadeable() );
+                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
+                break;
+
+                case KDecoration2::DecorationButtonType::Menu:
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
+                break;
+
+                default: break;
+
             }
+
             return b;
         }
+
         return nullptr;
+
     }
 
     //__________________________________________________________________
