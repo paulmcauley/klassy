@@ -250,7 +250,7 @@ namespace Breeze
                             << QPointF( 9.5, 11.5 ) );
 
                         painter->setPen( pen );
-                        painter->drawLine( QPointF( 5, 7 ), QPointF( 11, 13 ) );
+                        painter->drawLine( QPointF( 5.5, 7.5 ), QPointF( 10.5, 12.5 ) );
                         painter->drawLine( QPointF( 12, 6 ), QPointF( 4.5, 13.5 ) );
                     }
                     break;
