@@ -171,21 +171,21 @@ namespace Breeze
         );
 
         connect(client().data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
-        connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged,   this,
+        connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged, this,
             [this]() {
                 m_colorSettings.update(client().data()->palette());
                 m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
                 update();
             }
         );
-        connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateTitleBar);
+        connect(client().data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
-        connect(client().data(), &KDecoration2::DecoratedClient::widthChanged,     this, &Decoration::updateButtonsGeometry);
+        connect(client().data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
         connect(client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-        connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::recalculateBorders);
-        connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged,    this, &Decoration::updateButtonsGeometry);
+        connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
+        connect(client().data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
         createButtons();
         createShadow();
@@ -211,6 +211,14 @@ namespace Breeze
             m_animation->setDirection( client().data()->isActive() ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
             if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
         }
+    }
+
+    //________________________________________________________________
+    void Decoration::updateSizeGripVisibility()
+    {
+        auto c = client().data();
+        if( m_sizeGrip )
+        { m_sizeGrip->setVisible( c->isResizeable() && !isMaximized() && !c->isShaded() ); }
     }
 
     //________________________________________________________________
@@ -621,10 +629,12 @@ namespace Breeze
         KDecoration2::DecoratedClient *c( client().data() );
         if( !c ) return;
 
-        if( ( c->isResizeable() && c->windowId() != 0 ) )
+        if( c->windowId() != 0 )
         {
             m_sizeGrip = new SizeGrip( this );
-            m_sizeGrip->setVisible( !( isMaximized() || c->isShaded() ) );
+            connect( client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
+            connect( client().data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
+            connect( client().data(), &KDecoration2::DecoratedClient::resizeableChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
         }
         #endif
 
