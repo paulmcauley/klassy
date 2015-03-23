@@ -343,10 +343,12 @@ namespace Breeze
     //__________________________________________________________________
     QColor Button::foregroundColor( void ) const
     {
-
         auto d = qobject_cast<Decoration*>( decoration() );
-        if( !d ) return QColor();
-        if( isPressed() ) {
+        if( !d ) {
+
+            return QColor();
+
+        } else if( isPressed() ) {
 
             return d->titleBarColor();
 
@@ -378,9 +380,11 @@ namespace Breeze
     QColor Button::backgroundColor( void ) const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
-        if( !d ) return QColor();
-        if( isPressed() )
-        {
+        if( !d ) {
+
+            return QColor();
+
+        } else if( isPressed() ) {
 
             if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor();
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
