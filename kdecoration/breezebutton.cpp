@@ -346,7 +346,11 @@ namespace Breeze
 
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
-        if( type() == KDecoration2::DecorationButtonType::Close ) {
+        if( isPressed() ) {
+
+            return d->titleBarColor();
+
+        } else if( type() == KDecoration2::DecorationButtonType::Close ) {
 
             return d->titleBarColor();
 
