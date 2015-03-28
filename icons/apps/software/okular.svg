@@ -133,8 +133,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="26.348037"
-     inkscape:cy="13.757212"
+     inkscape:cx="14.363339"
+     inkscape:cy="32.491489"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -271,11 +271,6 @@
        height="0.9999736"
        x="390.57144"
        y="542.79797" />
-    <path
-       style="opacity:1;fill:url(#linearGradient4866);fill-opacity:1;stroke:none;stroke-opacity:1"
-       d="m 392.57143,503.798 0,17 4,-2.30859 4,2.30859 0,-17 -8,0 z"
-       id="rect4783"
-       inkscape:connector-curvature="0" />
     <rect
        style="opacity:0.6;fill:#080809;fill-opacity:1;stroke:none;stroke-opacity:1"
        id="rect4965"
@@ -302,6 +297,11 @@
        height="1"
        x="392.57144"
        y="540.79816" />
+    <path
+       style="opacity:1;fill:url(#linearGradient4866);fill-opacity:1;stroke:none;stroke-opacity:1"
+       d="m 392.57143,503.798 0,17 4,-2.30859 4,2.30859 0,-17 -8,0 z"
+       id="rect4783"
+       inkscape:connector-curvature="0" />
     <path
        style="opacity:0.15;fill:url(#linearGradient5028);fill-opacity:1;stroke:none;stroke-opacity:1"
        d="m 393.57144,503.798 6,0 0,15 -3,-2 -3,2 z"

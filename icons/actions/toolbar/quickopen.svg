@@ -13,7 +13,7 @@
    height="22"
    id="svg3760"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="quickopen.svg">
   <defs
      id="defs3762" />
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.98097"
-     inkscape:cx="8.2799961"
-     inkscape:cy="12.579329"
+     inkscape:zoom="32.499999"
+     inkscape:cx="10.686581"
+     inkscape:cy="12.362484"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="666"
-     inkscape:window-x="-2"
-     inkscape:window-y="25"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      showguides="true">
@@ -98,7 +98,7 @@
      transform="translate(-551.28571,-607.64788)">
     <path
        style="fill:#4d4d4d;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 563.28571,613.64788 -4,6 2,0 0,5 4,-6 -2,0 z"
+       d="m 563.28571,612.64788 -4,7 2,0 0,5 4,-7 -2,0 z"
        id="path4146"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccc" />

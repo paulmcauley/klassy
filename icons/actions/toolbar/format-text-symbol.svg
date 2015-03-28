@@ -13,9 +13,9 @@
    height="22"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.91+devel r"
    viewBox="0 0 22 22"
-   sodipodi:docname="format-text-italic.svg">
+   sodipodi:docname="format-text-symbol.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -26,17 +26,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="17.113356"
-     inkscape:cx="11.157896"
-     inkscape:cy="10.850695"
+     inkscape:cx="5.7152771"
+     inkscape:cy="9.8517647"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      units="px"
-     inkscape:window-width="1874"
-     inkscape:window-height="1060"
-     inkscape:window-x="44"
-     inkscape:window-y="-3"
+     inkscape:window-width="1366"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      showguides="true">
     <inkscape:grid
@@ -100,18 +100,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1030.3622)">
-    <text
-       xml:space="preserve"
-       style="font-size:28.94717598px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
-       x="0.74912125"
-       y="1045.5477"
-       id="text2994"
-       sodipodi:linespacing="125%"
-       transform="scale(0.99647267,1.0035398)"><tspan
-         sodipodi:role="line"
-         id="tspan2996"
-         x="0.74912125"
-         y="1045.5477"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#4d4d4d;fill-opacity:1;font-family:Oxygen;-inkscape-font-specification:Oxygen">π</tspan></text>
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.29943501"
+       d="M 8 3 C 8 3 3 3 3 8 C 3.9988232 6.0023537 4.9984639 5.0023509 7.9902344 5 C 7.9782762 15.936865 5.002485 16.692212 5 18.4375 C 6.5008252 19.5896 8.8453725 18.951 9.0175781 16.6875 L 9.9941406 5 L 13.978516 5 L 13 16.75 C 13 19.75 17 19.75 18 16.75 L 19 13.75 C 18 15.75 15.000165 18.749966 15.087891 15.697266 L 15.978516 5 L 19 5 L 19 3 L 8 3 z "
+       transform="translate(0,1030.3622)"
+       id="rect3346" />
   </g>
 </svg>

@@ -90,8 +90,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="15.8125"
-     inkscape:cx="16"
-     inkscape:cy="16"
+     inkscape:cx="21.375494"
+     inkscape:cy="15.494071"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -198,7 +198,7 @@
        ry="14.000006" />
     <path
        style="fill:url(#linearGradient4210);fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1;opacity:0.2"
-       d="M 19 15 L 12 17 L 15 20 L 15 21 L 15 23 L 21.050781 29.050781 C 23.79022 27.995146 26.109995 26.115391 27.699219 23.699219 L 19 15 z "
+       d="M 16 9 L 16 15 L 16.113281 15 L 16.113281 15.824219 L 12 17 L 15 20 L 15 21 L 15 23 L 21.050781 29.050781 C 22.688657 28.41963 24.171962 27.488934 25.443359 26.330078 C 25.445397 26.328221 25.447182 26.326077 25.449219 26.324219 C 26.140295 25.693564 26.76413 24.992976 27.316406 24.234375 C 27.319925 24.229542 27.324613 24.225541 27.328125 24.220703 C 27.332576 24.214577 27.335403 24.207306 27.339844 24.201172 C 27.460466 24.034463 27.585911 23.871486 27.699219 23.699219 L 27.679688 23.679688 C 28.082356 23.06778 28.453772 22.433376 28.757812 21.757812 L 16 9 z "
        transform="translate(384.57143,515.798)"
        id="path4193" />
     <path

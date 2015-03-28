@@ -11,7 +11,7 @@ endif(WIN32)
 
 ########### install files ###############
 
-set( breeze_icon_dark_dirs  actions apps categories mimetypes places devices)
+set( breeze_icon_dark_dirs  actions apps categories devices emblems mimetypes places status)
 
 
 set(BREEZE_INSTALL_DIR ${ICON_INSTALL_DIR}/breeze-dark)

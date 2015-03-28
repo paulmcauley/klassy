@@ -13,8 +13,8 @@
    height="24"
    id="svg3760"
    version="1.1"
-   inkscape:version="0.48+devel r"
-   sodipodi:docname="button-cancel.svg">
+   inkscape:version="0.91+devel r"
+   sodipodi:docname="dialog-cancel.svg">
   <defs
      id="defs3762" />
   <sodipodi:namedview
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.627417"
-     inkscape:cx="3.2105798"
-     inkscape:cy="10.950826"
+     inkscape:cx="12.063674"
+     inkscape:cy="12.115534"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="668"
-     inkscape:window-x="-2"
-     inkscape:window-y="23"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false">
     <sodipodi:guide
@@ -125,22 +125,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-550.28572,-606.6479)">
-    <g
-       id="g4216"
-       style="fill:#4d4d4d">
-      <path
-         transform="translate(550.28572,606.6479)"
-         id="path4143"
-         d="M 12 4 A 8 8 0 0 0 4 12 A 8 8 0 0 0 12 20 A 8 8 0 0 0 20 12 A 8 8 0 0 0 12 4 z M 12 4.8886719 A 7.1111112 7.1111112 0 0 1 19.111328 12 A 7.1111112 7.1111112 0 0 1 12 19.111328 A 7.1111112 7.1111112 0 0 1 4.8886719 12 A 7.1111112 7.1111112 0 0 1 12 4.8886719 z "
-         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
-      <rect
-         transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0,0)"
-         y="827.06067"
-         x="-40.354076"
-         height="15.971"
-         width="1"
-         id="rect4203"
-         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
-    </g>
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 12 4 C 9.9724023 4 8.1286798 4.7566937 6.71875 6 C 6.592511 6.1113202 6.4627201 6.2247799 6.34375 6.34375 L 6 6.71875 C 4.7566937 8.1286798 4 9.9724023 4 12 C 4 16.41828 7.58172 20 12 20 C 14.027598 20 15.87132 19.243306 17.28125 18 L 17.65625 17.65625 C 17.77522 17.53728 17.88868 17.407489 18 17.28125 C 19.243306 15.87132 20 14.027598 20 12 C 20 7.58172 16.41828 4 12 4 z M 12 5 C 15.86599 5 19 8.13401 19 12 C 19 13.75366 18.346785 15.334268 17.28125 16.5625 L 7.4375 6.71875 C 8.6657315 5.6532151 10.24634 5 12 5 z M 6.71875 7.4375 L 16.5625 17.28125 C 15.334268 18.346785 13.75366 19 12 19 C 8.13401 19 5 15.86599 5 12 C 5 10.24634 5.6532151 8.6657315 6.71875 7.4375 z "
+       transform="translate(550.28572,606.6479)"
+       id="rect4203" />
   </g>
 </svg>

@@ -11,7 +11,7 @@ endif(WIN32)
 
 ########### install files ###############
 
-set( breeze_icon_dirs  actions apps devices emblems emotes mimetypes places resources status )
+set( breeze_icon_dirs  actions apps categories devices emblems emotes mimetypes places resources status )
 
 
 set(BREEZE_INSTALL_DIR ${ICON_INSTALL_DIR}/breeze)

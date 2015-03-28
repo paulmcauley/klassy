@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="46"
-     inkscape:cx="1.4193689"
-     inkscape:cy="4.3122364"
+     inkscape:cx="2.0135164"
+     inkscape:cy="4.832493"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -40,7 +40,7 @@
      inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:snap-bbox="true"
-     showguides="true"
+     showguides="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
@@ -75,22 +75,11 @@
        height="8"
        x="7"
        y="1037.3622"
-       ry="0.36364365" />
-    <rect
-       ry="0.27273273"
-       y="1038.3622"
-       x="8"
-       height="6"
-       width="6"
-       id="rect4145"
-       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none" />
-    <rect
-       style="opacity:1;fill:#27ae60;fill-opacity:1;stroke:none"
-       id="rect4147"
-       width="4"
-       height="4"
-       x="9"
-       y="1039.3622"
-       ry="0.18182182" />
+       ry="4" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 13,1039.3622 -3,3 -1,-1 -1,1 1,1 1,1 4,-4 -1,-1 z"
+       id="path4142"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

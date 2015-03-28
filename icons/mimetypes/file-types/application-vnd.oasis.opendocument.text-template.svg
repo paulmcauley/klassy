@@ -11,8 +11,8 @@
    viewBox="0 0 64 64"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91+devel r"
-   sodipodi:docname="application-vnd.oasis.opendocument.text-template.svg"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="application-msword-template.svg"
    width="64"
    height="64">
   <metadata
@@ -36,16 +36,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-width="1868"
+     inkscape:window-height="1060"
      id="namedview82"
      showgrid="true"
      inkscape:showpageshadow="false"
      inkscape:zoom="5.6568543"
      inkscape:cx="-29.524145"
      inkscape:cy="44.102258"
-     inkscape:window-x="-4"
-     inkscape:window-y="29"
+     inkscape:window-x="50"
+     inkscape:window-y="-3"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2"
      showguides="true">
@@ -204,11 +204,6 @@
      id="path4320"
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-  <path
-     style="opacity:1;fill:none;fill-opacity:1;stroke:none"
-     d="m -7,21 -12,4 0,13.544922 L -15,37 -15,26 -7,24.285156 -7,40.333984 -19,39 l 12,4 6,-2 0,-18 -6,-2 z"
-     id="rect4323"
-     inkscape:connector-curvature="0" />
   <path
      style="opacity:1;fill:#d5dadc;fill-opacity:1;stroke:none"
      d="M 21 21 L 21 22 L 43 22 L 43 21 L 21 21 z M 21 24 L 21 25 L 43 25 L 43 24 L 21 24 z M 21 27 L 21 28 L 32 28 L 32 27 L 21 27 z M 21 31 L 21 32 L 43 32 L 43 31 L 21 31 z M 21 34 L 21 35 L 30 35 L 30 34 L 21 34 z M 34 34 L 34 43 L 43 43 L 43 34 L 34 34 z M 35 35 L 42 35 L 42 42 L 35 42 L 35 35 z M 21 36 L 21 37 L 26 37 L 26 36 L 21 36 z M 21 39 L 21 40 L 31 40 L 31 39 L 21 39 z M 21 42 L 21 43 L 27 43 L 27 42 L 21 42 z "

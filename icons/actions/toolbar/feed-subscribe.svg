@@ -13,7 +13,7 @@
    height="22"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91+devel r"
    viewBox="0 0 22 22"
    sodipodi:docname="feed-subscribe.svg">
   <defs
@@ -26,8 +26,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="23.979306"
-     inkscape:cx="11.826921"
-     inkscape:cy="11.93173"
+     inkscape:cx="7.1303718"
+     inkscape:cy="6.6915032"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      borderlayer="true"
      inkscape:showpageshadow="false"
      inkscape:window-width="1366"
-     inkscape:window-height="668"
-     inkscape:window-x="-2"
-     inkscape:window-y="23"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      showguides="true">
     <sodipodi:guide
@@ -92,7 +92,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -102,9 +102,9 @@
      id="layer1"
      transform="translate(0,-1030.3622)">
     <path
-       inkscape:connector-curvature="0"
-       id="path120"
-       style="fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none"
-       d="m 5.3896172,1044.5808 c -1.3196049,0 -2.3896174,1.0714 -2.3896174,2.3917 0,1.3176 1.0700125,2.3897 2.3896174,2.3897 1.319586,0 2.389598,-1.0721 2.389598,-2.3897 0,-1.3203 -1.070012,-2.3917 -2.389598,-2.3917 z m -2.3896174,-6.2338 0,2.4952 c 4.7055744,0 8.5197012,3.8141 8.5197012,8.52 l 2.492562,0 c 0,-6.0821 -4.9303888,-11.0152 -11.0122632,-11.0152 z m 0,-4.9848 0,2.492 c 7.4588042,0 13.5074372,6.0469 13.5074372,13.508 l 2.492563,0 c 0,-8.8381 -7.164245,-16 -16.0000002,-16" />
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.29943501"
+       d="M 3 3 L 3 4 A 15.000001 15.000017 0 0 1 18 19 L 19 19 A 16 16.000017 0 0 0 3 3 z M 3 8 L 3 9 A 10 10 0 0 1 13 19 L 14 19 A 11 11 0 0 0 3 8 z M 5 15 A 2 2 0 0 0 3 17 A 2 2 0 0 0 5 19 A 2 2 0 0 0 7 17 A 2 2 0 0 0 5 15 z "
+       transform="translate(0,1030.3622)"
+       id="path3345" />
   </g>
 </svg>

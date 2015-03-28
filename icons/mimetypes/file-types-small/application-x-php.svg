@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.839192"
-     inkscape:cx="-11.136249"
-     inkscape:cy="6.9026765"
+     inkscape:zoom="22.4"
+     inkscape:cx="9.9154739"
+     inkscape:cy="11.305556"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -77,28 +77,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1036.3622)">
-    <g
-       id="layer1-7"
-       inkscape:label="Capa 1"
-       transform="translate(-9.4542525e-8,-1.3439919e-5)"
-       style="fill:#8e44ad;fill-opacity:1">
-      <g
-         style="fill:#8e44ad;fill-opacity:1"
-         id="g3054"
-         transform="matrix(0.54545417,0,0,0.54545759,-9.4545376,1026.9076)">
-        <g
-           style="fill:#8e44ad;fill-opacity:1"
-           inkscape:label="Capa 1"
-           id="layer1-3"
-           transform="matrix(1.8333346,0,0,1.8333231,17.333331,-1882.6534)">
-          <path
-             inkscape:connector-curvature="0"
-             style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#8e44ad;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;marker:none;enable-background:accumulate"
-             d="M 9.0898438,2 5.9433594,13.740234 6.9101562,14 10.056641,2.2597656 9.0898438,2 Z M 5.2851562,4 2.3242188,7.1445312 2,7.4921875 2.3242188,7.8378906 5.2675781,11 5.9824219,10.304688 3.3613281,7.4921875 6,4.6953125 5.2851562,4 Z M 10.714844,4 10,4.6953125 12.638672,7.4921875 10.017578,10.304688 10.732422,11 13.675781,7.8378906 14,7.4921875 13.675781,7.1445312 10.714844,4 Z"
-             transform="translate(0,1036.3622)"
-             id="rect3918" />
-        </g>
-      </g>
-    </g>
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#4f5b93;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;marker:none;enable-background:accumulate"
+       d="M 9.0898438 2 L 5.9433594 13.740234 L 6.9101562 14 L 10.056641 2.2597656 L 9.0898438 2 z M 5.2851562 4 L 2.3242188 7.1445312 L 2 7.4921875 L 2.3242188 7.8378906 L 5.2675781 11 L 5.9824219 10.304688 L 3.3613281 7.4921875 L 6 4.6953125 L 5.2851562 4 z M 12 4 C 10.892 4 10 4.892 10 6 L 10 7 L 11 7 L 11 6 C 11 5.446 11.446 5 12 5 C 12.554 5 13 5.446 13 6 L 13 7 C 11.892 7 11 7.892 11 9 L 12 9 C 12 8.446 12.446 8 13 8 L 14 8 L 14 7.2773438 L 14 6 C 14 4.892 13.108 4 12 4 z M 11.5 10 A 0.5 0.5 0 0 0 11 10.5 A 0.5 0.5 0 0 0 11.5 11 A 0.5 0.5 0 0 0 12 10.5 A 0.5 0.5 0 0 0 11.5 10 z "
+       transform="translate(0,1036.3622)"
+       id="rect3918" />
   </g>
 </svg>

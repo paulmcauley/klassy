@@ -13,7 +13,7 @@
    height="22"
    id="svg3760"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="quickopen-class.svg">
   <defs
      id="defs3762" />
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="24.075123"
-     inkscape:cx="9.4862694"
-     inkscape:cy="12.789892"
+     inkscape:zoom="1"
+     inkscape:cx="6.6617771"
+     inkscape:cy="12.665282"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="666"
-     inkscape:window-x="-2"
-     inkscape:window-y="25"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      showguides="true">
@@ -98,7 +98,7 @@
      transform="translate(-551.28571,-607.64788)">
     <path
        style="fill:#4d4d4d;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 7 3 L 3 9 L 5 9 L 5 14 L 9 8 L 7 8 L 7 3 z M 14 3 L 14 5 L 11 5 L 11 6 L 11 17 L 12 17 L 14 17 L 14 19 L 19 19 L 19 14 L 14 14 L 14 16 L 12 16 L 12 6 L 14 6 L 14 8 L 19 8 L 19 3 L 14 3 z "
+       d="M 7 3 L 3 10 L 5 10 L 5 15 L 9 8 L 7 8 L 7 3 z M 14 3 L 14 5 L 11 5 L 11 6 L 11 17 L 12 17 L 14 17 L 14 19 L 19 19 L 19 14 L 14 14 L 14 16 L 12 16 L 12 6 L 14 6 L 14 8 L 19 8 L 19 3 L 14 3 z "
        transform="translate(551.28571,607.64788)"
        id="path4146" />
   </g>

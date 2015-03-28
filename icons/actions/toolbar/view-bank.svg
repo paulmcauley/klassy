@@ -13,7 +13,7 @@
    height="22"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="view-bank.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32"
-     inkscape:cx="12.891071"
-     inkscape:cy="12.251696"
+     inkscape:zoom="22.627417"
+     inkscape:cx="13.05198"
+     inkscape:cy="12.823243"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -38,9 +38,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="669"
+     inkscape:window-height="670"
      inkscape:window-x="-4"
-     inkscape:window-y="25"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true">
@@ -115,8 +115,8 @@
      transform="translate(-421.71429,-525.79074)">
     <path
        style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 11 3.0058594 L 3 7.625 L 3 8 L 3 9 L 4 9 L 4 18 L 3 18 L 3 19 L 19 19 L 19 18 L 18 18 L 18 9 L 19 9 L 19 8 L 19 7.625 L 11 3.0058594 z M 11 4.1601562 L 17.650391 8 L 4.3496094 8 L 11 4.1601562 z M 5 9 L 7 9 L 7 18 L 5 18 L 5 9 z M 8 9 L 14 9 L 14 18 L 13 18 L 13 14 L 9 14 L 9 18 L 8 18 L 8 9 z M 15 9 L 17 9 L 17 18 L 15 18 L 15 9 z "
+       d="M 11 3 L 3 7.6230469 L 3 7.9980469 L 3 9 L 4 9 L 4 10 L 4 18 L 3 18 L 3 19 L 19 19 L 19 18 L 18 18 L 18 10 L 18 9 L 19 9 L 19 7.9980469 L 19 7.6230469 L 11 3 z M 11 4.15625 L 17.650391 7.9980469 L 4.3496094 7.9980469 L 11 4.15625 z M 5 9 L 7 9 L 7 10 L 7 18 L 5 18 L 5 10 L 5 9 z M 8 9 L 14 9 L 14 10 L 14 18 L 13 18 L 13 14 L 9 14 L 9 18 L 8 18 L 8 10 L 8 9 z M 15 9 L 17 9 L 17 10 L 17 18 L 15 18 L 15 10 L 15 9 z "
        transform="translate(421.71429,525.79074)"
-       id="rect4145" />
+       id="path4159" />
   </g>
 </svg>

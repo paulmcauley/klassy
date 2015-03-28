@@ -13,8 +13,8 @@
    height="22"
    id="svg3760"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="shift-right-x.svg">
+   inkscape:version="0.91+devel r"
+   sodipodi:docname="shift-left-x.svg">
   <defs
      id="defs3762" />
   <sodipodi:namedview
@@ -25,22 +25,22 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="17.004705"
-     inkscape:cx="16.775788"
+     inkscape:cx="7.2196093"
      inkscape:cy="9.9257735"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
-     showgrid="false"
+     showgrid="true"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1874"
-     inkscape:window-height="1060"
-     inkscape:window-x="44"
-     inkscape:window-y="-3"
+     inkscape:window-width="1366"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
-     showguides="false">
+     showguides="true">
     <sodipodi:guide
        position="4.1796875e-06,21.999997"
        orientation="22,0"

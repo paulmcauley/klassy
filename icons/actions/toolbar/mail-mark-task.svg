@@ -13,7 +13,7 @@
    height="22"
    id="svg3869"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="mail-mark-task.svg">
   <defs
      id="defs3871" />
@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="23.340048"
-     inkscape:cx="8.4013032"
-     inkscape:cy="11.385887"
+     inkscape:cx="14.378155"
+     inkscape:cy="11.471577"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="666"
-     inkscape:window-x="-2"
-     inkscape:window-y="25"
+     inkscape:window-height="670"
+     inkscape:window-x="-4"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      showguides="true">
@@ -157,7 +157,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -166,45 +166,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-326,-534.3622)">
-    <rect
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       id="rect4162"
-       width="4.0000172"
-       height="4.0000172"
-       x="329"
-       y="537.36218" />
-    <rect
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       id="rect4164"
-       width="4.0000172"
-       height="4.0000172"
-       x="329"
-       y="543.36194" />
-    <rect
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       id="rect4166"
-       width="3.9999826"
-       height="3.9999826"
-       x="329"
-       y="549.36218" />
-    <rect
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       id="rect4168"
-       width="12"
-       height="1.0000174"
-       x="334"
-       y="538.36218" />
-    <rect
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       id="rect4170"
-       width="12"
-       height="1"
-       x="334"
-       y="544.36218" />
     <path
-       inkscape:connector-curvature="0"
        style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       d="m 345.29264,546.97631 -4.5918,4.5918 -1.14648,-1.14649 -0.70703,0.70703 1.8457,1.84766 0.006,-0.008 0.008,0.008 5.29297,-5.29297 -0.70703,-0.70703 z"
-       id="rect4166-9" />
+       d="M 3 3 L 3 7 L 7 7 L 7 3 L 3 3 z M 8 3 L 8 4 L 20 4 L 20 3 L 8 3 z M 8 6 L 8 7 L 15 7 L 15 6 L 8 6 z M 3 9 L 3 13 L 7 13 L 7 9 L 3 9 z M 8 9 L 8 10 L 20 10 L 20 9 L 8 9 z M 8 12 L 8 13 L 12 13 L 12 12 L 8 12 z M 19.292969 12.613281 L 14.701172 17.205078 L 13.554688 16.058594 L 12.847656 16.765625 L 14.693359 18.613281 L 14.699219 18.605469 L 14.707031 18.613281 L 20 13.320312 L 19.292969 12.613281 z M 3 15 L 3 19 L 7 19 L 7 15 L 3 15 z "
+       transform="translate(326,534.3622)"
+       id="rect4162" />
   </g>
 </svg>

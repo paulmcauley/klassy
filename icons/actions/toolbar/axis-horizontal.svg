@@ -11,12 +11,12 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="22"
    height="22"
-   id="svg3760"
+   id="svg3813"
    version="1.1"
    inkscape:version="0.91+devel r"
    sodipodi:docname="axis-horizontal.svg">
   <defs
-     id="defs3762" />
+     id="defs3815" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="23.909091"
-     inkscape:cx="11"
-     inkscape:cy="11"
+     inkscape:zoom="22.627417"
+     inkscape:cx="12.15864"
+     inkscape:cy="10.790886"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,53 +35,49 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="672"
+     inkscape:window-height="670"
      inkscape:window-x="-4"
-     inkscape:window-y="25"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
-     inkscape:showpageshadow="false"
-     showguides="true"
-     inkscape:snap-global="false">
+     inkscape:showpageshadow="false">
     <inkscape:grid
        type="xygrid"
-       id="grid4106"
-       originx="-0.99998557px"
-       originy="-1.0000252px" />
+       id="grid4109" />
     <sodipodi:guide
-       position="2.00001,19.99997"
-       orientation="0,18"
-       id="guide4229" />
-    <sodipodi:guide
-       position="20.00001,19.99997"
+       position="2.0000072,19.999993"
        orientation="18,0"
-       id="guide4231" />
+       id="guide4115" />
     <sodipodi:guide
-       position="20.00001,1.99997"
-       orientation="0,-18"
-       id="guide4233" />
+       position="2.0000072,1.9999929"
+       orientation="0,18"
+       id="guide4117" />
     <sodipodi:guide
-       position="2.00001,1.99997"
+       position="20.000007,1.9999929"
        orientation="-18,0"
-       id="guide4235" />
+       id="guide4119" />
     <sodipodi:guide
-       position="3.00001,18.99997"
-       orientation="0,16"
-       id="guide4237" />
+       position="20.000007,19.999993"
+       orientation="0,-18"
+       id="guide4121" />
     <sodipodi:guide
-       position="19.00001,18.99997"
+       position="3.0000072,18.999993"
        orientation="16,0"
-       id="guide4239" />
+       id="guide4123" />
     <sodipodi:guide
-       position="19.00001,2.99997"
-       orientation="0,-16"
-       id="guide4241" />
+       position="3.0000072,2.9999929"
+       orientation="0,16"
+       id="guide4125" />
     <sodipodi:guide
-       position="3.00001,2.99997"
+       position="19.000007,2.9999929"
        orientation="-16,0"
-       id="guide4243" />
+       id="guide4127" />
+    <sodipodi:guide
+       position="19.000007,18.999993"
+       orientation="0,-16"
+       id="guide4129" />
   </sodipodi:namedview>
   <metadata
-     id="metadata3765">
+     id="metadata3818">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -96,11 +92,11 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-551.28571,-607.64788)">
+     transform="translate(-378.85714,-540.07647)">
     <path
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="M 4 3 L 4 17 L 3 17 L 3 18 L 4 18 L 4 19 L 5 19 L 5 18 L 19 18 L 19 17 L 19 15 L 18 15 L 18 17 L 9.6660156 17 L 9.6660156 15 L 8.6660156 15 L 8.6660156 17 L 5 17 L 5 3 L 4 3 z M 13.333984 14.992188 L 13.333984 16.992188 L 14.333984 16.992188 L 14.333984 14.992188 L 13.333984 14.992188 z "
-       transform="translate(551.28571,607.64788)"
-       id="rect3012" />
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.29943501"
+       d="M 4 3 L 4 17 L 3 17 L 3 18 L 4 18 L 4 19 L 5 19 L 5 18 L 19 18 L 19 17 L 17 17 L 17 15 L 16 15 L 16 17 L 13 17 L 13 15 L 12 15 L 12 17 L 9 17 L 9 15 L 8 15 L 8 17 L 5 17 L 5 3 L 4 3 z "
+       transform="translate(378.85714,540.07647)"
+       id="rect3343" />
   </g>
 </svg>

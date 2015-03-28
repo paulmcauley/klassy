@@ -25,8 +25,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.627417"
-     inkscape:cx="10.77734"
-     inkscape:cy="15.473977"
+     inkscape:cx="11.187188"
+     inkscape:cy="12.695185"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,9 +35,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="1366"
-     inkscape:window-height="672"
+     inkscape:window-height="670"
      inkscape:window-x="-4"
-     inkscape:window-y="25"
+     inkscape:window-y="29"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      showguides="true"
@@ -88,7 +88,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -98,9 +98,9 @@
      id="layer1"
      transform="translate(-551.28571,-607.64788)">
     <path
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="M 10.5 3 L 10.5 10.5 L 3 10.5 L 3 11.5 L 10.5 11.5 L 10.5 14.783203 L 6.9882812 18 L 3 18 L 3 19 L 7 19 L 7.3769531 19 L 10.5 16.138672 L 10.5 19 L 11.5 19 L 11.5 15.222656 L 15 12.017578 L 15 11.5 L 19 11.5 L 19 10.5 L 15 10.5 L 15 9.4609375 L 18.994141 6 L 19 6 L 19 5.9941406 L 19 4.671875 L 19 3 L 18 3 L 18 5.5390625 L 14.003906 9 L 14 9 L 14 9.0039062 L 14 10.328125 L 14 10.5 L 11.5 10.5 L 11.5 3 L 10.5 3 z M 11.5 11.5 L 14 11.5 L 14 11.578125 L 11.5 13.867188 L 11.5 11.5 z "
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.29943501"
+       d="M 18 3 L 18 5.40625 L 14 9.078125 L 14 10 L 14 11 L 11 11 L 11 4 L 10 4 L 10 11 L 3 11 L 3 12 L 10 12 L 10 15.242188 L 7 17.996094 L 7 18 L 3 18 L 3 19 L 7 19 L 7.3847656 19 L 10 16.599609 L 10 19 L 11 19 L 11 15.681641 L 15 12.009766 L 15 12 L 18 12 L 18 11 L 15 11 L 15 9.5175781 L 19 5.8457031 L 19 5 L 19 3 L 18 3 z M 11 12 L 13.53125 12 L 11 14.324219 L 11 12 z "
        transform="translate(551.28571,607.64788)"
-       id="rect3764" />
+       id="rect3343" />
   </g>
 </svg>
