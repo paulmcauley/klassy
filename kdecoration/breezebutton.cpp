@@ -203,9 +203,9 @@ namespace Breeze
                             << QPointF( 9, 13.5 ) );
                     } else {
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 4.5, 10.5 )
-                            << QPointF( 9, 6.5 )
-                            << QPointF( 13.5, 10.5 ) );
+                            << QPointF( 4, 11 )
+                            << QPointF( 9, 6 )
+                            << QPointF( 14, 11 ) );
                     }
                     break;
                 }
@@ -213,9 +213,9 @@ namespace Breeze
                 case KDecoration2::DecorationButtonType::Minimize:
                 {
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 4.5, 7.5 )
-                        << QPointF( 9, 11.5 )
-                        << QPointF( 13.5, 7.5 ) );
+                        << QPointF( 4, 7 )
+                        << QPointF( 9, 12 )
+                        << QPointF( 14, 7 ) );
                     break;
                 }
 
@@ -262,19 +262,19 @@ namespace Breeze
                     if (isChecked())
                     {
 
-                        painter->drawLine( 4, 6.5, 14, 6.5 );
+                        painter->drawLine( 4, 5, 14, 5 );
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 4.5, 9.5 )
-                            << QPointF( 9, 13.5 )
-                            << QPointF( 13.5, 9.5 ) );
+                            << QPointF( 4, 8 )
+                            << QPointF( 9, 13 )
+                            << QPointF( 14, 8 ) );
 
                     } else {
 
-                        painter->drawLine( 4, 6.5, 14, 6.5 );
+                        painter->drawLine( 4, 5, 14, 5 );
                         painter->drawPolyline( QPolygonF()
-                            << QPointF( 4.5, 13.5 )
-                            << QPointF( 9, 9.5 )
-                            << QPointF( 13.5, 13.5 ) );
+                            << QPointF( 4, 13 )
+                            << QPointF( 9, 8 )
+                            << QPointF( 14, 13 ) );
                     }
 
                     break;
@@ -285,14 +285,14 @@ namespace Breeze
                 {
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 4.5, 5.5 )
-                        << QPointF( 9, 9.5 )
-                        << QPointF( 13.5, 5.5 ) );
+                        << QPointF( 4, 5 )
+                        << QPointF( 9, 10 )
+                        << QPointF( 14, 5 ) );
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 4.5, 9.5 )
-                        << QPointF( 9, 13.5 )
-                        << QPointF( 13.5, 9.5 ) );
+                        << QPointF( 4, 9 )
+                        << QPointF( 9, 14 )
+                        << QPointF( 14, 9 ) );
                     break;
 
                 }
@@ -300,16 +300,17 @@ namespace Breeze
                 case KDecoration2::DecorationButtonType::KeepAbove:
                 {
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 4.5, 8.5 )
-                        << QPointF( 9, 4.5 )
-                        << QPointF( 13.5, 8.5 ) );
+                        << QPointF( 4, 9 )
+                        << QPointF( 9, 4 )
+                        << QPointF( 14, 9 ) );
 
                     painter->drawPolyline( QPolygonF()
-                        << QPointF( 4.5, 12.5 )
-                        << QPointF( 9, 8.5 )
-                        << QPointF( 13.5, 12.5 ) );
+                        << QPointF( 4, 13 )
+                        << QPointF( 9, 8 )
+                        << QPointF( 14, 13 ) );
                     break;
                 }
+
 
                 case KDecoration2::DecorationButtonType::ApplicationMenu:
                 {
