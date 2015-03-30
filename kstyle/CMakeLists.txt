@@ -127,7 +127,7 @@ set(breeze_PART_SRCS
 if(BREEZE_USE_KDE4)
 
   kde4_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
-  kde4_add_plugin(breeze ${breeze_PART_SRCS})
+  kde4_add_plugin(breeze ${breeze_PART_SRCS} kstylekde4compat.cpp)
   target_link_libraries(breeze  ${KDE4_KDEUI_LIBS})
 
   if(BREEZE_HAVE_X11)

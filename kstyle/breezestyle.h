@@ -27,6 +27,10 @@
 #include <KStyle>
 #endif
 
+#if BREEZE_USE_KDE4
+#include "kstylekde4compat.h"
+#endif
+
 #include <QAbstractItemView>
 #include <QAbstractScrollArea>
 #include <QCommonStyle>
@@ -57,7 +61,9 @@ namespace Breeze
     class WindowManager;
 
     //* convenience typedef for base class
-    #if BREEZE_USE_KDE4 || !BREEZE_HAVE_KSTYLE
+    #if BREEZE_USE_KDE4
+    using ParentStyleClass = KStyleKDE4Compat;
+    #elif !BREEZE_HAVE_KSTYLE
     using ParentStyleClass = QCommonStyle;
     #else
     using ParentStyleClass = KStyle;
