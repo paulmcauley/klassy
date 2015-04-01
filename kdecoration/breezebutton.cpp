@@ -353,7 +353,7 @@ namespace Breeze
 
             return d->titleBarColor();
 
-        } else if( type() == KDecoration2::DecorationButtonType::Close ) {
+        } else if( type() == KDecoration2::DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
 
             return d->titleBarColor();
 
@@ -398,8 +398,18 @@ namespace Breeze
 
             if( type() == KDecoration2::DecorationButtonType::Close )
             {
+                if( d->internalSettings()->outlineCloseButton() )
+                {
 
-                return KColorUtils::mix( d->fontColor(), d->colorSettings().closeButtonColor().lighter(), m_opacity );
+                    return KColorUtils::mix( d->fontColor(), d->colorSettings().closeButtonColor().lighter(), m_opacity );
+
+                } else {
+
+                    QColor color( d->colorSettings().closeButtonColor().lighter() );
+                    color.setAlpha( color.alpha()*m_opacity );
+                    return color;
+
+                }
 
             } else {
 
@@ -414,7 +424,7 @@ namespace Breeze
             if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor().lighter();
             else return d->fontColor();
 
-        } else if( type() == KDecoration2::DecorationButtonType::Close ) {
+        } else if( type() == KDecoration2::DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
 
             return d->fontColor();
 

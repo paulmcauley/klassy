@@ -11,16 +11,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -92,7 +83,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="3">
+      <item row="3" column="0" colspan="3">
        <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
         <property name="text">
          <string>Display window borders for maximized windows</string>
@@ -123,10 +114,17 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
+      <item row="4" column="0" colspan="3">
        <widget class="QCheckBox" name="drawSizeGrip">
         <property name="text">
          <string>Add handle to resize windows with no border</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QCheckBox" name="outlineCloseButton">
+        <property name="text">
+         <string>Draw a circle around close button</string>
         </property>
        </widget>
       </item>

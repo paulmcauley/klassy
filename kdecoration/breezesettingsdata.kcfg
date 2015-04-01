@@ -65,10 +65,15 @@
       <default>ButtonDefault</default>
     </entry>
 
+    <!-- close button -->
+    <entry name="OutlineCloseButton" type = "Bool">
+        <default>true</default>
+    </entry>
+
     <!-- maximized windows -->
-	    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
-	       <default>false</default>
-	    </entry>
+    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
+        <default>false</default>
+    </entry>
 
     <!-- size grip -->
     <entry name="DrawSizeGrip" type = "Bool">
