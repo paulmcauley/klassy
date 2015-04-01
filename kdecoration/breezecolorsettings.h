@@ -23,17 +23,18 @@
  */
 
 #include <QPalette>
+#include <KDecoration2/DecoratedClient>
 
 namespace Breeze
 {
-
-    // TODO: move to deco API
     class ColorSettings
     {
         public:
-        ColorSettings(const QPalette &pal);
+        ColorSettings() {}
 
-        void update(const QPalette &pal);
+        ColorSettings(const QPalette &pal, const KDecoration2::DecoratedClient &client);
+
+        void update(const QPalette &pal, const KDecoration2::DecoratedClient &client);
 
         const QColor &titleBar(bool active) const {
             return active ? m_activeTitleBarColor : m_inactiveTitleBarColor;
@@ -69,7 +70,7 @@ namespace Breeze
             return m_palette;
         }
         private:
-        void init(const QPalette &pal);
+        void init(const QPalette &pal, const KDecoration2::DecoratedClient &client);
         QColor m_activeTitleBarColor;
         QColor m_inactiveTitleBarColor;
         QColor m_activeFrameColor;

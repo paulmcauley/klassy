@@ -28,33 +28,30 @@ namespace Breeze
 {
 
     //________________________________________________________________
-    ColorSettings::ColorSettings(const QPalette &palette)
-    { init(palette); }
+    ColorSettings::ColorSettings(const QPalette &palette, const KDecoration2::DecoratedClient &client)
+    { init(palette, client); }
 
     //________________________________________________________________
-    void ColorSettings::update(const QPalette &palette)
-    { init(palette); }
+    void ColorSettings::update(const QPalette &palette, const KDecoration2::DecoratedClient &client)
+    { init(palette, client); }
 
     //________________________________________________________________
-    void ColorSettings::init(const QPalette &palette)
+    void ColorSettings::init(const QPalette &palette, const KDecoration2::DecoratedClient &client)
     {
+        using KDecoration2::ColorRole;
+        using KDecoration2::ColorGroup;
+
         m_palette = palette;
+        m_activeFrameColor = client.color(ColorGroup::Active, ColorRole::Frame);
+        m_inactiveFrameColor = client.color(ColorGroup::Inactive, ColorRole::Frame);
 
-        {
-            KConfigGroup wmConfig(KSharedConfig::openConfig(QStringLiteral("kdeglobals")), QStringLiteral("WM"));
-            m_activeFrameColor      = wmConfig.readEntry("frame", palette.color(QPalette::Active, QPalette::Background));
-            m_inactiveFrameColor    = wmConfig.readEntry("inactiveFrame", m_activeFrameColor);
-            m_activeTitleBarColor   = wmConfig.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
-            m_inactiveTitleBarColor = wmConfig.readEntry("inactiveBackground", m_inactiveFrameColor);
-            m_activeFontColor       = wmConfig.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
-            m_inactiveFontColor     = wmConfig.readEntry("inactiveForeground", m_activeFontColor.dark());
-        }
+        m_activeTitleBarColor = client.color(ColorGroup::Active, ColorRole::TitleBar);
+        m_inactiveTitleBarColor = client.color(ColorGroup::Inactive, ColorRole::TitleBar);
 
-        {
-            KConfigGroup wmConfig(KSharedConfig::openConfig(QStringLiteral("kdeglobals")), QStringLiteral("Colors:Window"));
-            m_closeButtonColor = wmConfig.readEntry("ForegroundNegative", QColor(237, 21, 2));
-        }
+        m_activeFontColor = client.color(ColorGroup::Active, ColorRole::Foreground);
+        m_inactiveFontColor = client.color(ColorGroup::Inactive, ColorRole::Foreground);
 
+        m_closeButtonColor = client.color(ColorGroup::Warning, ColorRole::Foreground);
     }
 
 }

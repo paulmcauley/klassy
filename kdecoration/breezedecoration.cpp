@@ -69,11 +69,10 @@ namespace Breeze
     //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
-        , m_colorSettings(client().data()->palette())
+        , m_colorSettings()
         , m_animation( new QPropertyAnimation( this ) )
     {
         // g_sDecoCount++;
-        m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
     }
 
     //________________________________________________________________
@@ -138,6 +137,9 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::init()
     {
+        m_colorSettings.update(client().data()->palette(), *client().data());
+        m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
+
 
         // active state change animation
         m_animation->setStartValue( 0 );
@@ -173,7 +175,7 @@ namespace Breeze
         connect(client().data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
         connect(client().data(), &KDecoration2::DecoratedClient::paletteChanged, this,
             [this]() {
-                m_colorSettings.update(client().data()->palette());
+                m_colorSettings.update(client().data()->palette(), *client().data());
                 m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
                 update();
             }
