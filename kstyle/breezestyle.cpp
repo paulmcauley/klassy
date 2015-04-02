@@ -6401,13 +6401,15 @@ namespace Breeze
         else if( widget ) palette = widget->palette();
         else palette = QApplication::palette();
 
+        const bool isCloseButton( buttonType == ButtonClose && StyleConfigData::outlineCloseButton() );
+
         palette.setCurrentColorGroup( QPalette::Active );
         const QColor base( palette.color( QPalette::WindowText ) );
         const QColor selected( palette.color( QPalette::HighlightedText ) );
-        const QColor negative( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):base );
-        const QColor negativeSelected( ( buttonType == ButtonClose ) ? _helper->negativeText( palette ):selected );
+        const QColor negative( buttonType == ButtonClose ? _helper->negativeText( palette ):base );
+        const QColor negativeSelected( buttonType == ButtonClose ? _helper->negativeText( palette ):selected );
 
-        const bool invertNormalState( buttonType == ButtonClose );
+        const bool invertNormalState( isCloseButton );
 
         // convenience class to map color to icon mode
         struct IconData

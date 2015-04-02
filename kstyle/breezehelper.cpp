@@ -802,7 +802,6 @@ namespace Breeze
         {
 
             frameRect.translate(1, 1);
-            // painter->translate( 1, 1 );
 
         } else {
 
@@ -1296,18 +1295,19 @@ namespace Breeze
             case ButtonMaximize:
             {
                 painter->drawPolyline( QPolygonF()
-                    << QPointF( 4.5, 10.5 )
-                    << QPointF( 9, 6.5 )
-                    << QPointF( 13.5, 10.5 ) );
+                    << QPointF( 4, 11 )
+                    << QPointF( 9, 6 )
+                    << QPointF( 14, 11 ) );
                 break;
             }
 
             case ButtonMinimize:
             {
+
                 painter->drawPolyline( QPolygonF()
-                    << QPointF( 4.5, 7.5 )
-                    << QPointF( 9, 11.5 )
-                    << QPointF( 13.5, 7.5 ) );
+                    << QPointF( 4, 7 )
+                    << QPointF( 9, 12 )
+                    << QPointF( 14, 7 ) );
                 break;
             }
 

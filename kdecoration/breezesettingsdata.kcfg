@@ -19,6 +19,11 @@
        <max>64</max>
     </entry>
 
+    <!-- close button -->
+    <entry name="OutlineCloseButton" type = "Bool">
+        <default>true</default>
+    </entry>
+
   </group>
 
   <group name="Windeco">
@@ -63,11 +68,6 @@
           <choice name="ButtonVeryLarge" />
       </choices>
       <default>ButtonDefault</default>
-    </entry>
-
-    <!-- close button -->
-    <entry name="OutlineCloseButton" type = "Bool">
-        <default>true</default>
     </entry>
 
     <!-- maximized windows -->
