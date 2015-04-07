@@ -85,9 +85,6 @@ namespace Breeze
 
         protected:
 
-        //* true if shadows are supported
-        bool checkSupported( void ) const;
-
         //* true if widget is a menu
         bool isMenu( QWidget* ) const;
 
