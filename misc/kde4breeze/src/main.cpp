@@ -86,7 +86,7 @@ void updateKdeGlobals()
 {
     Kdelibs4Migration migration;
     //Apply the color scheme
-    KConfig config(migration.saveLocation("config") + "kdeglobals");
+    KConfig config(migration.saveLocation("config") + "kdeglobals", KConfig::SimpleConfig);
 
     KSharedConfig::Ptr kf5Config = KSharedConfig::openConfig("kdeglobals");
     KConfigGroup kf5Group(kf5Config, "General");
@@ -122,7 +122,6 @@ void updateKdeGlobals()
 
     KConfigGroup iconGroup(&config, "Icons");
     iconGroup.writeEntry("Theme", icons);
-    applyColorScheme(colorScheme, &config);
     iconGroup.sync();
 
 
