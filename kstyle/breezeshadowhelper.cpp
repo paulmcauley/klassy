@@ -45,9 +45,9 @@ namespace Breeze
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
         QObject( parent ),
-        _helper( helper ),
+        _helper( helper )
         #if BREEZE_HAVE_X11
-        _gc( 0 ),
+        ,_gc( 0 ),
         _atom( 0 )
         #endif
     {}
