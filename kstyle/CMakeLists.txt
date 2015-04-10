@@ -103,9 +103,13 @@ set(breeze_PART_SRCS
     animations/breezescrollbarengine.cpp
     animations/breezespinboxengine.cpp
     animations/breezespinboxdata.cpp
+    animations/breezestackedwidgetdata.cpp
+    animations/breezestackedwidgetengine.cpp
     animations/breezetabbarengine.cpp
     animations/breezetabbardata.cpp
     animations/breezetoolboxengine.cpp
+    animations/breezetransitiondata.cpp
+    animations/breezetransitionwidget.cpp
     animations/breezewidgetstateengine.cpp
     animations/breezewidgetstatedata.cpp
     debug/breezewidgetexplorer.cpp

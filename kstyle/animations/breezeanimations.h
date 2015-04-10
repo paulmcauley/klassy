@@ -25,6 +25,7 @@
 #include "breezeheaderviewengine.h"
 #include "breezescrollbarengine.h"
 #include "breezespinboxengine.h"
+#include "breezestackedwidgetengine.h"
 #include "breezetabbarengine.h"
 #include "breezetoolboxengine.h"
 #include "breezewidgetstateengine.h"
@@ -145,6 +146,9 @@ namespace Breeze
 
         //* spinbox engine
         SpinBoxEngine* _spinBoxEngine;
+
+        //* stacked widget engine
+        StackedWidgetEngine* _stackedWidgetEngine;
 
         //* tabbar engine
         TabBarEngine* _tabBarEngine;

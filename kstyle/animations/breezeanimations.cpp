@@ -54,6 +54,7 @@ namespace Breeze
         registerEngine( _widgetStateEngine = new WidgetStateEngine( this ) );
         registerEngine( _inputWidgetEngine = new WidgetStateEngine( this ) );
         registerEngine( _scrollBarEngine = new ScrollBarEngine( this ) );
+        registerEngine( _stackedWidgetEngine = new StackedWidgetEngine( this ) );
         registerEngine( _tabBarEngine = new TabBarEngine( this ) );
         registerEngine( _dialEngine = new DialEngine( this ) );
 
@@ -79,6 +80,7 @@ namespace Breeze
         _comboBoxEngine->setDuration( animationsDuration );
         _toolButtonEngine->setDuration( animationsDuration );
         _spinBoxEngine->setDuration( animationsDuration );
+        _stackedWidgetEngine->setDuration( animationsDuration );
         _toolBoxEngine->setDuration( animationsDuration );
 
         // registered engines
@@ -87,6 +89,9 @@ namespace Breeze
             engine.data()->setEnabled( animationsEnabled );
             engine.data()->setDuration( animationsDuration );
         }
+
+        // stacked widget transition has an extra flag for animations
+        _stackedWidgetEngine->setEnabled( animationsEnabled && StyleConfigData::stackedWidgetTransitionsEnabled() );
 
         // busy indicator
         _busyIndicatorEngine->setEnabled( StyleConfigData::progressBarAnimated() );
@@ -181,6 +186,10 @@ namespace Breeze
             { _inputWidgetEngine->registerWidget( widget, AnimationHover|AnimationFocus ); }
 
         }
+
+        // stacked widgets
+        if( QStackedWidget* stack = qobject_cast<QStackedWidget*>( widget ) )
+        { _stackedWidgetEngine->registerWidget( stack ); }
 
         return;
 
