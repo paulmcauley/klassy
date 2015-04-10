@@ -61,7 +61,7 @@ namespace Breeze
         //* duration
         virtual void setDuration( int duration )
         {
-            if( transition() )
+            if( _transition )
             { _transition.data()->setDuration( duration ); }
         }
 
