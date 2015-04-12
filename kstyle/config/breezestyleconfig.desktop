@@ -10,6 +10,7 @@ X-KDE-ParentApp=kcontrol
 X-KDE-Weight=50
 
 Name=Widget Style
+Name[ar]=نمط الودجات
 Name[ca]=Estil dels estris
 Name[cs]=Styl widgetu
 Name[de]=Stil der Bedienelemente
@@ -40,6 +41,7 @@ Name[x-test]=xxWidget Stylexx
 Name[zh_CN]=部件样式
 Name[zh_TW]=元件樣式
 Comment=Modify the appearance of widgets
+Comment[ar]=عدّل مظهر الودجات
 Comment[ca]=Modifica l'aparença dels estris
 Comment[cs]=Změnit vzhled widgetů
 Comment[de]=Das Erscheinungsbild der Bedienelemente ändern
@@ -71,6 +73,7 @@ Comment[zh_CN]=修改部件外观
 Comment[zh_TW]=變更元件外觀
 
 X-KDE-Keywords=breeze,widget,style
+X-KDE-Keywords[ar]=نسيم,ودجة,نمط
 X-KDE-Keywords[ca]=breeze,brisa,estri,estil
 X-KDE-Keywords[cs]=breeze,widget,styl
 X-KDE-Keywords[de]=Breeze,Bedienelement,Stil
