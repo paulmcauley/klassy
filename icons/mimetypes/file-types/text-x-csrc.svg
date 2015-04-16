@@ -159,7 +159,7 @@
       <stop
          id="stop4353-0"
          offset="0"
-         style="stop-color:#16907d;stop-opacity:1" />
+         style="stop-color:#127666;stop-opacity:1" />
       <stop
          id="stop4355-4"
          offset="1"
@@ -207,7 +207,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#16907d;fill-opacity:1;stroke:none;stroke-opacity:1"
+     style="opacity:1;fill:#127666;fill-opacity:1;stroke:none;stroke-opacity:1"
      d="M 26 21 L 26 23 L 39 23 L 39 21 L 26 21 z M 39 23 L 39 25 L 41 25 L 41 23 L 39 23 z M 41 25 L 41 27 L 43 27 L 43 25 L 41 25 z M 26 23 L 24 23 L 24 25 L 26 25 L 26 23 z M 24 25 L 22 25 L 22 27 L 21 27 L 21 29 L 21 38 L 22 38 L 22 40 L 24 40 L 24 38 L 23 38 L 23 29 L 23 27 L 24 27 L 24 25 z M 24 40 L 24 42 L 26 42 L 26 43 L 39 43 L 39 41 L 26 41 L 26 40 L 24 40 z M 39 41 L 41 41 L 41 39 L 39 39 L 39 41 z M 41 39 L 43 39 L 43 37 L 41 37 L 41 39 z "
      id="rect4226" />
 </svg>

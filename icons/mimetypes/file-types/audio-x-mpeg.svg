@@ -119,7 +119,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#dcc6e0;stop-opacity:1"
+         style="stop-color:#e8d9eb;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#dcc6e0;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#e8d9eb;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
      d="M 27 21 L 27 37.052734 C 26.365433 36.404437 25.483041 36 24.5 36 C 22.561 36 21 37.561 21 39.5 C 21 41.439 22.561 43 24.5 43 C 26.404858 43 27.93659 41.49103 27.990234 39.599609 L 28 39.599609 L 28 39.5 L 28 26 L 42 26 L 42 34.052734 C 41.365433 33.404437 40.483041 33 39.5 33 C 37.561 33 36 34.561 36 36.5 C 36 38.439 37.561 40 39.5 40 C 41.439 40 43 38.439 43 36.5 L 43 21 L 42 21 L 28 21 L 27 21 z M 28 23 L 42 23 L 42 25 L 28 25 L 28 23 z "
      id="rect4204" />
 </svg>

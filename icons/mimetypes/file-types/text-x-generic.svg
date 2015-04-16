@@ -119,7 +119,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#6c7a89;stop-opacity:1"
+         style="stop-color:#5e6b78;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -195,7 +195,7 @@
      x="10"
      y="3" />
   <path
-     style="opacity:1;fill:#6c7a89;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#5e6b78;fill-opacity:1;stroke:none"
      d="M 21 21 L 21 22 L 43 22 L 43 21 L 21 21 z M 21 24 L 21 25 L 43 25 L 43 24 L 21 24 z M 21 27 L 21 28 L 32 28 L 32 27 L 21 27 z M 21 31 L 21 32 L 43 32 L 43 31 L 21 31 z M 21 34 L 21 35 L 40 35 L 40 34 L 21 34 z M 21 36 L 21 37 L 32 37 L 32 36 L 21 36 z M 21 39 L 21 40 L 43 40 L 43 39 L 21 39 z M 21 42 L 21 43 L 37 43 L 37 42 L 21 42 z "
      id="rect4274" />
   <path

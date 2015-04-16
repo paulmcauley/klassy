@@ -387,11 +387,11 @@
     <linearGradient
        id="linearGradient4351-5">
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="0"
          id="stop4353-7" />
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="1"
          id="stop4355-6" />
     </linearGradient>
@@ -438,7 +438,7 @@
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
      inkscape:connector-curvature="0"
-     style="opacity:1;fill:#04896a;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#036b53;fill-opacity:1;stroke:none"
      d="M 25.707031,25 25,25.707031 30.292969,31 25,36.292969 25.707031,37 31,31.707031 31.707031,31 31,30.292969 25.707031,25 Z M 32,38 l 0,1 7,0 0,-1 -7,0 z"
      id="rect4173" />
 </svg>

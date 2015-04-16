@@ -161,13 +161,13 @@
       <stop
          id="stop4355"
          offset="1"
-         style="stop-color:#ececec;stop-opacity:1" />
+         style="stop-color:#fbfbfb;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
        id="linearGradient4300-7">
       <stop
-         style="stop-color:#6c7a89;stop-opacity:1"
+         style="stop-color:#5e6b78;stop-opacity:1"
          offset="0"
          id="stop4302-2" />
       <stop
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ececec;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#fbfbfb;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
      d="M 36.785156 21 L 30.990234 42.625 L 26.009766 34 L 26 34 L 21 34 L 21 35 L 25.433594 35 L 30.623047 43.990234 L 30.621094 44 L 31.658203 44 L 37.552734 22 L 43 22 L 43 21 L 37.820312 21 L 37 21 L 36.785156 21 z "
      id="rect4165" />
 </svg>

@@ -115,7 +115,7 @@
        inkscape:collect="always"
        id="linearGradient4351">
       <stop
-         style="stop-color:#4f5b93;stop-opacity:1"
+         style="stop-color:#444e7e;stop-opacity:1"
          offset="0"
          id="stop4353" />
       <stop
@@ -205,12 +205,12 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#4f5b93;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#444e7e;fill-opacity:1;stroke:none"
      d="M 27,26 27.707031,26.707031 22.414062,32 27.707031,37.292969 27,38 21.707031,32.707031 21,32 21.707031,31.292969 27,26 Z"
      id="path4317"
      inkscape:connector-curvature="0" />
   <rect
-     style="opacity:1;fill:#4f5b93;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#444e7e;fill-opacity:1;stroke:none"
      id="rect4323"
      width="1"
      height="22.507999"
@@ -218,7 +218,7 @@
      y="11.373416"
      transform="matrix(0.96592583,0.25881905,-0.25881905,0.96592583,0,0)" />
   <path
-     style="opacity:1;fill:#4f5b93;fill-opacity:1;stroke:none;stroke-width:3.77952743;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     style="opacity:1;fill:#444e7e;fill-opacity:1;stroke:none;stroke-width:3.77952743;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      d="m 39,24 c -2.216,0 -4,1.784 -4,4 l 0,2 1,0 0,-2 c 0,-1.662 1.338,-3 3,-3 1.662,0 3,1.338 3,3 l 0,2.138672 C 40.273703,30.582364 39,32.13145 39,34 l 1,0 c 0,-1.319549 0.843422,-2.434861 2.022784,-2.838454 C 43,30.899702 43,30.998627 43,30 l 0,-2 c 0,-2.216 -1.784,-4 -4,-4 z m 0.5,11 C 38.671573,35 38,35.671573 38,36.5 38,37.328427 38.671573,38 39.5,38 40.328427,38 41,37.328427 41,36.5 41,35.671573 40.328427,35 39.5,35 Z"
      id="rect4210"
      inkscape:connector-curvature="0"

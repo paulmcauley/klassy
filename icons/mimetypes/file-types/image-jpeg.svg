@@ -155,11 +155,11 @@
        inkscape:collect="always"
        id="linearGradient4351-4">
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="0"
          id="stop4353-0" />
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="1"
          id="stop4355-2" />
     </linearGradient>
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#04896a;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#036b53;fill-opacity:1;stroke:none"
      d="M 21 21 L 21 34.800781 L 17.800781 38 L 19.207031 38 L 21 36.210938 L 21 43 L 33.847656 43 L 34.869141 43 L 43 43 L 43 38.169922 L 43 36.548828 L 43 31.412109 L 45.59375 34 L 47 34 L 43 30 L 43 21 L 21 21 z M 22 22 L 42 22 L 42 29 L 39 26 L 37 28 L 36.992188 28 L 30.400391 34.580078 L 30.400391 34.599609 L 25.800781 30 L 22 33.800781 L 22 22 z M 25.5 23 A 2.5 2.5 0 0 0 23 25.5 A 2.5 2.5 0 0 0 25.5 28 A 2.5 2.5 0 0 0 28 25.5 A 2.5 2.5 0 0 0 25.5 23 z M 25.5 24 A 1.5 1.5 0 0 1 27 25.5 A 1.5 1.5 0 0 1 25.5 27 A 1.5 1.5 0 0 1 24 25.5 A 1.5 1.5 0 0 1 25.5 24 z M 39 27.419922 L 42 30.414062 L 42 35.662109 L 42 36 L 30.400391 36 L 22 36 L 22 35.212891 L 25.800781 31.419922 L 25.800781 31.400391 L 30.400391 36 L 32.400391 34 L 32.40625 34 L 39 27.419922 z M 22 37 L 42 37 L 42 42 L 35 42 L 34 42 L 22 42 L 22 38.013672 L 22 37 z "
      id="rect4434" />
 </svg>

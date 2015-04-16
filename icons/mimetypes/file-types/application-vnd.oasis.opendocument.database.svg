@@ -162,7 +162,7 @@
       <stop
          id="stop4355-6"
          offset="1"
-         style="stop-color:#dcc6e0;stop-opacity:1" />
+         style="stop-color:#e8d9eb;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        id="linearGradient4300-1"
@@ -206,7 +206,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#dcc6e0;fill-opacity:1;stroke:none;stroke-opacity:1"
+     style="opacity:1;fill:#e8d9eb;fill-opacity:1;stroke:none;stroke-opacity:1"
      d="M 32 21 A 11 3 0 0 0 21 24 L 21 29 L 21 35 L 21 40 A 11 3 0 0 0 32 43 A 11 3 0 0 0 43 40 L 43 35 L 43 29 L 43 24 A 11 3 0 0 0 32 21 z M 32 22 A 10 2 0 0 1 42 24 A 10 2 0 0 1 32 26 A 10 2 0 0 1 22 24 A 10 2 0 0 1 32 22 z M 22 25.242188 A 11 3 0 0 0 32 27 A 11 3 0 0 0 42 25.242188 L 42 29 A 10 2 0 0 1 32 31 A 10 2 0 0 1 22 29 L 22 25.242188 z M 22 30.242188 A 11 3 0 0 0 32 32 A 11 3 0 0 0 42 30.242188 L 42 35 A 10 2 0 0 1 32 37 A 10 2 0 0 1 22 35 L 22 30.242188 z M 22 36.242188 A 11 3 0 0 0 32 38 A 11 3 0 0 0 42 36.242188 L 42 39 L 42 40 A 10 2 0 0 1 32 42 A 10 2 0 0 1 22 40 L 22 39 L 22 36.242188 z "
      id="rect4185" />
 </svg>

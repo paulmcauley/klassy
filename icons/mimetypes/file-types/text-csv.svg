@@ -116,11 +116,11 @@
        inkscape:collect="always"
        id="linearGradient4351">
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -206,7 +206,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#04896a;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;white-space:normal;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#036b53;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
      d="M 21 21 L 21 43 L 35 43 L 35 42 L 28 42 L 28 39 L 35 39 L 35 38 L 28 38 L 28 35 L 35 35 L 36 35 L 37 35 L 42 35 L 43 35 L 43 21 L 21 21 z M 22 22 L 42 22 L 42 26 L 22 26 L 22 22 z M 22 27 L 27 27 L 27 30 L 22 30 L 22 27 z M 28 27 L 36 27 L 36 30 L 28 30 L 28 27 z M 37 27 L 42 27 L 42 30 L 37 30 L 37 27 z M 22 31 L 27 31 L 27 34 L 22 34 L 22 31 z M 28 31 L 36 31 L 36 34 L 28 34 L 28 31 z M 37 31 L 42 31 L 42 34 L 37 34 L 37 31 z M 22 35 L 27 35 L 27 38 L 22 38 L 22 35 z M 40 36 C 38.892 36 38 36.892 38 38 C 38 39.067861 38.830889 39.926849 39.882812 39.988281 C 39.959502 40.353784 39.99877 40.726148 40 41.099609 C 39.9979 41.747076 39.881569 42.389094 39.65625 42.996094 C 41.122911 41.968363 41.997349 40.290899 42 38.5 L 42 38 C 42 36.892 41.108 36 40 36 z M 22 39 L 27 39 L 27 42 L 22 42 L 22 39 z "
      id="rect4167" />
 </svg>

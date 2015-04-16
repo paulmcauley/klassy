@@ -161,7 +161,7 @@
       <stop
          id="stop4355-4"
          offset="1"
-         style="stop-color:#fb9fa2;stop-opacity:1" />
+         style="stop-color:#fcbcbe;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        id="linearGradient4300"
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#fb9fa2;fill-opacity:1;stroke:none;stroke-opacity:1"
+     style="opacity:1;fill:#fcbcbe;fill-opacity:1;stroke:none;stroke-opacity:1"
      d="M 32 21 A 11 11 0 0 0 21 32 A 11 11 0 0 0 32 43 A 11 11 0 0 0 43 32 A 11 11 0 0 0 32 21 z M 32 22 A 10 10 0 0 1 42 32 A 10 10 0 0 1 32 42 A 10 10 0 0 1 22 32 A 10 10 0 0 1 32 22 z M 32 23 A 9 9 0 0 0 29.607422 23.333984 L 29.849609 24.306641 A 8 8 0 0 1 32 24 A 8 8 0 0 1 40 32 A 8 8 0 0 1 39.929688 33 L 40.933594 33 A 9 9 0 0 0 41 32 A 9 9 0 0 0 32 23 z M 27.078125 24.476562 A 9 9 0 0 0 23.640625 28.671875 L 24.539062 29.136719 A 8 8 0 0 1 27.580078 25.34375 L 27.078125 24.476562 z M 34.140625 26.058594 L 32.011719 34 A 2 2 0 0 0 32 34 A 2 2 0 0 0 30 36 A 2 2 0 0 0 32 38 A 2 2 0 0 0 34 36 A 2 2 0 0 0 32.9375 34.234375 A 2 2 0 0 1 32.978516 34.255859 L 35.107422 26.316406 L 34.140625 26.058594 z M 23.056641 31.083984 A 9 9 0 0 0 23 32 A 9 9 0 0 0 23.060547 33 L 24.072266 33 A 8 8 0 0 1 24 32 A 8 8 0 0 1 24.035156 31.292969 L 23.056641 31.083984 z M 32.169922 34.009766 A 2 2 0 0 1 32.269531 34.021484 A 2 2 0 0 0 32.169922 34.009766 z M 32.75 34.148438 A 2 2 0 0 1 32.851562 34.193359 A 2 2 0 0 0 32.75 34.148438 z M 32 35 A 1 1 0 0 1 33 36 A 1 1 0 0 1 32 37 A 1 1 0 0 1 31 36 A 1 1 0 0 1 32 35 z "
      id="path4165" />
 </svg>

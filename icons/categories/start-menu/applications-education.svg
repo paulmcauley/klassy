@@ -15,7 +15,8 @@
    id="svg5453"
    version="1.1"
    inkscape:version="0.91+devel r"
-   sodipodi:docname="applications-education.svg">
+   sodipodi:docname="applications-education.svg"
+   viewBox="0 0 32 32">
   <defs
      id="defs5455">
     <linearGradient
@@ -71,8 +72,8 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="15.999999"
-     inkscape:cx="11.644046"
-     inkscape:cy="1.1212459"
+     inkscape:cx="-1.6059548"
+     inkscape:cy="16.121247"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -80,8 +81,8 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-width="2560"
+     inkscape:window-height="957"
      inkscape:window-x="-4"
      inkscape:window-y="29"
      inkscape:window-maximized="1"
@@ -149,7 +150,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -171,13 +172,6 @@
        style="fill:url(#linearGradient3087);fill-opacity:1;stroke:none;stroke-width:0.66666621"
        d="m 384.57143,517.798 0,1.4 0,26.59998 1.33333,0 30.66665,0 3e-5,-2.09998 -3e-5,-24.5 0,-1.4 -1.33334,0 -29.33331,0 z m 2.00004,2 27.99996,0 0,24 -27.99996,0 z"
        id="rect4778" />
-    <rect
-       style="fill:#aa7f41;fill-opacity:1;stroke:none;stroke-width:0.66666621"
-       id="rect4799"
-       width="31.999949"
-       height="0.9999665"
-       x="384.57147"
-       y="544.79803" />
     <path
        sodipodi:nodetypes="ccccccccccccc"
        inkscape:connector-curvature="0"

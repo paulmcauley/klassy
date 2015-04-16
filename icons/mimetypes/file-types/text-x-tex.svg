@@ -161,7 +161,7 @@
       <stop
          id="stop4355-6"
          offset="1"
-         style="stop-color:#dcc6e0;stop-opacity:1" />
+         style="stop-color:#e8d9eb;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        id="linearGradient4300-1"
@@ -206,7 +206,7 @@
      x="10"
      y="3" />
   <path
-     style="opacity:1;fill:#dcc6e0;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#e8d9eb;fill-opacity:1;stroke:none"
      d="M 21 21 L 21 22 L 21 23 L 21 24 L 43 24 L 43 23 L 43 22 L 43 21 L 21 21 z M 29.46875 26 L 29.5 26.875 L 35.5 35 L 29 43 L 29 44 L 43 44 L 43 39 L 42 39 C 42 40 42.259312 40.620032 41.40625 41.21875 C 40.47102 41.87512 39.239383 42 38.15625 42 L 33 42 L 38 35 L 33 27 L 35.9375 27 C 38.021594 27 40.987855 26.807586 41.8125 29.3125 C 41.95347 29.740691 41.96451 30.550399 42 31 L 43 31 L 43 26 L 29.46875 26 z M 21 27 L 21 28 L 28 28 L 28 27 L 21 27 z M 21 30 L 21 31 L 30 31 L 30 30 L 21 30 z M 21 33 L 21 34 L 32 34 L 32 33 L 21 33 z M 21 36 L 21 37 L 32 37 L 32 36 L 21 36 z M 21 39 L 21 40 L 30 40 L 30 39 L 21 39 z M 21 42 L 21 43 L 27 43 L 27 42 L 21 42 z "
      id="rect4274" />
   <path

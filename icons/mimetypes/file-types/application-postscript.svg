@@ -118,7 +118,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#ffecdb;stop-opacity:1"
+         style="stop-color:#fffcf9;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -203,7 +203,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="fill:#ffecdb;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+     style="fill:#fffcf9;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
      d="M 24 21 L 24 28 L 21 28 L 21 29 L 21 39 L 27 39 L 27 42 L 27 43 L 28 43 L 36 43 L 37 43 L 37 42 L 37 39 L 43 39 L 43 28 L 40 28 L 40 21 L 24 21 z M 25 22 L 39 22 L 39 28 L 37 28 L 37 27 L 27 27 L 27 28 L 25 28 L 25 22 z M 27 24 L 27 25 L 37 25 L 37 24 L 27 24 z M 22 29 L 42 29 L 42 38 L 39 38 L 39 35 L 25 35 L 25 38 L 22 38 L 22 29 z M 36 31 L 36 32 L 40 32 L 40 31 L 36 31 z M 28 39 L 36 39 L 36 42 L 28 42 L 28 39 z "
      id="path4166" />
 </svg>

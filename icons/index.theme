@@ -88,9 +88,9 @@ Size=16
 Context=Actions
 Type=Fixed
 
-#16x16 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
+#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
 [actions/categories]
-Size=16
+Size=22
 Context=Categories
 Type=Fixed
 

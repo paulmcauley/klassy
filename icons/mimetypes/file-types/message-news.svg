@@ -119,7 +119,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#ececec;stop-opacity:1"
+         style="stop-color:#fbfbfb;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -167,7 +167,7 @@
        inkscape:collect="always"
        id="linearGradient4300-7">
       <stop
-         style="stop-color:#6c7a89;stop-opacity:1"
+         style="stop-color:#5e6b78;stop-opacity:1"
          offset="0"
          id="stop4302-2" />
       <stop
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#ececec;fill-opacity:1;stroke:none;stroke-opacity:1"
+     style="opacity:1;fill:#fbfbfb;fill-opacity:1;stroke:none;stroke-opacity:1"
      d="M 23 21 L 23 27 L 20 27 L 19 27 L 19 28 L 19 30 L 19 40.5 C 19 41.885 20.115 43 21.5 43 L 23 43 L 24 43 L 42.5 43 C 43.885 43 45 41.885 45 40.5 L 45 30 L 45 21 L 23 21 z M 24 22 L 44 22 L 44 30 L 44 40.5 C 44 41.331 43.331 42 42.5 42 L 24 42 L 24 28 L 24 27 L 24 22 z M 25 23 L 25 27 L 43 27 L 43 23 L 25 23 z M 26 24 L 42 24 L 42 26 L 26 26 L 26 24 z M 20 28 L 23 28 L 23 42 L 21.5 42 C 20.669 42 20 41.331 20 40.5 L 20 30 L 20 28 z M 25 29 L 25 38 L 35 38 L 35 29 L 25 29 z M 36 29 L 36 30 L 43 30 L 43 29 L 36 29 z M 26 30 L 34 30 L 34 37 L 26 37 L 26 30 z M 36 33 L 36 34 L 43 34 L 43 33 L 36 33 z M 36 37 L 36 38 L 43 38 L 43 37 L 36 37 z M 25 40 L 25 41 L 43 41 L 43 40 L 25 40 z "
      id="rect4225" />
 </svg>

@@ -172,11 +172,11 @@
       <stop
          id="stop4353"
          offset="0"
-         style="stop-color:#04896a;stop-opacity:1" />
+         style="stop-color:#036b53;stop-opacity:1" />
       <stop
          id="stop4355"
          offset="1"
-         style="stop-color:#04896a;stop-opacity:1" />
+         style="stop-color:#036b53;stop-opacity:1" />
     </linearGradient>
     <linearGradient
        inkscape:collect="always"
@@ -186,7 +186,7 @@
          offset="0"
          id="stop4353-9" />
       <stop
-         style="stop-color:#fb9fa2;stop-opacity:1"
+         style="stop-color:#fcbcbe;stop-opacity:1"
          offset="1"
          id="stop4355-6" />
     </linearGradient>
@@ -208,7 +208,7 @@
      d="M 10 3 L 10 61 L 40 61 L 54 47 L 54 17 L 54 3 L 40 3 L 10 3 z "
      id="rect3500" />
   <path
-     style="fill:#fb9fa2;fill-opacity:1;stroke:none"
+     style="fill:#fcbcbe;fill-opacity:1;stroke:none"
      d="m 21,21 0,1 22,0 0,-1 z m 0,3 0,1 22,0 0,-1 z m 0,3 0,1 11,0 0,-1 z m 0,4 0,1 11,0 11,0 0,-1 z m 15,2 0,1 0,3.300781 1,0 L 37,34 l 2,0 0,3.300781 1,0 L 40,34 40,33 Z m -15,1 0,1 11,0 0,-1 z m 0,2 0,1 9,0 0,-1 z M 33.707031,37.292969 33,38 36.292969,41.292969 38,43 39.707031,41.292969 43,38 42.292969,37.292969 39,40.585938 l -1,1 -1,-1 z M 21,39 l 0,1 7,0 0,-1 z m 0,3 0,1 9,0 0,-1 z"
      id="path4207"
      inkscape:connector-curvature="0"

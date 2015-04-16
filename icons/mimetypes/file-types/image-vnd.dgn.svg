@@ -162,7 +162,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#e4f1fe;stop-opacity:1"
+         style="stop-color:#ffffff;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -213,7 +213,7 @@
      id="rect4323"
      inkscape:connector-curvature="0" />
   <path
-     style="fill:#e4f1fe;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
      d="M 30 21 L 30 25 L 34 25 L 34 21 L 30 21 z M 31 22 L 33 22 L 33 24 L 31 24 L 31 22 z M 29.335938 23.257812 L 27.404297 23.775391 L 27.664062 24.742188 L 29.595703 24.224609 L 29.335938 23.257812 z M 26.335938 24.257812 L 24.404297 24.775391 L 24.664062 25.742188 L 26.595703 25.224609 L 26.335938 24.257812 z M 35 24.533203 L 35 25.568359 L 41.142578 27.212891 L 35 28.966797 L 35 30 L 35 37.433594 L 35 38.46875 L 35 41.966797 L 35 43 L 35.029297 43 L 43 40.722656 L 43 40.666016 L 43 40.611328 L 43 39.683594 L 43 27.722656 L 43 27.710938 L 43 26.660156 L 35 24.533203 z M 23 25 A 1 1 0 0 0 22 26 A 1 1 0 0 0 23 27 A 1 1 0 0 0 24 26 A 1 1 0 0 0 23 25 z M 21 27 L 21 41 L 33 43 L 33 29 L 21 27 z M 42 28.007812 L 42 39.310547 L 36 37.701172 L 36 29.722656 L 42 28.007812 z M 36 38.736328 L 41.322266 40.162109 L 36 41.681641 L 36 38.736328 z "
      id="path4166" />
 </svg>

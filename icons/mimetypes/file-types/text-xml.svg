@@ -119,7 +119,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#f9bda3;stop-opacity:1"
+         style="stop-color:#fbd2bf;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#f9bda3;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#fbd2bf;fill-opacity:1;stroke:none"
      d="M 34.429688 21 L 28.603516 42.740234 L 29.570312 43 L 35.396484 21.259766 L 34.429688 21 z M 27 26 L 21.707031 31.292969 L 21 32 L 21.707031 32.707031 L 27 38 L 27.707031 37.292969 L 22.414062 32 L 27.707031 26.707031 L 27 26 z M 37 26 L 36.292969 26.707031 L 41.585938 32 L 36.292969 37.292969 L 37 38 L 42.292969 32.707031 L 43 32 L 42.292969 31.292969 L 37 26 z "
      id="path4317" />
 </svg>

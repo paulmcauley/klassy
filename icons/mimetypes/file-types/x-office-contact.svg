@@ -118,7 +118,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#e4f1fe;stop-opacity:1"
+         style="stop-color:#ffffff;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -204,7 +204,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#e4f1fe;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     style="color:#000000;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
      d="M 28.5 21 C 26.007 21 24 23.007 24 25.5 C 24 27.993 26.007 30 28.5 30 C 30.993 30 33 27.993 33 25.5 C 33 23.007 30.993 21 28.5 21 z M 28.5 22 C 30.439 22 32 23.561 32 25.5 C 32 27.439 30.439 29 28.5 29 C 26.561 29 25 27.439 25 25.5 C 25 23.561 26.561 22 28.5 22 z M 39 22.099609 C 37.338 22.099609 36 23.437609 36 25.099609 C 36 26.76161 37.338 28.099609 39 28.099609 C 40.662 28.099609 42 26.76161 42 25.099609 C 42 23.437609 40.662 22.099609 39 22.099609 z M 39 23.099609 C 40.108 23.099609 41 23.991609 41 25.099609 C 41 26.20761 40.108 27.099609 39 27.099609 C 37.892 27.099609 37 26.20761 37 25.099609 C 37 23.991609 37.892 23.099609 39 23.099609 z M 39 30 C 37.814201 30 36.764447 30.521432 36.033203 31.335938 A 9 9 0 0 1 36.736328 32.048828 C 37.285649 31.411429 38.088684 31 39 31 C 40.662 31 42 32.338 42 34 L 42 38 L 39 38 A 9 9 0 0 1 38.939453 39 L 42 39 C 42.352917 39 42.68601 39.070688 43 39.181641 L 43 39 L 43 38 L 43 34 C 43 31.784 41.216 30 39 30 z M 28.5 31 C 24.345 31 21 34.345 21 38.5 L 21 42 L 21 43 L 22 43 L 35 43 L 36 43 L 36 42 L 36 38.5 C 36 34.345 32.655 31 28.5 31 z M 28.5 32.101562 C 32.101 32.101562 35 35.000563 35 38.601562 L 35 42 L 22 42 L 22 38.601562 C 22 35.000563 24.899 32.101562 28.5 32.101562 z "
      id="rect4170" />
 </svg>

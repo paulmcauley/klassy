@@ -155,11 +155,11 @@
        inkscape:collect="always"
        id="linearGradient4351-4">
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="0"
          id="stop4353-8" />
       <stop
-         style="stop-color:#04896a;stop-opacity:1"
+         style="stop-color:#036b53;stop-opacity:1"
          offset="1"
          id="stop4355-4" />
     </linearGradient>
@@ -210,7 +210,7 @@
      id="rect4323"
      inkscape:connector-curvature="0" />
   <path
-     style="opacity:1;fill:#04896a;fill-opacity:1;stroke:none"
+     style="opacity:1;fill:#036b53;fill-opacity:1;stroke:none"
      d="M 21 21 L 21 43 L 43 43 L 43 21 L 21 21 z M 22 26 L 27 26 L 27 42 L 22 42 L 22 26 z M 28 26 L 42 26 L 42 42 L 28 42 L 28 26 z "
      id="rect4168" />
 </svg>

@@ -119,7 +119,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#ececec;stop-opacity:1"
+         style="stop-color:#fbfbfb;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -167,7 +167,7 @@
        inkscape:collect="always"
        id="linearGradient4300-7">
       <stop
-         style="stop-color:#6c7a89;stop-opacity:1"
+         style="stop-color:#5e6b78;stop-opacity:1"
          offset="0"
          id="stop4302-2" />
       <stop
@@ -205,7 +205,7 @@
      d="M 26,61 40,47 40,61 Z"
      style="opacity:0.2;fill:url(#linearGradient4427);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   <path
-     style="opacity:1;fill:#ececec;fill-opacity:1;stroke:none;stroke-opacity:1"
+     style="opacity:1;fill:#fbfbfb;fill-opacity:1;stroke:none;stroke-opacity:1"
      d="M 26 21 A 2 2 0 0 0 24 23 A 2 2 0 0 0 25 24.728516 L 25 39.269531 A 2 2 0 0 0 24 41 A 2 2 0 0 0 26 43 A 2 2 0 0 0 28 41 A 2 2 0 0 0 27 39.271484 L 27 24.730469 A 2 2 0 0 0 28 23 A 2 2 0 0 0 26 21 z M 28 23 L 31 25.099609 L 31 24 L 35 24 C 36.108 24 37 24.892 37 26 L 37 33 L 37 39.269531 A 2 2 0 0 0 36 41 A 2 2 0 0 0 38 43 A 2 2 0 0 0 40 41 A 2 2 0 0 0 39 39.271484 L 39 25 C 39 23.338 37.661668 22.033233 36 22 L 31 22 L 31 21 L 28 23 z M 26 22 A 1 1 0 0 1 27 23 A 1 1 0 0 1 26 24 A 1 1 0 0 1 25 23 A 1 1 0 0 1 26 22 z M 26 40 A 1 1 0 0 1 27 41 A 1 1 0 0 1 26 42 A 1 1 0 0 1 25 41 A 1 1 0 0 1 26 40 z M 38 40 A 1 1 0 0 1 39 41 A 1 1 0 0 1 38 42 A 1 1 0 0 1 37 41 A 1 1 0 0 1 38 40 z "
      id="path4211" />
 </svg>

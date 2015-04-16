@@ -118,7 +118,7 @@
          offset="0"
          id="stop4353" />
       <stop
-         style="stop-color:#e4f1fe;stop-opacity:1"
+         style="stop-color:#ffffff;stop-opacity:1"
          offset="1"
          id="stop4355" />
     </linearGradient>
@@ -209,11 +209,11 @@
      id="rect4323"
      inkscape:connector-curvature="0" />
   <g
-     style="fill:#e4f1fe;fill-opacity:1"
+     style="fill:#ffffff;fill-opacity:1"
      transform="matrix(1.8333333,0,0,1.8333333,-159.76667,-1532.3467)"
      id="g90">
     <path
-       style="opacity:1;fill:#e4f1fe;fill-opacity:1;stroke:none;stroke-opacity:1"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-opacity:1"
        d="M 39 21 L 39 41 L 41 41 L 41 21 L 39 21 z M 27 29 L 27 41 L 29 41 L 29 29 L 27 29 z M 31 33 L 31 41 L 33 41 L 33 33 L 31 33 z M 35 36 L 35 41 L 37 41 L 37 36 L 35 36 z M 23 38 L 23 41 L 25 41 L 25 38 L 23 38 z M 21 42 L 21 43 L 43 43 L 43 42 L 21 42 z "
        transform="matrix(0.54545456,0,0,0.54545456,87.145458,835.82549)"
        id="rect4167" />
