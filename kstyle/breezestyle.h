@@ -320,6 +320,9 @@ namespace Breeze
         //* spinbox arrows
         void renderSpinBoxArrow( const SubControl&, const QStyleOptionSpinBox*, QPainter*, const QWidget*) const;
 
+        //* menu title
+        void renderMenuTitle( const QStyleOptionToolButton*, QPainter*, const QWidget* ) const;
+
         //* return dial angle based on option and value
         qreal dialAngle( const QStyleOptionSlider*, int ) const;
 
@@ -438,6 +441,9 @@ namespace Breeze
 
         //* return true if one of the widget's parent inherits requested type
         template<typename T> bool hasParent( const QWidget* ) const;
+
+        //* return true if passed widget is a menu title (KMenu::addTitle)
+        bool isMenuTitle( const QWidget* ) const;
 
         private:
 

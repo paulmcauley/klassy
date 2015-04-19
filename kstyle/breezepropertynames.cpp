@@ -29,5 +29,6 @@ namespace Breeze
     const char PropertyNames::netWMSkipShadow[] = "_KDE_NET_WM_SKIP_SHADOW";
     const char PropertyNames::sidePanelView[] = "_kde_side_panel_view";
     const char PropertyNames::toolButtonAlignment[] = "_kde_toolButton_alignment";
+    const char PropertyNames::menuTitle[] = "_breeze_toolButton_menutitle";
 
 }

@@ -33,6 +33,7 @@ namespace Breeze
         static const char netWMSkipShadow[];
         static const char sidePanelView[];
         static const char toolButtonAlignment[];
+        static const char menuTitle[];
     };
 
 }

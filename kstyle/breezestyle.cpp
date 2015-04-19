@@ -57,6 +57,7 @@
 #include <QTextEdit>
 #include <QToolBox>
 #include <QToolButton>
+#include <QWidgetAction>
 
 namespace BreezePrivate
 {
@@ -4259,11 +4260,11 @@ namespace Breeze
 
                 /*
                  * separator can have a title and an icon
-                 * in that case they are rendered as sunken flat toolbuttons
+                 * in that case they are rendered as menu title buttons
                  */
-                QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
-                toolButtonOption.state = State_On|State_Sunken|State_HasFocus|State_Enabled;
-                drawComplexControl( CC_ToolButton, &toolButtonOption, painter, widget );
+                QStyleOptionToolButton copy( separatorMenuItemOption( menuItemOption, widget ) );
+                renderMenuTitle( &copy, painter, widget );
+
                 return true;
 
             }
@@ -5451,6 +5452,19 @@ namespace Breeze
 
         // detect buttons in tabbar, for which special rendering is needed
         const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
+        const bool isMenuTitle( this->isMenuTitle( widget ) );
+        if( isMenuTitle )
+        {
+            // copy option to adust state, and set font as not-bold
+            QStyleOptionToolButton copy( *toolButtonOption );
+            copy.font.setBold( false );
+            copy.state = State_Enabled;
+
+            // render
+            renderMenuTitle( &copy, painter, widget );
+            return true;
+        }
+
 
         // copy option and alter palette
         QStyleOptionToolButton copy( *toolButtonOption );
@@ -6159,6 +6173,17 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Style::renderMenuTitle( const QStyleOptionToolButton* option, QPainter* painter, const QWidget* widget ) const
+    {
+        const QPalette& palette( option->palette );
+        const QColor outline( _helper->buttonOutlineColor( palette, false, false ) );
+        const QColor background( _helper->buttonBackgroundColor( palette, false, false ) );
+
+        _helper->renderButtonFrame( painter, option->rect, background, outline, QColor(), false, false );
+        drawControl( CE_ToolButtonLabel, option, painter, widget);
+    }
+
+    //______________________________________________________________________________
     qreal Style::dialAngle( const QStyleOptionSlider* sliderOption, int value ) const
     {
 
@@ -6287,7 +6312,7 @@ namespace Breeze
         toolButtonOption.initFrom( widget );
         toolButtonOption.rect = menuItemOption->rect;
         toolButtonOption.features = QStyleOptionToolButton::None;
-        toolButtonOption.state = State_On|State_Sunken|State_Enabled;
+        toolButtonOption.state = State_Enabled;
         toolButtonOption.subControls = SC_ToolButton;
         toolButtonOption.icon =  menuItemOption->icon;
 
@@ -6296,7 +6321,6 @@ namespace Breeze
         toolButtonOption.text = menuItemOption->text;
 
         toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
-
         return toolButtonOption;
 
     }
@@ -6511,6 +6535,29 @@ namespace Breeze
 
         // check whether index is selected
         return itemView->selectionModel()->isSelected( index );
+
+    }
+
+    //____________________________________________________________________
+    bool Style::isMenuTitle( const QWidget* widget ) const
+    {
+        if( !widget ) return false;
+        if( widget->property( PropertyNames::menuTitle ).toBool() ) return true;
+
+        // detect menu toolbuttons
+        QWidget* parent = widget->parentWidget();
+        if( qobject_cast<QMenu*>( parent ) )
+        {
+            foreach( auto child, parent->findChildren<QWidgetAction*>() )
+            {
+                if( child->defaultWidget() != widget ) continue;
+                const_cast<QWidget*>(widget)->setProperty( PropertyNames::menuTitle, true );
+                return true;
+            }
+
+        }
+
+        return false;
 
     }
 
