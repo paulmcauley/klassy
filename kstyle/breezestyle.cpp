@@ -5704,8 +5704,8 @@ namespace Breeze
 
         }
 
-        if( option->subControls & SC_SpinBoxUp ) renderSpinBoxArrow( painter, spinBoxOption, widget, SC_SpinBoxUp );
-        if( option->subControls & SC_SpinBoxDown ) renderSpinBoxArrow( painter, spinBoxOption, widget, SC_SpinBoxDown );
+        if( option->subControls & SC_SpinBoxUp ) renderSpinBoxArrow( SC_SpinBoxUp, spinBoxOption, painter, widget );
+        if( option->subControls & SC_SpinBoxDown ) renderSpinBoxArrow( SC_SpinBoxDown, spinBoxOption, painter, widget );
 
         return true;
 
@@ -6097,7 +6097,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________________________
-    void Style::renderSpinBoxArrow( QPainter* painter, const QStyleOptionSpinBox* option, const QWidget* widget, const SubControl& subControl ) const
+    void Style::renderSpinBoxArrow( const SubControl& subControl, const QStyleOptionSpinBox* option, QPainter* painter, const QWidget* widget ) const
     {
 
         const QPalette& palette( option->palette );

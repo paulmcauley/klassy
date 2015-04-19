@@ -318,7 +318,7 @@ namespace Breeze
         //@{
 
         //* spinbox arrows
-        void renderSpinBoxArrow( QPainter*, const QStyleOptionSpinBox*, const QWidget*, const SubControl& ) const;
+        void renderSpinBoxArrow( const SubControl&, const QStyleOptionSpinBox*, QPainter*, const QWidget*) const;
 
         //* return dial angle based on option and value
         qreal dialAngle( const QStyleOptionSlider*, int ) const;
