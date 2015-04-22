@@ -2731,7 +2731,12 @@ namespace Breeze
     QSize Style::itemViewItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
         // call base class
-        QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
+        const QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
+
+        #if QT_VERSION >= 0x050000
+        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        if( isQtQuickControl ) return size;
+        #endif;
 
         // add margins
         return expandSize( size, Metrics::ItemView_ItemMarginWidth );
