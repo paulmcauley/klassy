@@ -466,7 +466,7 @@ namespace Breeze
 
         // draw caption
         painter->setFont(s->font());
-        painter->setPen(m_colorSettings.font(c->isActive()));
+        painter->setPen( fontColor() );
         const auto cR = captionRect();
         const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
         painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
