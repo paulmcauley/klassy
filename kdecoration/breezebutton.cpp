@@ -45,7 +45,8 @@ namespace Breeze
         const int height = decoration->buttonHeight();
         setGeometry(QRect(0, 0, height, height));
 
-        // connect hover state changed
+        // connections
+        connect(decoration->client().data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
         connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
 
     }
@@ -105,9 +106,6 @@ namespace Breeze
         return nullptr;
 
     }
-
-    //__________________________________________________________________
-    Button::~Button() = default;
 
     //__________________________________________________________________
     void Button::paint(QPainter *painter, const QRect &repaintRegion)

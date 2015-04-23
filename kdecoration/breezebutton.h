@@ -44,13 +44,13 @@ namespace Breeze
         explicit Button(QObject *parent, const QVariantList &args);
 
         //* destructor
-        virtual ~Button();
+        virtual ~Button() = default;
+
+        //* button creation
+        static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
 
         //* render
-        void paint(QPainter *painter, const QRect &repaintRegion) override;
-
-        //* create
-        static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
+        virtual void paint(QPainter *painter, const QRect &repaintRegion) Q_DECL_OVERRIDE;
 
         //* flag
         enum Flag

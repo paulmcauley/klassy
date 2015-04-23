@@ -140,7 +140,6 @@ namespace Breeze
         m_colorSettings.update(client().data()->palette(), *client().data());
         m_useSeparator = (m_colorSettings.palette().color( QPalette::Window ) != m_colorSettings.activeTitleBar() );
 
-
         // active state change animation
         m_animation->setStartValue( 0 );
         m_animation->setEndValue( 1.0 );
@@ -482,11 +481,11 @@ namespace Breeze
         const int baseSize = settings()->gridUnit();
         switch( m_internalSettings->buttonSize() )
         {
-            case Breeze::InternalSettings::ButtonSmall: return baseSize*1.5;
+            case InternalSettings::ButtonSmall: return baseSize*1.5;
             default:
-            case Breeze::InternalSettings::ButtonDefault: return baseSize*2;
-            case Breeze::InternalSettings::ButtonLarge: return baseSize*2.5;
-            case Breeze::InternalSettings::ButtonVeryLarge: return baseSize*3.5;
+            case InternalSettings::ButtonDefault: return baseSize*2;
+            case InternalSettings::ButtonLarge: return baseSize*2.5;
+            case InternalSettings::ButtonVeryLarge: return baseSize*3.5;
         }
 
     }
@@ -508,17 +507,17 @@ namespace Breeze
 
             switch( m_internalSettings->titleAlignment() )
             {
-                case Breeze::InternalSettings::AlignLeft:
+                case InternalSettings::AlignLeft:
                 return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignLeft );
 
-                case Breeze::InternalSettings::AlignRight:
+                case InternalSettings::AlignRight:
                 return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignRight );
 
-                case Breeze::InternalSettings::AlignCenter:
+                case InternalSettings::AlignCenter:
                 return qMakePair( maxRect, Qt::AlignCenter );
 
                 default:
-                case Breeze::InternalSettings::AlignCenterFullWidth:
+                case InternalSettings::AlignCenterFullWidth:
                 {
 
                     // full caption rect
@@ -634,9 +633,9 @@ namespace Breeze
         if( c->windowId() != 0 )
         {
             m_sizeGrip = new SizeGrip( this );
-            connect( client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
-            connect( client().data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
-            connect( client().data(), &KDecoration2::DecoratedClient::resizeableChanged, this, &Breeze::Decoration::updateSizeGripVisibility );
+            connect( client().data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateSizeGripVisibility );
+            connect( client().data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateSizeGripVisibility );
+            connect( client().data(), &KDecoration2::DecoratedClient::resizeableChanged, this, &Decoration::updateSizeGripVisibility );
         }
         #endif
 
