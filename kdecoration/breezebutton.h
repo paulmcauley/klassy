@@ -96,6 +96,9 @@ namespace Breeze
 
         private Q_SLOTS:
 
+        //* apply configuration changes
+        void reconfigure();
+
         //* animation state
         void updateAnimationState(bool);
 
