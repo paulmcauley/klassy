@@ -552,74 +552,73 @@ namespace Breeze
     {
 
         // assign global shadow if exists and parameters match
-        if( g_sShadow && g_shadowSize == m_internalSettings->shadowSize() && g_shadowStrength == m_internalSettings->shadowStrength() )
+        if( !( g_sShadow && g_shadowSize == m_internalSettings->shadowSize() && g_shadowStrength == m_internalSettings->shadowStrength() ) )
         {
-            setShadow(g_sShadow);
-            return;
+            // assign parameters
+            g_shadowSize = m_internalSettings->shadowSize();
+            g_shadowStrength = m_internalSettings->shadowStrength();
+            const int shadowOffset = qMax( 6*g_shadowSize/16, Metrics::Shadow_Overlap*2 );
+
+            // create image
+            QImage image(2*g_shadowSize, 2*g_shadowSize, QImage::Format_ARGB32_Premultiplied);
+            image.fill(Qt::transparent);
+
+            // create gradient
+            // gaussian delta function
+            auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
+
+            // color calculation delta function
+            auto gradientStopColor = [](QColor color, int alpha)
+            {
+                color.setAlpha(alpha);
+                return color;
+            };
+
+            const QColor shadowColor( m_colorSettings.palette().color( QPalette::Shadow ) );
+
+            QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize);
+            for( int i = 0; i < 10; ++i )
+            {
+                const qreal x( qreal( i )/9 );
+                radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*g_shadowStrength));
+            }
+
+            radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
+
+            // fill
+            QPainter painter(&image);
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+            painter.fillRect( image.rect(), radialGradient);
+
+            // contrast pixel
+            painter.setBrush( Qt::NoBrush );
+            painter.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
+            painter.setRenderHints(QPainter::Antialiasing );
+            painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
+            painter.end();
+
+
+            g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
+            g_sShadow->setPadding( QMargins(
+                g_shadowSize-shadowOffset,
+                g_shadowSize-shadowOffset,
+                g_shadowSize,
+                g_shadowSize ) );
+
+            g_sShadow->setInnerShadowRect(QRect(
+                g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+                g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
+                shadowOffset - 2*Metrics::Shadow_Overlap,
+                shadowOffset - 2*Metrics::Shadow_Overlap ) );
+
+
+            // assign image
+            g_sShadow->setShadow(image);
+
         }
 
-        // assign parameters
-        g_shadowSize = m_internalSettings->shadowSize();
-        g_shadowStrength = m_internalSettings->shadowStrength();
+        setShadow(g_sShadow);
 
-        // setup shadow
-        const int shadowOffset = qMax( 6*g_shadowSize/16, Metrics::Shadow_Overlap*2 );
-        auto decorationShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
-        decorationShadow->setPadding( QMargins(
-            g_shadowSize-shadowOffset,
-            g_shadowSize-shadowOffset,
-            g_shadowSize,
-            g_shadowSize ) );
-
-        decorationShadow->setInnerShadowRect(QRect(
-            g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-            g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-            shadowOffset - 2*Metrics::Shadow_Overlap,
-            shadowOffset - 2*Metrics::Shadow_Overlap ) );
-
-        // create image
-        QImage image(2*g_shadowSize, 2*g_shadowSize, QImage::Format_ARGB32_Premultiplied);
-        image.fill(Qt::transparent);
-
-        // create gradient
-        // gaussian delta function
-        auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
-
-        // color calculation delta function
-        auto gradientStopColor = [](QColor color, int alpha)
-        {
-            color.setAlpha(alpha);
-            return color;
-        };
-
-        const QColor shadowColor( m_colorSettings.palette().color( QPalette::Shadow ) );
-
-        QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize);
-        for( int i = 0; i < 10; ++i )
-        {
-            const qreal x( qreal( i )/9 );
-            radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*g_shadowStrength));
-        }
-
-        radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
-
-        // fill
-        QPainter painter(&image);
-        painter.setCompositionMode(QPainter::CompositionMode_Source);
-        painter.fillRect( image.rect(), radialGradient);
-
-        // contrast pixel
-        painter.setBrush( Qt::NoBrush );
-        painter.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
-        painter.setRenderHints(QPainter::Antialiasing );
-        painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
-        painter.end();
-
-        // assign to shadow
-        decorationShadow->setShadow(image);
-
-        g_sShadow = decorationShadow;
-        setShadow(decorationShadow);
     }
 
     //_________________________________________________________________
