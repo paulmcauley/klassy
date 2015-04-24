@@ -51,7 +51,6 @@ if(NOT BREEZE_USE_KDE4)
       install(TARGETS breeze-settings5 ${INSTALL_TARGETS_DEFAULT_ARGS})
 
       # icon
-      message( "ICON_INSTALL_DIR: ${ICON_INSTALL_DIR}" )
       ecm_install_icons(ICONS sc-apps-breeze-settings.svgz
         DESTINATION ${ICON_INSTALL_DIR}
         THEME hicolor )
