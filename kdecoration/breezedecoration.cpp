@@ -72,7 +72,7 @@ namespace Breeze
         , m_colorSettings()
         , m_animation( new QPropertyAnimation( this ) )
     {
-        // g_sDecoCount++;
+        g_sDecoCount++;
     }
 
     //________________________________________________________________
