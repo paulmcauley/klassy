@@ -209,8 +209,14 @@ namespace Breeze
     {
         if( m_internalSettings->animationsEnabled() )
         {
+
             m_animation->setDirection( client().data()->isActive() ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
             if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
+
+        } else {
+
+            update();
+
         }
     }
 
