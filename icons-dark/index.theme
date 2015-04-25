@@ -72,7 +72,7 @@ Comment[zh_TW]=KDE 視覺設計組製作的微風暗色系圖示主題
 
 DisplayDepth=32
 
-Inherits=Breeze
+Inherits=breeze
 
 Example=folder
 
