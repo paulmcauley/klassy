@@ -367,36 +367,54 @@ namespace Breeze
             static_cast<Button*>( button.data() )->setIconSize( QSize( bWidth, bWidth ) );
         }
 
-        if( isMaximized() )
+        // left buttons
+        if( !m_leftButtons->buttons().isEmpty() )
         {
-            // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
-            const int hOffset = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-            if( !m_leftButtons->buttons().isEmpty() )
-            {
-                auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hOffset, bHeight ) ) );
-                button->setFlag( Button::FlagFirstInList );
-                button->setHorizontalOffset( hOffset );
-            }
 
-            if( !m_rightButtons->buttons().isEmpty() )
+            // spacing
+            m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
+
+            // padding
+            const int vPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            if( isMaximizedHorizontally() )
             {
-                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hOffset, bHeight ) ) );
-                button->setFlag( Button::FlagLastInList );
-                button->setHorizontalOffset( hOffset );
-            }
+                // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
+                auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
+                button->setFlag( Button::FlagFirstInList );
+                button->setHorizontalOffset( hPadding );
+
+                m_leftButtons->setPos(QPointF(0, vPadding));
+
+            } else m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
 
         }
 
-        // adjust buttons position
-        const int vPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-        const int hPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_SideMargin;
+        // right buttons
+        if( !m_rightButtons->buttons().isEmpty() )
+        {
 
-        m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-        m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-        m_leftButtons->setPos(QPointF(hPadding, vPadding));
-        m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding, vPadding));
+            // spacing
+            m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
+
+            // padding
+            const int vPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            if( isMaximizedHorizontally() )
+            {
+
+                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
+                button->setFlag( Button::FlagLastInList );
+
+                m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
+
+            } else m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
+
+        }
+
+
     }
 
     //________________________________________________________________
