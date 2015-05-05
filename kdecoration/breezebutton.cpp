@@ -44,6 +44,7 @@ namespace Breeze
         // setup default geometry
         const int height = decoration->buttonHeight();
         setGeometry(QRect(0, 0, height, height));
+        setIconSize(QSize( height, height ));
 
         // connections
         connect(decoration->client().data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
@@ -126,9 +127,8 @@ namespace Breeze
         if (type() == KDecoration2::DecorationButtonType::Menu)
         {
 
-            const QSizeF iconSize( size().width()-m_offset.x(), size().height()-m_offset.y() );
-            const QRectF iconRect( geometry().topLeft(), iconSize );
-            const QPixmap pixmap = decoration()->client().data()->icon().pixmap( iconSize.toSize());
+            const QRectF iconRect( geometry().topLeft(), m_iconSize );
+            const QPixmap pixmap = decoration()->client().data()->icon().pixmap( m_iconSize );
             painter->drawPixmap(iconRect.center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
 
         } else {
@@ -154,7 +154,7 @@ namespace Breeze
         */
         painter->translate( geometry().topLeft() );
 
-        const qreal width( geometry().width() - m_offset.x() );
+        const qreal width( m_iconSize.width() );
         painter->scale( width/20, width/20 );
         painter->translate( 1, 1 );
 

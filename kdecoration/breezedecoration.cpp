@@ -364,6 +364,7 @@ namespace Breeze
         {
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
             static_cast<Button*>( button.data() )->setOffset( QPointF( 0, verticalOffset ) );
+            static_cast<Button*>( button.data() )->setIconSize( QSize( bWidth, bWidth ) );
         }
 
         if( isMaximized() )
