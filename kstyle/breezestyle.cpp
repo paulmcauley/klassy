@@ -2736,7 +2736,7 @@ namespace Breeze
         #if QT_VERSION >= 0x050000
         const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
         if( isQtQuickControl ) return size;
-        #endif;
+        #endif
 
         // add margins
         return expandSize( size, Metrics::ItemView_ItemMarginWidth );
