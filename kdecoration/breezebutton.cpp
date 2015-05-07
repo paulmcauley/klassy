@@ -28,8 +28,13 @@
 namespace Breeze
 {
 
+    using KDecoration2::ColorRole;
+    using KDecoration2::ColorGroup;
+    using KDecoration2::DecorationButtonType;
+
+
     //__________________________________________________________________
-    Button::Button(KDecoration2::DecorationButtonType type, Decoration* decoration, QObject* parent)
+    Button::Button(DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
         , m_animation( new QPropertyAnimation( this ) )
     {
@@ -57,13 +62,13 @@ namespace Breeze
 
     //__________________________________________________________________
     Button::Button(QObject *parent, const QVariantList &args)
-        : DecorationButton(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
+        : DecorationButton(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
         , m_flag(FlagStandalone)
         , m_animation( new QPropertyAnimation( this ) )
     {}
 
     //__________________________________________________________________
-    Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
+    Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
     {
         if (auto d = qobject_cast<Decoration*>(decoration))
         {
@@ -71,32 +76,32 @@ namespace Breeze
             switch( type )
             {
 
-                case KDecoration2::DecorationButtonType::Close:
+                case DecorationButtonType::Close:
                 b->setVisible( d->client().data()->isCloseable() );
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
-                case KDecoration2::DecorationButtonType::Maximize:
+                case DecorationButtonType::Maximize:
                 b->setVisible( d->client().data()->isMaximizeable() );
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
-                case KDecoration2::DecorationButtonType::Minimize:
+                case DecorationButtonType::Minimize:
                 b->setVisible( d->client().data()->isMinimizeable() );
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
-                case KDecoration2::DecorationButtonType::ContextHelp:
+                case DecorationButtonType::ContextHelp:
                 b->setVisible( d->client().data()->providesContextHelp() );
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
                 break;
 
-                case KDecoration2::DecorationButtonType::Shade:
+                case DecorationButtonType::Shade:
                 b->setVisible( d->client().data()->isShadeable() );
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
-                case KDecoration2::DecorationButtonType::Menu:
+                case DecorationButtonType::Menu:
                 QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
                 break;
 
@@ -127,7 +132,7 @@ namespace Breeze
         if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
 
         // menu button
-        if (type() == KDecoration2::DecorationButtonType::Menu)
+        if (type() == DecorationButtonType::Menu)
         {
 
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
@@ -187,14 +192,14 @@ namespace Breeze
             switch( type() )
             {
 
-                case KDecoration2::DecorationButtonType::Close:
+                case DecorationButtonType::Close:
                 {
                     painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
                     painter->drawLine( 13, 5, 5, 13 );
                     break;
                 }
 
-                case KDecoration2::DecorationButtonType::Maximize:
+                case DecorationButtonType::Maximize:
                 {
                     if( isChecked() )
                     {
@@ -214,7 +219,7 @@ namespace Breeze
                     break;
                 }
 
-                case KDecoration2::DecorationButtonType::Minimize:
+                case DecorationButtonType::Minimize:
                 {
                     painter->drawPolyline( QPolygonF()
                         << QPointF( 4, 7 )
@@ -223,7 +228,7 @@ namespace Breeze
                     break;
                 }
 
-                case KDecoration2::DecorationButtonType::OnAllDesktops:
+                case DecorationButtonType::OnAllDesktops:
                 {
                     painter->setPen( Qt::NoPen );
                     painter->setBrush( foregroundColor );
@@ -260,7 +265,7 @@ namespace Breeze
                     break;
                 }
 
-                case KDecoration2::DecorationButtonType::Shade:
+                case DecorationButtonType::Shade:
                 {
 
                     if (isChecked())
@@ -285,7 +290,7 @@ namespace Breeze
 
                 }
 
-                case KDecoration2::DecorationButtonType::KeepBelow:
+                case DecorationButtonType::KeepBelow:
                 {
 
                     painter->drawPolyline( QPolygonF()
@@ -301,7 +306,7 @@ namespace Breeze
 
                 }
 
-                case KDecoration2::DecorationButtonType::KeepAbove:
+                case DecorationButtonType::KeepAbove:
                 {
                     painter->drawPolyline( QPolygonF()
                         << QPointF( 4, 9 )
@@ -316,7 +321,7 @@ namespace Breeze
                 }
 
 
-                case KDecoration2::DecorationButtonType::ApplicationMenu:
+                case DecorationButtonType::ApplicationMenu:
                 {
                     painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
                     painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
@@ -324,7 +329,7 @@ namespace Breeze
                     break;
                 }
 
-                case KDecoration2::DecorationButtonType::ContextHelp:
+                case DecorationButtonType::ContextHelp:
                 {
                     QPainterPath path;
                     path.moveTo( 5, 6 );
@@ -357,11 +362,11 @@ namespace Breeze
 
             return d->titleBarColor();
 
-        } else if( type() == KDecoration2::DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
 
             return d->titleBarColor();
 
-        } else if( ( type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
 
             return d->titleBarColor();
 
@@ -389,27 +394,30 @@ namespace Breeze
 
             return QColor();
 
-        } else if( isPressed() ) {
+        }
 
-            if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor();
+        auto c = d->client().data();
+        if( isPressed() ) {
+
+            if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
 
-        } else if( ( type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
 
             return d->fontColor();
 
         } else if( m_animation->state() == QPropertyAnimation::Running ) {
 
-            if( type() == KDecoration2::DecorationButtonType::Close )
+            if( type() == DecorationButtonType::Close )
             {
                 if( d->internalSettings()->outlineCloseButton() )
                 {
 
-                    return KColorUtils::mix( d->fontColor(), d->colorSettings().closeButtonColor().lighter(), m_opacity );
+                    return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ), m_opacity );
 
                 } else {
 
-                    QColor color( d->colorSettings().closeButtonColor().lighter() );
+                    QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
                     color.setAlpha( color.alpha()*m_opacity );
                     return color;
 
@@ -425,10 +433,10 @@ namespace Breeze
 
         } else if( isHovered() ) {
 
-            if( type() == KDecoration2::DecorationButtonType::Close ) return d->colorSettings().closeButtonColor().lighter();
+            if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
             else return d->fontColor();
 
-        } else if( type() == KDecoration2::DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
 
             return d->fontColor();
 

@@ -22,7 +22,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "breezecolorsettings.h"
 #include "breeze.h"
 #include "breezesettings.h"
 
@@ -60,10 +59,6 @@ namespace Breeze
 
         //* paint
         void paint(QPainter *painter, const QRect &repaintRegion) override;
-
-        //* color settings
-        const ColorSettings &colorSettings()
-        { return m_colorSettings; }
 
         //* internal settings
         InternalSettingsPtr internalSettings() const
@@ -134,7 +129,6 @@ namespace Breeze
         { return m_sizeGrip; }
         //@}
 
-        ColorSettings m_colorSettings;
         InternalSettingsPtr m_internalSettings;
         bool m_useSeparator = true;
 

@@ -32,7 +32,6 @@ configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h
 ################# newt target #################
 ### plugin classes
 set(breezedecoration_SRCS
-    breezecolorsettings.cpp
     breezebutton.cpp
     breezedecoration.cpp
     breezeexceptionlist.cpp
