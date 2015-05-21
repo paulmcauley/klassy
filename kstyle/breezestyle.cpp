@@ -973,18 +973,19 @@ namespace Breeze
                 // get scrollarea viewport
                 QAbstractScrollArea* scrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
                 QWidget* viewport;
-                if( !( scrollArea && (viewport = scrollArea->viewport()) ) ) return false;
+                if( !( scrollArea && (viewport = scrollArea->viewport()) ) ) break;
 
                 // get scrollarea horizontal and vertical containers
                 QWidget* child( nullptr );
                 QList<QWidget*> children;
-                if( viewport && ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && child->isVisible() )
+                if( ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && child->isVisible() )
                 { children.append( child ); }
 
-                if( viewport && ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && child->isVisible() )
+                if( ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && child->isVisible() )
                 { children.append( child ); }
 
-                if( children.empty() ) return false;
+                if( children.empty() ) break;
+                if( !scrollArea->styleSheet().isEmpty() ) break;
 
                 // make sure proper background is rendered behind the containers
                 QPainter painter( scrollArea );
@@ -993,7 +994,7 @@ namespace Breeze
                 painter.setPen( Qt::NoPen );
                 painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
 
-                foreach( QWidget* child, children )
+                foreach( auto* child, children )
                 { painter.drawRect( child->geometry() ); }
 
             }
