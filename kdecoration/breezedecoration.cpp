@@ -520,6 +520,7 @@ namespace Breeze
         const int baseSize = settings()->gridUnit();
         switch( m_internalSettings->buttonSize() )
         {
+            case InternalSettings::ButtonTiny: return baseSize;
             case InternalSettings::ButtonSmall: return baseSize*1.5;
             default:
             case InternalSettings::ButtonDefault: return baseSize*2;
