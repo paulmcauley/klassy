@@ -55,6 +55,7 @@
 #include <QItemDelegate>
 #include <QSplitterHandle>
 #include <QTextEdit>
+#include <QToolBar>
 #include <QToolBox>
 #include <QToolButton>
 #include <QWidgetAction>
@@ -2865,13 +2866,30 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawFrameMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
+        // only draw frame for (expanded) toolbars and QtQuick controls
+        // do nothing for other cases, for which frame is rendered via drawPanelMenuPrimitive
+        if( qobject_cast<const QToolBar*>( widget ) )
+        {
 
-        const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::Window ) );
-        const QColor outline( _helper->frameOutlineColor( palette ) );
+            const QPalette& palette( option->palette );
+            const QColor background( palette.color( QPalette::Window ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
 
-        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
+            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+            _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
+
+        #if !BREEZE_USE_KDE4
+        } else if( option->styleObject && option->styleObject->inherits( "QQuickItem" ) ) {
+
+            const QPalette& palette( option->palette );
+            const QColor background( palette.color( QPalette::Window ) );
+            const QColor outline( _helper->frameOutlineColor( palette ) );
+
+            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+            _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
+
+        #endif
+        }
 
         return true;
 
