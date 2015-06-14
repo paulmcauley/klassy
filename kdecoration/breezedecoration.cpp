@@ -245,40 +245,34 @@ namespace Breeze
     int Decoration::borderSize(bool bottom) const
     {
         const int baseSize = settings()->smallSpacing();
-
-        auto maxSize = [] (int size) {
-            const int minSize = 4;
-            return qMax(size, minSize);
-        };
-
         if( m_internalSettings && (m_internalSettings->mask() & BorderSize ) )
         {
             switch (m_internalSettings->borderSize()) {
                 case InternalSettings::BorderNone: return 0;
-                case InternalSettings::BorderNoSides: return bottom ? maxSize(baseSize) : 0;
+                case InternalSettings::BorderNoSides: return bottom ? qMax(4, baseSize) : 0;
                 default:
-                case InternalSettings::BorderTiny: return maxSize(baseSize);
-                case InternalSettings::BorderNormal: return maxSize(baseSize*2);
-                case InternalSettings::BorderLarge: return maxSize(baseSize * 3);
-                case InternalSettings::BorderVeryLarge: return maxSize(baseSize * 4);
-                case InternalSettings::BorderHuge: return maxSize(baseSize * 5);
-                case InternalSettings::BorderVeryHuge: return maxSize(baseSize * 6);
-                case InternalSettings::BorderOversized: return maxSize(baseSize * 10);
+                case InternalSettings::BorderTiny: return bottom ? qMax(4, baseSize) : baseSize;
+                case InternalSettings::BorderNormal: return baseSize*2;
+                case InternalSettings::BorderLarge: return baseSize*3;
+                case InternalSettings::BorderVeryLarge: return baseSize*4;
+                case InternalSettings::BorderHuge: return baseSize*5;
+                case InternalSettings::BorderVeryHuge: return baseSize*6;
+                case InternalSettings::BorderOversized: return baseSize*10;
             }
 
         } else {
 
             switch (settings()->borderSize()) {
                 case KDecoration2::BorderSize::None: return 0;
-                case KDecoration2::BorderSize::NoSides: return bottom ? maxSize(baseSize ) : 0;
+                case KDecoration2::BorderSize::NoSides: return bottom ? qMax(4, baseSize) : 0;
                 default:
-                case KDecoration2::BorderSize::Tiny: return maxSize(baseSize);
-                case KDecoration2::BorderSize::Normal: return maxSize(baseSize*2);
-                case KDecoration2::BorderSize::Large: return maxSize(baseSize * 3);
-                case KDecoration2::BorderSize::VeryLarge: return maxSize(baseSize * 4);
-                case KDecoration2::BorderSize::Huge: return maxSize(baseSize * 5);
-                case KDecoration2::BorderSize::VeryHuge: return maxSize(baseSize * 6);
-                case KDecoration2::BorderSize::Oversized: return maxSize(baseSize * 10);
+                case KDecoration2::BorderSize::Tiny: return bottom ? qMax(4, baseSize) : baseSize;
+                case KDecoration2::BorderSize::Normal: return baseSize*2;
+                case KDecoration2::BorderSize::Large: return baseSize*3;
+                case KDecoration2::BorderSize::VeryLarge: return baseSize*4;
+                case KDecoration2::BorderSize::Huge: return baseSize*5;
+                case KDecoration2::BorderSize::VeryHuge: return baseSize*6;
+                case KDecoration2::BorderSize::Oversized: return baseSize*10;
 
             }
 
