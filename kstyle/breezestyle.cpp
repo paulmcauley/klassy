@@ -2573,7 +2573,6 @@ namespace Breeze
 
                     return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth );
 
-
                 } else {
 
                     // build toolbutton option
@@ -2583,7 +2582,11 @@ namespace Breeze
                     const int iconWidth( menuItemOption->maxIconWidth );
                     const int textHeight( menuItemOption->fontMetrics.height() );
                     if( !menuItemOption->icon.isNull() ) size.setHeight( qMax( size.height(), iconWidth ) );
-                    if( !menuItemOption->text.isEmpty() ) size.setHeight( qMax( size.height(), textHeight ) );
+                    if( !menuItemOption->text.isEmpty() )
+                    {
+                        size.setHeight( qMax( size.height(), textHeight ) );
+                        size.setWidth( qMax( size.width(), menuItemOption->fontMetrics.width( menuItemOption->text ) ) );
+                    }
 
                     return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
 
@@ -6347,12 +6350,10 @@ namespace Breeze
         toolButtonOption.initFrom( widget );
         toolButtonOption.rect = menuItemOption->rect;
         toolButtonOption.features = QStyleOptionToolButton::None;
-        toolButtonOption.state = State_Enabled;
+        toolButtonOption.state = State_Enabled|State_AutoRaise;
         toolButtonOption.subControls = SC_ToolButton;
-        toolButtonOption.icon =  menuItemOption->icon;
-
-        int iconWidth( pixelMetric( PM_SmallIconSize, menuItemOption, widget ) );
-        toolButtonOption.iconSize = QSize( iconWidth, iconWidth );
+        toolButtonOption.icon =  QIcon();
+        toolButtonOption.iconSize = QSize();
         toolButtonOption.text = menuItemOption->text;
 
         toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
