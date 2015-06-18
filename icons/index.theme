@@ -39,6 +39,7 @@ Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
 Name[zh_TW]=Breeze
+
 Comment=Default Plasma 5 Theme
 Comment[ar]=سمة بلازما 5 الافتراضيّة
 Comment[ca]=Tema del Plasma 5 per defecte
@@ -74,6 +75,7 @@ Comment[uk]=Тема тема Плазми 5
 Comment[x-test]=xxDefault Plasma 5 Themexx
 Comment[zh_CN]=默认 Plasma 5 主题
 Comment[zh_TW]=預設 Plasma 5 主題
+
 DisplayDepth=32
 
 Inherits=hicolor
@@ -93,11 +95,10 @@ PanelSizes=16,22,32,48,64,128,256
 DialogDefault=32
 DialogSizes=16,22,32,48,64,128,256
 
-
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/categories,actions/kickoff-menu-tabs,actions/toolbar,actions/toolbar-small,apps/actions,apps/categories,apps/devices,apps/devices-small,apps/emotes,apps/kickoff-menu-tabs,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-small,devices/hardware,devices/kickoff-menu-tabs,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,emotes/objects,mimetypes/file-types,mimetypes/file-types-small,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,apps/actions,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,plasmoids/kickoff-menu-tabs/action,plasmoids/kickoff-menu-tabs/apps,plasmoids/kickoff-menu-tabs/categories,plasmoids/kickoff-menu-tabs/devices,plasmoids/system-power-application,status/dialogs,status/im-status,status/toolbar,status/panel
 
 ########## Actions
 ########## ordered by size
@@ -108,21 +109,21 @@ Size=16
 Context=Actions
 Type=Fixed
 
-#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
-[actions/categories]
-Size=22
-Context=Categories
-Type=Fixed
-
 #22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/toolbar]
 Size=22
 Context=Actions
 Type=Fixed
 
-#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[actions/kickoff-menu-tabs]
-Size=48
+#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-gtk]
+Size=22
+Context=Actions
+Type=Fixed
+
+#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-kde]
+Size=22
 Context=Actions
 Type=Fixed
 
@@ -131,40 +132,17 @@ Type=Fixed
 ########## Apps
 ########## ordered by size
 
-#16x16 - Fixed size - Devices icon(s) for sidebars - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[apps/devices-small]
-Size=16
-Context=Devices
-Type=Fixed
-
-#16x16 - Fixed size - Application icon(s) for sidebars - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+#16x16 - Fixed size - Application icon(s) for Dolphin sidebar - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [apps/software-small]
 Size=16
 Context=Applications
 Type=Fixed
 
 #22x22 - Fixed size - Application icon(s) for task manager - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Open Terminal/About Dolphin/About KDE buttons - WRONG_ICON_USAGE_BY_APP - Monochrome
 [apps/software-medium]
 Size=22
 Context=Applications
-Type=Fixed
-
-#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Open Terminal/About Dolphin/About KDE buttons - WRONG_ICON_USAGE_BY_APP - Monochrome
-[apps/toolbar]
-Size=22
-Context=Applications
-Type=Fixed
-
-#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
-[apps/emotes]
-Size=32
-Context=Emotes
-Type=Fixed
-
-#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
-[apps/categories]
-Size=32
-Context=Categories
 Type=Fixed
 
 #32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
@@ -173,20 +151,8 @@ Size=32
 Context=Actions
 Type=Fixed
 
-#32x32 - Fixed size - Icon(s) belonging to System Settings - WRONG_ICON_USAGE_BY_APP - Color
-[apps/devices]
-Size=32
-Context=Actions
-Type=Fixed
-
 #32x32 - Fixed size - For System Settings icons >!!!ONLY!!!< - Scalable to the following sizes: 32x32 (default), 64x64, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [apps/preferences]
-Size=32
-Context=Applications
-Type=Fixed
-
-#32x32 - Fixed size - For System power icons, used in Kickoff and Homerun kicker >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[apps/system-power-actions]
 Size=32
 Context=Applications
 Type=Fixed
@@ -199,22 +165,10 @@ Type=Scalable
 MinSize=32
 MaxSize=256
 
-#48x48 - Fixed size - Icon used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[apps/kickoff-menu-tabs]
-Size=48
-Context=Applications
-Type=Fixed
-
 ##########
 
 ########## Categories
 ########## ordered by size
-
-#16x16 - Fixed size - NOT_IN_USE - Monochrome
-[categories/start-menu-small]
-Size=16
-Context=Categories
-Type=Fixed
 
 #32x32 - Fixed size - For categories icons >!!!ONLY!!!< - Used in Kickoff (KDE 4.x.x) and Lancelot. Also used in MATE and Cinnamon (just FYI) - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [categories/start-menu]
@@ -222,9 +176,9 @@ Size=32
 Context=Categories
 Type=Fixed
 
-#48x48 - Fixed size - Icon used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[categories/kickoff-menu-tabs]
-Size=32
+#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
+[categories/start-menu-medium]
+Size=22
 Context=Categories
 Type=Fixed
 
@@ -236,12 +190,6 @@ Type=Fixed
 #16x16 - Fixed size - For small device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [devices/sidebars]
 Size=16
-Context=Devices
-Type=Fixed
-
-#48x48 - Fixed size - Icon used in Kickoff on KDE 4 tabs section - DO_NOT_USE_ANYWHERE_ELSE - Color
-[devices/kickoff-menu-tabs]
-Size=48
 Context=Devices
 Type=Fixed
 
@@ -285,12 +233,6 @@ Size=22
 Context=Emotes
 Type=Fixed
 
-#22x22 - Fixed size - Emoticons - DO_NOT_USE_ANYWHERE_ELSE - Color
-[emotes/objects]
-Size=22
-Context=Emotes
-Type=Fixed
-
 #########
 
 ########## Mimetypes
@@ -320,6 +262,12 @@ Context=Places
 Type=Scalable
 Type=Fixed
 
+#22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. KMail trash icon - WRONG_ICON_USAGE_BY_APP - Monochrome
+[places/toolbar]
+Size=22
+Context=Places
+Type=Fixed
+
 #64x64 - Scalable - For folder icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [places/user-folders]
 Size=64
@@ -327,6 +275,40 @@ Context=Places
 Type=Scalable
 MinSize=32
 MaxSize=256
+
+########## Plasmoids
+########## ordered by size
+
+#32x32 - Fixed size - For System power icons, used in Kickoff and Homerun kicker >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[plasmoids/system-power-application]
+Size=32
+Context=Applications
+Type=Fixed
+
+#Kickoff folder is only used on KDE 4
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[plasmoids/kickoff-menu-tabs/action]
+Size=48
+Context=Actions
+Type=Fixed
+
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[plasmoids/kickoff-menu-tabs/apps]
+Size=48
+Context=Applications
+Type=Fixed
+
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[plasmoids/kickoff-menu-tabs/categories]
+Size=48
+Context=Categories
+Type=Fixed
+
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[plasmoids/kickoff-menu-tabs/devices]
+Size=48
+Context=Devices
+Type=Fixed
 
 ########## Status
 ########## ordered by size
