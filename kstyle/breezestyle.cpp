@@ -1191,12 +1191,18 @@ namespace Breeze
             QPainter painter( button );
             painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
 
+            const bool isFlat = false;
+
             // option
             QStyleOptionButton option;
             option.initFrom( button );
             option.features |= QStyleOptionButton::CommandLinkButton;
+            if( isFlat ) option.features |= QStyleOptionButton::Flat;
             option.text = QString();
             option.icon = QIcon();
+
+            if( button->isChecked() ) option.state|=State_On;
+            if( button->isDown() ) option.state|=State_Sunken;
 
             // frame
             drawControl(QStyle::CE_PushButton, &option, &painter, button );
@@ -1204,6 +1210,9 @@ namespace Breeze
             // offset
             const int margin( Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
             QPoint offset( margin, margin );
+
+            if( button->isDown() && !isFlat ) painter.translate( 1, 1 );
+            { offset += QPoint( 1, 1 ); }
 
             // state
             const State& state( option.state );
@@ -1222,13 +1231,13 @@ namespace Breeze
                     button->isChecked() ? QIcon::On : QIcon::Off) );
                 drawItemPixmap( &painter, pixmapRect, Qt::AlignCenter, pixmap );
 
-                offset.rx() += pixmapSize.width() + 4;
+                offset.rx() += pixmapSize.width() + Metrics::Button_ItemSpacing;
 
             }
 
             // text rect
             QRect textRect( offset, QSize( button->size().width() - offset.x() - margin, button->size().height() - 2*margin ) );
-            const QPalette::ColorRole textRole = (enabled && hasFocus && !mouseOver) ? QPalette::HighlightedText : QPalette::ButtonText;
+            const QPalette::ColorRole textRole = (enabled && hasFocus && !mouseOver && !isFlat ) ? QPalette::HighlightedText : QPalette::ButtonText;
             if( !button->text().isEmpty() )
             {
 
