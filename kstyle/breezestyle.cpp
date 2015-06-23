@@ -353,6 +353,11 @@ namespace Breeze
 
             setTranslucentBackground( widget );
 
+        #if QT_VERSION >= 0x050000
+        } else if( qobject_cast<QCommandLinkButton*>( widget ) ) {
+
+            addEventFilter( widget );
+        #endif
         } else if( QComboBox *comboBox = qobject_cast<QComboBox*>( widget ) ) {
 
             if( !hasParent( widget, "QWebView" ) )
@@ -951,7 +956,9 @@ namespace Breeze
 
         if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
         else if( QMdiSubWindow* subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
-
+        #if QT_VERSION >= 0x050000
+        else if( QCommandLinkButton* commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
+        #endif
         // cast to QWidget
         QWidget *widget = static_cast<QWidget*>( object );
         if( widget->inherits( "QAbstractScrollArea" ) || widget->inherits( "KTextEditor::View" ) ) { return eventFilterScrollArea( widget, event ); }
@@ -1171,6 +1178,90 @@ namespace Breeze
         return false;
 
     }
+
+    //____________________________________________________________________________
+    #if QT_VERSION >= 0x050000
+    bool Style::eventFilterCommandLinkButton( QCommandLinkButton* button, QEvent* event )
+    {
+
+        if( event->type() == QEvent::Paint )
+        {
+
+            // painter
+            QPainter painter( button );
+            painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+
+            // option
+            QStyleOptionButton option;
+            option.initFrom( button );
+            option.features |= QStyleOptionButton::CommandLinkButton;
+            option.text = QString();
+            option.icon = QIcon();
+
+            // frame
+            drawControl(QStyle::CE_PushButton, &option, &painter, button );
+
+            // offset
+            const int margin( Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
+            QPoint offset( margin, margin );
+
+            // state
+            const State& state( option.state );
+            const bool enabled( state & State_Enabled );
+            bool mouseOver( enabled && ( state & State_MouseOver ) );
+            bool hasFocus( enabled && ( state & State_HasFocus ) );
+
+            // icon
+            if( !button->icon().isNull() )
+            {
+
+                const QSize pixmapSize( button->icon().actualSize( button->iconSize() ) );
+                const QRect pixmapRect( QPoint( offset.x(), button->description().isEmpty() ? (button->height() - pixmapSize.height())/2:offset.y() ), pixmapSize );
+                const QPixmap pixmap( button->icon().pixmap(pixmapSize,
+                    enabled ? QIcon::Normal : QIcon::Disabled,
+                    button->isChecked() ? QIcon::On : QIcon::Off) );
+                drawItemPixmap( &painter, pixmapRect, Qt::AlignCenter, pixmap );
+
+                offset.rx() += pixmapSize.width() + 4;
+
+            }
+
+            // text rect
+            QRect textRect( offset, QSize( button->size().width() - offset.x() - margin, button->size().height() - 2*margin ) );
+            const QPalette::ColorRole textRole = (enabled && hasFocus && !mouseOver) ? QPalette::HighlightedText : QPalette::ButtonText;
+            if( !button->text().isEmpty() )
+            {
+
+                QFont font( button->font() );
+                font.setBold( true );
+                painter.setFont( font );
+                if( button->description().isEmpty() )
+                {
+
+                    drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole );
+
+                } else {
+
+                    drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignTop|Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole );
+                    textRect.setTop( textRect.top() + QFontMetrics( font ).height() );
+
+                }
+
+                painter.setFont( button->font() );
+
+            }
+
+            if( !button->description().isEmpty() )
+            { drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWordWrap, button->palette(), enabled, button->description(), textRole ); }
+
+            return true;
+        }
+
+        // continue with normal painting
+        return false;
+
+    }
+    #endif
 
     //_____________________________________________________________________
     void Style::configurationChanged( void )

@@ -33,6 +33,7 @@
 
 #include <QAbstractItemView>
 #include <QAbstractScrollArea>
+
 #include <QCommonStyle>
 #include <QDockWidget>
 #include <QHash>
@@ -40,6 +41,10 @@
 #include <QMdiSubWindow>
 #include <QStyleOption>
 #include <QWidget>
+
+#if QT_VERSION >= 0x050000
+#include <QCommandLinkButton>
+#endif
 
 namespace BreezePrivate
 {
@@ -136,6 +141,10 @@ namespace Breeze
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );
+
+        #if QT_VERSION >= 0x050000
+        bool eventFilterCommandLinkButton( QCommandLinkButton*, QEvent* );
+        #endif
 
         //* install event filter to object, in a unique way
         void addEventFilter( QObject* object )
