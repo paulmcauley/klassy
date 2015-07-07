@@ -1,11 +1,9 @@
 {
-    "Type": "Service",
-    "X-KDE-Library": "breezedecoration",
-    "X-KDE-PluginInfo-EnabledByDefault": true,
-    "X-KDE-PluginInfo-Name": "org.kde.breeze",
-    "X-KDE-ServiceTypes": [
-        "org.kde.kdecoration2"
-    ],
+    "KPlugin": {
+        "Id": "org.kde.breeze",
+        "ServiceTypes": ["org.kde.kdecoration2"],
+        "EnabledByDefault": true
+    },
     "org.kde.kdecoration2": {
         "blur": false,
         "kcmodule": true
