@@ -149,7 +149,7 @@ namespace Breeze
         {
 
             const QPalette palette( QApplication::palette() );
-            const QColor shadowColor( palette.color( QPalette::Shadow ) );
+            const QColor shadowColor( StyleConfigData::shadowColor() );
 
             // metrics
             const int shadowSize = StyleConfigData::shadowSize()*12/16;
