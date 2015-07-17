@@ -93,14 +93,6 @@ namespace Breeze
         bool isValid( void ) const
         { return _pixmaps.size() == 9; }
 
-        //* side extend
-        /**
-        it is used to (pre) tile the side pixmaps, in order to make further tiling faster when rendering, at the cost of
-        using more memory for the cache. Changes to this member only affects tilesets that are created afterwards.
-        */
-        void setSideExtent( int value )
-        { _sideExtent = value; }
-
         //* returns pixmap for given index
         QPixmap pixmap( int index ) const
         { return _pixmaps[index]; }
@@ -114,13 +106,6 @@ namespace Breeze
         void initPixmap( PixmapList&, const QPixmap&, int w, int h, const QRect& );
 
         private:
-
-        //* side extend
-        /**
-        it is used to (pre) tile the side pixmaps, in order to make further tiling faster when rendering, at the cost of
-        using more memory for the cache.
-        */
-        static int _sideExtent;
 
         //* pixmap arry
         PixmapList _pixmaps;

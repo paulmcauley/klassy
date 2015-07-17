@@ -51,9 +51,6 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    int TileSet::_sideExtent = 32;
-
-    //______________________________________________________________
     void TileSet::initPixmap( PixmapList& pixmaps, const QPixmap &source, int width, int height, const QRect &rect)
     {
         QSize size( width, height );
