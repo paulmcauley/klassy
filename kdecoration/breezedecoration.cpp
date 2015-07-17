@@ -66,6 +66,7 @@ namespace Breeze
     static int g_sDecoCount = 0;
     static int g_shadowSize = 0;
     static int g_shadowStrength = 0;
+    static QColor g_shadowColor = Qt::black;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 
     //________________________________________________________________
@@ -587,11 +588,17 @@ namespace Breeze
     {
 
         // assign global shadow if exists and parameters match
-        if( !( g_sShadow && g_shadowSize == m_internalSettings->shadowSize() && g_shadowStrength == m_internalSettings->shadowStrength() ) )
+        if(
+            !g_sShadow  ||
+            g_shadowSize != m_internalSettings->shadowSize() ||
+            g_shadowStrength != m_internalSettings->shadowStrength() ||
+            g_shadowColor != m_internalSettings->shadowColor()
+            )
         {
             // assign parameters
             g_shadowSize = m_internalSettings->shadowSize();
             g_shadowStrength = m_internalSettings->shadowStrength();
+            g_shadowColor = m_internalSettings->shadowColor();
             const int shadowOffset = qMax( 6*g_shadowSize/16, Metrics::Shadow_Overlap*2 );
 
             // create image
@@ -609,17 +616,14 @@ namespace Breeze
                 return color;
             };
 
-            auto c = client().data();
-            const QColor shadowColor( c->palette().color( QPalette::Shadow ) );
-
-            QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize);
+            QRadialGradient radialGradient( g_shadowSize, g_shadowSize, g_shadowSize );
             for( int i = 0; i < 10; ++i )
             {
                 const qreal x( qreal( i )/9 );
-                radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*g_shadowStrength));
+                radialGradient.setColorAt(x,  gradientStopColor( g_shadowColor, alpha(x)*g_shadowStrength ) );
             }
 
-            radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
+            radialGradient.setColorAt(1, gradientStopColor( g_shadowColor, 0 ) );
 
             // fill
             QPainter painter(&image);
@@ -628,7 +632,7 @@ namespace Breeze
 
             // contrast pixel
             painter.setBrush( Qt::NoBrush );
-            painter.setPen( gradientStopColor(shadowColor, g_shadowStrength) );
+            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
             painter.setRenderHints(QPainter::Antialiasing );
             painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
             painter.end();

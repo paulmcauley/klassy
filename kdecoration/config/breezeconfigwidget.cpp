@@ -59,6 +59,7 @@ namespace Breeze
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.shadowColor, SIGNAL(changed(QColor)), SLOT(updateChanged()) );
 
         // track exception changes
         connect( m_ui.exceptions, SIGNAL(changed(bool)), SLOT(updateChanged()) );
@@ -85,6 +86,7 @@ namespace Breeze
         // load shadows
         m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
+        m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
 
         // load exceptions
         ExceptionList exceptions;
@@ -113,6 +115,7 @@ namespace Breeze
 
         m_internalSettings->setShadowSize( m_ui.shadowSize->value() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
+        m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
 
         // save configuration
         m_internalSettings->save();
@@ -160,6 +163,7 @@ namespace Breeze
 
         m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
+        m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
 
     }
 
@@ -186,6 +190,7 @@ namespace Breeze
         // shadows
         else if( m_ui.shadowSize->value() !=  m_internalSettings->shadowSize() ) modified = true;
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
+        else if( m_ui.shadowColor->color() != m_internalSettings->shadowColor() ) modified = true;
 
         // exceptions
         else if( m_ui.exceptions->isChanged() ) modified = true;
