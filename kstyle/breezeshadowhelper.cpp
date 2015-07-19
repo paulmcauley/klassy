@@ -154,7 +154,6 @@ namespace Breeze
             // metrics
             const int shadowSize = StyleConfigData::shadowSize()*12/16;
             const int shadowStrength = StyleConfigData::shadowStrength();
-            const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
 
             // pixmap
             QPixmap pixmap = _helper.highDpiPixmap( shadowSize*2 );
@@ -184,21 +183,13 @@ namespace Breeze
             QPainter p(&pixmap);
             p.setCompositionMode(QPainter::CompositionMode_Source);
             p.fillRect( pixmap.rect(), radialGradient);
-
-            // contrast pixel
-            p.setBrush( Qt::NoBrush );
-            p.setPen( gradientStopColor(shadowColor, shadowStrength) );
-            p.setRenderHints(QPainter::Antialiasing );
-            p.drawRoundedRect( QRect( shadowSize-shadowOffset, shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
-
             p.end();
 
             // create tiles from pixmap
             _shadowTiles = TileSet( pixmap,
-                shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-                shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-                shadowOffset - 2*Metrics::Shadow_Overlap,
-                shadowOffset - 2*Metrics::Shadow_Overlap );
+                shadowSize,
+                shadowSize,
+                1, 1 );
 
         }
 
