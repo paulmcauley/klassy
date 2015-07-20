@@ -96,13 +96,19 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,apps/actions,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,plasmoids/kickoff-menu-tabs/action,plasmoids/kickoff-menu-tabs/apps,plasmoids/kickoff-menu-tabs/categories,plasmoids/kickoff-menu-tabs/devices,plasmoids/system-power-application,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,apps/actions,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,plasmoids/kickoff-menu-tabs/action,plasmoids/kickoff-menu-tabs/apps,plasmoids/kickoff-menu-tabs/categories,plasmoids/kickoff-menu-tabs/devices,plasmoids/system-power-application,status/dialogs,status/im-status,status/toolbar,status/panel
 
 ########## Actions
 ########## ordered by size
 
 #16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/toolbar-small]
+Size=16
+Context=Actions
+Type=Fixed
+
+#16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-small-gtk]
 Size=16
 Context=Actions
 Type=Fixed
