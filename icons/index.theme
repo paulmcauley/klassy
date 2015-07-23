@@ -99,7 +99,7 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,apps/actions,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,plasmoids/kickoff-menu-tabs/action,plasmoids/kickoff-menu-tabs/apps,plasmoids/kickoff-menu-tabs/categories,plasmoids/kickoff-menu-tabs/devices,plasmoids/system-power-application,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,apps/actions,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
 
 ########## Actions
 ########## ordered by size
@@ -249,14 +249,16 @@ Type=Fixed
 [mimetypes/file-types-small]
 Size=16
 Context=MimeTypes
-Type=Fixed
+Type=Scalable
+MinSize=16
+MaxSize=32
 
 #64x64 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [mimetypes/file-types]
 Size=64
 Context=MimeTypes
 Type=Scalable
-MinSize=32
+MinSize=48
 MaxSize=256
 
 ########## Places
@@ -282,40 +284,6 @@ Context=Places
 Type=Scalable
 MinSize=32
 MaxSize=256
-
-########## Plasmoids
-########## ordered by size
-
-#32x32 - Fixed size - For System power icons, used in Kickoff and Homerun kicker >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[plasmoids/system-power-application]
-Size=32
-Context=Applications
-Type=Fixed
-
-#Kickoff folder is only used on KDE 4
-#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[plasmoids/kickoff-menu-tabs/action]
-Size=48
-Context=Actions
-Type=Fixed
-
-#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[plasmoids/kickoff-menu-tabs/apps]
-Size=48
-Context=Applications
-Type=Fixed
-
-#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[plasmoids/kickoff-menu-tabs/categories]
-Size=48
-Context=Categories
-Type=Fixed
-
-#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[plasmoids/kickoff-menu-tabs/devices]
-Size=48
-Context=Devices
-Type=Fixed
 
 ########## Status
 ########## ordered by size

@@ -11,13 +11,13 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="22"
    height="22"
-   id="svg3815"
+   id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="edit-select-all.svg"
-   viewBox="0 0 22 22">
+   viewBox="0 0 22 22"
+   sodipodi:docname="kt-magnet.svg">
   <defs
-     id="defs3817" />
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,68 +25,67 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="36.670822"
-     inkscape:cx="14.087893"
-     inkscape:cy="13.512715"
+     inkscape:zoom="15.839192"
+     inkscape:cx="1.73345"
+     inkscape:cy="17.15811"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     fit-margin-top="0"
-     fit-margin-left="0"
-     fit-margin-right="0"
-     fit-margin-bottom="0"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
      inkscape:window-width="1920"
-     inkscape:window-height="1021"
+     inkscape:window-height="957"
      inkscape:window-x="-4"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:showpageshadow="false"
-     borderlayer="false">
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true">
     <sodipodi:guide
-       position="2.0000044,19.999979"
+       position="2,20.000017"
        orientation="18,0"
-       id="guide3338" />
+       id="guide4085" />
     <sodipodi:guide
-       position="2.0000044,1.9999785"
+       position="2,2.0000174"
        orientation="0,18"
-       id="guide3340" />
+       id="guide4087" />
     <sodipodi:guide
-       position="20.000004,1.9999785"
+       position="20,2.0000174"
        orientation="-18,0"
-       id="guide3342" />
+       id="guide4089" />
     <sodipodi:guide
-       position="20.000004,19.999979"
+       position="20,20.000017"
        orientation="0,-18"
-       id="guide3344" />
+       id="guide4091" />
     <sodipodi:guide
-       position="3.0000044,18.999979"
+       position="3,19.000017"
        orientation="16,0"
-       id="guide3346" />
+       id="guide4093" />
     <sodipodi:guide
-       position="3.0000044,2.9999785"
+       position="3,3.0000174"
        orientation="0,16"
-       id="guide3348" />
+       id="guide4095" />
     <sodipodi:guide
-       position="19.000004,2.9999785"
+       position="19,3.0000174"
        orientation="-16,0"
-       id="guide3350" />
+       id="guide4097" />
     <sodipodi:guide
-       position="17,19"
+       position="19,19.000017"
        orientation="0,-16"
-       id="guide3352" />
+       id="guide4099" />
     <inkscape:grid
        type="xygrid"
-       id="grid3354" />
+       id="grid4101" />
   </sodipodi:namedview>
   <metadata
-     id="metadata3820">
+     id="metadata7">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -94,16 +93,25 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-461.71429,-525.79075)">
-    <g
-       id="layer1-8"
-       inkscape:label="Capa 1">
-      <path
-         inkscape:connector-curvature="0"
-         id="rect4108-3"
-         transform="translate(461.71429,525.79075)"
-         d="M 3,3 3,4 3,7 4,7 4,4 7,4 7,3 4,3 3,3 Z m 12,0 0,1 3,0 0,3 1,0 0,-4 -4,0 z m -10,2 0,5 5,0 0,-5 -5,0 z m 7,0 0,5 5,0 0,-5 -5,0 z M 6,6 9,6 9,9 6,9 6,6 Z m 7,0 3,0 0,3 -3,0 0,-3 z m -8,6 0,5 5,0 0,-5 -5,0 z m 7,0 0,5 5,0 0,-5 -5,0 z m -6,1 3,0 0,3 -3,0 0,-3 z m 7,0 3,0 0,3 -3,0 0,-3 z m -10,2 0,4 1,0 3,0 0,-1 -3,0 0,-3 -1,0 z m 15,0 0,3 -3,0 0,1 4,0 0,-1 0,-3 -1,0 z"
-         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
-    </g>
+     transform="translate(0,-1030.3622)">
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 11 3 A 8 8.0000086 0 0 0 3 11 A 8 8.0000086 0 0 0 11 19 L 15 19 L 15 16 L 11 16 A 5 5 0 0 1 6 11 A 5 5 0 0 1 11 6 L 15 6 L 15 3 L 11 3 z "
+       transform="translate(0,1030.3622)"
+       id="rect4188" />
+    <rect
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       id="rect4203"
+       width="3"
+       height="2.9999826"
+       x="16"
+       y="1046.3622" />
+    <rect
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       id="rect4205"
+       width="3"
+       height="3"
+       x="16"
+       y="1033.3622" />
   </g>
 </svg>
