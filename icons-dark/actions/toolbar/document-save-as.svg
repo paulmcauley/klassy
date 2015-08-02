@@ -28,15 +28,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="11.2"
-     inkscape:cx="2.7908151"
+     inkscape:cx="-35.066327"
      inkscape:cy="9.6407523"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      borderlayer="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-width="2560"
+     inkscape:window-height="957"
      inkscape:window-x="-4"
      inkscape:window-y="29"
      inkscape:window-maximized="1"
@@ -90,11 +90,13 @@
         </dc:creator>
         <dc:rights>
           <cc:Agent>
-            <dc:title>CC-BY-SA</dc:title>
+            <dc:title />
           </cc:Agent>
         </dc:rights>
         <dc:language>English</dc:language>
         <dc:description>Migh as well use Tango... for crying out loud. This damn icon has to die, but no because obviously we're still using floppies therefore it is still relevant in 2014.</dc:description>
+        <cc:license
+           rdf:resource="" />
       </cc:Work>
     </rdf:RDF>
   </metadata>

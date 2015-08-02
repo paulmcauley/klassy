@@ -28,15 +28,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="-5.5575327"
+     inkscape:cx="-32.057533"
      inkscape:cy="11.442155"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      borderlayer="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-width="2560"
+     inkscape:window-height="957"
      inkscape:window-x="-4"
      inkscape:window-y="29"
      inkscape:window-maximized="1"
@@ -90,7 +90,7 @@
         <dc:language>English</dc:language>
         <dc:rights>
           <cc:Agent>
-            <dc:title>CC-BY-SA</dc:title>
+            <dc:title />
           </cc:Agent>
         </dc:rights>
         <dc:creator>
@@ -99,6 +99,8 @@
           </cc:Agent>
         </dc:creator>
         <dc:date>November 20th 2014</dc:date>
+        <cc:license
+           rdf:resource="" />
       </cc:Work>
     </rdf:RDF>
   </metadata>

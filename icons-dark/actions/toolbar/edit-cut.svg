@@ -14,7 +14,8 @@
    id="svg3815"
    version="1.1"
    inkscape:version="0.91+devel r"
-   sodipodi:docname="edit-cut.svg">
+   sodipodi:docname="edit-cut.svg"
+   viewBox="0 0 22 22">
   <title
      id="title4252">I hate this icon</title>
   <defs
@@ -27,7 +28,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="16"
-     inkscape:cx="15.88113"
+     inkscape:cx="-10.61887"
      inkscape:cy="9.6403348"
      inkscape:document-units="px"
      inkscape:current-layer="svg3815"
@@ -36,8 +37,8 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-width="2560"
+     inkscape:window-height="957"
      inkscape:window-x="-4"
      inkscape:window-y="29"
      inkscape:window-maximized="1"
@@ -96,7 +97,7 @@
         </dc:creator>
         <dc:rights>
           <cc:Agent>
-            <dc:title>CC-BY-SA</dc:title>
+            <dc:title />
           </cc:Agent>
         </dc:rights>
         <dc:language>English</dc:language>
@@ -106,6 +107,8 @@
             <dc:title>Everyone</dc:title>
           </cc:Agent>
         </dc:contributor>
+        <cc:license
+           rdf:resource="" />
       </cc:Work>
     </rdf:RDF>
   </metadata>

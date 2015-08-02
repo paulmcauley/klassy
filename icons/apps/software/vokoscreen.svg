@@ -14,7 +14,7 @@
    height="48"
    id="svg5453"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="vokoscreen.svg">
   <defs
      id="defs5455">
@@ -48,7 +48,7 @@
        x2="408.57144"
        y2="536.79797"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="translate(-384.57143,-499.798)" />
+       gradientTransform="matrix(1,0,0,0.54545455,0,243.99909)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient4424"
@@ -134,9 +134,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16.25"
-     inkscape:cx="25.157275"
-     inkscape:cy="5.0180637"
+     inkscape:zoom="16"
+     inkscape:cx="25.470654"
+     inkscape:cy="31.617083"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -144,14 +144,16 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1366"
-     inkscape:window-height="666"
-     inkscape:window-x="-2"
-     inkscape:window-y="25"
+     inkscape:window-width="2560"
+     inkscape:window-height="1508"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
-     showguides="true">
+     showguides="true"
+     inkscape:snap-bbox="true"
+     inkscape:snap-bbox-edge-midpoints="true">
     <inkscape:grid
        type="xygrid"
        id="grid4063" />
@@ -239,11 +241,10 @@
      transform="translate(-384.57143,-499.798)">
     <path
        style="opacity:1;fill:url(#linearGradient4272);fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
-       d="m 18,37 0,7 0,2 0,2 12,0 0,-2 0,-2 0,-7 z"
+       d="m 402.57143,536.798 0,3.81818 0,1.09091 0,1.09091 12,0 0,-1.09091 0,-1.09091 0,-3.81818 z"
        id="rect4254"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccc"
-       transform="translate(384.57143,499.798)" />
+       sodipodi:nodetypes="ccccccccc" />
     <rect
        style="opacity:1;fill:url(#linearGradient4250);fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
        id="rect4173"
@@ -269,9 +270,9 @@
        style="opacity:1;fill:#99a1a7;fill-opacity:1;stroke:none;stroke-width:2.79999995;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.55026455"
        id="rect4295"
        width="22"
-       height="0.99997365"
+       height="1.9999189"
        x="397.57144"
-       y="546.79797" />
+       y="541.79797" />
     <path
        style="fill:url(#linearGradient4402);fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1.0;opacity:0.2"
        d="M 27 17 L 21 25 L 36 40 L 48 40 L 48 38 L 27 17 z "
@@ -282,7 +283,6 @@
        id="path4306"
        cx="408.57144"
        cy="520.79803"
-       r="5"
-       d="m 413.57144,520.79803 a 5,5 0 0 1 -5,5 5,5 0 0 1 -5,-5 5,5 0 0 1 5,-5 5,5 0 0 1 5,5 z" />
+       r="5" />
   </g>
 </svg>
