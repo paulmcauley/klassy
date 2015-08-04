@@ -100,6 +100,9 @@ namespace Breeze
         //* frame outline color, using animations
         QColor frameOutlineColor( const QPalette&, bool mouseOver = false, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
+        //* focus outline color, using animations
+        QColor focusOutlineColor( const QPalette& ) const;
+
         //* side panel outline color, using animations
         QColor sidePanelOutlineColor( const QPalette&, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
@@ -158,7 +161,7 @@ namespace Breeze
         void renderDebugFrame( QPainter*, const QRect& ) const;
 
         //* focus rect
-        void renderFocusRect( QPainter*, const QRect&, const QColor& ) const;
+        void renderFocusRect( QPainter*, const QRect&, const QColor&, const QColor& outline = QColor(), Sides = 0 ) const;
 
         //* focus line
         void renderFocusLine( QPainter*, const QRect&, const QColor& ) const;
@@ -182,7 +185,7 @@ namespace Breeze
         void renderToolBoxFrame( QPainter*, const QRect&, int tabWidth, const QColor& color ) const;
 
         //* tab widget frame
-        void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners corners ) const;
+        void renderTabWidgetFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
 
         //* selection frame
         void renderSelection( QPainter*, const QRect&, const QColor& ) const;

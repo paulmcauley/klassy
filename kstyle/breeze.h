@@ -66,6 +66,7 @@ namespace Breeze
         LineEdit_FrameWidth = 6,
 
         // menu items
+        Menu_FrameWidth = 0,
         MenuItem_MarginWidth = 3,
         MenuItem_ItemSpacing = 4,
         MenuItem_AcceleratorSpace = 16,

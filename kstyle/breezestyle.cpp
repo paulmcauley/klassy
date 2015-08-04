@@ -417,6 +417,7 @@ namespace Breeze
 
             // frame width
             case PM_DefaultFrameWidth:
+            if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
             if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
             #if QT_VERSION >= 0x050000
             else if( option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" ) )
@@ -4411,8 +4412,19 @@ namespace Breeze
         if( useStrongFocus && ( selected || sunken ) )
         {
 
-            QColor outlineColor = _helper->focusColor( palette );
-            _helper->renderFocusRect( painter, rect, outlineColor );
+            const QColor color = _helper->focusColor( palette );
+            const QColor outlineColor = _helper->focusOutlineColor( palette );
+
+            Sides sides = 0;
+            if( !menuItemOption->menuRect.isNull() )
+            {
+                if( rect.top() <= menuItemOption->menuRect.top() ) sides |= SideTop;
+                if( rect.bottom() >= menuItemOption->menuRect.bottom() ) sides |= SideBottom;
+                if( rect.left() <= menuItemOption->menuRect.left() ) sides |= SideLeft;
+                if( rect.right() >= menuItemOption->menuRect.right() ) sides |= SideRight;
+            }
+
+            _helper->renderFocusRect( painter, rect, color, outlineColor, sides );
 
         }
 

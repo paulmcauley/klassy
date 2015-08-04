@@ -102,6 +102,9 @@ namespace Breeze
 
     }
 
+    //____________________________________________________________________
+    QColor Helper::focusOutlineColor( const QPalette& palette ) const
+    { return KColorUtils::mix( focusColor( palette ), palette.color( QPalette::WindowText ), 0.15 ); }
 
     //____________________________________________________________________
     QColor Helper::sidePanelOutlineColor( const QPalette& palette, bool hasFocus, qreal opacity, AnimationMode mode ) const
@@ -131,7 +134,6 @@ namespace Breeze
 
     //____________________________________________________________________
     QColor Helper::sidePanelBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
-    // { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.6 ); }
     { return palette.color( role, QPalette::Window ); }
 
     //____________________________________________________________________
@@ -432,15 +434,41 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderFocusRect( QPainter* painter, const QRect& rect, const QColor& color ) const
+    void Helper::renderFocusRect( QPainter* painter, const QRect& rect, const QColor& color, const QColor& outline, Sides sides ) const
     {
         if( !color.isValid() ) return;
 
         painter->save();
+        painter->setRenderHints( QPainter::Antialiasing );
         painter->setBrush( color );
-        painter->setPen( Qt::NoPen );
-        painter->drawRect( rect );
+
+        if( !( outline.isValid() && sides ) )
+        {
+
+            painter->setPen( Qt::NoPen );
+            painter->drawRect( rect );
+
+        } else {
+
+            painter->setClipRect( rect );
+
+            QRectF copy( rect );
+            copy.adjust( 0.5, 0.5, -0.5, -0.5 );
+
+            const qreal radius( frameRadius()-1.0 );
+            if( !(sides&SideTop) ) copy.adjust( 0, -radius, 0, 0 );
+            if( !(sides&SideBottom) ) copy.adjust( 0, 0, 0, radius );
+            if( !(sides&SideLeft) ) copy.adjust( -radius, 0, 0, 0 );
+            if( !(sides&SideRight) ) copy.adjust( 0, 0, radius, 0 );
+
+            painter->setPen( outline );
+            // painter->setBrush( Qt::NoBrush );
+            painter->drawRoundedRect( copy, radius, radius );
+
+        }
+
         painter->restore();
+        return;
     }
 
     //______________________________________________________________________________
