@@ -99,7 +99,7 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,actions/toolbar-small-kde,apps/preferences,apps/software,apps/software-medium,apps/software-small,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-gtk-24,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,actions/toolbar-small-kde,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-32,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-32,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
 
 ########## Actions
 ########## ordered by size
@@ -111,6 +111,12 @@ Context=Actions
 Type=Fixed
 
 #16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-small]
+Size=16
+Context=Actions
+Type=Fixed
+
+#16x16 - Fixed size - For use in context menus >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/toolbar-small-gtk]
 Size=16
 Context=Actions
@@ -137,6 +143,12 @@ Type=Fixed
 #22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/toolbar-kde]
 Size=22
+Context=Actions
+Type=Fixed
+
+#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/toolbar-gtk-24]
+Size=24
 Context=Actions
 Type=Fixed
 
@@ -251,7 +263,12 @@ Size=16
 Context=MimeTypes
 Type=Scalable
 MinSize=16
-MaxSize=32
+MaxSize=22
+
+[mimetypes/file-types-32]
+Size=32
+Context=MimeTypes
+Type=Fixed
 
 #64x64 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [mimetypes/file-types]
@@ -270,11 +287,16 @@ Size=16
 Context=Places
 Type=Scalable
 MinSize=16
-MaxSize=32
+MaxSize=22
 
 #22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. KMail trash icon - WRONG_ICON_USAGE_BY_APP - Monochrome
 [places/toolbar]
 Size=22
+Context=Places
+Type=Fixed
+
+[places/user-folders-32]
+Size=32
 Context=Places
 Type=Fixed
 
