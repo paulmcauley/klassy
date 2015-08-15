@@ -13,11 +13,12 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sc_print.svg"
+   inkscape:version="0.91+devel r"
+   sodipodi:docname="view-grid.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
-   inkscape:export-ydpi="30">
+   inkscape:export-ydpi="30"
+   viewBox="0 0 16 16">
   <defs
      id="defs3051" />
   <sodipodi:namedview
@@ -74,7 +75,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -97,17 +98,50 @@
            id="text3781"
            y="1053.0374"
            x="16.914654"
-           style="font-size:12.00001526px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+           style="font-style:normal;font-weight:normal;font-size:12.00001526px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;"
            xml:space="preserve"><tspan
              id="tspan3783"
              sodipodi:role="line"
              x="16.914654"
              y="1053.0374" /></text>
         <path
-           style="color:#000000;fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-           d="M 2 3 L 2 4 L 3 4 L 3 3 L 2 3 z M 6 3 L 6 4 L 7 4 L 7 3 L 6 3 z M 9 3 L 9 4 L 10 4 L 10 3 L 9 3 z M 13 3 L 13 4 L 14 4 L 14 3 L 13 3 z M 2 5 L 2 6 L 3 6 L 3 5 L 2 5 z M 6 5 L 6 6 L 7 6 L 7 5 L 6 5 z M 9 5 L 9 6 L 10 6 L 10 5 L 9 5 z M 13 5 L 13 6 L 14 6 L 14 5 L 13 5 z M 2 7 L 2 8 L 3 8 L 3 7 L 2 7 z M 6 7 L 6 8 L 7 8 L 7 7 L 6 7 z M 9 7 L 9 8 L 10 8 L 10 7 L 9 7 z M 13 7 L 13 8 L 14 8 L 14 7 L 13 7 z M 2 9 L 2 10 L 3 10 L 3 9 L 2 9 z M 6 9 L 6 10 L 7 10 L 7 9 L 6 9 z M 9 9 L 9 10 L 10 10 L 10 9 L 9 9 z M 13 9 L 13 10 L 14 10 L 14 9 L 13 9 z M 2 11 L 2 12 L 3 12 L 3 11 L 2 11 z M 6 11 L 6 12 L 7 12 L 7 11 L 6 11 z M 9 11 L 9 12 L 10 12 L 10 11 L 9 11 z M 13 11 L 13 12 L 14 12 L 14 11 L 13 11 z M 2 13 L 2 14 L 3 14 L 3 13 L 2 13 z M 6 13 L 6 14 L 7 14 L 7 13 L 6 13 z M 9 13 L 9 14 L 10 14 L 10 13 L 9 13 z M 13 13 L 13 14 L 14 14 L 14 13 L 13 13 z "
-           transform="matrix(1.3333333,0,0,1.3333367,0.3333327,1030.6957)"
-           id="rect4865" />
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 3.000005,1046.6958 h 2.6666608 v 2.6667 H 3.000005 Z"
+           id="rect4162" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="M 9.6666689,1040.0291 H 12.33333 v 2.6666 H 9.6666689 Z"
+           id="rect4164" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 16.333338,1033.3623 h 2.666661 v 2.6667 h -2.666661 z"
+           id="rect4166" />
+        <path
+           transform="scale(1,-1)"
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 3.000005,-1036.0289 h 2.6666608 v 2.6666 H 3.000005 Z"
+           id="rect4168" />
+        <path
+           transform="scale(1,-1)"
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 16.333338,-1049.3624 h 2.666661 v 2.6666 h -2.666661 z"
+           id="rect4170" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="M 9.6666689,1033.3622 H 12.33333 v 2.6667 H 9.6666689 Z"
+           id="rect4172" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="M 9.6666689,1046.6956 H 12.33333 v 2.6666 H 9.6666689 Z"
+           id="rect4172-6" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 3.0000021,1040.0288 h 2.6666608 v 2.6667 H 3.0000021 Z"
+           id="rect4172-1" />
+        <path
+           style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1.33333504;stroke-opacity:1"
+           d="m 16.333336,1040.0286 h 2.666661 v 2.6666 h -2.666661 z"
+           id="rect4172-5" />
       </g>
     </g>
   </g>

@@ -13,11 +13,12 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sc_formproperties.svg"
+   inkscape:version="0.91+devel r"
+   sodipodi:docname="document-export.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
-   inkscape:export-ydpi="30">
+   inkscape:export-ydpi="30"
+   viewBox="0 0 16 16">
   <defs
      id="defs3051" />
   <sodipodi:namedview
@@ -27,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="45.254834"
-     inkscape:cx="9.4299314"
-     inkscape:cy="7.9473236"
+     inkscape:zoom="22.627417"
+     inkscape:cx="3.8365203"
+     inkscape:cy="2.9709935"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +38,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1868"
-     inkscape:window-height="1060"
-     inkscape:window-x="50"
-     inkscape:window-y="-3"
+     inkscape:window-width="2560"
+     inkscape:window-height="964"
+     inkscape:window-x="-4"
+     inkscape:window-y="34"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -74,7 +75,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -84,10 +85,10 @@
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
     <path
-       style="color:#000000;fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="M 3 2 L 3 12 L 4 12 L 7.09375 12 L 5.09375 14 L 6.5 14 L 8.8125 11.71875 L 9 11.5 L 8.8125 11.28125 L 6.5 9 L 5.09375 9 L 7.09375 11 L 4 11 L 4 3 L 12 3 L 12 13 L 9 13 L 9 14 L 13 14 L 13 2 L 3 2 z "
-       transform="translate(421.71429,531.79074)"
-       id="rect3015" />
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#4d4d4d;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;enable-background:accumulate"
+       d="M 3 2 L 3 11 L 3 12 L 5 12 L 7.0859375 12 L 6.4140625 12.671875 L 5.4648438 13.621094 L 6.171875 14.328125 L 7.1210938 13.378906 L 9 11.5 L 7.1210938 9.6210938 L 6.171875 8.671875 L 5.4648438 9.3789062 L 6.4140625 10.328125 L 7.0859375 11 L 5 11 L 4 11 L 4 3 L 12 3 L 12 13 L 9 13 L 9 14 L 13 14 L 13 2 L 3 2 z "
+       id="rect3015"
+       transform="translate(421.71429,531.79074)" />
     <rect
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
        id="rect4035"
@@ -121,7 +122,7 @@
        id="text3781"
        y="559.42297"
        x="410.30652"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783"
          sodipodi:role="line"
@@ -132,7 +133,7 @@
        id="text3781-8"
        y="553.55963"
        x="411.04321"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-1"
          sodipodi:role="line"
@@ -143,7 +144,7 @@
        id="text3781-4"
        y="560.42297"
        x="404.30652"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-13"
          sodipodi:role="line"
@@ -210,7 +211,7 @@
        id="text3781-1"
        y="559.42297"
        x="410.30652"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-8"
          sodipodi:role="line"
@@ -221,7 +222,7 @@
        id="text3781-8-2"
        y="553.55963"
        x="411.04321"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-1-6"
          sodipodi:role="line"
@@ -232,7 +233,7 @@
        id="text3781-4-7"
        y="560.42297"
        x="404.30652"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-13-8"
          sodipodi:role="line"
@@ -299,7 +300,7 @@
        id="text3781-41"
        y="561.39795"
        x="406.07214"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-9"
          sodipodi:role="line"
@@ -310,7 +311,7 @@
        id="text3781-8-7"
        y="555.53461"
        x="406.80884"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-1-2"
          sodipodi:role="line"
@@ -321,7 +322,7 @@
        id="text3781-4-3"
        y="562.39795"
        x="400.07214"
-       style="font-size:9px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;font-size:9px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none"
        xml:space="preserve"><tspan
          id="tspan3783-13-6"
          sodipodi:role="line"
