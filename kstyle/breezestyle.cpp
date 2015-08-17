@@ -1489,9 +1489,6 @@ namespace Breeze
         // convert the pixel width
         const int indicatorSize( widthFrac*( horizontal ? rect.width():rect.height() ) );
 
-        // do nothing if indicator size is too small
-        if( indicatorSize < Metrics::ProgressBar_Thickness ) return QRect();
-
         QRect indicatorRect;
         if( horizontal )
         {
@@ -4639,12 +4636,15 @@ namespace Breeze
         if( !progressBarOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
+        QRect rect( option->rect );
         const QPalette& palette( option->palette );
 
         // get direction
         const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+        const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
+        bool reverse = horizontal && option->direction == Qt::RightToLeft;
+        if( inverted ) reverse = !reverse;
 
         // check if anything is to be drawn
         const bool busy( ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 ) );
@@ -4653,17 +4653,35 @@ namespace Breeze
 
             const qreal progress( _animations->busyIndicatorEngine().value() );
 
-            bool reverse = horizontal && option->direction == Qt::RightToLeft;
-            const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
-            if( inverted ) reverse = !reverse;
-
             const QColor first( palette.color( QPalette::Highlight ) );
             const QColor second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
             _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, reverse, progress );
 
         } else {
 
+            const QRegion oldClipRegion( painter->clipRegion() );
+            if( horizontal )
+            {
+                if( rect.width() < Metrics::ProgressBar_Thickness )
+                {
+                    painter->setClipRect( rect, Qt::IntersectClip );
+                    if( reverse ) rect.setLeft( rect.left() - Metrics::ProgressBar_Thickness + rect.width() );
+                    else rect.setWidth( Metrics::ProgressBar_Thickness );
+                }
+
+            } else {
+
+                if( rect.height() < Metrics::ProgressBar_Thickness )
+                {
+                    painter->setClipRect( rect, Qt::IntersectClip );
+                    if( reverse ) rect.setHeight( Metrics::ProgressBar_Thickness );
+                    else rect.setTop( rect.top() - Metrics::ProgressBar_Thickness + rect.height() );
+                }
+
+            }
+
             _helper->renderProgressBarContents( painter, rect, palette.color( QPalette::Highlight ) );
+            painter->setClipRegion( oldClipRegion );
 
         }
 
