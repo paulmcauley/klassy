@@ -76,6 +76,11 @@
 
 #include <QTextStream>
 
+#if QT_VERSION >= 0x050300
+// needed to deal with device pixel ratio
+#include <QWindow>
+#endif
+
 #if BREEZE_HAVE_X11
 #include <QX11Info>
 #endif
@@ -389,7 +394,7 @@ namespace Breeze
 
             if( _dragAboutToStart )
             {
-                if( mouseEvent->globalPos() == _globalDragPoint )
+                if( mouseEvent->pos() == _dragPoint )
                 {
                     // start timer,
                     _dragAboutToStart = false;
@@ -740,6 +745,16 @@ namespace Breeze
             // window
             const WId window( widget->window()->winId() );
 
+            #if QT_VERSION >= 0x050300
+            qreal dpiRatio = 1;
+            QWindow* windowHandle = widget->window()->windowHandle();
+            if( windowHandle ) dpiRatio = windowHandle->devicePixelRatio();
+            else dpiRatio = qApp->devicePixelRatio();
+            dpiRatio = qApp->devicePixelRatio();
+            #else
+            const qreal dpiRatio = 1;
+            #endif
+
             // from bespin/virtuality
             xcb_button_release_event_t releaseEvent;
             memset(&releaseEvent, 0, sizeof(releaseEvent));
@@ -748,10 +763,10 @@ namespace Breeze
             releaseEvent.event = window;
             releaseEvent.child = XCB_WINDOW_NONE;
             releaseEvent.root = QX11Info::appRootWindow();
-            releaseEvent.event_x = _dragPoint.x();
-            releaseEvent.event_y = _dragPoint.y();
-            releaseEvent.root_x = position.x();
-            releaseEvent.root_y = position.y();
+            releaseEvent.event_x = _dragPoint.x()*dpiRatio;
+            releaseEvent.event_y = _dragPoint.y()*dpiRatio;
+            releaseEvent.root_x = position.x()*dpiRatio;
+            releaseEvent.root_y = position.y()*dpiRatio;
             releaseEvent.detail = XCB_BUTTON_INDEX_1;
             releaseEvent.state = XCB_BUTTON_MASK_1;
             releaseEvent.time = XCB_CURRENT_TIME;
@@ -768,8 +783,8 @@ namespace Breeze
             clientMessageEvent.format = 32;
             clientMessageEvent.window = window;
             clientMessageEvent.type = _moveResizeAtom;
-            clientMessageEvent.data.data32[0] = position.x();
-            clientMessageEvent.data.data32[1] = position.y();
+            clientMessageEvent.data.data32[0] = position.x()*dpiRatio;
+            clientMessageEvent.data.data32[1] = position.y()*dpiRatio;
             clientMessageEvent.data.data32[2] = 8; // NET::Move
             clientMessageEvent.data.data32[3] = XCB_KEY_BUT_MASK_BUTTON_1;
             xcb_send_event( connection, false, QX11Info::appRootWindow(),
