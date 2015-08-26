@@ -34,6 +34,10 @@
 
 namespace Breeze
 {
+
+    //* contrast for arrow and treeline rendering
+    static const qreal arrowShade = 0.15;
+
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config ):
         _config( config )
@@ -180,10 +184,23 @@ namespace Breeze
     }
 
     //____________________________________________________________________
+    QColor Helper::arrowColor( const QPalette& palette, QPalette::ColorGroup group, QPalette::ColorRole role ) const
+    {
+        switch( role )
+        {
+            case QPalette::Text: return KColorUtils::mix( palette.color( group, QPalette::Text ), palette.color( group, QPalette::Base ), arrowShade );
+            case QPalette::WindowText: return KColorUtils::mix( palette.color( group, QPalette::WindowText ), palette.color( group, QPalette::Window ), arrowShade );
+            case QPalette::ButtonText: return KColorUtils::mix( palette.color( group, QPalette::ButtonText ), palette.color( group, QPalette::Button ), arrowShade );
+            default: return palette.color( group, role );
+        }
+
+    }
+
+    //____________________________________________________________________
     QColor Helper::arrowColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
-        QColor outline( palette.color( QPalette::WindowText ) );
+        QColor outline( arrowColor( palette, QPalette::WindowText ) );
         if( mode == AnimationHover )
         {
 
