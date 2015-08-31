@@ -822,7 +822,7 @@ namespace Breeze
 
         // copy rect and radius
         QRectF frameRect( rect );
-        frameRect.adjust( 1, 1, -1, -1 );
+        frameRect.adjust( 2, 2, -2, -2 );
         const qreal radius( frameRadius() );
 
         // shadow
@@ -876,10 +876,10 @@ namespace Breeze
             painter->setRenderHint( QPainter::Antialiasing, false );
 
             QPainterPath path;
-            path.moveTo( 4, 4 );
-            path.lineTo( qreal( Metrics::CheckBox_Size ) -5, 4 );
-            path.lineTo( 4, qreal( Metrics::CheckBox_Size ) - 5 );
-            painter->drawPath( path.translated( rect.topLeft() ) );
+            path.moveTo( 3, 3 );
+            path.lineTo( frameRect.right() - 6, 3 );
+            path.lineTo( 3, frameRect.bottom() - 6 );
+            painter->drawPath( path.translated( frameRect.topLeft() ) );
 
         } else if( state == CheckAnimated ) {
 
@@ -911,7 +911,7 @@ namespace Breeze
 
         // copy rect
         QRectF frameRect( rect );
-        frameRect.adjust( 1, 1, -1, -1 );
+        frameRect.adjust( 2, 2, -2, -2 );
 
         // shadow
         if( sunken )
