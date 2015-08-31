@@ -14,7 +14,7 @@
    height="32"
    id="svg5453"
    version="1.1"
-   inkscape:version="0.91+devel r"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="applications-science.svg"
    viewBox="0 0 32 32">
   <defs
@@ -54,7 +54,7 @@
          id="stop4156-8" />
     </linearGradient>
     <linearGradient
-       gradientTransform="translate(7.8863526e-6,-0.00776287)"
+       gradientTransform="translate(7.8863526e-6,-0.0234437)"
        inkscape:collect="always"
        xlink:href="#linearGradient4259"
        id="linearGradient4179"
@@ -155,9 +155,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32.000001"
-     inkscape:cx="17.559173"
-     inkscape:cy="16.09679"
+     inkscape:zoom="16.000001"
+     inkscape:cx="3.9561771"
+     inkscape:cy="8.7105512"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -166,9 +166,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="2560"
-     inkscape:window-height="957"
+     inkscape:window-height="1016"
      inkscape:window-x="-4"
-     inkscape:window-y="29"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -271,7 +271,7 @@
        y="538.79022" />
     <path
        style="fill:url(#linearGradient4179);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 389.85269,540.77461 21.40419,0.0156 c 0,0 -3.62157,4.98286 -10.68545,5.01559 -7.23437,-0.3125 -10.71874,-5.03125 -10.71874,-5.03125 z"
+       d="m 389.85269,540.75893 21.40419,0.0156 c 0,0 -3.62157,4.98286 -10.68545,5.01559 -7.23437,-0.3125 -10.71874,-5.03125 -10.71874,-5.03125 z"
        id="path4171"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
