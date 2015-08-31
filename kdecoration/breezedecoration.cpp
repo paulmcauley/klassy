@@ -456,15 +456,24 @@ namespace Breeze
         const auto c = client().data();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
 
-        // render a linear gradient on title area
-        const QColor titleBarColor( this->titleBarColor() );
-        QLinearGradient gradient( 0, 0, 0, titleRect.height() );
-        gradient.setColorAt(0.0, titleBarColor.lighter(100.0));
-        gradient.setColorAt(0.8, titleBarColor);
-
         painter->save();
-        painter->setBrush(gradient);
         painter->setPen(Qt::NoPen);
+
+        // render a linear gradient on title area
+        if( c->isActive() )
+        {
+
+            const QColor titleBarColor( this->titleBarColor() );
+            QLinearGradient gradient( 0, 0, 0, titleRect.height() );
+            gradient.setColorAt(0.0, titleBarColor.lighter( 120 ) );
+            gradient.setColorAt(0.8, titleBarColor);
+            painter->setBrush(gradient);
+
+        } else {
+
+            painter->setBrush( titleBarColor() );
+
+        }
 
         if (isMaximized())
         {
