@@ -103,6 +103,16 @@ namespace Breeze
         //* focus outline color, using animations
         QColor focusOutlineColor( const QPalette& ) const;
 
+        //* hover outline color, using animations
+        QColor hoverOutlineColor( const QPalette& ) const;
+
+        //* focus outline color, using animations
+        QColor buttonFocusOutlineColor( const QPalette& ) const;
+
+        //* hover outline color, using animations
+        QColor buttonHoverOutlineColor( const QPalette& ) const;
+
+
         //* side panel outline color, using animations
         QColor sidePanelOutlineColor( const QPalette&, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 

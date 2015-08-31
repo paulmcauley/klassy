@@ -107,6 +107,18 @@ namespace Breeze
     { return KColorUtils::mix( focusColor( palette ), palette.color( QPalette::WindowText ), 0.15 ); }
 
     //____________________________________________________________________
+    QColor Helper::hoverOutlineColor( const QPalette& palette ) const
+    { return KColorUtils::mix( hoverColor( palette ), palette.color( QPalette::WindowText ), 0.15 ); }
+
+    //____________________________________________________________________
+    QColor Helper::buttonFocusOutlineColor( const QPalette& palette ) const
+    { return KColorUtils::mix( focusColor( palette ), palette.color( QPalette::ButtonText ), 0.15 ); }
+
+    //____________________________________________________________________
+    QColor Helper::buttonHoverOutlineColor( const QPalette& palette ) const
+    { return KColorUtils::mix( hoverColor( palette ), palette.color( QPalette::ButtonText ), 0.15 ); }
+
+    //____________________________________________________________________
     QColor Helper::sidePanelOutlineColor( const QPalette& palette, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
@@ -207,23 +219,32 @@ namespace Breeze
         if( mode == AnimationHover )
         {
 
-            const QColor focus( focusColor( palette ) );
-            const QColor hover( hoverColor( palette ) );
-            if( hasFocus ) outline = KColorUtils::mix( focus, hover, opacity );
-            else outline = KColorUtils::mix( outline, hover, opacity );
+            if( hasFocus )
+            {
+                const QColor focus( buttonFocusOutlineColor( palette ) );
+                const QColor hover( buttonHoverOutlineColor( palette ) );
+                outline = KColorUtils::mix( focus, hover, opacity );
+
+            } else {
+
+                const QColor hover( hoverColor( palette ) );
+                outline = KColorUtils::mix( outline, hover, opacity );
+
+            }
 
         } else if( mouseOver ) {
 
-            outline = hoverColor( palette );
+            if( hasFocus ) outline = buttonHoverOutlineColor( palette );
+            else outline = hoverColor( palette );
 
         } else if( mode == AnimationFocus ) {
 
-            const QColor focus( focusColor( palette ) );
+            const QColor focus( buttonFocusOutlineColor( palette ) );
             outline = KColorUtils::mix( outline, focus, opacity );
 
         } else if( hasFocus ) {
 
-            outline = focusColor( palette );
+            outline = buttonFocusOutlineColor( palette );
 
         }
 
@@ -630,10 +651,14 @@ namespace Breeze
 
         }
 
-        if( outline.isValid() && !hasFocus )
+        if( outline.isValid() )
         {
 
-            painter->setPen( outline );
+            QLinearGradient gradient( frameRect.topLeft(), frameRect.bottomLeft() );
+            gradient.setColorAt( 0, outline.lighter( hasFocus ? 103:101 ) );
+            gradient.setColorAt( 1, outline.darker( hasFocus ? 110:103 ) );
+            painter->setPen( QPen( QBrush( gradient ), 1.0 ) );
+
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
             radius -= 1.0;
 
