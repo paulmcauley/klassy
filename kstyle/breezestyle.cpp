@@ -4454,7 +4454,7 @@ namespace Breeze
 
             checkBoxRect = visualRect( option, checkBoxRect );
 
-            const bool active( enabled && menuItemOption->checked );
+            const bool active( menuItemOption->checked );
             const QColor shadow( _helper->shadowColor( palette ) );
             QColor color;
             if( useStrongFocus && ( selected || sunken ) )
