@@ -2630,7 +2630,13 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                const int iconWidth( qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) );
+                #if QT_VERSION >= 0x050000
+                const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+                const int iconWidth( isQtQuickControl ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
+                #else
+                const int iconWidth( menuItemOption->maxIconWidth );
+                #endif
+
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
@@ -4485,7 +4491,12 @@ namespace Breeze
         }
 
         // icon
-        const int iconWidth( qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) );
+        #if QT_VERSION >= 0x050000
+        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        const int iconWidth( isQtQuickControl ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
+        #else
+        const int iconWidth( menuItemOption->maxIconWidth );
+        #endif
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
