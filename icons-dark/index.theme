@@ -76,7 +76,7 @@ Comment[zh_TW]=KDE 視覺設計組製作的微風暗色系圖示主題
 
 DisplayDepth=32
 
-Inherits=hicolor
+Inherits=breeze
 
 Example=folder
 
@@ -96,140 +96,125 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/toolbar,actions/toolbar-gtk,actions/toolbar-gtk-24,actions/toolbar-kde,actions/toolbar-small,actions/toolbar-small-gtk,actions/toolbar-small-kde,apps/preferences,apps/software,apps/software-medium,apps/software-small,apps/system-power-actions,apps/toolbar,categories/kickoff-menu-tabs,categories/start-menu,categories/start-menu-medium,devices/hardware,devices/sidebars,emblems/medium,emblems/small,emotes/faces,emotes/food,mimetypes/file-types,mimetypes/file-types-32,mimetypes/file-types-small,places/toolbar,places/user-folders,places/user-folders-32,places/user-folders-small,status/dialogs,status/im-status,status/toolbar,status/panel
+Directories=actions/16,actions/22,actions/24,actions/48,apps/16,apps/22,apps/32,apps/48,categories/16,categories/22,categories/32,categories/48,devices/16,devices/48,devices/64,emblems/8,emblems/22,emotes/22,mimetypes/16,mimetypes/32,mimetypes/64,places/16,places/22,places/32,places/64,status/16,status/22,status/64
 
 ########## Actions
 ########## ordered by size
 
 #16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-small]
-Size=16
-Context=Actions
-Type=Fixed
-
-#16x16 - Fixed size - For use in sidebar(s) smaller toolbar(s) >!!!ONLY!!!<: e.g. Kate movable sidebar/toolbar (search and replace, current project, etc.) or Juk tree view - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-small]
-Size=16
-Context=Actions
-Type=Fixed
-
-#16x16 - Fixed size - For use in context menus >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-small-gtk]
-Size=16
-Context=Actions
-Type=Fixed
-
-#16x16 - Fixed size - For use in context menus >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-small-kde]
+[actions/16]
 Size=16
 Context=Actions
 Type=Fixed
 
 #22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar]
+[actions/22]
 Size=22
 Context=Actions
 Type=Fixed
 
-#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-gtk]
-Size=22
-Context=Actions
-Type=Fixed
-
-#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-kde]
-Size=22
-Context=Actions
-Type=Fixed
-
-#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[actions/toolbar-gtk-24]
+#24x24 - Fixed size - GTK icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/24]
 Size=24
 Context=Actions
 Type=Fixed
 
-##########
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[actions/48]
+Size=48
+Context=Actions
+Type=Fixed
 
 ########## Apps
 ########## ordered by size
 
 #16x16 - Fixed size - Application icon(s) for Dolphin sidebar - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[apps/software-small]
+[apps/16]
 Size=16
 Context=Applications
 Type=Fixed
 
-#22x22 - Fixed size - Application icon(s) for task manager - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 #22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Open Terminal/About Dolphin/About KDE buttons - WRONG_ICON_USAGE_BY_APP - Monochrome
-[apps/software-medium]
+[apps/22]
 Size=22
 Context=Applications
 Type=Fixed
 
 #32x32 - Fixed size - For System Settings icons >!!!ONLY!!!< - Scalable to the following sizes: 32x32 (default), 64x64, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
-[apps/preferences]
+[apps/32]
 Size=32
 Context=Applications
 Type=Fixed
 
 #48x48 - Scalable - For application icons >!!!ONLY!!!< - Scalable to the following sizes: 48x48 (default), 96x96 and 24x24 (not recommended) - DO_NOT_USE_ANYWHERE_ELSE - Color
-[apps/software]
+[apps/48]
 Size=48
 Context=Applications
 Type=Scalable
-MinSize=32
+MinSize=48
 MaxSize=256
-
-##########
 
 ########## Categories
 ########## ordered by size
 
-#32x32 - Fixed size - For categories icons >!!!ONLY!!!< - Used in Kickoff (KDE 4.x.x) and Lancelot. Also used in MATE and Cinnamon (just FYI) - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[categories/start-menu]
-Size=32
+#16x16 - Fixed size - Category icon for symlinks - OPTIONAL + DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[categories/16]
+Size=16
 Context=Categories
 Type=Fixed
 
 #22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. Dolphin Configure toolbar button -  WRONG_ICON_USAGE_BY_APP - Monochrome
-[categories/start-menu-medium]
+[categories/22]
 Size=22
 Context=Categories
 Type=Fixed
 
-##########
+#32x32 - Fixed size - For categories icons >!!!ONLY!!!< - Used in Kickoff (KDE 4.x.x) and Lancelot. Also used in MATE and Cinnamon (just FYI) - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[categories/32]
+Size=32
+Context=Categories
+Type=Fixed
+
+#48x48 - Fixed size - Icon(s) used in Kickoff on KDE 4 tabs section >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[categories/48]
+Size=48
+Context=Categories
+Type=Fixed
 
 ########## Devices
 ########## ordered by size
 
 #16x16 - Fixed size - For small device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[devices/sidebars]
+[devices/16]
 Size=16
 Context=Devices
 Type=Fixed
 
+#48x48 - Scalable - For device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
+[devices/48]
+Size=48
+Context=Devices
+Type=Fixed
+
 #64x64 - Scalable - For device icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
-[devices/hardware]
+[devices/64]
 Size=64
 Context=Devices
 Type=Scalable
-MinSize=32
+MinSize=64
 MaxSize=256
-
-##########
 
 ########## Emblems
 ########## ordered by size
 
 #8x8 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[emblems/small]
+[emblems/8]
 Size=8
 Context=Emblems
 Type=Fixed
 
 #22x22 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[emblems/medium]
+[emblems/22]
 Size=22
 Context=Emblems
 Type=Fixed
@@ -238,48 +223,42 @@ Type=Fixed
 ########## ordered by size
 
 #22x22 - Fixed size - Emoticons - DO_NOT_USE_ANYWHERE_ELSE - Color/flat
-[emotes/faces]
+[emotes/22]
 Size=22
 Context=Emotes
 Type=Fixed
-
-#22x22 - Fixed size - Emoticons - DO_NOT_USE_ANYWHERE_ELSE - Color
-[emotes/food]
-Size=22
-Context=Emotes
-Type=Fixed
-
-#########
 
 ########## Mimetypes
 ########## ordered by size
 
 #16x16 - Fixed size - For small file type icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[mimetypes/file-types-small]
+[mimetypes/16]
 Size=16
 Context=MimeTypes
 Type=Scalable
 MinSize=16
 MaxSize=22
 
-[mimetypes/file-types-32]
+#32x32 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
+[mimetypes/32]
 Size=32
 Context=MimeTypes
-Type=Fixed
+MinSize=32
+MaxSize=48
 
 #64x64 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
-[mimetypes/file-types]
+[mimetypes/64]
 Size=64
 Context=MimeTypes
 Type=Scalable
-MinSize=48
+MinSize=64
 MaxSize=256
 
 ########## Places
 ########## ordered by size
 
 #16x16 - Fixed size - For small folder icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[places/user-folders-small]
+[places/16]
 Size=16
 Context=Places
 Type=Scalable
@@ -287,47 +266,44 @@ MinSize=16
 MaxSize=22
 
 #22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. KMail trash icon - WRONG_ICON_USAGE_BY_APP - Monochrome
-[places/toolbar]
+[places/22]
 Size=22
 Context=Places
 Type=Fixed
 
-[places/user-folders-32]
+#32x32 - Scalable - For folder icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
+[places/32]
 Size=32
 Context=Places
 Type=Fixed
+MinSize=32
+MaxSize=48
 
 #64x64 - Scalable - For folder icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
-[places/user-folders]
+[places/64]
 Size=64
 Context=Places
 Type=Scalable
-MinSize=48
+MinSize=64
 MaxSize=256
 
 ########## Status
 ########## ordered by size
 
 #16x16 - Fixed size - For IM status icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[status/im-status]
+[status/16]
 Size=16
 Context=Status
 Type=Fixed
 
-#22x22 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[status/toolbar]
-Size=22
-Context=Status
-Type=Fixed
-
 #22x22 - Fixed size - Icon(s) for Plasma theme/System Tray. Not particularly used on Plasma. - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
-[status/panel]
+[status/22]
 Size=22
 Context=Status
 Type=Fixed
 
 #64x64 - Fixed size - For dialog icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
-[status/dialogs]
+[status/64]
 Size=64
 Context=Status
 Type=Fixed
