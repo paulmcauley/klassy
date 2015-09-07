@@ -901,10 +901,10 @@ namespace Breeze
             painter->setRenderHint( QPainter::Antialiasing, false );
 
             QPainterPath path;
-            path.moveTo( 3, 3 );
-            path.lineTo( frameRect.right() - 6, 3 );
-            path.lineTo( 3, frameRect.bottom() - 6 );
-            painter->drawPath( path.translated( frameRect.topLeft() ) );
+            path.moveTo( markerRect.topLeft() );
+            path.lineTo( markerRect.right() - 1, markerRect.top() );
+            path.lineTo( markerRect.left(), markerRect.bottom()-1 );
+            painter->drawPath( path );
 
         } else if( state == CheckAnimated ) {
 
