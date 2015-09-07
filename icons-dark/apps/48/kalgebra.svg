@@ -134,7 +134,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.2708333"
-     inkscape:cx="-17.90607"
+     inkscape:cx="0.41260734"
      inkscape:cy="24"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -309,6 +309,11 @@
        x="390.57144"
        y="542.79797" />
     <path
+       style="fill:#bdb49e;fill-opacity:1;stroke:none"
+       d="m 400.57134,513.79804 0,1.98633 0,0.0137 0.008,0 4.59179,7.94922 -4.59961,7.96484 0,0.0859 0,1.90039 0,0.0996 16,0 0,-0.0996 0,-1.90039 0,-2 -2,0 0,2 -11.73827,0 4.04101,-7 0.60547,-1.04883 0,-0.002 -0.60547,-1.04883 -3.98437,-6.90039 9.68164,0 0,1 2,0 0,-3 -12.83594,0 -1.16406,0 z"
+       id="rect4259"
+       inkscape:connector-curvature="0" />
+    <path
        style="fill:#ebebeb;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 424.57143,530.798 -9,9 0,-9 z"
        id="path4252"
@@ -326,43 +331,5 @@
        id="path6163"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccc" />
-    <rect
-       style="fill:#bdb49e;fill-opacity:1;stroke:none"
-       id="rect4259"
-       width="15.999989"
-       height="2.0000005"
-       x="400.57144"
-       y="531.79797" />
-    <rect
-       y="513.79797"
-       x="400.57144"
-       height="2.0000265"
-       width="13.999989"
-       id="rect4261"
-       style="fill:#bdb49e;fill-opacity:1;stroke:none" />
-    <path
-       style="fill:#bdb49e;fill-opacity:1;stroke:none"
-       d="M 16 14 L 16 15.986328 L 21.205078 25 L 22.302734 25 L 22.908203 23.951172 L 17.164062 14 L 16 14 z "
-       transform="translate(384.57143,499.798)"
-       id="rect4263" />
-    <path
-       style="fill:#bdb49e;fill-opacity:1;stroke:none"
-       d="M 21.205078 22.900391 L 16 31.914062 L 16 33.900391 L 17.164062 33.900391 L 22.302734 25 L 22.908203 23.949219 L 22.302734 22.900391 L 21.205078 22.900391 z "
-       transform="translate(384.57143,499.798)"
-       id="path4271" />
-    <rect
-       style="fill:#bdb49e;fill-opacity:1;stroke:none"
-       id="rect4314"
-       width="2"
-       height="3.9000001"
-       x="414.57144"
-       y="529.79797" />
-    <rect
-       style="fill:#bdb49e;fill-opacity:1;stroke:none"
-       id="rect4316"
-       width="2"
-       height="3"
-       x="412.57144"
-       y="513.79797" />
   </g>
 </svg>
