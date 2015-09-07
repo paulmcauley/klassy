@@ -13,9 +13,9 @@
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91+devel r"
+   inkscape:version="0.91 r13725"
    viewBox="0 0 16 16"
-   sodipodi:docname="smartphone.svg">
+   sodipodi:docname="computer-laptop.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="31.678384"
-     inkscape:cx="3.8016253"
-     inkscape:cy="7.7461321"
+     inkscape:zoom="22.4"
+     inkscape:cx="10.173832"
+     inkscape:cy="9.2877832"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -35,10 +35,12 @@
      borderlayer="true"
      units="px"
      inkscape:window-width="1366"
-     inkscape:window-height="670"
+     inkscape:window-height="709"
      inkscape:window-x="-4"
-     inkscape:window-y="29"
-     inkscape:window-maximized="1">
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true">
     <inkscape:grid
        type="xygrid"
        id="grid4062" />
@@ -67,7 +69,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -77,9 +79,9 @@
      id="layer1"
      transform="translate(0,-1036.3622)">
     <path
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
-       d="M 4 2 L 4 14 L 12 14 L 12 2 L 4 2 z M 5 3 L 7 3 L 7 4 L 9 4 L 9 3 L 11 3 L 11 13 L 9 13 L 9 12 L 7 12 L 7 13 L 5 13 L 5 3 z "
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
+       d="M 3 4 L 3 11 L 2 11 C 2 11.554 2.446 12 3 12 L 13 12 C 13.554 12 14 11.554 14 11 L 13 11 L 13 4 L 3 4 z M 4 5 L 12 5 L 12 10 L 4 10 L 4 5 z "
        transform="translate(0,1036.3622)"
-       id="rect4148" />
+       id="rect4178" />
   </g>
 </svg>

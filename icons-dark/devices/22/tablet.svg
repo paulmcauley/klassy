@@ -13,9 +13,9 @@
    height="22"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.91 r13725"
    viewBox="0 0 22 22"
-   sodipodi:docname="tools-media-optical-format.svg">
+   sodipodi:docname="tablet.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,19 +25,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32.676067"
-     inkscape:cx="12.329835"
-     inkscape:cy="9.8989938"
+     inkscape:zoom="16.338034"
+     inkscape:cx="20.241509"
+     inkscape:cy="14.010296"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g4644"
      showgrid="true"
      inkscape:showpageshadow="false"
      units="px"
      inkscape:window-width="1366"
-     inkscape:window-height="666"
-     inkscape:window-x="-2"
-     inkscape:window-y="25"
-     inkscape:window-maximized="1">
+     inkscape:window-height="709"
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true">
     <inkscape:grid
        type="xygrid"
        id="grid4101" />
@@ -82,7 +84,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -92,15 +94,18 @@
      id="layer1"
      transform="translate(0,-1030.3622)">
     <g
-       id="layer1-0"
-       inkscape:label="Capa 1">
-      <path
-         id="rect4119"
-         transform="translate(0,1030.3622)"
-         d="m 11,3 c -4.432,0 -8,3.568 -8,8 0,4.432 3.568,8 8,8 4.432,0 8,-3.568 8,-8 0,-4.432 -3.568,-8 -8,-8 z m 0,1 c 3.878,0 7,3.122 7,7 0,3.878 -3.122,7 -7,7 C 7.122,18 4,14.878 4,11 4,7.122 7.122,4 11,4 Z m 0,5 c -1.1079987,0 -2,0.8920013 -2,2 0,1.107999 0.8920013,2 2,2 1.107999,0 2,-0.892001 2,-2 0,-1.1079987 -0.892001,-2 -2,-2 z m 0,1 c 0.553999,0 1,0.446001 1,1 0,0.553999 -0.446001,1 -1,1 -0.553999,0 -1,-0.446001 -1,-1 0,-0.553999 0.446001,-1 1,-1 z"
-         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0"
-         sodipodi:nodetypes="ssssssssssssssssssss" />
+       transform="translate(0,39.500035)"
+       id="g4644">
+      <g
+         id="g3379-4"
+         transform="translate(0,-39.500035)">
+        <path
+           inkscape:connector-curvature="0"
+           style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
+           d="m -36,5 0,14 16,0 0,-14 -16,0 z m 1,1 14,0 0,4 -1,0 0,4 1,0 0,4 -14,0 0,-4 1,0 0,-4 -1,0 0,-4 z"
+           transform="translate(39,1029.3622)"
+           id="rect4590" />
+      </g>
     </g>
   </g>
 </svg>
