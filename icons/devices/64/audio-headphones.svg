@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg5453"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="audio-headphones.svg">
+  <defs
+     id="defs5455" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="16.000001"
+     inkscape:cx="10.867893"
+     inkscape:cy="37.576848"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1024"
+     inkscape:window-height="532"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     showguides="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4063"
+       originx="7.9999866px"
+       originy="7.9999772px" />
+    <sodipodi:guide
+       position="0,0"
+       orientation="0,64"
+       id="guide4196" />
+    <sodipodi:guide
+       position="64,0"
+       orientation="-64,0"
+       id="guide4198" />
+    <sodipodi:guide
+       position="64,64"
+       orientation="0,-64"
+       id="guide4200" />
+    <sodipodi:guide
+       position="6,58"
+       orientation="52,0"
+       id="guide4202" />
+    <sodipodi:guide
+       position="6,6"
+       orientation="0,52"
+       id="guide4204" />
+    <sodipodi:guide
+       position="58,6"
+       orientation="-52,0"
+       id="guide4206" />
+    <sodipodi:guide
+       position="58,58"
+       orientation="0,-52"
+       id="guide4208" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5458">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-376.57144,-491.79797)" />
+</svg>
