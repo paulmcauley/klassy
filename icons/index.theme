@@ -40,7 +40,7 @@ Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
 Name[zh_TW]=微風
 
-Comment=Default Plasma 5 Theme
+Comment=Default Plasma 5 Theme GitHub
 Comment[ar]=سمة بلازما 5 الافتراضيّة
 Comment[ca]=Tema del Plasma 5 per defecte
 Comment[cs]=Výchozí motiv Plasma 5
@@ -259,6 +259,7 @@ MaxSize=24
 [mimetypes/32]
 Size=32
 Context=MimeTypes
+Type=Scalable
 MinSize=32
 MaxSize=48
 
