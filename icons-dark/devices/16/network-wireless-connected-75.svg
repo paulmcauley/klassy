@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16"
+   height="16"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   viewBox="0 0 16 16"
+   sodipodi:docname="network-wireless-connected-75.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.627417"
+     inkscape:cx="11.583897"
+     inkscape:cy="9.0587778"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     units="px"
+     inkscape:window-width="1366"
+     inkscape:window-height="709"
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4062" />
+    <sodipodi:guide
+       position="2,2.0000174"
+       orientation="0,12"
+       id="guide4068" />
+    <sodipodi:guide
+       position="14,3"
+       orientation="-12,0"
+       id="guide4070" />
+    <sodipodi:guide
+       position="14,14.000017"
+       orientation="0,-12"
+       id="guide4072" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-1036.3622)">
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none;opacity:0.5"
+       d="M 8 2 C 5.1217226 2 2.4471588 2.8167177 0.16796875 4.2109375 L 0.79882812 4.9980469 C 2.902248 3.7369058 5.3590869 3 8 3 C 10.640918 3 13.097755 3.7369049 15.201172 4.9980469 L 15.832031 4.2109375 C 13.552841 2.8167214 10.878283 2 8 2 z "
+       transform="translate(0,1036.3622)"
+       id="rect4152-67" />
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none;opacity:1"
+       d="M 8 5 C 5.8435991 5 3.8425681 5.6235825 2.1484375 6.6875 L 2.7792969 7.4726562 C 4.2984285 6.5437457 6.0817927 6 8 6 C 9.9182124 6 11.701572 6.5437531 13.220703 7.4726562 L 13.851562 6.6875 C 12.157434 5.623599 10.156407 5 8 5 z "
+       transform="translate(0,1036.3622)"
+       id="rect4204-8" />
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none;opacity:1"
+       d="M 8 8 C 6.5661803 8 5.2366865 8.428369 4.1289062 9.1621094 L 4.7597656 9.9492188 C 5.693648 9.3502155 6.8034854 9 8 9 C 9.1965141 9 10.306354 9.3502173 11.240234 9.9492188 L 11.871094 9.1621094 C 10.763314 8.4283753 9.4338257 8 8 8 z "
+       transform="translate(0,1036.3622)"
+       id="rect4208-3" />
+    <circle
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
+       id="path4471"
+       cx="8"
+       cy="1048.8622"
+       r="1.5" />
+  </g>
+</svg>
