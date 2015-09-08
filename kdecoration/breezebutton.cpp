@@ -205,11 +205,13 @@ namespace Breeze
                     {
                         pen.setJoinStyle( Qt::RoundJoin );
                         painter->setPen( pen );
+
                         painter->drawPolygon( QPolygonF()
-                            << QPointF( 4.5, 9 )
-                            << QPointF( 9, 4.5 )
-                            << QPointF( 13.5, 9 )
-                            << QPointF( 9, 13.5 ) );
+                            << QPointF( 4, 9 )
+                            << QPointF( 9, 4 )
+                            << QPointF( 14, 9 )
+                            << QPointF( 9, 14 ) );
+
                     } else {
                         painter->drawPolyline( QPolygonF()
                             << QPointF( 4, 11 )
