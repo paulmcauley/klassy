@@ -13,8 +13,8 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sc_deletemasterpage.svg"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="edit-delete.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
    inkscape:export-ydpi="30">
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="32"
-     inkscape:cx="5.26562"
-     inkscape:cy="11.121553"
+     inkscape:cx="-0.093755"
+     inkscape:cy="11.152803"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +37,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1868"
-     inkscape:window-height="1060"
-     inkscape:window-x="50"
-     inkscape:window-y="-3"
+     inkscape:window-width="1024"
+     inkscape:window-height="532"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -74,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -83,10 +83,26 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
-    <path
-       style="fill:#da4453;fill-opacity:1;stroke:none"
-       d="M 8 2 C 4.6862928 2 2 4.6862997 2 8 C 2 11.3137 4.6862928 14 8 14 C 11.313707 14 14 11.3137 14 8 C 14 4.6862997 11.313707 2 8 2 z M 8 3 C 10.761424 3 13 5.2385763 13 8 C 13 9.199635 12.548037 10.263384 11.84375 11.125 L 4.875 4.15625 C 5.7366165 3.4519627 6.8003651 3 8 3 z M 4.15625 4.875 L 11.125 11.84375 C 10.263384 12.548037 9.199635 13 8 13 C 5.2385763 13 3 10.761424 3 8 C 3 6.8003651 3.4519627 5.7366165 4.15625 4.875 z "
-       transform="translate(421.71429,531.79074)"
-       id="rect4203" />
+    <g
+       id="g4156"
+       style="fill:#da4453;fill-opacity:1"
+       transform="translate(10.90625,5.8125)">
+      <g
+         id="g4152"
+         style="fill:#da4453;fill-opacity:1">
+        <g
+           id="layer1-3"
+           inkscape:label="Capa 1"
+           transform="translate(-10.90625,-5.8125)"
+           style="fill:#da4453;fill-opacity:1">
+          <path
+             id="rect4455"
+             transform="translate(421.71429,531.79074)"
+             d="m 5,2 0,2 1,0 0,-1 4,0 0,1 1,0 0,-2 -1,0 -4,0 -1,0 z m -3,3 0,1 2,0 0,7 0,1 8,0 0,-1 0,-7 2,0 0,-1 -12,0 z m 3,1 6,0 0,7 -6,0 0,-7 z"
+             style="opacity:1;fill:#da4453;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+    </g>
   </g>
 </svg>
