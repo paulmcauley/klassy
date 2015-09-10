@@ -40,14 +40,14 @@ Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
 Name[zh_TW]=Breeze
 
-Comment=Default Plasma 5 Theme GitHub
-Comment[ca]=Tema del Plasma 5 per defecte al GitHub
-Comment[es]=Tema por omisión de Plasma 5 GitHub
-Comment[nl]=Standaard thema van Plasma 5 uit GitHub
-Comment[pt_BR]=Tema padrão do Plasma 5 no GitHub
-Comment[sv]=Standardtema för Plasma 5 GitHub
-Comment[uk]=Типова тема Плазми 5, GitHub
-Comment[x-test]=xxDefault Plasma 5 Theme GitHubxx
+Comment=Default Plasma 5 Theme
+Comment[ca]=Tema del Plasma 5 per defecte al
+Comment[es]=Tema por omisión de Plasma 5
+Comment[nl]=Standaard thema van Plasma 5 uit
+Comment[pt_BR]=Tema padrão do Plasma 5 no
+Comment[sv]=Standardtema för Plasma 5
+Comment[uk]=Типова тема Плазми 5
+Comment[x-test]=xxDefault Plasma 5 Themexx
 
 DisplayDepth=32
 
