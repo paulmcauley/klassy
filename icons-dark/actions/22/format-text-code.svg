@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg7384"
+   height="22"
+   width="22"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="format-text-code.svg"
+   inkscape:export-filename="/home/uri/Descargas/NITRUX-KDE/NITRUX-KDE/16x16/actions/view-preview.png"
+   inkscape:export-xdpi="30"
+   inkscape:export-ydpi="30">
+  <defs
+     id="defs9">
+    <linearGradient
+       id="linearGradient4300-8"
+       inkscape:collect="always">
+      <stop
+         id="stop4302-5"
+         offset="0"
+         style="stop-color:#f27935;stop-opacity:1" />
+      <stop
+         id="stop4304-7"
+         offset="1"
+         style="stop-color:#f2784b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4351"
+       id="linearGradient4357"
+       x1="47"
+       y1="61"
+       x2="47"
+       y2="47"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4410">
+      <stop
+         style="stop-color:#383e51;stop-opacity:1"
+         offset="0"
+         id="stop4412" />
+      <stop
+         style="stop-color:#655c6f;stop-opacity:0"
+         offset="1"
+         id="stop4414" />
+    </linearGradient>
+    <linearGradient
+       gradientTransform="matrix(1,0,0,-1,-14,78)"
+       inkscape:collect="always"
+       xlink:href="#linearGradient4410"
+       id="linearGradient4427"
+       x1="54"
+       y1="31"
+       x2="40"
+       y2="17"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4300-8"
+       id="linearGradient4306"
+       x1="32"
+       y1="61"
+       x2="32"
+       y2="3"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4351">
+      <stop
+         style="stop-color:#f7ab89;stop-opacity:1"
+         offset="0"
+         id="stop4353" />
+      <stop
+         style="stop-color:#f9bda3;stop-opacity:1"
+         offset="1"
+         id="stop4355" />
+    </linearGradient>
+    <linearGradient
+       y2="17"
+       x2="40"
+       y1="31"
+       x1="54"
+       gradientTransform="matrix(1,0,0,-1,503.93261,656.69754)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3444"
+       xlink:href="#linearGradient4410"
+       inkscape:collect="always" />
+    <linearGradient
+       gradientTransform="translate(517.93261,578.69754)"
+       y2="47"
+       x2="47"
+       y1="61"
+       x1="47"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3447"
+       xlink:href="#linearGradient4351"
+       inkscape:collect="always" />
+    <linearGradient
+       gradientTransform="translate(517.93261,578.69754)"
+       y2="3"
+       x2="32"
+       y1="61"
+       x1="32"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3452"
+       xlink:href="#linearGradient4300-8"
+       inkscape:collect="always" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="709"
+     id="namedview7"
+     showgrid="true"
+     inkscape:zoom="16.5"
+     inkscape:cx="13.152566"
+     inkscape:cy="10.147264"
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:showpageshadow="false"
+     borderlayer="true"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true"
+     showguides="false">
+    <sodipodi:guide
+       position="2,20"
+       orientation="18,0"
+       id="guide4064" />
+    <sodipodi:guide
+       position="2,2"
+       orientation="0,18"
+       id="guide4066" />
+    <sodipodi:guide
+       position="20,2"
+       orientation="-18,0"
+       id="guide4068" />
+    <sodipodi:guide
+       position="20,20"
+       orientation="0,-18"
+       id="guide4070" />
+    <sodipodi:guide
+       position="3,19"
+       orientation="16,0"
+       id="guide4072" />
+    <sodipodi:guide
+       position="3,3"
+       orientation="0,16"
+       id="guide4074" />
+    <sodipodi:guide
+       position="19,3"
+       orientation="-16,0"
+       id="guide4076" />
+    <sodipodi:guide
+       position="2.4855874,4"
+       orientation="0,-16"
+       id="guide4078" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid4080" />
+    <sodipodi:guide
+       position="5,17"
+       orientation="12,0"
+       id="guide4089" />
+    <sodipodi:guide
+       position="5,5"
+       orientation="0,12"
+       id="guide4091" />
+    <sodipodi:guide
+       position="17,5"
+       orientation="-12,0"
+       id="guide4093" />
+    <sodipodi:guide
+       position="17,17"
+       orientation="0,-12"
+       id="guide4095" />
+    <sodipodi:guide
+       position="5,10"
+       orientation="5,0"
+       id="guide4127" />
+    <sodipodi:guide
+       position="5,5"
+       orientation="0,5"
+       id="guide4129" />
+    <sodipodi:guide
+       position="10,5"
+       orientation="-5,0"
+       id="guide4131" />
+    <sodipodi:guide
+       position="10,10"
+       orientation="0,-5"
+       id="guide4133" />
+    <sodipodi:guide
+       position="10,12"
+       orientation="7,0"
+       id="guide4135" />
+    <sodipodi:guide
+       position="10,5"
+       orientation="0,7"
+       id="guide4137" />
+    <sodipodi:guide
+       position="17,5"
+       orientation="-7,0"
+       id="guide4139" />
+    <sodipodi:guide
+       position="15,12"
+       orientation="0,-7"
+       id="guide4141" />
+    <sodipodi:guide
+       position="5,17"
+       orientation="5,0"
+       id="guide4147" />
+    <sodipodi:guide
+       position="5,12"
+       orientation="0,5"
+       id="guide4149" />
+    <sodipodi:guide
+       position="10,12"
+       orientation="-5,0"
+       id="guide4151" />
+    <sodipodi:guide
+       position="10,17"
+       orientation="0,-5"
+       id="guide4153" />
+    <sodipodi:guide
+       position="7.6999952,5.7071148"
+       orientation="0.70710678,0.70710678"
+       id="guide4175" />
+    <sodipodi:guide
+       position="8.407102,5.000008"
+       orientation="-6.2932501,6.2932501"
+       id="guide4177" />
+    <sodipodi:guide
+       position="13.993245,12.000365"
+       orientation="6.2932501,-6.2932501"
+       id="guide4181" />
+    <sodipodi:guide
+       position="9.3066406,10"
+       orientation="0.707031,-0.7070312"
+       id="guide4188" />
+    <sodipodi:guide
+       position="8.5996094,9.292969"
+       orientation="2.050781,2.0488286"
+       id="guide4190" />
+    <sodipodi:guide
+       position="11.355469,7.949219"
+       orientation="-2.050781,-2.0488284"
+       id="guide4194" />
+    <sodipodi:guide
+       position="20.300349,5.7071173"
+       orientation="0.70710678,-0.70710678"
+       id="guide4203" />
+    <sodipodi:guide
+       position="19.593242,5.0000105"
+       orientation="-6.2932501,-6.2932501"
+       id="guide4205" />
+    <sodipodi:guide
+       position="14.007099,12.000367"
+       orientation="6.2932501,6.2932501"
+       id="guide4209" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Gnome Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">Gnome Symbolic Icon Theme</title>
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035"
+     width="0"
+     height="14.668059"
+     x="-69.774445"
+     y="-19.66469" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-8"
+     width="0"
+     height="14.668059"
+     x="-62.813873"
+     y="2.9059274" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-0"
+     width="0"
+     height="14.668059"
+     x="-61.00058"
+     y="1.8451974" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-3"
+     width="0"
+     height="14.668059"
+     x="-69.774445"
+     y="-19.66469" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-8-9"
+     width="0"
+     height="14.668059"
+     x="-62.813873"
+     y="2.9059274" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-0-4"
+     width="0"
+     height="14.668059"
+     x="-61.00058"
+     y="1.8451974" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-2"
+     width="0"
+     height="14.668059"
+     x="-69.774445"
+     y="-19.66469" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-8-99"
+     width="0"
+     height="14.668059"
+     x="-62.813873"
+     y="2.9059274" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-0-43"
+     width="0"
+     height="14.668059"
+     x="-61.00058"
+     y="1.8451974" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-3-9"
+     width="0"
+     height="14.668059"
+     x="-69.774445"
+     y="-19.66469" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-8-9-9"
+     width="0"
+     height="14.668059"
+     x="-62.813873"
+     y="2.9059274" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-0-4-4"
+     width="0"
+     height="14.668059"
+     x="-61.00058"
+     y="1.8451974" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-6"
+     width="0"
+     height="14.668059"
+     x="-52.618195"
+     y="-15.88344" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-8-8"
+     width="0"
+     height="14.668059"
+     x="-45.657623"
+     y="6.6871777" />
+  <rect
+     style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+     id="rect4035-0-6"
+     width="0"
+     height="14.668059"
+     x="-43.84433"
+     y="5.6264477" />
+  <g
+     style="fill:#f2f2f2;fill-opacity:1"
+     transform="translate(-551.28572,-607.64791)"
+     id="layer1-1"
+     inkscape:label="Capa 1">
+    <path
+       inkscape:connector-curvature="0"
+       id="path3454"
+       d="m 563.78571,610.64791 -4,15.75384 1,0.24616 4,-15.75385 -1,-0.24615 z"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:1px;marker:none;enable-background:accumulate" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4224"
+       d="m 566.03107,613.64791 -0.74534,0.70967 3.66459,4.29032 -3.66459,4.29033 0.74534,0.70968 3.97515,-4.64516 0.27951,-0.35485 -0.27951,-0.35483 -3.97515,-4.64516 z"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:1px;marker:none;enable-background:accumulate" />
+    <path
+       inkscape:connector-curvature="0"
+       id="path4224-7"
+       d="m 558.54037,613.64791 0.74534,0.70967 -3.66459,4.29032 3.66459,4.29033 -0.74534,0.70968 -3.97515,-4.64516 -0.27951,-0.35485 0.27951,-0.35483 3.97515,-4.64516 z"
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:Sans;-inkscape-font-specification:Sans;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;baseline-shift:baseline;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:1px;marker:none;enable-background:accumulate" />
+  </g>
+</svg>
