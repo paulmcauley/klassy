@@ -38,6 +38,15 @@ Name[zh_CN]=暗色微风
 Name[zh_TW]=Breeze Dark
 
 Comment=Default Plasma 5 Theme for Dark themes
+Comment[en_GB]=Default Plasma 5 Theme for Dark themes
+Comment[es]=Tema por omisión de Plasma 5 para temas oscuros
+Comment[nl]=Standaard Plasma 5 thema voor donkere thema's
+Comment[pl]=Domyślny wystrój Plazma 5 dla ciemnych wystrojów
+Comment[pt]=Tema Escuro por Omissão para o Plasma 5
+Comment[pt_BR]=Tema padrão do Plasma 5 para temas escuros
+Comment[sv]=Plasma 5 standardtema för mörka teman
+Comment[uk]=Тема піктограм для Плазми 5 для темних тем
+Comment[x-test]=xxDefault Plasma 5 Theme for Dark themesxx
 
 DisplayDepth=32
 
