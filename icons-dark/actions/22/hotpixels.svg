@@ -14,7 +14,7 @@
    id="svg4355"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="filmgrain.svg">
+   sodipodi:docname="hotpixels.svg">
   <defs
      id="defs4357">
     <clipPath
@@ -38,7 +38,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="23.414198"
      inkscape:cx="8.1702418"
-     inkscape:cy="11.526175"
+     inkscape:cy="9.8178098"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -101,7 +101,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -111,9 +111,16 @@
      id="layer1"
      transform="translate(-544.57141,-742.93359)">
     <path
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="m 547.57141,746.43359 0,15 1,0 2,0 10,0 2,0 1,0 0,-15 -1,0 -2,0 -10,0 -2,0 -1,0 z m 1,1 1,0 0,1 -1,0 0,-1 z m 2,0 10,0 0,5.5 -10,0 0,-5.5 z m 11,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -11,1.5 10,0 0,5.5 -10,0 0,-5.5 z m -2,1.5 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z"
-       id="rect3009" />
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-linecap:round"
+       d="M 3 3 L 3 19 L 19 19 L 19 3 L 3 3 z M 4 4 L 18 4 L 18 18 L 4 18 L 4 4 z "
+       transform="translate(544.57141,742.93359)"
+       id="rect4167" />
+    <rect
+       style="opacity:1;fill:#da4453;fill-opacity:1;stroke:none;stroke-linecap:round"
+       id="rect4172"
+       width="2"
+       height="2"
+       x="557.57141"
+       y="755.93359" />
   </g>
 </svg>

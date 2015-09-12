@@ -14,7 +14,7 @@
    id="svg4355"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="filmgrain.svg">
+   sodipodi:docname="texture.svg">
   <defs
      id="defs4357">
     <clipPath
@@ -37,8 +37,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="23.414198"
-     inkscape:cx="8.1702418"
-     inkscape:cy="11.526175"
+     inkscape:cx="3.4295285"
+     inkscape:cy="9.8178098"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -111,9 +111,9 @@
      id="layer1"
      transform="translate(-544.57141,-742.93359)">
     <path
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="m 547.57141,746.43359 0,15 1,0 2,0 10,0 2,0 1,0 0,-15 -1,0 -2,0 -10,0 -2,0 -1,0 z m 1,1 1,0 0,1 -1,0 0,-1 z m 2,0 10,0 0,5.5 -10,0 0,-5.5 z m 11,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -11,1.5 10,0 0,5.5 -10,0 0,-5.5 z m -2,1.5 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z"
-       id="rect3009" />
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-linecap:round"
+       d="M 3 3 L 3 4 L 3 6 L 3 7 L 3 9 L 3 10 L 3 12 L 3 13 L 3 15 L 3 16 L 3 18 L 3 19 L 18 19 L 19 19 L 19 18 L 19 16 L 19 15 L 19 13 L 19 12 L 19 10 L 19 9 L 19 7 L 19 6 L 19 4 L 19 3 L 18 3 L 3 3 z M 4 4 L 18 4 L 18 6 L 4 6 L 4 4 z M 4 7 L 18 7 L 18 9 L 4 9 L 4 7 z M 4 10 L 18 10 L 18 12 L 4 12 L 4 10 z M 4 13 L 18 13 L 18 15 L 4 15 L 4 13 z M 4 16 L 18 16 L 18 18 L 4 18 L 4 16 z "
+       transform="translate(544.57141,742.93359)"
+       id="rect4234-0" />
   </g>
 </svg>

@@ -14,19 +14,41 @@
    id="svg4355"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="filmgrain.svg">
+   sodipodi:docname="underexposure.svg">
   <defs
      id="defs4357">
     <clipPath
-       id="clipPath4160"
-       clipPathUnits="userSpaceOnUse">
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4160">
       <rect
-         y="1023.3622"
-         x="7"
-         height="1"
-         width="1"
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
          id="rect4162"
-         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
+         width="1"
+         height="1"
+         x="7"
+         y="1023.3622" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4160-4">
+      <rect
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="rect4162-9"
+         width="1"
+         height="1"
+         x="7"
+         y="1023.3622" />
+    </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4160-3">
+      <rect
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="rect4162-0"
+         width="1"
+         height="1"
+         x="7"
+         y="1023.3622" />
     </clipPath>
   </defs>
   <sodipodi:namedview
@@ -36,9 +58,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="23.414198"
-     inkscape:cx="8.1702418"
-     inkscape:cy="11.526175"
+     inkscape:zoom="22.627417"
+     inkscape:cx="12.361839"
+     inkscape:cy="11.600164"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -101,7 +123,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -110,10 +132,31 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-544.57141,-742.93359)">
-    <path
-       inkscape:connector-curvature="0"
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="m 547.57141,746.43359 0,15 1,0 2,0 10,0 2,0 1,0 0,-15 -1,0 -2,0 -10,0 -2,0 -1,0 z m 1,1 1,0 0,1 -1,0 0,-1 z m 2,0 10,0 0,5.5 -10,0 0,-5.5 z m 11,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -11,1.5 10,0 0,5.5 -10,0 0,-5.5 z m -2,1.5 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z"
-       id="rect3009" />
+    <g
+       transform="translate(544.57141,-287.42861)"
+       id="layer1-4"
+       inkscape:label="Capa 1">
+      <rect
+         y="1036.3622"
+         x="10"
+         height="2"
+         width="2"
+         id="rect4120"
+         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
+      <rect
+         y="1039.3622"
+         x="10"
+         height="7"
+         width="2"
+         id="rect4124"
+         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
+      <path
+         sodipodi:nodetypes="ssssssssss"
+         inkscape:connector-curvature="0"
+         id="rect4129"
+         transform="translate(0,1030.3622)"
+         d="m 11,3 c -4.432,0 -8,3.568 -8,8 0,4.432 3.568,8 8,8 4.432,0 8,-3.568 8,-8 0,-4.432 -3.568,-8 -8,-8 z m 0,1 c 3.878,0 7,3.122 7,7 0,3.878 -3.122,7 -7,7 C 7.122,18 4,14.878 4,11 4,7.122 7.122,4 11,4 Z"
+         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none" />
+    </g>
   </g>
 </svg>
