@@ -92,9 +92,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627417"
-     inkscape:cx="10.515459"
-     inkscape:cy="16.038036"
+     inkscape:zoom="22.185475"
+     inkscape:cx="18.20625"
+     inkscape:cy="18.177743"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -102,9 +102,9 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1024"
-     inkscape:window-height="547"
-     inkscape:window-x="0"
+     inkscape:window-width="1366"
+     inkscape:window-height="709"
+     inkscape:window-x="-4"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
@@ -177,7 +177,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -246,17 +246,23 @@
        height="10.999983"
        x="375.57144"
        y="525.79797" />
-    <path
-       style="fill:#fbfbfb;fill-opacity:1"
-       d="m 392.57143,527.798 0,0.82617 0,7.17383 2,0 0,-5.17383 2,2 2,-2 0,5.17383 2,0 0,-7.17383 0,-0.82617 -2.00195,0 -1.99805,1.99805 -1.99805,-1.99805 z"
-       id="path3387"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccccc" />
-    <path
-       style="fill:#fbfbfb;fill-opacity:1"
-       d="m 404.57143,527.798 0,4 -2,0 3,4 3,-4 -2,0 0,-4 z"
-       id="rect3367"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccc" />
+    <rect
+       style="fill:#fbfbfb;fill-opacity:1;stroke:none"
+       id="rect4035-2"
+       width="0"
+       height="10.999983"
+       x="395.57144"
+       y="525.79797" />
+    <g
+       transform="translate(392.57143,-513.5642)"
+       id="layer1-3"
+       inkscape:label="Capa 1"
+       style="fill:#fbfbfb;fill-opacity:1">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3387"
+         d="m 0,1040.3622 0,0.8262 0,7.1738 2,0 0,-5.1738 2,2 2,-2 0,5.1738 2,0 0,-7.1738 0,-0.8262 -2.001953,0 -1.998047,1.998 -1.998047,-1.998 -2.001953,0 z m 12,0 0,4 -2,0 3,4 3,-4 -2,0 0,-4 -2,0 z"
+         style="fill:#fbfbfb;fill-opacity:1" />
+    </g>
   </g>
 </svg>

@@ -37,24 +37,16 @@ Name[x-test]=xxBreeze Darkxx
 Name[zh_CN]=暗色微风
 Name[zh_TW]=Breeze Dark
 
-Comment=KDE Plasma 5 Icon Theme for Dark themes
-Comment[ca]=Tema d'icones del Plasma 5 pels temes foscos del KDE
-Comment[cs]=Motiv ikon KDE Plasma 5 pro tmavé motivy vzhledu
-Comment[es]=Tema de iconos de KDE Plasma 5 para temas oscuros
-Comment[fi]=KDE Plasma 5:n kuvaketeema tummille teemoille
-Comment[hu]=KDE Plasma 5 ikontéma sötét témákhoz
-Comment[nl]=Pictogramthema voor donkere thema's voor KDE Plasma 5
-Comment[pl]=Zestaw ikon KDE Plazma 5 dla ciemnych wystrojów
-Comment[pt]=Tema de Ícones Escuro para o Plasma 5 do KDE
-Comment[pt_BR]=Tema de ícones do KDE Plasma 5 para temas escuros
-Comment[sr]=Тема икона Плазме 5 за тамне теме
-Comment[sr@ijekavian]=Тема икона Плазме 5 за тамне теме
-Comment[sr@ijekavianlatin]=Tema ikona Plasme 5 za tamne teme
-Comment[sr@latin]=Tema ikona Plasme 5 za tamne teme
-Comment[sv]=KDE Plasma 5 ikontema för mörka teman
-Comment[tr]=KDE Plazma 5 Koyu Simge Teması
-Comment[uk]=Тема піктограм для Плазми 5 KDE для темних тем
-Comment[x-test]=xxKDE Plasma 5 Icon Theme for Dark themesxx
+Comment=Default Plasma 5 Theme for Dark themes
+Comment[en_GB]=Default Plasma 5 Theme for Dark themes
+Comment[es]=Tema por omisión de Plasma 5 para temas oscuros
+Comment[nl]=Standaard Plasma 5 thema voor donkere thema's
+Comment[pl]=Domyślny wystrój Plazma 5 dla ciemnych wystrojów
+Comment[pt]=Tema Escuro por Omissão para o Plasma 5
+Comment[pt_BR]=Tema padrão do Plasma 5 para temas escuros
+Comment[sv]=Plasma 5 standardtema för mörka teman
+Comment[uk]=Тема піктограм для Плазми 5 для темних тем
+Comment[x-test]=xxDefault Plasma 5 Theme for Dark themesxx
 
 DisplayDepth=32
 
@@ -78,7 +70,7 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/16,actions/22,actions/24,actions/48,apps/16,apps/22,apps/32,apps/48,categories/16,categories/22,categories/32,categories/48,devices/16,devices/48,devices/64,emblems/8,emblems/22,emotes/22,mimetypes/16,mimetypes/32,mimetypes/64,places/16,places/22,places/32,places/64,status/16,status/22,status/64
+Directories=actions/16,actions/22,actions/24,actions/48,apps/16,apps/22,apps/32,apps/48,categories/16,categories/22,categories/32,categories/48,devices/16,devices/22,devices/48,devices/64,emblems/8,emblems/16,emblems/22,emotes/22,mimetypes/16,mimetypes/22,mimetypes/32,mimetypes/64,places/16,places/22,places/32,places/64,status/16,status/22,status/64
 
 ########## Actions
 ########## ordered by size
@@ -172,6 +164,12 @@ Size=16
 Context=Devices
 Type=Fixed
 
+#22x22 - Fixed size - For small device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[devices/22]
+Size=22
+Context=Devices
+Type=Fixed
+
 #48x48 - Scalable - For device icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Color
 [devices/48]
 Size=48
@@ -192,6 +190,12 @@ MaxSize=256
 #8x8 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [emblems/8]
 Size=8
+Context=Emblems
+Type=Fixed
+
+#16x16 - Fixed size - File system emblems - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[emblems/16]
+Size=16
 Context=Emblems
 Type=Fixed
 
@@ -217,14 +221,22 @@ Type=Fixed
 [mimetypes/16]
 Size=16
 Context=MimeTypes
-Type=Scalable
+Type=Fixed
 MinSize=16
-MaxSize=22
+
+#22x22 - Fixed size - For small file type icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[mimetypes/22]
+Size=22
+Context=MimeTypes
+Type=Scalable
+MinSize=22
+MaxSize=24
 
 #32x32 - Scalable - For file type icons >!!!ONLY!!!< - Scalable to the following sizes: 64x64 (default), 32x32, 128x128, 256x256 - DO_NOT_USE_ANYWHERE_ELSE - Color
 [mimetypes/32]
 Size=32
 Context=MimeTypes
+Type=Scalable
 MinSize=32
 MaxSize=48
 
@@ -243,9 +255,8 @@ MaxSize=256
 [places/16]
 Size=16
 Context=Places
-Type=Scalable
+Type=Fixed
 MinSize=16
-MaxSize=22
 
 #22x22 - Fixed size - Workaround icon(s) for toolbar(s) button(s) e.g. KMail trash icon - WRONG_ICON_USAGE_BY_APP - Monochrome
 [places/22]
