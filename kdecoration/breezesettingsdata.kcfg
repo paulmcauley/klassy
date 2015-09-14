@@ -81,6 +81,11 @@
     </entry>
 
     <!-- size grip -->
+    <entry name="DrawBackgroundGradient" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!-- size grip -->
     <entry name="DrawSizeGrip" type = "Bool">
       <default>true</default>
     </entry>

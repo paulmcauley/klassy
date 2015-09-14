@@ -460,7 +460,7 @@ namespace Breeze
         painter->setPen(Qt::NoPen);
 
         // render a linear gradient on title area
-        if( c->isActive() )
+        if( c->isActive() && m_internalSettings->drawBackgroundGradient() )
         {
 
             const QColor titleBarColor( this->titleBarColor() );
