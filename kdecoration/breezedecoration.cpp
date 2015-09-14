@@ -641,9 +641,9 @@ namespace Breeze
 
             // contrast pixel
             painter.setBrush( Qt::NoBrush );
-            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength*0.5 ) );
-            painter.setRenderHints(QPainter::Antialiasing);
-            painter.drawRoundedRect( QRectF( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ).adjusted( -0.5, -0.5, 0.5, 0.5 ), 3.5, 3.5 );
+            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
+            painter.setRenderHints(QPainter::Antialiasing );
+            painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
             painter.end();
 
 
