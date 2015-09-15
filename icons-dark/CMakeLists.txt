@@ -18,4 +18,4 @@ set(BREEZE_INSTALL_DIR ${ICON_INSTALL_DIR}/breeze-dark)
 install( DIRECTORY ${breeze_icon_dark_dirs} DESTINATION ${BREEZE_INSTALL_DIR} PATTERN "*.sh" EXCLUDE )
 install( FILES index.theme DESTINATION ${BREEZE_INSTALL_DIR})
 
-
+gtk_update_icon_cache(${BREEZE_INSTALL_DIR})
