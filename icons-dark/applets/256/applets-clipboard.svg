@@ -991,10 +991,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="67.931427"
-     inkscape:cy="111.26944"
+     inkscape:cx="30.440712"
+     inkscape:cy="106.47157"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="g9735"
      showgrid="false"
      units="px"
      showguides="true"
@@ -1002,8 +1002,8 @@
      inkscape:snap-bbox="true"
      inkscape:object-nodes="true"
      inkscape:window-width="1920"
-     inkscape:window-height="957"
-     inkscape:window-x="0"
+     inkscape:window-height="1021"
+     inkscape:window-x="-4"
      inkscape:window-y="0"
      inkscape:window-maximized="1">
     <inkscape:grid
@@ -1034,7 +1034,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1045,6 +1045,20 @@
      transform="translate(0,-796.36216)">
     <g
        id="g9735">
+      <g
+         id="center"
+         transform="matrix(5.3953488,0,0,17.860432,-311.72093,486.87442)">
+        <g
+           id="toolbutton-pressed-center"
+           transform="matrix(0.344,0,0,0.8118505,3.584,-783.88382)">
+          <path
+             class="ColorScheme-Background"
+             style="color:#eff0f1;fill:currentColor;fill-opacity:1"
+             d="m 164,987.7235 0,16 125,0 0,-16 -125,0 z"
+             id="path11378"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
       <text
          transform="scale(1.0001607,0.99983934)"
          xml:space="preserve"
