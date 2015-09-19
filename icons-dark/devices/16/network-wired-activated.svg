@@ -25,19 +25,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="37.0261"
-     inkscape:cy="2.704448"
+     inkscape:zoom="45.254834"
+     inkscape:cx="16.939083"
+     inkscape:cy="7.7309547"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      borderlayer="true"
      units="px"
-     inkscape:window-width="1366"
-     inkscape:window-height="709"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:snap-bbox="true"
      inkscape:object-nodes="true">
@@ -69,7 +69,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -78,40 +78,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1036.3622)">
-    <rect
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
-       id="rect4364"
-       width="12"
-       height="1.0000174"
-       x="2"
-       y="1048.3622" />
-    <rect
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
-       id="rect4366"
-       width="2"
-       height="2.9999826"
-       x="7"
-       y="1047.3622" />
     <path
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
-       d="m 2,2 0,9 12,0 0,-9 z m 1,1 10,0 0,7 -10,0 z"
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="M 7 2 L 7 3 L 13 3 L 13 10 L 7 10 L 7 12 L 7 13 L 6 13 C 5.4459904 13 5 12.55401 5 12 L 5 10 L 5 8 L 5 7 L 6 7 L 6 3 L 3 3 L 3 7 L 4 7 L 4 8 L 4 10 L 4 12 C 4 13.108 4.892 14 6 14 L 7 14 L 9 14 L 11 14 L 11 13 L 9 13 L 9 12 L 14 12 L 14 11 L 14 10 L 14 2 L 7 2 z M 4 5 L 5 5 L 5 6 L 4 6 L 4 5 z M 2 8 L 2 12 L 3 12 L 3 10 L 3 8 L 2 8 z "
        transform="translate(0,1036.3622)"
-       id="rect4370"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccccccccc" />
-    <rect
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
-       id="rect4375"
-       width="2"
-       height="1"
-       x="10"
-       y="1040.3622" />
-    <rect
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke-linecap:round"
-       id="rect4377"
-       width="2"
-       height="1"
-       x="10"
-       y="1042.3622" />
+       id="rect4161" />
   </g>
 </svg>

@@ -13,7 +13,7 @@
    height="16"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91+devel r"
+   inkscape:version="0.91 r13725"
    viewBox="0 0 16 16"
    sodipodi:docname="smartphone.svg">
   <defs
@@ -25,19 +25,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="31.678384"
-     inkscape:cx="3.8016253"
-     inkscape:cy="7.7461321"
+     inkscape:zoom="44.8"
+     inkscape:cx="11.921989"
+     inkscape:cy="8.4729942"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:showpageshadow="false"
      borderlayer="true"
      units="px"
-     inkscape:window-width="1366"
-     inkscape:window-height="670"
-     inkscape:window-x="-4"
-     inkscape:window-y="29"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="xygrid"
@@ -78,8 +78,8 @@
      transform="translate(0,-1036.3622)">
     <path
        style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
-       d="M 4 2 L 4 14 L 12 14 L 12 2 L 4 2 z M 5 3 L 7 3 L 7 4 L 9 4 L 9 3 L 11 3 L 11 13 L 9 13 L 9 12 L 7 12 L 7 13 L 5 13 L 5 3 z "
+       d="M 4 2 L 4 14 L 12 14 L 12 2 L 4 2 z M 7 3 L 9 3 L 9 4 L 7 4 L 7 3 z M 5 5 L 11 5 L 11 12 L 5 12 L 5 5 z "
        transform="translate(0,1036.3622)"
-       id="rect4148" />
+       id="path4141" />
   </g>
 </svg>
