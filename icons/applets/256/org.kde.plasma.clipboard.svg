@@ -16,7 +16,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="applets-clipboard.svg">
+   sodipodi:docname="org.kde.plasma.clipboard.svg">
   <defs
      id="defs4">
     <style
@@ -991,7 +991,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="30.440712"
+     inkscape:cx="-55.422254"
      inkscape:cy="106.47157"
      inkscape:document-units="px"
      inkscape:current-layer="g9735"
@@ -1047,13 +1047,15 @@
        id="g9735">
       <g
          id="center"
-         transform="matrix(5.3953488,0,0,17.860432,-311.72093,486.87442)">
+         transform="matrix(5.3953488,0,0,17.860432,-311.72093,486.87442)"
+         style="fill:#eff0f1;fill-opacity:1">
         <g
            id="toolbutton-pressed-center"
-           transform="matrix(0.344,0,0,0.8118505,3.584,-783.88382)">
+           transform="matrix(0.344,0,0,0.8118505,3.584,-783.88382)"
+           style="fill:#eff0f1;fill-opacity:1">
           <path
              class="ColorScheme-Background"
-             style="color:#eff0f1;fill:currentColor;fill-opacity:1"
+             style="color:#eff0f1;fill:#eff0f1;fill-opacity:1"
              d="m 164,987.7235 0,16 125,0 0,-16 -125,0 z"
              id="path11378"
              inkscape:connector-curvature="0" />
