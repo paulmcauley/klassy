@@ -13,11 +13,12 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="im-user-busy.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
-   inkscape:export-ydpi="30">
+   inkscape:export-ydpi="30"
+   viewBox="0 0 16 16">
   <defs
      id="defs3051">
     <clipPath
@@ -31,6 +32,28 @@
          id="rect4162"
          style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4160-3">
+      <rect
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="rect4162-5"
+         width="1"
+         height="1"
+         x="7"
+         y="1023.3622" />
+    </clipPath>
+    <clipPath
+       id="clipPath4160-0"
+       clipPathUnits="userSpaceOnUse">
+      <rect
+         y="1023.3622"
+         x="7"
+         height="1"
+         width="1"
+         id="rect4162-1"
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -40,7 +63,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="48.822612"
-     inkscape:cx="5.0879905"
+     inkscape:cx="1.2373157"
      inkscape:cy="8.946937"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -49,10 +72,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1021"
+     inkscape:window-width="2560"
+     inkscape:window-height="964"
      inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-y="34"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -86,7 +109,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -96,18 +119,9 @@
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
     <path
-       style="fill:#f47750;fill-opacity:1;stroke:none"
-       d="m 8,8 c -2.77,0 -5,0.89198 -5,2 0.020482,0.0024 0,4 0,4 l 10,0 0,-4 C 13,8.89198 10.77,8 8,8 Z m 0,1 c 2.216,0 4,0.64607 4,1.4375 L 12,13 4,13 4,10.4375 C 4,9.64607 5.784,9 8,9 Z"
-       transform="translate(421.71429,531.79074)"
-       id="rect4109"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="sccccssccccs" />
-    <path
-       style="opacity:1;fill:#f47750;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 8,2 C 6.3431528,2 5.0000099,3.1192857 5,4.5 5.0000099,5.8807143 6.3431528,7 8,7 9.6568472,7 10.99999,5.8807143 11,4.5 10.99999,3.1192857 9.6568472,2 8,2 Z"
-       transform="translate(421.71429,531.79074)"
-       id="path4171"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="scscs" />
+       style="opacity:1;fill:#f47750;fill-opacity:1;stroke:none;stroke-opacity:1"
+       d="m 429.71432,533.79074 a 3,3 0 0 0 -3,3 3,3 0 0 0 3,3 3,3 0 0 0 3,-3 3,3 0 0 0 -3,-3 z m 0,1 a 2,2 0 0 1 2,2 2,2 0 0 1 -2,2 2,2 0 0 1 -2,-2 2,2 0 0 1 2,-2 z m 0,6 a 5,4.5 0 0 0 -5,4.5 5,4.5 0 0 0 0.0332,0.5 h 0.96679 0.0449 7.91016 0.0449 0.96289 a 5,4.5 0 0 0 0.0371,-0.5 5,4.5 0 0 0 -5,-4.5 z m 0,1 a 4,3.5 0 0 1 3.95508,3 h -7.91017 a 4,3.5 0 0 1 3.95509,-3 z"
+       id="path16" />
   </g>
 </svg>

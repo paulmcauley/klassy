@@ -13,11 +13,12 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.91 r13725"
+   inkscape:version="0.91+devel r"
    sodipodi:docname="list-add-user.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
-   inkscape:export-ydpi="30">
+   inkscape:export-ydpi="30"
+   viewBox="0 0 16 16">
   <defs
      id="defs3051">
     <clipPath
@@ -31,6 +32,17 @@
          id="rect4162"
          style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1" />
     </clipPath>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath4160-3">
+      <rect
+         style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
+         id="rect4162-9"
+         width="1"
+         height="1"
+         x="7"
+         y="1023.3622" />
+    </clipPath>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -40,8 +52,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="48.822612"
-     inkscape:cx="8.3651605"
-     inkscape:cy="8.946937"
+     inkscape:cx="10.946785"
+     inkscape:cy="7.8853783"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -49,11 +61,11 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1578"
-     inkscape:window-height="963"
-     inkscape:window-x="338"
-     inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="964"
+     inkscape:window-x="-4"
+     inkscape:window-y="34"
+     inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
      inkscape:snap-bbox="true"
@@ -87,7 +99,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -97,21 +109,9 @@
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
     <path
-       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
-       d="M 8 8 C 5.23 8 3 8.89198 3 10 C 3.020482 10.0024 3 14 3 14 L 9 14 L 9 13 L 4 13 L 4 10.4375 C 4 9.64607 5.784 9 8 9 C 8.7420689 9 9.409085 9.0861609 10 9.2128906 L 10 8.1679688 C 9.387202 8.0612267 8.7132581 8 8 8 z "
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-opacity:1"
+       d="M 8 2 A 3 3 0 0 0 5 5 A 3 3 0 0 0 8 8 A 3 3 0 0 0 11 5 A 3 3 0 0 0 8 2 z M 8 3 A 2 2 0 0 1 10 5 A 2 2 0 0 1 8 7 A 2 2 0 0 1 6 5 A 2 2 0 0 1 8 3 z M 8 9 A 5 4.5 0 0 0 3 13.5 A 5 4.5 0 0 0 3.0332031 14 L 4 14 L 4.0449219 14 L 8 14 L 8 13 L 4.0449219 13 A 4 3.5 0 0 1 8 10 L 8 9 z M 11 9 L 11 11 L 9 11 L 9 12 L 11 12 L 11 14 L 12 14 L 12 12 L 14 12 L 14 11 L 12 11 L 12 9 L 11 9 z "
        transform="translate(421.71429,531.79074)"
-       id="rect4109" />
-    <ellipse
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="path4171"
-       cx="429.71429"
-       cy="536.29071"
-       rx="3"
-       ry="2.500015" />
-    <path
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:2;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 11 9 L 11 11 L 9 11 L 9 12 L 11 12 L 11 14 L 12 14 L 12 12 L 14 12 L 14 11 L 12 11 L 12 9 L 11 9 z "
-       transform="translate(421.71429,531.79074)"
-       id="rect4142" />
+       id="path16" />
   </g>
 </svg>

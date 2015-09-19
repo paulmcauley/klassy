@@ -11,27 +11,15 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="24"
    height="24"
-   id="svg3869"
+   id="svg3049"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="im-invisible-user.svg">
+   sodipodi:docname="im-invisible-user.svg"
+   inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
+   inkscape:export-xdpi="30"
+   inkscape:export-ydpi="30">
   <defs
-     id="defs3871">
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 12 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="24 : 12 : 1"
-       inkscape:persp3d-origin="12 : 8 : 1"
-       id="perspective4146" />
-    <inkscape:perspective
-       sodipodi:type="inkscape:persp3d"
-       inkscape:vp_x="0 : 12 : 1"
-       inkscape:vp_y="0 : 1000 : 0"
-       inkscape:vp_z="24 : 12 : 1"
-       inkscape:persp3d-origin="12 : 8 : 1"
-       id="perspective4090" />
-  </defs>
+     id="defs3051" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -39,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627416"
-     inkscape:cx="5.4926209"
-     inkscape:cy="12.032563"
+     inkscape:zoom="36.585386"
+     inkscape:cx="15.427265"
+     inkscape:cy="7.8277014"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -49,59 +37,60 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1366"
-     inkscape:window-height="709"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
-     inkscape:object-nodes="true"
-     inkscape:snap-bbox="true">
+     borderlayer="true">
+    <sodipodi:guide
+       position="3,21"
+       orientation="18,0"
+       id="guide4067" />
+    <sodipodi:guide
+       position="3,3"
+       orientation="0,18"
+       id="guide4069" />
+    <sodipodi:guide
+       position="21,3"
+       orientation="-18,0"
+       id="guide4071" />
+    <sodipodi:guide
+       position="21,21"
+       orientation="0,-18"
+       id="guide4073" />
+    <sodipodi:guide
+       position="4,20"
+       orientation="16,0"
+       id="guide4077" />
+    <sodipodi:guide
+       position="4,4"
+       orientation="0,16"
+       id="guide4079" />
+    <sodipodi:guide
+       position="20,4"
+       orientation="-16,0"
+       id="guide4081" />
+    <sodipodi:guide
+       position="20,20"
+       orientation="0,-16"
+       id="guide4083" />
     <inkscape:grid
        type="xygrid"
-       id="grid4132" />
-    <sodipodi:guide
-       position="4,18"
-       orientation="18,0"
-       id="guide4138" />
-    <sodipodi:guide
-       position="5,3"
-       orientation="0,18"
-       id="guide4140" />
-    <sodipodi:guide
-       position="20,2.0000174"
-       orientation="-18,0"
-       id="guide4142" />
-    <sodipodi:guide
-       position="2,21"
-       orientation="0,-18"
-       id="guide4144" />
-    <sodipodi:guide
-       position="3,19.000017"
-       orientation="16,0"
-       id="guide4146" />
-    <sodipodi:guide
-       position="2,4"
-       orientation="0,16"
-       id="guide4148" />
-    <sodipodi:guide
-       position="21,20"
-       orientation="-16,0"
-       id="guide4150" />
-    <sodipodi:guide
-       position="2,20"
-       orientation="0,-16"
-       id="guide4152" />
+       id="grid4085"
+       originx="0.99999557"
+       originy="0.99997045" />
   </sodipodi:namedview>
   <metadata
-     id="metadata3874">
+     id="metadata3054">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -109,17 +98,30 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-326,-532.3622)">
-    <g
-       transform="translate(-94.71429,7.57146)"
-       id="layer1-8"
-       inkscape:label="Capa 1">
-      <path
-         id="rect4109"
-         transform="translate(421.71429,525.79074)"
-         d="M 11,3 C 9.338,3 8,4.338 8,6 8,7.662 9.338,9 11,9 12.662,9 14,7.662 14,6 14,4.338 12.662,3 11,3 Z m 0,1 c 1.108,0 2,0.892 2,2 0,1.108 -0.892,2 -2,2 C 9.892,8 9,7.108 9,6 9,4.892 9.892,4 11,4 Z m 0,7 c -2.77,0 -5,0.891984 -5,2 l 0,5 0,1 1.2011719,0 7.5976561,0 L 16,19 l 0,-1 0,-5 c 0,-1.108016 -2.23,-2 -5,-2 z m 0,1 c 2.216,0 4,0.636298 4,1.427734 L 15,18 7,18 7,13.427734 C 7,12.636298 8.784,12 11,12 Z"
-         style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0" />
-    </g>
+     transform="translate(-420.71429,-524.79071)">
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 12 4.0996094 A 3.9999902 4.0000296 0 0 0 8 8.0996094 A 3.9999902 4.0000296 0 0 0 12 12.099609 A 3.9999902 4.0000296 0 0 0 16 8.0996094 A 3.9999902 4.0000296 0 0 0 12 4.0996094 z M 12 5.0996094 A 3 3.0000296 0 0 1 15 8.0996094 A 3 3.0000296 0 0 1 12 11.099609 A 3 3.0000296 0 0 1 9 8.0996094 A 3 3.0000296 0 0 1 12 5.0996094 z "
+       transform="translate(420.71429,524.79071)"
+       id="path4149" />
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 12 13 A 7.9999504 8.0000296 0 0 0 4.0722656 20 L 5.0800781 20 A 6.9999604 7.0000296 0 0 1 12 14 A 6.9999604 7.0000296 0 0 1 13 14.080078 L 13 13.070312 A 7.9999504 8.0000296 0 0 0 12 13 z "
+       transform="translate(420.71429,524.79071)"
+       id="ellipse4156" />
+    <circle
+       style="opacity:1;fill:#666666;fill-opacity:1;stroke:none"
+       id="path4167"
+       cx="437.21429"
+       cy="541.29071"
+       r="3.5" />
+    <rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="rect4152"
+       width="1"
+       height="4.6570001"
+       x="691.40753"
+       y="71.264633"
+       transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)" />
   </g>
 </svg>
