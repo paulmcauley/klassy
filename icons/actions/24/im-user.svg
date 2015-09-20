@@ -28,7 +28,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="18.292693"
-     inkscape:cx="19.029398"
+     inkscape:cx="9.5994032"
      inkscape:cy="13.106581"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -38,9 +38,9 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:window-width="2560"
-     inkscape:window-height="955"
+     inkscape:window-height="957"
      inkscape:window-x="0"
-     inkscape:window-y="35"
+     inkscape:window-y="30"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true">
@@ -90,7 +90,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -101,9 +101,9 @@
      transform="translate(-420.71429,-524.79071)">
     <path
        style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="M 12 4.0996094 A 3.9999902 4.0000296 0 0 0 8 8.0996094 A 3.9999902 4.0000296 0 0 0 12 12.099609 A 3.9999902 4.0000296 0 0 0 16 8.0996094 A 3.9999902 4.0000296 0 0 0 12 4.0996094 z M 12 5.0996094 A 3 3.0000296 0 0 1 15 8.0996094 A 3 3.0000296 0 0 1 12 11.099609 A 3 3.0000296 0 0 1 9 8.0996094 A 3 3.0000296 0 0 1 12 5.0996094 z "
-       transform="translate(420.71429,524.79071)"
-       id="path4149" />
+       d="m 432.71429,528.79032 a 3.9999902,4.0000296 0 0 0 -4,4 3.9999902,4.0000296 0 0 0 4,4 3.9999902,4.0000296 0 0 0 4,-4 3.9999902,4.0000296 0 0 0 -4,-4 z m 0,1 a 3,3.0000296 0 0 1 3,3 3,3.0000296 0 0 1 -3,3 3,3.0000296 0 0 1 -3,-3 3,3.0000296 0 0 1 3,-3 z"
+       id="path4149"
+       inkscape:connector-curvature="0" />
     <path
        style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
        d="M 12 13 A 7.9999504 8.0000296 0 0 0 4.0722656 20 L 5.0800781 20 A 6.9999604 7.0000296 0 0 1 12 14 A 6.9999604 7.0000296 0 0 1 18.921875 20 L 19.929688 20 A 7.9999504 8.0000296 0 0 0 12 13 z "
