@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="22"
+   height="22"
+   id="svg3760"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="crosshairs.svg">
+  <defs
+     id="defs3762">
+    <linearGradient
+       id="linearGradient4324">
+      <stop
+         id="stop4326"
+         offset="0"
+         style="stop-color:#f62459;stop-opacity:1" />
+      <stop
+         id="stop4328"
+         offset="1"
+         style="stop-color:#f8567f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="16"
+     inkscape:cx="13.55662"
+     inkscape:cy="1.6653915"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1021"
+     inkscape:window-x="-4"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     showguides="true"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-global="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4106"
+       originx="-0.99998557px"
+       originy="-1.0000252px" />
+    <sodipodi:guide
+       position="2.00001,19.99997"
+       orientation="0,18"
+       id="guide4229" />
+    <sodipodi:guide
+       position="20.00001,19.99997"
+       orientation="18,0"
+       id="guide4231" />
+    <sodipodi:guide
+       position="20.00001,1.99997"
+       orientation="0,-18"
+       id="guide4233" />
+    <sodipodi:guide
+       position="2.00001,1.99997"
+       orientation="-18,0"
+       id="guide4235" />
+    <sodipodi:guide
+       position="19.00001,2.99997"
+       orientation="0,-16"
+       id="guide4241" />
+    <sodipodi:guide
+       position="2.9999956,18.999992"
+       orientation="6,0"
+       id="guide4155" />
+    <sodipodi:guide
+       position="18.999996,12.999992"
+       orientation="-6,0"
+       id="guide4167" />
+    <sodipodi:guide
+       position="18.999996,18.999992"
+       orientation="0,-6"
+       id="guide4169" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata3765">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-551.28571,-607.64788)">
+    <rect
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       id="rect4366"
+       width="18"
+       height="1"
+       x="553.28571"
+       y="618.14789" />
+    <rect
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       id="rect4368"
+       width="1"
+       height="17.999994"
+       x="561.78571"
+       y="609.64789" />
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="M 11 7 A 4 4 0 0 0 7 11 A 4 4 0 0 0 11 15 A 4 4 0 0 0 15 11 A 4 4 0 0 0 11 7 z M 11 8 A 3 3 0 0 1 14 11 A 3 3 0 0 1 11 14 A 3 3 0 0 1 8 11 A 3 3 0 0 1 11 8 z "
+       transform="translate(551.28571,607.64788)"
+       id="path4375" />
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="M 11 4 A 7 7 0 0 0 4 11 A 7 7 0 0 0 11 18 A 7 7 0 0 0 18 11 A 7 7 0 0 0 11 4 z M 11 5 A 6 6 0 0 1 17 11 A 6 6 0 0 1 11 17 A 6 6 0 0 1 5 11 A 6 6 0 0 1 11 5 z "
+       transform="translate(551.28571,607.64788)"
+       id="path4380" />
+  </g>
+</svg>
