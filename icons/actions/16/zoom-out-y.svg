@@ -14,7 +14,7 @@
    id="svg3049"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="zoom-out-y.svg"
+   sodipodi:docname="zoom-out.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
    inkscape:export-ydpi="30">
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="24.411306"
-     inkscape:cx="3.0406314"
-     inkscape:cy="7.6858631"
+     inkscape:zoom="69.0456"
+     inkscape:cx="7.6215067"
+     inkscape:cy="6.1982848"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,16 +37,15 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
+     inkscape:window-width="2560"
      inkscape:window-height="957"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
      inkscape:snap-bbox="true"
-     inkscape:snap-global="true"
-     inkscape:object-nodes="true">
+     inkscape:snap-global="true">
     <inkscape:grid
        type="xygrid"
        id="grid4085" />
@@ -75,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -85,9 +84,20 @@
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
     <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="m 423.71429,537.79075 -1e-4,-4.00001 4.00005,0 10e-5,4.00001 z m 1,-1 2.00005,0 -10e-5,-2.00001 -2.00005,0 z"
+       id="rect4241"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccc" />
+    <path
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       d="m 435.71429,545.79074 0,-1 0,-4 -1,0 0,4 -4,0 0,1 4,0 1,0 z m -8.5,0 3.5,-3.54102 -1.88086,0 -1.61914,-4.95898 -1.61914,4.95898 -1.88086,0 1.40039,1.41602 2.09961,2.125 z m 8.5,-7 0,-5 -5,0 0,5 5,0 z m -11,0 0,-4 4,0 0,-1 -4,0 -1,0 0,1 0,4 1,0 z m 10,-1 -3,0 0,-3 3,0 0,3 z"
-       id="rect4134-8"
+       d="m 429.38529,542.96233 0.70711,-0.70711 1.62137,1.62137 0,-4.65696 0.9999,0 0,4.65696 1.62137,-1.62137 0.70711,0.70711 -2.82843,2.82842 -0.70711,-0.7071 -2.12132,-2.12132 z"
+       id="rect3354"
        inkscape:connector-curvature="0" />
+    <path
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 7 2 L 7 3 L 9 3 L 12 3 L 13 3 L 13 4 L 13 6 L 14 6 L 14 4 L 14 2 L 13 2 L 12 2 L 9 2 L 7 2 z M 2 7 L 2 9 L 2 12 L 2 13 L 2 14 L 3 14 L 4 14 L 7 14 L 7 13 L 4 13 L 3 13 L 3 12 L 3 9 L 3 7 L 2 7 z "
+       transform="translate(421.71429,531.79074)"
+       id="rect3378" />
   </g>
 </svg>

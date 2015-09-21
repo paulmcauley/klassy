@@ -9,8 +9,8 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="22"
-   height="22"
+   width="24"
+   height="24.000002"
    id="svg4355"
    version="1.1"
    inkscape:version="0.91 r13725"
@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="256"
-     inkscape:cx="13.657835"
-     inkscape:cy="15.5054"
+     inkscape:zoom="22.627417"
+     inkscape:cx="21.254282"
+     inkscape:cy="15.226708"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -44,37 +44,39 @@
      inkscape:showpageshadow="false">
     <inkscape:grid
        type="xygrid"
-       id="grid4112" />
+       id="grid4112"
+       originx="0.99999887"
+       originy="1.0001888" />
     <sodipodi:guide
-       position="2.0000011,19.999996"
+       position="3,21.000185"
        orientation="18,0"
        id="guide4118" />
     <sodipodi:guide
-       position="2.0000011,1.9999962"
+       position="3,3.000185"
        orientation="0,18"
        id="guide4120" />
     <sodipodi:guide
-       position="20.000001,1.9999962"
+       position="21,3.000185"
        orientation="-18,0"
        id="guide4122" />
     <sodipodi:guide
-       position="20.000001,19.999996"
+       position="21,21.000185"
        orientation="0,-18"
        id="guide4124" />
     <sodipodi:guide
-       position="3.0000011,18.999996"
+       position="4,20.000185"
        orientation="16,0"
        id="guide4126" />
     <sodipodi:guide
-       position="3.0000011,2.9999962"
+       position="4,4.000185"
        orientation="0,16"
        id="guide4128" />
     <sodipodi:guide
-       position="19.000001,2.9999962"
+       position="20,4.000185"
        orientation="-16,0"
        id="guide4130" />
     <sodipodi:guide
-       position="19.000001,18.999996"
+       position="20,20.000185"
        orientation="0,-16"
        id="guide4132" />
   </sodipodi:namedview>
@@ -94,7 +96,7 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-544.57141,-742.93359)">
+     transform="translate(-543.57141,-741.93378)">
     <path
        style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
        d="m 547.57141,755.93359 0,6 6,0 0,-6 -6,0 z m 1,1 4,0 0,4 -4,0 0,-4 z"
