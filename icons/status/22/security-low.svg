@@ -24,14 +24,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8"
-     inkscape:cx="32.248922"
-     inkscape:cy="6.4422027"
+     inkscape:zoom="22.627417"
+     inkscape:cx="21.671284"
+     inkscape:cy="7.6595755"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1366"
-     inkscape:window-height="709"
+     inkscape:window-width="1920"
+     inkscape:window-height="1021"
      inkscape:window-x="-4"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -80,6 +80,11 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1030.3622)">
+    <path
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="m 11,1035.9384 c -1.743491,1.2103 -3.702151,1.8232 -5.667969,2.2402 0.930846,5.282 2.936084,7.5407 5.667969,8.9551 2.731885,-1.4144 4.737124,-3.6731 5.667969,-8.9551 -1.965818,-0.417 -3.924478,-1.0299 -5.667969,-2.2402 z"
+       id="path4943-9-4-1-2" />
     <path
        inkscape:connector-curvature="0"
        style="fill:#4d4d4d;fill-opacity:1;stroke:none"
