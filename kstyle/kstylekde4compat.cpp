@@ -23,7 +23,6 @@
 #include <QToolBar>
 #include <KSharedConfig>
 
-
 static const QStyle::StyleHint SH_KCustomStyleElement = (QStyle::StyleHint)0xff000001;
 static const int X_KdeBase = 0xff000000;
 
@@ -41,11 +40,11 @@ KStyleKDE4Compat::~KStyleKDE4Compat()
 //_____________________________________________________________________
 static inline int newStyleElement(const QString &element, const char *check, int &counter, QHash<QString, int> *elements)
 {
-    if (!element.contains(check)) {
-        return 0;
-    }
+    if (!element.contains(check)) return 0;
+
     int id = elements->value(element, 0);
-    if (!id) {
+    if (!id)
+    {
         ++counter;
         id = counter;
         elements->insert(element, id);
