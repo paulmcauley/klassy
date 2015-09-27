@@ -554,7 +554,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.979899"
-     inkscape:cx="49.50159"
+     inkscape:cx="175.26558"
      inkscape:cy="102.30482"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -565,8 +565,8 @@
      inkscape:snap-bbox="true"
      inkscape:object-nodes="true"
      inkscape:window-width="1920"
-     inkscape:window-height="957"
-     inkscape:window-x="0"
+     inkscape:window-height="1021"
+     inkscape:window-x="-4"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
      inkscape:snap-global="true">
@@ -598,7 +598,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1323,5 +1323,36 @@
          id="tspan7164"
          x="205"
          y="829.36218" /></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:16.81597328px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="20.936768"
+       y="834.68054"
+       id="text11719"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan11721"
+         x="20.936768"
+         y="834.68054"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.25px;font-family:Oxygen-Sans;-inkscape-font-specification:Oxygen-Sans;fill:#4d4d4d;fill-opacity:1">Storage Volume</tspan></text>
+    <rect
+       style="opacity:0.5;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       id="rect7886"
+       width="216"
+       height="1"
+       x="20.000031"
+       y="846.36218" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:16.81597328px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="67.905029"
+       y="871.58533"
+       id="text11719-4"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan11721-6"
+         x="67.905029"
+         y="871.58533"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.75px;font-family:Oxygen-Sans;-inkscape-font-specification:Oxygen-Sans;fill:#4d4d4d;fill-opacity:1">removable media</tspan></text>
   </g>
 </svg>
