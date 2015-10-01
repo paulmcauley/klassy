@@ -908,7 +908,7 @@ namespace Breeze
 
         } else if( state == CheckAnimated ) {
 
-            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
+            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
             QPainterPath path;
             path.moveTo( markerRect.topRight() );
             path.lineTo( markerRect.center() + animation*( markerRect.topLeft() - markerRect.center() ) );
