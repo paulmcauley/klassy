@@ -4376,9 +4376,6 @@ namespace Breeze
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
 
-        // get rect available for contents
-        QRect contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
-
         // deal with separators
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::Separator )
         {
@@ -4388,7 +4385,7 @@ namespace Breeze
             {
 
                 const QColor color( _helper->separatorColor( palette ) );
-                _helper->renderSeparator( painter, contentsRect, color );
+                _helper->renderSeparator( painter, rect, color );
                 return true;
 
             } else {
@@ -4433,6 +4430,9 @@ namespace Breeze
             _helper->renderFocusRect( painter, rect, color, outlineColor, sides );
 
         }
+
+        // get rect available for contents
+        QRect contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
 
         // define relevant rectangles
         // checkbox
