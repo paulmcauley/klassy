@@ -1899,6 +1899,7 @@ namespace Breeze
 
         }
 
+        contentsWidth += 2*Metrics::ToolBox_TabMarginWidth;
         contentsWidth = qMin( contentsWidth, rect.width() );
         contentsWidth = qMax( contentsWidth, int(Metrics::ToolBox_TabMinWidth) );
         return centerRect( rect, contentsWidth, rect.height() );

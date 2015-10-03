@@ -146,6 +146,7 @@ namespace Breeze
         // toolbox
         ToolBox_TabMinWidth = 80,
         ToolBox_TabItemSpacing = 4,
+        ToolBox_TabMarginWidth = 8,
 
         // tooltips
         ToolTip_FrameWidth = 3,
