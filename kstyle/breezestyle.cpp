@@ -799,7 +799,7 @@ namespace Breeze
             case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
             case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
             case PE_FrameWindow: fcn = &Style::drawFrameWindowPrimitive; break;
-            case PE_FrameFocusRect: fcn = &Style::emptyPrimitive; break;
+            case PE_FrameFocusRect: fcn = _frameFocusPrimitive; break;
 
             // fallback
             default: break;
@@ -1379,6 +1379,10 @@ namespace Breeze
             default:
             case 2: _subLineButtons = DoubleButton; break;
         }
+
+        // frame focus
+        if( StyleConfigData::viewDrawFocusIndicator() ) _frameFocusPrimitive = &Style::drawFrameFocusRectPrimitive;
+        else _frameFocusPrimitive = &Style::emptyPrimitive;
 
         // widget explorer
         _widgetExplorer->setEnabled( StyleConfigData::widgetExplorerEnabled() );
@@ -2966,6 +2970,31 @@ namespace Breeze
             _helper->renderFrame( painter, rect, background, outline );
 
         }
+
+        return true;
+
+    }
+
+    //___________________________________________________________________________________
+    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
+    {
+
+        if( !widget ) return true;
+
+        // no focus indicator on buttons, since it is rendered elsewhere
+        if( qobject_cast< const QAbstractButton*>( widget ) )
+        { return true; }
+
+        const State& state( option->state );
+        const QRect rect( option->rect.adjusted( 0, 0, 0, 1 ) );
+        const QPalette& palette( option->palette );
+
+        if( rect.width() < 10 ) return true;
+
+        const QColor outlineColor( state & State_Selected ? palette.color( QPalette::HighlightedText ):palette.color( QPalette::Highlight ) );
+        painter->setRenderHint( QPainter::Antialiasing, false );
+        painter->setPen( outlineColor );
+        painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
 
         return true;
 

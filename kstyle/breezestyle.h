@@ -242,6 +242,7 @@ namespace Breeze
 
         bool drawFramePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameLineEditPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFrameFocusRectPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameMenuPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameGroupBoxPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawFrameTabWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -501,6 +502,7 @@ namespace Breeze
 
         //* pointer to primitive specialized function
         using StylePrimitive = bool(Style::*)(const QStyleOption*, QPainter*, const QWidget* ) const;
+        StylePrimitive _frameFocusPrimitive = nullptr;
 
         //* pointer to control specialized function
         using StyleControl = bool (Style::*)( const QStyleOption*, QPainter*, const QWidget* ) const;

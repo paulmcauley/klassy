@@ -87,6 +87,11 @@
       <default>true</default>
     </entry>
 
+    <!-- views -->
+    <entry name="ViewDrawFocusIndicator" type="Bool">
+      <default>true</default>
+    </entry>
+    
     <!-- sliders -->
     <entry name="SliderDrawTickMarks" type="Bool">
       <default>true</default>

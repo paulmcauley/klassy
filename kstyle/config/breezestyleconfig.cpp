@@ -51,6 +51,7 @@ namespace Breeze
 
         connect( _tabBarDrawCenteredTabs, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _toolBarDrawItemSeparator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _viewDrawFocusIndicator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _dockWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _titleWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _sidePanelDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
@@ -71,6 +72,7 @@ namespace Breeze
     {
         StyleConfigData::setTabBarDrawCenteredTabs( _tabBarDrawCenteredTabs->isChecked() );
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
+        StyleConfigData::setViewDrawFocusIndicator( _viewDrawFocusIndicator->isChecked() );
         StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
         StyleConfigData::setTitleWidgetDrawFrame( _titleWidgetDrawFrame->isChecked() );
         StyleConfigData::setSidePanelDrawFrame( _sidePanelDrawFrame->isChecked() );
@@ -132,6 +134,7 @@ namespace Breeze
         // check if any value was modified
         if( _tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs() ) modified = true;
         else if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
+        else if( _viewDrawFocusIndicator->isChecked() != StyleConfigData::viewDrawFocusIndicator() ) modified = true;
         else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
         else if( _titleWidgetDrawFrame->isChecked() != StyleConfigData::titleWidgetDrawFrame() ) modified = true;
         else if( _sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame() ) modified = true;
@@ -155,6 +158,7 @@ namespace Breeze
 
         _tabBarDrawCenteredTabs->setChecked( StyleConfigData::tabBarDrawCenteredTabs() );
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
+        _viewDrawFocusIndicator->setChecked( StyleConfigData::viewDrawFocusIndicator() );
         _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
         _titleWidgetDrawFrame->setChecked( StyleConfigData::titleWidgetDrawFrame() );
         _sidePanelDrawFrame->setChecked( StyleConfigData::sidePanelDrawFrame() );
