@@ -31,10 +31,6 @@
 #include <QString>
 #include <QWidget>
 
-#if BREEZE_HAVE_X11
-#include <xcb/xcb.h>
-#endif
-
 namespace Breeze
 {
 
@@ -259,10 +255,6 @@ namespace Breeze
 
         //* application event filter
         QObject* _appEventFilter;
-
-        #if BREEZE_HAVE_X11
-        xcb_atom_t _moveResizeAtom;
-        #endif
 
         //* allow access of all private members to the app event filter
         friend class AppEventFilter;

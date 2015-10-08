@@ -83,6 +83,14 @@
 
 #if BREEZE_HAVE_X11
 #include <QX11Info>
+#include <xcb/xcb.h>
+
+#if BREEZE_USE_KDE4
+#include <NETRootInfo>
+#else
+#include <NETWM>
+#endif
+
 #endif
 
 namespace Breeze
@@ -139,11 +147,8 @@ namespace Breeze
 
         //* application-wise event.
         /** needed to catch end of XMoveResize events */
-        bool appMouseEvent( QObject*, QEvent* event )
+        bool appMouseEvent( QObject*, QEvent* )
         {
-
-            // store target window (see later)
-            QWidget* window( _parent->_target.data()->window() );
 
             /*
             post some mouseRelease event to the target, in order to counter balance
@@ -151,19 +156,6 @@ namespace Breeze
             */
             QMouseEvent mouseEvent( QEvent::MouseButtonRelease, _parent->_dragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
             qApp->sendEvent( _parent->_target.data(), &mouseEvent );
-
-            if( event->type() == QEvent::MouseMove )
-            {
-                /*
-                HACK: quickly move the main cursor out of the window and back
-                this is needed to get the focus right for the window children
-                the origin of this issue is unknown at the moment
-                */
-                const QPoint cursor = QCursor::pos();
-                QCursor::setPos(window->mapToGlobal( window->rect().topRight() ) + QPoint(1, 0) );
-                QCursor::setPos(cursor);
-
-            }
 
             return false;
 
@@ -193,19 +185,6 @@ namespace Breeze
         // install application wise event filter
         _appEventFilter = new AppEventFilter( this );
         qApp->installEventFilter( _appEventFilter );
-
-        #if BREEZE_HAVE_X11
-        _moveResizeAtom = 0;
-        if( Helper::isX11() )
-        {
-            // create move-resize atom
-            xcb_connection_t* connection( Helper::connection() );
-            const QString atomName( QStringLiteral( "_NET_WM_MOVERESIZE" ) );
-            xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
-            ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr) );
-            _moveResizeAtom = reply ? reply->atom:0;
-        }
-        #endif
 
     }
 
@@ -755,43 +734,15 @@ namespace Breeze
             const qreal dpiRatio = 1;
             #endif
 
-            // from bespin/virtuality
-            xcb_button_release_event_t releaseEvent;
-            memset(&releaseEvent, 0, sizeof(releaseEvent));
-
-            releaseEvent.response_type = XCB_BUTTON_RELEASE;
-            releaseEvent.event = window;
-            releaseEvent.child = XCB_WINDOW_NONE;
-            releaseEvent.root = QX11Info::appRootWindow();
-            releaseEvent.event_x = _dragPoint.x()*dpiRatio;
-            releaseEvent.event_y = _dragPoint.y()*dpiRatio;
-            releaseEvent.root_x = position.x()*dpiRatio;
-            releaseEvent.root_y = position.y()*dpiRatio;
-            releaseEvent.detail = XCB_BUTTON_INDEX_1;
-            releaseEvent.state = XCB_BUTTON_MASK_1;
-            releaseEvent.time = XCB_CURRENT_TIME;
-            releaseEvent.same_screen = true;
-            xcb_send_event( connection, false, window, XCB_EVENT_MASK_BUTTON_RELEASE, reinterpret_cast<const char*>(&releaseEvent));
+            #if BREEZE_USE_KDE4
+            Display* net_connection = QX11Info::display();
+            #else
+            xcb_connection_t* net_connection = connection;
+            #endif
 
             xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
-
-            // from QtCurve
-            xcb_client_message_event_t clientMessageEvent;
-            memset(&clientMessageEvent, 0, sizeof(clientMessageEvent));
-
-            clientMessageEvent.response_type = XCB_CLIENT_MESSAGE;
-            clientMessageEvent.format = 32;
-            clientMessageEvent.window = window;
-            clientMessageEvent.type = _moveResizeAtom;
-            clientMessageEvent.data.data32[0] = position.x()*dpiRatio;
-            clientMessageEvent.data.data32[1] = position.y()*dpiRatio;
-            clientMessageEvent.data.data32[2] = 8; // NET::Move
-            clientMessageEvent.data.data32[3] = XCB_KEY_BUT_MASK_BUTTON_1;
-            xcb_send_event( connection, false, QX11Info::appRootWindow(),
-                XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY |
-                XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT, reinterpret_cast<const char*>(&clientMessageEvent) );
-
-            xcb_flush( connection );
+            NETRootInfo rootInfo( net_connection, NET::WMMoveResize );
+            rootInfo.moveResizeRequest( window, position.x() * dpiRatio, position.y() * dpiRatio, NET::Move );
 
             #else
 
