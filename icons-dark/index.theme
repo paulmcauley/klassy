@@ -84,7 +84,7 @@ DialogSizes=16,22,32,48,64,128,256
 ########## Directories
 ########## ordered by category and alphabetically
 
-Directories=actions/16,actions/22,actions/24,actions/48,apps/16,apps/22,apps/32,apps/48,applets/256,categories/16,categories/22,categories/32,categories/48,devices/16,devices/22,devices/48,devices/64,emblems/8,emblems/16,emblems/22,emotes/22,mimetypes/16,mimetypes/22,mimetypes/32,mimetypes/64,places/16,places/22,places/32,places/64,status/16,status/22,status/64
+Directories=actions/16,actions/22,actions/24,actions/32,actions/48,apps/16,apps/22,apps/32,apps/48,applets/256,categories/16,categories/22,categories/32,categories/48,devices/16,devices/22,devices/48,devices/64,emblems/8,emblems/16,emblems/22,emotes/22,mimetypes/16,mimetypes/22,mimetypes/32,mimetypes/64,places/16,places/22,places/32,places/64,status/16,status/22,status/64
 
 ########## Actions
 ########## ordered by size
@@ -104,6 +104,12 @@ Type=Fixed
 #24x24 - Fixed size - GTK icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
 [actions/24]
 Size=24
+Context=Actions
+Type=Fixed
+
+#32x32 - Fixed size - For toolbar icons >!!!ONLY!!!< - DO_NOT_USE_ANYWHERE_ELSE - Monochrome
+[actions/32]
+Size=32
 Context=Actions
 Type=Fixed
 
