@@ -56,10 +56,10 @@ namespace Breeze
         //* unregister widget
         void unregisterWidget( QObject* );
 
+        protected:
+
         //* adjust palettes
         void adjustPalettes( const QPalette& );
-
-        protected:
 
         //* adjust widget palette
         bool adjustPalette( QWidget*, const QPalette& ) const;
