@@ -49,6 +49,7 @@ namespace Breeze
     //_____________________________________________________
     bool PaletteHelper::registerWidget( QWidget* widget )
     {
+        if( _registeredWidgets.contains( widget ) ) return false;
         if( adjustPalette( widget, QApplication::palette() ) )
         {
 
