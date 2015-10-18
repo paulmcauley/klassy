@@ -31,6 +31,7 @@
 #include <QPalette>
 #include <QTabWidget>
 #include <QTextStream>
+#include <QTimer>
 
 namespace Breeze
 {
@@ -45,12 +46,11 @@ namespace Breeze
     PaletteHelper::~PaletteHelper()
     { if( _widget ) _widget->deleteLater(); }
 
-
     //_____________________________________________________
     bool PaletteHelper::registerWidget( QWidget* widget )
     {
         if( _registeredWidgets.contains( widget ) ) return false;
-        if( adjustPalette( widget, QApplication::palette() ) )
+        if( acceptWidget( widget ) )
         {
 
             if( !_widget )
@@ -59,8 +59,11 @@ namespace Breeze
                 _widget->installEventFilter( this );
             }
 
-            _registeredWidgets.insert( widget );
+            _pendingWidgets.insert( widget );
             connect( widget, SIGNAL(destroyed(QObject*)), SLOT(unregisterWidget(QObject*)) );
+
+            QTimer::singleShot( 0, this, SLOT(adjustPendingPalettes()) );
+
             return true;
 
         } else return false;
@@ -69,7 +72,10 @@ namespace Breeze
 
     //_____________________________________________________
     void PaletteHelper::unregisterWidget( QObject* object )
-    { _registeredWidgets.remove( object ); }
+    {
+        _pendingWidgets.remove( object );
+        _registeredWidgets.remove( object );
+    }
 
     //_____________________________________________________
     bool PaletteHelper::eventFilter( QObject*, QEvent* event )
@@ -80,6 +86,17 @@ namespace Breeze
         return false;
     }
 
+
+    //_____________________________________________________
+    void PaletteHelper::adjustPendingPalettes( void )
+    {
+        foreach( QObject* object, _pendingWidgets )
+        {
+            adjustPalette( static_cast<QWidget*>( object ), qApp->palette() );
+            _registeredWidgets.insert( object );
+        }
+        _pendingWidgets.clear();
+    }
 
     //_____________________________________________________
     void PaletteHelper::adjustPalettes( const QPalette& palette )
@@ -131,6 +148,42 @@ namespace Breeze
         } else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() ) {
 
             widget->setPalette( _helper.framePalette( palette ) );
+            return true;
+
+        }
+
+        return false;
+
+    }
+
+    //_____________________________________________________
+    bool PaletteHelper::acceptWidget( QWidget* widget ) const
+    {
+
+        // force side panels as flat, on option, and change font to not-bold
+        QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>( widget );
+        if( scrollArea &&
+            !StyleConfigData::sidePanelDrawFrame() &&
+            ( widget->inherits( "KDEPrivate::KPageListView" ) ||
+            widget->inherits( "KDEPrivate::KPageTreeView" ) ||
+            widget->property( PropertyNames::sidePanelView ).toBool() ) )
+        {
+
+            return true;
+
+        } else if( qobject_cast<QGroupBox*>( widget ) ||
+            qobject_cast<QMenu*>( widget ) ||
+            widget->inherits( "QComboBoxPrivateContainer" ) )
+        {
+
+            return true;
+
+        } else if( QTabWidget *tabWidget = qobject_cast<QTabWidget*>( widget ) ) {
+
+            if( !tabWidget->documentMode() ) return true;
+
+        } else if( qobject_cast<QDockWidget*>( widget ) && StyleConfigData::dockWidgetDrawFrame() ) {
+
             return true;
 
         }

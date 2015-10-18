@@ -56,7 +56,15 @@ namespace Breeze
         //* unregister widget
         void unregisterWidget( QObject* );
 
+        protected Q_SLOTS:
+
+        //* adjust palettes
+        void adjustPendingPalettes( void );
+
         protected:
+
+        //* adjust widget palette
+        bool acceptWidget( QWidget* ) const;
 
         //* adjust palettes
         void adjustPalettes( const QPalette& );
@@ -72,6 +80,9 @@ namespace Breeze
         //* dummy widget
         /** it is used to keep track of application palette changes */
         QWidget* _widget = nullptr;
+
+        //* widget set
+        QSet<QObject*> _pendingWidgets;
 
         //* widget set
         QSet<QObject*> _registeredWidgets;
