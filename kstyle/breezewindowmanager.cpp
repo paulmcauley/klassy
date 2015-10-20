@@ -147,8 +147,15 @@ namespace Breeze
 
         //* application-wise event.
         /** needed to catch end of XMoveResize events */
-        bool appMouseEvent( QObject*, QEvent* )
+        bool appMouseEvent( QObject*, QEvent* event )
         {
+
+            #if BREEZE_USE_KDE4
+            // store target window (see later)
+            QWidget* window( _parent->_target.data()->window() );
+            #else
+            Q_UNUSED( event );
+            #endif
 
             /*
             post some mouseRelease event to the target, in order to counter balance
@@ -156,6 +163,22 @@ namespace Breeze
             */
             QMouseEvent mouseEvent( QEvent::MouseButtonRelease, _parent->_dragPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
             qApp->sendEvent( _parent->_target.data(), &mouseEvent );
+
+            #if BREEZE_USE_KDE4
+            if( event->type() == QEvent::MouseMove )
+            {
+                /*
+                HACK: quickly move the main cursor out of the window and back
+                this is needed to get the focus right for the window children
+                the origin of this issue is unknown at the moment.
+                This apparently got fixed with qt5
+                */
+                const QPoint cursor = QCursor::pos();
+                QCursor::setPos(window->mapToGlobal( window->rect().topRight() ) + QPoint(1, 0) );
+                QCursor::setPos(cursor);
+
+            }
+            #endif
 
             return false;
 
@@ -741,8 +764,10 @@ namespace Breeze
             #endif
 
             xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
-            NETRootInfo rootInfo( net_connection, NET::WMMoveResize );
-            rootInfo.moveResizeRequest( window, position.x() * dpiRatio, position.y() * dpiRatio, NET::Move );
+            NETRootInfo( net_connection, NET::WMMoveResize ).moveResizeRequest(
+                window, position.x() * dpiRatio,
+                position.y() * dpiRatio,
+                NET::Move );
 
             #else
 
