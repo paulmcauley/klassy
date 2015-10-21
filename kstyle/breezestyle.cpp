@@ -3334,7 +3334,7 @@ namespace Breeze
 
             const QColor shadow( _helper->shadowColor( palette ) );
             const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // render
             _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
@@ -3378,7 +3378,7 @@ namespace Breeze
             // render as push button
             const QColor shadow( _helper->shadowColor( palette ) );
             const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // adjust frame in case of menu
             if( hasPopupMenu )
@@ -3725,7 +3725,7 @@ namespace Breeze
         // render as push button
         const QColor shadow( _helper->shadowColor( palette ) );
         const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
         QRect frameRect( rect );
         painter->setClipRect( rect );
@@ -5810,7 +5810,7 @@ namespace Breeze
                     // define colors
                     const QColor shadow( _helper->shadowColor( palette ) );
                     const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                    const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                    const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
                     // render
                     _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );

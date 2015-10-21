@@ -253,10 +253,13 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
+    QColor Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
     {
 
-        QColor background( palette.color( QPalette::Button ) );
+        QColor background( sunken ?
+            KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.2 ):
+            palette.color( QPalette::Button ) );
+
         if( mode == AnimationHover )
         {
 
