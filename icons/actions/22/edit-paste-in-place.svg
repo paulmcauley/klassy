@@ -24,9 +24,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.627417"
-     inkscape:cx="18.210419"
-     inkscape:cy="10.562542"
+     inkscape:zoom="32"
+     inkscape:cx="10.970132"
+     inkscape:cy="11.08027"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -34,10 +34,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1021"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="false"
@@ -97,7 +97,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -106,94 +106,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-461.71429,-525.79075)">
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-34"
-       width="0"
-       height="14.668059"
-       x="391.93985"
-       y="506.12607" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-8-0"
-       width="0"
-       height="14.668059"
-       x="398.90042"
-       y="528.69666" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-0-1"
-       width="0"
-       height="14.668059"
-       x="400.71371"
-       y="527.63593" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-3"
-       width="0"
-       height="14.668059"
-       x="391.93985"
-       y="506.12607" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-8-9"
-       width="0"
-       height="14.668059"
-       x="398.90042"
-       y="528.69666" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-0-4"
-       width="0"
-       height="14.668059"
-       x="400.71371"
-       y="527.63593" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-2"
-       width="0"
-       height="14.668059"
-       x="391.93985"
-       y="506.12607" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-8-99"
-       width="0"
-       height="14.668059"
-       x="398.90042"
-       y="528.69666" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-0-43"
-       width="0"
-       height="14.668059"
-       x="400.71371"
-       y="527.63593" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-3-9"
-       width="0"
-       height="14.668059"
-       x="391.93985"
-       y="506.12607" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-8-9-9"
-       width="0"
-       height="14.668059"
-       x="398.90042"
-       y="528.69666" />
-    <rect
-       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
-       id="rect4035-0-4-4"
-       width="0"
-       height="14.668059"
-       x="400.71371"
-       y="527.63593" />
     <path
-       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none;stroke-width:1;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 11 3 C 7.6863 3.00001 5.00001 5.3884744 5 8.3339844 C 5.002 8.9691444 5.1332956 9.5988302 5.3847656 10.193359 C 5.5999156 10.679159 6.0000825 11.223284 6.1640625 11.476562 L 11 19 L 15.835938 11.476562 C 15.999917 11.223282 16.400084 10.679159 16.615234 10.193359 C 16.866704 9.5988294 16.998 8.9691444 17 8.3339844 C 16.99999 5.3884744 14.3137 3.00001 11 3 z M 11 4 A 5 4.5 0 0 1 16 8.5 A 5 4.5 0 0 1 11 13 A 5 4.5 0 0 1 6 8.5 A 5 4.5 0 0 1 11 4 z "
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 11 3 C 8.23858 3 6 5.23858 6 8 C 6 10.76142 11 19 11 19 C 11 19 16 10.76142 16 8 C 16 5.23858 13.76142 3 11 3 z M 11 4 A 4 4 0 0 1 15 8 A 4 4 0 0 1 11 12 A 4 4 0 0 1 7 8 A 4 4 0 0 1 11 4 z "
        transform="translate(461.71429,525.79075)"
-       id="path4147" />
+       id="circle3359" />
   </g>
 </svg>
