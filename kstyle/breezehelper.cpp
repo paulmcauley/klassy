@@ -479,7 +479,7 @@ namespace Breeze
             QRectF copy( rect );
             copy.adjust( 0.5, 0.5, -0.5, -0.5 );
 
-            const qreal radius( frameRadius()-1.0 );
+            const qreal radius( frameRadius( -1.0 ) );
             if( !(sides&SideTop) ) copy.adjust( 0, -radius, 0, 0 );
             if( !(sides&SideBottom) ) copy.adjust( 0, 0, 0, radius );
             if( !(sides&SideLeft) ) copy.adjust( -radius, 0, 0, 0 );
@@ -527,7 +527,7 @@ namespace Breeze
 
             painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 1.0;
+            radius = qMax( radius - 1, 0.0 );
 
         } else {
 
@@ -585,8 +585,7 @@ namespace Breeze
 
             case AllSides:
             {
-                qreal radius( frameRadius() );
-                radius -= 1.0;
+                const qreal radius( frameRadius( -1.0 ) );
                 painter->drawRoundedRect( frameRect, radius, radius );
                 break;
             }
@@ -612,7 +611,7 @@ namespace Breeze
 
             painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 1.0;
+            radius = qMax( radius - 1, 0.0 );
 
         } else painter->setPen( Qt::NoPen );
 
@@ -648,9 +647,10 @@ namespace Breeze
 
         } else if( shadow.isValid() ) {
 
+            const qreal shadowRadius = qMax( radius - 1, 0.0 );
             painter->setPen( QPen( shadow, 2 ) );
             painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( shadowRect( frameRect ), radius - 1, radius - 1 );
+            painter->drawRoundedRect( shadowRect( frameRect ), shadowRadius, shadowRadius );
 
         }
 
@@ -663,7 +663,7 @@ namespace Breeze
             painter->setPen( QPen( QBrush( gradient ), 1.0 ) );
 
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 1.0;
+            radius = qMax( radius - 1, 0.0 );
 
         } else painter->setPen( Qt::NoPen );
 
@@ -710,7 +710,7 @@ namespace Breeze
 
         } else {
 
-            const qreal radius( frameRadius()-0.5 );
+            const qreal radius( frameRadius(-0.5) );
 
             painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
@@ -749,7 +749,7 @@ namespace Breeze
         path.lineTo( ( baseRect.width() - tabWidth )/2, radius );
         path.arcTo( QRectF( QPointF( ( baseRect.width() - tabWidth )/2, 0 ), cornerSize ), 180, -90 );
         path.lineTo( ( baseRect.width() + tabWidth )/2 -1 - radius, 0 );
-        path.arcTo( QRectF(  QPointF( ( baseRect.width() + tabWidth )/2 -1 - 2*radius, 0 ), cornerSize ), 90, -90 );
+        path.arcTo( QRectF(  QPointF( ( baseRect.width() + tabWidth )/2  - 1 - 2*radius, 0 ), cornerSize ), 90, -90 );
         path.lineTo( ( baseRect.width() + tabWidth )/2 -1, baseRect.height()-1 - radius );
         path.arcTo( QRectF( QPointF( ( baseRect.width() + tabWidth )/2 -1, baseRect.height()-1 - 2*radius ), cornerSize ), 180, 90 );
         path.lineTo( baseRect.width()-1, baseRect.height()-1 );
@@ -782,7 +782,7 @@ namespace Breeze
 
             painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 1.0;
+            radius = qMax( radius-1, 0.0 );
 
         } else painter->setPen( Qt::NoPen );
 
@@ -851,7 +851,7 @@ namespace Breeze
         // copy rect and radius
         QRectF frameRect( rect );
         frameRect.adjust( 2, 2, -2, -2 );
-        const qreal radius( frameRadius() );
+        qreal radius( frameRadius() );
 
         // shadow
         if( sunken )
@@ -875,8 +875,9 @@ namespace Breeze
             painter->setPen( QPen( color, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
+            radius = qMax( radius-1, 0.0 );
             const QRectF contentRect( frameRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-            painter->drawRoundedRect( contentRect, radius - 1.0, radius - 1.0 );
+            painter->drawRoundedRect( contentRect, radius, radius );
 
         }
 
@@ -1260,7 +1261,7 @@ namespace Breeze
 
             painter->setPen( outline );
             frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius -= 1.0;
+            radius = qMax( radius-1, 0.0 );
 
         } else painter->setPen( Qt::NoPen );
 

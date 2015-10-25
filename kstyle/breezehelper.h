@@ -307,8 +307,8 @@ namespace Breeze
         void init( void );
 
         //* frame radius
-        qreal frameRadius( void ) const
-        { return qreal( Metrics::Frame_FrameRadius )-0.5; }
+        qreal frameRadius( qreal bias = 0 ) const
+        { return qMax( qreal( Metrics::Frame_FrameRadius ) - 0.5 + bias, 0.0 ); }
 
         //* return rectangle for widgets shadow, offset depending on light source
         QRectF shadowRect( const QRectF& ) const;

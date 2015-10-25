@@ -3084,7 +3084,7 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
+            if( tabBarSize.width() >= rect.width() - 2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
             if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
             break;
@@ -3384,7 +3384,7 @@ namespace Breeze
             if( hasPopupMenu )
             {
                 painter->setClipRect( rect );
-                rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+                rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 2, 0 );
                 rect = visualRect( option, rect );
             }
 
@@ -3729,7 +3729,7 @@ namespace Breeze
 
         QRect frameRect( rect );
         painter->setClipRect( rect );
-        frameRect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+        frameRect.adjust( -Metrics::Frame_FrameRadius - 1, 0, 0, 0 );
         frameRect = visualRect( option, frameRect );
 
         // render
@@ -5286,7 +5286,7 @@ namespace Breeze
             {
 
                 corners = CornerTopLeft|CornerTopRight;
-                rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
+                rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius + 1 );
 
             } else {
 
@@ -5306,7 +5306,7 @@ namespace Breeze
             {
 
                 corners = CornerBottomLeft|CornerBottomRight;
-                rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
+                rect.adjust( 0, -Metrics::Frame_FrameRadius - 1, 0, 0 );
 
             } else {
 
@@ -5325,7 +5325,7 @@ namespace Breeze
             if( selected )
             {
                 corners = CornerTopLeft|CornerBottomLeft;
-                rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
+                rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 1, 0 );
 
             } else {
 
@@ -5345,7 +5345,7 @@ namespace Breeze
             {
 
                 corners = CornerTopRight|CornerBottomRight;
-                rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
+                rect.adjust( -Metrics::Frame_FrameRadius - 1, 0, 0, 0 );
 
             } else {
 
