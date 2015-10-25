@@ -1115,18 +1115,8 @@ namespace Breeze
         if( outline.isValid() )
         {
 
-            if( hasFocus )
-            {
-
-                painter->setPen( QPen( outline, 2 ) );
-                frameRect.adjust( 1, 1, -1, -1 );
-
-            } else {
-
-                painter->setPen( outline );
-                frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-
-            }
+            painter->setPen( outline );
+            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
         } else painter->setPen( Qt::NoPen );
 
