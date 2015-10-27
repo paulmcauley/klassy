@@ -13,8 +13,8 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sc_setobjecttobackground.svg"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="object-order-front.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
    inkscape:export-ydpi="30">
@@ -28,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="32"
-     inkscape:cx="1.4470797"
-     inkscape:cy="13.534991"
+     inkscape:cx="7.5720797"
+     inkscape:cy="9.066241"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +37,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1868"
-     inkscape:window-height="1060"
-     inkscape:window-x="50"
-     inkscape:window-y="-3"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -83,21 +83,15 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
-    <g
-       id="g5944"
-       transform="matrix(-1,0,0,-1,859.42858,1079.5815)">
-      <path
-         id="rect5580"
-         transform="translate(421.71429,531.79074)"
-         d="M 8,2 8,3 14,3 14,2 8,2 z M 8,5 8,6 9,6 14,6 14,5 9,5 8,5 z m 0,4 0,1 1,0 5,0 0,-1 -5,0 -1,0 z m -6,4 0,1 5,0 7,0 0,-1 -7,0 -5,0 z"
-         style="color:#000000;fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-         inkscape:connector-curvature="0" />
-      <path
-         id="rect4071-0-1"
-         transform="translate(421.71429,531.79074)"
-         d="M 4,2 4,6 4,10.03125 2.65625,8.59375 2,9.28125 l 2.3125,2.5 L 4.5,12 4.6875,11.78125 7,9.28125 6.34375,8.59375 5,10.03125 5,6 5,2 4,2 z"
-         style="fill:#f2f2f2;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0" />
-    </g>
+    <path
+       style="fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 425.71429,545.79074 0,-4 0,-4.03125 -1.34375,1.4375 -0.65625,-0.6875 2.3125,-2.5 0.1875,-0.21875 0.1875,0.21875 2.3125,2.5 -0.65625,0.6875 -1.34375,-1.4375 0,4.03125 0,4 -1,0 z"
+       id="rect4071-0-1"
+       inkscape:connector-curvature="0" />
+    <path
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#f2f2f2;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate"
+       d="m 428.71429,544.79074 0,-1 7,0 0,1 -7,0 z m 2,-2 0,-1 5,0 0,1 -5,0 z m -1,-2 0,-1 6,0 0,1 -6,0 z m 1,-2 0,-1 5,0 0,1 -5,0 z m -2,-2 0,-1 7,0 0,1 -7,0 z m -5,-2 0,-1 12,0 0,1 -12,0 z"
+       id="rect5740"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
