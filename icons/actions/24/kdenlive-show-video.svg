@@ -15,7 +15,7 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    viewBox="0 0 24 24"
-   sodipodi:docname="media-playlist-repeat.svg">
+   sodipodi:docname="kdenlive-show-video.svg">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -25,86 +25,70 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="16.841998"
-     inkscape:cx="1.9316438"
-     inkscape:cy="13.424145"
+     inkscape:zoom="24.845161"
+     inkscape:cx="9.1648073"
+     inkscape:cy="12.029454"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:showpageshadow="false"
+     units="px"
      borderlayer="true"
+     inkscape:showpageshadow="false"
      inkscape:window-width="2560"
      inkscape:window-height="955"
      inkscape:window-x="0"
      inkscape:window-y="35"
      inkscape:window-maximized="1"
-     units="px"
+     showguides="true"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0"
-     inkscape:snap-bbox="true">
+     fit-margin-bottom="0">
     <sodipodi:guide
-       position="3,20.999966"
+       position="3,21"
        orientation="18,0"
-       id="guide4085" />
+       id="guide4066" />
     <sodipodi:guide
-       position="3,2.9999652"
+       position="3,3"
        orientation="0,18"
-       id="guide4087" />
+       id="guide4068" />
     <sodipodi:guide
-       position="21,2.9999652"
+       position="21,3"
        orientation="-18,0"
-       id="guide4089" />
+       id="guide4070" />
     <sodipodi:guide
-       position="21,20.999966"
+       position="21,21"
        orientation="0,-18"
-       id="guide4091" />
+       id="guide4072" />
     <sodipodi:guide
-       position="4,19.999966"
+       position="4,20"
        orientation="16,0"
-       id="guide4093" />
+       id="guide4074" />
     <sodipodi:guide
-       position="4,3.9999652"
+       position="4,4"
        orientation="0,16"
-       id="guide4095" />
+       id="guide4076" />
     <sodipodi:guide
-       position="20,3.9999652"
+       position="20,4"
        orientation="-16,0"
-       id="guide4097" />
+       id="guide4078" />
     <sodipodi:guide
-       position="20,19.999966"
+       position="20,20"
        orientation="0,-16"
-       id="guide4099" />
+       id="guide4080" />
     <inkscape:grid
        type="xygrid"
        id="grid4101"
        originx="1"
-       originy="0.99994785" />
+       originy="0.99998262" />
     <sodipodi:guide
-       position="4,19.999966"
-       orientation="16,0"
-       id="guide4123" />
+       position="9,20"
+       orientation="0,-5"
+       id="guide4124" />
     <sodipodi:guide
-       position="4,3.9999652"
-       orientation="0,2.000001"
-       id="guide4125" />
-    <sodipodi:guide
-       position="6.000001,19.999966"
-       orientation="0,-2.000001"
-       id="guide4129" />
-    <sodipodi:guide
-       position="18,3.9999652"
-       orientation="0,2"
-       id="guide4133" />
-    <sodipodi:guide
-       position="20,3.9999652"
-       orientation="-16,0"
-       id="guide4135" />
-    <sodipodi:guide
-       position="20,19.999966"
-       orientation="0,-2"
-       id="guide4137" />
+       position="12,4"
+       orientation="0,4"
+       id="guide4241" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -124,11 +108,11 @@
      id="layer1"
      transform="translate(1,-1029.3622)">
     <path
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
-       d="M 16,5 16,6.5996094 16,7 6,7 C 4.338,7 3,8.338 3,10 l 0,1 1,0 0,-1 C 4,8.892 4.892,8 6,8 l 10,0 0,2 3,-2.4003906 z m 2,6 0,1 c 0,1.108 -0.892,2 -2,2 L 6,14 6,12 3,14.400391 6,17 6,15.400391 6,15 16,15 c 1.662,0 3,-1.338 3,-3 l 0,-1 z"
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="m 3,3 0,16 16,0 0,-16 z m 3,1 10,0 0,5.9003906 -10,0 z M 4,5 5,5 5,6 4,6 Z m 13,0 1,0 0,1 -1,0 z M 4,7 5,7 5,8 4,8 Z m 13,0 1,0 0,1 -1,0 z M 4,9 5,9 5,10 4,10 Z m 13,0.099609 1,0 0,1 -1,0 z M 4,12 l 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z m -11,0 10,0 0,6 -10,0 z m -2,2 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z m -13,2 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z"
        transform="translate(0,1030.3622)"
-       id="rect3375"
+       id="rect4145"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccssccsscccccssccccccsscc" />
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
   </g>
 </svg>
