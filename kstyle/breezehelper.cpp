@@ -1090,7 +1090,6 @@ namespace Breeze
         const QColor& color,
         const QColor& outline,
         const QColor& shadow,
-        bool hasFocus,
         bool sunken ) const
     {
 

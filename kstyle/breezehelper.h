@@ -213,7 +213,7 @@ namespace Breeze
         void renderSliderGroove( QPainter*, const QRect&, const QColor& ) const;
 
         //* slider handle
-        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool sunken ) const;
 
         //* dial groove
         void renderDialGroove( QPainter*, const QRect&, const QColor& ) const;

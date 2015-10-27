@@ -6073,7 +6073,7 @@ namespace Breeze
             const QColor shadow( _helper->shadowColor( palette ) );
 
             // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
 
         }
 
@@ -6153,7 +6153,7 @@ namespace Breeze
             const QColor shadow( _helper->shadowColor( palette ) );
 
             // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
 
         }
 
