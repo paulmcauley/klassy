@@ -25,19 +25,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="35.663084"
-     inkscape:cx="9.9607204"
-     inkscape:cy="9.2327809"
+     inkscape:zoom="71.32617"
+     inkscape:cx="8.6893238"
+     inkscape:cy="6.7829214"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      units="px"
      borderlayer="true"
      inkscape:showpageshadow="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1021"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      showguides="true">
     <sodipodi:guide
@@ -92,7 +92,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -101,16 +101,12 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1030.3622)">
-    <g
-       transform="translate(-553.72253,447.24294)"
-       id="layer1-6"
-       inkscape:label="Capa 1">
-      <path
-         id="rect3009"
-         transform="translate(553.72253,583.11926)"
-         d="m 3,4 0,15 1,0 2,0 10,0 2,0 1,0 L 19,4 18,4 16,4 6,4 4,4 3,4 Z M 4,5 5,5 5,6 4,6 4,5 Z m 2,0 10,0 0,5.5 -10,0 L 6,5 Z m 11,0 1,0 0,1 -1,0 0,-1 z M 4,8 5,8 5,9 4,9 4,8 Z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -11,1.5 10,0 0,5.5 -10,0 0,-5.5 z m -2,1.5 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z m -13,3 1,0 0,1 -1,0 0,-1 z m 13,0 1,0 0,1 -1,0 0,-1 z"
-         style="fill:#f2f2f2;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0" />
-    </g>
+    <path
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 3,3 0,16 16,0 0,-16 z m 3,1 10,0 0,5.9003906 -10,0 z M 4,5 5,5 5,6 4,6 Z m 13,0 1,0 0,1 -1,0 z M 4,7 5,7 5,8 4,8 Z m 13,0 1,0 0,1 -1,0 z M 4,9 5,9 5,10 4,10 Z m 13,0.099609 1,0 0,0.9999996 -1,0 z M 4,12 l 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z m -11,0 10,0 0,6 -10,0 z m -2,2 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z m -13,2 1,0 0,1 -1,0 z m 13,0 1,0 0,1 -1,0 z"
+       transform="translate(0,1030.3622)"
+       id="rect4145"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
   </g>
 </svg>

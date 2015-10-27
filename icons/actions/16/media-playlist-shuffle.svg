@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32.000001"
-     inkscape:cx="3.9863085"
-     inkscape:cy="7.0213873"
+     inkscape:zoom="64"
+     inkscape:cx="11.645769"
+     inkscape:cy="7.9193903"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +37,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="957"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -75,7 +75,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -85,10 +85,9 @@
      id="layer1"
      transform="translate(-421.71429,-531.79074)">
     <path
-       style="fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:none"
-       d="m 433.71429,535.79074 0,1 -2.18555,0 -1.81445,2.2383 -1.81445,-2.2383 -3.18555,0 0,1 2.75977,0 c -9.5e-4,0.01 0.83579,1.046 1.61132,2.0137 l -1.61132,1.9863 -2.75977,0 0,1 3.23828,0 c 0,0 0.89312,-1.1189 1.76172,-2.2012 0.86877,1.0823 1.76172,2.2012 1.76172,2.2012 l 2.23828,0 0,1 2,-1.5 -2,-1.5 0,1 -1.75977,0 -1.61132,-1.9863 c 0.77538,-0.9677 1.61227,-2.0058 1.61132,-2.0137 l 1.75977,0 0,1 2,-1.5 z"
-       id="rect4155-8"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccccccccccccccccccccccccccc" />
+       style="fill:#4d4d4d;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 11 3.5 L 11 5 L 9 5 C 7.33803 5 6 6.33803 6 8 C 6 9.108 5.108 10 4 10 L 2 10 L 2 11 L 4 11 C 5.66197 11 7 9.66197 7 8 C 7 6.892 7.892 6 9 6 L 11 6 L 11 7.5 L 14 5.5 L 11 3.5 z M 2 5 L 2 6 L 4 6 C 4.4010806 6 4.7715748 6.1186123 5.0839844 6.3203125 C 5.1608465 5.9877967 5.2939035 5.6779211 5.4707031 5.3984375 C 5.0349147 5.1522927 4.5381424 5 4 5 L 2 5 z M 11 8.5 L 11 10 L 9 10 C 8.5989194 10 8.2284252 9.8813877 7.9160156 9.6796875 C 7.8391535 10.012203 7.7060965 10.32208 7.5292969 10.601562 C 7.9650853 10.847709 8.4618576 11 9 11 L 11 11 L 11 12.5 L 14 10.5 L 11 8.5 z "
+       transform="translate(421.71429,531.79074)"
+       id="path3355" />
   </g>
 </svg>

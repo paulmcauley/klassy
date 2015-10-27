@@ -13,7 +13,7 @@
    height="22"
    id="svg4165"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="media-eject.svg">
   <defs
      id="defs4167" />
@@ -25,15 +25,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="22.724638"
-     inkscape:cx="-1.809234"
+     inkscape:cx="-8.8940553"
      inkscape:cy="9.7018213"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1864"
-     inkscape:window-height="1060"
-     inkscape:window-x="53"
-     inkscape:window-y="-5"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false">
     <inkscape:grid
@@ -89,18 +89,10 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-1030.3622)">
-    <rect
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
-       id="rect4127"
-       width="14"
-       height="2.0999999"
-       x="4"
-       y="1047.2625" />
     <path
-       style="fill:#f2f2f2;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 4,1042.3622 14,0 -7,-9 z"
-       id="path4148"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cccc" />
+       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none"
+       d="m 11,1035.3622 -7,8 14,0 -7,-8 z m -7,9.9004 0,2.0996 14,0 0,-2.0996 -14,0 z"
+       id="rect4127"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>

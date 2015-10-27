@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32.000001"
-     inkscape:cx="17.252001"
-     inkscape:cy="8.2032091"
+     inkscape:zoom="1"
+     inkscape:cx="13.694365"
+     inkscape:cy="11.377843"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +37,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1920"
-     inkscape:window-height="1021"
-     inkscape:window-x="-4"
-     inkscape:window-y="0"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -90,7 +90,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -106,16 +106,10 @@
        id="rect4143-4"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccccccccc" />
-    <g
-       transform="translate(5,1)"
-       id="layer1-4"
-       inkscape:label="Capa 1">
-      <path
-         sodipodi:nodetypes="ccccccccccccccccccccccccccc"
-         inkscape:connector-curvature="0"
-         id="rect4155-8"
-         d="m 433.71429,535.79074 0,1 -2.18555,0 -1.81445,2.2383 -1.81445,-2.2383 -3.18555,0 0,1 2.75977,0 c -9.5e-4,0.01 0.83579,1.046 1.61132,2.0137 l -1.61132,1.9863 -2.75977,0 0,1 3.23828,0 c 0,0 0.89312,-1.1189 1.76172,-2.2012 0.86877,1.0823 1.76172,2.2012 1.76172,2.2012 l 2.23828,0 0,1 2,-1.5 -2,-1.5 0,1 -1.75977,0 -1.61132,-1.9863 c 0.77538,-0.9677 1.61227,-2.0058 1.61132,-2.0137 l 1.75977,0 0,1 2,-1.5 z"
-         style="fill:#4d4d4d;fill-opacity:1;fill-rule:evenodd;stroke:none" />
-    </g>
+    <path
+       style="opacity:1;fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="M 17 11 L 17 12 L 16 12 L 15.976562 12 C 14.327554 12 13 13.327554 13 14.976562 L 13 15 C 13 16.108 12.108 17 11 17 L 8 17 L 8 18 L 11 18 L 11.023438 18 C 12.672446 18 14 16.672446 14 15.023438 L 14 15 C 14 13.892 14.892 13 16 13 L 17 13 L 17 14 L 19 12.5 L 17 11 z M 8 12 L 8 13 L 11 13 C 11.398899 13 11.766762 13.118675 12.078125 13.318359 C 12.153845 12.981498 12.288 12.669142 12.466797 12.386719 C 12.037922 12.147813 11.551108 12 11.023438 12 L 11 12 L 8 12 z M 17 16 L 17 17 L 16 17 C 15.601101 17 15.233238 16.881325 14.921875 16.681641 C 14.846152 17.018502 14.712 17.330858 14.533203 17.613281 C 14.962077 17.852187 15.44889 18 15.976562 18 L 16 18 L 17 18 L 17 19 L 19 17.5 L 17 16 z "
+       transform="translate(421.71429,525.79074)"
+       id="rect3368" />
   </g>
 </svg>
