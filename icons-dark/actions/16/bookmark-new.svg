@@ -13,8 +13,8 @@
    height="16"
    id="svg3049"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="sc_flipvertical.svg"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="bookmark-new.svg"
    inkscape:export-filename="/home/uri/.kde/share/icons/NITRUX-KDE/16x16/actions/view-right-new.png"
    inkscape:export-xdpi="30"
    inkscape:export-ydpi="30">
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="32"
-     inkscape:cx="4.7672162"
-     inkscape:cy="7.9355786"
+     inkscape:zoom="22.627417"
+     inkscape:cx="-3.1532541"
+     inkscape:cy="7.8503066"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -37,10 +37,10 @@
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1868"
-     inkscape:window-height="1060"
-     inkscape:window-x="50"
-     inkscape:window-y="-3"
+     inkscape:window-width="2560"
+     inkscape:window-height="955"
+     inkscape:window-x="0"
+     inkscape:window-y="35"
      inkscape:window-maximized="1"
      inkscape:showpageshadow="false"
      borderlayer="true"
@@ -74,7 +74,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -85,7 +85,7 @@
      transform="translate(-421.71429,-531.79074)">
     <path
        style="fill:#f2f2f2;fill-opacity:1;stroke:none"
-       d="M 4 2 L 4 13.59375 L 8 12 L 12 13.59375 L 12 2 L 11 2 L 5 2 L 4 2 z M 5 3 L 11 3 L 11 12.1875 L 8 11 L 5 12.1875 L 5 3 z "
+       d="M 4 2 L 4 3 L 4 10 L 4 11 L 4 12 L 4 14 L 8 12.40625 L 12 14 L 12 12 L 12 11.003906 L 12 11 L 12 10 L 12 3 L 12 2 L 11 2 L 5 2 L 4 2 z M 5 3 L 11 3 L 11 10 L 11 11 L 11 11.003906 L 11 12 L 11 12.59375 L 8 11.40625 L 5 12.59375 L 5 11.003906 L 5 11 L 5 10 L 5 3 z "
        transform="translate(421.71429,531.79074)"
        id="rect4112" />
   </g>
