@@ -1,3 +1,2 @@
 add_subdirectory(qtcurvepreset)
 add_subdirectory(kde4breeze)
-add_subdirectory(gtkbreeze)
