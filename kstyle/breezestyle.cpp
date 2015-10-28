@@ -3246,14 +3246,24 @@ namespace Breeze
             } else {
 
                 const bool sunken( state & (State_On | State_Sunken) );
-                QPalette::ColorRole colorRole;
-                if( flat ) colorRole = ( sunken && hasFocus && !mouseOver ) ? QPalette::HighlightedText: QPalette::WindowText;
-                else colorRole = ( hasFocus &&! mouseOver ) ? QPalette::HighlightedText:QPalette::ButtonText;
-                color = palette.color( colorRole );
+                if( flat )
+                {
 
+                    if( sunken && hasFocus && !mouseOver ) color = palette.color( QPalette::HighlightedText );
+                    else color = _helper->arrowColor( palette, QPalette::WindowText );
+
+                } else if( hasFocus && !mouseOver )  {
+
+                    color = palette.color( QPalette::HighlightedText );
+
+                } else {
+
+                    color = _helper->arrowColor( palette, QPalette::ButtonText );
+
+                }
             }
 
-        } else color = palette.color( QPalette::WindowText );
+        } else color = _helper->arrowColor( palette, QPalette::WindowText );
 
         // render
         _helper->renderArrow( painter, rect, color, orientation );
@@ -3278,7 +3288,7 @@ namespace Breeze
         const QPalette& palette( option->palette );
 
         // define color and polygon for drawing arrow
-        const QColor color = palette.color( QPalette::ButtonText );
+        const QColor color = _helper->arrowColor( palette, QPalette::ButtonText );
 
         // render
         _helper->renderArrow( painter, rect, color, orientation );
@@ -3947,7 +3957,7 @@ namespace Breeze
             else orientation = ArrowRight;
 
             // color
-            const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : palette.color( QPalette::Text ) );
+            const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : _helper->arrowColor( palette, QPalette::Text ) );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
@@ -4042,9 +4052,7 @@ namespace Breeze
             arrowRect = visualRect( option, arrowRect );
 
             // define color
-            const QColor arrowColor( palette.color( textRole ) );
-
-            // render
+            const QColor arrowColor( _helper->arrowColor( palette, textRole ) );
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
         }
@@ -4569,7 +4577,7 @@ namespace Breeze
             if( useStrongFocus && ( selected || sunken ) ) arrowColor = palette.color( QPalette::HighlightedText );
             else if( sunken ) arrowColor = _helper->focusColor( palette );
             else if( selected ) arrowColor = _helper->hoverColor( palette );
-            else arrowColor = palette.color( QPalette::WindowText );
+            else arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
@@ -5845,7 +5853,7 @@ namespace Breeze
                     const qreal opacity( _animations->comboBoxEngine().opacity( widget, AnimationHover ) );
 
                     // color
-                    const QColor normal( palette.color( QPalette::Text ) );
+                    const QColor normal( _helper->arrowColor( palette, QPalette::WindowText ) );
                     const QColor hover( _helper->hoverColor( palette ) );
 
                     if( animated )
@@ -5862,13 +5870,13 @@ namespace Breeze
 
             } else if( flat )  {
 
-                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::WindowText );
+                if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::WindowText );
                 else if( hasFocus && !mouseOver && sunken ) arrowColor = palette.color( QPalette::HighlightedText );
-                else arrowColor = palette.color( QPalette::WindowText );
+                else arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
 
-            } else if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::ButtonText );
+            } else if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::ButtonText );
             else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
-            else arrowColor = palette.color( QPalette::ButtonText );
+            else arrowColor = _helper->arrowColor( palette, QPalette::ButtonText );
 
             // arrow rect
             QRect arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
@@ -6073,7 +6081,7 @@ namespace Breeze
             const QColor shadow( _helper->shadowColor( palette ) );
 
             // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
 
         }
 
@@ -6153,7 +6161,7 @@ namespace Breeze
             const QColor shadow( _helper->shadowColor( palette ) );
 
             // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, hasFocus, sunken );
+            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
 
         }
 
@@ -6340,12 +6348,12 @@ namespace Breeze
         const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
         const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
 
-        QColor color;
+        QColor color = _helper->arrowColor( palette, QPalette::Text );
         if( animated )
         {
 
             QColor highlight = _helper->hoverColor( palette );
-            color = KColorUtils::mix( palette.color( QPalette::Text ), highlight, opacity );
+            color = KColorUtils::mix( color, highlight, opacity );
 
         } else if( subControlHover ) {
 
@@ -6353,11 +6361,7 @@ namespace Breeze
 
         } else if( atLimit ) {
 
-            color = palette.color( QPalette::Disabled, QPalette::Text );
-
-        } else {
-
-            color = palette.color( QPalette::Text );
+            color = _helper->arrowColor( palette, QPalette::Disabled, QPalette::Text );
 
         }
 
@@ -6447,7 +6451,7 @@ namespace Breeze
 
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
-        QColor color( palette.color( QPalette::WindowText ) );
+        QColor color( _helper->arrowColor( palette, QPalette::WindowText ) );
 
         // check enabled state
         const bool enabled( option->state & State_Enabled );
@@ -6459,7 +6463,7 @@ namespace Breeze
         {
 
             // manually disable arrow, to indicate that scrollbar is at limit
-            return palette.color( QPalette::Disabled, QPalette::WindowText );
+            return _helper->arrowColor( palette, QPalette::Disabled, QPalette::WindowText );
 
         }
 

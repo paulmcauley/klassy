@@ -135,6 +135,13 @@ namespace Breeze
         //* return altered palette suitable for tinted frames
         QPalette sideViewPalette( const QPalette& ) const;
 
+        //* arrow outline color
+        QColor arrowColor( const QPalette&, QPalette::ColorGroup, QPalette::ColorRole ) const;
+
+        //* arrow outline color
+        QColor arrowColor( const QPalette& palette, QPalette::ColorRole role ) const
+        { return arrowColor( palette, palette.currentColorGroup(), role ); }
+
         //* arrow outline color, using animations
         QColor arrowColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
@@ -213,7 +220,7 @@ namespace Breeze
         void renderSliderGroove( QPainter*, const QRect&, const QColor& ) const;
 
         //* slider handle
-        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
+        void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool sunken ) const;
 
         //* dial groove
         void renderDialGroove( QPainter*, const QRect&, const QColor& ) const;
