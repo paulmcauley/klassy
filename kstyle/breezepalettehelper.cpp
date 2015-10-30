@@ -113,21 +113,14 @@ namespace Breeze
         QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea*>( widget );
         if( scrollArea &&
             !StyleConfigData::sidePanelDrawFrame() &&
-            ( widget->inherits( "KDEPrivate::KPageListView" ) ||
-            widget->inherits( "KDEPrivate::KPageTreeView" ) ||
-            widget->property( PropertyNames::sidePanelView ).toBool() ) )
+            widget->property( PropertyNames::sidePanelView ).toBool() )
         {
 
             scrollArea->setPalette( _helper.sideViewPalette( palette ) );
-            scrollArea->setProperty( PropertyNames::sidePanelView, true );
-
             if( QWidget *viewport = scrollArea->viewport() )
-            {
+            { viewport->setPalette( _helper.sideViewPalette( palette ) ); }
 
-                viewport->setPalette( _helper.sideViewPalette( palette ) );
-                return true;
-            }
-
+            return true;
 
         } else if( qobject_cast<QGroupBox*>( widget ) ||
             qobject_cast<QMenu*>( widget ) ||

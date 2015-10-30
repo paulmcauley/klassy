@@ -293,13 +293,15 @@ namespace Breeze
 
             addEventFilter( widget );
 
-            // force side panels as flat, on option, and change font to not-bold
+            // force side panels as flat, on option
             if(
                 widget->inherits( "KDEPrivate::KPageListView" ) ||
-                widget->inherits( "KDEPrivate::KPageTreeView" ) ||
-                widget->property( PropertyNames::sidePanelView ).toBool() )
-            {
+                widget->inherits( "KDEPrivate::KPageTreeView" ) )
+            { widget->setProperty( PropertyNames::sidePanelView, true ); }
 
+            // for all side view panels, unbold font (design choice)
+            if( widget->property( PropertyNames::sidePanelView ).toBool() )
+            {
                 // upbold list font
                 QFont font( widget->font() );
                 font.setBold( false );
