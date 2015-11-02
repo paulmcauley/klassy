@@ -5389,7 +5389,19 @@ namespace Breeze
         const QColor outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
 
         // render
-        _helper->renderTabBarTab( painter, rect, color, outline, corners );
+        if( selected )
+        {
+
+            QRegion oldRegion( painter->clipRegion() );
+            painter->setClipRect( option->rect, Qt::IntersectClip );
+            _helper->renderTabBarTab( painter, rect, color, outline, corners );
+            painter->setClipRegion( oldRegion );
+
+        } else {
+
+            _helper->renderTabBarTab( painter, rect, color, outline, corners );
+
+        }
 
         return true;
 
