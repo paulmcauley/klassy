@@ -11,13 +11,12 @@
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="22"
    height="22"
-   id="svg2"
+   id="svg4183"
    version="1.1"
    inkscape:version="0.91 r13725"
-   viewBox="0 0 22 22"
-   sodipodi:docname="smartphone.svg">
+   sodipodi:docname="system-switch-user.svg">
   <defs
-     id="defs4" />
+     id="defs4185" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,66 +24,74 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="23.105469"
-     inkscape:cx="21.13248"
-     inkscape:cy="12.718471"
+     inkscape:zoom="32"
+     inkscape:cx="7.693172"
+     inkscape:cy="10.462125"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:showpageshadow="false"
-     units="px"
-     inkscape:window-width="2560"
-     inkscape:window-height="957"
-     inkscape:window-x="0"
-     inkscape:window-y="30"
+     inkscape:window-width="1883"
+     inkscape:window-height="1051"
+     inkscape:window-x="33"
+     inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:snap-bbox="true"
-     inkscape:object-nodes="true">
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:showpageshadow="false"
+     borderlayer="true">
     <inkscape:grid
        type="xygrid"
-       id="grid4101" />
+       id="grid4103" />
     <sodipodi:guide
        position="2,20.000017"
        orientation="18,0"
-       id="guide4107" />
+       id="guide4095" />
     <sodipodi:guide
        position="2,2.0000174"
        orientation="0,18"
-       id="guide4109" />
+       id="guide4097" />
     <sodipodi:guide
        position="20,2.0000174"
        orientation="-18,0"
-       id="guide4111" />
+       id="guide4099" />
     <sodipodi:guide
        position="20,20.000017"
        orientation="0,-18"
-       id="guide4113" />
+       id="guide4101" />
     <sodipodi:guide
        position="3,19.000017"
        orientation="16,0"
-       id="guide4115" />
+       id="guide4103" />
     <sodipodi:guide
        position="3,3.0000174"
        orientation="0,16"
-       id="guide4117" />
+       id="guide4105" />
     <sodipodi:guide
        position="19,3.0000174"
-       orientation="-16,0"
-       id="guide4119" />
+       orientation="-1,6.123234e-17"
+       id="guide4107" />
     <sodipodi:guide
        position="19,19.000017"
        orientation="0,-16"
-       id="guide4121" />
+       id="guide4109" />
+    <sodipodi:guide
+       position="10.292994,3.0001395"
+       orientation="0,1.414012"
+       id="guide4266" />
+    <sodipodi:guide
+       position="10,3.0000174"
+       orientation="0,2"
+       id="guide4137" />
   </sodipodi:namedview>
   <metadata
-     id="metadata7">
+     id="metadata4188">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -94,9 +101,10 @@
      id="layer1"
      transform="translate(0,-1030.3622)">
     <path
-       style="opacity:1;fill:#f2f2f2;fill-opacity:1;stroke:none;stroke-width:0.1;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 6 3 L 6 19 L 16 19 L 16 3 L 6 3 z M 9 4 L 13 4 L 13 5 L 9 5 L 9 4 z M 7 6 L 15 6 L 15 11.5 L 15 12.5 L 15 17 L 7 17 L 7 16 L 7 12.5 L 7 11.5 L 7 6 z "
-       transform="translate(0,1030.3622)"
-       id="rect4403" />
+       class="ColorScheme-Text"
+       inkscape:connector-curvature="0"
+       style="fill:#4d4d4d;fill-opacity:1;stroke:none"
+       d="m 16.294294,1033.3622 -3.291358,3.293 -0.206944,0.207 0.206944,0.207 3.291358,3.293 0.70668,-0.707 -2.291856,-2.293 4.290875,0 0,-1 -4.290875,0 2.291856,-2.293 -0.70668,-0.707 z m -8.296739,3 c -1.6611889,0 -2.998536,1.338 -2.998536,3 0,1.662 1.3373471,3 2.998536,3 1.6611889,0 2.998536,-1.338 2.998536,-3 0,-1.662 -1.3373471,-3 -2.998536,-3 z m 0,7 c -2.7686682,0 -4.997555,2.23 -4.997555,5 l 0,1 9.995125,0 0,-1 c 0,-2.77 -2.228902,-5 -4.99757,-5 z m 0,1 c 2.214929,0 3.998053,1.784 3.998053,4 l -7.996091,0 c 0,-2.216 1.7831094,-4 3.998038,-4 z"
+       id="rect4109-66" />
   </g>
 </svg>
