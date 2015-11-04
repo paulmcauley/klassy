@@ -3,6 +3,7 @@ Name=Breeze Dark
 Name[ar]=نسيم داكن
 Name[bs]=Breeze tamna
 Name[ca]=Brisa fosca
+Name[ca@valencia]=Brisa fosca
 Name[cs]=Breeze Tmavé
 Name[da]=Breeze Dark
 Name[de]=Breeze-Dunkel
@@ -39,6 +40,7 @@ Name[zh_TW]=Breeze Dark
 
 Comment=Default Plasma 5 Theme for Dark themes
 Comment[ca]=Tema del Plasma 5 per defecte per temes foscos
+Comment[ca@valencia]=Tema del Plasma 5 per defecte per temes foscos
 Comment[cs]=Výchozí motiv KDE Plasma 5 pro tmavé motivy vzhledu
 Comment[de]=Dunkles Standard-Arbeitsflächendesign für Plasma 5
 Comment[en_GB]=Default Plasma 5 Theme for Dark themes

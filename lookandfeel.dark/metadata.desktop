@@ -1,6 +1,7 @@
 [Desktop Entry]
 Comment=Breeze Dark Desktop Design Language by the KDE VDG
 Comment[ca]=Llenguatge de disseny d'escriptori Brisa fosca pel VDG del KDE
+Comment[ca@valencia]=Llenguatge de disseny d'escriptori Brisa fosca pel VDG del KDE
 Comment[cs]=Jazyk pro návrh pracovní plochy Breeze Dark od KDE VDG
 Comment[de]=Breeze-Dunkel-Arbeitsflächendesign der KDE VDG
 Comment[en_GB]=Breeze Dark Desktop Design Language by the KDE VDG
@@ -31,6 +32,7 @@ Name=Breeze Dark
 Name[ar]=نسيم داكن
 Name[bs]=Breeze tamna
 Name[ca]=Brisa fosca
+Name[ca@valencia]=Brisa fosca
 Name[cs]=Breeze Tmavé
 Name[da]=Breeze Dark
 Name[de]=Breeze-Dunkel
