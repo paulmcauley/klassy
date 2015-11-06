@@ -21,8 +21,6 @@ else()
   include(GtkUpdateIconCache)
 
   add_subdirectory(cursors)
-  add_subdirectory(icons)
-  add_subdirectory(icons-dark)
   add_subdirectory(kdecoration)
   add_subdirectory(kstyle)
   add_subdirectory(misc)
@@ -41,5 +39,3 @@ else()
 endif()
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
-message(" * Orion theme for GTK 2 and 3 will be set by gtkbreeze kconf_update binary,"
-        " please install or add a runtime dependency to packages. https://github.com/shimmerproject/Orion")
