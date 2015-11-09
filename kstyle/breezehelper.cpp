@@ -856,6 +856,27 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderCheckBoxBackground(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, bool sunken ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // copy rect and radius
+        QRectF frameRect( rect );
+        frameRect.adjust( 3, 3, -3, -3 );
+
+        if( sunken ) frameRect.translate(1, 1);
+
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( color );
+        painter->drawRect( frameRect );
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderCheckBox(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& shadow,
@@ -942,6 +963,24 @@ namespace Breeze
             painter->drawPath( path );
 
         }
+
+    }
+
+    //______________________________________________________________________________
+    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QColor& color, bool sunken ) const
+    {
+
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // copy rect
+        QRectF frameRect( rect );
+        frameRect.adjust( 3, 3, -3, -3 );
+        if( sunken ) frameRect.translate(1, 1);
+
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( color );
+        painter->drawEllipse( frameRect );
 
     }
 

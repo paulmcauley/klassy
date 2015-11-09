@@ -3638,10 +3638,13 @@ namespace Breeze
         if( _animations->widgetStateEngine().isAnimated( widget, AnimationPressed ) ) checkBoxState = CheckAnimated;
         const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
 
-        const QColor shadow( _helper->shadowColor( palette ) );
         QColor color;
-        if( isSelectedItem ) color = palette.color( QPalette::HighlightedText );
-        else {
+        if( isSelectedItem ) {
+
+            color = _helper->checkBoxIndicatorColor( palette, false, enabled && active  );
+            _helper->renderCheckBoxBackground( painter, rect, palette.color( QPalette::Base ), sunken );
+
+        } else {
 
             const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
             const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
@@ -3650,6 +3653,7 @@ namespace Breeze
         }
 
         // render
+        const QColor shadow( _helper->shadowColor( palette ) );
         _helper->renderCheckBox( painter, rect, color, shadow, sunken, checkBoxState, animation );
         return true;
 
@@ -3685,8 +3689,13 @@ namespace Breeze
         // colors
         const QColor shadow( _helper->shadowColor( palette ) );
         QColor color;
-        if( isSelectedItem ) color = palette.color( QPalette::HighlightedText );
-        else {
+        if( isSelectedItem )
+        {
+
+            color = _helper->checkBoxIndicatorColor( palette, false, enabled && checked );
+            _helper->renderRadioButtonBackground( painter, rect, palette.color( QPalette::Base ), sunken );
+
+        } else {
 
             const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
             const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
@@ -4490,42 +4499,26 @@ namespace Breeze
             checkBoxRect = visualRect( option, checkBoxRect );
 
             // checkbox state
-            CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
 
-            const QColor shadow( _helper->shadowColor( palette ) );
-            QColor color;
             if( useStrongFocus && ( selected || sunken ) )
-            {
+            { _helper->renderCheckBoxBackground( painter, checkBoxRect, palette.color( QPalette::Window ), sunken ); }
 
-                color = palette.color( QPalette::HighlightedText );
-
-            } else {
-
-                const bool active( menuItemOption->checked );
-                color = _helper->checkBoxIndicatorColor( palette, selected, enabled && active );
-
-            }
-
+            CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
+            const bool active( menuItemOption->checked );
+            const QColor shadow( _helper->shadowColor( palette ) );
+            const QColor color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
             _helper->renderCheckBox( painter, checkBoxRect, color, shadow, sunken, state );
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
 
             checkBoxRect = visualRect( option, checkBoxRect );
 
+            if( useStrongFocus && ( selected || sunken ) )
+            { _helper->renderRadioButtonBackground( painter, checkBoxRect, palette.color( QPalette::Window ), sunken ); }
+
             const bool active( menuItemOption->checked );
             const QColor shadow( _helper->shadowColor( palette ) );
-            QColor color;
-            if( useStrongFocus && ( selected || sunken ) )
-            {
-
-                color = palette.color( QPalette::HighlightedText );
-
-            } else {
-
-                color = _helper->checkBoxIndicatorColor( palette, selected, enabled && active );
-
-            }
-
+            const QColor color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
             _helper->renderRadioButton( painter, checkBoxRect, color, shadow, sunken, active ? RadioOn:RadioOff );
 
         }
