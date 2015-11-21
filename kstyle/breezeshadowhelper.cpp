@@ -153,6 +153,8 @@ namespace Breeze
 
             // metrics
             const int shadowSize = StyleConfigData::shadowSize()*12/16;
+            const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
+            // const int size( shadowSize - Metrics::Shadow_Overlap );
             const int shadowStrength = StyleConfigData::shadowStrength();
 
             // pixmap
@@ -181,8 +183,21 @@ namespace Breeze
 
             // fill
             QPainter p(&pixmap);
+            p.setRenderHint( QPainter::Antialiasing, true );
             p.setCompositionMode(QPainter::CompositionMode_Source);
             p.fillRect( pixmap.rect(), radialGradient);
+
+            p.setPen( Qt::NoPen );
+            p.setBrush( Qt::black );
+
+            QRectF innerRect(
+                shadowSize - shadowOffset - Metrics::Shadow_Overlap, shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
+
+            p.setCompositionMode(QPainter::CompositionMode_DestinationOut );
+
+            const qreal radius( _helper.frameRadius() );
+            p.drawRoundedRect( innerRect, radius, radius );
             p.end();
 
             // create tiles from pixmap
