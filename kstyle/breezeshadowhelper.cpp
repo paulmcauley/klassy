@@ -154,7 +154,6 @@ namespace Breeze
             // metrics
             const int shadowSize = StyleConfigData::shadowSize()*12/16;
             const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
-            // const int size( shadowSize - Metrics::Shadow_Overlap );
             const int shadowStrength = StyleConfigData::shadowStrength();
 
             // pixmap
@@ -184,7 +183,6 @@ namespace Breeze
             // fill
             QPainter p(&pixmap);
             p.setRenderHint( QPainter::Antialiasing, true );
-            p.setCompositionMode(QPainter::CompositionMode_Source);
             p.fillRect( pixmap.rect(), radialGradient);
 
             p.setPen( Qt::NoPen );
