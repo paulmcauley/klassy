@@ -640,14 +640,21 @@ namespace Breeze
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.fillRect( image.rect(), radialGradient);
 
+            // contrast pixel
             QRectF innerRect = QRectF(
                 g_shadowSize - shadowOffset - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
-                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap )
-                .adjusted( -0.5, -0.5, 0.5, 0.5 );
+                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
 
             painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
             painter.setBrush( Qt::NoBrush );
             painter.drawRoundedRect( innerRect, 2.5, 2.5 );
+
+            // mask out inner rect
+            painter.setPen( Qt::NoPen );
+            painter.setBrush( Qt::black );
+            painter.setCompositionMode(QPainter::CompositionMode_DestinationOut );
+            painter.drawRoundedRect( innerRect, 2.5, 2.5 );
+
             painter.end();
 
             g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
