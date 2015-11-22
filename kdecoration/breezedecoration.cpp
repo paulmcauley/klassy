@@ -637,7 +637,6 @@ namespace Breeze
             // fill
             QPainter painter(&image);
             painter.setRenderHint( QPainter::Antialiasing, true );
-            painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.fillRect( image.rect(), radialGradient);
 
             // contrast pixel
