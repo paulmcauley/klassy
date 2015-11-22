@@ -636,30 +636,28 @@ namespace Breeze
 
             // fill
             QPainter painter(&image);
+            painter.setRenderHint( QPainter::Antialiasing, true );
             painter.setCompositionMode(QPainter::CompositionMode_Source);
             painter.fillRect( image.rect(), radialGradient);
 
-            // contrast pixel
-            painter.setBrush( Qt::NoBrush );
-            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
-            painter.setRenderHints(QPainter::Antialiasing );
-            painter.drawRoundedRect( QRect( g_shadowSize-shadowOffset, g_shadowSize-shadowOffset, shadowOffset, shadowOffset ), 3, 3 );
-            painter.end();
+            QRectF innerRect = QRectF(
+                g_shadowSize - shadowOffset - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap )
+                .adjusted( -0.5, -0.5, 0.5, 0.5 );
 
+            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
+            painter.setBrush( Qt::NoBrush );
+            painter.drawRoundedRect( innerRect, 2.5, 2.5 );
+            painter.end();
 
             g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
             g_sShadow->setPadding( QMargins(
-                g_shadowSize-shadowOffset,
-                g_shadowSize-shadowOffset,
-                g_shadowSize,
-                g_shadowSize ) );
+                g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                g_shadowSize - Metrics::Shadow_Overlap,
+                g_shadowSize - Metrics::Shadow_Overlap ) );
 
-            g_sShadow->setInnerShadowRect(QRect(
-                g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-                g_shadowSize-shadowOffset+Metrics::Shadow_Overlap,
-                shadowOffset - 2*Metrics::Shadow_Overlap,
-                shadowOffset - 2*Metrics::Shadow_Overlap ) );
-
+            g_sShadow->setInnerShadowRect(QRect( g_shadowSize, g_shadowSize, 1, 1) );
 
             // assign image
             g_sShadow->setShadow(image);
