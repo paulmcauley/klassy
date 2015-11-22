@@ -645,7 +645,7 @@ namespace Breeze
                 g_shadowSize - shadowOffset - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
                 shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
 
-            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength ) );
+            painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength*0.5 ) );
             painter.setBrush( Qt::NoBrush );
             painter.drawRoundedRect( innerRect, 2.5, 2.5 );
 
