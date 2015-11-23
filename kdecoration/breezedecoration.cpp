@@ -642,17 +642,17 @@ namespace Breeze
             // contrast pixel
             QRectF innerRect = QRectF(
                 g_shadowSize - shadowOffset - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
-                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
+                shadowOffset + 2*Metrics::Shadow_Overlap, shadowOffset + 2*Metrics::Shadow_Overlap );
 
             painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength*0.5 ) );
             painter.setBrush( Qt::NoBrush );
-            painter.drawRoundedRect( innerRect, 2.5, 2.5 );
+            painter.drawRoundedRect( innerRect, -0.5 + Metrics::Frame_FrameRadius, -0.5 + Metrics::Frame_FrameRadius );
 
             // mask out inner rect
             painter.setPen( Qt::NoPen );
             painter.setBrush( Qt::black );
             painter.setCompositionMode(QPainter::CompositionMode_DestinationOut );
-            painter.drawRoundedRect( innerRect, 3.0, 3.0 );
+            painter.drawRoundedRect( innerRect, 0.5 + Metrics::Frame_FrameRadius, 0.5 + Metrics::Frame_FrameRadius );
 
             painter.end();
 
