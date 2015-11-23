@@ -652,7 +652,7 @@ namespace Breeze
             painter.setPen( Qt::NoPen );
             painter.setBrush( Qt::black );
             painter.setCompositionMode(QPainter::CompositionMode_DestinationOut );
-            painter.drawRoundedRect( innerRect, 2.5, 2.5 );
+            painter.drawRoundedRect( innerRect, 3.0, 3.0 );
 
             painter.end();
 
