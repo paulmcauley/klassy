@@ -415,7 +415,7 @@ namespace Breeze
                 if( d->internalSettings()->outlineCloseButton() )
                 {
 
-                    return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ), m_opacity );
+                    return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter(), m_opacity );
 
                 } else {
 
