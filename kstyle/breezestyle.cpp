@@ -6389,16 +6389,15 @@ namespace Breeze
     void Style::renderMenuTitle( const QStyleOptionToolButton* option, QPainter* painter, const QWidget* ) const
     {
 
-        const QPalette& palette( option->palette );
-
         // render a separator at the bottom
-        const QRect contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth );
+        const QPalette& palette( option->palette );
         const QColor color( _helper->separatorColor( palette ) );
-        _helper->renderSeparator( painter, QRect( contentsRect.bottomLeft(), QSize( contentsRect.width(), 1 ) ), color );
+        _helper->renderSeparator( painter, QRect( option->rect.bottomLeft()-QPoint( 0, Metrics::MenuItem_MarginWidth), QSize( option->rect.width(), 1 ) ), color );
 
         // render text in the center of the rect
         // icon is discarded on purpose
         painter->setFont( option->font );
+        const QRect contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
     }
