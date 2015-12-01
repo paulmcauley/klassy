@@ -430,6 +430,7 @@ namespace Breeze
     {
         // TODO: optimize based on repaintRegion
         auto c = client().data();
+        auto s = settings();
 
         // paint background
         if( !c->isShaded() )
@@ -443,11 +444,26 @@ namespace Breeze
             // clip away the top part
             if( !hideTitleBar() ) painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
 
-            painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            else painter->drawRect( rect() );
+
             painter->restore();
         }
 
         if( !hideTitleBar() ) paintTitleBar(painter, repaintRegion);
+
+        if( hasBorders() && !s->isAlphaChannelSupported() )
+        {
+            painter->save();
+            painter->setBrush( Qt::NoBrush );
+            painter->setPen( c->isActive() ?
+                c->color( ColorGroup::Active, ColorRole::TitleBar ):
+                c->color( ColorGroup::Inactive, ColorRole::Foreground ) );
+
+            painter->drawRect( rect().adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+            painter->restore();
+        }
+
     }
 
     //________________________________________________________________
@@ -475,7 +491,8 @@ namespace Breeze
 
         }
 
-        if (isMaximized())
+        auto s = settings();
+        if( isMaximized() || !s->isAlphaChannelSupported() )
         {
 
             painter->drawRect(titleRect);
@@ -491,8 +508,6 @@ namespace Breeze
             painter->drawRoundedRect(titleRect.adjusted(0, 0, 0, Metrics::Frame_FrameRadius), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
 
         }
-
-        auto s = settings();
 
         const QColor outlineColor( this->outlineColor() );
         if( !c->isShaded() && outlineColor.isValid() )

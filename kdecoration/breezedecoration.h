@@ -117,6 +117,7 @@ namespace Breeze
         //*@name border size
         //@{
         int borderSize(bool bottom = false) const;
+        inline bool hasBorders( void ) const;
         inline bool hasNoBorders( void ) const;
         inline bool hasNoSideBorders( void ) const;
         //@}
@@ -146,6 +147,12 @@ namespace Breeze
         qreal m_opacity = 0;
 
     };
+
+    bool Decoration::hasBorders( void ) const
+    {
+        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
+        else return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
+    }
 
     bool Decoration::hasNoBorders( void ) const
     {
