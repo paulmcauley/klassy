@@ -3285,6 +3285,9 @@ namespace Breeze
         else if( state & State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
         if( orientation == ArrowNone ) return true;
 
+        // invert arrows if requested by (hidden) options
+        if( StyleConfigData::viewInvertSortIndicator() ) orientation = (orientation == ArrowUp) ? ArrowDown:ArrowUp;
+
         // state, rect and palette
         const QRect& rect( option->rect );
         const QPalette& palette( option->palette );
