@@ -86,18 +86,15 @@ namespace Breeze
         if( !( force || acceptWidget( widget ) ) )
         { return false; }
 
-        // store in map and add destroy signal connection
+        // try create shadow directly
+        if( installX11Shadows( widget ) ) _widgets.insert( widget, widget->winId() );
+        else _widgets.insert( widget, 0 );
+
+        // install event filter
         widget->removeEventFilter( this );
         widget->installEventFilter( this );
-        _widgets.insert( widget, 0 );
 
-        /*
-        need to install shadow directly when widget "created" state is already set
-        since WinID changed is never called when this is the case
-        */
-        if( widget->testAttribute(Qt::WA_WState_Created) && installX11Shadows( widget ) )
-        {  _widgets.insert( widget, widget->winId() ); }
-
+        // connect destroy signal
         connect( widget, SIGNAL(destroyed(QObject*)), SLOT(objectDeleted(QObject*)) );
 
         return true;
@@ -349,7 +346,7 @@ namespace Breeze
         From bespin code. Supposibly prevent playing with some 'pseudo-widgets'
         that have winId matching some other -random- window
         */
-        if( !(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId() ))
+        if( !(widget->testAttribute(Qt::WA_WState_Created) && widget->internalWinId() ))
         { return false; }
 
         // create pixmap handles if needed
