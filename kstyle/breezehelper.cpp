@@ -617,28 +617,46 @@ namespace Breeze
         const QColor& color, const QColor& outline, bool roundCorners ) const
     {
 
-        painter->setRenderHint( QPainter::Antialiasing );
-
-        QRectF frameRect( rect );
-        qreal radius( frameRadius() );
-
-        // set pen
-        if( outline.isValid() )
-        {
-
-            painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
-            radius = qMax( radius - 1, qreal( 0.0 ) );
-
-        } else painter->setPen( Qt::NoPen );
 
         // set brush
         if( color.isValid() ) painter->setBrush( color );
         else painter->setBrush( Qt::NoBrush );
 
-        // render
-        if( roundCorners ) painter->drawRoundedRect( frameRect, radius, radius );
-        else painter->drawRect( frameRect );
+        if( roundCorners )
+        {
+
+            painter->setRenderHint( QPainter::Antialiasing );
+            QRectF frameRect( rect );
+            qreal radius( frameRadius() );
+
+            // set pen
+            if( outline.isValid() )
+            {
+
+                painter->setPen( outline );
+                frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+                radius = qMax( radius - 1, qreal( 0.0 ) );
+
+            } else painter->setPen( Qt::NoPen );
+
+            // render
+            painter->drawRoundedRect( frameRect, radius, radius );
+
+        } else {
+
+            painter->setRenderHint( QPainter::Antialiasing, false );
+            QRect frameRect( rect );
+            if( outline.isValid() )
+            {
+
+                painter->setPen( outline );
+                frameRect.adjust( 0, 0, -1, -1 );
+
+            } else painter->setPen( Qt::NoPen );
+
+            painter->drawRect( frameRect );
+
+        }
 
     }
 
