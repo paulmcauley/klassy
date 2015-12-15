@@ -112,7 +112,6 @@ namespace Breeze
         //* hover outline color, using animations
         QColor buttonHoverOutlineColor( const QPalette& ) const;
 
-
         //* side panel outline color, using animations
         QColor sidePanelOutlineColor( const QPalette&, bool hasFocus = false, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
@@ -122,18 +121,6 @@ namespace Breeze
 
         //* frame background color
         QColor frameBackgroundColor( const QPalette&, QPalette::ColorGroup ) const;
-
-        //* side panel background color
-        QColor sidePanelBackgroundColor( const QPalette&, QPalette::ColorGroup ) const;
-
-        //* side panel foreground color
-        QColor sidePanelForegroundColor( const QPalette&, QPalette::ColorGroup ) const;
-
-        //* return altered palette suitable for tinted frames
-        QPalette framePalette( const QPalette& ) const;
-
-        //* return altered palette suitable for tinted frames
-        QPalette sideViewPalette( const QPalette& ) const;
 
         //* arrow outline color
         QColor arrowColor( const QPalette&, QPalette::ColorGroup, QPalette::ColorRole ) const;

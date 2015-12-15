@@ -145,43 +145,8 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::frameBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
-    { return KColorUtils::mix( palette.color( role, QPalette::Window ), palette.color( role, QPalette::Base ), 0.3 ); }
-
-    //____________________________________________________________________
-    QColor Helper::sidePanelBackgroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
-    { return palette.color( role, QPalette::Window ); }
-
-    //____________________________________________________________________
-    QColor Helper::sidePanelForegroundColor( const QPalette& palette, QPalette::ColorGroup role ) const
-    { return palette.color( role, QPalette::WindowText ); }
-
-    //____________________________________________________________________
-    QPalette Helper::framePalette( const QPalette& palette ) const
-    {
-        QPalette copy( palette );
-
-        const QList<QPalette::ColorGroup> groups = { QPalette::Disabled, QPalette::Active, QPalette::Inactive };
-        foreach( const QPalette::ColorGroup& group, groups )
-        { copy.setColor( group, QPalette::Window, frameBackgroundColor( palette, group ) ); }
-
-        return copy;
-    }
-
-    //____________________________________________________________________
-    QPalette Helper::sideViewPalette( const QPalette& palette ) const
-    {
-        QPalette copy( palette );
-
-        const QList<QPalette::ColorGroup> groups = { QPalette::Disabled, QPalette::Active, QPalette::Inactive };
-        foreach( const QPalette::ColorGroup& group, groups )
-        {
-            copy.setColor( group, QPalette::Base, sidePanelBackgroundColor( palette, group ) );
-            copy.setColor( group, QPalette::Text, sidePanelForegroundColor( palette, group ) );
-        }
-
-        return copy;
-    }
+    QColor Helper::frameBackgroundColor( const QPalette& palette, QPalette::ColorGroup group ) const
+    { return KColorUtils::mix( palette.color( group, QPalette::Window ), palette.color( group, QPalette::Base ), 0.3 ); }
 
     //____________________________________________________________________
     QColor Helper::arrowColor( const QPalette& palette, QPalette::ColorGroup group, QPalette::ColorRole role ) const

@@ -25,7 +25,6 @@
 #include "breezehelper.h"
 #include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
-#include "breezepalettehelper.h"
 #include "breezepropertynames.h"
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
@@ -163,7 +162,6 @@ namespace Breeze
         , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
         #endif
 
-        , _paletteHelper( new PaletteHelper( this, *_helper ) )
         , _shadowHelper( new ShadowHelper( this, *_helper ) )
         , _animations( new Animations( this ) )
         , _mnemonics( new Mnemonics( this ) )
@@ -200,7 +198,6 @@ namespace Breeze
     //______________________________________________________________
     Style::~Style( void )
     {
-        delete _paletteHelper;
         delete _shadowHelper;
         delete _helper;
     }
@@ -215,7 +212,6 @@ namespace Breeze
         _windowManager->registerWidget( widget );
         _frameShadowFactory->registerWidget( widget, *_helper );
         _mdiWindowShadowFactory->registerWidget( widget );
-        _paletteHelper->registerWidget( widget );
         _shadowHelper->registerWidget( widget );
         _splitterFactory->registerWidget( widget );
 
@@ -259,7 +255,10 @@ namespace Breeze
             { widget->setAttribute( Qt::WA_Hover ); }
 
             if( scrollArea->viewport() && scrollArea->inherits( "KItemListContainer" ) && scrollArea->frameShape() == QFrame::NoFrame )
-            { scrollArea->viewport()->setBackgroundRole( QPalette::Window ); }
+            {
+                scrollArea->viewport()->setBackgroundRole( QPalette::Window );
+                scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
+            }
 
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
@@ -289,7 +288,7 @@ namespace Breeze
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
-        } else if( qobject_cast<QAbstractScrollArea*>( widget ) ) {
+        } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
 
             addEventFilter( widget );
 
@@ -306,6 +305,19 @@ namespace Breeze
                 QFont font( widget->font() );
                 font.setBold( false );
                 widget->setFont( font );
+
+                if( !StyleConfigData::sidePanelDrawFrame() )
+                {
+                    scrollArea->setBackgroundRole( QPalette::Window );
+                    scrollArea->setForegroundRole( QPalette::WindowText );
+
+                    if( scrollArea->viewport() )
+                    {
+                        scrollArea->viewport()->setBackgroundRole( QPalette::Window );
+                        scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
+                    }
+
+                }
 
             }
 
@@ -393,7 +405,6 @@ namespace Breeze
         _animations->unregisterWidget( widget );
         _frameShadowFactory->unregisterWidget( widget );
         _mdiWindowShadowFactory->unregisterWidget( widget );
-        _paletteHelper->unregisterWidget( widget );
         _shadowHelper->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
@@ -1090,7 +1101,7 @@ namespace Breeze
 
             const QRect rect( widget->rect() );
             const QPalette& palette( widget->palette() );
-            const QColor background( palette.color( QPalette::Window ) );
+            const QColor background( _helper->frameBackgroundColor( palette ) );
             const QColor outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
@@ -1124,7 +1135,7 @@ namespace Breeze
 
             // store palette and set colors
             const QPalette& palette( dockWidget->palette() );
-            const QColor background( palette.color( QPalette::Window ) );
+            const QColor background( _helper->frameBackgroundColor( palette ) );
             const QColor outline( _helper->frameOutlineColor( palette ) );
 
             // store rect
@@ -3011,7 +3022,7 @@ namespace Breeze
         {
 
             const QPalette& palette( option->palette );
-            const QColor background( palette.color( QPalette::Window ) );
+            const QColor background( _helper->frameBackgroundColor( palette ) );
             const QColor outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
@@ -3021,7 +3032,7 @@ namespace Breeze
         } else if( option->styleObject && option->styleObject->inherits( "QQuickItem" ) ) {
 
             const QPalette& palette( option->palette );
-            const QColor background( palette.color( QPalette::Window ) );
+            const QColor background( _helper->frameBackgroundColor( palette ) );
             const QColor outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
@@ -3048,7 +3059,7 @@ namespace Breeze
 
         // normal frame
         const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::Window ) );
+        const QColor background( _helper->frameBackgroundColor( palette ) );
         const QColor outline( _helper->frameOutlineColor( palette ) );
 
         /*
@@ -3117,7 +3128,7 @@ namespace Breeze
 
         // define colors
         const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::Window ) );
+        const QColor background( _helper->frameBackgroundColor( palette ) );
         const QColor outline( _helper->frameOutlineColor( palette ) );
         _helper->renderTabWidgetFrame( painter, rect, background, outline, corners );
 
@@ -5370,8 +5381,25 @@ namespace Breeze
 
         // color
         QColor color;
-        if( selected ) color = palette.color( QPalette::Window );
-        else {
+        if( selected )
+        {
+
+            #if QT_VERSION >= 0x050000
+            bool documentMode = tabOption->documentMode;
+            #else
+            bool documentMode = false;
+            if( const QStyleOptionTabV3* tabOptionV3 = qstyleoption_cast<const QStyleOptionTabV3*>( option ) )
+            { documentMode = tabOptionV3->documentMode; }
+            #endif
+
+            // flag passed to QStyleOptionTab is unfortunately not reliable enough
+            // also need to check on parent widget
+            const QTabWidget *tabWidget = ( widget && widget->parentWidget() ) ? qobject_cast<const QTabWidget *>( widget->parentWidget() ) : nullptr;
+            documentMode |= ( tabWidget ? tabWidget->documentMode() : true );
+
+            color = documentMode ? palette.color( QPalette::Window ) : _helper->frameBackgroundColor( palette );
+
+        } else {
 
             const QColor normal( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
             const QColor hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
