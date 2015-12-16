@@ -2691,7 +2691,9 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                const int iconWidth( isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
+                int iconWidth = 0;
+                if( showIconsInMenuItems() ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
+
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
@@ -4575,12 +4577,14 @@ namespace Breeze
         }
 
         // icon
-        const int iconWidth( isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
+        int iconWidth = 0;
+        const bool showIcon( showIconsInMenuItems() );
+        if( showIcon ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
 
-        if( !menuItemOption->icon.isNull() )
+        if( showIcon && !menuItemOption->icon.isNull() )
         {
 
             const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
@@ -6833,6 +6837,13 @@ namespace Breeze
         Q_UNUSED( option );
         return false;
         #endif
+    }
+
+    //____________________________________________________________________
+    bool Style::showIconsInMenuItems( void ) const
+    {
+        const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
+        return g.readEntry("ShowIconsInMenuItems", true);
     }
 
     //____________________________________________________________________

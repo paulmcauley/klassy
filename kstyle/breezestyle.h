@@ -457,6 +457,9 @@ namespace Breeze
         //* return true if one of the widget's parent inherits requested type
         template<typename T> bool hasParent( const QWidget* ) const;
 
+        //* return true if icons should be shown in menus
+        bool showIconsInMenuItems( void ) const;
+
         //* return true if icons should be shown on buttons
         bool showIconsOnPushButtons( void ) const;
 
