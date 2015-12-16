@@ -242,23 +242,14 @@ namespace Breeze
             widget->clearMask();
         }
 
+        // scrollarea polishing is somewhat complex. It is moved to a dedicated method
+        polishScrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
+
         if( QAbstractItemView *itemView = qobject_cast<QAbstractItemView*>( widget ) )
         {
 
             // enable mouse over effects in itemviews' viewport
             itemView->viewport()->setAttribute( Qt::WA_Hover );
-
-        } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
-
-            // enable mouse over effect in sunken scrollareas that support focus
-            if( scrollArea->frameShadow() == QFrame::Sunken && widget->focusPolicy()&Qt::StrongFocus )
-            { widget->setAttribute( Qt::WA_Hover ); }
-
-            if( scrollArea->viewport() && scrollArea->inherits( "KItemListContainer" ) && scrollArea->frameShape() == QFrame::NoFrame )
-            {
-                scrollArea->viewport()->setBackgroundRole( QPalette::Window );
-                scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
-            }
 
         } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
@@ -287,39 +278,6 @@ namespace Breeze
 
             // remove opaque painting for scrollbars
             widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
-
-        } else if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) ) {
-
-            addEventFilter( widget );
-
-            // force side panels as flat, on option
-            if(
-                widget->inherits( "KDEPrivate::KPageListView" ) ||
-                widget->inherits( "KDEPrivate::KPageTreeView" ) )
-            { widget->setProperty( PropertyNames::sidePanelView, true ); }
-
-            // for all side view panels, unbold font (design choice)
-            if( widget->property( PropertyNames::sidePanelView ).toBool() )
-            {
-                // upbold list font
-                QFont font( widget->font() );
-                font.setBold( false );
-                widget->setFont( font );
-
-                if( !StyleConfigData::sidePanelDrawFrame() )
-                {
-                    scrollArea->setBackgroundRole( QPalette::Window );
-                    scrollArea->setForegroundRole( QPalette::WindowText );
-
-                    if( scrollArea->viewport() )
-                    {
-                        scrollArea->viewport()->setBackgroundRole( QPalette::Window );
-                        scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
-                    }
-
-                }
-
-            }
 
         } else if( widget->inherits( "KTextEditor::View" ) ) {
 
@@ -394,6 +352,75 @@ namespace Breeze
 
         // base class polishing
         ParentStyleClass::polish( widget );
+
+    }
+
+    //______________________________________________________________
+    void Style::polishScrollArea( QAbstractScrollArea* scrollArea )
+    {
+
+        // check argument
+        if( !scrollArea ) return;
+
+        // enable mouse over effect in sunken scrollareas that support focus
+        if( scrollArea->frameShadow() == QFrame::Sunken && scrollArea->focusPolicy()&Qt::StrongFocus )
+        { scrollArea->setAttribute( Qt::WA_Hover ); }
+
+        if( scrollArea->viewport() && scrollArea->inherits( "KItemListContainer" ) && scrollArea->frameShape() == QFrame::NoFrame )
+        {
+            scrollArea->viewport()->setBackgroundRole( QPalette::Window );
+            scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
+        }
+
+        // add event filter, to make sure proper background is rendered behind scrollbars
+        addEventFilter( scrollArea );
+
+        // force side panels as flat, on option
+        if( scrollArea->inherits( "KDEPrivate::KPageListView" ) || scrollArea->inherits( "KDEPrivate::KPageTreeView" ) )
+        { scrollArea->setProperty( PropertyNames::sidePanelView, true ); }
+
+        // for all side view panels, unbold font (design choice)
+        if( scrollArea->property( PropertyNames::sidePanelView ).toBool() )
+        {
+            // upbold list font
+            QFont font( scrollArea->font() );
+            font.setBold( false );
+            scrollArea->setFont( font );
+
+            // adjust background role
+            if( !StyleConfigData::sidePanelDrawFrame() )
+            {
+                scrollArea->setBackgroundRole( QPalette::Window );
+                scrollArea->setForegroundRole( QPalette::WindowText );
+
+                if( scrollArea->viewport() )
+                {
+                    scrollArea->viewport()->setBackgroundRole( QPalette::Window );
+                    scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
+                }
+
+            }
+
+        }
+
+        // disable autofill background for flat (== NoFrame) scrollareas, with QPalette::Window as a background
+        // this fixes flat scrollareas placed in a tinted widget, such as groupboxes, tabwidgets or framed dock-widgets
+        if( !(scrollArea->frameShape() == QFrame::NoFrame || scrollArea->backgroundRole() == QPalette::Window ) )
+        { return; }
+
+        // get viewport and check background role
+        QWidget* viewport( scrollArea->viewport() );
+        if( !( viewport && viewport->backgroundRole() == QPalette::Window ) ) return;
+
+        // change viewport autoFill background.
+        // do the same for all children if the background role is QPalette::Window
+        viewport->setAutoFillBackground( false );
+        QList<QWidget*> children( viewport->findChildren<QWidget*>() );
+        foreach( QWidget* child, children )
+        {
+            if( child->parent() == viewport && child->backgroundRole() == QPalette::Window )
+            { child->setAutoFillBackground( false ); }
+        }
 
     }
 

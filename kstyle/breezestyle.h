@@ -100,6 +100,9 @@ namespace Breeze
         //* widget unpolishing
         virtual void unpolish( QWidget* );
 
+        //* polish scrollarea
+        void polishScrollArea( QAbstractScrollArea* );
+
         //* pixel metrics
         virtual int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const;
 
