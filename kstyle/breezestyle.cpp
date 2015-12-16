@@ -2592,39 +2592,47 @@ namespace Breeze
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return contentsSize;
 
-        QSize size( contentsSize );
+        /*
+        rather than trying to guess what Qt puts into its contents size calculation,
+        we recompute the button size entirely, based on button option
+        this ensures consistency with the rendering stage
+        */
+        QSize size;
 
-        // add space for arrow
-        if( buttonOption->features & QStyleOptionButton::HasMenu )
+        // text
+        const bool hasText( !buttonOption->text.isEmpty() );
+        if( hasText ) size = buttonOption->fontMetrics.size( Qt::TextShowMnemonic, buttonOption->text );
+
+        // icon
+        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
+        const bool hasIcon( (showIconsOnPushButtons() || flat || !hasText ) && !buttonOption->icon.isNull() );
+        if( hasIcon )
         {
-            size.rheight() += 2*Metrics::Button_MarginWidth;
-            size.setHeight( qMax( size.height(), int( Metrics::MenuButton_IndicatorWidth ) ) );
-            size.rwidth() += Metrics::Button_MarginWidth;
-
-            if( !( buttonOption->icon.isNull() && buttonOption->text.isEmpty() ) )
-            { size.rwidth() += Metrics::Button_ItemSpacing; }
-
-        }  else size = expandSize( size, Metrics::Button_MarginWidth );
-
-        // add space for icon
-        if( !buttonOption->icon.isNull() )
-        {
-
             QSize iconSize = buttonOption->iconSize;
             if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
 
             size.setHeight( qMax( size.height(), iconSize.height() ) );
+            size.rwidth() += iconSize.width();
 
-            if( !buttonOption->text.isEmpty() )
-            { size.rwidth() += Metrics::Button_ItemSpacing; }
-
+            if( hasText ) size.rwidth() += Metrics::Button_ItemSpacing;
         }
 
-        // make sure buttons have a minimum width
-        if( !buttonOption->text.isEmpty() )
-        { size.rwidth() = qMax( size.rwidth(), int( Metrics::Button_MinWidth ) ); }
+        // menu
+        const bool hasMenu( buttonOption->features & QStyleOptionButton::HasMenu );
+        if( hasMenu )
+        {
+            size.rwidth() += Metrics::MenuButton_IndicatorWidth;
+            if( hasText||hasIcon ) size.rwidth() += Metrics::Button_ItemSpacing;
+        }
 
-        // finally add margins
+        // expand with buttons margin
+        size = expandSize( size, Metrics::Button_MarginWidth );
+
+        // make sure buttons have a minimum width
+        if( hasText )
+        { size.setWidth( qMax( size.width(), int( Metrics::Button_MinWidth ) ) ); }
+
+        // finally add frame margins
         return expandSize( size, Metrics::Frame_FrameWidth );
 
     }
@@ -4069,8 +4077,8 @@ namespace Breeze
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
 
         // content
-        const bool hasIcon( !buttonOption->icon.isNull() );
         const bool hasText( !buttonOption->text.isEmpty() );
+        const bool hasIcon( (showIconsOnPushButtons() || flat || !hasText ) && !buttonOption->icon.isNull() );
 
         // contents
         QRect contentsRect( rect );
@@ -4108,11 +4116,15 @@ namespace Breeze
         }
 
         // icon size
-        QSize iconSize( buttonOption->iconSize );
-        if( !iconSize.isValid() )
+        QSize iconSize;
+        if( hasIcon )
         {
-            const int metric( pixelMetric( PM_SmallIconSize, option, widget ) );
-            iconSize = QSize( metric, metric );
+            iconSize = buttonOption->iconSize;
+            if( !iconSize.isValid() )
+            {
+                const int metric( pixelMetric( PM_SmallIconSize, option, widget ) );
+                iconSize = QSize( metric, metric );
+            }
         }
 
         // text size
@@ -6821,6 +6833,13 @@ namespace Breeze
         Q_UNUSED( option );
         return false;
         #endif
+    }
+
+    //____________________________________________________________________
+    bool Style::showIconsOnPushButtons( void ) const
+    {
+        const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
+        return g.readEntry("ShowIconsOnPushButtons", true);
     }
 
     //____________________________________________________________________
