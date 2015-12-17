@@ -1041,8 +1041,15 @@ namespace Breeze
                 painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
 
                 painter.setPen( Qt::NoPen );
-                painter.setBrush( viewport->palette().color( viewport->backgroundRole() ) );
 
+                // decide background color
+                const QPalette::ColorRole role( viewport->backgroundRole() );
+                QColor background;
+                if( role == QPalette::Window && hasAlteredBackground( viewport ) ) background = _helper->frameBackgroundColor( viewport->palette() );
+                else background = viewport->palette().color( role );
+                painter.setBrush( background );
+
+                // render
                 foreach( auto* child, children )
                 { painter.drawRect( child->geometry() ); }
 
@@ -6816,8 +6823,13 @@ namespace Breeze
     //____________________________________________________________________
     bool Style::isMenuTitle( const QWidget* widget ) const
     {
+
+        // check widget
         if( !widget ) return false;
-        if( widget->property( PropertyNames::menuTitle ).toBool() ) return true;
+
+        // check property
+        const QVariant property( widget->property( PropertyNames::menuTitle ) );
+        if( property.isValid() ) return property.toBool();
 
         // detect menu toolbuttons
         QWidget* parent = widget->parentWidget();
@@ -6832,7 +6844,32 @@ namespace Breeze
 
         }
 
+        const_cast<QWidget*>(widget)->setProperty( PropertyNames::menuTitle, false );
         return false;
+
+    }
+
+    //____________________________________________________________________
+    bool Style::hasAlteredBackground( const QWidget* widget ) const
+    {
+
+        // check widget
+        if( !widget ) return false;
+
+        // check property
+        const QVariant property( widget->property( PropertyNames::alteredBackground ) );
+        if( property.isValid() ) return property.toBool();
+
+        // check if widget is of relevant type
+        bool hasAlteredBackground( false );
+        if( const QGroupBox* groupBox = qobject_cast<const QGroupBox*>( widget ) ) hasAlteredBackground = !groupBox->isFlat();
+        else if( const QTabWidget* tabWidget = qobject_cast<const QTabWidget*>( widget ) ) hasAlteredBackground = !tabWidget->documentMode();
+        else if( qobject_cast<const QMenu*>( widget ) ) hasAlteredBackground = true;
+        else if( StyleConfigData::dockWidgetDrawFrame() && qobject_cast<const QDockWidget*>( widget ) ) hasAlteredBackground = true;
+
+        if( widget->parentWidget() && !hasAlteredBackground ) hasAlteredBackground = this->hasAlteredBackground( widget->parentWidget() );
+        const_cast<QWidget*>(widget)->setProperty( PropertyNames::alteredBackground, hasAlteredBackground );
+        return hasAlteredBackground;
 
     }
 

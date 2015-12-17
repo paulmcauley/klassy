@@ -30,5 +30,6 @@ namespace Breeze
     const char PropertyNames::sidePanelView[] = "_kde_side_panel_view";
     const char PropertyNames::toolButtonAlignment[] = "_kde_toolButton_alignment";
     const char PropertyNames::menuTitle[] = "_breeze_toolButton_menutitle";
+    const char PropertyNames::alteredBackground[] = "_breeze_altered_background";
 
 }

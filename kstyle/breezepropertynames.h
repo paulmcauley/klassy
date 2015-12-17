@@ -26,7 +26,6 @@ namespace Breeze
 
     struct PropertyNames
     {
-
         static const char noAnimations[];
         static const char noWindowGrab[];
         static const char netWMForceShadow[];
@@ -34,6 +33,7 @@ namespace Breeze
         static const char sidePanelView[];
         static const char toolButtonAlignment[];
         static const char menuTitle[];
+        static const char alteredBackground[];
     };
 
 }

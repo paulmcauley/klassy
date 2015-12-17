@@ -457,6 +457,9 @@ namespace Breeze
         //* return true if passed widget is a menu title (KMenu::addTitle)
         bool isMenuTitle( const QWidget* ) const;
 
+        //* return true if passed widget is a menu title (KMenu::addTitle)
+        bool hasAlteredBackground( const QWidget* ) const;
+
         private:
 
         //*@name scrollbar button types (for addLine and subLine )
