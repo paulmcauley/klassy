@@ -2682,13 +2682,7 @@ namespace Breeze
             case QStyleOptionMenuItem::SubMenu:
             {
 
-                #if QT_VERSION >= 0x050000
-                const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
-                const int iconWidth( isQtQuickControl ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
-                #else
-                const int iconWidth( menuItemOption->maxIconWidth );
-                #endif
-
+                const int iconWidth( isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
                 int leftColumnWidth( iconWidth );
 
                 // add space with respect to text
@@ -2897,15 +2891,7 @@ namespace Breeze
     {
         // call base class
         const QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
-
-        #if QT_VERSION >= 0x050000
-        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
-        if( isQtQuickControl ) return size;
-        #endif
-
-        // add margins
-        return expandSize( size, Metrics::ItemView_ItemMarginWidth );
-
+        return isQtQuickControl( option, widget ) ? size:expandSize( size, Metrics::ItemView_ItemMarginWidth );
     }
 
     //______________________________________________________________
@@ -2928,9 +2914,8 @@ namespace Breeze
         if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
 
         #if QT_VERSION >= 0x050000
-        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
-            ( isQtQuickControl && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
+            ( isQtQuickControl( option, widget ) && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
         #else
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) );
         #endif
@@ -4572,12 +4557,7 @@ namespace Breeze
         }
 
         // icon
-        #if QT_VERSION >= 0x050000
-        const bool isQtQuickControl = !widget && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
-        const int iconWidth( isQtQuickControl ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
-        #else
-        const int iconWidth( menuItemOption->maxIconWidth );
-        #endif
+        const int iconWidth( isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth );
 
         QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
         contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
@@ -6818,6 +6798,18 @@ namespace Breeze
         // check whether index is selected
         return itemView->selectionModel()->isSelected( index );
 
+    }
+
+    //____________________________________________________________________
+    bool Style::isQtQuickControl( const QStyleOption* option, const QWidget* widget ) const
+    {
+        #if QT_VERSION >= 0x050000
+        return (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        #else
+        Q_UNUSED( widget );
+        Q_UNUSED( option );
+        return false;
+        #endif
     }
 
     //____________________________________________________________________
