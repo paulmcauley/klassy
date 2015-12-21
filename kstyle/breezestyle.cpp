@@ -3094,7 +3094,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawFrameTabWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawFrameTabWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         // cast option and check
@@ -3102,7 +3102,8 @@ namespace Breeze
         if( !tabOption ) return true;
 
         // do nothing if tabbar is hidden
-        if( tabOption->tabBarSize.isEmpty() ) return true;
+        const bool isQtQuickControl( this->isQtQuickControl( option, widget ) );
+        if( tabOption->tabBarSize.isEmpty() && !isQtQuickControl ) return true;
 
         // adjust rect to handle overlaps
         QRect rect( option->rect );
@@ -3116,6 +3117,7 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
+            if( isQtQuickControl ) rect.adjust( 0, -1, 0, 0 );
             if( tabBarSize.width() >= rect.width() - 2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
             if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
@@ -3123,6 +3125,7 @@ namespace Breeze
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
+            if( isQtQuickControl ) rect.adjust( 0, 0, 0, 1 );
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
             if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
@@ -3130,6 +3133,7 @@ namespace Breeze
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
+            if( isQtQuickControl ) rect.adjust( -1, 0, 0, 0 );
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersLeft;
             if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
             if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
@@ -3137,6 +3141,7 @@ namespace Breeze
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
+            if( isQtQuickControl ) rect.adjust( 0, 0, 1, 0 );
             if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersRight;
             if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
             if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
@@ -5288,6 +5293,7 @@ namespace Breeze
         // tab position
         const QStyleOptionTab::TabPosition& position = tabOption->position;
         const bool isSingle( position == QStyleOptionTab::OnlyOneTab );
+        const bool isQtQuickControl( this->isQtQuickControl( option, widget ) );
         bool isFirst( isSingle || position == QStyleOptionTab::Beginning );
         bool isLast( isSingle || position == QStyleOptionTab::End );
         bool isLeftOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
@@ -5306,6 +5312,10 @@ namespace Breeze
             qSwap( isFirst, isLast );
             qSwap( isLeftOfSelected, isRightOfSelected );
         }
+
+        // overlap
+        // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
+        const int overlap( isQtQuickControl ? 0:Metrics::TabBar_TabOverlap );
 
         // adjust rect and define corners based on tabbar orientation
         Corners corners;
@@ -5326,7 +5336,7 @@ namespace Breeze
                 if( isLast ) corners |= CornerTopRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                else if( !isLast ) rect.adjust( 0, 0, overlap, 0 );
 
             }
             break;
@@ -5346,7 +5356,7 @@ namespace Breeze
                 if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                else if( !isLast ) rect.adjust( 0, 0, overlap, 0 );
 
             }
             break;
@@ -5365,7 +5375,7 @@ namespace Breeze
                 if( isLast ) corners |= CornerBottomLeft;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
-                else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+                else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
 
             }
             break;
@@ -5385,7 +5395,7 @@ namespace Breeze
                 if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
-                else if( !isLast ) rect.adjust( 0, 0, 0, Metrics::TabBar_TabOverlap );
+                else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
 
             }
             break;
@@ -5411,7 +5421,7 @@ namespace Breeze
             const QTabWidget *tabWidget = ( widget && widget->parentWidget() ) ? qobject_cast<const QTabWidget *>( widget->parentWidget() ) : nullptr;
             documentMode |= ( tabWidget ? tabWidget->documentMode() : true );
 
-            color = documentMode ? palette.color( QPalette::Window ) : _helper->frameBackgroundColor( palette );
+            color = (documentMode&&!isQtQuickControl) ? palette.color( QPalette::Window ) : _helper->frameBackgroundColor( palette );
 
         } else {
 
