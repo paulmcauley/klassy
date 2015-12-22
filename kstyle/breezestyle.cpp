@@ -5317,7 +5317,7 @@ namespace Breeze
             {
 
                 corners = CornerTopLeft|CornerTopRight;
-                rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius + 1 );
+                rect.adjust( 0, 0, 0, 1 );
 
             } else {
 
@@ -5325,7 +5325,7 @@ namespace Breeze
                 if( isFirst ) corners |= CornerTopLeft;
                 if( isLast ) corners |= CornerTopRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
             }
@@ -5337,7 +5337,7 @@ namespace Breeze
             {
 
                 corners = CornerBottomLeft|CornerBottomRight;
-                rect.adjust( 0, -Metrics::Frame_FrameRadius - 1, 0, 0 );
+                rect.adjust( 0, - 1, 0, 0 );
 
             } else {
 
@@ -5345,7 +5345,7 @@ namespace Breeze
                 if( isFirst ) corners |= CornerBottomLeft;
                 if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
+                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, Metrics::TabBar_TabOverlap, 0 );
 
             }
@@ -5356,7 +5356,7 @@ namespace Breeze
             if( selected )
             {
                 corners = CornerTopLeft|CornerBottomLeft;
-                rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 1, 0 );
+                rect.adjust( 0, 0, 1, 0 );
 
             } else {
 
@@ -5376,7 +5376,7 @@ namespace Breeze
             {
 
                 corners = CornerTopRight|CornerBottomRight;
-                rect.adjust( -Metrics::Frame_FrameRadius - 1, 0, 0, 0 );
+                rect.adjust( -1, 0, 0, 0 );
 
             } else {
 
