@@ -41,6 +41,7 @@
 
 #include <QPainter>
 #include <QTextStream>
+#include <QTimer>
 
 #if BREEZE_HAVE_X11
 #include <QX11Info>
@@ -167,6 +168,11 @@ namespace Breeze
         // a change in font might cause the borders to change
         connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
         connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
+
+        // buttons
+        connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
         // full reconfiguration
         connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
@@ -360,6 +366,10 @@ namespace Breeze
     }
 
     //________________________________________________________________
+    void Decoration::updateButtonsGeometryDelayed()
+    { QTimer::singleShot( 0, this, &Decoration::updateButtonsGeometry ); }
+
+    //________________________________________________________________
     void Decoration::updateButtonsGeometry()
     {
         auto s = settings();
@@ -421,6 +431,8 @@ namespace Breeze
             } else m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
 
         }
+
+        update();
 
 
     }

@@ -101,6 +101,7 @@ namespace Breeze
         void reconfigure();
         void recalculateBorders();
         void updateButtonsGeometry();
+        void updateButtonsGeometryDelayed();
         void updateTitleBar();
         void updateAnimationState();
         void updateSizeGripVisibility();
