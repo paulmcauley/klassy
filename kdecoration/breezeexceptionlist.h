@@ -56,16 +56,16 @@ namespace Breeze
         //! write to kconfig
         void writeConfig( KSharedConfig::Ptr );
 
-        //! read configuration
-        static void readConfig( KCoreConfigSkeleton*, KConfig*, const QString& = QString() );
-
-        //! write configuration
-        static void writeConfig( KCoreConfigSkeleton*, KConfig*, const QString& = QString() );
-
         protected:
 
         //! generate exception group name for given exception index
         static QString exceptionGroupName( int index );
+
+        //! read configuration
+        static void readConfig( KCoreConfigSkeleton*, KConfig*, const QString& );
+
+        //! write configuration
+        static void writeConfig( KCoreConfigSkeleton*, KConfig*, const QString& );
 
         private:
 

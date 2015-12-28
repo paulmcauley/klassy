@@ -48,7 +48,7 @@ namespace Breeze
 
             // create new configuration
             InternalSettingsPtr configuration( new InternalSettings() );
-            readConfig( configuration.data(), config.data() );
+            configuration.data()->load();
 
             // apply changes from exception
             configuration->setEnabled( exception.enabled() );
@@ -96,11 +96,19 @@ namespace Breeze
     void ExceptionList::writeConfig( KCoreConfigSkeleton* skeleton, KConfig* config, const QString& groupName )
     {
 
+        // list of items to be written
+        QStringList keys = { "Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "Mask", "BorderSize"};
+
         // write all items
-        foreach( KConfigSkeletonItem* item, skeleton->items() )
+        foreach( auto key, keys )
         {
+            KConfigSkeletonItem* item( skeleton->findItem( key ) );
+            if( !item ) continue;
+
             if( !groupName.isEmpty() ) item->setGroup( groupName );
-            item->writeConfig( config );
+            KConfigGroup configGroup( config, item->group() );
+            configGroup.writeEntry( item->key(), item->property() );
+
         }
 
     }

@@ -123,9 +123,6 @@ namespace Breeze
         // save configuration
         m_internalSettings->save();
 
-        // save standard configuration
-        ExceptionList::writeConfig( m_internalSettings.data(), m_configuration.data() );
-
         // get list of exceptions and write
         InternalSettingsList exceptions( m_ui.exceptions->exceptions() );
         ExceptionList( exceptions ).writeConfig( m_configuration );
@@ -140,7 +137,7 @@ namespace Breeze
             QDBusConnection::sessionBus().send(message);
         }
 
-        // needed for oxygen style to reload shadows
+        // needed for breeze style to reload shadows
         {
             QDBusMessage message( QDBusMessage::createSignal("/BreezeDecoration",  "org.kde.Breeze.Style", "reparseConfiguration") );
             QDBusConnection::sessionBus().send(message);
