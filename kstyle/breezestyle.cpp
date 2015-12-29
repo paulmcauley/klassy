@@ -650,6 +650,8 @@ namespace Breeze
             case SH_Menu_SupportsSections: return true;
             #endif
 
+            case SH_DialogButtonBox_ButtonsHaveIcons: return true;
+
             case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
             case SH_TabBar_Alignment: return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter:Qt::AlignLeft;
             case SH_ToolBox_SelectedPageTitleBold: return false;
@@ -660,9 +662,8 @@ namespace Breeze
             case SH_FormLayoutFieldGrowthPolicy: return QFormLayout::ExpandingFieldsGrow;
             case SH_FormLayoutWrapPolicy: return QFormLayout::DontWrapRows;
             case SH_MessageBox_TextInteractionFlags: return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
-            case SH_ProgressDialog_CenterCancelButton:
-            case SH_MessageBox_CenterButtons:
-            return false;
+            case SH_ProgressDialog_CenterCancelButton: return false;
+            case SH_MessageBox_CenterButtons: return false;
 
             case SH_RequestSoftwareInputPanel: return RSIP_OnMouseClick;
             case SH_TitleBar_NoBorder: return true;
