@@ -88,6 +88,20 @@ ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=127,140,141
 
+[Colors:Complementary]
+BackgroundAlternate=41,44,48
+BackgroundNormal=35,38,41
+DecorationFocus=29,153,243
+DecorationHover=77,77,77
+ForegroundActive=61,174,233
+ForegroundInactive=127,140,141
+ForegroundLink=41,128,185
+ForegroundNegative=218,68,83
+ForegroundNeutral=246,116,0
+ForegroundNormal=252,252,252
+ForegroundPositive=39,174,96
+ForegroundVisited=127,140,141
+
 [General]
 ColorScheme=Breeze High Conttrast
 Name=Breeze High Contrast
