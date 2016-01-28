@@ -16,7 +16,7 @@ else()
   include(ECMInstallIcons)
   include(KDEInstallDirs)
   include(KDECMakeSettings)
-  include(KDECompilerSettings)
+  include(KDECompilerSettings NO_POLICY_SCOPE)
   include(GenerateExportHeader)
   include(GtkUpdateIconCache)
 
