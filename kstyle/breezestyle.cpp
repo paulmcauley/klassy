@@ -3270,9 +3270,11 @@ namespace Breeze
             const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
             color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
 
-        }
-        else if( mouseOver && !inToolButton ) color = _helper->hoverColor( palette );
-        else if( inToolButton ) {
+        } else if( mouseOver && !inToolButton ) {
+
+            color = _helper->hoverColor( palette );
+
+        } else if( inToolButton ) {
 
             const bool flat( state & State_AutoRaise );
 
@@ -3508,10 +3510,11 @@ namespace Breeze
         const QWidget* parent( tabBar->parentWidget() );
         if( qobject_cast<const QTabWidget*>( parent ) ) parent = parent->parentWidget();
         const QPalette palette( parent ? parent->palette() : QApplication::palette() );
+        const QColor color = hasAlteredBackground(parent) ? _helper->frameBackgroundColor( palette ):palette.color( QPalette::Window );
 
         // render flat background
         painter->setPen( Qt::NoPen );
-        painter->setBrush( palette.color( QPalette::Window ) );
+        painter->setBrush( color );
         painter->drawRect( rect );
 
         return true;
