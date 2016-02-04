@@ -3259,8 +3259,7 @@ namespace Breeze
 
         // color
         QColor color;
-        if( mouseOver && !inToolButton ) color = _helper->hoverColor( palette );
-        else if( inTabBar && hasFocus ) {
+        if( inTabBar ) {
 
             // for tabbar arrows one uses animations to get the arrow color
             /*
@@ -3271,7 +3270,9 @@ namespace Breeze
             const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
             color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
 
-        } else if( inToolButton ) {
+        }
+        else if( mouseOver && !inToolButton ) color = _helper->hoverColor( palette );
+        else if( inToolButton ) {
 
             const bool flat( state & State_AutoRaise );
 
