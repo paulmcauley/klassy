@@ -1421,7 +1421,8 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         #if QT_VERSION >= 0x050000
-        return QX11Info::isPlatformX11();
+        static const bool s_isX11 = QX11Info::isPlatformX11();
+        return s_isX11;
         #else
         return true;
         #endif
