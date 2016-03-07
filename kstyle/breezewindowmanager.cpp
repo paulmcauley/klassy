@@ -570,6 +570,12 @@ namespace Breeze
     bool WindowManager::canDrag( QWidget* widget, QWidget* child, const QPoint& position )
     {
 
+        // do not start drag on Wayland, this is not yet supported
+        // To implement integration with KWayland is required
+        // and QtWayland must support getting the wl_seat.
+        // Other option would be adding support to Qt for starting a move
+        if( Helper::isWayland() ) return false;
+
         // retrieve child at given position and check cursor again
         if( child && child->cursor().shape() != Qt::ArrowCursor ) return false;
 

@@ -259,6 +259,9 @@ namespace Breeze
         //* true if style was compiled for and is running on X11
         static bool isX11( void );
 
+        //* true if running on platform Wayland
+        static bool isWayland( void );
+
         //* returns true if compositing is active
         bool compositingActive( void ) const;
 

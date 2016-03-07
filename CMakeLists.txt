@@ -37,7 +37,7 @@ else()
   INSTALL(FILES colors/BreezeHighContrast.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 
   find_package(KF5Package CONFIG REQUIRED)
-  kpackage_install_package(lookandfeel.dark org.kde.breezedark.desktop look-and-feel lookandfeel)
+  kpackage_install_package(lookandfeel.dark org.kde.breezedark.desktop look-and-feel plasma lookandfeel)
   if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
     find_package(KF5I18n CONFIG REQUIRED)
     ki18n_install(po)
