@@ -30,6 +30,17 @@
 #include <xcb/xcb.h>
 #endif
 
+#if BREEZE_HAVE_KWAYLAND
+namespace KWayland
+{
+namespace Client
+{
+    class ShadowManager;
+    class ShmPool;
+}
+}
+#endif
+
 namespace Breeze
 {
 
@@ -106,6 +117,12 @@ namespace Breeze
         // create pixmap handle from pixmap
         quint32 createPixmap( const QPixmap& );
 
+        //* installs shadow on given widget in a platform independent way
+        bool installShadows( QWidget * );
+
+        //* uninstalls shadow on given widget in a platform independent way
+        void uninstallShadows( QWidget * ) const;
+
         //* install shadow X11 property on given widget
         /**
         shadow atom and property specification available at
@@ -115,6 +132,18 @@ namespace Breeze
 
         //* uninstall shadow X11 property on given widget
         void uninstallX11Shadows( QWidget* ) const;
+
+        //* install shadow on given widget for Wayland
+        bool installWaylandShadows( QWidget * );
+
+        //* uninstall shadow on given widget for Wayland
+        void uninstallWaylandShadows( QWidget* ) const;
+
+        //* initializes the Wayland specific parts
+        void initializeWayland();
+
+        //* gets the shadow margins for the given widget
+        QMarginsF shadowMargins( QWidget* ) const;
 
         private:
 
@@ -144,6 +173,13 @@ namespace Breeze
         //* shadow atom
         xcb_atom_t _atom;
 
+        #endif
+
+        #if BREEZE_HAVE_KWAYLAND
+        //* The Wayland shadow manager to create Shadows for Surfaces (QWindow)
+        KWayland::Client::ShadowManager* _shadowManager;
+        //* The Wayland Shared memory pool to share the shadow pixmaps with compositor
+        KWayland::Client::ShmPool* _shmPool;
         #endif
 
     };

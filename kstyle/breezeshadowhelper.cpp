@@ -27,6 +27,7 @@
 #include <QDockWidget>
 #include <QEvent>
 #include <QApplication>
+#include <QMarginsF>
 #include <QMenu>
 #include <QPainter>
 #include <QPixmap>
@@ -35,6 +36,15 @@
 
 #if BREEZE_HAVE_X11
 #include <QX11Info>
+#endif
+
+#if BREEZE_HAVE_KWAYLAND
+#include <KWayland/Client/buffer.h>
+#include <KWayland/Client/connection_thread.h>
+#include <KWayland/Client/registry.h>
+#include <KWayland/Client/shadow.h>
+#include <KWayland/Client/shm_pool.h>
+#include <KWayland/Client/surface.h>
 #endif
 
 namespace Breeze
@@ -50,7 +60,13 @@ namespace Breeze
         ,_gc( 0 ),
         _atom( 0 )
         #endif
-    {}
+        #if BREEZE_HAVE_KWAYLAND
+        , _shadowManager( Q_NULLPTR )
+        , _shmPool( Q_NULLPTR )
+        #endif
+    {
+        initializeWayland();
+    }
 
     //_______________________________________________________
     ShadowHelper::~ShadowHelper( void )
@@ -61,6 +77,36 @@ namespace Breeze
         { foreach( const quint32& value, _pixmaps  ) xcb_free_pixmap( Helper::connection(), value ); }
         #endif
 
+    }
+
+    void ShadowHelper::initializeWayland()
+    {
+        #if BREEZE_HAVE_KWAYLAND
+        if( !Helper::isWayland() ) return;
+
+        using namespace KWayland::Client;
+        auto connection = ConnectionThread::fromApplication( this );
+        if( !connection ) {
+            return;
+        }
+        Registry *registry = new Registry( this );
+        registry->create( connection );
+        connect(registry, &Registry::interfacesAnnounced, this,
+            [registry, this] {
+                const auto interface = registry->interface( Registry::Interface::Shadow );
+                if( interface.name != 0 ) {
+                    _shadowManager = registry->createShadowManager( interface.name, interface.version, this );
+                }
+                const auto shmInterface = registry->interface( Registry::Interface::Shm );
+                if( shmInterface.name != 0 ) {
+                    _shmPool = registry->createShmPool( shmInterface.name, shmInterface.version, this );
+                }
+            }
+        );
+
+        registry->setup();
+        connection->roundtrip();
+        #endif
     }
 
     //______________________________________________
@@ -87,7 +133,7 @@ namespace Breeze
         { return false; }
 
         // try create shadow directly
-        if( installX11Shadows( widget ) ) _widgets.insert( widget, widget->winId() );
+        if( installShadows( widget ) ) _widgets.insert( widget, widget->winId() );
         else _widgets.insert( widget, 0 );
 
         // install event filter
@@ -105,7 +151,7 @@ namespace Breeze
     void ShadowHelper::unregisterWidget( QWidget* widget )
     {
         if( _widgets.remove( widget ) )
-        { uninstallX11Shadows( widget ); }
+        { uninstallShadows( widget ); }
     }
 
     //_______________________________________________________
@@ -117,7 +163,7 @@ namespace Breeze
 
         // update property for registered widgets
         for( QMap<QWidget*,WId>::const_iterator iter = _widgets.constBegin(); iter != _widgets.constEnd(); ++iter )
-        { installX11Shadows( iter.key() ); }
+        { installShadows( iter.key() ); }
 
     }
 
@@ -132,7 +178,7 @@ namespace Breeze
         QWidget* widget( static_cast<QWidget*>( object ) );
 
         // install shadows and update winId
-        if( installX11Shadows( widget ) )
+        if( installShadows( widget ) )
         { _widgets.insert( widget, widget->winId() ); }
 
         return false;
@@ -333,14 +379,9 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    bool ShadowHelper::installX11Shadows( QWidget* widget )
+    bool ShadowHelper::installShadows( QWidget* widget )
     {
-        // check widget and shadow
         if( !widget ) return false;
-        if( !Helper::isX11() ) return false;
-
-        #if BREEZE_HAVE_X11
-        #ifndef QT_NO_XRENDER
 
         /*
         From bespin code. Supposibly prevent playing with some 'pseudo-widgets'
@@ -348,6 +389,18 @@ namespace Breeze
         */
         if( !(widget->testAttribute(Qt::WA_WState_Created) && widget->internalWinId() ))
         { return false; }
+
+        if( Helper::isX11() ) return installX11Shadows( widget );
+        if( Helper::isWayland() ) return installWaylandShadows( widget );
+
+        return false;
+    }
+
+    //_______________________________________________________
+    bool ShadowHelper::installX11Shadows( QWidget* widget )
+    {
+        #if BREEZE_HAVE_X11
+        #ifndef QT_NO_XRENDER
 
         // create pixmap handles if needed
         const QVector<quint32>& pixmaps( createPixmapHandles() );
@@ -359,6 +412,66 @@ namespace Breeze
         foreach( const quint32& value, pixmaps )
         { data.append( value ); }
 
+
+        const QMarginsF margins = shadowMargins( widget );
+        const int topSize = margins.top();
+        const int bottomSize = margins.bottom();
+        const int leftSize( margins.left() );
+        const int rightSize( margins.right() );
+
+        // assign to data and xcb property
+        data << topSize << rightSize << bottomSize << leftSize;
+        xcb_change_property( Helper::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
+        xcb_flush( Helper::connection() );
+
+        return true;
+
+        #endif
+        #endif
+
+        return false;
+
+    }
+
+    //_______________________________________________________
+    bool ShadowHelper::installWaylandShadows( QWidget* widget )
+    {
+        #if BREEZE_HAVE_KWAYLAND
+        if( !_shadowManager || !_shmPool ) return false;
+
+        if( !_shadowTiles.isValid() ) return false;
+
+        // create shadow
+        using namespace KWayland::Client;
+        auto s = Surface::fromWindow( widget->windowHandle() );
+        if( !s ) return false;
+
+        auto shadow = _shadowManager->createShadow( s, widget );
+        if( !shadow->isValid() ) return false;
+
+        // add the shadow elements
+        shadow->attachTop( _shmPool->createBuffer( _shadowTiles.pixmap( 1 ).toImage() ) );
+        shadow->attachTopRight( _shmPool->createBuffer( _shadowTiles.pixmap( 2 ).toImage() ) );
+        shadow->attachRight( _shmPool->createBuffer( _shadowTiles.pixmap( 5 ).toImage() ) );
+        shadow->attachBottomRight( _shmPool->createBuffer( _shadowTiles.pixmap( 8 ).toImage() ) );
+        shadow->attachBottom( _shmPool->createBuffer( _shadowTiles.pixmap( 7 ).toImage() ) );
+        shadow->attachBottomLeft( _shmPool->createBuffer( _shadowTiles.pixmap( 6 ).toImage() ) );
+        shadow->attachLeft( _shmPool->createBuffer( _shadowTiles.pixmap( 3 ).toImage() ) );
+        shadow->attachTopLeft( _shmPool->createBuffer( _shadowTiles.pixmap( 0 ).toImage() ) );
+
+        shadow->setOffsets( shadowMargins( widget ) );
+        shadow->commit();
+        s->commit( Surface::CommitFlag::None );
+
+        return true;
+        #endif
+
+        return false;
+    }
+
+    //_______________________________________________________
+    QMarginsF ShadowHelper::shadowMargins( QWidget* widget ) const
+    {
         // get devicePixelRatio
         // for testing purposes only
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
@@ -391,32 +504,43 @@ namespace Breeze
 
         }
 
-        // assign to data and xcb property
-        data << topSize << rightSize << bottomSize << leftSize;
-        xcb_change_property( Helper::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
-        xcb_flush( Helper::connection() );
+        return QMarginsF( leftSize, topSize, rightSize, bottomSize );
+    }
 
-        return true;
-
-        #endif
-        #endif
-
-        return false;
-
+    //_______________________________________________________
+    void ShadowHelper::uninstallShadows( QWidget* widget ) const
+    {
+        if( !( widget && widget->testAttribute(Qt::WA_WState_Created) ) ) return;
+        if( Helper::isX11() ) uninstallX11Shadows( widget );
+        if( Helper::isWayland() ) uninstallWaylandShadows( widget );
     }
 
     //_______________________________________________________
     void ShadowHelper::uninstallX11Shadows( QWidget* widget ) const
     {
-
         #if BREEZE_HAVE_X11
-        if( !Helper::isX11() ) return;
-        if( !( widget && widget->testAttribute(Qt::WA_WState_Created) ) ) return;
         xcb_delete_property( Helper::connection(), widget->winId(), _atom);
         #else
         Q_UNUSED( widget )
         #endif
 
+    }
+
+    //_______________________________________________________
+    void ShadowHelper::uninstallWaylandShadows( QWidget* widget ) const
+    {
+        #if BREEZE_HAVE_KWAYLAND
+        if( !_shadowManager ) return;
+
+        using namespace KWayland::Client;
+        auto s = Surface::fromWindow( widget->windowHandle() );
+        if( !s ) return;
+
+        _shadowManager->removeShadow( s );
+        s->commit( Surface::CommitFlag::None );
+        #else
+        Q_UNUSED( widget )
+        #endif
     }
 
 }

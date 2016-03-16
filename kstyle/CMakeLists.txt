@@ -32,6 +32,8 @@ if(BREEZE_USE_KDE4)
     set(BREEZE_HAVE_X11 FALSE)
   endif()
 
+  set(BREEZE_HAVE_KWAYLAND FALSE)
+
   ### KStyle
   set(BREEZE_HAVE_KSTYLE FALSE)
 
@@ -61,6 +63,9 @@ else()
       TYPE OPTIONAL
       PURPOSE "Required to pass style properties to native Windows on X11 Platform"
   )
+
+  find_package(KF5Wayland CONFIG)
+  set(BREEZE_HAVE_KWAYLAND ${KF5Wayland_FOUND})
 
   if(UNIX AND NOT APPLE)
 
@@ -162,6 +167,10 @@ else()
   if(BREEZE_HAVE_X11)
     target_link_libraries(breeze ${XCB_LIBRARIES})
     target_link_libraries(breeze Qt5::X11Extras)
+  endif()
+
+  if(BREEZE_HAVE_KWAYLAND)
+    target_link_libraries(breeze KF5::WaylandClient)
   endif()
 
   install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/)
