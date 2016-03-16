@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QMargins>
 
 #if BREEZE_HAVE_X11
 #include <xcb/xcb.h>
@@ -143,7 +144,7 @@ namespace Breeze
         void initializeWayland();
 
         //* gets the shadow margins for the given widget
-        QMarginsF shadowMargins( QWidget* ) const;
+        QMargins shadowMargins( QWidget* ) const;
 
         private:
 

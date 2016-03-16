@@ -27,7 +27,6 @@
 #include <QDockWidget>
 #include <QEvent>
 #include <QApplication>
-#include <QMarginsF>
 #include <QMenu>
 #include <QPainter>
 #include <QPixmap>
@@ -413,7 +412,7 @@ namespace Breeze
         { data.append( value ); }
 
 
-        const QMarginsF margins = shadowMargins( widget );
+        const QMargins margins = shadowMargins( widget );
         const int topSize = margins.top();
         const int bottomSize = margins.bottom();
         const int leftSize( margins.left() );
@@ -470,7 +469,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    QMarginsF ShadowHelper::shadowMargins( QWidget* widget ) const
+    QMargins ShadowHelper::shadowMargins( QWidget* widget ) const
     {
         // get devicePixelRatio
         // for testing purposes only
@@ -504,7 +503,7 @@ namespace Breeze
 
         }
 
-        return QMarginsF( leftSize, topSize, rightSize, bottomSize );
+        return QMargins( leftSize, topSize, rightSize, bottomSize );
     }
 
     //_______________________________________________________
