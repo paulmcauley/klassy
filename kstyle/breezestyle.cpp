@@ -2592,29 +2592,49 @@ namespace Breeze
         const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return contentsSize;
 
-        /*
-        rather than trying to guess what Qt puts into its contents size calculation,
-        we recompute the button size entirely, based on button option
-        this ensures consistency with the rendering stage
-        */
+        // output
         QSize size;
 
-        // text
+        // check text and icon
         const bool hasText( !buttonOption->text.isEmpty() );
-        if( hasText ) size = buttonOption->fontMetrics.size( Qt::TextShowMnemonic, buttonOption->text );
-
-        // icon
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
-        const bool hasIcon( (showIconsOnPushButtons() || flat || !hasText ) && !buttonOption->icon.isNull() );
-        if( hasIcon )
+        bool hasIcon( !buttonOption->icon.isNull() );
+
+        if( !( hasText||hasIcon ) )
         {
-            QSize iconSize = buttonOption->iconSize;
-            if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
 
-            size.setHeight( qMax( size.height(), iconSize.height() ) );
-            size.rwidth() += iconSize.width();
+            /*
+            no text nor icon is passed.
+            assume custom button and use contentsSize as a starting point
+            */
+            size = contentsSize;
 
-            if( hasText ) size.rwidth() += Metrics::Button_ItemSpacing;
+        } else {
+
+            /*
+            rather than trying to guess what Qt puts into its contents size calculation,
+            we recompute the button size entirely, based on button option
+            this ensures consistency with the rendering stage
+            */
+
+            // update has icon to honour showIconsOnPushButtons, when possible
+            hasIcon &= (showIconsOnPushButtons() || flat || !hasText );
+
+            // text
+            if( hasText ) size = buttonOption->fontMetrics.size( Qt::TextShowMnemonic, buttonOption->text );
+
+            // icon
+            if( hasIcon )
+            {
+                QSize iconSize = buttonOption->iconSize;
+                if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
+
+                size.setHeight( qMax( size.height(), iconSize.height() ) );
+                size.rwidth() += iconSize.width();
+
+                if( hasText ) size.rwidth() += Metrics::Button_ItemSpacing;
+            }
+
         }
 
         // menu
