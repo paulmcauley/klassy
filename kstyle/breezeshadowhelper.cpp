@@ -78,6 +78,7 @@ namespace Breeze
 
     }
 
+    //_______________________________________________________
     void ShadowHelper::initializeWayland()
     {
         #if BREEZE_HAVE_KWAYLAND
@@ -463,6 +464,8 @@ namespace Breeze
         s->commit( Surface::CommitFlag::None );
 
         return true;
+        #else
+        Q_UNUSED( widget );
         #endif
 
         return false;
