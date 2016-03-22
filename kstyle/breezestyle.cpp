@@ -2922,7 +2922,7 @@ namespace Breeze
     {
         // call base class
         const QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
-        return isQtQuickControl( option, widget ) ? size:expandSize( size, Metrics::ItemView_ItemMarginWidth );
+        return expandSize( size, Metrics::ItemView_ItemMarginWidth );
     }
 
     //______________________________________________________________
@@ -5046,7 +5046,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
         // cast option and check
@@ -5071,6 +5071,19 @@ namespace Breeze
                 const bool isVertical( frameOpt->frameShape == QFrame::VLine );
                 _helper->renderSeparator( painter, rect, color, isVertical );
                 return true;
+            }
+
+            case QFrame::StyledPanel:
+            {
+
+                if( isQtQuickControl( option, widget ) )
+                {
+
+                    // ComboBox popup frame
+                    drawFrameMenuPrimitive( option, painter, widget );
+                    return true;
+
+                } else break;
             }
 
             default: break;
