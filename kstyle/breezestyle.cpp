@@ -3148,7 +3148,7 @@ namespace Breeze
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            if( isQtQuickControl ) rect.adjust( 0, -1, 0, 0 );
+            if( isQtQuickControl ) rect.adjust( -1, -1, 1, 0 );
             if( tabBarSize.width() >= rect.width() - 2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
             if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
@@ -3156,7 +3156,7 @@ namespace Breeze
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            if( isQtQuickControl ) rect.adjust( 0, 0, 0, 1 );
+            if( isQtQuickControl ) rect.adjust( -1, 0, 1, 1 );
             if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
             if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
             if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
