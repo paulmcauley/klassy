@@ -2922,7 +2922,7 @@ namespace Breeze
     {
         // call base class
         const QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
-        return isQtQuickControl( option, widget ) ? size:expandSize( size, Metrics::ItemView_ItemMarginWidth );
+        return expandSize( size, Metrics::ItemView_ItemMarginWidth );
     }
 
     //______________________________________________________________
