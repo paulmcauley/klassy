@@ -437,6 +437,7 @@ namespace Breeze
     bool ShadowHelper::installWaylandShadows( QWidget* widget )
     {
         #if BREEZE_HAVE_KWAYLAND
+        if( widget->windowHandle()->parent() ) return false;
         if( !_shadowManager || !_shmPool ) return false;
 
         if( !_shadowTiles.isValid() ) return false;
@@ -532,6 +533,7 @@ namespace Breeze
     void ShadowHelper::uninstallWaylandShadows( QWidget* widget ) const
     {
         #if BREEZE_HAVE_KWAYLAND
+        if( widget->windowHandle()->parent() ) return;
         if( !_shadowManager ) return;
 
         using namespace KWayland::Client;
