@@ -3385,7 +3385,7 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( ( enabled && ( state & ( State_HasFocus | State_Sunken ) ) ) && !( widget && widget->focusProxy()));
+        const bool hasFocus( ( enabled && ( state & State_HasFocus ) ) && !( widget && widget->focusProxy()));
         const bool sunken( state & ( State_On|State_Sunken ) );
         const bool flat( buttonOption->features & QStyleOptionButton::Flat );
 
