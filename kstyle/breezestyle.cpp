@@ -6372,7 +6372,7 @@ namespace Breeze
         {
 
             // skip if not requested
-            if( !titleBarOption->subControls & subControl ) continue;
+            if( !( titleBarOption->subControls & subControl ) ) continue;
 
             // find matching icon
             QIcon icon;
