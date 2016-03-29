@@ -43,8 +43,7 @@ namespace Breeze
         { setDuration( duration ); }
 
         //* destructor
-        virtual ~Animation( void )
-        {}
+        virtual ~Animation( void ) = default;
 
         //* true if running
         bool isRunning( void ) const
