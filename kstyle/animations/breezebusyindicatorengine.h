@@ -78,8 +78,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
-        { return _data.unregisterWidget( object ); }
+        virtual bool unregisterWidget( QObject* );
 
         protected:
 
@@ -95,7 +94,7 @@ namespace Breeze
         Animation::Pointer _animation;
 
         //* value
-        int _value;
+        int _value = 0;
 
     };
 
