@@ -460,7 +460,7 @@ namespace Breeze
             if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
             if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
             #if QT_VERSION >= 0x050000
-            else if( option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" ) )
+            else if( isQtQuickControl( option, widget ) )
             {
                 const QString &elementType = option->styleObject->property( "elementType" ).toString();
                 if( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
@@ -3079,7 +3079,7 @@ namespace Breeze
             _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
         #if !BREEZE_USE_KDE4
-        } else if( option->styleObject && option->styleObject->inherits( "QQuickItem" ) ) {
+        } else if( isQtQuickControl( option, widget ) ) {
 
             const QPalette& palette( option->palette );
             const QColor background( _helper->frameBackgroundColor( palette ) );
@@ -6868,7 +6868,7 @@ namespace Breeze
     bool Style::isQtQuickControl( const QStyleOption* option, const QWidget* widget ) const
     {
         #if QT_VERSION >= 0x050000
-        return (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickStyleItem" );
+        return (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickItem" );
         #else
         Q_UNUSED( widget );
         Q_UNUSED( option );
