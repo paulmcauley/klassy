@@ -42,6 +42,25 @@ else()
     find_package(KF5I18n CONFIG REQUIRED)
     ki18n_install(po)
   endif()
+
+  include(ECMSetupVersion)
+  ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE
+                    PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfigVersion.cmake"
+                    )
+
+  # create a Config.cmake and a ConfigVersion.cmake file and install them
+  set(CMAKECONFIG_INSTALL_DIR "${CMAKECONFIG_INSTALL_PREFIX}/Breeze")
+
+  ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in"
+                                    "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
+                                    INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
+                                    )
+
+  install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
+                 "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfigVersion.cmake"
+          DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
+          COMPONENT Devel
+         )
 endif()
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
