@@ -1,9 +1,9 @@
 {
     "KPlugin": {
-        "Name": "Breeze",
-        "Description": "Window decoration using the Breeze visual style for the Plasma Desktop",
+        "Description": "Window decoration using the Breeze visual style for the Plasma Desktop", 
         "EnabledByDefault": true, 
         "Id": "org.kde.breeze", 
+        "Name": "Breeze", 
         "ServiceTypes": [
             "org.kde.kdecoration2"
         ]
