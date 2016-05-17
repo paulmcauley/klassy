@@ -4430,9 +4430,7 @@ namespace Breeze
         if( sunken && !flat )
         { painter->translate( 1, 1 ); }
 
-        // call base class method
-        //ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
-
+        #if QT_VERSION >= 0x050000
         if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
             QRect editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
             painter->save();
@@ -4470,6 +4468,11 @@ namespace Breeze
             }
             painter->restore();
         }
+        #else
+        // call base class method
+        ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
+        #endif
+        
 
         return true;
 
