@@ -4185,6 +4185,7 @@ namespace Breeze
             const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
             QIcon::Mode iconMode;
             if( !enabled ) iconMode = QIcon::Disabled;
+            else if( !flat && hasFocus ) iconMode = QIcon::Selected;
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
@@ -4307,6 +4308,7 @@ namespace Breeze
             const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
             QIcon::Mode iconMode;
             if( !enabled ) iconMode = QIcon::Disabled;
+            if( !flat && hasFocus ) iconMode = QIcon::Selected;
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
@@ -4429,7 +4431,46 @@ namespace Breeze
         { painter->translate( 1, 1 ); }
 
         // call base class method
-        ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
+        //ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
+
+        if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
+            QRect editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
+            painter->save();
+            painter->setClipRect(editRect);
+            if (!cb->currentIcon.isNull()) {
+                QIcon::Mode mode;
+
+                if ((cb->state & QStyle::State_Selected) && (cb->state & QStyle::State_Active)) {
+                    mode = QIcon::Selected;
+                } else if (cb->state & QStyle::State_Enabled) {
+                    mode = QIcon::Normal;
+                } else {
+                    mode = QIcon::Disabled;
+                }
+
+                QPixmap pixmap = cb->currentIcon.pixmap(widget->windowHandle(), cb->iconSize, mode);
+                QRect iconRect(editRect);
+                iconRect.setWidth(cb->iconSize.width() + 4);
+                iconRect = alignedRect(cb->direction,
+                                       Qt::AlignLeft | Qt::AlignVCenter,
+                                       iconRect.size(), editRect);
+                if (cb->editable)
+                    painter->fillRect(iconRect, option->palette.brush(QPalette::Base));
+                proxy()->drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
+
+                if (cb->direction == Qt::RightToLeft)
+                    editRect.translate(-4 - cb->iconSize.width(), 0);
+                else
+                    editRect.translate(cb->iconSize.width() + 4, 0);
+            }
+            if (!cb->currentText.isEmpty() && !cb->editable) {
+                proxy()->drawItemText(painter, editRect.adjusted(1, 0, -1, 0),
+                             visualAlignment(cb->direction, Qt::AlignLeft | Qt::AlignVCenter),
+                             cb->palette, cb->state & State_Enabled, cb->currentText);
+            }
+            painter->restore();
+        }
+
         return true;
 
     }
@@ -4617,7 +4658,7 @@ namespace Breeze
 
             // icon mode
             QIcon::Mode mode;
-            if( selected ) mode = QIcon::Active;
+            if( selected ) mode = QIcon::Selected;
             else if( enabled ) mode = QIcon::Normal;
             else mode = QIcon::Disabled;
 
