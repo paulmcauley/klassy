@@ -4661,7 +4661,8 @@ namespace Breeze
 
             // icon mode
             QIcon::Mode mode;
-            if( selected ) mode = QIcon::Selected;
+            if( selected && !useStrongFocus)  mode = QIcon::Active;
+            else if( selected ) mode = QIcon::Selected;
             else if( enabled ) mode = QIcon::Normal;
             else mode = QIcon::Disabled;
 
