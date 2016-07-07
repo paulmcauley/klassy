@@ -4308,7 +4308,7 @@ namespace Breeze
             const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
             QIcon::Mode iconMode;
             if( !enabled ) iconMode = QIcon::Disabled;
-            if( !flat && hasFocus ) iconMode = QIcon::Selected;
+            else if( !flat && hasFocus ) iconMode = QIcon::Selected;
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
