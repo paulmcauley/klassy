@@ -179,7 +179,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>&amp;Animations duration:</string>
+          <string>Anima&amp;tions duration:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -245,7 +245,7 @@
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
-          <string>S&amp;ize:</string>
+          <string>Si&amp;ze:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -375,11 +375,13 @@
   <tabstop>buttonSize</tabstop>
   <tabstop>outlineCloseButton</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
+  <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawSizeGrip</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsDuration</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
+  <tabstop>shadowColor</tabstop>
  </tabstops>
  <resources/>
  <connections>
