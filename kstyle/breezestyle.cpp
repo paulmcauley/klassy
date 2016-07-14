@@ -605,7 +605,6 @@ namespace Breeze
         switch( hint )
         {
 
-            case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
             case SH_RubberBand_Mask:
             {
 
@@ -647,6 +646,7 @@ namespace Breeze
             case SH_Menu_SloppySubMenus: return true;
 
             #if QT_VERSION >= 0x050000
+            case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
             case SH_Menu_SupportsSections: return true;
             #endif
 
