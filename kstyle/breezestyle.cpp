@@ -605,7 +605,7 @@ namespace Breeze
         switch( hint )
         {
 
-
+            case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
             case SH_RubberBand_Mask:
             {
 
