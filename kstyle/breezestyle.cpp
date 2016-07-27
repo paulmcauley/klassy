@@ -2817,8 +2817,46 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    QSize Style::tabWidgetSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::TabWidget_MarginWidth ); }
+    QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
+        // cast option and check
+        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        if( !tabOption ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+
+        // try find direct children of type QTabBar and QStackedWidget
+        // this is needed in order to add TabWidget margins only if they are necessary around tabWidget content, not the tabbar
+        if( !widget ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+        QTabBar* tabBar = nullptr;
+        QStackedWidget* stack = nullptr;
+        auto children( widget->children() );
+        foreach( auto child, children )
+        {
+            if( !tabBar ) tabBar = qobject_cast<QTabBar*>( child );
+            if( !stack ) stack = qobject_cast<QStackedWidget*>( child );
+            if( tabBar && stack ) break;
+        }
+
+        if( !( tabBar && stack ) ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+
+        // tab orientation
+        const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
+        if( verticalTabs )
+        {
+            const int tabBarHeight = tabBar->minimumSizeHint().height();
+            const int stackHeight = stack->minimumSizeHint().height();
+            if( contentsSize.height() == tabBarHeight && tabBarHeight + 2*(Metrics::Frame_FrameWidth - 1) >= stackHeight + 2*Metrics::TabWidget_MarginWidth ) return QSize( contentsSize.width() + 2*Metrics::TabWidget_MarginWidth, contentsSize.height() + 2*(Metrics::Frame_FrameWidth - 1) );
+            else return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+
+        } else {
+
+            const int tabBarWidth = tabBar->minimumSizeHint().width();
+            const int stackWidth = stack->minimumSizeHint().width();
+            if( contentsSize.width() == tabBarWidth && tabBarWidth + 2*(Metrics::Frame_FrameWidth - 1) >= stackWidth + 2*Metrics::TabWidget_MarginWidth) return QSize( contentsSize.width() + 2*(Metrics::Frame_FrameWidth - 1), contentsSize.height() + 2*Metrics::TabWidget_MarginWidth );
+            else return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+
+        }
+
+    }
 
     //______________________________________________________________
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
