@@ -3065,12 +3065,14 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        if( !widget ) return true;
-
         // no focus indicator on buttons, since it is rendered elsewhere
-        if( qobject_cast< const QAbstractButton*>( widget ) )
-        { return true; }
+        if ( widget && qobject_cast< const QAbstractButton*>( widget ) )
+            return true;
+
+        #if QT_VERSION >= 0x050000
+            if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
+                return true;
+        #endif
 
         const State& state( option->state );
         const QRect rect( option->rect.adjusted( 0, 0, 0, 1 ) );
@@ -3081,7 +3083,7 @@ namespace Breeze
         const QColor outlineColor( state & State_Selected ? palette.color( QPalette::HighlightedText ):palette.color( QPalette::Highlight ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( outlineColor );
-        painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
+        painter->drawLine( QPoint( rect.bottomLeft() - QPoint( 0,1 ) ), QPoint( rect.bottomRight() - QPoint( 0,1 ) ) );
 
         return true;
 
