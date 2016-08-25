@@ -4,6 +4,8 @@ set(PROJECT_VERSION_MAJOR 5)
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
+option(USE_KDE4 "Build a widget style for KDE4 (and nothing else)")
+
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
