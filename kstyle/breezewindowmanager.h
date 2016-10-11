@@ -31,6 +31,17 @@
 #include <QString>
 #include <QWidget>
 
+#if BREEZE_HAVE_KWAYLAND
+namespace KWayland
+{
+namespace Client
+{
+    class Pointer;
+    class Seat;
+}
+}
+#endif
+
 namespace Breeze
 {
 
@@ -125,6 +136,12 @@ namespace Breeze
         */
         void initializeBlackList( void );
 
+        //* initializes the Wayland specific parts
+        void initializeWayland();
+
+        //* The Wayland Seat's hasPointer property changed
+        void waylandHasPointerChanged(bool hasPointer);
+
         //@}
 
         //* returns true if widget is dragable
@@ -148,6 +165,12 @@ namespace Breeze
 
         //* start drag
         void startDrag( QWidget*, const QPoint& );
+
+        //* X11 specific implementation for startDrag
+        void startDragX11( QWidget*, const QPoint& );
+
+        //* Wayland specific implementation for startDrag
+        void startDragWayland( QWidget*, const QPoint& );
 
         //* returns true if window manager is used for moving
         /** right now this is true only for X11 */
@@ -255,6 +278,15 @@ namespace Breeze
 
         //* application event filter
         QObject* _appEventFilter;
+
+        #if BREEZE_HAVE_KWAYLAND
+        //* The Wayland seat object which needs to be passed to move requests.
+        KWayland::Client::Seat* _seat;
+        //* The Wayland pointer object where we get pointer events on.
+        KWayland::Client::Pointer* _pointer;
+        //* latest searial which needs to be passed to the move requests.
+        quint32 _waylandSerial;
+        #endif
 
         //* allow access of all private members to the app event filter
         friend class AppEventFilter;
