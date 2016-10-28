@@ -1,4 +1,4 @@
-File=breeze.kcfgc
+File=breeze.kcfg
 ClassName=StyleConfigData
 NameSpace=Breeze
 Singleton=true
