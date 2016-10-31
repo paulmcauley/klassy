@@ -34,6 +34,7 @@ namespace Breeze
         Q_OBJECT
         Q_PROPERTY( qreal addLineOpacity READ addLineOpacity WRITE setAddLineOpacity )
         Q_PROPERTY( qreal subLineOpacity READ subLineOpacity WRITE setSubLineOpacity )
+        Q_PROPERTY( qreal grooveOpacity READ grooveOpacity WRITE setGrooveOpacity )
 
         public:
 
@@ -64,6 +65,7 @@ namespace Breeze
             {
                 case QStyle::SC_ScrollBarAddLine: return addLineArrowHovered();
                 case QStyle::SC_ScrollBarSubLine: return subLineArrowHovered();
+                case QStyle::SC_ScrollBarGroove: return grooveHovered();
                 default: return false;
             }
 
@@ -105,6 +107,7 @@ namespace Breeze
             WidgetStateData::setDuration( duration );
             addLineAnimation().data()->setDuration( duration );
             subLineAnimation().data()->setDuration( duration );
+            grooveAnimation().data()->setDuration( duration );
         }
 
         //* addLine opacity
@@ -132,6 +135,19 @@ namespace Breeze
         //* subLine opacity
         virtual qreal subLineOpacity( void ) const
         { return _subLineData._opacity; }
+
+        //* groove opacity
+        virtual void setGrooveOpacity( qreal value )
+        {
+            value = digitize( value );
+            if( _grooveData._opacity == value ) return;
+            _grooveData._opacity = value;
+            setDirty();
+        }
+
+        //* groove opacity
+        virtual qreal grooveOpacity( void ) const
+        { return _grooveData._opacity; }
 
         //* mouse position
         QPoint position( void ) const
@@ -176,6 +192,12 @@ namespace Breeze
         virtual void setSubLineArrowHovered( bool value )
         { _subLineData._hovered = value; }
 
+        virtual bool grooveHovered( void ) const
+        { return _grooveData._hovered; }
+
+        virtual void setGrooveHovered( bool value )
+        { _grooveData._hovered = value; }
+
         //@}
 
         //* update add line arrow
@@ -193,9 +215,12 @@ namespace Breeze
         virtual const Animation::Pointer& subLineAnimation( void ) const
         { return _subLineData._animation; }
 
+        virtual const Animation::Pointer& grooveAnimation( void ) const
+        { return _grooveData._animation; }
+
         private:
 
-        //* stores arrow data
+        //* stores sub control data
         class Data
         {
 
@@ -227,6 +252,9 @@ namespace Breeze
 
         //* subtract line data (up arrow)
         Data _subLineData;
+
+        //* groove data
+        Data _grooveData;
 
         //* mouse position
         QPoint _position;

@@ -38,6 +38,7 @@ namespace Breeze
 
         _addLineData._animation = new Animation( duration, this );
         _subLineData._animation = new Animation( duration, this );
+        _grooveData._animation = new Animation( duration, this );
 
         connect( addLineAnimation().data(), SIGNAL(finished()), SLOT(clearAddLineRect()) );
         connect( subLineAnimation().data(), SIGNAL(finished()), SLOT(clearSubLineRect()) );
@@ -45,6 +46,7 @@ namespace Breeze
         // setup animation
         setupAnimation( addLineAnimation(), "addLineOpacity" );
         setupAnimation( subLineAnimation(), "subLineOpacity" );
+        setupAnimation( grooveAnimation(), "grooveOpacity" );
 
     }
 
@@ -60,12 +62,20 @@ namespace Breeze
         {
 
             case QEvent::HoverEnter:
+            setGrooveHovered(true);
+            grooveAnimation().data()->setDirection( Animation::Forward );
+            if( !grooveAnimation().data()->isRunning() ) grooveAnimation().data()->start();
+
             case QEvent::HoverMove:
             hoverMoveEvent( object, event );
             break;
 
             case QEvent::HoverLeave:
+            setGrooveHovered(false);
+            grooveAnimation().data()->setDirection( Animation::Backward );
+            if( !grooveAnimation().data()->isRunning() ) grooveAnimation().data()->start();
             hoverLeaveEvent( object, event );
+
             break;
 
             default: break;
@@ -90,6 +100,9 @@ namespace Breeze
 
             case QStyle::SC_ScrollBarSubLine:
             return subLineAnimation();
+
+            case QStyle::SC_ScrollBarGroove:
+            return grooveAnimation();
         }
 
     }
@@ -108,6 +121,9 @@ namespace Breeze
 
             case QStyle::SC_ScrollBarSubLine:
             return subLineOpacity();
+
+            case QStyle::SC_ScrollBarGroove:
+            return grooveOpacity();
         }
 
     }

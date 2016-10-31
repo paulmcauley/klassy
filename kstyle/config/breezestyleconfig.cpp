@@ -63,6 +63,7 @@ namespace Breeze
         connect( _animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( _scrollBarShowOnMouseOver, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
         connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
 
     }
@@ -82,6 +83,7 @@ namespace Breeze
         StyleConfigData::setMnemonicsMode( _mnemonicsMode->currentIndex() );
         StyleConfigData::setScrollBarAddLineButtons( _scrollBarAddLineButtons->currentIndex() );
         StyleConfigData::setScrollBarSubLineButtons( _scrollBarSubLineButtons->currentIndex() );
+        StyleConfigData::setScrollBarShowOnMouseOver( _scrollBarShowOnMouseOver->isChecked() );
         StyleConfigData::setAnimationsEnabled( _animationsEnabled->isChecked() );
         StyleConfigData::setAnimationsDuration( _animationsDuration->value() );
         StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex()  );
@@ -143,6 +145,7 @@ namespace Breeze
         else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
         else if( _scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons() ) modified = true;
         else if( _scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons() ) modified = true;
+        else if( _scrollBarShowOnMouseOver->isChecked() != StyleConfigData::scrollBarShowOnMouseOver() ) modified = true;
         else if( _splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled() ) modified = true;
         else if( _animationsEnabled->isChecked() != StyleConfigData::animationsEnabled() ) modified = true;
         else if( _animationsDuration->value() != StyleConfigData::animationsDuration() ) modified = true;
@@ -168,6 +171,7 @@ namespace Breeze
         _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
         _scrollBarAddLineButtons->setCurrentIndex( StyleConfigData::scrollBarAddLineButtons() );
         _scrollBarSubLineButtons->setCurrentIndex( StyleConfigData::scrollBarSubLineButtons() );
+        _scrollBarShowOnMouseOver->setChecked( StyleConfigData::scrollBarShowOnMouseOver() );
         _animationsEnabled->setChecked( StyleConfigData::animationsEnabled() );
         _animationsDuration->setValue( StyleConfigData::animationsDuration() );
         _windowDragMode->setCurrentIndex( StyleConfigData::windowDragMode() );
