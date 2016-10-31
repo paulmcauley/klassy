@@ -2507,7 +2507,7 @@ namespace Breeze
         size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
 
         // add button width and spacing
-        size.rwidth() += Metrics::MenuButton_IndicatorWidth;
+        size.rwidth() += Metrics::MenuButton_IndicatorWidth+2;
 
         return size;
 
