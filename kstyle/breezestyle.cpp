@@ -6648,8 +6648,10 @@ namespace Breeze
 
         bool widgetMouseOver;
         if( widget ) widgetMouseOver = widget->underMouse();
+        #if QT_VERSION >= 0x050000
         // in case this QStyle is used by QQuickControls QStyle wrapper
         else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
+        #endif
 
         // check enabled state
         const bool enabled( option->state & State_Enabled );
