@@ -6646,11 +6646,11 @@ namespace Breeze
         const QPalette& palette( option->palette );
         QColor color( _helper->arrowColor( palette, QPalette::WindowText ) );
 
-        bool widgetMouseOver;
+        bool widgetMouseOver( ( option->state & State_MouseOver ) );
         if( widget ) widgetMouseOver = widget->underMouse();
         #if QT_VERSION >= 0x050000
         // in case this QStyle is used by QQuickControls QStyle wrapper
-        else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
+        if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
         #endif
 
         // check enabled state
@@ -6715,8 +6715,8 @@ namespace Breeze
 
         }
 
-        if( StyleConfigData::scrollBarShowOnMouseOver() ) {
-            const bool mouseOver( ( option->state & State_MouseOver ) );
+        if( StyleConfigData::scrollBarShowOnMouseOver() )
+        {
             // finally, global opacity when ScrollBarShowOnMouseOver
             const qreal globalOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
             if( globalOpacity >= 0 ) color.setAlphaF( globalOpacity );
