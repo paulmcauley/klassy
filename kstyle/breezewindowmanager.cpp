@@ -292,6 +292,8 @@ namespace Breeze
             delete _pointer;
             _pointer = nullptr;
         }
+        #else
+        Q_UNUSED( hasPointer );
         #endif
     }
 
@@ -883,6 +885,9 @@ namespace Breeze
         }
 
         shellSurface->requestMove( _seat, _waylandSerial );
+        #else
+        Q_UNUSED( widget );
+        Q_UNUSED( position );
         #endif
     }
 
