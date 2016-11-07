@@ -95,6 +95,9 @@ namespace Breeze
         //* unregister widget
         void objectDeleted( QObject* );
 
+        //* initializes the Wayland specific parts
+        void initializeWayland();
+
         protected:
 
         //* true if widget is a menu
@@ -139,9 +142,6 @@ namespace Breeze
 
         //* uninstall shadow on given widget for Wayland
         void uninstallWaylandShadows( QWidget* ) const;
-
-        //* initializes the Wayland specific parts
-        void initializeWayland();
 
         //* gets the shadow margins for the given widget
         QMargins shadowMargins( QWidget* ) const;

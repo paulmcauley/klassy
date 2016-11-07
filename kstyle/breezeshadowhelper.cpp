@@ -64,7 +64,8 @@ namespace Breeze
         , _shmPool( Q_NULLPTR )
         #endif
     {
-        initializeWayland();
+        // delay till event dispatcher is running as Wayland is highly async
+        QMetaObject::invokeMethod(this, "initializeWayland", Qt::QueuedConnection);
     }
 
     //_______________________________________________________

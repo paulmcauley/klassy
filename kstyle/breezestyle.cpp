@@ -198,8 +198,23 @@ namespace Breeze
     //______________________________________________________________
     Style::~Style( void )
     {
+        cleanup();
+    }
+
+    //______________________________________________________________
+    void Style::unpolish( QApplication* )
+    {
+        // NOTE: unpolish is not called in general on tear-down of Application
+        // only when a new QStyle is loaded by the QApplication unpolish is invoked
+        cleanup();
+    }
+
+    void Style::cleanup( void )
+    {
         delete _shadowHelper;
+        _shadowHelper = nullptr;
         delete _helper;
+        _helper = nullptr;
     }
 
     //______________________________________________________________
