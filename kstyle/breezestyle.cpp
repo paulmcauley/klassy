@@ -3119,7 +3119,6 @@ namespace Breeze
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
             _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
-        #if !BREEZE_USE_KDE4
         } else if( isQtQuickControl( option, widget ) ) {
 
             const QPalette& palette( option->palette );
@@ -3129,7 +3128,6 @@ namespace Breeze
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
             _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
-        #endif
         }
 
         return true;
