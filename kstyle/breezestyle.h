@@ -92,15 +92,13 @@ namespace Breeze
 
         //* needed to avoid warnings at compilation time
         using  ParentStyleClass::polish;
+        using  ParentStyleClass::unpolish;
 
         //* widget polishing
         virtual void polish( QWidget* );
 
         //* widget unpolishing
         virtual void unpolish( QWidget* );
-
-        //* application unpolishing
-        void unpolish( QApplication* ) override;
 
         //* polish scrollarea
         void polishScrollArea( QAbstractScrollArea* );
@@ -472,9 +470,6 @@ namespace Breeze
         bool hasAlteredBackground( const QWidget* ) const;
 
         private:
-
-        //* shared cleanup for unpolish and dtor
-        void cleanup();
 
         //*@name scrollbar button types (for addLine and subLine )
         //@{
