@@ -72,11 +72,6 @@
       <default>1</default>
     </entry>
 
-    <!-- show scrollbar pieces only on hover? -->
-    <entry name="ScrollBarShowOnMouseOver" type="Bool">
-        <default>true</default>
-    </entry>
-
     <!-- mnemonics -->
     <entry name="MnemonicsMode" type="Enum">
       <choices>

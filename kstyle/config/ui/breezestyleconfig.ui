@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>508</width>
-    <height>246</height>
+    <width>522</width>
+    <height>257</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -177,7 +177,7 @@
           <bool>false</bool>
          </property>
          <property name="text">
-          <string>Animations d&amp;uration:</string>
+          <string>Anima&amp;tions duration:</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -365,7 +365,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="0" colspan="3">
+       <item row="2" column="0" colspan="3">
         <spacer name="verticalSpacer_4">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -377,16 +377,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="2" column="0">
-        <widget class="QCheckBox" name="_scrollBarShowOnMouseOver">
-         <property name="text">
-          <string>Only show full scrollbar on mouse over</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

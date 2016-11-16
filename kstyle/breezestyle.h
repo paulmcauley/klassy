@@ -22,6 +22,7 @@
 
 #include "breeze.h"
 #include "config-breeze.h"
+#include "breezehelper.h"
 
 #if BREEZE_HAVE_KSTYLE
 #include <KStyle>
