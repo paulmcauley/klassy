@@ -65,11 +65,11 @@
 
     <!-- scrollbar buttons -->
     <entry name="ScrollBarAddLineButtons" type="Int">
-      <default>1</default>
+      <default>0</default>
     </entry>
 
     <entry name="ScrollBarSubLineButtons" type="Int">
-      <default>1</default>
+      <default>0</default>
     </entry>
 
     <!-- mnemonics -->
