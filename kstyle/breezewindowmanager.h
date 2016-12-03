@@ -31,6 +31,10 @@
 #include <QString>
 #include <QWidget>
 
+#if !BREEZE_USE_KDE4
+#include <QQuickItem>
+#endif
+
 #if BREEZE_HAVE_KWAYLAND
 namespace KWayland
 {
@@ -65,6 +69,11 @@ namespace Breeze
 
         //* register widget
         void registerWidget( QWidget* );
+
+#if !BREEZE_USE_KDE4
+        //* register quick item
+        void registerQuickItem( QQuickItem* );
+#endif
 
         //* unregister widget
         void unregisterWidget( QWidget* );
@@ -163,14 +172,20 @@ namespace Breeze
         //* reset drag
         void resetDrag( void );
 
+#if QT_VERSION >= 0x050000
+        using Window = QWindow;
+#else
+        using Window = QWidget;
+#endif
+
         //* start drag
-        void startDrag( QWidget*, const QPoint& );
+        void startDrag( Window*, const QPoint& );
 
         //* X11 specific implementation for startDrag
-        void startDragX11( QWidget*, const QPoint& );
+        void startDragX11( Window*, const QPoint& );
 
         //* Wayland specific implementation for startDrag
-        void startDragWayland( QWidget*, const QPoint& );
+        void startDragWayland( Window*, const QPoint& );
 
         //* returns true if window manager is used for moving
         /** right now this is true only for X11 */
@@ -262,6 +277,10 @@ namespace Breeze
         //* target being dragged
         /** Weak pointer is used in case the target gets deleted while drag is in progress */
         WeakPointer<QWidget> _target;
+
+#if !BREEZE_USE_KDE4
+        WeakPointer<QQuickItem> _quickTarget;
+#endif
 
         //* true if drag is about to start
         bool _dragAboutToStart;

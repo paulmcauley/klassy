@@ -89,6 +89,8 @@
 #include <NETRootInfo>
 #else
 #include <NETWM>
+#include <QQuickItem>
+#include <QQuickWindow>
 #endif
 
 #endif
@@ -317,6 +319,22 @@ namespace Breeze
 
     }
 
+#if !BREEZE_USE_KDE4
+    void WindowManager::registerQuickItem( QQuickItem* item )
+    {
+        if ( !item ) return;
+
+        QQuickWindow *window = item->window();
+        if (window) {
+            QQuickItem *contentItem = window->contentItem();
+            contentItem->setAcceptedMouseButtons( Qt::LeftButton );
+            contentItem->removeEventFilter( this );
+            contentItem->installEventFilter( this );
+        }
+
+    }
+#endif
+
     //_____________________________________________________________
     void WindowManager::unregisterWidget( QWidget* widget )
     {
@@ -372,11 +390,19 @@ namespace Breeze
             break;
 
             case QEvent::MouseMove:
-            if ( object == _target.data() ) return mouseMoveEvent( object, event );
+            if ( object == _target.data()
+#if !BREEZE_USE_KDE4
+                || object == _quickTarget.data()
+#endif
+               ) return mouseMoveEvent( object, event );
             break;
 
             case QEvent::MouseButtonRelease:
-            if ( _target ) return mouseReleaseEvent( object, event );
+            if ( _target
+#if !BREEZE_USE_KDE4
+                || _quickTarget
+#endif
+               ) return mouseReleaseEvent( object, event );
             break;
 
             default:
@@ -396,8 +422,15 @@ namespace Breeze
         {
 
             _dragTimer.stop();
+#if BREEZE_USE_KDE4
             if( _target )
-            { startDrag( _target.data(), _globalDragPoint ); }
+            { startDrag( _target.data()->window(), _globalDragPoint ); }
+#else
+            if( _target )
+            { startDrag( _target.data()->window()->windowHandle(), _globalDragPoint ); }
+            else if( _quickTarget )
+            { startDrag( _quickTarget.data()->window(), _globalDragPoint ); }
+#endif
 
         } else {
 
@@ -419,6 +452,21 @@ namespace Breeze
         // check lock
         if( isLocked() ) return false;
         else setLocked( true );
+
+#if !BREEZE_USE_KDE4
+        // check QQuickItem - we can immediately start drag, because QQuickWindow's contentItem
+        // only receives mouse events that weren't handled by children
+        if ( QQuickItem *item = qobject_cast<QQuickItem*>( object ) ) {
+            _quickTarget = item;
+            _dragPoint = mouseEvent->pos();
+            _globalDragPoint = mouseEvent->globalPos();
+
+            if( _dragTimer.isActive() ) _dragTimer.stop();
+            _dragTimer.start( _dragDelay, this );
+
+            return true;
+        }
+#endif
 
         // cast to widget
         QWidget *widget = static_cast<QWidget*>( object );
@@ -483,7 +531,7 @@ namespace Breeze
 
             return true;
 
-        } else if( !useWMMoveResize() ) {
+        } else if( !useWMMoveResize() && _target ) {
 
             // use QWidget::move for the grabbing
             /* this works only if the sending object and the target are identical */
@@ -791,6 +839,9 @@ namespace Breeze
         }
 
         _target.clear();
+#if !BREEZE_USE_KDE4
+        _quickTarget.clear();
+#endif
         if( _dragTimer.isActive() ) _dragTimer.stop();
         _dragPoint = QPoint();
         _globalDragPoint = QPoint();
@@ -800,10 +851,10 @@ namespace Breeze
     }
 
     //____________________________________________________________
-    void WindowManager::startDrag( QWidget* widget, const QPoint& position )
+    void WindowManager::startDrag( Window* window, const QPoint& position )
     {
 
-        if( !( enabled() && widget ) ) return;
+        if( !( enabled() && window ) ) return;
         if( QWidget::mouseGrabber() ) return;
 
         // ungrab pointer
@@ -811,9 +862,9 @@ namespace Breeze
         {
 
             if( Helper::isX11() ) {
-                startDragX11( widget, position );
+                startDragX11( window, position );
             } else if( Helper::isWayland() ) {
-                startDragWayland( widget, position );
+                startDragWayland( window, position );
             }
 
         } else if( !_cursorOverride ) {
@@ -830,21 +881,14 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void WindowManager::startDragX11( QWidget* widget, const QPoint& position )
+    void WindowManager::startDragX11( Window* window, const QPoint& position )
     {
         #if BREEZE_HAVE_X11
         // connection
         xcb_connection_t* connection( Helper::connection() );
 
-        // window
-        const WId window( widget->window()->winId() );
-
         #if QT_VERSION >= 0x050300
-        qreal dpiRatio = 1;
-        QWindow* windowHandle = widget->window()->windowHandle();
-        if( windowHandle ) dpiRatio = windowHandle->devicePixelRatio();
-        else dpiRatio = qApp->devicePixelRatio();
-        dpiRatio = qApp->devicePixelRatio();
+        const qreal dpiRatio = window->devicePixelRatio();
         #else
         const qreal dpiRatio = 1;
         #endif
@@ -857,28 +901,27 @@ namespace Breeze
 
         xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
         NETRootInfo( net_connection, NET::WMMoveResize ).moveResizeRequest(
-            window, position.x() * dpiRatio,
+            window->winId(), position.x() * dpiRatio,
             position.y() * dpiRatio,
             NET::Move );
 
         #else
 
-        Q_UNUSED( widget );
+        Q_UNUSED( window );
         Q_UNUSED( position );
 
         #endif
     }
 
     //_______________________________________________________
-    void WindowManager::startDragWayland( QWidget* widget, const QPoint& position )
+    void WindowManager::startDragWayland( Window* window, const QPoint& position )
     {
         #if BREEZE_HAVE_KWAYLAND
         if( !_seat ) {
             return;
         }
 
-        QWindow* windowHandle = widget->window()->windowHandle();
-        auto shellSurface = KWayland::Client::ShellSurface::fromWindow(windowHandle);
+        auto shellSurface = KWayland::Client::ShellSurface::fromWindow(window);
         if( !shellSurface ) {
             // TODO: also check for xdg-shell in future
             return;
@@ -886,7 +929,7 @@ namespace Breeze
 
         shellSurface->requestMove( _seat, _waylandSerial );
         #else
-        Q_UNUSED( widget );
+        Q_UNUSED( window );
         Q_UNUSED( position );
         #endif
     }
