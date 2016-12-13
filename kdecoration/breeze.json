@@ -1,6 +1,7 @@
 {
     "KPlugin": {
         "Description": "Window decoration using the Breeze visual style for the Plasma Desktop", 
+        "Description[ast]": "Decoración de ventanes qu'usa l'estilu visual Breeze pal escritoriu Plasma", 
         "Description[ca@valencia]": "Decoració de les finestres que usa l'estil visual Brisa per a l'escriptori del Plasma", 
         "Description[ca]": "Decoració de les finestres que usa l'estil visual Brisa per a l'escriptori del Plasma", 
         "Description[cs]": "Dekorace oken pro pracovní plochu Plasma využívající styl Breeze", 
