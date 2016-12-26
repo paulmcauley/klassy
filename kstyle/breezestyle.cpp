@@ -3063,8 +3063,8 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-        // no focus indicator on buttons, since it is rendered elsewhere
-        if ( widget && qobject_cast< const QAbstractButton*>( widget ) )
+        // no focus indicator on buttons / scrollbars, since it is rendered elsewhere
+        if ( qobject_cast< const QAbstractButton*>( widget ) || qobject_cast< const QScrollBar*>( widget ) )
             return true;
 
         #if QT_VERSION >= 0x050000
@@ -4947,7 +4947,7 @@ namespace Breeze
 
         // check focus from relevant parent
         const QWidget* parent( scrollBarParent( widget ) );
-        const bool hasFocus( enabled && parent && parent->hasFocus() );
+        const bool hasFocus( enabled && ( (widget && widget->hasFocus()) || (parent && parent->hasFocus()) ) );
 
         // enable animation state
         const bool handleActive( sliderOption->activeSubControls & SC_ScrollBarSlider );
