@@ -2926,9 +2926,9 @@ namespace Breeze
         int contentsHeight( headerOption->fontMetrics.height() );
         if( hasIcon ) contentsHeight = qMax( contentsHeight, iconSize.height() );
 
-        if( horizontal )
+        if( horizontal && headerOption->sortIndicator != QStyleOptionHeader::None )
         {
-            // also add space for icon
+            // also add space for sort indicator
             contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_ItemSpacing;
             contentsHeight = qMax( contentsHeight, int(Metrics::Header_ArrowSize) );
         }
