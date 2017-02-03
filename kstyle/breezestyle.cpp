@@ -3067,6 +3067,11 @@ namespace Breeze
         if ( qobject_cast< const QAbstractButton*>( widget ) || qobject_cast< const QScrollBar*>( widget ) )
             return true;
 
+        // no focus indicator on ComboBox list items
+        if (widget && widget->inherits("QComboBoxListView")) {
+            return true;
+        }
+
         #if QT_VERSION >= 0x050000
             if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
                 return true;
