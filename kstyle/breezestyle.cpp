@@ -5551,7 +5551,7 @@ namespace Breeze
 
         } else {
 
-            const QColor normal( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+            const QColor normal( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
             const QColor hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
             if( animated ) color = KColorUtils::mix( normal, hover, opacity );
             else if( mouseOver ) color = hover;
