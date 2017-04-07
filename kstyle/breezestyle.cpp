@@ -4881,9 +4881,13 @@ namespace Breeze
 
             }
 
-            _helper->renderProgressBarContents( painter, rect, palette.color( QPalette::Highlight ) );
-            painter->setClipRegion( oldClipRegion );
+            QColor contentsColor(
+                option->state.testFlag( QStyle::State_Selected ) ?
+                palette.color( QPalette::HighlightedText ) :
+                palette.color( QPalette::Highlight ) );
 
+            _helper->renderProgressBarContents( painter, rect, contentsColor );
+            painter->setClipRegion( oldClipRegion );
         }
 
         return true;
