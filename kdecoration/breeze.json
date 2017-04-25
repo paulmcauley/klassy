@@ -29,6 +29,7 @@
         "Description[sr@latin]": "Dekoracija prozora sa Povetarcem kao vizuelnim stilom za plasma površ.",
         "Description[sr]": "Декорација прозора са Поветарцем као визуелним стилом за плазма површ.",
         "Description[sv]": "Fönsterdekoration med den visuella stilen Breeze för Plasma skrivbord",
+        "Description[tr]": "Breeze görsel biçemini Plasma Masaüstü için kullanan pencere dekorasyonu",
         "Description[uk]": "Обрамлення вікон з використанням візуального стилю Breeze для стільничного середовища Плазми",
         "Description[x-test]": "xxWindow decoration using the Breeze visual style for the Plasma Desktopxx",
         "Description[zh_CN]": "窗口装饰使用等离子桌面微风视觉主题",
@@ -50,6 +51,7 @@
         "Name[sr@ijekavianlatin]": "Povetarac",
         "Name[sr@latin]": "Povetarac",
         "Name[sr]": "Поветарац",
+        "Name[tr]": "Esinti",
         "Name[x-test]": "xxBreezexx",
         "Name[zh_CN]": "微风",
         "ServiceTypes": [
