@@ -914,7 +914,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void WindowManager::startDragWayland( Window* window, const QPoint& position )
+    void WindowManager::startDragWayland( Window* window, const QPoint& )
     {
         #if BREEZE_HAVE_KWAYLAND
         if( !_seat ) {
@@ -930,7 +930,6 @@ namespace Breeze
         shellSurface->requestMove( _seat, _waylandSerial );
         #else
         Q_UNUSED( window );
-        Q_UNUSED( position );
         #endif
     }
 
