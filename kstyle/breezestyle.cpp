@@ -3064,17 +3064,16 @@ namespace Breeze
     bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
         // no focus indicator on buttons / scrollbars, since it is rendered elsewhere
-        if ( qobject_cast< const QAbstractButton*>( widget ) || qobject_cast< const QScrollBar*>( widget ) )
-            return true;
+        if ( qobject_cast<const QAbstractButton*>( widget ) || qobject_cast<const QScrollBar*>( widget ) || qobject_cast<const QGroupBox*>( widget ) )
+        { return true; }
 
         // no focus indicator on ComboBox list items
-        if (widget && widget->inherits("QComboBoxListView")) {
-            return true;
-        }
+        if (widget && widget->inherits("QComboBoxListView"))
+        { return true; }
 
         #if QT_VERSION >= 0x050000
-            if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
-                return true;
+        if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
+        { return true; }
         #endif
 
         const State& state( option->state );
