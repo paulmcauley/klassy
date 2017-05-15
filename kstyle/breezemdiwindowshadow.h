@@ -42,19 +42,7 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
-          QWidget( parent ),
-          _widget( 0L ),
-          _shadowTiles( shadowTiles )
-        {
-            setAttribute( Qt::WA_OpaquePaintEvent, false );
-            setAttribute( Qt::WA_TransparentForMouseEvents, true );
-            setFocusPolicy( Qt::NoFocus );
-        }
-
-        //* destructor
-        virtual ~MdiWindowShadow( void )
-        {}
+        explicit MdiWindowShadow( QWidget*, TileSet );
 
         //* update geometry
         void updateGeometry( void );

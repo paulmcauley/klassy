@@ -31,6 +31,17 @@ namespace Breeze
 {
 
     //____________________________________________________________________
+    MdiWindowShadow::MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
+        QWidget( parent ),
+        _widget( nullptr ),
+        _shadowTiles( shadowTiles )
+    {
+        setAttribute( Qt::WA_OpaquePaintEvent, false );
+        setAttribute( Qt::WA_TransparentForMouseEvents, true );
+        setFocusPolicy( Qt::NoFocus );
+    }
+
+    //____________________________________________________________________
     void MdiWindowShadow::updateGeometry( void )
     {
         if( !_widget ) return;
@@ -167,7 +178,7 @@ namespace Breeze
     {
 
         // check object,
-        if( !object->parent() ) return 0L;
+        if( !object->parent() ) return nullptr;
 
         // find existing window shadows
         const QList<QObject* > children = object->parent()->children();
@@ -177,7 +188,7 @@ namespace Breeze
             { if( shadow->widget() == object ) return shadow; }
         }
 
-        return 0L;
+        return nullptr;
 
     }
 
