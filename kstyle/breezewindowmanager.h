@@ -206,7 +206,7 @@ namespace Breeze
 
         //@}
 
-        //* returns first widget matching given class, or 0L if none
+        //* returns first widget matching given class, or nullptr if none
         template<typename T> T findParent( const QWidget* ) const;
 
         private:
@@ -317,11 +317,11 @@ namespace Breeze
         T WindowManager::findParent( const QWidget* widget ) const
     {
 
-        if( !widget ) return 0L;
+        if( !widget ) return nullptr;
         for( QWidget* parent = widget->parentWidget(); parent; parent = parent->parentWidget() )
         { if( T cast = qobject_cast<T>(parent) ) return cast; }
 
-        return 0L;
+        return nullptr;
     }
 
 }
