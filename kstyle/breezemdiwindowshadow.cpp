@@ -56,7 +56,8 @@ namespace Breeze
         const int rightSize( size );
 
         // get tileSet rect
-        _shadowTilesRect = _widget->frameGeometry().adjusted( -leftSize, -topSize, rightSize, bottomSize );
+        auto hole = _widget->frameGeometry();
+        _shadowTilesRect = hole.adjusted( -leftSize, -topSize, rightSize, bottomSize );
 
         // get parent MDI area's viewport
         QWidget *parent( parentWidget() );
@@ -68,8 +69,15 @@ namespace Breeze
 
         // set geometry
         QRect geometry( _shadowTilesRect );
-        if( parent ) geometry &= parent->rect();
+        if( parent )
+        {
+            geometry &= parent->rect();
+            hole &= parent->rect();
+        }
+
+        // update geometry and mask
         setGeometry( geometry );
+        setMask( QRegion( rect() ) - hole.translated( -geometry.topLeft() ) );
 
         // translate rendering rect
         _shadowTilesRect.translate( -geometry.topLeft() );
