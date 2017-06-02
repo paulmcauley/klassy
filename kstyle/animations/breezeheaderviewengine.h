@@ -63,14 +63,14 @@ namespace Breeze
         { return isAnimated( object, point ) ? _data.find( object ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
         //* enability
-        void setEnabled( bool value ) override
+        virtual void setEnabled( bool value )
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
         //* duration
-        void setDuration( int value ) override
+        virtual void setDuration( int value )
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
@@ -79,7 +79,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        bool unregisterWidget( QObject* object ) override
+        virtual bool unregisterWidget( QObject* object )
         { return _data.unregisterWidget( object ); }
 
         private:

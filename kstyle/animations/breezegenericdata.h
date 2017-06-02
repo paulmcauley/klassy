@@ -52,7 +52,7 @@ namespace Breeze
         { return _animation; }
 
         //* duration
-        void setDuration( int duration ) override
+        virtual void setDuration( int duration )
         { _animation.data()->setDuration( duration ); }
 
         //* opacity

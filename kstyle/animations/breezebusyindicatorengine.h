@@ -65,7 +65,7 @@ namespace Breeze
         virtual bool registerWidget( QObject* );
 
         //* duration
-        void setDuration( int ) override;
+        virtual void setDuration( int );
 
         //* set object as animated
         virtual void setAnimated( const QObject*, bool );
@@ -78,7 +78,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        bool unregisterWidget( QObject* ) override;
+        virtual bool unregisterWidget( QObject* );
 
         protected:
 

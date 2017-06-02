@@ -95,7 +95,7 @@ namespace Breeze
         virtual ~SplitterProxy( void );
 
         //* event filter
-        bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
+        virtual bool eventFilter( QObject*, QEvent* );
 
         //* enable state
         void setEnabled( bool );
@@ -107,7 +107,7 @@ namespace Breeze
         protected:
 
         //* event handler
-        bool event( QEvent* ) Q_DECL_OVERRIDE;
+        virtual bool event( QEvent* );
 
         protected:
 

@@ -41,7 +41,7 @@ namespace Breeze
         {}
 
         //* event filter
-        bool eventFilter( QObject*, QEvent* ) override;
+        virtual bool eventFilter( QObject*, QEvent* );
 
         //* subcontrol rect
         virtual void setHandleRect( const QRect& rect )

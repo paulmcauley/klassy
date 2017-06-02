@@ -44,7 +44,7 @@ namespace Breeze
         {}
 
         //* register dial
-        bool registerWidget( QWidget*, AnimationModes ) override;
+        virtual bool registerWidget( QWidget*, AnimationModes );
 
         //* control rect
         virtual void setHandleRect( const QObject* object, const QRect& rect )

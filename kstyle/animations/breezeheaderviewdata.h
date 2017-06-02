@@ -46,7 +46,7 @@ namespace Breeze
         {}
 
         //* duration
-        void setDuration( int duration ) override
+        void setDuration( int duration )
         {
             currentIndexAnimation().data()->setDuration( duration );
             previousIndexAnimation().data()->setDuration( duration );
@@ -124,7 +124,7 @@ namespace Breeze
         protected:
 
         //* dirty
-        void setDirty( void ) const override;
+        virtual void setDirty( void ) const;
 
         private:
 

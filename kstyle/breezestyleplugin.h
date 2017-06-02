@@ -48,7 +48,7 @@ namespace Breeze
         QStringList keys() const;
 
         //* create style
-        QStyle* create( const QString& ) Q_DECL_OVERRIDE;
+        QStyle* create( const QString& );
 
     };
 

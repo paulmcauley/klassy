@@ -173,10 +173,10 @@ namespace Breeze
         protected:
 
         //* generic event filter
-        bool event( QEvent* ) override;
+        virtual bool event( QEvent* );
 
         //* paint event
-        void paintEvent( QPaintEvent* ) override;
+        virtual void paintEvent( QPaintEvent* );
 
         //* grab widget background
         /*!

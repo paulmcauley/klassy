@@ -52,10 +52,10 @@ namespace Breeze
         protected Q_SLOTS:
 
         //! initialize animation
-        bool initializeAnimation( void ) override;
+        virtual bool initializeAnimation( void );
 
         //! animate
-        bool animate( void ) override;
+        virtual bool animate( void );
 
         //! finish animation
         virtual void finishAnimation( void );

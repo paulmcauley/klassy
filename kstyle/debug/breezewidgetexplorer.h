@@ -51,7 +51,7 @@ namespace Breeze
         { _drawWidgetRects = value; }
 
         //* event filter
-        bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
+        virtual bool eventFilter( QObject*, QEvent* );
 
         protected:
 

@@ -63,7 +63,7 @@ namespace Breeze
         { return _registeredWidgets.contains( widget ); }
 
         //* event filter
-        bool eventFilter( QObject*, QEvent*) Q_DECL_OVERRIDE;
+        virtual bool eventFilter( QObject*, QEvent*);
 
         //* update state
         void updateState( const QWidget*, bool focus, bool hover, qreal opacity, AnimationMode ) const;
@@ -127,7 +127,7 @@ namespace Breeze
         protected:
 
         //* painting
-        void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+        virtual void paintEvent(QPaintEvent *);
 
         //* return viewport associated to parent widget
         virtual QWidget* viewport( void ) const;
