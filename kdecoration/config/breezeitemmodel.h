@@ -55,7 +55,7 @@ namespace Breeze
         { sort( sortColumn(), sortOrder() ); }
 
         //* sort
-        virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+        void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
         //* current sorting column
         const int& sortColumn( void ) const

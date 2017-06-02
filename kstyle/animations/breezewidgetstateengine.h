@@ -104,7 +104,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _hoverData.setEnabled( value );
@@ -114,7 +114,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _hoverData.setDuration( value );
@@ -126,7 +126,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        bool unregisterWidget( QObject* object ) override
         {
             if( !object ) return false;
             bool found = false;

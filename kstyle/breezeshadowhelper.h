@@ -84,7 +84,7 @@ namespace Breeze
         void unregisterWidget( QWidget* );
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
 
         //* shadow tiles
         /** is public because it is also needed for mdi windows */

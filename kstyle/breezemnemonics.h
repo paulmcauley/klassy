@@ -50,7 +50,7 @@ namespace Breeze
         void setMode( int );
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
 
         //* true if mnemonics are enabled
         const bool& enabled( void ) const

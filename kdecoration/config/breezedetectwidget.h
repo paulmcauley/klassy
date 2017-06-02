@@ -78,7 +78,7 @@ namespace Breeze
 
         protected:
 
-        virtual bool eventFilter( QObject* o, QEvent* e );
+        bool eventFilter( QObject* o, QEvent* e ) override;
 
         private:
 

@@ -71,7 +71,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int duration )
+        void setDuration( int duration ) override
         {
             upArrowAnimation().data()->setDuration( duration );
             downArrowAnimation().data()->setDuration( duration );

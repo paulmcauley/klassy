@@ -46,7 +46,7 @@ namespace Breeze
         {}
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* needed to avoid warning about virtual function being hidden
         using WidgetStateData::animation;
@@ -102,7 +102,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int duration )
+        void setDuration( int duration ) override
         {
             WidgetStateData::setDuration( duration );
             addLineAnimation().data()->setDuration( duration );

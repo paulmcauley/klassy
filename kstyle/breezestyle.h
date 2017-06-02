@@ -96,50 +96,50 @@ namespace Breeze
         using  ParentStyleClass::unpolish;
 
         //* widget polishing
-        virtual void polish( QWidget* );
+        void polish( QWidget* ) Q_DECL_OVERRIDE;
 
         //* widget unpolishing
-        virtual void unpolish( QWidget* );
+        void unpolish( QWidget* ) Q_DECL_OVERRIDE;
 
         //* polish scrollarea
         void polishScrollArea( QAbstractScrollArea* );
 
         //* pixel metrics
-        virtual int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const;
+        int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const Q_DECL_OVERRIDE;
 
         //* style hints
-        virtual int styleHint(StyleHint, const QStyleOption* = nullptr, const QWidget* = nullptr, QStyleHintReturn* = nullptr) const;
+        int styleHint(StyleHint, const QStyleOption* = nullptr, const QWidget* = nullptr, QStyleHintReturn* = nullptr) const Q_DECL_OVERRIDE;
 
         //* returns rect corresponding to one widget's subelement
-        virtual QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const;
+        QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* returns rect corresponding to one widget's subcontrol
-        virtual QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* returns size matching contents
-        QSize sizeFromContents( ContentsType, const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize sizeFromContents( ContentsType, const QStyleOption*, const QSize&, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* returns which subcontrol given QPoint corresponds to
-        SubControl hitTestComplexControl( ComplexControl, const QStyleOptionComplex*, const QPoint&, const QWidget* ) const;
+        SubControl hitTestComplexControl( ComplexControl, const QStyleOptionComplex*, const QPoint&, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* primitives
-        void drawPrimitive( PrimitiveElement, const QStyleOption*, QPainter*, const QWidget* ) const;
+        void drawPrimitive( PrimitiveElement, const QStyleOption*, QPainter*, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* controls
-        void drawControl( ControlElement, const QStyleOption*, QPainter*, const QWidget* ) const;
+        void drawControl( ControlElement, const QStyleOption*, QPainter*, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* complex controls
-        void drawComplexControl( ComplexControl, const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        void drawComplexControl( ComplexControl, const QStyleOptionComplex*, QPainter*, const QWidget* ) const Q_DECL_OVERRIDE;
 
         //* generic text rendering
-        virtual void drawItemText(
+        void drawItemText(
             QPainter*, const QRect&, int alignment, const QPalette&, bool enabled,
-            const QString&, QPalette::ColorRole = QPalette::NoRole) const;
+            const QString&, QPalette::ColorRole = QPalette::NoRole) const Q_DECL_OVERRIDE;
 
         //*@name event filters
         //@{
 
-        virtual bool eventFilter(QObject *, QEvent *);
+        bool eventFilter(QObject *, QEvent *) Q_DECL_OVERRIDE;
         bool eventFilterScrollArea( QWidget*, QEvent* );
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
@@ -169,7 +169,7 @@ namespace Breeze
         protected:
 
         //* standard icons
-        virtual QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const
+        QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const Q_DECL_OVERRIDE
         { return standardIconImplementation( pixmap, option, widget ); }
 
         //* load configuration

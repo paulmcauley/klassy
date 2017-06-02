@@ -61,7 +61,7 @@ namespace Breeze
         protected:
 
         //* painting
-        virtual void paintEvent(QPaintEvent *);
+        void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
 
         private:
 
@@ -106,7 +106,7 @@ namespace Breeze
         { return _registeredWidgets.contains( widget ); }
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent*);
+        bool eventFilter( QObject*, QEvent*) Q_DECL_OVERRIDE;
 
         protected:
 

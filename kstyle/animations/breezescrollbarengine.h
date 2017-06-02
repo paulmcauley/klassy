@@ -44,7 +44,7 @@ namespace Breeze
         {}
 
         //* register scrollbar
-        virtual bool registerWidget( QWidget*, AnimationModes );
+        bool registerWidget( QWidget*, AnimationModes ) override;
 
         //*@name accessors
         //@{

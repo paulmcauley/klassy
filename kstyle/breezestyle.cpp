@@ -113,7 +113,7 @@ namespace BreezePrivate
         {}
 
         //* paint
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE
         {
             // call either proxy or parent class
             if( _proxy ) _proxy.data()->paint( painter, option, index );
@@ -121,7 +121,7 @@ namespace BreezePrivate
         }
 
         //* size hint for index
-        virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+        QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const Q_DECL_OVERRIDE
         {
 
             // get size from either proxy or parent class

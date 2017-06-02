@@ -53,13 +53,13 @@ namespace Breeze
         //@{
 
         //* return data for a given index
-        virtual QVariant data(const QModelIndex &index, int role) const;
+        QVariant data(const QModelIndex &index, int role) const override;
 
         //* header data
-        virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+        QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
         //* number of columns for a given index
-        virtual int columnCount(const QModelIndex& ) const
+        int columnCount(const QModelIndex& ) const override
         { return nColumns; }
 
         //@}
@@ -67,7 +67,7 @@ namespace Breeze
         protected:
 
         //* sort
-        virtual void privateSort( int, Qt::SortOrder )
+        void privateSort( int, Qt::SortOrder ) override
         {}
 
         private:

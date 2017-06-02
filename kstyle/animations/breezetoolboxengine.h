@@ -45,14 +45,14 @@ namespace Breeze
         {}
 
         //* enability
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
@@ -74,7 +74,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* data )
+        bool unregisterWidget( QObject* data ) override
         {
 
             if( !data ) return false;

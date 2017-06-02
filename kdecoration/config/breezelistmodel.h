@@ -70,14 +70,14 @@ namespace Breeze
         //@{
 
         //! flags
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const
+        Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE
         {
             if (!index.isValid()) return 0;
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
 
         //! unique index for given row, column and parent index
-        virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const
+        QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE
         {
 
             // check if index is valid
@@ -92,11 +92,11 @@ namespace Breeze
         }
 
         //! index of parent
-        virtual QModelIndex parent(const QModelIndex &) const
+        QModelIndex parent(const QModelIndex &) const Q_DECL_OVERRIDE
         { return QModelIndex(); }
 
         //! number of rows below given index
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const
+        int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE
         { return parent.isValid() ? 0:_values.size(); }
 
         //@}

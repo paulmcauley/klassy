@@ -79,13 +79,13 @@ namespace Breeze
         void unregisterWidget( QWidget* );
 
         //* event filter [reimplemented]
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) Q_DECL_OVERRIDE;
 
         protected:
 
         //* timer event,
         /** used to start drag if button is pressed for a long enough time */
-        void timerEvent( QTimerEvent* );
+        void timerEvent( QTimerEvent* ) Q_DECL_OVERRIDE;
 
         //* mouse press event
         bool mousePressEvent( QObject*, QEvent* );
