@@ -171,16 +171,40 @@ namespace Breeze
     //_______________________________________________________
     bool ShadowHelper::eventFilter( QObject* object, QEvent* event )
     {
+        if( Helper::isWayland() )
+        {
+            QWidget* widget( static_cast<QWidget*>( object ) );
+            if( event->type() == QEvent::Paint )
+            {
+                auto iter = _widgetSurfaces.constFind( widget );
+                if( iter == _widgetSurfaces.constEnd() )
+                {
+                    // install shadows and update winId
+                    installShadows( widget );
+                }
+            }
+            else if( event->type() == QEvent::Hide )
+            {
+                auto iter = _widgetSurfaces.find( widget );
+                if( iter != _widgetSurfaces.end() )
+                {
+                    delete iter.value();
+                    _widgetSurfaces.erase( iter );
+                }
+            }
+        }
+        else if( Helper::isX11() )
+        {
+            // check event type
+            if( event->type() != QEvent::WinIdChange ) return false;
 
-        // check event type
-        if( event->type() != QEvent::WinIdChange ) return false;
+            // cast widget
+            QWidget* widget( static_cast<QWidget*>( object ) );
 
-        // cast widget
-        QWidget* widget( static_cast<QWidget*>( object ) );
-
-        // install shadows and update winId
-        if( installShadows( widget ) )
-        { _widgets.insert( widget, widget->winId() ); }
+            // install shadows and update winId
+            if( installShadows( widget ) )
+            { _widgets.insert( widget, widget->winId() ); }
+        }
 
         return false;
 
@@ -464,6 +488,7 @@ namespace Breeze
         shadow->setOffsets( shadowMargins( widget ) );
         shadow->commit();
         s->commit( Surface::CommitFlag::None );
+        _widgetSurfaces.insert(widget, s);
 
         return true;
         #else

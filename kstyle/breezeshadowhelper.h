@@ -38,6 +38,7 @@ namespace Client
 {
     class ShadowManager;
     class ShmPool;
+    class Surface;
 }
 }
 #endif
@@ -156,6 +157,9 @@ namespace Breeze
 
         //* registered widgets
         QMap<QWidget*, WId> _widgets;
+
+        //* registered widgets to wayland surface mappings
+        QMap<QWidget*, KWayland::Client::Surface *> _widgetSurfaces;
 
         //* tileset
         TileSet _shadowTiles;
