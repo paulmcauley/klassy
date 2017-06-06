@@ -326,7 +326,7 @@ namespace Breeze
         else {
 
             QFontMetrics fm(s->font());
-            top += qMax(fm.boundingRect(c->caption()).height(), buttonHeight() );
+            top += qMax(fm.height(), buttonHeight() );
 
             // padding below
             // extra pixel is used for the active window outline
