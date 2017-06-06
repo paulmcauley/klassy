@@ -312,8 +312,8 @@ namespace Breeze
     void Decoration::recalculateBorders()
     {
         auto s = settings();
-        const auto c = client().data();
-        const Qt::Edges edges = c->adjacentScreenEdges();
+        auto c = client().data();
+        auto edges = c->adjacentScreenEdges();
 
         // left, right and bottom borders
         auto testFlag = [&]( Qt::Edge edge ) { return edges.testFlag(edge) && !m_internalSettings->drawBorderOnMaximizedWindows(); };
@@ -330,7 +330,7 @@ namespace Breeze
 
             // padding below
             // extra pixel is used for the active window outline
-            const int baseSize = settings()->smallSpacing();
+            const int baseSize = s->smallSpacing();
             top += baseSize*Metrics::TitleBar_BottomMargin + 1;
 
             // padding above
