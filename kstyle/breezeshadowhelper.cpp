@@ -173,28 +173,33 @@ namespace Breeze
     {
         if( Helper::isWayland() )
         {
+
+            #if BREEZE_HAVE_KWAYLAND
             QWidget* widget( static_cast<QWidget*>( object ) );
             if( event->type() == QEvent::Paint )
             {
+
                 auto iter = _widgetSurfaces.constFind( widget );
                 if( iter == _widgetSurfaces.constEnd() )
                 {
                     // install shadows and update winId
                     installShadows( widget );
                 }
-            }
-            else if( event->type() == QEvent::Hide )
-            {
+
+            } else if( event->type() == QEvent::Hide ) {
+
                 auto iter = _widgetSurfaces.find( widget );
                 if( iter != _widgetSurfaces.end() )
                 {
                     delete iter.value();
                     _widgetSurfaces.erase( iter );
                 }
+
             }
-        }
-        else if( Helper::isX11() )
-        {
+            #endif
+
+        } else if( Helper::isX11() ) {
+
             // check event type
             if( event->type() != QEvent::WinIdChange ) return false;
 
@@ -436,7 +441,6 @@ namespace Breeze
         QVector<quint32> data;
         foreach( const quint32& value, pixmaps )
         { data.append( value ); }
-
 
         const QMargins margins = shadowMargins( widget );
         const int topSize = margins.top();

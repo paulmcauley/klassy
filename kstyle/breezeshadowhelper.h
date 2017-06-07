@@ -34,12 +34,12 @@
 #if BREEZE_HAVE_KWAYLAND
 namespace KWayland
 {
-namespace Client
-{
-    class ShadowManager;
-    class ShmPool;
-    class Surface;
-}
+    namespace Client
+    {
+        class ShadowManager;
+        class ShmPool;
+        class Surface;
+    }
 }
 #endif
 
@@ -158,9 +158,6 @@ namespace Breeze
         //* registered widgets
         QMap<QWidget*, WId> _widgets;
 
-        //* registered widgets to wayland surface mappings
-        QMap<QWidget*, KWayland::Client::Surface *> _widgetSurfaces;
-
         //* tileset
         TileSet _shadowTiles;
 
@@ -181,8 +178,13 @@ namespace Breeze
         #endif
 
         #if BREEZE_HAVE_KWAYLAND
+
+        //* registered widgets to wayland surface mappings
+        QMap<QWidget*, KWayland::Client::Surface *> _widgetSurfaces;
+
         //* The Wayland shadow manager to create Shadows for Surfaces (QWindow)
         KWayland::Client::ShadowManager* _shadowManager;
+
         //* The Wayland Shared memory pool to share the shadow pixmaps with compositor
         KWayland::Client::ShmPool* _shmPool;
         #endif
