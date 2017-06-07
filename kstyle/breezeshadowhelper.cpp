@@ -60,8 +60,8 @@ namespace Breeze
         _atom( 0 )
         #endif
         #if BREEZE_HAVE_KWAYLAND
-        , _shadowManager( Q_NULLPTR )
-        , _shmPool( Q_NULLPTR )
+        , _shadowManager( nullptr )
+        , _shmPool( nullptr )
         #endif
     {
         // delay till event dispatcher is running as Wayland is highly async
@@ -90,7 +90,7 @@ namespace Breeze
         if( !connection ) {
             return;
         }
-        Registry *registry = new Registry( this );
+        auto registry = new Registry( this );
         registry->create( connection );
         connect(registry, &Registry::interfacesAnnounced, this,
             [registry, this] {

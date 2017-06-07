@@ -214,8 +214,8 @@ namespace Breeze
         _locked( false ),
         _cursorOverride( false )
         #if BREEZE_HAVE_KWAYLAND
-        , _seat( Q_NULLPTR )
-        , _pointer( Q_NULLPTR )
+        , _seat( nullptr )
+        , _pointer( nullptr )
         , _waylandSerial( 0 )
         #endif
     {
@@ -391,17 +391,17 @@ namespace Breeze
 
             case QEvent::MouseMove:
             if ( object == _target.data()
-#if !BREEZE_USE_KDE4
+                #if !BREEZE_USE_KDE4
                 || object == _quickTarget.data()
-#endif
+                #endif
                ) return mouseMoveEvent( object, event );
             break;
 
             case QEvent::MouseButtonRelease:
             if ( _target
-#if !BREEZE_USE_KDE4
+                #if !BREEZE_USE_KDE4
                 || _quickTarget
-#endif
+                #endif
                ) return mouseReleaseEvent( object, event );
             break;
 
@@ -422,15 +422,13 @@ namespace Breeze
         {
 
             _dragTimer.stop();
-#if BREEZE_USE_KDE4
+            #if BREEZE_USE_KDE4
             if( _target )
             { startDrag( _target.data()->window(), _globalDragPoint ); }
-#else
-            if( _target )
-            { startDrag( _target.data()->window()->windowHandle(), _globalDragPoint ); }
-            else if( _quickTarget )
-            { startDrag( _quickTarget.data()->window(), _globalDragPoint ); }
-#endif
+            #else
+            if( _target ) startDrag( _target.data()->window()->windowHandle(), _globalDragPoint );
+            else if( _quickTarget ) startDrag( _quickTarget.data()->window(), _globalDragPoint );
+            #endif
 
         } else {
 
@@ -445,7 +443,7 @@ namespace Breeze
     {
 
         // cast event and check buttons/modifiers
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
+        auto mouseEvent = static_cast<QMouseEvent*>( event );
         if( !( mouseEvent->modifiers() == Qt::NoModifier && mouseEvent->button() == Qt::LeftButton ) )
         { return false; }
 
@@ -453,10 +451,11 @@ namespace Breeze
         if( isLocked() ) return false;
         else setLocked( true );
 
-#if !BREEZE_USE_KDE4
+        #if !BREEZE_USE_KDE4
         // check QQuickItem - we can immediately start drag, because QQuickWindow's contentItem
         // only receives mouse events that weren't handled by children
-        if ( QQuickItem *item = qobject_cast<QQuickItem*>( object ) ) {
+        if( auto item = qobject_cast<QQuickItem*>( object ) )
+        {
             _quickTarget = item;
             _dragPoint = mouseEvent->pos();
             _globalDragPoint = mouseEvent->globalPos();
@@ -466,17 +465,17 @@ namespace Breeze
 
             return true;
         }
-#endif
+        #endif
 
         // cast to widget
-        QWidget *widget = static_cast<QWidget*>( object );
+        auto widget = static_cast<QWidget*>( object );
 
         // check if widget can be dragged from current position
         if( isBlackListed( widget ) || !canDrag( widget ) ) return false;
 
         // retrieve widget's child at event position
-        QPoint position( mouseEvent->pos() );
-        QWidget* child = widget->childAt( position );
+        auto position( mouseEvent->pos() );
+        auto child = widget->childAt( position );
         if( !canDrag( widget, child, position ) ) return false;
 
         // save target and drag point
@@ -508,7 +507,7 @@ namespace Breeze
         if( _dragTimer.isActive() ) _dragTimer.stop();
 
         // cast event and check drag distance
-        QMouseEvent *mouseEvent = static_cast<QMouseEvent*>( event );
+        auto mouseEvent = static_cast<QMouseEvent*>( event );
         if( !_dragInProgress )
         {
 
@@ -535,7 +534,7 @@ namespace Breeze
 
             // use QWidget::move for the grabbing
             /* this works only if the sending object and the target are identical */
-            QWidget* window( _target.data()->window() );
+            auto window( _target.data()->window() );
             window->move( window->pos() + mouseEvent->pos() - _dragPoint );
             return true;
 
@@ -582,7 +581,7 @@ namespace Breeze
         { return true; }
 
         // flat toolbuttons
-        if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) )
+        if( auto toolButton = qobject_cast<QToolButton*>( widget ) )
         { if( toolButton->autoRaise() ) return true; }
 
         // viewports
@@ -592,10 +591,10 @@ namespace Breeze
         2/ it matches its parent viewport
         3/ the parent is not blacklisted
         */
-        if( QListView* listView = qobject_cast<QListView*>( widget->parentWidget() ) )
+        if( auto listView = qobject_cast<QListView*>( widget->parentWidget() ) )
         { if( listView->viewport() == widget && !isBlackListed( listView ) ) return true; }
 
-        if( QTreeView* treeView = qobject_cast<QTreeView*>( widget->parentWidget() ) )
+        if( auto treeView = qobject_cast<QTreeView*>( widget->parentWidget() ) )
         { if( treeView->viewport() == widget && !isBlackListed( treeView ) ) return true; }
 
         /*
@@ -603,7 +602,7 @@ namespace Breeze
         this is because of kstatusbar
         who captures buttonPress/release events
         */
-        if( QLabel* label = qobject_cast<QLabel*>( widget ) )
+        if( auto label = qobject_cast<QLabel*>( widget ) )
         {
             if( label->textInteractionFlags().testFlag( Qt::TextSelectableByMouse ) ) return false;
 
@@ -702,14 +701,14 @@ namespace Breeze
         { return false; }
 
         // tool buttons
-        if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) )
+        if( auto toolButton = qobject_cast<QToolButton*>( widget ) )
         {
             if( dragMode() == StyleConfigData::WD_MINIMAL && !qobject_cast<QToolBar*>(widget->parentWidget() ) ) return false;
             return toolButton->autoRaise() && !toolButton->isEnabled();
         }
 
         // check menubar
-        if( QMenuBar* menuBar = qobject_cast<QMenuBar*>( widget ) )
+        if( auto menuBar = qobject_cast<QMenuBar*>( widget ) )
         {
 
             // do not drag from menubars embedded in Mdi windows
@@ -719,7 +718,7 @@ namespace Breeze
             if( menuBar->activeAction() && menuBar->activeAction()->isEnabled() ) return false;
 
             // check if action at position exists and is enabled
-            if( QAction* action = menuBar->actionAt( position ) )
+            if( auto action = menuBar->actionAt( position ) )
             {
                 if( action->isSeparator() ) return true;
                 if( action->isEnabled() ) return false;
@@ -743,14 +742,14 @@ namespace Breeze
         /* following checks are relevant only for WD_FULL mode */
 
         // tabbar. Make sure no tab is under the cursor
-        if( QTabBar* tabBar = qobject_cast<QTabBar*>( widget ) )
+        if( auto tabBar = qobject_cast<QTabBar*>( widget ) )
         { return tabBar->tabAt( position ) == -1; }
 
         /*
         check groupboxes
         prevent drag if unchecking grouboxes
         */
-        if( QGroupBox *groupBox = qobject_cast<QGroupBox*>( widget ) )
+        if( auto groupBox = qobject_cast<QGroupBox*>( widget ) )
         {
             // non checkable group boxes are always ok
             if( !groupBox->isCheckable() ) return true;
@@ -781,7 +780,7 @@ namespace Breeze
         }
 
         // labels
-        if( QLabel* label = qobject_cast<QLabel*>( widget ) )
+        if( auto label = qobject_cast<QLabel*>( widget ) )
         { if( label->textInteractionFlags().testFlag( Qt::TextSelectableByMouse ) ) return false; }
 
         // abstract item views
@@ -811,7 +810,7 @@ namespace Breeze
                 else if( itemView->indexAt( position ).isValid() ) return false;
             }
 
-        } else if( QGraphicsView* graphicsView =  qobject_cast<QGraphicsView*>( widget->parentWidget() ) )  {
+        } else if( auto graphicsView =  qobject_cast<QGraphicsView*>( widget->parentWidget() ) )  {
 
             if( widget == graphicsView->viewport() )
             {
@@ -839,9 +838,9 @@ namespace Breeze
         }
 
         _target.clear();
-#if !BREEZE_USE_KDE4
+        #if !BREEZE_USE_KDE4
         _quickTarget.clear();
-#endif
+        #endif
         if( _dragTimer.isActive() ) _dragTimer.stop();
         _dragPoint = QPoint();
         _globalDragPoint = QPoint();
@@ -861,11 +860,8 @@ namespace Breeze
         if( useWMMoveResize() )
         {
 
-            if( Helper::isX11() ) {
-                startDragX11( window, position );
-            } else if( Helper::isWayland() ) {
-                startDragWayland( window, position );
-            }
+            if( Helper::isX11() ) startDragX11( window, position );
+            else if( Helper::isWayland() ) startDragWayland( window, position );
 
         } else if( !_cursorOverride ) {
 
@@ -885,7 +881,7 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         // connection
-        xcb_connection_t* connection( Helper::connection() );
+        auto connection( Helper::connection() );
 
         #if QT_VERSION >= 0x050300
         const qreal dpiRatio = window->devicePixelRatio();
@@ -894,9 +890,9 @@ namespace Breeze
         #endif
 
         #if BREEZE_USE_KDE4
-        Display* net_connection = QX11Info::display();
+        auto net_connection = QX11Info::display();
         #else
-        xcb_connection_t* net_connection = connection;
+        auto net_connection = connection;
         #endif
 
         xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
@@ -956,7 +952,7 @@ namespace Breeze
     {
 
         if( !widget ) return false;
-        if( const QDockWidget* dockWidget = qobject_cast<const QDockWidget*>( widget->parent() ) )
+        if( auto dockWidget = qobject_cast<const QDockWidget*>( widget->parent() ) )
         {
 
             return widget == dockWidget->titleBarWidget();
