@@ -33,7 +33,6 @@ namespace Breeze
     //____________________________________________________________________
     MdiWindowShadow::MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
         QWidget( parent ),
-        _widget( nullptr ),
         _shadowTiles( shadowTiles )
     {
         setAttribute( Qt::WA_OpaquePaintEvent, false );
@@ -128,12 +127,14 @@ namespace Breeze
         // store in set
         _registeredWidgets.insert( widget );
 
+        // create shadow immediatly if widget is already visible
         if( widget->isVisible() )
         {
             installShadow( widget );
             updateShadowGeometry( widget );
             updateShadowZOrder( widget );
         }
+
         widget->installEventFilter( this );
 
         // catch object destruction

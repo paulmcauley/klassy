@@ -66,7 +66,7 @@ namespace Breeze
         private:
 
         //* associated widget
-        QWidget* _widget;
+        QWidget* _widget = nullptr;
 
         //* tileset rect, used for painting
         QRect _shadowTilesRect;
