@@ -60,7 +60,7 @@ namespace Breeze
         _shadowTilesRect = hole.adjusted( -leftSize, -topSize, rightSize, bottomSize );
 
         // get parent MDI area's viewport
-        QWidget *parent( parentWidget() );
+        auto parent( parentWidget() );
         if (parent && !qobject_cast<QMdiArea *>(parent) && qobject_cast<QMdiArea*>(parent->parentWidget()))
         { parent = parent->parentWidget(); }
 
@@ -76,8 +76,15 @@ namespace Breeze
         }
 
         // update geometry and mask
-        setGeometry( geometry );
-        setMask( QRegion( rect() ) - hole.translated( -geometry.topLeft() ) );
+        const QRegion mask = QRegion( geometry ) - hole;
+        if( mask.isEmpty() ) hide();
+        else {
+
+            setGeometry( geometry );
+            setMask( mask.translated( -geometry.topLeft() ) );
+            show();
+
+        }
 
         // translate rendering rect
         _shadowTilesRect.translate( -geometry.topLeft() );
@@ -111,7 +118,7 @@ namespace Breeze
     {
 
         // check widget type
-        QMdiSubWindow* subwindow( qobject_cast<QMdiSubWindow*>( widget ) );
+        auto subwindow( qobject_cast<QMdiSubWindow*>( widget ) );
         if( !subwindow ) return false;
         if( subwindow->widget() && subwindow->widget()->inherits( "KMainWindow" ) ) return false;
 
@@ -121,6 +128,12 @@ namespace Breeze
         // store in set
         _registeredWidgets.insert( widget );
 
+        if( widget->isVisible() )
+        {
+            installShadow( widget );
+            updateShadowGeometry( widget );
+            updateShadowZOrder( widget );
+        }
         widget->installEventFilter( this );
 
         // catch object destruction
@@ -189,7 +202,7 @@ namespace Breeze
         if( !object->parent() ) return nullptr;
 
         // find existing window shadows
-        const QList<QObject* > children = object->parent()->children();
+        auto children = object->parent()->children();
         foreach( QObject *child, children )
         {
             if( MdiWindowShadow* shadow = qobject_cast<MdiWindowShadow*>(child) )
@@ -205,16 +218,15 @@ namespace Breeze
     {
 
         // cast
-        QWidget* widget( static_cast<QWidget*>( object ) );
+        auto widget( static_cast<QWidget*>( object ) );
         if( !widget->parentWidget() ) return;
 
         // make sure shadow is not already installed
         if( findShadow( object ) ) return;
 
         // create new shadow
-        MdiWindowShadow* windowShadow( new MdiWindowShadow( widget->parentWidget(), _shadowTiles ) );
+        auto windowShadow( new MdiWindowShadow( widget->parentWidget(), _shadowTiles ) );
         windowShadow->setWidget( widget );
-        windowShadow->show();
         return;
 
     }
