@@ -3079,7 +3079,7 @@ namespace Breeze
         const State& state( option->state );
 
         // no focus indicator on selected list items
-        if (widget && widget->inherits("QAbstractItemView") && (state & State_Selected))
+        if ((state & State_Selected) && qobject_cast<const QAbstractItemView *>(widget))
         { return true; }
 
         const QRect rect( option->rect.adjusted( 0, 0, 0, 1 ) );
