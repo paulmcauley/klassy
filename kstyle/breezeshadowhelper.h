@@ -24,6 +24,7 @@
 #include "config-breeze.h"
 
 #include <QObject>
+#include <QPointer>
 #include <QMap>
 #include <QMargins>
 
@@ -183,10 +184,10 @@ namespace Breeze
         QMap<QWidget*, KWayland::Client::Surface *> _widgetSurfaces;
 
         //* The Wayland shadow manager to create Shadows for Surfaces (QWindow)
-        KWayland::Client::ShadowManager* _shadowManager;
+        QPointer<KWayland::Client::ShadowManager> _shadowManager;
 
         //* The Wayland Shared memory pool to share the shadow pixmaps with compositor
-        KWayland::Client::ShmPool* _shmPool;
+        QPointer<KWayland::Client::ShmPool> _shmPool;
         #endif
 
     };

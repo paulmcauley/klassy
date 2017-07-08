@@ -90,17 +90,17 @@ namespace Breeze
         if( !connection ) {
             return;
         }
-        auto registry = new Registry( this );
+        auto registry = new Registry( connection );
         registry->create( connection );
         connect(registry, &Registry::interfacesAnnounced, this,
             [registry, this] {
                 const auto interface = registry->interface( Registry::Interface::Shadow );
                 if( interface.name != 0 ) {
-                    _shadowManager = registry->createShadowManager( interface.name, interface.version, this );
+                    _shadowManager = registry->createShadowManager( interface.name, interface.version, registry );
                 }
                 const auto shmInterface = registry->interface( Registry::Interface::Shm );
                 if( shmInterface.name != 0 ) {
-                    _shmPool = registry->createShmPool( shmInterface.name, shmInterface.version, this );
+                    _shmPool = registry->createShmPool( shmInterface.name, shmInterface.version, registry );
                 }
             }
         );
