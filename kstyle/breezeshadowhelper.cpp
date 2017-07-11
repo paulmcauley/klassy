@@ -191,7 +191,6 @@ namespace Breeze
                 auto iter = _widgetSurfaces.find( widget );
                 if( iter != _widgetSurfaces.end() )
                 {
-                    delete iter.value();
                     _widgetSurfaces.erase( iter );
                 }
 
