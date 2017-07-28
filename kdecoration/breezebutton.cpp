@@ -137,7 +137,7 @@ namespace Breeze
 
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
             const QPixmap pixmap = decoration()->client().data()->icon().pixmap( m_iconSize );
-            painter->drawPixmap(iconRect.center() - QPoint(pixmap.width()/2, pixmap.height()/2), pixmap);
+            painter->drawPixmap(iconRect.center() - QPoint(pixmap.width()/2, pixmap.height()/2)/pixmap.devicePixelRatio(), pixmap);
 
         } else {
 
