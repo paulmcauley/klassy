@@ -56,6 +56,7 @@
 #include <QToolBar>
 #include <QToolBox>
 #include <QToolButton>
+#include <QTreeView>
 #include <QWidgetAction>
 
 namespace BreezePrivate
@@ -398,6 +399,17 @@ namespace Breeze
                     scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
                 }
 
+                // QTreeView animates expanding/collapsing branches. It paints them into a
+                // temp pixmap whose background is unconditionally filled with the palette's
+                // *base* color which is usually different from the window's color
+                // cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
+                if ( QTreeView *treeView = qobject_cast<QTreeView *>( scrollArea ) ) {
+                    if (treeView->isAnimated()) {
+                        QPalette pal( treeView->palette() );
+                        pal.setColor( QPalette::Active, QPalette::Base, treeView->palette().color( treeView->backgroundRole() ) );
+                        treeView->setPalette(pal);
+                    }
+                }
             }
 
         }
