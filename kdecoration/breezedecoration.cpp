@@ -182,6 +182,7 @@ namespace Breeze
         connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
         connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
         connect(c, &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
         connect(c, &KDecoration2::DecoratedClient::captionChanged, this,
             [this]()
             {
@@ -204,7 +205,7 @@ namespace Breeze
 
         connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
         connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
         connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
         createButtons();
@@ -312,14 +313,11 @@ namespace Breeze
     void Decoration::recalculateBorders()
     {
         auto s = settings();
-        auto c = client().data();
-        auto edges = c->adjacentScreenEdges();
 
         // left, right and bottom borders
-        auto testFlag = [&]( Qt::Edge edge ) { return edges.testFlag(edge) && !m_internalSettings->drawBorderOnMaximizedWindows(); };
-        const int left   = isMaximizedHorizontally() || testFlag(Qt::LeftEdge) ? 0 : borderSize();
-        const int right  = isMaximizedHorizontally() || testFlag(Qt::RightEdge) ? 0 : borderSize();
-        const int bottom = isMaximizedVertically() || c->isShaded() || testFlag(Qt::BottomEdge) ? 0 : borderSize(true);
+        const int left   = isLeftEdge() ? 0 : borderSize();
+        const int right  = isRightEdge() ? 0 : borderSize();
+        const int bottom = isBottomEdge() ? 0 : borderSize(true);
 
         int top = 0;
         if( hideTitleBar() ) top = bottom;
@@ -373,12 +371,12 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateButtonsGeometry()
     {
-        auto s = settings();
+        const auto s = settings();
 
         // adjust button position
-        const int bHeight = captionHeight() + (isMaximized() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
+        const int bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
         const int bWidth = buttonHeight();
-        const int verticalOffset = (isMaximized() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
+        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() + m_rightButtons->buttons() )
         {
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
@@ -394,9 +392,9 @@ namespace Breeze
             m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
 
             // padding
-            const int vPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-            if( isMaximizedHorizontally() )
+            if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
@@ -418,9 +416,9 @@ namespace Breeze
             m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
 
             // padding
-            const int vPadding = isMaximized() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-            if( isMaximizedHorizontally() )
+            if( isRightEdge() )
             {
 
                 auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
@@ -434,7 +432,6 @@ namespace Breeze
         }
 
         update();
-
 
     }
 
@@ -517,9 +514,15 @@ namespace Breeze
 
         } else {
 
-            // we make the rect a little bit larger to be able to clip away the rounded corners on bottom
             painter->setClipRect(titleRect, Qt::IntersectClip);
-            painter->drawRoundedRect(titleRect.adjusted(0, 0, 0, Metrics::Frame_FrameRadius), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+
+            // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
+            painter->drawRoundedRect(titleRect.adjusted(
+                isLeftEdge() ? -Metrics::Frame_FrameRadius:0,
+                isTopEdge() ? -Metrics::Frame_FrameRadius:0,
+                isRightEdge() ? Metrics::Frame_FrameRadius:0,
+                Metrics::Frame_FrameRadius),
+                Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
 
         }
 
