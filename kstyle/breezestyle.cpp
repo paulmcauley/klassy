@@ -820,7 +820,7 @@ namespace Breeze
     void Style::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        StylePrimitive fcn( nullptr );
+        StylePrimitive fcn;
         switch( element )
         {
 
@@ -861,7 +861,7 @@ namespace Breeze
         painter->save();
 
         // call function if implemented
-        if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
+        if( !( fcn && fcn( *this, option, painter, widget ) ) )
         { ParentStyleClass::drawPrimitive( element, option, painter, widget ); }
 
         painter->restore();
@@ -872,7 +872,7 @@ namespace Breeze
     void Style::drawControl( ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        StyleControl fcn( nullptr );
+        StyleControl fcn;
 
         #if BREEZE_HAVE_KSTYLE||BREEZE_USE_KDE4
         if( element == CE_CapacityBar )
@@ -922,7 +922,7 @@ namespace Breeze
         painter->save();
 
         // call function if implemented
-        if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
+        if( !( fcn && fcn( *this, option, painter, widget ) ) )
         { ParentStyleClass::drawControl( element, option, painter, widget ); }
 
         painter->restore();
@@ -933,7 +933,7 @@ namespace Breeze
     void Style::drawComplexControl( ComplexControl element, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        StyleComplexControl fcn( nullptr );
+        StyleComplexControl fcn;
         switch( element )
         {
             case CC_GroupBox: fcn = &Style::drawGroupBoxComplexControl; break;
@@ -953,11 +953,10 @@ namespace Breeze
         painter->save();
 
         // call function if implemented
-        if( !( fcn && ( this->*fcn )( option, painter, widget ) ) )
+        if( !( fcn && fcn( *this, option, painter, widget ) ) )
         { ParentStyleClass::drawComplexControl( element, option, painter, widget ); }
 
         painter->restore();
-
 
     }
 

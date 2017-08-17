@@ -47,6 +47,8 @@
 #include <QCommandLinkButton>
 #endif
 
+#include <functional>
+
 namespace BreezePrivate
 {
     class TabBarData;
@@ -513,14 +515,14 @@ namespace Breeze
         IconCache _iconCache;
 
         //* pointer to primitive specialized function
-        using StylePrimitive = bool(Style::*)(const QStyleOption*, QPainter*, const QWidget* ) const;
-        StylePrimitive _frameFocusPrimitive = nullptr;
+        using StylePrimitive = std::function<bool(const Style&, const QStyleOption*, QPainter*, const QWidget*)>;
+        StylePrimitive _frameFocusPrimitive;
 
         //* pointer to control specialized function
-        using StyleControl = bool (Style::*)( const QStyleOption*, QPainter*, const QWidget* ) const;
+        using StyleControl = std::function<bool(const Style&, const QStyleOption*, QPainter*, const QWidget*)>;
 
         //* pointer to control specialized function
-        using StyleComplexControl = bool (Style::*)( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        using StyleComplexControl = std::function<bool(const Style&, const QStyleOptionComplex*, QPainter*, const QWidget*)>;
 
         //*@name custom elements
         //@{
