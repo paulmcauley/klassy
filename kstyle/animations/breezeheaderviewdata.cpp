@@ -146,7 +146,7 @@ namespace Breeze
 
 
     //__________________________________________________________
-    void HeaderViewData::setDirty( void ) const
+    void HeaderViewData::setDirty() const
     {
         QHeaderView* header = qobject_cast<QHeaderView*>( target().data() );
         if( !header ) return;

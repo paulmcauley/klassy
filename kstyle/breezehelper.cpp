@@ -1416,7 +1416,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    bool Helper::isX11( void )
+    bool Helper::isX11()
     {
         #if BREEZE_HAVE_X11
         #if QT_VERSION >= 0x050000
@@ -1432,7 +1432,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    bool Helper::isWayland( void )
+    bool Helper::isWayland()
     {
         #if QT_VERSION >= 0x050000
         static const bool s_isWayland = qApp->platformName().startsWith(QLatin1String("wayland"));
@@ -1513,7 +1513,7 @@ namespace Breeze
     }
 
     //________________________________________________________________________________________________________
-    bool Helper::compositingActive( void ) const
+    bool Helper::compositingActive() const
     {
 
         #if BREEZE_HAVE_X11
@@ -1563,7 +1563,7 @@ namespace Breeze
     #if BREEZE_HAVE_X11
 
     //____________________________________________________________________
-    xcb_connection_t* Helper::connection( void )
+    xcb_connection_t* Helper::connection()
     {
 
         #if QT_VERSION >= 0x050000
@@ -1597,7 +1597,7 @@ namespace Breeze
     #endif
 
     //____________________________________________________________________
-    void Helper::init( void )
+    void Helper::init()
     {
         #if BREEZE_HAVE_X11
 

@@ -43,7 +43,7 @@ namespace Breeze
         explicit BusyIndicatorEngine( QObject* );
 
         //* destructor
-        virtual ~BusyIndicatorEngine( void )
+        virtual ~BusyIndicatorEngine()
         {}
 
         //*@name accessors
@@ -53,7 +53,7 @@ namespace Breeze
         virtual bool isAnimated( const QObject* );
 
         //* value
-        virtual int value( void ) const
+        virtual int value() const
         { return _value; }
 
         //@}

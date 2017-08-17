@@ -88,60 +88,60 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit Style( void );
+        explicit Style();
 
         //* destructor
-        virtual ~Style( void );
+        ~Style() override;
 
         //* needed to avoid warnings at compilation time
         using  ParentStyleClass::polish;
         using  ParentStyleClass::unpolish;
 
         //* widget polishing
-        virtual void polish( QWidget* );
+        void polish( QWidget* ) override;
 
         //* widget unpolishing
-        virtual void unpolish( QWidget* );
+        void unpolish( QWidget* ) override;
 
         //* polish scrollarea
         void polishScrollArea( QAbstractScrollArea* );
 
         //* pixel metrics
-        virtual int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const;
+        int pixelMetric(PixelMetric, const QStyleOption* = nullptr, const QWidget* = nullptr) const override;
 
         //* style hints
-        virtual int styleHint(StyleHint, const QStyleOption* = nullptr, const QWidget* = nullptr, QStyleHintReturn* = nullptr) const;
+        int styleHint(StyleHint, const QStyleOption* = nullptr, const QWidget* = nullptr, QStyleHintReturn* = nullptr) const override;
 
         //* returns rect corresponding to one widget's subelement
-        virtual QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const;
+        QRect subElementRect( SubElement, const QStyleOption*, const QWidget* ) const override;
 
         //* returns rect corresponding to one widget's subcontrol
-        virtual QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const;
+        QRect subControlRect( ComplexControl, const QStyleOptionComplex*, SubControl, const QWidget* ) const override;
 
         //* returns size matching contents
-        QSize sizeFromContents( ContentsType, const QStyleOption*, const QSize&, const QWidget* ) const;
+        QSize sizeFromContents( ContentsType, const QStyleOption*, const QSize&, const QWidget* ) const override;
 
         //* returns which subcontrol given QPoint corresponds to
-        SubControl hitTestComplexControl( ComplexControl, const QStyleOptionComplex*, const QPoint&, const QWidget* ) const;
+        SubControl hitTestComplexControl( ComplexControl, const QStyleOptionComplex*, const QPoint&, const QWidget* ) const override;
 
         //* primitives
-        void drawPrimitive( PrimitiveElement, const QStyleOption*, QPainter*, const QWidget* ) const;
+        void drawPrimitive( PrimitiveElement, const QStyleOption*, QPainter*, const QWidget* ) const override;
 
         //* controls
-        void drawControl( ControlElement, const QStyleOption*, QPainter*, const QWidget* ) const;
+        void drawControl( ControlElement, const QStyleOption*, QPainter*, const QWidget* ) const override;
 
         //* complex controls
-        void drawComplexControl( ComplexControl, const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
+        void drawComplexControl( ComplexControl, const QStyleOptionComplex*, QPainter*, const QWidget* ) const override;
 
         //* generic text rendering
-        virtual void drawItemText(
+        void drawItemText(
             QPainter*, const QRect&, int alignment, const QPalette&, bool enabled,
-            const QString&, QPalette::ColorRole = QPalette::NoRole) const;
+            const QString&, QPalette::ColorRole = QPalette::NoRole) const override;
 
         //*@name event filters
         //@{
 
-        virtual bool eventFilter(QObject *, QEvent *);
+        bool eventFilter(QObject *, QEvent *) override;
         bool eventFilterScrollArea( QWidget*, QEvent* );
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
@@ -163,16 +163,21 @@ namespace Breeze
         protected Q_SLOTS:
 
         //* update configuration
-        void configurationChanged( void );
+        void configurationChanged();
 
         //* standard icons
-        virtual QIcon standardIconImplementation( StandardPixmap, const QStyleOption*, const QWidget* ) const;
+        QIcon standardIconImplementation( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 
         protected:
 
         //* standard icons
-        virtual QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const
+        #if BREEZE_USE_KDE4
+        QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const
         { return standardIconImplementation( pixmap, option, widget ); }
+        #else
+        QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const override
+        { return standardIconImplementation( pixmap, option, widget ); }
+        #endif
 
         //* load configuration
         void loadConfiguration();
@@ -461,10 +466,10 @@ namespace Breeze
         template<typename T> bool hasParent( const QWidget* ) const;
 
         //* return true if icons should be shown in menus
-        bool showIconsInMenuItems( void ) const;
+        bool showIconsInMenuItems() const;
 
         //* return true if icons should be shown on buttons
-        bool showIconsOnPushButtons( void ) const;
+        bool showIconsOnPushButtons() const;
 
         //* return true if passed widget is a menu title (KMenu::addTitle)
         bool isMenuTitle( const QWidget* ) const;
@@ -481,34 +486,34 @@ namespace Breeze
         //@}
 
         //* helper
-        Helper* _helper;
+        Helper* _helper = nullptr;
 
         //* shadow helper
-        ShadowHelper* _shadowHelper;
+        ShadowHelper* _shadowHelper = nullptr;
 
         //* animations
-        Animations* _animations;
+        Animations* _animations = nullptr;
 
         //* keyboard accelerators
-        Mnemonics* _mnemonics;
+        Mnemonics* _mnemonics = nullptr;
 
         //* window manager
-        WindowManager* _windowManager;
+        WindowManager* _windowManager = nullptr;
 
         //* frame shadows
-        FrameShadowFactory* _frameShadowFactory;
+        FrameShadowFactory* _frameShadowFactory = nullptr;
 
         //* mdi window shadows
-        MdiWindowShadowFactory* _mdiWindowShadowFactory;
+        MdiWindowShadowFactory* _mdiWindowShadowFactory = nullptr;
 
         //* splitter Factory, to extend splitters hit area
-        SplitterFactory* _splitterFactory;
+        SplitterFactory* _splitterFactory = nullptr;
 
         //* widget explorer
-        WidgetExplorer* _widgetExplorer;
+        WidgetExplorer* _widgetExplorer = nullptr;
 
         //* tabbar data
-        BreezePrivate::TabBarData* _tabBarData;
+        BreezePrivate::TabBarData* _tabBarData = nullptr;
 
         //* icon hash
         using IconCache = QHash<StandardPixmap, QIcon>;

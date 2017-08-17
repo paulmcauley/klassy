@@ -43,7 +43,7 @@ namespace Breeze
         TabBarData( QObject* parent, QWidget* target, int duration );
 
         //* destructor
-        virtual ~TabBarData( void )
+        virtual ~TabBarData()
         {}
 
         //* duration
@@ -60,7 +60,7 @@ namespace Breeze
         //@{
 
         //* current opacity
-        virtual qreal currentOpacity( void ) const
+        virtual qreal currentOpacity() const
         { return _current._opacity; }
 
         //* current opacity
@@ -72,7 +72,7 @@ namespace Breeze
         }
 
         //* current index
-        virtual int currentIndex( void ) const
+        virtual int currentIndex() const
         { return _current._index; }
 
         //* current index
@@ -80,7 +80,7 @@ namespace Breeze
         { _current._index = index; }
 
         //* current index animation
-        virtual const Animation::Pointer& currentIndexAnimation( void ) const
+        virtual const Animation::Pointer& currentIndexAnimation() const
         { return _current._animation; }
 
         //@}
@@ -89,7 +89,7 @@ namespace Breeze
         //@{
 
         //* previous opacity
-        virtual qreal previousOpacity( void ) const
+        virtual qreal previousOpacity() const
         { return _previous._opacity; }
 
         //* previous opacity
@@ -101,7 +101,7 @@ namespace Breeze
         }
 
         //* previous index
-        virtual int previousIndex( void ) const
+        virtual int previousIndex() const
         { return _previous._index; }
 
         //* previous index
@@ -109,7 +109,7 @@ namespace Breeze
         { _previous._index = index; }
 
         //* previous index Animation
-        virtual const Animation::Pointer& previousIndexAnimation( void ) const
+        virtual const Animation::Pointer& previousIndexAnimation() const
         { return _previous._animation; }
 
         //@}
@@ -128,7 +128,7 @@ namespace Breeze
             public:
 
             //* default constructor
-            Data( void ):
+            Data():
                 _opacity(0),
                 _index(-1)
             {}

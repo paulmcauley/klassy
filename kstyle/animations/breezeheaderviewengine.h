@@ -41,7 +41,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~HeaderViewEngine( void )
+        virtual ~HeaderViewEngine()
         {}
 
         //* register headerview

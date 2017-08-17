@@ -61,7 +61,7 @@ namespace Breeze
     }
 
     //____________________________________________________________
-    void Animations::setupEngines( void )
+    void Animations::setupEngines()
     {
 
         // animation steps

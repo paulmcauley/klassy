@@ -346,7 +346,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________________________
-    QWidget* FrameShadow::viewport( void ) const
+    QWidget* FrameShadow::viewport() const
     {
 
         if( !parentWidget() ) return nullptr;

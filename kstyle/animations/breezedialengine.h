@@ -40,7 +40,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~DialEngine( void )
+        virtual ~DialEngine()
         {}
 
         //* register dial

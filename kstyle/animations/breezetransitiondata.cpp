@@ -36,7 +36,7 @@ namespace Breeze
     { _transition.data()->hide(); }
 
     //_________________________________________________________________
-    TransitionData::~TransitionData( void )
+    TransitionData::~TransitionData()
     { if( _transition ) _transition.data()->deleteLater(); }
 
 }

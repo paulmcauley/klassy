@@ -42,7 +42,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~TabBarEngine( void )
+        virtual ~TabBarEngine()
         {}
 
         //* register tabbar

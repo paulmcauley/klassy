@@ -86,11 +86,11 @@ namespace Breeze
         void render(const QRect&, QPainter*, Tiles = Ring) const;
 
         //* return size associated to this tileset
-        QSize size( void ) const
+        QSize size() const
         { return QSize( _w1 + _w3, _h1 + _h3 ); }
 
         //* is valid
-        bool isValid( void ) const
+        bool isValid() const
         { return _pixmaps.size() == 9; }
 
         //* returns pixmap for given index

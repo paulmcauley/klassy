@@ -39,7 +39,7 @@ namespace Breeze
         { target->installEventFilter( this ); }
 
         //* destructor
-        virtual ~EnableData( void )
+        virtual ~EnableData()
         {}
 
         //* event filter

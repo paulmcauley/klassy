@@ -41,7 +41,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~SpinBoxEngine( void )
+        virtual ~SpinBoxEngine()
         {}
 
         //* register widget

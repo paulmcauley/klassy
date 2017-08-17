@@ -41,7 +41,7 @@ namespace Breeze
         explicit WidgetExplorer( QObject* );
 
         //* enable
-        bool enabled( void ) const;
+        bool enabled() const;
 
         //* enable
         void setEnabled( bool );

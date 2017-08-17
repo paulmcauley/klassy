@@ -49,7 +49,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________
-    bool StackedWidgetData::initializeAnimation( void )
+    bool StackedWidgetData::initializeAnimation()
     {
 
         // check enability
@@ -90,7 +90,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________
-    bool StackedWidgetData::animate( void )
+    bool StackedWidgetData::animate()
     {
 
         // check enability
@@ -108,7 +108,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________
-    void StackedWidgetData::finishAnimation( void )
+    void StackedWidgetData::finishAnimation()
     {
         // disable updates on currentWidget
         if( _target && _target.data()->currentWidget() )
@@ -130,7 +130,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________
-    void StackedWidgetData::targetDestroyed( void )
+    void StackedWidgetData::targetDestroyed()
     {
         setEnabled( false );
         _target.clear();

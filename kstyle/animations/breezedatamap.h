@@ -40,14 +40,14 @@ namespace Breeze
         using Value = WeakPointer<T>;
 
         //* constructor
-        BaseDataMap( void ):
+        BaseDataMap():
             QMap<Key, Value>(),
             _enabled( true ),
             _lastKey( NULL )
         {}
 
         //* destructor
-        virtual ~BaseDataMap( void )
+        virtual ~BaseDataMap()
         {}
 
         //* insertion
@@ -109,7 +109,7 @@ namespace Breeze
         }
 
         //* enability
-        bool enabled( void ) const
+        bool enabled() const
         { return _enabled; }
 
         //* duration
@@ -139,11 +139,11 @@ namespace Breeze
         public:
 
         //* constructor
-        DataMap( void )
+        DataMap()
         {}
 
         //* destructor
-        virtual ~DataMap( void )
+        virtual ~DataMap()
         {}
 
     };
@@ -155,11 +155,11 @@ namespace Breeze
         public:
 
         //* constructor
-        PaintDeviceDataMap( void )
+        PaintDeviceDataMap()
         {}
 
         //* destructor
-        virtual ~PaintDeviceDataMap( void )
+        virtual ~PaintDeviceDataMap()
         {}
 
     };

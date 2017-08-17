@@ -73,10 +73,6 @@ namespace BreezePrivate
             QObject( parent )
         {}
 
-        //* destructor
-        virtual ~TabBarData( void )
-        {}
-
         //* assign target tabBar
         void lock( const QWidget* widget )
         { _tabBar = widget; }
@@ -86,7 +82,7 @@ namespace BreezePrivate
         { return _tabBar && _tabBar.data() == widget; }
 
         //* release
-        void release( void )
+        void release()
         { _tabBar.clear(); }
 
         private:
@@ -103,14 +99,10 @@ namespace BreezePrivate
         public:
 
         //* constructor
-        ComboBoxItemDelegate( QAbstractItemView* parent ):
+        explicit ComboBoxItemDelegate( QAbstractItemView* parent ):
             QItemDelegate( parent ),
             _proxy( parent->itemDelegate() ),
             _itemMargin( Breeze::Metrics::ItemView_ItemMarginWidth )
-        {}
-
-        //* destructor
-        virtual ~ComboBoxItemDelegate( void )
         {}
 
         //* paint
@@ -126,7 +118,7 @@ namespace BreezePrivate
         {
 
             // get size from either proxy or parent class
-            QSize size( _proxy ?
+            auto size( _proxy ?
                 _proxy.data()->sizeHint( option, index ):
                 QItemDelegate::sizeHint( option, index ) );
 
@@ -152,7 +144,7 @@ namespace Breeze
 {
 
     //______________________________________________________________
-    Style::Style( void ):
+    Style::Style():
         _addLineButtons( SingleButton )
         , _subLineButtons( SingleButton )
 
@@ -178,7 +170,7 @@ namespace Breeze
     {
 
         // use DBus connection to update on breeze configuration change
-        QDBusConnection dbus = QDBusConnection::sessionBus();
+        auto dbus = QDBusConnection::sessionBus();
         dbus.connect( QString(),
             QStringLiteral( "/BreezeStyle" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
@@ -196,7 +188,7 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    Style::~Style( void )
+    Style::~Style()
     {
         delete _shadowHelper;
         delete _helper;
@@ -245,13 +237,13 @@ namespace Breeze
         // scrollarea polishing is somewhat complex. It is moved to a dedicated method
         polishScrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
 
-        if( QAbstractItemView *itemView = qobject_cast<QAbstractItemView*>( widget ) )
+        if( auto itemView = qobject_cast<QAbstractItemView*>( widget ) )
         {
 
             // enable mouse over effects in itemviews' viewport
             itemView->viewport()->setAttribute( Qt::WA_Hover );
 
-        } else if( QGroupBox* groupBox = qobject_cast<QGroupBox*>( widget ) )  {
+        } else if( auto groupBox = qobject_cast<QGroupBox*>( widget ) )  {
 
             // checkable group boxes
             if( groupBox->isCheckable() )
@@ -283,7 +275,7 @@ namespace Breeze
 
             addEventFilter( widget );
 
-        } else if( QToolButton* toolButton = qobject_cast<QToolButton*>( widget ) ) {
+        } else if( auto toolButton = qobject_cast<QToolButton*>( widget ) ) {
 
             if( toolButton->autoRaise() )
             {
@@ -330,11 +322,11 @@ namespace Breeze
 
             addEventFilter( widget );
         #endif
-        } else if( QComboBox *comboBox = qobject_cast<QComboBox*>( widget ) ) {
+        } else if( auto comboBox = qobject_cast<QComboBox*>( widget ) ) {
 
             if( !hasParent( widget, "QWebView" ) )
             {
-                QAbstractItemView *itemView( comboBox->view() );
+                auto itemView( comboBox->view() );
                 if( itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits( "QComboBoxDelegate" ) )
                 { itemView->setItemDelegate( new BreezePrivate::ComboBoxItemDelegate( itemView ) ); }
             }
@@ -383,7 +375,7 @@ namespace Breeze
         if( scrollArea->property( PropertyNames::sidePanelView ).toBool() )
         {
             // upbold list font
-            QFont font( scrollArea->font() );
+            auto font( scrollArea->font() );
             font.setBold( false );
             scrollArea->setFont( font );
 
@@ -403,7 +395,7 @@ namespace Breeze
                 // temp pixmap whose background is unconditionally filled with the palette's
                 // *base* color which is usually different from the window's color
                 // cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
-                if ( QTreeView *treeView = qobject_cast<QTreeView *>( scrollArea ) ) {
+                if ( auto treeView = qobject_cast<QTreeView *>( scrollArea ) ) {
                     if (treeView->isAnimated()) {
                         QPalette pal( treeView->palette() );
                         pal.setColor( QPalette::Active, QPalette::Base, treeView->palette().color( treeView->backgroundRole() ) );
@@ -420,7 +412,7 @@ namespace Breeze
         { return; }
 
         // get viewport and check background role
-        QWidget* viewport( scrollArea->viewport() );
+        auto viewport( scrollArea->viewport() );
         if( !( viewport && viewport->backgroundRole() == QPalette::Window ) ) return;
 
         // change viewport autoFill background.
@@ -492,7 +484,7 @@ namespace Breeze
 
             case PM_ComboBoxFrameWidth:
             {
-                const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast< const QStyleOptionComboBox*>( option ) );
+                const auto comboBoxOption( qstyleoption_cast< const QStyleOptionComboBox*>( option ) );
                 return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
             }
 
@@ -619,7 +611,7 @@ namespace Breeze
             case SH_RubberBand_Mask:
             {
 
-                if( QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask*>( returnData ) )
+                if( auto mask = qstyleoption_cast<QStyleHintReturnMask*>( returnData ) )
                 {
 
                     mask->region = option->rect;
@@ -774,11 +766,11 @@ namespace Breeze
             case CC_ScrollBar:
             {
 
-                QRect grooveRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget );
+                auto grooveRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget );
                 if( grooveRect.contains( point ) )
                 {
                     // Must be either page up/page down, or just click on the slider.
-                    QRect sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
+                    auto sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
 
                     if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
                     else if( preceeds( point, sliderRect, option ) ) return SC_ScrollBarSubPage;
@@ -793,7 +785,7 @@ namespace Breeze
                     if( _subLineButtons == DoubleButton )
                     {
 
-                        QRect buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine );
+                        auto buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine );
                         return scrollBarHitTest( buttonRect, point, option );
 
                     } else return SC_ScrollBarSubLine;
@@ -803,7 +795,7 @@ namespace Breeze
                 if( _addLineButtons == DoubleButton )
                 {
 
-                    QRect buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine );
+                    auto buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine );
                     return scrollBarHitTest( buttonRect, point, option );
 
                 } else return SC_ScrollBarAddLine;
@@ -1006,10 +998,10 @@ namespace Breeze
     bool Style::eventFilter( QObject *object, QEvent *event )
     {
 
-        if( QDockWidget* dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
-        else if( QMdiSubWindow* subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
+        if( auto dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
+        else if( auto subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
         #if QT_VERSION >= 0x050000
-        else if( QCommandLinkButton* commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
+        else if( auto commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
         #endif
         // cast to QWidget
         QWidget *widget = static_cast<QWidget*>( object );
@@ -1031,7 +1023,7 @@ namespace Breeze
             {
 
                 // get scrollarea viewport
-                QAbstractScrollArea* scrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
+                auto scrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
                 QWidget* viewport;
                 if( !( scrollArea && (viewport = scrollArea->viewport()) ) ) break;
 
@@ -1080,7 +1072,7 @@ namespace Breeze
 
                 // find list of scrollbars
                 QList<QScrollBar*> scrollBars;
-                if( QAbstractScrollArea* scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
+                if( auto scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
                 {
 
                     if( scrollArea->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff ) scrollBars.append( scrollArea->horizontalScrollBar() );
@@ -1141,13 +1133,13 @@ namespace Breeze
         {
 
             QPainter painter( widget );
-            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
+            auto paintEvent = static_cast<QPaintEvent*>( event );
             painter.setClipRegion( paintEvent->region() );
 
-            const QRect rect( widget->rect() );
-            const QPalette& palette( widget->palette() );
-            const QColor background( _helper->frameBackgroundColor( palette ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
+            const auto rect( widget->rect() );
+            const auto& palette( widget->palette() );
+            const auto background( _helper->frameBackgroundColor( palette ) );
+            const auto outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
             if( hasAlpha )
@@ -1179,12 +1171,12 @@ namespace Breeze
             painter.setClipRegion( paintEvent->region() );
 
             // store palette and set colors
-            const QPalette& palette( dockWidget->palette() );
-            const QColor background( _helper->frameBackgroundColor( palette ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
+            const auto& palette( dockWidget->palette() );
+            const auto background( _helper->frameBackgroundColor( palette ) );
+            const auto outline( _helper->frameOutlineColor( palette ) );
 
             // store rect
-            const QRect rect( dockWidget->rect() );
+            const auto rect( dockWidget->rect() );
 
             // render
             if( dockWidget->isFloating() )
@@ -1213,8 +1205,8 @@ namespace Breeze
             QPaintEvent* paintEvent( static_cast<QPaintEvent*>( event ) );
             painter.setClipRegion( paintEvent->region() );
 
-            const QRect rect( subWindow->rect() );
-            const QColor background( subWindow->palette().color( QPalette::Window ) );
+            const auto rect( subWindow->rect() );
+            const auto background( subWindow->palette().color( QPalette::Window ) );
 
             if( subWindow->isMaximized() )
             {
@@ -1283,7 +1275,7 @@ namespace Breeze
             if( !button->icon().isNull() )
             {
 
-                const QSize pixmapSize( button->icon().actualSize( button->iconSize() ) );
+                const auto pixmapSize( button->icon().actualSize( button->iconSize() ) );
                 const QRect pixmapRect( QPoint( offset.x(), button->description().isEmpty() ? (button->height() - pixmapSize.height())/2:offset.y() ), pixmapSize );
                 const QPixmap pixmap( button->icon().pixmap(pixmapSize,
                     enabled ? QIcon::Normal : QIcon::Disabled,
@@ -1332,7 +1324,7 @@ namespace Breeze
     #endif
 
     //_____________________________________________________________________
-    void Style::configurationChanged( void )
+    void Style::configurationChanged()
     {
 
         // reload
@@ -1459,7 +1451,7 @@ namespace Breeze
     QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
     {
         // cast option and check
-        const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
+        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return option->rect;
 
         // check flatness
@@ -1467,7 +1459,7 @@ namespace Breeze
         if( flat ) return option->rect;
 
         // copy rect and take out margins
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
         // take out margins if there is enough room
         const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
@@ -1480,18 +1472,18 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return option->rect;
 
         // get flags and orientation
         const bool textVisible( progressBarOption->textVisible );
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
 
         // copy rectangle and adjust
-        QRect rect( option->rect );
+        auto rect( option->rect );
         const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
         if( horizontal ) rect = insideMargin( rect, frameWidth, 0 );
         else rect = insideMargin( rect, 0, frameWidth );
@@ -1499,7 +1491,7 @@ namespace Breeze
         if( textVisible && !busy && horizontal )
         {
 
-            QRect textRect( subElementRect( SE_ProgressBarLabel, option, widget ) );
+            auto textRect( subElementRect( SE_ProgressBarLabel, option, widget ) );
             textRect = visualRect( option, textRect );
             rect.setRight( textRect.left() - Metrics::ProgressBar_ItemSpacing - 1 );
             rect = visualRect( option, rect );
@@ -1524,18 +1516,18 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return QRect();
 
         // get groove rect
-        const QRect rect( progressBarGrooveRect( option, widget ) );
+        const auto rect( progressBarGrooveRect( option, widget ) );
 
         // in busy mode, grooveRect is used
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
         if( busy ) return rect;
 
         // get orientation
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
 
         // check inverted appearance
@@ -1569,7 +1561,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return QRect();
 
         // get flags and check
@@ -1578,7 +1570,7 @@ namespace Breeze
         if( !textVisible || busy ) return QRect();
 
         // get direction and check
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
         if( !horizontal ) return QRect();
 
@@ -1586,7 +1578,7 @@ namespace Breeze
             option->fontMetrics.size( _mnemonics->textFlags(), progressBarOption->text ).width(),
             option->fontMetrics.size( _mnemonics->textFlags(), QStringLiteral( "100%" ) ).width() );
 
-        QRect rect( insideMargin( option->rect, Metrics::Frame_FrameWidth, 0 ) );
+        auto rect( insideMargin( option->rect, Metrics::Frame_FrameWidth, 0 ) );
         rect.setLeft( rect.right() - textWidth + 1 );
         rect = visualRect( option, rect );
 
@@ -1599,13 +1591,13 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return option->rect;
 
         // check if arrow is necessary
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return QRect();
 
-        QRect arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
+        auto arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
         arrowRect.setLeft( arrowRect.right() - Metrics::Header_ArrowSize + 1 );
 
         return visualRect( option, arrowRect );
@@ -1617,12 +1609,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return option->rect;
 
         // check if arrow is necessary
-        // QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
-        QRect labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth, 0 ) );
+        auto labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth, 0 ) );
         if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
 
         labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_ItemSpacing, 0 );
@@ -1635,10 +1626,10 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
         if( !tabOptionV3 || tabOptionV3->leftButtonSize.isEmpty() ) return QRect();
 
-        const QRect rect( option->rect );
+        const auto rect( option->rect );
         const QSize size( tabOptionV3->leftButtonSize );
         QRect buttonRect( QPoint(0,0), size );
 
@@ -1679,11 +1670,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
         if( !tabOptionV3 || tabOptionV3->rightButtonSize.isEmpty() ) return QRect();
 
-        const QRect rect( option->rect );
-        const QSize size( tabOptionV3->rightButtonSize );
+        const auto rect( option->rect );
+        const auto size( tabOptionV3->rightButtonSize );
         QRect buttonRect( QPoint(0,0), size );
 
         // vertical positioning
@@ -1723,13 +1714,13 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption ) return ParentStyleClass::subElementRect( SE_TabWidgetTabBar, option, widget );
 
         // do nothing if tabbar is hidden
         const QSize tabBarSize( tabOption->tabBarSize );
 
-        QRect rect( option->rect );
+        auto rect( option->rect );
         QRect tabBarRect( QPoint(0, 0), tabBarSize );
 
         Qt::Alignment tabBarAlignment( styleHint( SH_TabBar_Alignment, option, widget ) );
@@ -1747,8 +1738,8 @@ namespace Breeze
 
             // account for corner rects
             // need to re-run visualRect to remove right-to-left handling, since it is re-added on tabBarRect at the end
-            const QRect leftButtonRect( visualRect( option, subElementRect( SE_TabWidgetLeftCorner, option, widget ) ) );
-            const QRect rightButtonRect( visualRect( option, subElementRect( SE_TabWidgetRightCorner, option, widget ) ) );
+            const auto leftButtonRect( visualRect( option, subElementRect( SE_TabWidgetLeftCorner, option, widget ) ) );
+            const auto rightButtonRect( visualRect( option, subElementRect( SE_TabWidgetRightCorner, option, widget ) ) );
 
             rect.setLeft( leftButtonRect.width() );
             rect.setRight( rightButtonRect.left() - 1 );
@@ -1797,12 +1788,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption ) return option->rect;
 
         // do nothing if tabbar is hidden
         if( tabOption->tabBarSize.isEmpty() ) return option->rect;
-        const QRect rect = tabWidgetTabPaneRect( option, widget );
+        const auto rect = tabWidgetTabPaneRect( option, widget );
 
         const bool documentMode( tabOption->lineWidth == 0 );
         if( documentMode )
@@ -1838,13 +1829,13 @@ namespace Breeze
     QRect Style::tabWidgetTabPaneRect( const QStyleOption* option, const QWidget* ) const
     {
 
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
 
         const int overlap = Metrics::TabBar_BaseOverlap - 1;
         const QSize tabBarSize( tabOption->tabBarSize - QSize( overlap, overlap ) );
 
-        QRect rect( option->rect );
+        auto rect( option->rect );
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
@@ -1879,7 +1870,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption ) return option->rect;
 
         // do nothing if tabbar is hidden
@@ -1890,7 +1881,7 @@ namespace Breeze
         const bool verticalTabs( isVerticalTab( tabOption->shape ) );
         if( verticalTabs ) return QRect();
 
-        const QRect rect( option->rect );
+        const auto rect( option->rect );
         QRect cornerRect;
         switch( element )
         {
@@ -1937,11 +1928,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
         if( !toolBoxOption ) return option->rect;
 
         // copy rect
-        const QRect& rect( option->rect );
+        const auto& rect( option->rect );
 
         int contentsWidth(0);
         if( !toolBoxOption->icon.isNull() )
@@ -1985,7 +1976,7 @@ namespace Breeze
             {
 
                 // cast option and check
-                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
+                const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
                 if( !groupBoxOption ) break;
 
                 // take out frame width
@@ -2013,7 +2004,7 @@ namespace Breeze
             {
 
                 // cast option and check
-                const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
+                const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
                 if( !groupBoxOption ) break;
 
                 // take out frame width
@@ -2040,7 +2031,7 @@ namespace Breeze
                 }
 
                 // adjust height
-                QRect titleRect( rect );
+                auto titleRect( rect );
                 titleRect.setHeight( titleHeight );
                 titleRect.translate( 0, Metrics::GroupBox_TitleMarginWidth );
 
@@ -2064,7 +2055,7 @@ namespace Breeze
                     titleRect = centerRect( titleRect, titleWidth, fontMetrics.height() );
 
                     // horizontal positioning
-                    QRect subRect( titleRect );
+                    auto subRect( titleRect );
                     if( checkable ) subRect.adjust( Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0 );
                     return visualRect( option->direction, titleRect, subRect );
 
@@ -2085,7 +2076,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolButton* toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
+        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
         if( !toolButtonOption ) return ParentStyleClass::subControlRect( CC_ToolButton, option, subControl, widget );
 
         const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
@@ -2095,7 +2086,7 @@ namespace Breeze
             && !hasPopupMenu );
 
         // store rect
-        const QRect& rect( option->rect );
+        const auto& rect( option->rect );
         const int menuButtonWidth( Metrics::MenuButton_IndicatorWidth );
         switch( subControl )
         {
@@ -2106,7 +2097,7 @@ namespace Breeze
                 if( !(hasPopupMenu || hasInlineIndicator ) ) return QRect();
 
                 // check features
-                QRect menuRect( rect );
+                auto menuRect( rect );
                 menuRect.setLeft( rect.right() - menuButtonWidth + 1 );
                 if( hasInlineIndicator )
                 { menuRect.setTop( menuRect.bottom() - menuButtonWidth + 1 ); }
@@ -2120,7 +2111,7 @@ namespace Breeze
                 if( hasPopupMenu )
                 {
 
-                    QRect contentsRect( rect );
+                    auto contentsRect( rect );
                     contentsRect.setRight( rect.right() - menuButtonWidth );
                     return visualRect( option, contentsRect );
 
@@ -2138,14 +2129,14 @@ namespace Breeze
     QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
         // cast option and check
-        const QStyleOptionComboBox *comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
+        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return ParentStyleClass::subControlRect( CC_ComboBox, option, subControl, widget );
 
         const bool editable( comboBoxOption->editable );
         const bool flat( editable && !comboBoxOption->frame );
 
         // copy rect
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
         switch( subControl )
         {
@@ -2200,12 +2191,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
+        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
         // copy rect
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
         switch( subControl )
         {
@@ -2264,7 +2255,7 @@ namespace Breeze
     QRect Style::scrollBarInternalSubControlRect( const QStyleOptionComplex* option, SubControl subControl ) const
     {
 
-        const QRect& rect = option->rect;
+        const auto& rect = option->rect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
 
@@ -2296,7 +2287,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );
 
         // get relevant state
@@ -2312,8 +2303,8 @@ namespace Breeze
 
             case SC_ScrollBarGroove:
             {
-                QRect topRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
-                QRect bottomRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
+                auto topRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
+                auto bottomRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
 
                 QPoint topLeftCorner;
                 QPoint botRightCorner;
@@ -2340,7 +2331,7 @@ namespace Breeze
             {
 
                 // handle RTL here to unreflect things if need be
-                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( sliderOption->minimum == sliderOption->maximum ) return groove;
 
@@ -2365,8 +2356,8 @@ namespace Breeze
             {
 
                 // handle RTL here to unreflect things if need be
-                QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
-                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+                auto slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
+                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( horizontal ) return visualRect( option, QRect( groove.left(), groove.top(), slider.left() - groove.left(), groove.height() ) );
                 else return visualRect( option, QRect( groove.left(), groove.top(), groove.width(), slider.top() - groove.top() ) );
@@ -2376,8 +2367,8 @@ namespace Breeze
             {
 
                 // handle RTL here to unreflect things if need be
-                QRect slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
-                QRect groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+                auto slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
+                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
                 if( horizontal ) return visualRect( option, QRect( slider.right() + 1, groove.top(), groove.right() - slider.right(), groove.height() ) );
                 else return visualRect( option, QRect( groove.left(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom() ) );
@@ -2393,11 +2384,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );
 
         // adjust rect to be square, and centered
-        QRect rect( option->rect );
+        auto rect( option->rect );
         const int dimension( qMin( rect.width(), rect.height() ) );
         rect = centerRect( rect, dimension, dimension );
 
@@ -2435,7 +2426,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget );
 
         switch( subControl )
@@ -2447,7 +2438,7 @@ namespace Breeze
                 const bool horizontal( sliderOption->orientation == Qt::Horizontal );
 
                 // get base class rect
-                QRect grooveRect( ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget ) );
+                auto grooveRect( ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget ) );
                 grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
 
                 // centering
@@ -2488,7 +2479,7 @@ namespace Breeze
     QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
         // cast option and check
-        const QStyleOptionFrame* frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
+        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return contentsSize;
 
         const bool flat( frameOption->lineWidth == 0 );
@@ -2501,7 +2492,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
+        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return contentsSize;
 
         // copy size
@@ -2527,7 +2518,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
+        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return contentsSize;
 
         const bool flat( !spinBoxOption->frame );
@@ -2554,7 +2545,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return contentsSize;
 
         // store tick position and orientation
@@ -2598,7 +2589,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
+        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return contentsSize;
 
         // output
@@ -2671,7 +2662,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolButton* toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
+        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
         if( !toolButtonOption ) return contentsSize;
 
         // copy size
@@ -2704,7 +2695,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if( !menuItemOption ) return contentsSize;
 
         /*
@@ -2795,10 +2786,10 @@ namespace Breeze
     {
 
         // cast option
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return contentsSize;
 
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
 
         // make local copy
@@ -2829,7 +2820,7 @@ namespace Breeze
     QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
     {
         // cast option and check
-        const QStyleOptionTabWidgetFrame* tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
+        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
         if( !tabOption ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
 
         // try find direct children of type QTabBar and QStackedWidget
@@ -2870,8 +2861,8 @@ namespace Breeze
     //______________________________________________________________
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
-        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        const QStyleOptionTabV3 *tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
         const bool hasText( tabOption && !tabOption->text.isEmpty() );
         const bool hasIcon( tabOption && !tabOption->icon.isNull() );
         const bool hasLeftButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
@@ -2913,7 +2904,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return contentsSize;
 
         // get text size
@@ -2963,8 +2954,8 @@ namespace Breeze
     {
 
         // copy palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& rect( option->rect );
 
         // detect title widgets
         const bool isTitleWidget(
@@ -3000,7 +2991,7 @@ namespace Breeze
         if( !StyleConfigData::sidePanelDrawFrame() && widget && widget->property( PropertyNames::sidePanelView ).toBool() )
         {
 
-            const QColor outline( _helper->sidePanelOutlineColor( palette, hasFocus, opacity, mode ) );
+            const auto outline( _helper->sidePanelOutlineColor( palette, hasFocus, opacity, mode ) );
             const bool reverseLayout( option->direction == Qt::RightToLeft );
             const Side side( reverseLayout ? SideRight : SideLeft );
             _helper->renderSidePanelFrame( painter, rect, outline, side );
@@ -3016,8 +3007,8 @@ namespace Breeze
 
             }
 
-            const QColor background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
-            const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto background( isTitleWidget ? palette.color( widget->backgroundRole() ):QColor() );
+            const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             _helper->renderFrame( painter, rect, background, outline );
 
         }
@@ -3030,14 +3021,14 @@ namespace Breeze
     bool Style::drawFrameLineEditPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
         // copy palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& rect( option->rect );
 
         // make sure there is enough room to render frame
         if( rect.height() < 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height())
         {
 
-            const QColor background( palette.color( QPalette::Base ) );
+            const auto background( palette.color( QPalette::Base ) );
 
             painter->setPen( Qt::NoPen );
             painter->setBrush( background );
@@ -3061,8 +3052,8 @@ namespace Breeze
             const qreal opacity( _animations->inputWidgetEngine().frameOpacity( widget ) );
 
             // render
-            const QColor background( palette.color( QPalette::Base ) );
-            const QColor outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto background( palette.color( QPalette::Base ) );
+            const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             _helper->renderFrame( painter, rect, background, outline );
 
         }
@@ -3093,12 +3084,12 @@ namespace Breeze
         if ((state & State_Selected) && qobject_cast<const QAbstractItemView *>(widget))
         { return true; }
 
-        const QRect rect( option->rect.adjusted( 0, 0, 0, 1 ) );
-        const QPalette& palette( option->palette );
+        const auto rect( option->rect.adjusted( 0, 0, 0, 1 ) );
+        const auto& palette( option->palette );
 
         if( rect.width() < 10 ) return true;
 
-        const QColor outlineColor( state & State_Selected ? palette.color( QPalette::HighlightedText ):palette.color( QPalette::Highlight ) );
+        const auto outlineColor( state & State_Selected ? palette.color( QPalette::HighlightedText ):palette.color( QPalette::Highlight ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( outlineColor );
         painter->drawLine( QPoint( rect.bottomLeft() - QPoint( 0,1 ) ), QPoint( rect.bottomRight() - QPoint( 0,1 ) ) );
@@ -3115,18 +3106,18 @@ namespace Breeze
         if( qobject_cast<const QToolBar*>( widget ) )
         {
 
-            const QPalette& palette( option->palette );
-            const QColor background( _helper->frameBackgroundColor( palette ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
+            const auto& palette( option->palette );
+            const auto background( _helper->frameBackgroundColor( palette ) );
+            const auto outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
             _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
         } else if( isQtQuickControl( option, widget ) ) {
 
-            const QPalette& palette( option->palette );
-            const QColor background( _helper->frameBackgroundColor( palette ) );
-            const QColor outline( _helper->frameOutlineColor( palette ) );
+            const auto& palette( option->palette );
+            const auto background( _helper->frameBackgroundColor( palette ) );
+            const auto outline( _helper->frameOutlineColor( palette ) );
 
             const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
             _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
@@ -3142,7 +3133,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionFrame *frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
+        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
         if( !frameOption ) return true;
 
         // no frame for flat groupboxes
@@ -3150,9 +3141,9 @@ namespace Breeze
         if( frameOption2.features & QStyleOptionFrameV2::Flat ) return true;
 
         // normal frame
-        const QPalette& palette( option->palette );
-        const QColor background( _helper->frameBackgroundColor( palette ) );
-        const QColor outline( _helper->frameOutlineColor( palette ) );
+        const auto& palette( option->palette );
+        const auto background( _helper->frameBackgroundColor( palette ) );
+        const auto outline( _helper->frameOutlineColor( palette ) );
 
         /*
          * need to reset painter's clip region in order to paint behind textbox label
@@ -3171,7 +3162,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTabWidgetFrameV2* tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
         if( !tabOption ) return true;
 
         // do nothing if tabbar is hidden
@@ -3179,9 +3170,9 @@ namespace Breeze
         if( tabOption->tabBarSize.isEmpty() && !isQtQuickControl ) return true;
 
         // adjust rect to handle overlaps
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
-        const QRect tabBarRect( tabOption->tabBarRect );
+        const auto tabBarRect( tabOption->tabBarRect );
         const QSize tabBarSize( tabOption->tabBarSize );
         Corners corners = AllCorners;
 
@@ -3224,9 +3215,9 @@ namespace Breeze
         }
 
         // define colors
-        const QPalette& palette( option->palette );
-        const QColor background( _helper->frameBackgroundColor( palette ) );
-        const QColor outline( _helper->frameOutlineColor( palette ) );
+        const auto& palette( option->palette );
+        const auto background( _helper->frameBackgroundColor( palette ) );
+        const auto outline( _helper->frameOutlineColor( palette ) );
         _helper->renderTabWidgetFrame( painter, rect, background, outline, corners );
 
         return true;
@@ -3239,12 +3230,12 @@ namespace Breeze
         // tabbar frame used either for 'separate' tabbar, or in 'document mode'
 
         // cast option and check
-        const QStyleOptionTabBarBase* tabOption( qstyleoption_cast<const QStyleOptionTabBarBase*>( option ) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTabBarBase*>( option ) );
         if( !tabOption ) return true;
 
         // get rect, orientation, palette
-        const QRect rect( option->rect );
-        const QColor outline( _helper->frameOutlineColor( option->palette ) );
+        const auto rect( option->rect );
+        const auto outline( _helper->frameOutlineColor( option->palette ) );
 
         // setup painter
         painter->setBrush( Qt::NoBrush );
@@ -3288,13 +3279,13 @@ namespace Breeze
     {
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
         const State state( option->state );
         const bool selected( state & State_Selected );
 
         // render frame outline
-        const QColor outline( _helper->frameOutlineColor( palette, false, selected ) );
+        const auto outline( _helper->frameOutlineColor( palette, false, selected ) );
         _helper->renderMenuFrame( painter, rect, QColor(), outline );
 
         return true;
@@ -3306,8 +3297,8 @@ namespace Breeze
     {
 
         // store rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store state
         const State& state( option->state );
@@ -3387,7 +3378,7 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-        const QStyleOptionHeader *headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         const State& state( option->state );
 
         // arrow orientation
@@ -3400,11 +3391,11 @@ namespace Breeze
         if( StyleConfigData::viewInvertSortIndicator() ) orientation = (orientation == ArrowUp) ? ArrowDown:ArrowUp;
 
         // state, rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // define color and polygon for drawing arrow
-        const QColor color = _helper->arrowColor( palette, QPalette::ButtonText );
+        const auto color = _helper->arrowColor( palette, QPalette::ButtonText );
 
         // render
         _helper->renderArrow( painter, rect, color, orientation );
@@ -3417,11 +3408,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionButton* buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
+        const auto buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
         if( !buttonOption ) return true;
 
         // rect and palette
-        const QRect& rect( option->rect );
+        const auto& rect( option->rect );
 
         // button state
         const State& state( option->state );
@@ -3443,8 +3434,8 @@ namespace Breeze
         {
 
             // define colors and render
-            const QPalette& palette( option->palette );
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+            const auto& palette( option->palette );
+            const auto color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         } else {
@@ -3453,14 +3444,14 @@ namespace Breeze
             QPalette palette( option->palette );
             if( enabled && buttonOption->features & QStyleOptionButton::DefaultButton )
             {
-                const QColor button( palette.color( QPalette::Button ) );
-                const QColor base( palette.color( QPalette::Base ) );
+                const auto button( palette.color( QPalette::Button ) );
+                const auto base( palette.color( QPalette::Base ) );
                 palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
             }
 
-            const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+            const auto shadow( _helper->shadowColor( palette ) );
+            const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // render
             _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
@@ -3476,8 +3467,8 @@ namespace Breeze
     {
 
         // copy palette and rect
-        const QPalette& palette( option->palette );
-        QRect rect( option->rect );
+        const auto& palette( option->palette );
+        auto rect( option->rect );
 
         // store relevant flags
         const State& state( option->state );
@@ -3498,13 +3489,13 @@ namespace Breeze
         {
 
             // need to check widget for popup mode, because option is not set properly
-            const QToolButton* toolButton( qobject_cast<const QToolButton*>( widget ) );
+            const auto toolButton( qobject_cast<const QToolButton*>( widget ) );
             const bool hasPopupMenu( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
 
             // render as push button
-            const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+            const auto shadow( _helper->shadowColor( palette ) );
+            const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // adjust frame in case of menu
             if( hasPopupMenu )
@@ -3519,7 +3510,7 @@ namespace Breeze
 
         } else {
 
-            const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+            const auto color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
             _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
         }
@@ -3532,7 +3523,7 @@ namespace Breeze
     {
 
         // copy palette and rect
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
         // static_cast is safe here since check was already performed in calling function
         const QTabBar* tabBar( static_cast<QTabBar*>( widget->parentWidget() ) );
@@ -3571,8 +3562,8 @@ namespace Breeze
         // get the relevant palette
         const QWidget* parent( tabBar->parentWidget() );
         if( qobject_cast<const QTabWidget*>( parent ) ) parent = parent->parentWidget();
-        const QPalette palette( parent ? parent->palette() : QApplication::palette() );
-        const QColor color = hasAlteredBackground(parent) ? _helper->frameBackgroundColor( palette ):palette.color( QPalette::Window );
+        const auto& palette( parent ? parent->palette() : QApplication::palette() );
+        const auto color = hasAlteredBackground(parent) ? _helper->frameBackgroundColor( palette ):palette.color( QPalette::Window );
 
         // render flat background
         painter->setPen( Qt::NoPen );
@@ -3617,9 +3608,9 @@ namespace Breeze
          */
         if( widget && !widget->isWindow() ) return true;
 
-        const QPalette& palette( option->palette );
-        const QColor background( _helper->frameBackgroundColor( palette ) );
-        const QColor outline( _helper->frameOutlineColor( palette ) );
+        const auto& palette( option->palette );
+        const auto background( _helper->frameBackgroundColor( palette ) );
+        const auto outline( _helper->frameOutlineColor( palette ) );
 
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
@@ -3636,9 +3627,9 @@ namespace Breeze
         if( widget && widget->window() )
         { _shadowHelper->registerWidget( widget->window(), true ); }
 
-        const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::ToolTipBase ) );
-        const QColor outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
+        const auto& palette( option->palette );
+        const auto background( palette.color( QPalette::ToolTipBase ) );
+        const auto outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
 
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
@@ -3651,15 +3642,15 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionViewItemV4 *viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
+        const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
         if( !viewItemOption ) return false;
 
         // try cast widget
-        const QAbstractItemView *abstractItemView = qobject_cast<const QAbstractItemView *>( widget );
+        const auto abstractItemView = qobject_cast<const QAbstractItemView *>( widget );
 
         // store palette and rect
-        const QPalette& palette( option->palette );
-        QRect rect( option->rect );
+        const auto& palette( option->palette );
+        auto rect( option->rect );
 
         // store flags
         const State& state( option->state );
@@ -3729,8 +3720,8 @@ namespace Breeze
     {
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store flags
         const State& state( option->state );
@@ -3768,7 +3759,7 @@ namespace Breeze
         }
 
         // render
-        const QColor shadow( _helper->shadowColor( palette ) );
+        const auto shadow( _helper->shadowColor( palette ) );
         _helper->renderCheckBox( painter, rect, color, shadow, sunken, checkBoxState, animation );
         return true;
 
@@ -3779,8 +3770,8 @@ namespace Breeze
     {
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store flags
         const State& state( option->state );
@@ -3802,7 +3793,7 @@ namespace Breeze
         const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
 
         // colors
-        const QColor shadow( _helper->shadowColor( palette ) );
+        const auto shadow( _helper->shadowColor( palette ) );
         QColor color;
         if( isSelectedItem )
         {
@@ -3830,7 +3821,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
+        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
         if( !toolButtonOption ) return true;
 
         // store state
@@ -3841,8 +3832,8 @@ namespace Breeze
         if( autoRaise || !(toolButtonOption->subControls & SC_ToolButtonMenu) ) return true;
 
         // store palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& rect( option->rect );
 
         // store state
         const bool enabled( state & State_Enabled );
@@ -3859,11 +3850,11 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
         // render as push button
-        const QColor shadow( _helper->shadowColor( palette ) );
-        const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
+        const auto shadow( _helper->shadowColor( palette ) );
+        const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+        const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
 
-        QRect frameRect( rect );
+        auto frameRect( rect );
         painter->setClipRect( rect );
         frameRect.adjust( -Metrics::Frame_FrameRadius - 1, 0, 0, 0 );
         frameRect = visualRect( option, frameRect );
@@ -3872,7 +3863,7 @@ namespace Breeze
         _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
 
         // also render separator
-        QRect separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
+        auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
         separatorRect.setWidth( 1 );
         separatorRect = visualRect( option, separatorRect );
         _helper->renderSeparator( painter, separatorRect, outline, true );
@@ -3928,16 +3919,16 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
         if( !tabOption ) return true;
 
         // store palette and rect
-        const QPalette& palette( option->palette );
-        QRect rect( option->rect );
+        const auto& palette( option->palette );
+        auto rect( option->rect );
 
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
-        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+        const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
         painter->setRenderHint( QPainter::Antialiasing, false );
         painter->setPen( color );
         painter->setBrush( Qt::NoBrush );
@@ -3985,15 +3976,15 @@ namespace Breeze
         if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
 
         // store rect and palette
-        QRect rect( option->rect );
-        const QPalette& palette( option->palette );
+        auto rect( option->rect );
+        const auto& palette( option->palette );
 
         // store state
         const State& state( option->state );
         const bool separatorIsVertical( state & State_Horizontal );
 
         // define color and render
-        const QColor color( _helper->separatorColor( palette ) );
+        const auto color( _helper->separatorColor( palette ) );
         if( separatorIsVertical )
         {
             rect.setWidth( Metrics::ToolBar_HandleWidth );
@@ -4033,15 +4024,15 @@ namespace Breeze
         { return true; }
 
         // store rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store state
         const State& state( option->state );
         const bool separatorIsVertical( state & State_Horizontal );
 
         // define color and render
-        const QColor color( _helper->separatorColor( palette ) );
+        const auto color( _helper->separatorColor( palette ) );
         _helper->renderSeparator( painter, rect, color, separatorIsVertical );
 
         return true;
@@ -4053,8 +4044,8 @@ namespace Breeze
     {
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // state
         const State& state( option->state );
@@ -4074,7 +4065,7 @@ namespace Breeze
             int expanderSize = qMin( rect.width(), rect.height() );
             expanderSize = qMin( expanderSize, int(Metrics::ItemView_ArrowSize) );
             expanderAdjust = expanderSize/2 + 1;
-            const QRect arrowRect = centerRect( rect, expanderSize, expanderSize );
+            const auto arrowRect = centerRect( rect, expanderSize, expanderSize );
 
             // get orientation from option
             ArrowOrientation orientation;
@@ -4083,7 +4074,7 @@ namespace Breeze
             else orientation = ArrowRight;
 
             // color
-            const QColor arrowColor( mouseOver ? _helper->hoverColor( palette ) : _helper->arrowColor( palette, QPalette::Text ) );
+            const auto arrowColor( mouseOver ? _helper->hoverColor( palette ) : _helper->arrowColor( palette, QPalette::Text ) );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
@@ -4093,8 +4084,8 @@ namespace Breeze
         // tree branches
         if( !StyleConfigData::viewDrawTreeBranchLines() ) return true;
 
-        const QPoint center( rect.center() );
-        const QColor lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
+        const auto center( rect.center() );
+        const auto lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
         painter->setRenderHint( QPainter::Antialiasing, true );
         painter->translate( 0.5, 0.5 );
         painter->setPen( QPen( lineColor, 1 ) );
@@ -4129,12 +4120,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
+        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
         if( !buttonOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // state
         const State& state( option->state );
@@ -4149,7 +4140,7 @@ namespace Breeze
         const bool hasIcon( (showIconsOnPushButtons() || flat || !hasText ) && !buttonOption->icon.isNull() );
 
         // contents
-        QRect contentsRect( rect );
+        auto contentsRect( rect );
         if( sunken && !flat ) contentsRect.translate( 1, 1 );
 
         // color role
@@ -4168,7 +4159,7 @@ namespace Breeze
         {
 
             // define rect
-            QRect arrowRect( contentsRect );
+            auto arrowRect( contentsRect );
             arrowRect.setLeft( contentsRect.right() - Metrics::MenuButton_IndicatorWidth + 1 );
             arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
 
@@ -4178,7 +4169,7 @@ namespace Breeze
             arrowRect = visualRect( option, arrowRect );
 
             // define color
-            const QColor arrowColor( _helper->arrowColor( palette, textRole ) );
+            const auto arrowColor( _helper->arrowColor( palette, textRole ) );
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
 
         }
@@ -4249,11 +4240,11 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>(option) );
+        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>(option) );
 
         // copy rect and palette
-        const QRect& rect = option->rect;
-        const QPalette& palette = option->palette;
+        const auto& rect = option->rect;
+        const auto& palette = option->palette;
 
         // state
         const State& state( option->state );
@@ -4272,7 +4263,7 @@ namespace Breeze
         const bool hasText( !toolButtonOption->text.isEmpty() );
 
         // contents
-        QRect contentsRect( rect );
+        auto contentsRect( rect );
         if( sunken && !flat ) contentsRect.translate( 1, 1 );
 
         // icon size
@@ -4381,12 +4372,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionButton* buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
+        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
         if( !buttonOption ) return true;
 
         // copy palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& rect( option->rect );
 
         // store state
         const State& state( option->state );
@@ -4397,7 +4388,7 @@ namespace Breeze
         const int textFlags( _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft ) );
 
         // text rect
-        QRect textRect( rect );
+        auto textRect( rect );
 
         // render icon
         if( !buttonOption->icon.isNull() )
@@ -4444,7 +4435,7 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
+        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return false;
         if( comboBoxOption->editable ) return false;
 
@@ -4473,8 +4464,9 @@ namespace Breeze
         { painter->translate( 1, 1 ); }
 
         #if QT_VERSION >= 0x050000
-        if (const QStyleOptionComboBox *cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
-            QRect editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
+        if (const auto cb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
+        {
+            auto editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
             painter->save();
             painter->setClipRect(editRect);
             if (!cb->currentIcon.isNull()) {
@@ -4488,8 +4480,8 @@ namespace Breeze
                     mode = QIcon::Disabled;
                 }
 
-                QPixmap pixmap = cb->currentIcon.pixmap(widget->windowHandle(), cb->iconSize, mode);
-                QRect iconRect(editRect);
+                const auto pixmap = cb->currentIcon.pixmap(widget->windowHandle(), cb->iconSize, mode);
+                auto iconRect(editRect);
                 iconRect.setWidth(cb->iconSize.width() + 4);
                 iconRect = alignedRect(cb->direction,
                                        Qt::AlignLeft | Qt::AlignVCenter,
@@ -4524,12 +4516,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if( !menuItemOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store state
         const State& state( option->state );
@@ -4551,7 +4543,7 @@ namespace Breeze
 
         // get text rect
         const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
-        const QRect textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
+        const auto textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
 
         // render text
         const QPalette::ColorRole role = (useStrongFocus && sunken ) ? QPalette::HighlightedText : QPalette::WindowText;
@@ -4579,13 +4571,13 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionMenuItem* menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
+        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
         if( !menuItemOption ) return true;
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::EmptyArea ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // deal with separators
         if( menuItemOption->menuItemType == QStyleOptionMenuItem::Separator )
@@ -4595,7 +4587,7 @@ namespace Breeze
             if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
             {
 
-                const QColor color( _helper->separatorColor( palette ) );
+                const auto color( _helper->separatorColor( palette ) );
                 _helper->renderSeparator( painter, rect, color );
                 return true;
 
@@ -4626,8 +4618,8 @@ namespace Breeze
         if( useStrongFocus && ( selected || sunken ) )
         {
 
-            const QColor color = _helper->focusColor( palette );
-            const QColor outlineColor = _helper->focusOutlineColor( palette );
+            const auto color = _helper->focusColor( palette );
+            const auto outlineColor = _helper->focusOutlineColor( palette );
 
             Sides sides = 0;
             if( !menuItemOption->menuRect.isNull() )
@@ -4643,7 +4635,7 @@ namespace Breeze
         }
 
         // get rect available for contents
-        QRect contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
+        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
 
         // define relevant rectangles
         // checkbox
@@ -4667,8 +4659,8 @@ namespace Breeze
 
             CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
             const bool active( menuItemOption->checked );
-            const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
+            const auto shadow( _helper->shadowColor( palette ) );
+            const auto color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
             _helper->renderCheckBox( painter, checkBoxRect, color, shadow, sunken, state );
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
@@ -4679,8 +4671,8 @@ namespace Breeze
             { _helper->renderRadioButtonBackground( painter, checkBoxRect, palette.color( QPalette::Window ), sunken ); }
 
             const bool active( menuItemOption->checked );
-            const QColor shadow( _helper->shadowColor( palette ) );
-            const QColor color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
+            const auto shadow( _helper->shadowColor( palette ) );
+            const auto color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
             _helper->renderRadioButton( painter, checkBoxRect, color, shadow, sunken, active ? RadioOn:RadioOff );
 
         }
@@ -4741,7 +4733,7 @@ namespace Breeze
 
 
         // text
-        QRect textRect = contentsRect;
+        auto textRect = contentsRect;
         if( !menuItemOption->text.isEmpty() )
         {
 
@@ -4794,7 +4786,7 @@ namespace Breeze
     bool Style::drawProgressBarControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
         // render groove
@@ -4848,15 +4840,15 @@ namespace Breeze
     bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
         // copy rect and palette
-        QRect rect( option->rect );
-        const QPalette& palette( option->palette );
+        auto rect( option->rect );
+        const auto& palette( option->palette );
 
         // get direction
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
         const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
         bool reverse = horizontal && option->direction == Qt::RightToLeft;
@@ -4869,8 +4861,8 @@ namespace Breeze
 
             const qreal progress( _animations->busyIndicatorEngine().value() );
 
-            const QColor first( palette.color( QPalette::Highlight ) );
-            const QColor second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
+            const auto first( palette.color( QPalette::Highlight ) );
+            const auto second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
             _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, reverse, progress );
 
         } else {
@@ -4896,7 +4888,7 @@ namespace Breeze
 
             }
 
-            QColor contentsColor(
+            auto contentsColor(
                 option->state.testFlag( QStyle::State_Selected ) ?
                 palette.color( QPalette::HighlightedText ) :
                 palette.color( QPalette::Highlight ) );
@@ -4912,8 +4904,8 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawProgressBarGrooveControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+        const auto& palette( option->palette );
+        const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
         _helper->renderProgressBarGroove( painter, option->rect, color );
         return true;
     }
@@ -4923,17 +4915,17 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionProgressBar* progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
+        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return true;
 
         // get direction and check
-        const QStyleOptionProgressBarV2* progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
+        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
         if( !horizontal ) return true;
 
         // store rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // store state and direction
         const State& state( option->state );
@@ -4952,12 +4944,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // define handle rect
         QRect handleRect;
@@ -4979,9 +4971,9 @@ namespace Breeze
 
         _animations->scrollBarEngine().updateState( widget, AnimationHover, mouseOver && handleActive );
 
-        const AnimationMode mode( _animations->scrollBarEngine().animationMode( widget, SC_ScrollBarSlider ) );
+        const auto mode( _animations->scrollBarEngine().animationMode( widget, SC_ScrollBarSlider ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
-        const QColor color = _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode );
+        const auto color = _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode );
 
         _helper->renderScrollBarHandle( painter, handleRect, color );
         return true;
@@ -4995,7 +4987,7 @@ namespace Breeze
         if( _addLineButtons == NoButton ) return true;
 
         // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         const State& state( option->state );
@@ -5003,7 +4995,7 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
-        const QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
+        const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
@@ -5068,7 +5060,7 @@ namespace Breeze
         if( _subLineButtons == NoButton ) return true;
 
         // cast option and check
-        const QStyleOptionSlider* sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         const State& state( option->state );
@@ -5076,11 +5068,11 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // colors
-        const QPalette& palette( option->palette );
-        const QColor background( palette.color( QPalette::Window ) );
+        const auto& palette( option->palette );
+        const auto background( palette.color( QPalette::Window ) );
 
         // adjust rect, based on number of buttons to be drawn
-        const QRect rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
+        const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
@@ -5141,7 +5133,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionFrameV3* frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
+        const auto frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
         if( !frameOpt ) return false;
 
         switch( frameOpt->frameShape )
@@ -5157,8 +5149,8 @@ namespace Breeze
             case QFrame::VLine:
             {
 
-                const QRect& rect( option->rect );
-                const QColor color( _helper->separatorColor( option->palette ) );
+                const auto& rect( option->rect );
+                const auto color( _helper->separatorColor( option->palette ) );
                 const bool isVertical( frameOpt->frameShape == QFrame::VLine );
                 _helper->renderSeparator( painter, rect, color, isVertical );
                 return true;
@@ -5189,10 +5181,10 @@ namespace Breeze
     bool Style::drawRubberBandControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const QPalette& palette( option->palette );
-        const QRect rect( option->rect );
+        const auto& palette( option->palette );
+        const auto rect( option->rect );
 
-        QColor color = palette.color( QPalette::Highlight );
+        auto color = palette.color( QPalette::Highlight );
         painter->setPen( KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) ) );
         color.setAlpha( 50 );
         painter->setBrush( color );
@@ -5206,14 +5198,14 @@ namespace Breeze
     bool Style::drawHeaderSectionControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
-        const State& state( option->state );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool sunken( enabled && ( state & (State_On|State_Sunken) ) );
 
-        const QStyleOptionHeader* headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
+        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
         if( !headerOption ) return true;
 
         const bool horizontal( headerOption->orientation == Qt::Horizontal );
@@ -5227,9 +5219,9 @@ namespace Breeze
         const qreal opacity( _animations->headerViewEngine().opacity( widget, rect.topLeft() ) );
 
         // fill
-        const QColor normal( palette.color( QPalette::Button ) );
-        const QColor focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
-        const QColor hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
+        const auto normal( palette.color( QPalette::Button ) );
+        const auto focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
+        const auto hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
 
         QColor color;
         if( sunken ) color = focus;
@@ -5293,8 +5285,8 @@ namespace Breeze
     {
 
         // use the same background as in drawHeaderPrimitive
-        const QRect& rect( option->rect );
-        QPalette palette( option->palette );
+        const auto& rect( option->rect );
+        auto palette( option->palette );
 
         const bool horizontal( option->state & QStyle::State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
@@ -5332,8 +5324,8 @@ namespace Breeze
         ParentStyleClass::drawControl( CE_TabBarTabLabel, option, painter, widget );
 
         // store rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // check focus
         const State& state( option->state );
@@ -5350,7 +5342,7 @@ namespace Breeze
 
         // code is copied from QCommonStyle, but adds focus
         // cast option and check
-        const QStyleOptionTab *tabOption( qstyleoption_cast<const QStyleOptionTab*>(option) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>(option) );
         if( !tabOption || tabOption->text.isEmpty() ) return true;
 
         // tab option rect
@@ -5358,7 +5350,7 @@ namespace Breeze
         const int textFlags( Qt::AlignCenter | _mnemonics->textFlags() );
 
         // text rect
-        QRect textRect( subElementRect(SE_TabBarTabText, option, widget) );
+        auto textRect( subElementRect(SE_TabBarTabText, option, widget) );
 
         if( verticalTabs )
         {
@@ -5409,11 +5401,11 @@ namespace Breeze
     bool Style::drawTabBarTabShapeControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionTab* tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
         if( !tabOption ) return true;
 
         // palette and state
-        const QPalette& palette( option->palette );
+        const auto& palette( option->palette );
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool selected( state & State_Selected );
@@ -5424,7 +5416,7 @@ namespace Breeze
         const bool isLocked( widget && _tabBarData->isLocked( widget ) );
 
         // store rect
-        QRect rect( option->rect );
+        auto rect( option->rect );
 
         // update mouse over animation state
         _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationHover, mouseOver );
@@ -5557,21 +5549,21 @@ namespace Breeze
             bool documentMode = tabOption->documentMode;
             #else
             bool documentMode = false;
-            if( const QStyleOptionTabV3* tabOptionV3 = qstyleoption_cast<const QStyleOptionTabV3*>( option ) )
+            if( const auto tabOptionV3 = qstyleoption_cast<const QStyleOptionTabV3*>( option ) )
             { documentMode = tabOptionV3->documentMode; }
             #endif
 
             // flag passed to QStyleOptionTab is unfortunately not reliable enough
             // also need to check on parent widget
-            const QTabWidget *tabWidget = ( widget && widget->parentWidget() ) ? qobject_cast<const QTabWidget *>( widget->parentWidget() ) : nullptr;
+            const auto tabWidget = ( widget && widget->parentWidget() ) ? qobject_cast<const QTabWidget *>( widget->parentWidget() ) : nullptr;
             documentMode |= ( tabWidget ? tabWidget->documentMode() : true );
 
             color = (documentMode&&!isQtQuickControl&&!hasAlteredBackground(widget)) ? palette.color( QPalette::Window ) : _helper->frameBackgroundColor( palette );
 
         } else {
 
-            const QColor normal( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
-            const QColor hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
+            const auto normal( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
+            const auto hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
             if( animated ) color = KColorUtils::mix( normal, hover, opacity );
             else if( mouseOver ) color = hover;
             else color = normal;
@@ -5579,7 +5571,7 @@ namespace Breeze
         }
 
         // outline
-        const QColor outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
+        const auto outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
 
         // render
         if( selected )
@@ -5606,11 +5598,11 @@ namespace Breeze
 
         // rendering is similar to drawPushButtonLabelControl
         // cast option and check
-        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
         if( !toolBoxOption ) return true;
 
         // copy palette
-        const QPalette& palette( option->palette );
+        const auto& palette( option->palette );
 
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
@@ -5619,13 +5611,13 @@ namespace Breeze
         const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
 
         // contents rect
-        const QRect rect( subElementRect( SE_ToolBoxTabContents, option, widget ) );
+        const auto rect( subElementRect( SE_ToolBoxTabContents, option, widget ) );
 
         // store icon size
         const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
 
         // find contents size and rect
-        QRect contentsRect( rect );
+        auto contentsRect( rect );
         QSize contentsSize;
         if( !toolBoxOption->text.isEmpty() )
         {
@@ -5683,18 +5675,18 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolBox* toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
+        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
         if( !toolBoxOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QRect tabRect( toolBoxTabContentsRect( option, widget ) );
+        const auto& rect( option->rect );
+        const auto tabRect( toolBoxTabContentsRect( option, widget ) );
 
         /*
          * important: option returns the wrong palette.
          * we use the widget palette instead, when set
          */
-        const QPalette palette( widget ? widget->palette() : option->palette );
+        const auto& palette( widget ? widget->palette() : option->palette );
 
         // store flags
         const State& flags( option->state );
@@ -5734,22 +5726,22 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionDockWidget* dockWidgetOption = ::qstyleoption_cast<const QStyleOptionDockWidget*>( option );
+        const auto dockWidgetOption = qstyleoption_cast<const QStyleOptionDockWidget*>( option );
         if( !dockWidgetOption ) return true;
 
-        const QPalette& palette( option->palette );
-        const State& state( option->state );
+        const auto& palette( option->palette );
+        const auto& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // cast to v2 to check vertical bar
-        const QStyleOptionDockWidgetV2 *v2 = qstyleoption_cast<const QStyleOptionDockWidgetV2*>( option );
+        const auto v2 = qstyleoption_cast<const QStyleOptionDockWidgetV2*>( option );
         const bool verticalTitleBar( v2 ? v2->verticalTitleBar : false );
 
-        const QRect buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
+        const auto buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
 
         // get rectangle and adjust to properly accounts for buttons
-        QRect rect( insideMargin( dockWidgetOption->rect, Metrics::Frame_FrameWidth ) );
+        auto rect( insideMargin( dockWidgetOption->rect, Metrics::Frame_FrameWidth ) );
         if( verticalTitleBar )
         {
 
@@ -5806,7 +5798,7 @@ namespace Breeze
         ParentStyleClass::drawComplexControl( CC_GroupBox, option, painter, widget );
 
         // cast option and check
-        const QStyleOptionGroupBox *groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
+        const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
         if( !groupBoxOption ) return true;
 
         // do nothing if either label is not selected or groupbox is empty
@@ -5814,7 +5806,7 @@ namespace Breeze
         { return true; }
 
         // store palette and rect
-        const QPalette& palette( option->palette );
+        const auto& palette( option->palette );
 
         // check focus state
         const State& state( option->state );
@@ -5831,7 +5823,7 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
 
         // get relevant rect
-        QRect textRect = subControlRect( CC_GroupBox, option, SC_GroupBoxLabel, widget );
+        auto textRect = subControlRect( CC_GroupBox, option, SC_GroupBoxLabel, widget );
         textRect = option->fontMetrics.boundingRect( textRect, textFlags, groupBoxOption->text );
 
         // focus color
@@ -5851,7 +5843,7 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionToolButton* toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
+        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
         if( !toolButtonOption ) return true;
 
         // need to alter palette for focused buttons
@@ -5892,8 +5884,8 @@ namespace Breeze
             && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
             && !hasPopupMenu );
 
-        const QRect buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
-        const QRect menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
+        const auto buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
+        const auto menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
 
         // frame
         if( toolButtonOption->subControls & SC_ToolButton )
@@ -5929,7 +5921,7 @@ namespace Breeze
             copy.state = state;
 
             // define contents rect
-            QRect contentsRect( buttonRect );
+            auto contentsRect( buttonRect );
 
             // detect dock widget title button
             // for dockwidget title buttons, do not take out margins, so that icon do not get scaled down
@@ -5939,7 +5931,7 @@ namespace Breeze
 
                 // cast to abstract button
                 // adjust state to have correct icon rendered
-                const QAbstractButton* button( qobject_cast<const QAbstractButton*>( widget ) );
+                const auto button( qobject_cast<const QAbstractButton*>( widget ) );
                 if( button->isChecked() || button->isDown() ) copy.state |= State_On;
 
             } else if( !inTabBar && hasInlineIndicator ) {
@@ -5966,12 +5958,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionComboBox* comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
+        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
         if( !comboBoxOption ) return true;
 
         // rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // state
         const State& state( option->state );
@@ -5993,7 +5985,7 @@ namespace Breeze
                 if( flat )
                 {
 
-                    const QColor background( palette.color( QPalette::Base ) );
+                    const auto background( palette.color( QPalette::Base ) );
 
                     painter->setBrush( background );
                     painter->setPen( Qt::NoPen );
@@ -6017,15 +6009,15 @@ namespace Breeze
                 if( flat ) {
 
                     // define colors and render
-                    const QColor color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+                    const auto color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
                     _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
                 } else {
 
                     // define colors
-                    const QColor shadow( _helper->shadowColor( palette ) );
-                    const QColor outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                    const QColor background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
+                    const auto shadow( _helper->shadowColor( palette ) );
+                    const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                    const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
 
                     // render
                     _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
@@ -6041,7 +6033,7 @@ namespace Breeze
         {
 
             // detect empty comboboxes
-            const QComboBox* comboBox = qobject_cast<const QComboBox*>( widget );
+            const auto comboBox = qobject_cast<const QComboBox*>( widget );
             const bool empty( comboBox && !comboBox->count() );
 
             // arrow color
@@ -6060,8 +6052,8 @@ namespace Breeze
                     const qreal opacity( _animations->comboBoxEngine().opacity( widget, AnimationHover ) );
 
                     // color
-                    const QColor normal( _helper->arrowColor( palette, QPalette::WindowText ) );
-                    const QColor hover( _helper->hoverColor( palette ) );
+                    const auto normal( _helper->arrowColor( palette, QPalette::WindowText ) );
+                    const auto hover( _helper->hoverColor( palette ) );
 
                     if( animated )
                     {
@@ -6086,7 +6078,7 @@ namespace Breeze
             else arrowColor = _helper->arrowColor( palette, QPalette::ButtonText );
 
             // arrow rect
-            QRect arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
+            auto arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
 
             // translate for non editable, non flat, sunken comboboxes
             if( sunken && !flat && !editable ) arrowRect.translate( 1, 1 );
@@ -6104,12 +6096,12 @@ namespace Breeze
     bool Style::drawSpinBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QStyleOptionSpinBox *spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
+        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
         if( !spinBoxOption ) return true;
 
         // store palette and rect
-        const QPalette& palette( option->palette );
-        const QRect& rect( option->rect );
+        const auto& palette( option->palette );
+        const auto& rect( option->rect );
 
 
         if( option->subControls & SC_SpinBoxFrame )
@@ -6121,7 +6113,7 @@ namespace Breeze
             if( flat )
             {
 
-                const QColor background( palette.color( QPalette::Base ) );
+                const auto background( palette.color( QPalette::Base ) );
 
                 painter->setBrush( background );
                 painter->setPen( Qt::NoPen );
@@ -6147,12 +6139,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
         // copy rect and palette
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
 
         // copy state
         const State& state( option->state );
@@ -6177,7 +6169,7 @@ namespace Breeze
                 int current( sliderOption->minimum );
 
                 // store tick lines
-                const QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+                const auto grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
                 QList<QLine> tickLines;
                 if( horizontal )
                 {
@@ -6193,14 +6185,14 @@ namespace Breeze
                 }
 
                 // colors
-                const QColor base( _helper->separatorColor( palette ) );
-                const QColor highlight( palette.color( QPalette::Highlight ) );
+                const auto base( _helper->separatorColor( palette ) );
+                const auto highlight( palette.color( QPalette::Highlight ) );
 
                 while( current <= sliderOption->maximum )
                 {
 
                     // adjust color
-                    const QColor color( (enabled && current <= sliderOption->sliderPosition) ? highlight:base );
+                    const auto color( (enabled && current <= sliderOption->sliderPosition) ? highlight:base );
                     painter->setPen( color );
 
                     // calculate positions and draw lines
@@ -6222,10 +6214,10 @@ namespace Breeze
         if( sliderOption->subControls & SC_SliderGroove )
         {
             // retrieve groove rect
-            QRect grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
+            auto grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
 
             // base color
-            const QColor grooveColor( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
+            const auto grooveColor( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
 
             if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, grooveColor );
             else {
@@ -6233,29 +6225,29 @@ namespace Breeze
                 const bool upsideDown( sliderOption->upsideDown );
 
                 // handle rect
-                QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+                auto handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
 
                 // highlight color
-                const QColor highlight( palette.color( QPalette::Highlight ) );
+                const auto highlight( palette.color( QPalette::Highlight ) );
 
                 if( sliderOption->orientation == Qt::Horizontal )
                 {
 
-                    QRect leftRect( grooveRect );
+                    auto leftRect( grooveRect );
                     leftRect.setRight( handleRect.right() - Metrics::Slider_ControlThickness/2 );
                     _helper->renderSliderGroove( painter, leftRect, upsideDown ? grooveColor:highlight );
 
-                    QRect rightRect( grooveRect );
+                    auto rightRect( grooveRect );
                     rightRect.setLeft( handleRect.left() + Metrics::Slider_ControlThickness/2 );
                     _helper->renderSliderGroove( painter, rightRect, upsideDown ? highlight:grooveColor );
 
                 } else {
 
-                    QRect topRect( grooveRect );
+                    auto topRect( grooveRect );
                     topRect.setBottom( handleRect.bottom() - Metrics::Slider_ControlThickness/2 );
                     _helper->renderSliderGroove( painter, topRect, upsideDown ? grooveColor:highlight );
 
-                    QRect bottomRect( grooveRect );
+                    auto bottomRect( grooveRect );
                     bottomRect.setTop( handleRect.top() + Metrics::Slider_ControlThickness/2 );
                     _helper->renderSliderGroove( painter, bottomRect, upsideDown ? highlight:grooveColor );
 
@@ -6270,7 +6262,7 @@ namespace Breeze
         {
 
             // get rect and center
-            QRect handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
+            auto handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
 
             // handle state
             const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
@@ -6283,9 +6275,9 @@ namespace Breeze
             const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
             // define colors
-            const QColor background( palette.color( QPalette::Button ) );
-            const QColor outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
-            const QColor shadow( _helper->shadowColor( palette ) );
+            const auto background( palette.color( QPalette::Button ) );
+            const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            const auto shadow( _helper->shadowColor( palette ) );
 
             // render
             _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
@@ -6300,10 +6292,10 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionSlider *sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
+        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
 
-        const QPalette& palette( option->palette );
+        const auto& palette( option->palette );
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
@@ -6318,10 +6310,10 @@ namespace Breeze
         {
 
             // groove rect
-            QRect grooveRect( subControlRect( CC_Dial, sliderOption, SC_SliderGroove, widget ) );
+            auto grooveRect( subControlRect( CC_Dial, sliderOption, SC_SliderGroove, widget ) );
 
             // groove
-            const QColor grooveColor( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
+            const auto grooveColor( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
 
             // render groove
             _helper->renderDialGroove( painter, grooveRect, grooveColor );
@@ -6330,7 +6322,7 @@ namespace Breeze
             {
 
                 // highlight
-                const QColor highlight( palette.color( QPalette::Highlight ) );
+                const auto highlight( palette.color( QPalette::Highlight ) );
 
                 // angles
                 const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
@@ -6348,7 +6340,7 @@ namespace Breeze
         {
 
             // get handle rect
-            QRect handleRect( subControlRect( CC_Dial, sliderOption, SC_DialHandle, widget ) );
+            auto handleRect( subControlRect( CC_Dial, sliderOption, SC_DialHandle, widget ) );
             handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
 
             // handle state
@@ -6359,13 +6351,13 @@ namespace Breeze
             _animations->dialEngine().setHandleRect( widget, handleRect );
             _animations->dialEngine().updateState( widget, AnimationHover, handleActive && mouseOver );
             _animations->dialEngine().updateState( widget, AnimationFocus, hasFocus );
-            const AnimationMode mode( _animations->dialEngine().buttonAnimationMode( widget ) );
+            const auto mode( _animations->dialEngine().buttonAnimationMode( widget ) );
             const qreal opacity( _animations->dialEngine().buttonOpacity( widget ) );
 
             // define colors
-            const QColor background( palette.color( QPalette::Button ) );
-            const QColor outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
-            const QColor shadow( _helper->shadowColor( palette ) );
+            const auto background( palette.color( QPalette::Button ) );
+            const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            const auto shadow( _helper->shadowColor( palette ) );
 
             // render
             _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
@@ -6390,11 +6382,11 @@ namespace Breeze
         if( (!StyleConfigData::animationsEnabled() || mouseOver || animated) && option->subControls & SC_ScrollBarGroove )
         {
             // retrieve groove rectangle
-            QRect grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+            auto grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
 
-            const QPalette& palette( option->palette );
-            const QColor color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 * (animated ? opacity : 1) ) );
-            const State& state( option->state );
+            const auto& palette( option->palette );
+            const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 * (animated ? opacity : 1) ) );
+            const auto& state( option->state );
             const bool horizontal( state & State_Horizontal );
 
             if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidth );
@@ -6415,12 +6407,12 @@ namespace Breeze
     {
 
         // cast option and check
-        const QStyleOptionTitleBar *titleBarOption( qstyleoption_cast<const QStyleOptionTitleBar *>( option ) );
+        const auto titleBarOption( qstyleoption_cast<const QStyleOptionTitleBar *>( option ) );
         if( !titleBarOption ) return true;
 
         // store palette and rect
-        QPalette palette( option->palette );
-        const QRect& rect( option->rect );
+        auto palette( option->palette );
+        const auto& rect( option->rect );
 
         const State& flags( option->state );
         const bool enabled( flags & State_Enabled );
@@ -6431,8 +6423,8 @@ namespace Breeze
 
             // render background
             painter->setClipRect( rect );
-            const QColor outline( active ? QColor():_helper->frameOutlineColor( palette, false, false ) );
-            const QColor background( _helper->titleBarColor( active ) );
+            const auto outline( active ? QColor():_helper->frameOutlineColor( palette, false, false ) );
+            const auto background( _helper->titleBarColor( active ) );
             _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, CornersTop );
 
             const bool useSeparator(
@@ -6450,7 +6442,7 @@ namespace Breeze
 
             // render text
             palette.setColor( QPalette::WindowText, _helper->titleBarTextColor( active ) );
-            const QRect textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
+            const auto textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
             ParentStyleClass::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, QPalette::WindowText );
 
         }
@@ -6488,7 +6480,7 @@ namespace Breeze
             if( icon.isNull() ) continue;
 
             // define icon rect
-            QRect iconRect( subControlRect( CC_TitleBar, option, subControl, widget ) );
+            auto iconRect( subControlRect( CC_TitleBar, option, subControl, widget ) );
             if( iconRect.isEmpty() ) continue;
 
             // active state
@@ -6538,7 +6530,7 @@ namespace Breeze
     void Style::renderSpinBoxArrow( const SubControl& subControl, const QStyleOptionSpinBox* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        const QPalette& palette( option->palette );
+        const auto& palette( option->palette );
         const State& state( option->state );
 
         // enable state
@@ -6562,11 +6554,11 @@ namespace Breeze
         const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
         const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
 
-        QColor color = _helper->arrowColor( palette, QPalette::Text );
+        auto color = _helper->arrowColor( palette, QPalette::Text );
         if( animated )
         {
 
-            QColor highlight = _helper->hoverColor( palette );
+            auto highlight = _helper->hoverColor( palette );
             color = KColorUtils::mix( color, highlight, opacity );
 
         } else if( subControlHover ) {
@@ -6583,7 +6575,7 @@ namespace Breeze
         ArrowOrientation orientation( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown );
 
         // arrow rect
-        const QRect arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
+        const auto arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
 
         // render
         _helper->renderArrow( painter, arrowRect, color, orientation );
@@ -6597,14 +6589,14 @@ namespace Breeze
     {
 
         // render a separator at the bottom
-        const QPalette& palette( option->palette );
-        const QColor color( _helper->separatorColor( palette ) );
+        const auto& palette( option->palette );
+        const auto color( _helper->separatorColor( palette ) );
         _helper->renderSeparator( painter, QRect( option->rect.bottomLeft()-QPoint( 0, Metrics::MenuItem_MarginWidth), QSize( option->rect.width(), 1 ) ), color );
 
         // render text in the center of the rect
         // icon is discarded on purpose
         painter->setFont( option->font );
-        const QRect contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth );
+        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
     }
@@ -6662,9 +6654,9 @@ namespace Breeze
     QColor Style::scrollBarArrowColor( const QStyleOptionSlider* option, const SubControl& control, const QWidget* widget ) const
     {
 
-        const QRect& rect( option->rect );
-        const QPalette& palette( option->palette );
-        QColor color( _helper->arrowColor( palette, QPalette::WindowText ) );
+        const auto& rect( option->rect );
+        const auto& palette( option->palette );
+        auto color( _helper->arrowColor( palette, QPalette::WindowText ) );
 
         bool widgetMouseOver( ( option->state & State_MouseOver ) );
         if( widget ) widgetMouseOver = widget->underMouse();
@@ -6722,7 +6714,7 @@ namespace Breeze
         if( rect.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
         {
 
-            QColor highlight = _helper->hoverColor( palette );
+            auto highlight = _helper->hoverColor( palette );
             if( animated )
             {
                 color = KColorUtils::mix( color, highlight, opacity );
@@ -6883,10 +6875,10 @@ namespace Breeze
         const bool isCloseButton( buttonType == ButtonClose && StyleConfigData::outlineCloseButton() );
 
         palette.setCurrentColorGroup( QPalette::Active );
-        const QColor base( palette.color( QPalette::WindowText ) );
-        const QColor selected( palette.color( QPalette::HighlightedText ) );
-        const QColor negative( buttonType == ButtonClose ? _helper->negativeText( palette ):base );
-        const QColor negativeSelected( buttonType == ButtonClose ? _helper->negativeText( palette ):selected );
+        const auto base( palette.color( QPalette::WindowText ) );
+        const auto selected( palette.color( QPalette::HighlightedText ) );
+        const auto negative( buttonType == ButtonClose ? _helper->negativeText( palette ):base );
+        const auto negativeSelected( buttonType == ButtonClose ? _helper->negativeText( palette ):selected );
 
         const bool invertNormalState( isCloseButton );
 
@@ -7008,14 +7000,14 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    bool Style::showIconsInMenuItems( void ) const
+    bool Style::showIconsInMenuItems() const
     {
         const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
         return g.readEntry("ShowIconsInMenuItems", true);
     }
 
     //____________________________________________________________________
-    bool Style::showIconsOnPushButtons( void ) const
+    bool Style::showIconsOnPushButtons() const
     {
         const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
         return g.readEntry("ShowIconsOnPushButtons", true);
@@ -7063,8 +7055,8 @@ namespace Breeze
 
         // check if widget is of relevant type
         bool hasAlteredBackground( false );
-        if( const QGroupBox* groupBox = qobject_cast<const QGroupBox*>( widget ) ) hasAlteredBackground = !groupBox->isFlat();
-        else if( const QTabWidget* tabWidget = qobject_cast<const QTabWidget*>( widget ) ) hasAlteredBackground = !tabWidget->documentMode();
+        if( const auto groupBox = qobject_cast<const QGroupBox*>( widget ) ) hasAlteredBackground = !groupBox->isFlat();
+        else if( const auto tabWidget = qobject_cast<const QTabWidget*>( widget ) ) hasAlteredBackground = !tabWidget->documentMode();
         else if( qobject_cast<const QMenu*>( widget ) ) hasAlteredBackground = true;
         else if( StyleConfigData::dockWidgetDrawFrame() && qobject_cast<const QDockWidget*>( widget ) ) hasAlteredBackground = true;
 

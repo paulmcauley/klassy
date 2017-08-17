@@ -41,7 +41,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~WidgetStateData( void )
+        virtual ~WidgetStateData()
         {}
 
         /**

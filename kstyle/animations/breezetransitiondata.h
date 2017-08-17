@@ -48,14 +48,14 @@ namespace Breeze
         TransitionData( QObject* parent, QWidget* target, int );
 
         //* destructor
-        virtual ~TransitionData( void );
+        virtual ~TransitionData();
 
         //* enability
         virtual void setEnabled( bool value )
         { _enabled = value; }
 
         //* enability
-        virtual bool enabled( void ) const
+        virtual bool enabled() const
         { return _enabled; }
 
         //* duration
@@ -70,27 +70,27 @@ namespace Breeze
         { _maxRenderTime = value; }
 
         //* max renderTime
-        const int& maxRenderTime( void ) const
+        const int& maxRenderTime() const
         { return _maxRenderTime; }
 
         //* start clock
-        void startClock( void )
+        void startClock()
         {
             if( _clock.isNull() ) _clock.start();
             else _clock.restart();
         }
 
         //* check if rendering is two slow
-        bool slow( void ) const
+        bool slow() const
         { return !( _clock.isNull() || _clock.elapsed() <= maxRenderTime() ); }
 
         protected Q_SLOTS:
 
         //* initialize animation
-        virtual bool initializeAnimation( void ) = 0;
+        virtual bool initializeAnimation() = 0;
 
         //* animate
-        virtual bool animate( void ) = 0;
+        virtual bool animate() = 0;
 
         protected:
 
@@ -98,7 +98,7 @@ namespace Breeze
         inline bool hasParent( const QWidget*, const char* ) const;
 
         //* transition widget
-        virtual const TransitionWidget::Pointer& transition( void ) const
+        virtual const TransitionWidget::Pointer& transition() const
         { return _transition; }
 
         //* used to avoid recursion when grabbing widgets
@@ -106,7 +106,7 @@ namespace Breeze
         { _recursiveCheck = value; }
 
         //* used to avoid recursion when grabbing widgets
-        bool recursiveCheck( void ) const
+        bool recursiveCheck() const
         { return _recursiveCheck; }
 
         private:

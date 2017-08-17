@@ -43,14 +43,14 @@ namespace Breeze
         { setDuration( duration ); }
 
         //* destructor
-        virtual ~Animation( void ) = default;
+        virtual ~Animation() = default;
 
         //* true if running
-        bool isRunning( void ) const
+        bool isRunning() const
         { return state() == Animation::Running; }
 
         //* restart
-        void restart( void )
+        void restart()
         {
             if( isRunning() ) stop();
             start();

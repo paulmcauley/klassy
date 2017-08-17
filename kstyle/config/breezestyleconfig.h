@@ -36,7 +36,7 @@ namespace Breeze
         explicit StyleConfig(QWidget*);
 
         //* destructor
-        virtual ~StyleConfig( void )
+        virtual ~StyleConfig()
         {}
 
         Q_SIGNALS:
@@ -47,21 +47,21 @@ namespace Breeze
         public Q_SLOTS:
 
         //* load setup from config data
-        void load( void );
+        void load();
 
         //* save current state
-        void save( void );
+        void save();
 
         //* restore all default values
-        void defaults( void );
+        void defaults();
 
         //* reset to saved configuration
-        void reset( void );
+        void reset();
 
         protected Q_SLOTS:
 
         //* update modified state when option is checked/unchecked
-        void updateChanged( void );
+        void updateChanged();
 
     };
 

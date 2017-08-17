@@ -48,7 +48,7 @@ namespace Breeze
         {}
 
         //! destructor
-        virtual ~StackedWidgetEngine( void )
+        virtual ~StackedWidgetEngine()
         {}
 
         //! register widget

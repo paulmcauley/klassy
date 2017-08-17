@@ -34,12 +34,12 @@ namespace Breeze
         public:
 
         //* constructor
-        AddEventFilter( void ):
+        AddEventFilter():
             QObject()
             {}
 
         //* destructor
-        virtual ~AddEventFilter( void )
+        virtual ~AddEventFilter()
         {}
 
         //* event filter

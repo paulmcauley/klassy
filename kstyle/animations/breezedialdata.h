@@ -37,7 +37,7 @@ namespace Breeze
         DialData( QObject* parent, QWidget* target, int );
 
         //* destructor
-        virtual ~DialData( void )
+        virtual ~DialData()
         {}
 
         //* event filter
@@ -48,7 +48,7 @@ namespace Breeze
         { _handleRect = rect; }
 
         //* mouse position
-        QPoint position( void ) const
+        QPoint position() const
         { return _position; }
 
         protected:

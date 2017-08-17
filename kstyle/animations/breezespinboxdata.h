@@ -43,7 +43,7 @@ namespace Breeze
         SpinBoxData( QObject*, QWidget*, int );
 
         //* destructor
-        virtual ~SpinBoxData( void )
+        virtual ~SpinBoxData()
         {}
 
         //* animation state
@@ -81,7 +81,7 @@ namespace Breeze
         //@{
 
         //* opacity
-        qreal upArrowOpacity( void ) const
+        qreal upArrowOpacity() const
         { return _upArrowData._opacity; }
 
         //* opacity
@@ -94,7 +94,7 @@ namespace Breeze
         }
 
         //* animation
-        Animation::Pointer upArrowAnimation( void ) const
+        Animation::Pointer upArrowAnimation() const
         { return _upArrowData._animation; }
 
         //@}
@@ -103,7 +103,7 @@ namespace Breeze
         //@{
 
         //* opacity
-        qreal downArrowOpacity( void ) const
+        qreal downArrowOpacity() const
         { return _downArrowData._opacity; }
 
         //* opacity
@@ -116,7 +116,7 @@ namespace Breeze
         }
 
         //* animation
-        Animation::Pointer downArrowAnimation( void ) const
+        Animation::Pointer downArrowAnimation() const
         { return _downArrowData._animation; }
 
         //@}
@@ -130,7 +130,7 @@ namespace Breeze
             public:
 
             //* default constructor
-            Data( void ):
+            Data():
                 _state( false ),
                 _opacity(0)
                 {}

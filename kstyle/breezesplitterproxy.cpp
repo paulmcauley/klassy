@@ -122,7 +122,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    SplitterProxy::~SplitterProxy( void )
+    SplitterProxy::~SplitterProxy()
     {}
 
     //____________________________________________________________________
@@ -325,7 +325,7 @@ namespace Breeze
 
 
     //____________________________________________________________________
-    void SplitterProxy::clearSplitter( void )
+    void SplitterProxy::clearSplitter()
     {
 
         // check if changed

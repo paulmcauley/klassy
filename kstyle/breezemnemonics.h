@@ -43,7 +43,7 @@ namespace Breeze
             {}
 
         //* destructor
-        virtual ~Mnemonics( void )
+        virtual ~Mnemonics()
         {}
 
         //* set mode
@@ -53,11 +53,11 @@ namespace Breeze
         virtual bool eventFilter( QObject*, QEvent* );
 
         //* true if mnemonics are enabled
-        const bool& enabled( void ) const
+        const bool& enabled() const
         { return _enabled; }
 
         //* alignment flag
-        int textFlags( void ) const
+        int textFlags() const
         { return _enabled ? Qt::TextShowMnemonic : Qt::TextHideMnemonic; }
 
         protected:

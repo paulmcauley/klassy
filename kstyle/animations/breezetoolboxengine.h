@@ -41,7 +41,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~ToolBoxEngine( void )
+        virtual ~ToolBoxEngine()
         {}
 
         //* enability

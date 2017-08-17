@@ -69,7 +69,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    ShadowHelper::~ShadowHelper( void )
+    ShadowHelper::~ShadowHelper()
     {
 
         #if BREEZE_HAVE_X11
@@ -111,7 +111,7 @@ namespace Breeze
     }
 
     //______________________________________________
-    void ShadowHelper::reset( void )
+    void ShadowHelper::reset()
     {
         #if BREEZE_HAVE_X11
         if( Helper::isX11() )
@@ -156,7 +156,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ShadowHelper::loadConfig( void )
+    void ShadowHelper::loadConfig()
     {
 
         // reset
@@ -215,7 +215,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    TileSet ShadowHelper::shadowTiles( void )
+    TileSet ShadowHelper::shadowTiles()
     {
         if( !_shadowTiles.isValid() )
         {
@@ -330,7 +330,7 @@ namespace Breeze
     }
 
     //______________________________________________
-    const QVector<quint32>& ShadowHelper::createPixmapHandles( void )
+    const QVector<quint32>& ShadowHelper::createPixmapHandles()
     {
 
         /**

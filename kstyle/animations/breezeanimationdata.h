@@ -47,7 +47,7 @@ namespace Breeze
         { Q_ASSERT( _target ); }
 
         //* destructor
-        virtual ~AnimationData( void )
+        virtual ~AnimationData()
         {}
 
         //* duration
@@ -58,7 +58,7 @@ namespace Breeze
         { _steps = value; }
 
         //* enability
-        virtual bool enabled( void ) const
+        virtual bool enabled() const
         { return _enabled; }
 
         //* enability
@@ -66,7 +66,7 @@ namespace Breeze
         { _enabled = value; }
 
         //* target
-        const WeakPointer<QWidget>& target( void ) const
+        const WeakPointer<QWidget>& target() const
         { return _target; }
 
         //* invalid opacity
@@ -85,7 +85,7 @@ namespace Breeze
         }
 
         //* trigger target update
-        virtual void setDirty( void ) const
+        virtual void setDirty() const
         { if( _target ) _target.data()->update(); }
 
         private:

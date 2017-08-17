@@ -67,17 +67,17 @@ namespace Breeze
         ShadowHelper( QObject*, Helper& );
 
         //* destructor
-        virtual ~ShadowHelper( void );
+        virtual ~ShadowHelper();
 
         //* true if supported
-        bool isSupported( void ) const
+        bool isSupported() const
         { return _supported; }
 
         //* reset
-        void reset( void );
+        void reset();
 
         //* load config
-        void loadConfig( void );
+        void loadConfig();
 
         //* register widget
         bool registerWidget( QWidget*, bool force = false );
@@ -90,7 +90,7 @@ namespace Breeze
 
         //* shadow tiles
         /** is public because it is also needed for mdi windows */
-        TileSet shadowTiles( void );
+        TileSet shadowTiles();
 
         protected Q_SLOTS:
 
@@ -118,7 +118,7 @@ namespace Breeze
         bool acceptWidget( QWidget* ) const;
 
         // create pixmap handles from tileset
-        const QVector<quint32>& createPixmapHandles( void );
+        const QVector<quint32>& createPixmapHandles();
 
         // create pixmap handle from pixmap
         quint32 createPixmap( const QPixmap& );

@@ -85,7 +85,7 @@ namespace Breeze
     }
 
     //______________________________________________________________
-    TileSet::TileSet( void ):
+    TileSet::TileSet():
         _w1(0),
         _h1(0),
         _w3(0),

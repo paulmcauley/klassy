@@ -45,17 +45,17 @@ namespace Breeze
         explicit MdiWindowShadow( QWidget*, TileSet );
 
         //* update geometry
-        void updateGeometry( void );
+        void updateGeometry();
 
         //* update ZOrder
-        void updateZOrder( void );
+        void updateZOrder();
 
         //* set associated window
         void setWidget( QWidget* value )
         { _widget = value; }
 
         //* associated window
-        QWidget* widget( void ) const
+        QWidget* widget() const
         { return _widget; }
 
         protected:
@@ -88,7 +88,7 @@ namespace Breeze
         explicit MdiWindowShadowFactory( QObject* );
 
         //* destructor
-        virtual ~MdiWindowShadowFactory( void )
+        virtual ~MdiWindowShadowFactory()
         {}
 
         //* set shadow tiles

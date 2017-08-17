@@ -257,13 +257,13 @@ namespace Breeze
         //@{
 
         //* true if style was compiled for and is running on X11
-        static bool isX11( void );
+        static bool isX11();
 
         //* true if running on platform Wayland
-        static bool isWayland( void );
+        static bool isWayland();
 
         //* returns true if compositing is active
-        bool compositingActive( void ) const;
+        bool compositingActive() const;
 
         //* returns true if a given widget supports alpha channel
         bool hasAlphaChannel( const QWidget* ) const;
@@ -295,7 +295,7 @@ namespace Breeze
         #if BREEZE_HAVE_X11
 
         //* get xcb connection
-        static xcb_connection_t* connection( void );
+        static xcb_connection_t* connection();
 
         //* create xcb atom
         xcb_atom_t createAtom( const QString& ) const;
@@ -311,7 +311,7 @@ namespace Breeze
         protected:
 
         //* initialize
-        void init( void );
+        void init();
 
         //* return rectangle for widgets shadow, offset depending on light source
         QRectF shadowRect( const QRectF& ) const;

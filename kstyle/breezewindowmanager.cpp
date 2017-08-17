@@ -48,10 +48,8 @@
 
 #include "breezewindowmanager.h"
 #include "breezepropertynames.h"
-#include "breezestyleconfigdata.h"
 #include "breezehelper.h"
 
-#include <QApplication>
 #include <QComboBox>
 #include <QDialog>
 #include <QDockWidget>
@@ -102,6 +100,22 @@
 #include <KWayland/Client/shell.h>
 #include <KWayland/Client/seat.h>
 #endif
+
+namespace Util
+{
+    template<class T>
+        inline T makeT( std::initializer_list<typename T::key_type>&& reference )
+    {
+        #if QT_VERSION >= 0x050100
+        return T( std::move( reference ) );
+        #else
+        // for old QT versions there is no container constructor from initializer_list
+        T out;
+        for( auto&& value:std::move(reference) ) { out.insert( value ); }
+        return out;
+        #endif
+    }
+}
 
 namespace Breeze
 {
@@ -197,27 +211,13 @@ namespace Breeze
         private:
 
         //* parent
-        WindowManager* _parent;
+        WindowManager* _parent = nullptr;
 
     };
 
     //_____________________________________________________________
     WindowManager::WindowManager( QObject* parent ):
-        QObject( parent ),
-        _enabled( true ),
-        _useWMMoveResize( true ),
-        _dragMode( StyleConfigData::WD_FULL ),
-        _dragDistance( QApplication::startDragDistance() ),
-        _dragDelay( QApplication::startDragTime() ),
-        _dragAboutToStart( false ),
-        _dragInProgress( false ),
-        _locked( false ),
-        _cursorOverride( false )
-        #if BREEZE_HAVE_KWAYLAND
-        , _seat( nullptr )
-        , _pointer( nullptr )
-        , _waylandSerial( 0 )
-        #endif
+        QObject( parent )
     {
 
         // install application wise event filter
@@ -227,7 +227,7 @@ namespace Breeze
     }
 
     //_____________________________________________________________
-    void WindowManager::initialize( void )
+    void WindowManager::initialize()
     {
 
         setEnabled( StyleConfigData::windowDragMode() != StyleConfigData::WD_NONE );
@@ -248,23 +248,19 @@ namespace Breeze
     {
         #if BREEZE_HAVE_KWAYLAND
         if( !Helper::isWayland() ) return;
-
-        if( _seat ) {
-            // already initialized
-            return;
-        }
+        if( _seat )  return;
 
         using namespace KWayland::Client;
         auto connection = ConnectionThread::fromApplication( this );
-        if( !connection ) {
-            return;
-        }
-        Registry *registry = new Registry( this );
+        if( !connection ) return;
+
+        auto registry = new Registry( this );
         registry->create( connection );
         connect(registry, &Registry::interfacesAnnounced, this,
             [registry, this] {
                 const auto interface = registry->interface( Registry::Interface::Seat );
-                if( interface.name != 0 ) {
+                if( interface.name != 0 )
+                {
                     _seat = registry->createSeat( interface.name, interface.version, this );
                     connect(_seat, &Seat::hasPointerChanged, this, &WindowManager::waylandHasPointerChanged);
                 }
@@ -281,13 +277,13 @@ namespace Breeze
     {
         #if BREEZE_HAVE_KWAYLAND
         Q_ASSERT( _seat );
-        if( hasPointer ) {
-            if( !_pointer ) {
+        if( hasPointer )
+        {
+            if( !_pointer )
+            {
                 _pointer = _seat->createPointer(this);
                 connect(_pointer, &KWayland::Client::Pointer::buttonStateChanged, this,
-                    [this] (quint32 serial) {
-                        _waylandSerial = serial;
-                    }
+                    [this] (quint32 serial) { _waylandSerial = serial; }
                 );
             }
         } else {
@@ -319,39 +315,36 @@ namespace Breeze
 
     }
 
-#if !BREEZE_USE_KDE4
+    #if !BREEZE_USE_KDE4
+    //_____________________________________________________________
     void WindowManager::registerQuickItem( QQuickItem* item )
     {
         if ( !item ) return;
 
-        QQuickWindow *window = item->window();
-        if (window) {
-            QQuickItem *contentItem = window->contentItem();
+        if( auto window = item->window() )
+        {
+            auto contentItem = window->contentItem();
             contentItem->setAcceptedMouseButtons( Qt::LeftButton );
             contentItem->removeEventFilter( this );
             contentItem->installEventFilter( this );
         }
 
     }
-#endif
+    #endif
 
     //_____________________________________________________________
     void WindowManager::unregisterWidget( QWidget* widget )
-    {
-        if( widget )
-        { widget->removeEventFilter( this ); }
-    }
+    { if( widget ) widget->removeEventFilter( this ); }
 
     //_____________________________________________________________
-    void WindowManager::initializeWhiteList( void )
+    void WindowManager::initializeWhiteList()
     {
 
-        _whiteList.clear();
-
-        // add user specified whitelisted classnames
-        _whiteList.insert( ExceptionId( QStringLiteral( "MplayerWindow" ) ) );
-        _whiteList.insert( ExceptionId( QStringLiteral( "ViewSliders@kmix" ) ) );
-        _whiteList.insert( ExceptionId( QStringLiteral( "Sidebar_Widget@konqueror" ) ) );
+        _whiteList = Util::makeT<ExceptionSet>({
+            ExceptionId( QStringLiteral( "MplayerWindow" ) ),
+            ExceptionId( QStringLiteral( "ViewSliders@kmix" ) ),
+            ExceptionId( QStringLiteral( "Sidebar_Widget@konqueror" ) )
+        });
 
         foreach( const QString& exception, StyleConfigData::windowDragWhiteList() )
         {
@@ -362,13 +355,15 @@ namespace Breeze
     }
 
     //_____________________________________________________________
-    void WindowManager::initializeBlackList( void )
+    void WindowManager::initializeBlackList()
     {
 
-        _blackList.clear();
-        _blackList.insert( ExceptionId( QStringLiteral( "CustomTrackView@kdenlive" ) ) );
-        _blackList.insert( ExceptionId( QStringLiteral( "MuseScore" ) ) );
-        _blackList.insert( ExceptionId( QStringLiteral( "KGameCanvasWidget" ) ) );
+        _blackList = Util::makeT<ExceptionSet>({
+            ExceptionId( QStringLiteral( "CustomTrackView@kdenlive" ) ),
+            ExceptionId( QStringLiteral( "MuseScore" ) ),
+            ExceptionId( QStringLiteral( "KGameCanvasWidget" ) )
+        });
+
         foreach( const QString& exception, StyleConfigData::windowDragBlackList() )
         {
             ExceptionId id( exception );
@@ -486,7 +481,7 @@ namespace Breeze
 
         // send a move event to the current child with same position
         // if received, it is caught to actually start the drag
-        QPoint localPoint( _dragPoint );
+        auto localPoint( _dragPoint );
         if( child ) localPoint = child->mapFrom( widget, localPoint );
         else child = widget;
         QMouseEvent localMouseEvent( QEvent::MouseMove, localPoint, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
@@ -623,11 +618,11 @@ namespace Breeze
     {
 
         // check against noAnimations propery
-        QVariant propertyValue( widget->property( PropertyNames::noWindowGrab ) );
+        const auto propertyValue( widget->property( PropertyNames::noWindowGrab ) );
         if( propertyValue.isValid() && propertyValue.toBool() ) return true;
 
         // list-based blacklisted widgets
-        QString appName( qApp->applicationName() );
+        const auto appName( qApp->applicationName() );
         foreach( const ExceptionId& id, _blackList )
         {
             if( !id.appName().isEmpty() && id.appName() != appName ) continue;
@@ -648,10 +643,10 @@ namespace Breeze
     bool WindowManager::isWhiteListed( QWidget* widget ) const
     {
 
-        QString appName( qApp->applicationName() );
+        const auto appName( qApp->applicationName() );
         foreach( const ExceptionId& id, _whiteList )
         {
-            if( !id.appName().isEmpty() && id.appName() != appName ) continue;
+            if( !(id.appName().isEmpty() || id.appName() == appName ) ) continue;
             if( widget->inherits( id.className().toLatin1().data() ) ) return true;
         }
 
@@ -827,7 +822,7 @@ namespace Breeze
     }
 
     //____________________________________________________________
-    void WindowManager::resetDrag( void )
+    void WindowManager::resetDrag()
     {
 
         if( (!useWMMoveResize() ) && _target && _cursorOverride ) {
@@ -918,7 +913,8 @@ namespace Breeze
         }
 
         auto shellSurface = KWayland::Client::ShellSurface::fromWindow(window);
-        if( !shellSurface ) {
+        if( !shellSurface )
+        {
             // TODO: also check for xdg-shell in future
             return;
         }
@@ -930,11 +926,12 @@ namespace Breeze
     }
 
     //____________________________________________________________
-    bool WindowManager::supportWMMoveResize( void ) const
+    bool WindowManager::supportWMMoveResize() const
     {
 
         #if BREEZE_HAVE_KWAYLAND
-        if( Helper::isWayland() ) {
+        if( Helper::isWayland() )
+        {
             return true;
         }
         #endif

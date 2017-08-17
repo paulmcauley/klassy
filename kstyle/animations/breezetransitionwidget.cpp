@@ -36,7 +36,7 @@ namespace Breeze
 
     //________________________________________________
     bool TransitionWidget::_paintEnabled = true;
-    bool TransitionWidget::paintEnabled( void )
+    bool TransitionWidget::paintEnabled()
     { return _paintEnabled; }
 
     int TransitionWidget::_steps = 0;

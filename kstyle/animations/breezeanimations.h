@@ -47,10 +47,6 @@ namespace Breeze
         //* constructor
         explicit Animations( QObject* );
 
-        //* destructor
-        virtual ~Animations( void )
-        {}
-
         //* register animations corresponding to given widget, depending on its type.
         void registerWidget( QWidget* widget ) const;
 
@@ -58,55 +54,55 @@ namespace Breeze
         void unregisterWidget( QWidget* widget ) const;
 
         //* enability engine
-        WidgetStateEngine& widgetEnabilityEngine( void ) const
+        WidgetStateEngine& widgetEnabilityEngine() const
         { return *_widgetEnabilityEngine; }
 
         //* abstractButton engine
-        WidgetStateEngine& widgetStateEngine( void ) const
+        WidgetStateEngine& widgetStateEngine() const
         { return *_widgetStateEngine; }
 
         //* editable combobox arrow hover engine
-        WidgetStateEngine& comboBoxEngine( void ) const
+        WidgetStateEngine& comboBoxEngine() const
         { return *_comboBoxEngine; }
 
-        //! Tool buttons arrow hover engine
-        WidgetStateEngine& toolButtonEngine( void ) const
+        //* Tool buttons arrow hover engine
+        WidgetStateEngine& toolButtonEngine() const
         { return *_toolButtonEngine; }
 
-        //! item view engine
-        WidgetStateEngine& inputWidgetEngine( void ) const
+        //* item view engine
+        WidgetStateEngine& inputWidgetEngine() const
         { return *_inputWidgetEngine; }
 
         //* busy indicator
-        BusyIndicatorEngine& busyIndicatorEngine( void ) const
+        BusyIndicatorEngine& busyIndicatorEngine() const
         { return *_busyIndicatorEngine; }
 
         //* header view engine
-        HeaderViewEngine& headerViewEngine( void ) const
+        HeaderViewEngine& headerViewEngine() const
         { return *_headerViewEngine; }
 
         //* scrollbar engine
-        ScrollBarEngine& scrollBarEngine( void ) const
+        ScrollBarEngine& scrollBarEngine() const
         { return *_scrollBarEngine; }
 
         //* dial engine
-        DialEngine& dialEngine( void ) const
+        DialEngine& dialEngine() const
         { return *_dialEngine; }
 
         //* spinbox engine
-        SpinBoxEngine& spinBoxEngine( void ) const
+        SpinBoxEngine& spinBoxEngine() const
         { return *_spinBoxEngine; }
 
         //* tabbar
-        TabBarEngine& tabBarEngine( void ) const
+        TabBarEngine& tabBarEngine() const
         { return *_tabBarEngine; }
 
         //* toolbox
-        ToolBoxEngine& toolBoxEngine( void ) const
+        ToolBoxEngine& toolBoxEngine() const
         { return *_toolBoxEngine; }
 
         //* setup engines
-        void setupEngines( void );
+        void setupEngines();
 
         protected Q_SLOTS:
 
@@ -115,46 +111,46 @@ namespace Breeze
         private:
 
         //* register new engine
-        void registerEngine( BaseEngine* engine );
+        void registerEngine( BaseEngine* );
 
         //* busy indicator
-        BusyIndicatorEngine* _busyIndicatorEngine;
+        BusyIndicatorEngine* _busyIndicatorEngine = nullptr;
 
         //* headerview hover effect
-        HeaderViewEngine* _headerViewEngine;
+        HeaderViewEngine* _headerViewEngine = nullptr;
 
         //* widget enability engine
-        WidgetStateEngine* _widgetEnabilityEngine;
+        WidgetStateEngine* _widgetEnabilityEngine = nullptr;
 
         //* abstract button engine
-        WidgetStateEngine* _widgetStateEngine;
+        WidgetStateEngine* _widgetStateEngine = nullptr;
 
         //* editable combobox arrow hover effect
-        WidgetStateEngine* _comboBoxEngine;
+        WidgetStateEngine* _comboBoxEngine = nullptr;
 
-        //! mennu toolbutton arrow hover effect
-        WidgetStateEngine* _toolButtonEngine;
+        //* mennu toolbutton arrow hover effect
+        WidgetStateEngine* _toolButtonEngine = nullptr;
 
-        //! item view engine
-        WidgetStateEngine* _inputWidgetEngine;
+        //* item view engine
+        WidgetStateEngine* _inputWidgetEngine = nullptr;
 
         //* scrollbar engine
-        ScrollBarEngine* _scrollBarEngine;
+        ScrollBarEngine* _scrollBarEngine = nullptr;
 
         //* dial engine
-        DialEngine* _dialEngine;
+        DialEngine* _dialEngine = nullptr;
 
         //* spinbox engine
-        SpinBoxEngine* _spinBoxEngine;
+        SpinBoxEngine* _spinBoxEngine = nullptr;
 
         //* stacked widget engine
-        StackedWidgetEngine* _stackedWidgetEngine;
+        StackedWidgetEngine* _stackedWidgetEngine = nullptr;
 
         //* tabbar engine
-        TabBarEngine* _tabBarEngine;
+        TabBarEngine* _tabBarEngine = nullptr;
 
         //* toolbar engine
-        ToolBoxEngine* _toolBoxEngine;
+        ToolBoxEngine* _toolBoxEngine = nullptr;
 
         //* keep list of existing engines
         QList< BaseEngine::Pointer > _engines;

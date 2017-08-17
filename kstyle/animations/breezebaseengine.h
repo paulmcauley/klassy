@@ -47,7 +47,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~BaseEngine( void )
+        virtual ~BaseEngine()
         {}
 
         //* enability
@@ -55,7 +55,7 @@ namespace Breeze
         { _enabled = value; }
 
         //* enability
-        virtual bool enabled( void ) const
+        virtual bool enabled() const
         { return _enabled; }
 
         //* duration
@@ -63,7 +63,7 @@ namespace Breeze
         { _duration = value; }
 
         //* duration
-        virtual int duration( void ) const
+        virtual int duration() const
         { return _duration; }
 
         //* unregister widget
@@ -73,7 +73,7 @@ namespace Breeze
         using WidgetList = QSet<QWidget*>;
 
         //* returns registered widgets
-        virtual WidgetList registeredWidgets( void ) const
+        virtual WidgetList registeredWidgets() const
         { return WidgetList(); }
 
         private:

@@ -42,7 +42,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~WidgetStateEngine( void )
+        virtual ~WidgetStateEngine()
         {}
 
         //* register widget

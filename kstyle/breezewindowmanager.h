@@ -21,10 +21,12 @@
  *************************************************************************/
 
 #include "breeze.h"
+#include "breezestyleconfigdata.h"
 #include "config-breeze.h"
 
 #include <QEvent>
 
+#include <QApplication>
 #include <QBasicTimer>
 #include <QObject>
 #include <QSet>
@@ -38,11 +40,11 @@
 #if BREEZE_HAVE_KWAYLAND
 namespace KWayland
 {
-namespace Client
-{
-    class Pointer;
-    class Seat;
-}
+    namespace Client
+    {
+        class Pointer;
+        class Seat;
+    }
 }
 #endif
 
@@ -59,33 +61,29 @@ namespace Breeze
         //* constructor
         explicit WindowManager( QObject* );
 
-        //* destructor
-        virtual ~WindowManager( void )
-        {}
-
         //* initialize
         /** read relevant options from config */
-        void initialize( void );
+        void initialize();
 
         //* register widget
         void registerWidget( QWidget* );
 
-#if !BREEZE_USE_KDE4
+        #if !BREEZE_USE_KDE4
         //* register quick item
         void registerQuickItem( QQuickItem* );
-#endif
+        #endif
 
         //* unregister widget
         void unregisterWidget( QWidget* );
 
         //* event filter [reimplemented]
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         protected:
 
         //* timer event,
         /** used to start drag if button is pressed for a long enough time */
-        void timerEvent( QTimerEvent* );
+        void timerEvent( QTimerEvent* ) override;
 
         //* mouse press event
         bool mousePressEvent( QObject*, QEvent* );
@@ -100,7 +98,7 @@ namespace Breeze
         //@{
 
         //* enable state
-        bool enabled( void ) const
+        bool enabled() const
         { return _enabled; }
 
         //* enable state
@@ -108,7 +106,7 @@ namespace Breeze
         { _enabled = value; }
 
         //* returns true if window manager is used for moving
-        bool useWMMoveResize( void ) const
+        bool useWMMoveResize() const
         { return supportWMMoveResize() && _useWMMoveResize; }
 
         //* use window manager for moving, when available
@@ -116,7 +114,7 @@ namespace Breeze
         { _useWMMoveResize = value; }
 
         //* drag mode
-        int dragMode( void ) const
+        int dragMode() const
         { return _dragMode; }
 
         //* drag mode
@@ -143,7 +141,7 @@ namespace Breeze
         black list is read from options and is used to adjust
         per-app window dragging issues
         */
-        void initializeBlackList( void );
+        void initializeBlackList();
 
         //* initializes the Wayland specific parts
         void initializeWayland();
@@ -170,13 +168,13 @@ namespace Breeze
         bool canDrag( QWidget*, QWidget*, const QPoint& );
 
         //* reset drag
-        void resetDrag( void );
+        void resetDrag();
 
-#if QT_VERSION >= 0x050000
+        #if QT_VERSION >= 0x050000
         using Window = QWindow;
-#else
+        #else
         using Window = QWidget;
-#endif
+        #endif
 
         //* start drag
         void startDrag( Window*, const QPoint& );
@@ -189,7 +187,7 @@ namespace Breeze
 
         //* returns true if window manager is used for moving
         /** right now this is true only for X11 */
-        bool supportWMMoveResize( void ) const;
+        bool supportWMMoveResize() const;
 
         //* utility function
         bool isDockWidgetTitle( const QWidget* ) const;
@@ -201,7 +199,7 @@ namespace Breeze
         { _locked = value; }
 
         //* lock
-        bool isLocked( void ) const
+        bool isLocked() const
         { return _locked; }
 
         //@}
@@ -212,24 +210,24 @@ namespace Breeze
         private:
 
         //* enability
-        bool _enabled;
+        bool _enabled = true;
 
         //* use WM moveResize
-        bool _useWMMoveResize;
+        bool _useWMMoveResize = true;
 
         //* drag mode
-        int _dragMode;
+        int _dragMode = StyleConfigData::WD_FULL;
 
         //* drag distance
         /** this is copied from kwin::geometry */
-        int _dragDistance;
+        int _dragDistance = QApplication::startDragDistance();
 
         //* drag delay
         /** this is copied from kwin::geometry */
-        int _dragDelay;
+        int _dragDelay = QApplication::startDragTime();
 
         //* wrapper for exception id
-        class ExceptionId: public QPair<QString, QString>
+        class ExceptionId
         {
             public:
 
@@ -238,15 +236,25 @@ namespace Breeze
             {
                 const QStringList args( value.split( QChar::fromLatin1( '@' ) ) );
                 if( args.isEmpty() ) return;
-                second = args[0].trimmed();
-                if( args.size()>1 ) first = args[1].trimmed();
+                _exception.second = args[0].trimmed();
+                if( args.size()>1 ) _exception.first = args[1].trimmed();
             }
 
-            const QString& appName( void ) const
-            { return first; }
+            const QString& appName() const
+            { return _exception.first; }
 
-            const QString& className( void ) const
-            { return second; }
+            const QString& className() const
+            { return _exception.second; }
+
+            private:
+
+            QPair<QString, QString> _exception;
+
+            friend uint qHash( const ExceptionId& value )
+            { return qHash(value._exception); }
+
+            friend bool operator == ( const ExceptionId& lhs, const ExceptionId& rhs )
+            { return lhs._exception == rhs._exception; }
 
         };
 
@@ -278,33 +286,36 @@ namespace Breeze
         /** Weak pointer is used in case the target gets deleted while drag is in progress */
         WeakPointer<QWidget> _target;
 
-#if !BREEZE_USE_KDE4
+        #if !BREEZE_USE_KDE4
         WeakPointer<QQuickItem> _quickTarget;
-#endif
+        #endif
 
         //* true if drag is about to start
-        bool _dragAboutToStart;
+        bool _dragAboutToStart = false;
 
         //* true if drag is in progress
-        bool _dragInProgress;
+        bool _dragInProgress = false;
 
         //* true if drag is locked
-        bool _locked;
+        bool _locked = false;
 
         //* cursor override
         /** used to keep track of application cursor being overridden when dragging in non-WM mode */
-        bool _cursorOverride;
+        bool _cursorOverride = false;
 
         //* application event filter
-        QObject* _appEventFilter;
+        QObject* _appEventFilter = nullptr;
 
         #if BREEZE_HAVE_KWAYLAND
+
         //* The Wayland seat object which needs to be passed to move requests.
-        KWayland::Client::Seat* _seat;
+        KWayland::Client::Seat* _seat = nullptr;
+
         //* The Wayland pointer object where we get pointer events on.
-        KWayland::Client::Pointer* _pointer;
+        KWayland::Client::Pointer* _pointer = nullptr;
+
         //* latest searial which needs to be passed to the move requests.
-        quint32 _waylandSerial;
+        quint32 _waylandSerial = 0;
         #endif
 
         //* allow access of all private members to the app event filter

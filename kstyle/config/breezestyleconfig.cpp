@@ -68,7 +68,7 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    void StyleConfig::save( void )
+    void StyleConfig::save()
     {
         StyleConfigData::setTabBarDrawCenteredTabs( _tabBarDrawCenteredTabs->isChecked() );
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
@@ -106,14 +106,14 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    void StyleConfig::defaults( void )
+    void StyleConfig::defaults()
     {
         StyleConfigData::self()->setDefaults();
         load();
     }
 
     //__________________________________________________________________
-    void StyleConfig::reset( void )
+    void StyleConfig::reset()
     {
         // reparse configuration
         #if BREEZE_USE_KDE4
@@ -153,7 +153,7 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    void StyleConfig::load( void )
+    void StyleConfig::load()
     {
 
         _tabBarDrawCenteredTabs->setChecked( StyleConfigData::tabBarDrawCenteredTabs() );

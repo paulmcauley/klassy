@@ -46,22 +46,22 @@ namespace Breeze
         StackedWidgetData( QObject*, QStackedWidget*, int );
 
         //! destructor
-        virtual ~StackedWidgetData( void )
+        virtual ~StackedWidgetData()
         {}
 
         protected Q_SLOTS:
 
         //! initialize animation
-        virtual bool initializeAnimation( void );
+        virtual bool initializeAnimation();
 
         //! animate
-        virtual bool animate( void );
+        virtual bool animate();
 
         //! finish animation
-        virtual void finishAnimation( void );
+        virtual void finishAnimation();
 
         //! called when target is destroyed
-        virtual void targetDestroyed( void );
+        virtual void targetDestroyed();
 
         private:
 

@@ -54,7 +54,7 @@ namespace Breeze
         TransitionWidget( QWidget* parent, int duration );
 
         //* destructor
-        virtual ~TransitionWidget( void ) = default;
+        virtual ~TransitionWidget() = default;
 
         //*@name flags
         //@{
@@ -90,7 +90,7 @@ namespace Breeze
         }
 
         //* duration
-        int duration( void ) const
+        int duration() const
         { return ( _animation ) ? _animation.data()->duration() : 0; }
 
         //* steps
@@ -100,7 +100,7 @@ namespace Breeze
         //*@name opacity
         //@{
 
-        virtual qreal opacity( void ) const
+        virtual qreal opacity() const
         { return _opacity; }
 
         virtual void setOpacity( qreal value )
@@ -117,7 +117,7 @@ namespace Breeze
         //@{
 
         //* start
-        void resetStartPixmap( void )
+        void resetStartPixmap()
         { setStartPixmap( QPixmap() ); }
 
         //* start
@@ -125,11 +125,11 @@ namespace Breeze
         { _startPixmap = pixmap; }
 
         //* start
-        const QPixmap& startPixmap( void ) const
+        const QPixmap& startPixmap() const
         { return _startPixmap; }
 
         //* end
-        void resetEndPixmap( void )
+        void resetEndPixmap()
         { setEndPixmap( QPixmap() ); }
 
         //* end
@@ -140,11 +140,11 @@ namespace Breeze
         }
 
         //* start
-        const QPixmap& endPixmap( void ) const
+        const QPixmap& endPixmap() const
         { return _endPixmap; }
 
         //* current
-        const QPixmap& currentPixmap( void ) const
+        const QPixmap& currentPixmap() const
         { return _currentPixmap; }
 
         //@}
@@ -153,22 +153,22 @@ namespace Breeze
         QPixmap grab( QWidget* = 0, QRect = QRect() );
 
         //* true if animated
-        virtual bool isAnimated( void ) const
+        virtual bool isAnimated() const
         { return _animation.data()->isRunning(); }
 
         //* end animation
-        virtual void endAnimation( void )
+        virtual void endAnimation()
         { if( _animation.data()->isRunning() ) _animation.data()->stop(); }
 
         //* animate transition
-        virtual void animate( void )
+        virtual void animate()
         {
             if( _animation.data()->isRunning() ) _animation.data()->stop();
             _animation.data()->start();
         }
 
         //* true if paint is enabled
-        static bool paintEnabled( void );
+        static bool paintEnabled();
 
         protected:
 

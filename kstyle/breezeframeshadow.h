@@ -49,7 +49,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~FrameShadowFactory( void )
+        virtual ~FrameShadowFactory()
         {}
 
         //* register widget
@@ -130,7 +130,7 @@ namespace Breeze
         virtual void paintEvent(QPaintEvent *);
 
         //* return viewport associated to parent widget
-        virtual QWidget* viewport( void ) const;
+        virtual QWidget* viewport() const;
 
         private:
 

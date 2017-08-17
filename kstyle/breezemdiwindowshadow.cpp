@@ -41,7 +41,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    void MdiWindowShadow::updateGeometry( void )
+    void MdiWindowShadow::updateGeometry()
     {
         if( !_widget ) return;
 
@@ -91,7 +91,7 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    void MdiWindowShadow::updateZOrder( void )
+    void MdiWindowShadow::updateZOrder()
     { stackUnder( _widget ); }
 
     //____________________________________________________________________

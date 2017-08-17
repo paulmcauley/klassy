@@ -40,7 +40,7 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~ScrollBarEngine( void )
+        virtual ~ScrollBarEngine()
         {}
 
         //* register scrollbar

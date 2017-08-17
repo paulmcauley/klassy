@@ -39,14 +39,14 @@ namespace Breeze
         {}
 
         //* destructor
-        virtual ~BusyIndicatorData( void )
+        virtual ~BusyIndicatorData()
         {}
 
         //*@name accessors
         //@{
 
         //* animated
-        bool isAnimated( void ) const
+        bool isAnimated() const
         { return _animated; }
 
         //@}

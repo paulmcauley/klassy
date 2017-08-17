@@ -42,7 +42,7 @@ namespace Breeze
         ScrollBarData( QObject* parent, QWidget* target, int );
 
         //* destructor
-        virtual ~ScrollBarData( void )
+        virtual ~ScrollBarData()
         {}
 
         //* event filter
@@ -120,7 +120,7 @@ namespace Breeze
         }
 
         //* addLine opacity
-        virtual qreal addLineOpacity( void ) const
+        virtual qreal addLineOpacity() const
         { return _addLineData._opacity; }
 
         //* subLine opacity
@@ -133,7 +133,7 @@ namespace Breeze
         }
 
         //* subLine opacity
-        virtual qreal subLineOpacity( void ) const
+        virtual qreal subLineOpacity() const
         { return _subLineData._opacity; }
 
         //* groove opacity
@@ -146,24 +146,24 @@ namespace Breeze
         }
 
         //* groove opacity
-        virtual qreal grooveOpacity( void ) const
+        virtual qreal grooveOpacity() const
         { return _grooveData._opacity; }
 
         //* mouse position
-        QPoint position( void ) const
+        QPoint position() const
         { return _position; }
 
         protected Q_SLOTS:
 
         //* clear addLineRect
-        void clearAddLineRect( void )
+        void clearAddLineRect()
         {
             if( addLineAnimation().data()->direction() == Animation::Backward )
             { _addLineData._rect = QRect(); }
         }
 
         //* clear subLineRect
-        void clearSubLineRect( void )
+        void clearSubLineRect()
         {
             if( subLineAnimation().data()->direction() == Animation::Backward )
             { _subLineData._rect = QRect(); }
@@ -180,19 +180,19 @@ namespace Breeze
         //*@name hover flags
         //@{
 
-        virtual bool addLineArrowHovered( void ) const
+        virtual bool addLineArrowHovered() const
         { return _addLineData._hovered; }
 
         virtual void setAddLineArrowHovered( bool value )
         { _addLineData._hovered = value; }
 
-        virtual bool subLineArrowHovered( void ) const
+        virtual bool subLineArrowHovered() const
         { return _subLineData._hovered; }
 
         virtual void setSubLineArrowHovered( bool value )
         { _subLineData._hovered = value; }
 
-        virtual bool grooveHovered( void ) const
+        virtual bool grooveHovered() const
         { return _grooveData._hovered; }
 
         virtual void setGrooveHovered( bool value )
@@ -209,13 +209,13 @@ namespace Breeze
         //*@name timelines
         //@{
 
-        virtual const Animation::Pointer& addLineAnimation( void ) const
+        virtual const Animation::Pointer& addLineAnimation() const
         { return _addLineData._animation; }
 
-        virtual const Animation::Pointer& subLineAnimation( void ) const
+        virtual const Animation::Pointer& subLineAnimation() const
         { return _subLineData._animation; }
 
-        virtual const Animation::Pointer& grooveAnimation( void ) const
+        virtual const Animation::Pointer& grooveAnimation() const
         { return _grooveData._animation; }
 
         private:
@@ -227,7 +227,7 @@ namespace Breeze
           public:
 
           //* constructor
-          Data( void ):
+          Data():
             _hovered( false ),
             _opacity( AnimationData::OpacityInvalid )
           {}
