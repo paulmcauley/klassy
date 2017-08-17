@@ -65,6 +65,7 @@ namespace Breeze
             setGrooveHovered(true);
             grooveAnimation().data()->setDirection( Animation::Forward );
             if( !grooveAnimation().data()->isRunning() ) grooveAnimation().data()->start();
+            break;
 
             case QEvent::HoverMove:
             hoverMoveEvent( object, event );
@@ -75,7 +76,6 @@ namespace Breeze
             grooveAnimation().data()->setDirection( Animation::Backward );
             if( !grooveAnimation().data()->isRunning() ) grooveAnimation().data()->start();
             hoverLeaveEvent( object, event );
-
             break;
 
             default: break;
