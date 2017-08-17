@@ -4546,7 +4546,7 @@ namespace Breeze
             QColor outlineColor;
             if( sunken ) outlineColor = _helper->focusColor( palette );
             else if( selected ) outlineColor = _helper->hoverColor( palette );
-            _helper->renderFocusRect( painter, rect.adjusted( 1, 1, -1, -1 ), outlineColor );
+            _helper->renderFocusRect( painter, rect, outlineColor );
 
         }
 
