@@ -79,6 +79,12 @@
 #include <QWindow>
 #endif
 
+#if QT_VERSION >= 0x050000
+// needed to enable dragging from QQuickWindows
+#include <QQuickItem>
+#include <QQuickWindow>
+#endif
+
 #if BREEZE_HAVE_X11
 #include <QX11Info>
 #include <xcb/xcb.h>
@@ -87,8 +93,6 @@
 #include <NETRootInfo>
 #else
 #include <NETWM>
-#include <QQuickItem>
-#include <QQuickWindow>
 #endif
 
 #endif
