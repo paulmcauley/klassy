@@ -9,7 +9,7 @@ X-KDE-PluginKeyword=kcmodule
 X-KDE-ParentApp=kcontrol
 X-KDE-Weight=50
 
-Name=Widget Style
+Name=Breeze Widget Style
 Name[ar]=نمط الودجات
 Name[ca]=Estil dels estris
 Name[ca@valencia]=Estil dels estris
