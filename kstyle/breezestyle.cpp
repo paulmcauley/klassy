@@ -4355,7 +4355,7 @@ namespace Breeze
         {
 
             QPalette::ColorRole textRole( QPalette::ButtonText );
-            if( flat ) textRole = (hasFocus&&sunken&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
+            if( flat ) textRole = ( ((hasFocus&&sunken) || (state & State_Sunken))&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
             else if( hasFocus&&!mouseOver ) textRole = QPalette::HighlightedText;
 
             painter->setFont(toolButtonOption->font);
