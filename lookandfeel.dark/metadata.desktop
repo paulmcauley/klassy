@@ -92,3 +92,4 @@ X-KDE-PluginInfo-Name=org.kde.breezedark.desktop
 X-KDE-PluginInfo-Version=2.0
 X-KDE-PluginInfo-Website=http://www.kde.org
 X-Plasma-MainScript=defaults
+X-KDE-PluginInfo-License=GPLv2+
