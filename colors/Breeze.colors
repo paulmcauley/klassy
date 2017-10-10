@@ -93,13 +93,13 @@ BackgroundAlternate=59,64,69
 BackgroundNormal=49,54,59
 DecorationFocus=30,146,255
 DecorationHover=61,174,230
-ForegroundActive=246,116,0
+ForegroundActive=147,206,233
 ForegroundInactive=175,176,179
 ForegroundLink=61,174,230
-ForegroundNegative=237,21,21
-ForegroundNeutral=201,206,59
+ForegroundNegative=231,76,60
+ForegroundNeutral=253,188,75
 ForegroundNormal=239,240,241
-ForegroundPositive=17,209,22
+ForegroundPositive=46,204,113
 ForegroundVisited=61,174,230
 
 [General]
