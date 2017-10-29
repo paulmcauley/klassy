@@ -122,7 +122,7 @@ namespace Breeze
     {
 
         auto c( client().data() );
-        if( !m_useSeparator ) return QColor();
+        if(! ( m_internalSettings->drawTitleBarSeparator() && m_useSeparator ) ) return QColor();
         if( m_animation->state() == QPropertyAnimation::Running )
         {
             QColor color( c->palette().color( QPalette::Highlight ) );

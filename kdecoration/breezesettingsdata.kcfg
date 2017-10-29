@@ -80,6 +80,10 @@
         <default>false</default>
     </entry>
 
+    <entry name="DrawTitleBarSeparator" type = "Bool">
+        <default>true</default>
+    </entry>
+
     <!-- size grip -->
     <entry name="DrawBackgroundGradient" type = "Bool">
         <default>true</default>

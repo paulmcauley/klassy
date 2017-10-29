@@ -125,7 +125,7 @@
          </property>
         </spacer>
        </item>
-       <item row="6" column="0" colspan="3">
+       <item row="7" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -142,6 +142,13 @@
         <widget class="QCheckBox" name="drawSizeGrip">
          <property name="text">
           <string>Add handle to resize windows with no border</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="3">
+        <widget class="QCheckBox" name="drawTitleBarSeparator">
+         <property name="text">
+          <string>Draw separator between Title Bar and Window when colors differ</string>
          </property>
         </widget>
        </item>
@@ -377,6 +384,7 @@
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawSizeGrip</tabstop>
+  <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsDuration</tabstop>
   <tabstop>shadowSize</tabstop>
