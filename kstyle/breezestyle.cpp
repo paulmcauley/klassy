@@ -649,8 +649,12 @@ namespace Breeze
             case SH_Menu_SloppySubMenus: return true;
 
             #if QT_VERSION >= 0x050000
+            // TODO Qt6: drop deprecated SH_Widget_Animate
             case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
             case SH_Menu_SupportsSections: return true;
+            #endif
+            #if QT_VERSION >= 0x050A00
+            case SH_Widget_Animation_Duration: return StyleConfigData::animationsEnabled() ? StyleConfigData::animationsDuration() : 0;
             #endif
 
             case SH_DialogButtonBox_ButtonsHaveIcons: return true;
