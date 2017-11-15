@@ -312,12 +312,13 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::recalculateBorders()
     {
+        auto c = client().data();
         auto s = settings();
 
         // left, right and bottom borders
         const int left   = isLeftEdge() ? 0 : borderSize();
         const int right  = isRightEdge() ? 0 : borderSize();
-        const int bottom = isBottomEdge() ? 0 : borderSize(true);
+        const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
 
         int top = 0;
         if( hideTitleBar() ) top = bottom;
