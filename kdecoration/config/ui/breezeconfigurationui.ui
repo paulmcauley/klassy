@@ -148,7 +148,7 @@
        <item row="6" column="0" colspan="3">
         <widget class="QCheckBox" name="drawTitleBarSeparator">
          <property name="text">
-          <string>Draw separator between Title Bar and Window when colors differ</string>
+          <string>Draw separator between Title Bar and Window</string>
          </property>
         </widget>
        </item>

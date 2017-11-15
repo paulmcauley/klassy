@@ -122,7 +122,7 @@ namespace Breeze
     {
 
         auto c( client().data() );
-        if(! ( m_internalSettings->drawTitleBarSeparator() && m_useSeparator ) ) return QColor();
+        if( !m_internalSettings->drawTitleBarSeparator() ) return QColor();
         if( m_animation->state() == QPropertyAnimation::Running )
         {
             QColor color( c->palette().color( QPalette::Highlight ) );
@@ -151,7 +151,6 @@ namespace Breeze
     void Decoration::init()
     {
         auto c = client().data();
-        m_useSeparator = (c->palette().color( QPalette::Window ) != c->color( ColorGroup::Active, ColorRole::TitleBar ) );
 
         // active state change animation
         m_animation->setStartValue( 0 );
@@ -192,13 +191,6 @@ namespace Breeze
         );
 
         connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
-        connect(c, &KDecoration2::DecoratedClient::paletteChanged, this,
-            [this]() {
-                auto c = client().data();
-                m_useSeparator = (c->palette().color( QPalette::Window ) != c->color( ColorGroup::Active, ColorRole::TitleBar ) );
-                update();
-            }
-        );
         connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
         connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
         connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
