@@ -476,6 +476,8 @@ namespace Breeze
         const auto c = client().data();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
 
+        if ( !titleRect.contains(repaintRegion) ) return;
+
         painter->save();
         painter->setPen(Qt::NoPen);
 
