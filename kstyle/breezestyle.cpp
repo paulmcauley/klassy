@@ -4555,7 +4555,7 @@ namespace Breeze
         */
         if( !menuItemOption->icon.isNull() )
         {
-            // icon size is forced to
+            // icon size is forced to SmallIconSize
             const auto iconSize = pixelMetric(QStyle::PM_SmallIconSize, nullptr, widget);
             const auto iconRect = centerRect( rect, iconSize, iconSize );
 
