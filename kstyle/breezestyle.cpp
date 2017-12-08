@@ -2692,7 +2692,11 @@ namespace Breeze
 
     //______________________________________________________________
     QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    { return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight ); }
+    {
+
+        return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight );
+
+    }
 
     //______________________________________________________________
     QSize Style::menuItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
@@ -4226,7 +4230,7 @@ namespace Breeze
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
-            const QPixmap pixmap = buttonOption->icon.pixmap( iconSize, iconMode, iconState );
+            const auto pixmap = buttonOption->icon.pixmap( iconSize, iconMode, iconState );
             drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
 
         }
@@ -4516,7 +4520,7 @@ namespace Breeze
     }
 
     //___________________________________________________________________________________
-    bool Style::drawMenuBarItemControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
+    bool Style::drawMenuBarItemControl( const QStyleOption* option, QPainter* painter, const QWidget* widget) const
     {
 
         // cast option and check
@@ -4545,23 +4549,70 @@ namespace Breeze
 
         }
 
-        // get text rect
-        const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
-        const auto textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
-
-        // render text
-        const QPalette::ColorRole role = (useStrongFocus && sunken ) ? QPalette::HighlightedText : QPalette::WindowText;
-        drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, role );
-
-        // render outline
-        if( !useStrongFocus && ( selected || sunken ) )
+        /*
+        check if item as an icon, in which case only the icon should be rendered
+        consistently with comment in QMenuBarPrivate::calcActionRects
+        */
+        if( !menuItemOption->icon.isNull() )
         {
+            // icon size is forced to
+            const auto iconSize = pixelMetric(QStyle::PM_SmallIconSize, nullptr, widget);
+            const auto iconRect = centerRect( rect, iconSize, iconSize );
 
-            QColor outlineColor;
-            if( sunken ) outlineColor = _helper->focusColor( palette );
-            else if( selected ) outlineColor = _helper->hoverColor( palette );
+            // decide icon mode and state
+            QIcon::Mode iconMode;
+            QIcon::State iconState;
+            if( !enabled )
+            {
+                iconMode = QIcon::Disabled;
+                iconState = QIcon::Off;
 
-            _helper->renderFocusLine( painter, textRect, outlineColor );
+            } else {
+
+                if( useStrongFocus && selected ) iconMode = QIcon::Active;
+                else if( useStrongFocus && sunken ) iconMode = QIcon::Selected;
+                else iconMode = QIcon::Normal;
+
+                iconState = sunken ? QIcon::On : QIcon::Off;
+
+            }
+
+            const auto pixmap = menuItemOption->icon.pixmap( iconSize, iconMode, iconState );
+            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
+
+            // render outline
+            if( !useStrongFocus && ( selected || sunken ) )
+            {
+
+                QColor outlineColor;
+                if( sunken ) outlineColor = _helper->focusColor( palette );
+                else if( selected ) outlineColor = _helper->hoverColor( palette );
+
+                _helper->renderFocusLine( painter, iconRect, outlineColor );
+
+            }
+
+        } else {
+
+            // get text rect
+            const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
+            const auto textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
+
+            // render text
+            const QPalette::ColorRole role = (useStrongFocus && sunken ) ? QPalette::HighlightedText : QPalette::WindowText;
+            drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, role );
+
+            // render outline
+            if( !useStrongFocus && ( selected || sunken ) )
+            {
+
+                QColor outlineColor;
+                if( sunken ) outlineColor = _helper->focusColor( palette );
+                else if( selected ) outlineColor = _helper->hoverColor( palette );
+
+                _helper->renderFocusLine( painter, textRect, outlineColor );
+
+            }
 
         }
 
