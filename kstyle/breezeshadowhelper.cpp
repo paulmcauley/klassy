@@ -261,8 +261,8 @@ namespace Breeze
             p.setBrush( Qt::black );
 
             QRectF innerRect(
-                shadowSize - shadowOffset - Metrics::Shadow_Overlap, shadowSize - shadowOffset - Metrics::Shadow_Overlap,
-                shadowOffset + 2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
+                shadowSize - Metrics::Shadow_Overlap, shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
 
             p.setCompositionMode(QPainter::CompositionMode_DestinationOut );
 
@@ -516,7 +516,7 @@ namespace Breeze
         int size( shadowSize - Metrics::Shadow_Overlap );
         int topSize = ( size - shadowOffset ) * devicePixelRatio;
         int bottomSize = size * devicePixelRatio;
-        const int leftSize( (size - shadowOffset) * devicePixelRatio );
+        const int leftSize( size * devicePixelRatio );
         const int rightSize( size * devicePixelRatio );
 
         if( widget->inherits( "QBalloonTip" ) )

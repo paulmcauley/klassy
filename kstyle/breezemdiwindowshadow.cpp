@@ -51,7 +51,7 @@ namespace Breeze
         const int size( shadowSize - Metrics::Shadow_Overlap );
         const int topSize( size - shadowOffset );
         const int bottomSize( size );
-        const int leftSize( size - shadowOffset );
+        const int leftSize( size );
         const int rightSize( size );
 
         // get tileSet rect

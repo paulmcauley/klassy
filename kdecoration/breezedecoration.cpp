@@ -668,8 +668,8 @@ namespace Breeze
 
             // contrast pixel
             QRectF innerRect = QRectF(
-                g_shadowSize - shadowOffset - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
-                shadowOffset + 2*Metrics::Shadow_Overlap, shadowOffset + 2*Metrics::Shadow_Overlap );
+                g_shadowSize - Metrics::Shadow_Overlap, g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                2*Metrics::Shadow_Overlap, shadowOffset + 2*Metrics::Shadow_Overlap );
 
             painter.setPen( gradientStopColor( g_shadowColor, g_shadowStrength*0.5 ) );
             painter.setBrush( Qt::NoBrush );
@@ -685,7 +685,7 @@ namespace Breeze
 
             g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
             g_sShadow->setPadding( QMargins(
-                g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
+                g_shadowSize - Metrics::Shadow_Overlap,
                 g_shadowSize - shadowOffset - Metrics::Shadow_Overlap,
                 g_shadowSize - Metrics::Shadow_Overlap,
                 g_shadowSize - Metrics::Shadow_Overlap ) );

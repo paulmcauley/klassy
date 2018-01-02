@@ -14,13 +14,13 @@
     </entry>
 
     <entry name="ShadowSize" type = "Int">
-       <default>16</default>
+       <default>64</default>
        <min>6</min>
-       <max>64</max>
+       <max>100</max>
     </entry>
 
     <entry name="ShadowColor" type = "Color">
-       <default>0, 0, 0</default>
+       <default>35, 38, 41</default>
     </entry>
 
     <!-- close button -->
