@@ -1,3 +1,0 @@
-REVIEWBOARD_URL = "https://git.reviewboard.kde.org"
-REPOSITORY = 'git://anongit.kde.org/breeze'
-TARGET_GROUPS = 'plasma'
