@@ -46,6 +46,27 @@
 #include <KWayland/Client/surface.h>
 #endif
 
+namespace
+{
+
+    int shadowSize( int shadowSizeEnum )
+    {
+
+        switch( shadowSizeEnum )
+        {
+            default:
+            case Breeze::StyleConfigData::ShadowLarge: return 16;
+            case Breeze::StyleConfigData::ShadowNone: return 0;
+            case Breeze::StyleConfigData::ShadowSmall: return 12;
+            case Breeze::StyleConfigData::ShadowMedium: return 14;
+            case Breeze::StyleConfigData::ShadowVeryLarge: return 24;
+        }
+
+    }
+
+
+}
+
 namespace Breeze
 {
 
@@ -217,14 +238,14 @@ namespace Breeze
     //_______________________________________________________
     TileSet ShadowHelper::shadowTiles()
     {
-        if( !_shadowTiles.isValid() )
+        // metrics
+        const int shadowSize = ::shadowSize( StyleConfigData::shadowSize() );
+        if( !shadowSize ) return TileSet();
+        else if( !_shadowTiles.isValid() )
         {
 
             const QPalette palette( QApplication::palette() );
             const QColor shadowColor( StyleConfigData::shadowColor() );
-
-            // metrics
-            const int shadowSize = StyleConfigData::shadowSize()*12/16;
             const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
             const int shadowStrength = StyleConfigData::shadowStrength();
 
@@ -509,7 +530,8 @@ namespace Breeze
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
 
         // metrics
-        const int shadowSize = StyleConfigData::shadowSize()*12/16;
+        const int shadowSize = ::shadowSize( StyleConfigData::shadowSize() );
+        if( !shadowSize ) return QMargins();
         const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
 
         // define shadows padding

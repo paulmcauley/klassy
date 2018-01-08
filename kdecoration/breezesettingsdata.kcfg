@@ -6,17 +6,22 @@
   <!-- common options -->
   <group name="Common">
 
-    <!-- shadow -->
     <entry name="ShadowStrength" type = "Int">
        <default>90</default>
        <min>25</min>
        <max>255</max>
     </entry>
 
-    <entry name="ShadowSize" type = "Int">
-       <default>64</default>
-       <min>6</min>
-       <max>100</max>
+    <!-- shadow -->
+    <entry name="ShadowSize" type = "Enum">
+      <choices>
+          <choice name="ShadowNone"/>
+          <choice name="ShadowSmall"/>
+          <choice name="ShadowMedium"/>
+          <choice name="ShadowLarge"/>
+          <choice name="ShadowVeryLarge"/>
+      </choices>
+      <default>ShadowLarge</default>
     </entry>
 
     <entry name="ShadowColor" type = "Color">

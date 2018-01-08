@@ -59,7 +59,7 @@ namespace Breeze
         connect( m_ui.animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
 
         // track shadows changes
-        connect( m_ui.shadowSize, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowColor, SIGNAL(changed(QColor)), SLOT(updateChanged()) );
 
@@ -88,7 +88,9 @@ namespace Breeze
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
 
         // load shadows
-        m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
+        if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge ) m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
+        else m_ui.shadowSize->setCurrentIndex( InternalSettings::ShadowLarge );
+
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
 
@@ -119,7 +121,7 @@ namespace Breeze
         m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
         m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
 
-        m_internalSettings->setShadowSize( m_ui.shadowSize->value() );
+        m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
         m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
 
@@ -166,7 +168,7 @@ namespace Breeze
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
 
-        m_ui.shadowSize->setValue( m_internalSettings->shadowSize() );
+        m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
 
@@ -195,7 +197,7 @@ namespace Breeze
         else if( m_ui.animationsDuration->value() != m_internalSettings->animationsDuration() ) modified = true;
 
         // shadows
-        else if( m_ui.shadowSize->value() !=  m_internalSettings->shadowSize() ) modified = true;
+        else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
         else if( m_ui.shadowColor->color() != m_internalSettings->shadowColor() ) modified = true;
 

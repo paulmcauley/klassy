@@ -11,16 +11,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -73,7 +64,7 @@
          </item>
          <item>
           <property name="text">
-           <string comment="@item:inlistbox Button size:">Normal</string>
+           <string comment="@item:inlistbox Button size:">Medium</string>
           </property>
          </item>
          <item>
@@ -263,16 +254,32 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QSpinBox" name="shadowSize">
-         <property name="suffix">
-          <string>px</string>
-         </property>
-         <property name="minimum">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <number>64</number>
-         </property>
+        <widget class="QComboBox" name="shadowSize">
+         <item>
+          <property name="text">
+           <string comment="@item:inlistbox Button size:">None</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string comment="@item:inlistbox Button size:">Small</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string comment="@item:inlistbox Button size:">Medium</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string comment="@item:inlistbox Button size:">Large</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string comment="@item:inlistbox Button size:">Very Large</string>
+          </property>
+         </item>
         </widget>
        </item>
        <item row="1" column="0">
