@@ -5009,12 +5009,19 @@ namespace Breeze
         const auto& rect( option->rect );
         const auto& palette( option->palette );
 
+        //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
+        const bool widgetMouseOver( widget ? _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove )  : option->styleObject->property("hover").toBool());
+
+        qreal grooveAnimationOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
+        if( grooveAnimationOpacity == AnimationData::OpacityInvalid ) grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
+        const qreal handleSize = StyleConfigData::animationsEnabled() ? ((Metrics::ScrollBar_SliderWidth / 2.0) * (1 - grooveAnimationOpacity) + Metrics::ScrollBar_SliderWidth  * grooveAnimationOpacity) : (int)Metrics::ScrollBar_SliderWidth;
+
         // define handle rect
         QRect handleRect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
-        if( horizontal ) handleRect = centerRect( rect, rect.width(), Metrics::ScrollBar_SliderWidth );
-        else handleRect = centerRect( rect, Metrics::ScrollBar_SliderWidth, rect.height() );
+        if( horizontal ) handleRect = centerRect( rect, rect.width(), handleSize );
+        else handleRect = centerRect( rect, handleSize, rect.height() );
 
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
@@ -5031,7 +5038,10 @@ namespace Breeze
 
         const auto mode( _animations->scrollBarEngine().animationMode( widget, SC_ScrollBarSlider ) );
         const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
-        const auto color = _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode );
+        auto color = _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode );
+        if (StyleConfigData::animationsEnabled()) {
+            color.setAlphaF(color.alphaF() * (0.7 + 0.3 * grooveAnimationOpacity));
+        }
 
         _helper->renderScrollBarHandle( painter, handleRect, color );
         return true;
