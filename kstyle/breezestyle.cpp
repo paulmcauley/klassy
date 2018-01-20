@@ -5010,7 +5010,11 @@ namespace Breeze
         const auto& palette( option->palette );
 
         //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
+        #if QT_VERSION >= 0x050000
         const bool widgetMouseOver( widget ? _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove )  : option->styleObject->property("hover").toBool());
+        #else
+        const bool widgetMouseOver( _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove ) );
+        #endif
 
         qreal grooveAnimationOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
         if( grooveAnimationOpacity == AnimationData::OpacityInvalid ) grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
