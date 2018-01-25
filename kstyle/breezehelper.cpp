@@ -32,6 +32,8 @@
 #include <X11/Xlib-xcb.h>
 #endif
 
+#include <algorithm>
+
 namespace Breeze
 {
 
