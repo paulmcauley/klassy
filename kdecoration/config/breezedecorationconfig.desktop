@@ -10,6 +10,7 @@ X-KDE-ParentApp=kcontrol
 X-KDE-Weight=60
 
 Name=Breeze Window Decoration
+Name[ar]=زخرفة النّوافذ نسيم
 Name[ca]=Decoració de les finestres Brisa
 Name[ca@valencia]=Decoració de les finestres Brisa
 Name[cs]=Dekorace oken Breeze
