@@ -269,6 +269,7 @@ namespace Breeze
             if( static_cast<QTimerEvent*>( event )->timerId() != _timerId )
             { return QWidget::event( event ); }
 
+            // fall-through
             /*
             Fall through is intended.
             We somehow lost a QEvent::Leave before timeout. We fix it from here
