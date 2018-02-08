@@ -19,5 +19,5 @@ LayoutName=org.kde.breeze.desktop
 [kwinrc][DesktopSwitcher]
 LayoutName=org.kde.breeze.desktop
 
-[kwinrc][WindowDecoration]
+[kwinrc][org.kde.kdecoration2]
 library=org.kde.breeze
