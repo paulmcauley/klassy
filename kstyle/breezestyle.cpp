@@ -2762,7 +2762,7 @@ namespace Breeze
                 size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
                 size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
                 size.setHeight( qMax( size.height(), iconWidth ) );
-                return expandSize( size, Metrics::MenuItem_MarginWidth );
+                return expandSize( size, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
 
             }
 
@@ -2772,7 +2772,7 @@ namespace Breeze
                 if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
                 {
 
-                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth );
+                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
 
                 } else {
 
@@ -4710,7 +4710,7 @@ namespace Breeze
         }
 
         // get rect available for contents
-        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth ) );
+        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight ) );
 
         // define relevant rectangles
         // checkbox
@@ -6680,12 +6680,12 @@ namespace Breeze
         // render a separator at the bottom
         const auto& palette( option->palette );
         const auto color( _helper->separatorColor( palette ) );
-        _helper->renderSeparator( painter, QRect( option->rect.bottomLeft()-QPoint( 0, Metrics::MenuItem_MarginWidth), QSize( option->rect.width(), 1 ) ), color );
+        _helper->renderSeparator( painter, QRect( option->rect.bottomLeft()-QPoint( 0, Metrics::MenuItem_MarginHeight), QSize( option->rect.width(), 1 ) ), color );
 
         // render text in the center of the rect
         // icon is discarded on purpose
         painter->setFont( option->font );
-        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth );
+        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
     }
