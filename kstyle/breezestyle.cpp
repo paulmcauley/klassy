@@ -2728,8 +2728,7 @@ namespace Breeze
                 leftColumnWidth += Metrics::MenuItem_ItemSpacing;
 
                 // add checkbox indicator width
-                if( menuItemOption->menuHasCheckableItems )
-                { leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_ItemSpacing; }
+                leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_ItemSpacing;
 
                 // add spacing for accelerator
                 /*
@@ -4698,11 +4697,8 @@ namespace Breeze
         // define relevant rectangles
         // checkbox
         QRect checkBoxRect;
-        if( menuItemOption->menuHasCheckableItems )
-        {
-            checkBoxRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-Metrics::CheckBox_Size)/2, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
-            contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
-        }
+        checkBoxRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-Metrics::CheckBox_Size)/2, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
+        contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
 
         // render checkbox indicator
         if( menuItemOption->checkType == QStyleOptionMenuItem::NonExclusive )
