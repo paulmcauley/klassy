@@ -2738,10 +2738,11 @@ namespace Breeze
                 int iconWidth = 0;
                 if( showIconsInMenuItems() ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
 
-                int leftColumnWidth( iconWidth );
+                int leftColumnWidth = 0;
 
-                // add space with respect to text
-                leftColumnWidth += Metrics::MenuItem_ItemSpacing;
+                // add icon width
+                if( iconWidth > 0 )
+                { leftColumnWidth += iconWidth + Metrics::MenuItem_ItemSpacing; }
 
                 // add checkbox indicator width
                 if( menuItemOption->menuHasCheckableItems )
@@ -4761,14 +4762,18 @@ namespace Breeze
         const bool showIcon( showIconsInMenuItems() );
         if( showIcon ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
 
-        QRect iconRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
-        contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
+        QRect iconRect;
+        if( showIcon && iconWidth > 0 )
+        {
+            iconRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
+            contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
+            const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
+            iconRect = centerRect( iconRect, iconSize );
+        }
 
         if( showIcon && !menuItemOption->icon.isNull() )
         {
 
-            const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
-            iconRect = centerRect( iconRect, iconSize );
             iconRect = visualRect( option, iconRect );
 
             // icon mode
