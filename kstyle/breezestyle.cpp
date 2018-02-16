@@ -30,6 +30,7 @@
 #include "breezestyleconfigdata.h"
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
+#include "breezeblurhelper.h"
 
 #include <KColorUtils>
 
@@ -152,6 +153,7 @@ namespace Breeze
         , _helper( new Helper( "breeze" ) )
         #else
         , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
+        , _blurHelper( new BlurHelper( this ) )
         #endif
 
         , _shadowHelper( new ShadowHelper( this, *_helper ) )
@@ -317,6 +319,12 @@ namespace Breeze
 
             setTranslucentBackground( widget );
 
+            #if !BREEZE_USE_KDE4
+            if ( _helper->hasAlphaChannel( widget ) && StyleConfigData::menuOpacity() < 100 ) {
+                _blurHelper->registerWidget( widget->window() );
+            }
+            #endif
+
         #if QT_VERSION >= 0x050000
         } else if( qobject_cast<QCommandLinkButton*>( widget ) ) {
 
@@ -438,6 +446,10 @@ namespace Breeze
         _shadowHelper->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
+
+        #if !BREEZE_USE_KDE4
+        _blurHelper->unregisterWidget( widget );
+        #endif
 
         // remove event filter
         if( qobject_cast<QAbstractScrollArea*>( widget ) ||
@@ -3609,7 +3621,6 @@ namespace Breeze
     //___________________________________________________________________________________
     bool Style::drawPanelMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
         /*
          * do nothing if menu is embedded in another widget
          * this corresponds to having a transparent background
@@ -3617,10 +3628,16 @@ namespace Breeze
         if( widget && !widget->isWindow() ) return true;
 
         const auto& palette( option->palette );
-        const auto background( _helper->frameBackgroundColor( palette ) );
         const auto outline( _helper->frameOutlineColor( palette ) );
-
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
+        auto background( _helper->frameBackgroundColor( palette ) );
+
+        #if !BREEZE_USE_KDE4
+        if ( hasAlpha ) {
+            background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
+        }
+        #endif
+
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
         return true;

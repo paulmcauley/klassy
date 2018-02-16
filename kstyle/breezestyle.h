@@ -66,6 +66,7 @@ namespace Breeze
     class SplitterFactory;
     class WidgetExplorer;
     class WindowManager;
+    class BlurHelper;
 
     //* convenience typedef for base class
     #if BREEZE_USE_KDE4
@@ -496,6 +497,9 @@ namespace Breeze
 
         //* keyboard accelerators
         Mnemonics* _mnemonics = nullptr;
+
+        //* blur helper
+        BlurHelper* _blurHelper = nullptr;
 
         //* window manager
         WindowManager* _windowManager = nullptr;
