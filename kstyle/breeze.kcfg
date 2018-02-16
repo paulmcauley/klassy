@@ -40,7 +40,7 @@
 
   <!-- widget style -->
   <group name="Style">
-
+    
     <!-- animations -->
     <entry name="AnimationsEnabled" type="Bool">
       <default>true</default>
@@ -97,7 +97,7 @@
     <entry name="ViewDrawFocusIndicator" type="Bool">
       <default>true</default>
     </entry>
-
+    
     <!-- sliders -->
     <entry name="SliderDrawTickMarks" type="Bool">
       <default>true</default>
@@ -183,11 +183,6 @@
 
     <entry name="DrawWidgetRects" type="Bool">
       <default>false</default>
-    </entry>
-
-    <!-- transparency -->
-    <entry name="MenuOpacity" type="Int">
-        <default>100</default>
     </entry>
 
   </group>
