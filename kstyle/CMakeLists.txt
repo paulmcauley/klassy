@@ -128,7 +128,6 @@ set(breeze_PART_SRCS
     animations/breezewidgetstateengine.cpp
     animations/breezewidgetstatedata.cpp
     debug/breezewidgetexplorer.cpp
-    breezeblurhelper.cpp
     breezeaddeventfilter.cpp
     breezeframeshadow.cpp
     breezehelper.cpp
@@ -142,6 +141,13 @@ set(breeze_PART_SRCS
     breezetileset.cpp
     breezewindowmanager.cpp
 )
+
+if(NOT BREEZE_USE_KDE4)
+  set(breeze_PART_SRCS
+      ${breeze_PART_SRCS}
+      breezeblurhelper.cpp
+  )
+endif()
 
 if(BREEZE_USE_KDE4)
 

@@ -153,12 +153,16 @@ namespace Breeze
         , _helper( new Helper( "breeze" ) )
         #else
         , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
-        , _blurHelper( new BlurHelper( this ) )
         #endif
 
         , _shadowHelper( new ShadowHelper( this, *_helper ) )
         , _animations( new Animations( this ) )
         , _mnemonics( new Mnemonics( this ) )
+
+        #if !BREEZE_USE_KDE4
+        , _blurHelper( new BlurHelper( this ) )
+        #endif
+
         , _windowManager( new WindowManager( this ) )
         , _frameShadowFactory( new FrameShadowFactory( this ) )
         , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
