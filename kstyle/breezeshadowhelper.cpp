@@ -46,10 +46,13 @@
 #include <KWayland/Client/surface.h>
 #endif
 
-namespace
+namespace Breeze
 {
 
-    int shadowSize( int shadowSizeEnum )
+    const char ShadowHelper::netWMShadowAtomName[] ="_KDE_NET_WM_SHADOW";
+
+    //_____________________________________________________
+    int ShadowHelper::shadowSize( int shadowSizeEnum )
     {
 
         switch( shadowSizeEnum )
@@ -64,13 +67,6 @@ namespace
 
     }
 
-
-}
-
-namespace Breeze
-{
-
-    const char ShadowHelper::netWMShadowAtomName[] ="_KDE_NET_WM_SHADOW";
 
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
@@ -239,7 +235,7 @@ namespace Breeze
     TileSet ShadowHelper::shadowTiles()
     {
         // metrics
-        const int shadowSize = ::shadowSize( StyleConfigData::shadowSize() );
+        const int shadowSize = this->shadowSize( StyleConfigData::shadowSize() );
         if( !shadowSize ) return TileSet();
         else if( !_shadowTiles.isValid() )
         {
@@ -530,7 +526,7 @@ namespace Breeze
         const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
 
         // metrics
-        const int shadowSize = ::shadowSize( StyleConfigData::shadowSize() );
+        const int shadowSize = this->shadowSize( StyleConfigData::shadowSize() );
         if( !shadowSize ) return QMargins();
         const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
 

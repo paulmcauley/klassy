@@ -73,6 +73,9 @@ namespace Breeze
         bool isSupported() const
         { return _supported; }
 
+        //* shadow size from enum
+        static int shadowSize( int shadowSizeEnum );
+
         //* reset
         void reset();
 

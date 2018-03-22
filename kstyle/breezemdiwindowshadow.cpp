@@ -20,6 +20,7 @@
 #include "breezemdiwindowshadow.h"
 
 #include "breeze.h"
+#include "breezeshadowhelper.h"
 #include "breezestyleconfigdata.h"
 
 #include <QMdiArea>
@@ -46,7 +47,7 @@ namespace Breeze
         if( !_widget ) return;
 
         // metrics
-        const int shadowSize = StyleConfigData::shadowSize()*12/16;
+        const int shadowSize = ShadowHelper::shadowSize( StyleConfigData::shadowSize() );
         const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
         const int size( shadowSize - Metrics::Shadow_Overlap );
         const int topSize( size - shadowOffset );
@@ -75,7 +76,7 @@ namespace Breeze
         }
 
         // update geometry and mask
-        const QRegion mask = QRegion( geometry ) - hole;
+        const QRegion mask = QRegion( geometry ) - hole.adjusted( 2, 2, -2, -2 );
         if( mask.isEmpty() ) hide();
         else {
 
