@@ -191,8 +191,7 @@ namespace Breeze
         if( QStackedWidget* stack = qobject_cast<QStackedWidget*>( widget ) )
         { _stackedWidgetEngine->registerWidget( stack ); }
 
-        return;
-
+        
     }
 
     //____________________________________________________________

@@ -207,7 +207,6 @@ namespace Breeze
             emit layoutAboutToBeChanged();
             _remove( value );
             emit layoutChanged();
-            return;
 
         }
 
@@ -223,7 +222,6 @@ namespace Breeze
             for( typename List::const_iterator iter = values.begin(); iter != values.end(); iter++ )
             { _remove( *iter ); }
             emit layoutChanged();
-            return;
 
         }
 
@@ -281,9 +279,7 @@ namespace Breeze
             _selection.clear();
             privateSort();
             emit layoutChanged();
-
-            return;
-        }
+       }
 
         //! return all values
         const List& get( void ) const

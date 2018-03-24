@@ -871,8 +871,6 @@ namespace Breeze
 
         _dragInProgress = true;
 
-        return;
-
     }
 
     //_______________________________________________________

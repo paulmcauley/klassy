@@ -475,8 +475,7 @@ namespace Breeze
         }
 
         painter->restore();
-        return;
-    }
+   }
 
     //______________________________________________________________________________
     void Helper::renderFocusLine( QPainter* painter, const QRect& rect, const QColor& color ) const
@@ -762,8 +761,6 @@ namespace Breeze
         painter->translate( baseRect.topLeft() );
         painter->drawPath( path );
 
-        return;
-
     }
 
     //______________________________________________________________________________
@@ -835,8 +832,7 @@ namespace Breeze
 
         }
 
-        return;
-
+        
     }
 
     //______________________________________________________________________________
@@ -1054,8 +1050,7 @@ namespace Breeze
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
-        return;
-
+        
     }
 
     //______________________________________________________________________________
@@ -1080,8 +1075,7 @@ namespace Breeze
             painter->drawEllipse( grooveRect );
         }
 
-        return;
-
+        
     }
 
     //______________________________________________________________________________
@@ -1120,8 +1114,7 @@ namespace Breeze
 
         }
 
-        return;
-
+        
     }
 
     //______________________________________________________________________________
@@ -1188,8 +1181,7 @@ namespace Breeze
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
-        return;
-
+        
     }
 
 
@@ -1246,8 +1238,6 @@ namespace Breeze
         painter->setBrush( pixmap );
         painter->drawRoundedRect( baseRect, radius, radius );
 
-        return;
-
     }
 
     //______________________________________________________________________________
@@ -1270,8 +1260,7 @@ namespace Breeze
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
-        return;
-
+        
     }
 
     //______________________________________________________________________________
@@ -1327,9 +1316,7 @@ namespace Breeze
         painter->setPen( QPen( color, 1.1 ) );
         painter->drawPolyline( arrow );
         painter->restore();
-
-        return;
-    }
+   }
 
     //______________________________________________________________________________
     void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted ) const
@@ -1413,7 +1400,6 @@ namespace Breeze
         }
 
         painter->restore();
-        return;
 
     }
 

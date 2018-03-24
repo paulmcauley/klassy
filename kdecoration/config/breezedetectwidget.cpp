@@ -99,8 +99,6 @@ namespace Breeze
         m_ui.windowTitle->setText( m_info->name() );
         emit detectionDone( exec() == QDialog::Accepted );
 
-        return;
-
     }
 
     //_________________________________________________________

@@ -142,7 +142,6 @@ namespace Breeze
         }
 
         resizeColumns();
-        return;
 
     }
 
@@ -181,8 +180,6 @@ namespace Breeze
 
         setChanged( true );
 
-        return;
-
     }
 
     //_______________________________________________________
@@ -204,8 +201,6 @@ namespace Breeze
 
         setChanged( true );
 
-        return;
-
     }
 
     //_______________________________________________________
@@ -219,7 +214,6 @@ namespace Breeze
         InternalSettingsPtr exception( model().get( index ) );
         exception->setEnabled( !exception->enabled() );
         setChanged( true );
-        return;
 
     }
 
@@ -264,8 +258,6 @@ namespace Breeze
         { m_ui.exceptionListView->selectionModel()->select( model().index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
         setChanged( true );
-
-        return;
 
     }
 
@@ -316,8 +308,6 @@ namespace Breeze
         { m_ui.exceptionListView->selectionModel()->select( model().index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
         setChanged( true );
-
-        return;
 
     }
 

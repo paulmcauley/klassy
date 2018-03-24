@@ -6678,8 +6678,6 @@ namespace Breeze
         // render
         _helper->renderArrow( painter, arrowRect, color, orientation );
 
-        return;
-
     }
 
     //______________________________________________________________________________

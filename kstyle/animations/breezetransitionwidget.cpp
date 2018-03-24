@@ -303,7 +303,6 @@ namespace Breeze
         }
 
         p.end();
-        return;
-    }
+   }
 
 }

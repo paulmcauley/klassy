@@ -341,8 +341,6 @@ namespace Breeze
         painter.setCompositionMode( QPainter::CompositionMode_SourceOver );
         _helper.renderFrame( &painter, rect, QColor(), outline );
 
-        return;
-
     }
 
     //____________________________________________________________________________________
