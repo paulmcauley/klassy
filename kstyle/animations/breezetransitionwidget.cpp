@@ -212,7 +212,7 @@ namespace Breeze
         if( widget->autoFillBackground() )
         { widgets.append( widget ); }
 
-        QWidget *parent(0);
+        QWidget *parent(nullptr);
 
         // get highest level parent
         for( parent = widget->parentWidget(); parent; parent = parent->parentWidget() )
@@ -262,7 +262,7 @@ namespace Breeze
         for( int i = widgets.size() - 1; i>=0; i-- )
         {
             QWidget* w = widgets.at(i);
-            w->render( &p, -widget->mapTo( w, rect.topLeft() ), rect, 0 );
+            w->render( &p, -widget->mapTo( w, rect.topLeft() ), rect, nullptr );
         }
 
         // end

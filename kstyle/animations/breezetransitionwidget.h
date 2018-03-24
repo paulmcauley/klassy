@@ -150,7 +150,7 @@ namespace Breeze
         //@}
 
         //* grap pixmap
-        QPixmap grab( QWidget* = 0, QRect = QRect() );
+        QPixmap grab( QWidget* = nullptr, QRect = QRect() );
 
         //* true if animated
         virtual bool isAnimated() const

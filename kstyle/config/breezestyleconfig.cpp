@@ -97,7 +97,7 @@ namespace Breeze
         Kdelibs4Migration migration;
         const QString kde4ConfigDirPath = migration.saveLocation("config");
 
-        QScopedPointer<KConfig> kde4Config(StyleConfigData::self()->config()->copyTo(kde4ConfigDirPath+"/breezerc", 0));
+        QScopedPointer<KConfig> kde4Config(StyleConfigData::self()->config()->copyTo(kde4ConfigDirPath+"/breezerc", nullptr));
         kde4Config->sync();
         #endif
 

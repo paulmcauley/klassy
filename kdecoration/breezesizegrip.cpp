@@ -227,7 +227,7 @@ namespace Breeze
         */
         QPoint rootPosition( position );
         xcb_get_geometry_cookie_t cookie( xcb_get_geometry( connection, winId() ) );
-        ScopedPointer<xcb_get_geometry_reply_t> reply( xcb_get_geometry_reply( connection, cookie, 0x0 ) );
+        ScopedPointer<xcb_get_geometry_reply_t> reply( xcb_get_geometry_reply( connection, cookie, nullptr ) );
         if( reply )
         {
 
@@ -237,7 +237,7 @@ namespace Breeze
                 -reply.data()->border_width,
                 -reply.data()->border_width ) );
 
-            ScopedPointer< xcb_translate_coordinates_reply_t> coordReply( xcb_translate_coordinates_reply( connection, coordCookie, 0x0 ) );
+            ScopedPointer< xcb_translate_coordinates_reply_t> coordReply( xcb_translate_coordinates_reply( connection, coordCookie, nullptr ) );
 
             if( coordReply )
             {
@@ -254,7 +254,7 @@ namespace Breeze
             // create atom if not found
             const QString atomName( "_NET_WM_MOVERESIZE" );
             xcb_intern_atom_cookie_t cookie( xcb_intern_atom( connection, false, atomName.size(), qPrintable( atomName ) ) );
-            ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, 0x0 ) );
+            ScopedPointer<xcb_intern_atom_reply_t> reply( xcb_intern_atom_reply( connection, cookie, nullptr ) );
             m_moveResizeAtom = reply ? reply->atom:0;
 
         }

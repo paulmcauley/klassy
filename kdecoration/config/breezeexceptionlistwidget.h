@@ -41,7 +41,7 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit ExceptionListWidget( QWidget* = 0 );
+        explicit ExceptionListWidget( QWidget* = nullptr );
 
         //* set exceptions
         void setExceptions( const InternalSettingsList& );

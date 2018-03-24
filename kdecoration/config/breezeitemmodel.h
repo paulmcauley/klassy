@@ -38,7 +38,7 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit ItemModel(QObject *parent = 0);
+        explicit ItemModel(QObject *parent = nullptr);
 
         //* destructor
         virtual ~ItemModel()

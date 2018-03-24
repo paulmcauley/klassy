@@ -409,7 +409,7 @@ namespace Breeze
         if( !_gc )
         {
             _gc = xcb_generate_id( Helper::connection() );
-            xcb_create_gc( Helper::connection(), _gc, pixmap, 0, 0x0 );
+            xcb_create_gc( Helper::connection(), _gc, pixmap, 0, nullptr );
         }
 
         // create image from QPixmap and assign to pixmap

@@ -1088,7 +1088,7 @@ namespace Breeze
                 QMouseEvent* mouseEvent( static_cast<QMouseEvent*>( event ) );
 
                 // get frame framewidth
-                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, widget ) );
+                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, nullptr, widget ) );
 
                 // find list of scrollbars
                 QList<QScrollBar*> scrollBars;
@@ -3609,7 +3609,7 @@ namespace Breeze
         {
 
             // need to adjust clipRect in order not to render outside of frame
-            const int frameWidth( pixelMetric( PM_DefaultFrameWidth, 0, scrollArea ) );
+            const int frameWidth( pixelMetric( PM_DefaultFrameWidth, nullptr, scrollArea ) );
             painter->setClipRect( insideMargin( scrollArea->rect(), frameWidth ) );
             painter->setBrush( scrollArea->viewport()->palette().color( scrollArea->viewport()->backgroundRole() ) );
             painter->setPen( Qt::NoPen );
@@ -4701,7 +4701,7 @@ namespace Breeze
             const auto color = _helper->focusColor( palette );
             const auto outlineColor = _helper->focusOutlineColor( palette );
 
-            Sides sides = 0;
+            Sides sides = nullptr;
             if( !menuItemOption->menuRect.isNull() )
             {
                 if( rect.top() <= menuItemOption->menuRect.top() ) sides |= SideTop;

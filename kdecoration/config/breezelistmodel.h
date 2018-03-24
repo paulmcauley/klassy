@@ -58,7 +58,7 @@ namespace Breeze
         // typedef QSet<ValueType> Set;
 
         //! constructor
-        ListModel(QObject *parent = 0):
+        ListModel(QObject *parent = nullptr):
             ItemModel( parent )
         {}
 
@@ -72,7 +72,7 @@ namespace Breeze
         //! flags
         Qt::ItemFlags flags(const QModelIndex &index) const override
         {
-            if (!index.isValid()) return 0;
+            if (!index.isValid()) return nullptr;
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
         }
 

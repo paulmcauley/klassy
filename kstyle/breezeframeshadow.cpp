@@ -140,7 +140,7 @@ namespace Breeze
             if( FrameShadow* shadow = qobject_cast<FrameShadow*>(child) )
             {
                 shadow->hide();
-                shadow->setParent(0);
+                shadow->setParent(nullptr);
                 shadow->deleteLater();
             }
         }
@@ -202,7 +202,7 @@ namespace Breeze
     //____________________________________________________________________________________
     void FrameShadowFactory::installShadow( QWidget* widget, Helper& helper, Side area ) const
     {
-        FrameShadow *shadow(0);
+        FrameShadow *shadow(nullptr);
         shadow = new FrameShadow( area, helper );
         shadow->setParent(widget);
         shadow->hide();

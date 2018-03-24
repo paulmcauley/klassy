@@ -177,7 +177,7 @@ namespace Breeze
         }
 
         delete m_detectDialog;
-        m_detectDialog = 0;
+        m_detectDialog = nullptr;
 
     }
 

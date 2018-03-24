@@ -48,7 +48,7 @@ namespace Breeze
     //____________________________________________________________________
     #if BREEZE_USE_KDE4
     Helper::Helper( const QByteArray& name ):
-        _componentData( name, 0, KComponentData::SkipMainComponentRegistration ),
+        _componentData( name, nullptr, KComponentData::SkipMainComponentRegistration ),
         _config( _componentData.config() )
     { init(); }
     #endif
