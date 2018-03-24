@@ -48,17 +48,17 @@ namespace Breeze
         explicit ExceptionDialog( QWidget* parent );
 
         //* destructor
-        virtual ~ExceptionDialog( void )
+        virtual ~ExceptionDialog()
         {}
 
         //* set exception
         void setException( InternalSettingsPtr );
 
         //* save exception
-        void save( void );
+        void save();
 
         //* true if changed
-        virtual bool isChanged( void ) const
+        virtual bool isChanged() const
         { return m_changed; }
 
         Q_SIGNALS:
@@ -83,7 +83,7 @@ namespace Breeze
         private Q_SLOTS:
 
         //* select window properties from grabbed pointers
-        void selectWindowProperties( void );
+        void selectWindowProperties();
 
         //* read properties of selected window
         void readWindowProperties( bool );

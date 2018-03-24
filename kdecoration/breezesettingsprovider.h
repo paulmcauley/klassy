@@ -50,12 +50,12 @@ namespace Breeze
         public Q_SLOTS:
 
         //* reconfigure
-        void reconfigure( void );
+        void reconfigure();
 
         private:
 
         //* contructor
-        SettingsProvider( void );
+        SettingsProvider();
 
         //* default configuration
         InternalSettingsPtr m_defaultSettings;

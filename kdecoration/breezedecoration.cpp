@@ -724,7 +724,7 @@ namespace Breeze
     }
 
     //_________________________________________________________________
-    void Decoration::createSizeGrip( void )
+    void Decoration::createSizeGrip()
     {
 
         // do nothing if size grip already exist
@@ -749,7 +749,7 @@ namespace Breeze
     }
 
     //_________________________________________________________________
-    void Decoration::deleteSizeGrip( void )
+    void Decoration::deleteSizeGrip()
     {
         if( m_sizeGrip )
         {

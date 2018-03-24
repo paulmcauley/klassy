@@ -47,10 +47,10 @@ namespace Breeze
         void setExceptions( const InternalSettingsList& );
 
         //* get exceptions
-        InternalSettingsList exceptions( void );
+        InternalSettingsList exceptions();
 
         //* true if changed
-        virtual bool isChanged( void ) const
+        virtual bool isChanged() const
         { return m_changed; }
 
         Q_SIGNALS:
@@ -71,30 +71,30 @@ namespace Breeze
         protected Q_SLOTS:
 
         //* update button states
-        virtual void updateButtons( void );
+        virtual void updateButtons();
 
         //* add
-        virtual void add( void );
+        virtual void add();
 
         //* edit
-        virtual void edit( void );
+        virtual void edit();
 
         //* remove
-        virtual void remove( void );
+        virtual void remove();
 
         //* toggle
         virtual void toggle( const QModelIndex& );
 
         //* move up
-        virtual void up( void );
+        virtual void up();
 
         //* move down
-        virtual void down( void );
+        virtual void down();
 
         protected:
 
         //* resize columns
-        void resizeColumns( void ) const;
+        void resizeColumns() const;
 
         //* check exception
         bool checkException( InternalSettingsPtr );

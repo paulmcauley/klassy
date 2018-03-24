@@ -53,7 +53,7 @@ namespace Breeze
         BlurHelper( QObject* );
 
         //! destructor
-        virtual ~BlurHelper( void )
+        virtual ~BlurHelper()
         {}
 
         //! register widget

@@ -93,7 +93,7 @@ namespace Breeze
             update();
         }
 
-        qreal opacity( void ) const
+        qreal opacity() const
         { return m_opacity; }
 
         //@}
@@ -116,8 +116,8 @@ namespace Breeze
 
         //*@name colors
         //@{
-        QColor foregroundColor( void ) const;
-        QColor backgroundColor( void ) const;
+        QColor foregroundColor() const;
+        QColor backgroundColor() const;
         //@}
 
         Flag m_flag = FlagNone;

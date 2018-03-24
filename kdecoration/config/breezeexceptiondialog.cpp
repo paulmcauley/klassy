@@ -89,7 +89,7 @@ namespace Breeze
     }
 
     //___________________________________________
-    void ExceptionDialog::save( void )
+    void ExceptionDialog::save()
     {
         m_exception->setExceptionType( m_ui.exceptionType->currentIndex() );
         m_exception->setExceptionPattern( m_ui.exceptionEditor->text() );
@@ -108,7 +108,7 @@ namespace Breeze
     }
 
     //___________________________________________
-    void ExceptionDialog::updateChanged( void )
+    void ExceptionDialog::updateChanged()
     {
         bool modified( false );
         if( m_exception->exceptionType() != m_ui.exceptionType->currentIndex() ) modified = true;
@@ -133,7 +133,7 @@ namespace Breeze
     }
 
     //___________________________________________
-    void ExceptionDialog::selectWindowProperties( void )
+    void ExceptionDialog::selectWindowProperties()
     {
 
         // create widget

@@ -105,7 +105,7 @@ namespace Breeze
         //@{
 
         //! clear internal list selected items
-        virtual void clearSelectedIndexes( void )
+        virtual void clearSelectedIndexes()
         { _selection.clear(); }
 
         //! store index internal selection state
@@ -116,7 +116,7 @@ namespace Breeze
         }
 
         //! get list of internal selected items
-        virtual QModelIndexList selectedIndexes( void ) const
+        virtual QModelIndexList selectedIndexes() const
         {
 
             QModelIndexList out;
@@ -228,7 +228,7 @@ namespace Breeze
         }
 
         //! clear
-        virtual void clear( void )
+        virtual void clear()
         { set( List() ); }
 
         //! update values from list

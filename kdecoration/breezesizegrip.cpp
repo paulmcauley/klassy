@@ -75,11 +75,11 @@ namespace Breeze
     }
 
     //_____________________________________________
-    SizeGrip::~SizeGrip( void )
+    SizeGrip::~SizeGrip()
     {}
 
     //_____________________________________________
-    void SizeGrip::updateActiveState( void )
+    void SizeGrip::updateActiveState()
     {
         #if BREEZE_HAVE_X11
         if( QX11Info::isPlatformX11() )
@@ -95,7 +95,7 @@ namespace Breeze
     }
 
     //_____________________________________________
-    void SizeGrip::embed( void )
+    void SizeGrip::embed()
     {
 
         #if BREEZE_HAVE_X11
@@ -190,7 +190,7 @@ namespace Breeze
     }
 
     //_______________________________________________________________________________
-    void SizeGrip::updatePosition( void )
+    void SizeGrip::updatePosition()
     {
 
         #if BREEZE_HAVE_X11

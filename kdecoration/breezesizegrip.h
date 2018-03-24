@@ -47,18 +47,18 @@ namespace Breeze
         explicit SizeGrip( Decoration* );
 
         //* constructor
-        virtual ~SizeGrip( void );
+        virtual ~SizeGrip();
 
         protected Q_SLOTS:
 
         //* update background color
-        void updateActiveState( void );
+        void updateActiveState();
 
         //* update position
-        void updatePosition( void );
+        void updatePosition();
 
         //* embed into parent widget
-        void embed( void );
+        void embed();
 
         protected:
 

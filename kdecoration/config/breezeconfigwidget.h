@@ -51,16 +51,16 @@ namespace Breeze
         explicit ConfigWidget( QWidget*, const QVariantList& );
 
         //* destructor
-        virtual ~ConfigWidget( void ) = default;
+        virtual ~ConfigWidget() = default;
 
         //* default
         void defaults() override;
 
         //* load configuration
-        void load( void ) override;
+        void load() override;
 
         //* save configuration
-        void save( void ) override;
+        void save() override;
 
         protected Q_SLOTS:
 

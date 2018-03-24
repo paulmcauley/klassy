@@ -353,7 +353,7 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    QColor Button::foregroundColor( void ) const
+    QColor Button::foregroundColor() const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) {
@@ -389,7 +389,7 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    QColor Button::backgroundColor( void ) const
+    QColor Button::backgroundColor() const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) {

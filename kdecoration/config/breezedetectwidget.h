@@ -92,7 +92,7 @@ namespace Breeze
         WId findWindow();
 
         //* execute
-        void executeDialog( void );
+        void executeDialog();
 
         //* ui
         Ui::BreezeDetectWidget m_ui;

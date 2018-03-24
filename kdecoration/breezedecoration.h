@@ -74,30 +74,30 @@ namespace Breeze
         //@{
         void setOpacity( qreal );
 
-        qreal opacity( void ) const
+        qreal opacity() const
         { return m_opacity; }
 
         //@}
 
         //*@name colors
         //@{
-        QColor titleBarColor( void ) const;
-        QColor outlineColor( void ) const;
-        QColor fontColor( void ) const;
+        QColor titleBarColor() const;
+        QColor outlineColor() const;
+        QColor fontColor() const;
         //@}
 
         //*@name maximization modes
         //@{
-        inline bool isMaximized( void ) const;
-        inline bool isMaximizedHorizontally( void ) const;
-        inline bool isMaximizedVertically( void ) const;
+        inline bool isMaximized() const;
+        inline bool isMaximizedHorizontally() const;
+        inline bool isMaximizedVertically() const;
 
-        inline bool isLeftEdge( void ) const;
-        inline bool isRightEdge( void ) const;
-        inline bool isTopEdge( void ) const;
-        inline bool isBottomEdge( void ) const;
+        inline bool isLeftEdge() const;
+        inline bool isRightEdge() const;
+        inline bool isTopEdge() const;
+        inline bool isBottomEdge() const;
 
-        inline bool hideTitleBar( void ) const;
+        inline bool hideTitleBar() const;
         //@}
 
         public Q_SLOTS:
@@ -115,7 +115,7 @@ namespace Breeze
         private:
 
         //* return the rect in which caption will be drawn
-        QPair<QRect,Qt::Alignment> captionRect( void ) const;
+        QPair<QRect,Qt::Alignment> captionRect() const;
 
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
@@ -124,16 +124,16 @@ namespace Breeze
         //*@name border size
         //@{
         int borderSize(bool bottom = false) const;
-        inline bool hasBorders( void ) const;
-        inline bool hasNoBorders( void ) const;
-        inline bool hasNoSideBorders( void ) const;
+        inline bool hasBorders() const;
+        inline bool hasNoBorders() const;
+        inline bool hasNoSideBorders() const;
         //@}
 
         //*@name size grip
         //@{
-        void createSizeGrip( void );
-        void deleteSizeGrip( void );
-        SizeGrip* sizeGrip( void ) const
+        void createSizeGrip();
+        void deleteSizeGrip();
+        SizeGrip* sizeGrip() const
         { return m_sizeGrip; }
         //@}
 
@@ -153,46 +153,46 @@ namespace Breeze
 
     };
 
-    bool Decoration::hasBorders( void ) const
+    bool Decoration::hasBorders() const
     {
         if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
         else return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
     }
 
-    bool Decoration::hasNoBorders( void ) const
+    bool Decoration::hasNoBorders() const
     {
         if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNone;
         else return settings()->borderSize() == KDecoration2::BorderSize::None;
     }
 
-    bool Decoration::hasNoSideBorders( void ) const
+    bool Decoration::hasNoSideBorders() const
     {
         if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
         else return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
     }
 
-    bool Decoration::isMaximized( void ) const
+    bool Decoration::isMaximized() const
     { return client().data()->isMaximized() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isMaximizedHorizontally( void ) const
+    bool Decoration::isMaximizedHorizontally() const
     { return client().data()->isMaximizedHorizontally() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isMaximizedVertically( void ) const
+    bool Decoration::isMaximizedVertically() const
     { return client().data()->isMaximizedVertically() && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isLeftEdge( void ) const
+    bool Decoration::isLeftEdge() const
     { return (client().data()->isMaximizedHorizontally() || client().data()->adjacentScreenEdges().testFlag( Qt::LeftEdge ) ) && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isRightEdge( void ) const
+    bool Decoration::isRightEdge() const
     { return (client().data()->isMaximizedHorizontally() || client().data()->adjacentScreenEdges().testFlag( Qt::RightEdge ) ) && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isTopEdge( void ) const
+    bool Decoration::isTopEdge() const
     { return (client().data()->isMaximizedVertically() || client().data()->adjacentScreenEdges().testFlag( Qt::TopEdge ) ) && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::isBottomEdge( void ) const
+    bool Decoration::isBottomEdge() const
     { return (client().data()->isMaximizedVertically() || client().data()->adjacentScreenEdges().testFlag( Qt::BottomEdge ) ) && !m_internalSettings->drawBorderOnMaximizedWindows(); }
 
-    bool Decoration::hideTitleBar( void ) const
+    bool Decoration::hideTitleBar() const
     { return m_internalSettings->hideTitleBar() && !client().data()->isShaded(); }
 
 }

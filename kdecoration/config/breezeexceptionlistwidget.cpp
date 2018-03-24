@@ -83,14 +83,14 @@ namespace Breeze
     }
 
     //__________________________________________________________
-    InternalSettingsList ExceptionListWidget::exceptions( void )
+    InternalSettingsList ExceptionListWidget::exceptions()
     {
         return model().get();
         setChanged( false );
     }
 
     //__________________________________________________________
-    void ExceptionListWidget::updateButtons( void )
+    void ExceptionListWidget::updateButtons()
     {
 
         bool hasSelection( !m_ui.exceptionListView->selectionModel()->selectedRows().empty() );
@@ -104,7 +104,7 @@ namespace Breeze
 
 
     //_______________________________________________________
-    void ExceptionListWidget::add( void )
+    void ExceptionListWidget::add()
     {
 
 
@@ -147,7 +147,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ExceptionListWidget::edit( void )
+    void ExceptionListWidget::edit()
     {
 
         // retrieve selection
@@ -186,7 +186,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ExceptionListWidget::remove( void )
+    void ExceptionListWidget::remove()
     {
 
         // confirmation dialog
@@ -224,7 +224,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ExceptionListWidget::up( void )
+    void ExceptionListWidget::up()
     {
 
         InternalSettingsList selection( model().get( m_ui.exceptionListView->selectionModel()->selectedRows() ) );
@@ -270,7 +270,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ExceptionListWidget::down( void )
+    void ExceptionListWidget::down()
     {
 
         InternalSettingsList selection( model().get( m_ui.exceptionListView->selectionModel()->selectedRows() ) );
@@ -322,7 +322,7 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    void ExceptionListWidget::resizeColumns( void ) const
+    void ExceptionListWidget::resizeColumns() const
     {
         m_ui.exceptionListView->resizeColumnToContents( ExceptionModel::ColumnEnabled );
         m_ui.exceptionListView->resizeColumnToContents( ExceptionModel::ColumnType );

@@ -51,7 +51,7 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    void SettingsProvider::reconfigure( void )
+    void SettingsProvider::reconfigure()
     {
         if( !m_defaultSettings )
         {

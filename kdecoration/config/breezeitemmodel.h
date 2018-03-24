@@ -51,18 +51,18 @@ namespace Breeze
         //@{
 
         //* sort
-        virtual void sort( void )
+        virtual void sort()
         { sort( sortColumn(), sortOrder() ); }
 
         //* sort
         void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
         //* current sorting column
-        const int& sortColumn( void ) const
+        const int& sortColumn() const
         { return m_sortColumn; }
 
         //* current sort order
-        const Qt::SortOrder& sortOrder( void ) const
+        const Qt::SortOrder& sortOrder() const
         { return m_sortOrder; }
 
         //@}
@@ -70,7 +70,7 @@ namespace Breeze
         protected:
 
         //* this sort columns without calling the layout changed callbacks
-        void privateSort( void )
+        void privateSort()
         { privateSort( m_sortColumn, m_sortOrder ); }
 
         //* private sort, with no signals emmitted
