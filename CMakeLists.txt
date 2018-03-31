@@ -28,15 +28,12 @@ else()
     add_subdirectory(kdecoration)
   endif()
 
+  add_subdirectory(colors)
   add_subdirectory(cursors)
   add_subdirectory(kstyle)
   add_subdirectory(misc)
   add_subdirectory(qtquickcontrols)
   add_subdirectory(wallpapers)
-
-  INSTALL(FILES colors/Breeze.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
-  INSTALL(FILES colors/BreezeDark.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
-  INSTALL(FILES colors/BreezeHighContrast.colors DESTINATION ${DATA_INSTALL_DIR}/color-schemes/)
 
   find_package(KF5Package CONFIG REQUIRED)
   kpackage_install_package(lookandfeel.dark org.kde.breezedark.desktop look-and-feel plasma lookandfeel)
