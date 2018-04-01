@@ -26,6 +26,28 @@
 #include <QDebug>
 #include <QPainter>
 
+// Q_FALLTHROUGH() for Qt < 5.8
+#ifndef Q_FALLTHROUGH
+#if defined(__has_cpp_attribute)
+#if __has_cpp_attribute(fallthrough)
+#define Q_FALLTHROUGH() [[fallthrough]]
+#elif __has_cpp_attribute(clang::fallthrough)
+#define Q_FALLTHROUGH() [[clang::fallthrough]]
+#elif __has_cpp_attribute(gnu::fallthrough)
+#define Q_FALLTHROUGH() [[gnu::fallthrough]]
+#endif
+#endif
+#ifndef Q_FALLTHROUGH
+#if defined(Q_CC_GNU) && Q_CC_GNU >= 700
+#define Q_FALLTHROUGH() __attribute__((fallthrough))
+#elif defined(Q_CC_CLANG) && Q_CC_CLANG >= 305
+#define Q_FALLTHROUGH() [[clang::fallthrough]]
+#else
+#define Q_FALLTHROUGH()
+#endif
+#endif
+#endif
+
 namespace Breeze
 {
 
@@ -269,11 +291,12 @@ namespace Breeze
             if( static_cast<QTimerEvent*>( event )->timerId() != _timerId )
             { return QWidget::event( event ); }
 
-            // fall-through
             /*
             Fall through is intended.
             We somehow lost a QEvent::Leave before timeout. We fix it from here
             */
+
+            Q_FALLTHROUGH();
 
             case QEvent::HoverLeave:
             case QEvent::Leave:
