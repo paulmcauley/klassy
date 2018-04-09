@@ -179,6 +179,9 @@ namespace Breeze
         // reset
         reset();
 
+        // create shadow tiles
+        shadowTiles();
+
         // update property for registered widgets
         for( QMap<QWidget*,WId>::const_iterator iter = _widgets.constBegin(); iter != _widgets.constEnd(); ++iter )
         { installShadows( iter.key() ); }
@@ -360,10 +363,8 @@ namespace Breeze
         if( !_atom && Helper::isX11() ) _atom = _helper.createAtom( QLatin1String( netWMShadowAtomName ) );
         #endif
 
-        shadowTiles();
-
         // make sure size is valid
-        if( _pixmaps.empty() && _shadowTiles.isValid() )
+        if( _pixmaps.empty() )
         {
 
             _pixmaps.append( createPixmap( _shadowTiles.pixmap( 1 ) ) );
@@ -427,7 +428,7 @@ namespace Breeze
     //_______________________________________________________
     bool ShadowHelper::installShadows( QWidget* widget )
     {
-        if( !widget ) return false;
+        if( !widget || !_shadowTiles.isValid() ) return false;
 
         /*
         From bespin code. Supposibly prevent playing with some 'pseudo-widgets'
@@ -484,8 +485,6 @@ namespace Breeze
         #if BREEZE_HAVE_KWAYLAND
         if( widget->windowHandle()->parent() ) return false;
         if( !_shadowManager || !_shmPool ) return false;
-
-        if( !_shadowTiles.isValid() ) return false;
 
         // create shadow
         using namespace KWayland::Client;
