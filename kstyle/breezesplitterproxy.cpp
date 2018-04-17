@@ -38,9 +38,9 @@
 #endif
 #endif
 #ifndef Q_FALLTHROUGH
-#if defined(Q_CC_GNU) && Q_CC_GNU >= 700
+#if __GNUC__ >= 7
 #define Q_FALLTHROUGH() __attribute__((fallthrough))
-#elif defined(Q_CC_CLANG) && Q_CC_CLANG >= 305
+#elif (__clang_major__ > 3) || (__clang_major__ == 3 && __clang_minor__ >= 5)
 #define Q_FALLTHROUGH() [[clang::fallthrough]]
 #else
 #define Q_FALLTHROUGH()
