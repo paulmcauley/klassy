@@ -6,20 +6,30 @@ cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
 option(USE_KDE4 "Build a widget style for KDE4 (and nothing else)")
 
+include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
 if(USE_KDE4)
+  find_package(KDE4 REQUIRED)
+  include(KDE4Defaults)
+  include(MacroLibrary)
+
+  add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+  include_directories(${KDE4_INCLUDES})
+
+  add_subdirectory(libbreezecommon)
   add_subdirectory(kstyle)
 else()
   find_package(ECM 0.0.9 REQUIRED NO_MODULE)
-  set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
+  set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
   include(ECMInstallIcons)
   include(KDEInstallDirs)
   include(KDECMakeSettings)
   include(KDECompilerSettings NO_POLICY_SCOPE)
-  include(GenerateExportHeader)
   include(GtkUpdateIconCache)
 
   option(WITH_DECORATIONS "Build Breeze window decorations for KWin" ON)
@@ -30,6 +40,7 @@ else()
 
   add_subdirectory(colors)
   add_subdirectory(cursors)
+  add_subdirectory(libbreezecommon)
   add_subdirectory(kstyle)
   add_subdirectory(misc)
   add_subdirectory(qtquickcontrols)

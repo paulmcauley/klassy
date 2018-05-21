@@ -14,13 +14,6 @@ endif()
 ################# Qt/KDE #################
 if(BREEZE_USE_KDE4)
 
-  find_package(KDE4 REQUIRED)
-  include(KDE4Defaults)
-  include(MacroLibrary)
-
-  add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
-  include_directories(${KDE4_INCLUDES})
-
   ### XCB
   if(UNIX AND NOT APPLE)
     find_package(PkgConfig REQUIRED)
