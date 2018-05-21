@@ -10,7 +10,7 @@
 
     <!-- shadow -->
     <entry name="ShadowStrength" type = "Int">
-       <default>90</default>
+       <default>255</default>
        <min>25</min>
        <max>255</max>
     </entry>

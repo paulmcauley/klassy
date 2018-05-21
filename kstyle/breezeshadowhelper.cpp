@@ -20,6 +20,7 @@
 #include "breezeshadowhelper.h"
 
 #include "breeze.h"
+#include "breezeboxshadowhelper.h"
 #include "breezehelper.h"
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
@@ -46,27 +47,63 @@
 #include <KWayland/Client/surface.h>
 #endif
 
+namespace
+{
+    using Breeze::CompositeShadowParams;
+    using Breeze::ShadowParams;
+
+    const CompositeShadowParams s_shadowParams[] = {
+        // None
+        CompositeShadowParams(),
+        // Small
+        CompositeShadowParams(
+            QPoint(0, 6),
+            ShadowParams(QPoint(0, 0), 12, 0.2),
+            ShadowParams(QPoint(0, -3), 6, 0.16)),
+        // Medium
+        CompositeShadowParams(
+            QPoint(0, 8),
+            ShadowParams(QPoint(0, 0), 16, 0.21),
+            ShadowParams(QPoint(0, -4), 6, 0.14)),
+        // Large
+        CompositeShadowParams(
+            QPoint(0, 10),
+            ShadowParams(QPoint(0, 0), 20, 0.23),
+            ShadowParams(QPoint(0, -5), 8, 0.12)),
+        // Very Large
+        CompositeShadowParams(
+            QPoint(0, 12),
+            ShadowParams(QPoint(0, 0), 24, 0.26),
+            ShadowParams(QPoint(0, -5), 10, 0.12))
+    };
+}
+
 namespace Breeze
 {
 
     const char ShadowHelper::netWMShadowAtomName[] ="_KDE_NET_WM_SHADOW";
 
     //_____________________________________________________
-    int ShadowHelper::shadowSize( int shadowSizeEnum )
+    CompositeShadowParams ShadowHelper::lookupShadowParams(int shadowSizeEnum)
     {
 
-        switch( shadowSizeEnum )
-        {
-            default:
-            case Breeze::StyleConfigData::ShadowLarge: return 16;
-            case Breeze::StyleConfigData::ShadowNone: return 0;
-            case Breeze::StyleConfigData::ShadowSmall: return 12;
-            case Breeze::StyleConfigData::ShadowMedium: return 14;
-            case Breeze::StyleConfigData::ShadowVeryLarge: return 24;
+        switch (shadowSizeEnum) {
+        case StyleConfigData::ShadowNone:
+            return s_shadowParams[0];
+        case StyleConfigData::ShadowSmall:
+            return s_shadowParams[1];
+        case StyleConfigData::ShadowMedium:
+            return s_shadowParams[2];
+        case StyleConfigData::ShadowLarge:
+            return s_shadowParams[3];
+        case StyleConfigData::ShadowVeryLarge:
+            return s_shadowParams[4];
+        default:
+            // Fallback to the Large size.
+            return s_shadowParams[3];
         }
 
     }
-
 
     //_____________________________________________________
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
@@ -237,69 +274,84 @@ namespace Breeze
     //_______________________________________________________
     TileSet ShadowHelper::shadowTiles()
     {
-        // metrics
-        const int shadowSize = this->shadowSize( StyleConfigData::shadowSize() );
-        if( !shadowSize ) return TileSet();
-        else if( !_shadowTiles.isValid() )
-        {
+        const CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
 
-            const QPalette palette( QApplication::palette() );
-            const QColor shadowColor( StyleConfigData::shadowColor() );
-            const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
-            const int shadowStrength = StyleConfigData::shadowStrength();
-
-            // pixmap
-            QPixmap pixmap = _helper.highDpiPixmap( shadowSize*2 );
-            pixmap.fill( Qt::transparent );
-
-            // create gradient
-            // gaussian delta function
-            auto alpha = [](qreal x) { return std::exp( -x*x/0.15 ); };
-
-            // color calculation delta function
-            auto gradientStopColor = [](QColor color, int alpha)
-            {
-                color.setAlpha(alpha);
-                return color;
-            };
-
-            QRadialGradient radialGradient( shadowSize, shadowSize, shadowSize);
-            for( int i = 0; i < 10; ++i )
-            {
-                const qreal x( qreal( i )/9 );
-                radialGradient.setColorAt(x,  gradientStopColor(shadowColor, alpha(x)*shadowStrength));
-            }
-
-            radialGradient.setColorAt(1, gradientStopColor( shadowColor, 0 ) );
-
-            // fill
-            QPainter p(&pixmap);
-            p.setRenderHint( QPainter::Antialiasing, true );
-            p.fillRect( pixmap.rect(), radialGradient);
-
-            p.setPen( Qt::NoPen );
-            p.setBrush( Qt::black );
-
-            QRectF innerRect(
-                shadowSize - Metrics::Shadow_Overlap, shadowSize - shadowOffset - Metrics::Shadow_Overlap,
-                2*Metrics::Shadow_Overlap,shadowOffset + 2*Metrics::Shadow_Overlap );
-
-            p.setCompositionMode(QPainter::CompositionMode_DestinationOut );
-
-            const qreal radius( _helper.frameRadius() );
-            p.drawRoundedRect( innerRect, radius, radius );
-            p.end();
-
-            // create tiles from pixmap
-            _shadowTiles = TileSet( pixmap,
-                shadowSize,
-                shadowSize,
-                1, 1 );
-
+        if (params.isNone()) {
+            return TileSet();
+        } else if (_shadowTiles.isValid()) {
+            return _shadowTiles;
         }
 
-        return _shadowTiles;
+        auto withOpacity = [](const QColor &color, qreal opacity) -> QColor {
+            QColor c(color);
+            c.setAlphaF(opacity);
+            return c;
+        };
 
+        const int shadowSize = qMax(params.shadow1.radius, params.shadow2.radius);
+        const QColor color = StyleConfigData::shadowColor();
+        const qreal strength = static_cast<qreal>(StyleConfigData::shadowStrength()) / 255.0;
+
+        const QRect box(
+            shadowSize,
+            shadowSize,
+            2 * shadowSize + 1,
+            2 * shadowSize + 1);
+        const QRect outerRect = box.adjusted(-shadowSize, -shadowSize, shadowSize, shadowSize);
+
+        QPixmap shadow = _helper.highDpiPixmap(outerRect.width(), outerRect.height());
+        shadow.fill(Qt::transparent);
+
+        QPainter painter(&shadow);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        // Draw the "shape" shadow.
+        BoxShadowHelper::boxShadow(
+            &painter,
+            box,
+            params.shadow1.offset,
+            params.shadow1.radius,
+            withOpacity(color, params.shadow1.opacity * strength));
+
+        // Draw the "contrast" shadow.
+        BoxShadowHelper::boxShadow(
+            &painter,
+            box,
+            params.shadow2.offset,
+            params.shadow2.radius,
+            withOpacity(color, params.shadow2.opacity * strength));
+
+        // Mask out inner rect.
+        const QMargins margins = QMargins(
+            shadowSize - Metrics::Shadow_Overlap - params.offset.x(),
+            shadowSize - Metrics::Shadow_Overlap - params.offset.y(),
+            shadowSize - Metrics::Shadow_Overlap + params.offset.x(),
+            shadowSize - Metrics::Shadow_Overlap + params.offset.y());
+        const qreal frameRadius = _helper.frameRadius();
+
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(Qt::black);
+        painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+        painter.drawRoundedRect(
+#if BREEZE_USE_KDE4
+            outerRect.adjusted(margins.left(), margins.top(), -margins.right(), -margins.bottom()),
+#else
+            outerRect - margins,
+#endif
+            frameRadius,
+            frameRadius);
+
+        // We're done.
+        painter.end();
+
+        const QPoint innerRectTopLeft = outerRect.center();
+        _shadowTiles = TileSet(
+            shadow,
+            innerRectTopLeft.x(),
+            innerRectTopLeft.y(),
+            1, 1);
+
+        return _shadowTiles;
     }
 
 
@@ -520,40 +572,54 @@ namespace Breeze
     //_______________________________________________________
     QMargins ShadowHelper::shadowMargins( QWidget* widget ) const
     {
-        // get devicePixelRatio
-        // for testing purposes only
-        const qreal devicePixelRatio( _helper.devicePixelRatio( _shadowTiles.pixmap( 0 ) ) );
-
-        // metrics
-        const int shadowSize = this->shadowSize( StyleConfigData::shadowSize() );
-        if( !shadowSize ) return QMargins();
-        const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
-
-        // define shadows padding
-        int size( shadowSize - Metrics::Shadow_Overlap );
-        int topSize = ( size - shadowOffset ) * devicePixelRatio;
-        int bottomSize = size * devicePixelRatio;
-        const int leftSize( size * devicePixelRatio );
-        const int rightSize( size * devicePixelRatio );
-
-        if( widget->inherits( "QBalloonTip" ) )
-        {
-
-            // balloon tip needs special margins to deal with the arrow
-            int top = 0;
-            int bottom = 0;
-            widget->getContentsMargins( nullptr, &top, nullptr, &bottom );
-
-            // also need to decrement default size further due to extra hard coded round corner
-            size -= 2 * devicePixelRatio;
-
-            // it seems arrow can be either to the top or the bottom. Adjust margins accordingly
-            if( top > bottom ) topSize -= (top - bottom);
-            else bottomSize -= (bottom - top );
-
+        const CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+        if (params.isNone()) {
+            return QMargins();
         }
 
-        return QMargins( leftSize, topSize, rightSize, bottomSize );
+        const int shadowSize = qMax(params.shadow1.radius, params.shadow2.radius);
+        QMargins margins(
+            shadowSize - Metrics::Shadow_Overlap - params.offset.x(),
+            shadowSize - Metrics::Shadow_Overlap - params.offset.y(),
+            shadowSize - Metrics::Shadow_Overlap + params.offset.x(),
+            shadowSize - Metrics::Shadow_Overlap + params.offset.y());
+
+        if (widget->inherits("QBalloonTip")) {
+            // Balloon tip needs special margins to deal with the arrow.
+            int top = 0;
+            int bottom = 0;
+            widget->getContentsMargins(nullptr, &top, nullptr, &bottom);
+
+            // Need to decrement default size further due to extra hard coded round corner.
+#if BREEZE_USE_KDE4
+            margins.setLeft(margins.left() - 1);
+            margins.setTop(margins.top() - 1);
+            margins.setRight(margins.right() - 1);
+            margins.setBottom(margins.bottom() - 1);
+#else
+            margins -= 1;
+#endif
+
+            // Arrow can be either to the top or the bottom. Adjust margins accordingly.
+            const int diff = qAbs(top - bottom);
+            if (top > bottom) {
+                margins.setTop(margins.top() - diff);
+            } else {
+                margins.setBottom(margins.bottom() - diff);
+            }
+        }
+
+#if BREEZE_USE_KDE4
+        const qreal dpr = _helper.devicePixelRatio(_shadowTiles.pixmap(0));
+        margins.setLeft(margins.left() * dpr);
+        margins.setTop(margins.top() * dpr);
+        margins.setRight(margins.right() * dpr);
+        margins.setBottom(margins.bottom() * dpr);
+#else
+        margins *= _helper.devicePixelRatio(_shadowTiles.pixmap(0));
+#endif
+
+        return margins;
     }
 
     //_______________________________________________________

@@ -47,13 +47,15 @@ namespace Breeze
         if( !_widget ) return;
 
         // metrics
-        const int shadowSize = ShadowHelper::shadowSize( StyleConfigData::shadowSize() );
-        const int shadowOffset = qMax( shadowSize/2, Metrics::Shadow_Overlap*2 );
+        const CompositeShadowParams params = ShadowHelper::lookupShadowParams( StyleConfigData::shadowSize() );
+        if( params.isNone() ) return;
+
+        const int shadowSize = qMax( params.shadow1.radius, params.shadow2.radius );
         const int size( shadowSize - Metrics::Shadow_Overlap );
-        const int topSize( size - shadowOffset );
-        const int bottomSize( size );
-        const int leftSize( size );
-        const int rightSize( size );
+        const int topSize( size - params.offset.y() );
+        const int bottomSize( size + params.offset.y() );
+        const int leftSize( size - params.offset.x() );
+        const int rightSize( size + params.offset.x() );
 
         // get tileSet rect
         auto hole = _widget->frameGeometry();

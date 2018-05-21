@@ -50,6 +50,43 @@ namespace Breeze
     //* forward declaration
     class Helper;
 
+    struct ShadowParams
+    {
+        ShadowParams()
+            : offset(QPoint(0, 0))
+            , radius(0)
+            , opacity(0) {}
+
+        ShadowParams(const QPoint &offset, int radius, qreal opacity)
+            : offset(offset)
+            , radius(radius)
+            , opacity(opacity) {}
+
+        QPoint offset;
+        int radius;
+        qreal opacity;
+    };
+
+    struct CompositeShadowParams
+    {
+        CompositeShadowParams() = default;
+
+        CompositeShadowParams(
+                const QPoint &offset,
+                const ShadowParams &shadow1,
+                const ShadowParams &shadow2)
+            : offset(offset)
+            , shadow1(shadow1)
+            , shadow2(shadow2) {}
+
+        bool isNone() const
+        { return qMax(shadow1.radius, shadow2.radius) == 0; }
+
+        QPoint offset;
+        ShadowParams shadow1;
+        ShadowParams shadow2;
+    };
+
     //* handle shadow pixmaps passed to window manager via X property
     class ShadowHelper: public QObject
     {
@@ -73,8 +110,8 @@ namespace Breeze
         bool isSupported() const
         { return _supported; }
 
-        //* shadow size from enum
-        static int shadowSize( int shadowSizeEnum );
+        //* shadow params from size enum
+        static CompositeShadowParams lookupShadowParams( int shadowSizeEnum );
 
         //* reset
         void reset();

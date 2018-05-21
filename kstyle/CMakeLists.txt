@@ -82,6 +82,9 @@ include_directories(
   debug
 )
 
+include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
+include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
+
 ################# configuration #################
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
@@ -139,6 +142,7 @@ if(BREEZE_USE_KDE4)
   kde4_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
   kde4_add_plugin(breeze ${breeze_PART_SRCS} kstylekde4compat.cpp)
   target_link_libraries(breeze  ${KDE4_KDEUI_LIBS})
+  target_link_libraries(breeze breezecommon4)
 
   if(BREEZE_HAVE_X11)
     target_link_libraries(breeze ${X11_XCB_LIBRARIES})
@@ -153,6 +157,7 @@ else()
   add_library(breeze MODULE ${breeze_PART_SRCS})
   target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus Qt5::Quick)
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::WindowSystem)
+  target_link_libraries(breeze breezecommon)
 
   if( KF5FrameworkIntegration_FOUND )
   target_link_libraries(breeze KF5::Style)
