@@ -28,6 +28,10 @@ endif()
 ################# configuration #################
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
+################# includes #################
+include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
+include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
+
 ################# newt target #################
 ### plugin classes
 set(breezedecoration_SRCS
@@ -71,6 +75,7 @@ target_link_libraries(breezedecoration
         Qt5::Gui
         Qt5::DBus
     PRIVATE
+        breezecommon
         KDecoration2::KDecoration
         KF5::ConfigCore
         KF5::CoreAddons
