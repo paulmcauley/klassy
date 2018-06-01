@@ -96,7 +96,7 @@
 
     <!-- size grip -->
     <entry name="DrawSizeGrip" type = "Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
 
     <!-- animations -->
