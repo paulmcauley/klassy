@@ -3224,7 +3224,11 @@ namespace Breeze
     {
 
         // cast option and check
+        #if BREEZE_USE_KDE4
         const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
+        #else
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
+        #endif
         if( !tabOption ) return true;
 
         // do nothing if tabbar is hidden
