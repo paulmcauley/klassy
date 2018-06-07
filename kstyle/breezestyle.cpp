@@ -1662,15 +1662,19 @@ namespace Breeze
     {
 
         // cast option and check
-        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
-        if( !tabOptionV3 || tabOptionV3->leftButtonSize.isEmpty() ) return QRect();
+        #if BREEZE_USE_KDE4
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        #else
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        #endif
+        if( !tabOption || tabOption->leftButtonSize.isEmpty() ) return QRect();
 
         const auto rect( option->rect );
-        const QSize size( tabOptionV3->leftButtonSize );
+        const QSize size( tabOption->leftButtonSize );
         QRect buttonRect( QPoint(0,0), size );
 
         // vertical positioning
-        switch( tabOptionV3->shape )
+        switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
@@ -1706,15 +1710,19 @@ namespace Breeze
     {
 
         // cast option and check
-        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
-        if( !tabOptionV3 || tabOptionV3->rightButtonSize.isEmpty() ) return QRect();
+        #if BREEZE_USE_KDE4
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
+        #else
+        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
+        #endif
+        if( !tabOption || tabOption->rightButtonSize.isEmpty() ) return QRect();
 
         const auto rect( option->rect );
-        const auto size( tabOptionV3->rightButtonSize );
+        const auto size( tabOption->rightButtonSize );
         QRect buttonRect( QPoint(0,0), size );
 
         // vertical positioning
-        switch( tabOptionV3->shape )
+        switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
@@ -2907,11 +2915,16 @@ namespace Breeze
     QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
     {
         const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
         const bool hasText( tabOption && !tabOption->text.isEmpty() );
         const bool hasIcon( tabOption && !tabOption->icon.isNull() );
+        #if BREEZE_USE_KDE4
+        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
         const bool hasLeftButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
         const bool hasRightButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
+        #else
+        const bool hasLeftButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
+        const bool hasRightButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
+        #endif
 
         // calculate width increment for horizontal tabs
         int widthIncrement = 0;
