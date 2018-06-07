@@ -5096,7 +5096,9 @@ namespace Breeze
 
         //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
         #if QT_VERSION >= 0x050000
-        const bool widgetMouseOver( widget ? _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove )  : option->styleObject->property("hover").toBool());
+        bool widgetMouseOver( ( option->state & State_MouseOver ) );
+        if( widget ) widgetMouseOver = _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove );
+        else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
         #else
         const bool widgetMouseOver( _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove ) );
         #endif
