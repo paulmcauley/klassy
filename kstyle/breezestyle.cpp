@@ -5236,7 +5236,11 @@ namespace Breeze
     {
 
         // cast option and check
+        #if BREEZE_USE_KDE4
         const auto frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
+        #else
+        const auto frameOpt = qstyleoption_cast<const QStyleOptionFrame*>( option );
+        #endif
         if( !frameOpt ) return false;
 
         switch( frameOpt->frameShape )
