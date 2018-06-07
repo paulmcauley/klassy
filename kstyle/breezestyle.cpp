@@ -5834,8 +5834,12 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // cast to v2 to check vertical bar
+        #if BREEZE_USE_KDE4
         const auto v2 = qstyleoption_cast<const QStyleOptionDockWidgetV2*>( option );
         const bool verticalTitleBar( v2 ? v2->verticalTitleBar : false );
+        #else
+        const bool verticalTitleBar( dockWidgetOption->verticalTitleBar );
+        #endif
 
         const auto buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
 
