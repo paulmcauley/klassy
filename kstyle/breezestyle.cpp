@@ -3714,7 +3714,11 @@ namespace Breeze
     {
 
         // cast option and check
+        #if BREEZE_USE_KDE4
         const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
+        #else
+        const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
+        #endif
         if( !viewItemOption ) return false;
 
         // try cast widget
