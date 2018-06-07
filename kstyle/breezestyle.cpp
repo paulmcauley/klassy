@@ -1499,8 +1499,12 @@ namespace Breeze
         const bool textVisible( progressBarOption->textVisible );
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
 
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        #endif
 
         // copy rectangle and adjust
         auto rect( option->rect );
@@ -1547,11 +1551,19 @@ namespace Breeze
         if( busy ) return rect;
 
         // get orientation
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        #endif
 
         // check inverted appearance
+        #if BREEZE_USE_KDE4
         const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
+        #else
+        const bool inverted( progressBarOption->invertedAppearance );
+        #endif
 
         // get progress and steps
         const qreal progress( progressBarOption->progress - progressBarOption->minimum );
@@ -1590,8 +1602,12 @@ namespace Breeze
         if( !textVisible || busy ) return QRect();
 
         // get direction and check
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        #endif
         if( !horizontal ) return QRect();
 
         int textWidth = qMax(
@@ -2814,8 +2830,12 @@ namespace Breeze
         const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return contentsSize;
 
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        #endif
 
         // make local copy
         QSize size( contentsSize );
@@ -4879,7 +4899,11 @@ namespace Breeze
         if( !progressBarOption ) return true;
 
         // render groove
+        #if BREEZE_USE_KDE4
         QStyleOptionProgressBarV2 progressBarOption2 = *progressBarOption;
+        #else
+        QStyleOptionProgressBar progressBarOption2 = *progressBarOption;
+        #endif
         progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
         drawControl( CE_ProgressBarGroove, &progressBarOption2, painter, widget );
 
@@ -4937,9 +4961,14 @@ namespace Breeze
         const auto& palette( option->palette );
 
         // get direction
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
         const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        const bool inverted( progressBarOption->invertedAppearance );
+        #endif
         bool reverse = horizontal && option->direction == Qt::RightToLeft;
         if( inverted ) reverse = !reverse;
 
@@ -5008,8 +5037,12 @@ namespace Breeze
         if( !progressBarOption ) return true;
 
         // get direction and check
+        #if BREEZE_USE_KDE4
         const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
         const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
+        #else
+        const bool horizontal( progressBarOption->state & QStyle::State_Horizontal );
+        #endif
         if( !horizontal ) return true;
 
         // store rect and palette
