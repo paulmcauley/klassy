@@ -3162,8 +3162,12 @@ namespace Breeze
         if( !frameOption ) return true;
 
         // no frame for flat groupboxes
+        #if BREEZE_USE_KDE4
         QStyleOptionFrameV2 frameOption2( *frameOption );
         if( frameOption2.features & QStyleOptionFrameV2::Flat ) return true;
+        #else
+        if( frameOption->features & QStyleOptionFrame::Flat ) return true;
+        #endif
 
         // normal frame
         const auto& palette( option->palette );
