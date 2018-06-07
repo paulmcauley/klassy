@@ -11,14 +11,6 @@ if(BREEZE_USE_KDE4)
 
 endif()
 
-# do not warn on deprecated calls. this is because we need to still support QT4 compilation
-# which uses many classes deprecated in QT5
-if(NOT BREEZE_USE_KDE4)
-
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-
-endif()
-
 ################# Qt/KDE #################
 if(BREEZE_USE_KDE4)
 
