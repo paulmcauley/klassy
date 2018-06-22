@@ -51,13 +51,11 @@ namespace Breeze
         setFixedSize( QSize( GripSize, GripSize ) );
 
         // mask
-        QPolygon p;
-        p << QPoint( 0, GripSize )
-            << QPoint( GripSize, 0 )
-            << QPoint( GripSize, GripSize )
-            << QPoint( 0, GripSize );
-
-        setMask( QRegion( p ) );
+        setMask( QRegion( QVector<QPoint>{
+            QPoint( 0, GripSize ),
+            QPoint( GripSize, 0 ),
+            QPoint( GripSize, GripSize ),
+            QPoint( 0, GripSize )} ) );
 
         // embed
         embed();
@@ -147,13 +145,11 @@ namespace Breeze
         painter.setBrush( backgroundColor );
 
         // polygon
-        QPolygon p;
-        p << QPoint( 0, GripSize )
-            << QPoint( GripSize, 0 )
-            << QPoint( GripSize, GripSize )
-            << QPoint( 0, GripSize );
-        painter.drawPolygon( p );
-
+        painter.drawPolygon( QVector<QPoint> {
+            QPoint( 0, GripSize ),
+            QPoint( GripSize, 0 ),
+            QPoint( GripSize, GripSize ),
+            QPoint( 0, GripSize )} );
     }
 
     //_____________________________________________

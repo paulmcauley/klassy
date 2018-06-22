@@ -206,27 +206,27 @@ namespace Breeze
                         pen.setJoinStyle( Qt::RoundJoin );
                         painter->setPen( pen );
 
-                        painter->drawPolygon( QPolygonF()
-                            << QPointF( 4, 9 )
-                            << QPointF( 9, 4 )
-                            << QPointF( 14, 9 )
-                            << QPointF( 9, 14 ) );
+                        painter->drawPolygon( QVector<QPointF>{
+                            QPointF( 4, 9 ),
+                            QPointF( 9, 4 ),
+                            QPointF( 14, 9 ),
+                            QPointF( 9, 14 )} );
 
                     } else {
-                        painter->drawPolyline( QPolygonF()
-                            << QPointF( 4, 11 )
-                            << QPointF( 9, 6 )
-                            << QPointF( 14, 11 ) );
+                        painter->drawPolyline( QVector<QPointF>{
+                            QPointF( 4, 11 ),
+                            QPointF( 9, 6 ),
+                            QPointF( 14, 11 )});
                     }
                     break;
                 }
 
                 case DecorationButtonType::Minimize:
                 {
-                    painter->drawPolyline( QPolygonF()
-                        << QPointF( 4, 7 )
-                        << QPointF( 9, 12 )
-                        << QPointF( 14, 7 ) );
+                    painter->drawPolyline( QVector<QPointF>{
+                        QPointF( 4, 7 ),
+                        QPointF( 9, 12 ),
+                        QPointF( 14, 7 ) });
                     break;
                 }
 
@@ -254,11 +254,11 @@ namespace Breeze
 
                     } else {
 
-                        painter->drawPolygon( QPolygonF()
-                            << QPointF( 6.5, 8.5 )
-                            << QPointF( 12, 3 )
-                            << QPointF( 15, 6 )
-                            << QPointF( 9.5, 11.5 ) );
+                        painter->drawPolygon( QVector<QPointF> {
+                            QPointF( 6.5, 8.5 ),
+                            QPointF( 12, 3 ),
+                            QPointF( 15, 6 ),
+                            QPointF( 9.5, 11.5 )} );
 
                         painter->setPen( pen );
                         painter->drawLine( QPointF( 5.5, 7.5 ), QPointF( 10.5, 12.5 ) );
@@ -274,18 +274,18 @@ namespace Breeze
                     {
 
                         painter->drawLine( 4, 5, 14, 5 );
-                        painter->drawPolyline( QPolygonF()
-                            << QPointF( 4, 8 )
-                            << QPointF( 9, 13 )
-                            << QPointF( 14, 8 ) );
+                        painter->drawPolyline( QVector<QPointF> {
+                            QPointF( 4, 8 ),
+                            QPointF( 9, 13 ),
+                            QPointF( 14, 8 )} );
 
                     } else {
 
                         painter->drawLine( 4, 5, 14, 5 );
-                        painter->drawPolyline( QPolygonF()
-                            << QPointF( 4, 13 )
-                            << QPointF( 9, 8 )
-                            << QPointF( 14, 13 ) );
+                        painter->drawPolyline(  QVector<QPointF> {
+                            QPointF( 4, 13 ),
+                            QPointF( 9, 8 ),
+                            QPointF( 14, 13 ) });
                     }
 
                     break;
@@ -295,30 +295,30 @@ namespace Breeze
                 case DecorationButtonType::KeepBelow:
                 {
 
-                    painter->drawPolyline( QPolygonF()
-                        << QPointF( 4, 5 )
-                        << QPointF( 9, 10 )
-                        << QPointF( 14, 5 ) );
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 5 ),
+                        QPointF( 9, 10 ),
+                        QPointF( 14, 5 ) });
 
-                    painter->drawPolyline( QPolygonF()
-                        << QPointF( 4, 9 )
-                        << QPointF( 9, 14 )
-                        << QPointF( 14, 9 ) );
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 9 ),
+                        QPointF( 9, 14 ),
+                        QPointF( 14, 9 ) });
                     break;
 
                 }
 
                 case DecorationButtonType::KeepAbove:
                 {
-                    painter->drawPolyline( QPolygonF()
-                        << QPointF( 4, 9 )
-                        << QPointF( 9, 4 )
-                        << QPointF( 14, 9 ) );
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 9 ),
+                        QPointF( 9, 4 ),
+                        QPointF( 14, 9 ) });
 
-                    painter->drawPolyline( QPolygonF()
-                        << QPointF( 4, 13 )
-                        << QPointF( 9, 8 )
-                        << QPointF( 14, 13 ) );
+                    painter->drawPolyline(  QVector<QPointF> {
+                        QPointF( 4, 13 ),
+                        QPointF( 9, 8 ),
+                        QPointF( 14, 13 ) });
                     break;
                 }
 

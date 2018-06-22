@@ -415,16 +415,16 @@ namespace Breeze
         // make sure size is valid
         if( _pixmaps.empty() )
         {
-
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 1 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 2 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 5 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 8 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 7 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 6 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 3 ) ) );
-            _pixmaps.append( createPixmap( _shadowTiles.pixmap( 0 ) ) );
-
+            _pixmaps = QVector<quint32> {
+                createPixmap( _shadowTiles.pixmap( 1 ) ),
+                createPixmap( _shadowTiles.pixmap( 2 ) ),
+                createPixmap( _shadowTiles.pixmap( 5 ) ),
+                createPixmap( _shadowTiles.pixmap( 8 ) ),
+                createPixmap( _shadowTiles.pixmap( 7 ) ),
+                createPixmap( _shadowTiles.pixmap( 6 ) ),
+                createPixmap( _shadowTiles.pixmap( 3 ) ),
+                createPixmap( _shadowTiles.pixmap( 0 ) )
+            };
         }
 
         // return relevant list of pixmap handles
@@ -504,23 +504,17 @@ namespace Breeze
         #ifndef QT_NO_XRENDER
 
         // create pixmap handles if needed
-        const QVector<quint32>& pixmaps( createPixmapHandles() );
-        if( pixmaps.size() != numPixmaps ) return false;
-
-        // create data
-        // add pixmap handles
-        QVector<quint32> data;
-        foreach( const quint32& value, pixmaps )
-        { data.append( value ); }
+        QVector<quint32> data( createPixmapHandles() );
+        if( data.size() != numPixmaps ) return false;
 
         const QMargins margins = shadowMargins( widget );
-        const int topSize = margins.top();
-        const int bottomSize = margins.bottom();
-        const int leftSize( margins.left() );
-        const int rightSize( margins.right() );
+        const quint32 topSize = margins.top();
+        const quint32 bottomSize = margins.bottom();
+        const quint32 leftSize( margins.left() );
+        const quint32 rightSize( margins.right() );
 
         // assign to data and xcb property
-        data << topSize << rightSize << bottomSize << leftSize;
+        data << QVector<quint32>{topSize, rightSize, bottomSize, leftSize};
         xcb_change_property( Helper::connection(), XCB_PROP_MODE_REPLACE, widget->winId(), _atom, XCB_ATOM_CARDINAL, 32, data.size(), data.constData() );
         xcb_flush( Helper::connection() );
 

@@ -1297,15 +1297,14 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderArrow( QPainter* painter, const QRect& rect, const QColor& color, ArrowOrientation orientation ) const
     {
-
         // define polygon
         QPolygonF arrow;
         switch( orientation )
         {
-            case ArrowUp: arrow << QPointF( -4, 2 ) << QPointF( 0, -2 ) << QPointF( 4, 2 ); break;
-            case ArrowDown: arrow << QPointF( -4, -2 ) << QPointF( 0, 2 ) << QPointF( 4, -2 ); break;
-            case ArrowLeft: arrow << QPointF( 2, -4 ) << QPointF( -2, 0 ) << QPointF( 2, 4 ); break;
-            case ArrowRight: arrow << QPointF( -2, -4 ) << QPointF( 2, 0 ) << QPointF( -2, 4 ); break;
+            case ArrowUp: arrow = QVector<QPointF>{QPointF( -4, 2 ), QPointF( 0, -2 ), QPointF( 4, 2 )}; break;
+            case ArrowDown: arrow = QVector<QPointF>{QPointF( -4, -2 ), QPointF( 0, 2 ), QPointF( 4, -2 )}; break;
+            case ArrowLeft: arrow = QVector<QPointF>{QPointF( 2, -4 ), QPointF( -2, 0 ), QPointF( 2, 4 )}; break;
+            case ArrowRight: arrow = QVector<QPointF>{QPointF( -2, -4 ), QPointF( 2, 0 ), QPointF( -2, 4 )}; break;
             default: break;
         }
 
@@ -1367,20 +1366,20 @@ namespace Breeze
 
             case ButtonMaximize:
             {
-                painter->drawPolyline( QPolygonF()
-                    << QPointF( 4, 11 )
-                    << QPointF( 9, 6 )
-                    << QPointF( 14, 11 ) );
+                painter->drawPolyline( QVector<QPointF>{
+                    QPointF( 4, 11 ),
+                    QPointF( 9, 6 ),
+                    QPointF( 14, 11 )});
                 break;
             }
 
             case ButtonMinimize:
             {
 
-                painter->drawPolyline( QPolygonF()
-                    << QPointF( 4, 7 )
-                    << QPointF( 9, 12 )
-                    << QPointF( 14, 7 ) );
+                painter->drawPolyline(QVector<QPointF>{
+                    QPointF( 4, 7 ),
+                    QPointF( 9, 12 ),
+                    QPointF( 14, 7 )} );
                 break;
             }
 
@@ -1388,11 +1387,11 @@ namespace Breeze
             {
                 pen.setJoinStyle( Qt::RoundJoin );
                 painter->setPen( pen );
-                painter->drawPolygon( QPolygonF()
-                    << QPointF( 4.5, 9 )
-                    << QPointF( 9, 4.5 )
-                    << QPointF( 13.5, 9 )
-                    << QPointF( 9, 13.5 ) );
+                painter->drawPolygon( QVector<QPointF>{
+                    QPointF( 4.5, 9 ),
+                    QPointF( 9, 4.5 ),
+                    QPointF( 13.5, 9 ),
+                    QPointF( 9, 13.5 )});
                 break;
             }
 
