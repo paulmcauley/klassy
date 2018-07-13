@@ -85,7 +85,7 @@ QVector<double> computeGaussianKernel(int radius)
 // is transposed. So, the dst image should have proper size, e.g. if the src
 // image have (wxh) size then the dst image should have (hxw) size. The
 // result is transposed so we read memory in linear order.
-void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<qreal> &kernel)
+void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<double> &kernel)
 {
     const int alphaOffset = QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3;
     const int alphaStride = src.depth() >> 3;
@@ -97,7 +97,7 @@ void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<qreal> &ke
 
         for (int x = 0; x < radius; x++) {
             const uchar *window = in;
-            qreal alpha = 0;
+            double alpha = 0.0;
             for (int k = radius - x; k < kernel.size(); k++) {
                 alpha += *window * kernel[k];
                 window += alphaStride;
@@ -108,7 +108,7 @@ void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<qreal> &ke
 
         for (int x = radius; x < src.width() - radius; x++) {
             const uchar *window = in + (x - radius) * alphaStride;
-            qreal alpha = 0;
+            double alpha = 0.0;
             for (int k = 0; k < kernel.size(); k++) {
                 alpha += *window * kernel[k];
                 window += alphaStride;
@@ -119,7 +119,7 @@ void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<qreal> &ke
 
         for (int x = src.width() - radius; x < src.width(); x++) {
             const uchar *window = in + (x - radius - 1) * alphaStride;
-            qreal alpha = 0;
+            double alpha = 0.0;
             const int outside = x + radius - src.width();
             for (int k = 0; k < kernel.size() - outside; k++) {
                 alpha += *window * kernel[k];
@@ -135,7 +135,7 @@ void blurAlphaNaivePass(const QImage &src, QImage &dst, const QVector<qreal> &ke
 // gaussian kernel. Not very efficient with big blur radii.
 void blurAlphaNaive(QImage &img, int radius)
 {
-    const QVector<qreal> kernel = computeGaussianKernel(radius);
+    const QVector<double> kernel = computeGaussianKernel(radius);
     QImage tmp(img.height(), img.width(), img.format());
 
     blurAlphaNaivePass(img, tmp, kernel); // horizontal pass
@@ -224,7 +224,7 @@ void blurAlphaFFT(QImage &img, int radius)
     fftw_execute(imageIFFT);
 
     // Copy result back. Please note, result is scaled by `width x height` so we need to scale it down.
-    const qreal invSize = 1.0 / size;
+    const double invSize = 1.0 / size;
     data = img.scanLine(0) + alphaOffset;
     for (int i = 0; i < size; i++) {
         *data = imageIn[i][0] * invSize;
