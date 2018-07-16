@@ -41,9 +41,7 @@
 #include <KSharedConfig>
 #include <KPluginFactory>
 
-#include <QGuiApplication>
 #include <QPainter>
-#include <QScreen>
 #include <QTextStream>
 #include <QTimer>
 
