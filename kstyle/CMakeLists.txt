@@ -25,6 +25,7 @@ if(BREEZE_USE_KDE4)
     set(BREEZE_HAVE_X11 FALSE)
   endif()
 
+  set(BREEZE_HAVE_QTQUICK FALSE)
   set(BREEZE_HAVE_KWAYLAND FALSE)
 
   ### KStyle
@@ -32,13 +33,16 @@ if(BREEZE_USE_KDE4)
 
 else()
 
-  find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets DBus Quick)
+  find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets DBus)
   find_package(KF5 REQUIRED COMPONENTS
       I18n
       Config
       GuiAddons
       ConfigWidgets
       WindowSystem)
+
+  find_package(Qt5 COMPONENTS Quick)
+  set(BREEZE_HAVE_QTQUICK ${Qt5_Quick_FOUND})
 
   find_package( KF5FrameworkIntegration CONFIG )
   set_package_properties(KF5FrameworkIntegration PROPERTIES
@@ -155,7 +159,10 @@ else()
 
   kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
   add_library(breeze MODULE ${breeze_PART_SRCS})
-  target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus Qt5::Quick)
+  target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
+  if( Qt5_Quick_FOUND )
+    target_link_libraries(breeze Qt5::Quick)
+  endif()
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::WindowSystem)
   target_link_libraries(breeze breezecommon)
 

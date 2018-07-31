@@ -25,6 +25,9 @@
 /* Define to 1 if breeze is compiled against KDE4 */
 #cmakedefine01 BREEZE_USE_KDE4
 
+/* Define to 1 if QtQuick is available */
+#cmakedefine01 BREEZE_HAVE_QTQUICK
+
 /* Define to 1 if FrameworkIntegration/Kstyle libraries are found */
 #cmakedefine01 BREEZE_HAVE_KSTYLE
 

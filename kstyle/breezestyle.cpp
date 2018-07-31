@@ -7158,7 +7158,7 @@ namespace Breeze
     //____________________________________________________________________
     bool Style::isQtQuickControl( const QStyleOption* option, const QWidget* widget ) const
     {
-        #if QT_VERSION >= 0x050000
+        #if QT_VERSION >= 0x050000 && BREEZE_HAVE_QTQUICK
         const bool is = (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickItem" );
         if ( is ) _windowManager->registerQuickItem( static_cast<QQuickItem*>( option->styleObject ) );
         return is;

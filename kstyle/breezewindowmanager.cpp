@@ -79,7 +79,7 @@
 #include <QWindow>
 #endif
 
-#if QT_VERSION >= 0x050000
+#if BREEZE_HAVE_QTQUICK
 // needed to enable dragging from QQuickWindows
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -319,7 +319,7 @@ namespace Breeze
 
     }
 
-    #if !BREEZE_USE_KDE4
+    #if BREEZE_HAVE_QTQUICK
     //_____________________________________________________________
     void WindowManager::registerQuickItem( QQuickItem* item )
     {
@@ -390,7 +390,7 @@ namespace Breeze
 
             case QEvent::MouseMove:
             if ( object == _target.data()
-                #if !BREEZE_USE_KDE4
+                #if BREEZE_HAVE_QTQUICK
                 || object == _quickTarget.data()
                 #endif
                ) return mouseMoveEvent( object, event );
@@ -398,7 +398,7 @@ namespace Breeze
 
             case QEvent::MouseButtonRelease:
             if ( _target
-                #if !BREEZE_USE_KDE4
+                #if BREEZE_HAVE_QTQUICK
                 || _quickTarget
                 #endif
                ) return mouseReleaseEvent( object, event );
@@ -426,7 +426,9 @@ namespace Breeze
             { startDrag( _target.data()->window(), _globalDragPoint ); }
             #else
             if( _target ) startDrag( _target.data()->window()->windowHandle(), _globalDragPoint );
+            #if BREEZE_HAVE_QTQUICK
             else if( _quickTarget ) startDrag( _quickTarget.data()->window(), _globalDragPoint );
+            #endif
             #endif
 
         } else {
@@ -450,7 +452,7 @@ namespace Breeze
         if( isLocked() ) return false;
         else setLocked( true );
 
-        #if !BREEZE_USE_KDE4
+        #if BREEZE_HAVE_QTQUICK
         // check QQuickItem - we can immediately start drag, because QQuickWindow's contentItem
         // only receives mouse events that weren't handled by children
         if( auto item = qobject_cast<QQuickItem*>( object ) )
@@ -837,7 +839,7 @@ namespace Breeze
         }
 
         _target.clear();
-        #if !BREEZE_USE_KDE4
+        #if BREEZE_HAVE_QTQUICK
         _quickTarget.clear();
         #endif
         if( _dragTimer.isActive() ) _dragTimer.stop();
