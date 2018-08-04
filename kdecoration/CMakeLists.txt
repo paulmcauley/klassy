@@ -75,7 +75,7 @@ target_link_libraries(breezedecoration
         Qt5::Gui
         Qt5::DBus
     PRIVATE
-        breezecommon
+        breezecommon5
         KDecoration2::KDecoration
         KF5::ConfigCore
         KF5::CoreAddons

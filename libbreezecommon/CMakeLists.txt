@@ -41,24 +41,24 @@ if (BREEZE_COMMON_USE_KDE4)
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR})
 
-    install(TARGETS breezecommon4 ${INSTALL_TARGETS_DEFAULT_ARGS})
+    install(TARGETS breezecommon4 ${INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
 else ()
-    add_library(breezecommon ${breezecommon_LIB_SRCS})
+    add_library(breezecommon5 ${breezecommon_LIB_SRCS})
 
-    generate_export_header(breezecommon
+    generate_export_header(breezecommon5
         BASE_NAME breezecommon
         EXPORT_FILE_NAME breezecommon_export.h)
 
-    target_link_libraries(breezecommon
+    target_link_libraries(breezecommon5
         PUBLIC
             Qt5::Core
             Qt5::Gui
         PRIVATE
             ${FFTW_LIBRARIES})
 
-    set_target_properties(breezecommon PROPERTIES
+    set_target_properties(breezecommon5 PROPERTIES
         VERSION ${PROJECT_VERSION}
         SOVERSION ${PROJECT_VERSION_MAJOR})
 
-    install(TARGETS breezecommon ${INSTALL_TARGETS_DEFAULT_ARGS})
+    install(TARGETS breezecommon5 ${INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
 endif ()

@@ -164,7 +164,7 @@ else()
     target_link_libraries(breeze Qt5::Quick)
   endif()
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::WindowSystem)
-  target_link_libraries(breeze breezecommon)
+  target_link_libraries(breeze breezecommon5)
 
   if( KF5FrameworkIntegration_FOUND )
   target_link_libraries(breeze KF5::Style)
