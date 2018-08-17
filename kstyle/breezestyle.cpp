@@ -1433,7 +1433,7 @@ namespace Breeze
         _shadowHelper->loadConfig();
 
         // set mdiwindow factory shadow tiles
-        _mdiWindowShadowFactory->setShadowTiles( _shadowHelper->shadowTiles() );
+        _mdiWindowShadowFactory->setShadowHelper( _shadowHelper );
 
         // clear icon cache
         _iconCache.clear();

@@ -216,9 +216,6 @@ namespace Breeze
         // reset
         reset();
 
-        // create shadow tiles
-        shadowTiles();
-
         // update property for registered widgets
         for( QMap<QWidget*,WId>::const_iterator iter = _widgets.constBegin(); iter != _widgets.constEnd(); ++iter )
         { installShadows( iter.key() ); }
@@ -480,7 +477,7 @@ namespace Breeze
     //_______________________________________________________
     bool ShadowHelper::installShadows( QWidget* widget )
     {
-        if( !widget || !_shadowTiles.isValid() ) return false;
+        if( !widget ) return false;
 
         /*
         From bespin code. Supposibly prevent playing with some 'pseudo-widgets'
@@ -488,6 +485,11 @@ namespace Breeze
         */
         if( !(widget->testAttribute(Qt::WA_WState_Created) && widget->internalWinId() ))
         { return false; }
+
+        // create shadow tiles if needed
+        shadowTiles();
+
+        if( !_shadowTiles.isValid() ) return false;
 
         if( Helper::isX11() ) return installX11Shadows( widget );
         if( Helper::isWayland() ) return installWaylandShadows( widget );
