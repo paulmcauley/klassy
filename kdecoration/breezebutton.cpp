@@ -368,7 +368,7 @@ namespace Breeze
 
             return d->titleBarColor();
 
-        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
 
             return d->titleBarColor();
 
@@ -404,7 +404,7 @@ namespace Breeze
             if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
 
-        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
 
             return d->fontColor();
 
