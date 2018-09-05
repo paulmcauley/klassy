@@ -3744,7 +3744,11 @@ namespace Breeze
 
         const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !( state & State_Selected );
         const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
+        #if BREEZE_USE_KDE4
         const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItemV2::Alternate );
+        #else
+        const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItem::Alternate );
+        #endif
 
         // do nothing if no background is to be rendered
         if( !( mouseOver || selected || hasCustomBackground || hasAlternateBackground ) )
@@ -3756,7 +3760,7 @@ namespace Breeze
         else colorGroup = QPalette::Disabled;
 
         // render alternate background
-        if( viewItemOption && ( viewItemOption->features & QStyleOptionViewItemV2::Alternate ) )
+        if( hasAlternateBackground )
         {
             painter->setPen( Qt::NoPen );
             painter->setBrush( palette.brush( colorGroup, QPalette::AlternateBase ) );

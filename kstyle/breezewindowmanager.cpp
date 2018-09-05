@@ -758,7 +758,11 @@ namespace Breeze
             // gather options to retrieve checkbox subcontrol rect
             QStyleOptionGroupBox opt;
             opt.initFrom( groupBox );
+            #if BREEZE_USE_KDE4
             if( groupBox->isFlat() ) opt.features |= QStyleOptionFrameV2::Flat;
+            #else
+            if( groupBox->isFlat() ) opt.features |= QStyleOptionFrame::Flat;
+            #endif
             opt.lineWidth = 1;
             opt.midLineWidth = 0;
             opt.text = groupBox->title();
