@@ -86,7 +86,7 @@
     </entry>
 
     <entry name="DrawTitleBarSeparator" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <!-- size grip -->
