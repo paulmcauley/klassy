@@ -10,8 +10,6 @@ include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
-
 if(USE_KDE4)
   find_package(KDE4 REQUIRED)
   include(KDE4Defaults)

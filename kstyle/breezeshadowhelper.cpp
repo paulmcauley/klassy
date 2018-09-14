@@ -1,5 +1,6 @@
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
+ * Copyright (C) 2018 by Vlad Zagorodniy <vladzzag@gmail.com>            *
  *                                                                       *
  * This program is free software; you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
@@ -20,7 +21,7 @@
 #include "breezeshadowhelper.h"
 
 #include "breeze.h"
-#include "breezeboxshadowhelper.h"
+#include "breezeboxshadowrenderer.h"
 #include "breezehelper.h"
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
@@ -285,46 +286,46 @@ namespace Breeze
             return c;
         };
 
-        const int shadowSize = qMax(params.shadow1.radius, params.shadow2.radius);
         const QColor color = StyleConfigData::shadowColor();
         const qreal strength = static_cast<qreal>(StyleConfigData::shadowStrength()) / 255.0;
 
-        const QRect box(
-            shadowSize,
-            shadowSize,
-            2 * shadowSize + 1,
-            2 * shadowSize + 1);
-        const QRect outerRect = box.adjusted(-shadowSize, -shadowSize, shadowSize, shadowSize);
+        const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
+            .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-        QPixmap shadow = _helper.highDpiPixmap(outerRect.width(), outerRect.height());
-        shadow.fill(Qt::transparent);
+        #if QT_VERSION >= 0x050300
+        const qreal dpr = qApp->devicePixelRatio();
+        #else
+        const qreal dpr = 1.0;
+        #endif
 
-        QPainter painter(&shadow);
-        painter.setRenderHint(QPainter::Antialiasing);
+        const qreal frameRadius = _helper.frameRadius();
 
-        // Draw the "shape" shadow.
-        BoxShadowHelper::boxShadow(
-            &painter,
-            box,
-            params.shadow1.offset,
-            params.shadow1.radius,
+        BoxShadowRenderer shadowRenderer;
+        shadowRenderer.setBorderRadius(frameRadius);
+        shadowRenderer.setBoxSize(boxSize);
+        shadowRenderer.setDevicePixelRatio(dpr);
+
+        shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
             withOpacity(color, params.shadow1.opacity * strength));
-
-        // Draw the "contrast" shadow.
-        BoxShadowHelper::boxShadow(
-            &painter,
-            box,
-            params.shadow2.offset,
-            params.shadow2.radius,
+        shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius,
             withOpacity(color, params.shadow2.opacity * strength));
 
+        QImage shadowTexture = shadowRenderer.render();
+
+        const QRect outerRect(QPoint(0, 0), shadowTexture.size() / dpr);
+
+        QRect boxRect(QPoint(0, 0), boxSize);
+        boxRect.moveCenter(outerRect.center());
+
         // Mask out inner rect.
+        QPainter painter(&shadowTexture);
+        painter.setRenderHint(QPainter::Antialiasing);
+
         const QMargins margins = QMargins(
-            shadowSize - Metrics::Shadow_Overlap - params.offset.x(),
-            shadowSize - Metrics::Shadow_Overlap - params.offset.y(),
-            shadowSize - Metrics::Shadow_Overlap + params.offset.x(),
-            shadowSize - Metrics::Shadow_Overlap + params.offset.y());
-        const qreal frameRadius = _helper.frameRadius();
+            boxRect.left() - outerRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
+            boxRect.top() - outerRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
+            outerRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
+            outerRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
 
         painter.setPen(Qt::NoPen);
         painter.setBrush(Qt::black);
@@ -343,7 +344,7 @@ namespace Breeze
 
         const QPoint innerRectTopLeft = outerRect.center();
         _shadowTiles = TileSet(
-            shadow,
+            QPixmap::fromImage(shadowTexture),
             innerRectTopLeft.x(),
             innerRectTopLeft.y(),
             1, 1);
@@ -573,12 +574,22 @@ namespace Breeze
             return QMargins();
         }
 
-        const int shadowSize = qMax(params.shadow1.radius, params.shadow2.radius);
+        const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
+            .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
+
+        const QSize shadowSize = BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow1.radius, params.shadow1.offset)
+            .expandedTo(BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow2.radius, params.shadow2.offset));
+
+        const QRect shadowRect(QPoint(0, 0), shadowSize);
+
+        QRect boxRect(QPoint(0, 0), boxSize);
+        boxRect.moveCenter(shadowRect.center());
+
         QMargins margins(
-            shadowSize - Metrics::Shadow_Overlap - params.offset.x(),
-            shadowSize - Metrics::Shadow_Overlap - params.offset.y(),
-            shadowSize - Metrics::Shadow_Overlap + params.offset.x(),
-            shadowSize - Metrics::Shadow_Overlap + params.offset.y());
+            boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
+            boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
+            shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
+            shadowRect.bottom() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.y());
 
         if (widget->inherits("QBalloonTip")) {
             // Balloon tip needs special margins to deal with the arrow.
