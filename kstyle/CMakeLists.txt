@@ -42,7 +42,7 @@ else()
       WindowSystem)
 
   find_package(Qt5 COMPONENTS Quick)
-  set(BREEZE_HAVE_QTQUICK ${Qt5_Quick_FOUND})
+  set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
 
   find_package( KF5FrameworkIntegration CONFIG )
   set_package_properties(KF5FrameworkIntegration PROPERTIES
@@ -160,7 +160,7 @@ else()
   kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
   add_library(breeze MODULE ${breeze_PART_SRCS})
   target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
-  if( Qt5_Quick_FOUND )
+  if( BREEZE_HAVE_QTQUICK )
     target_link_libraries(breeze Qt5::Quick)
   endif()
   target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::WindowSystem)
