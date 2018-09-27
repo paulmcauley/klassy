@@ -44,7 +44,11 @@ else()
   add_subdirectory(kstyle)
   add_subdirectory(misc)
   add_subdirectory(qtquickcontrols)
-  add_subdirectory(wallpapers)
+
+  option(WITH_WALLPAPERS "Install Breeze default wallpapers" ON)
+  if (WITH_WALLPAPERS)
+    add_subdirectory(wallpapers)
+  endif()
 
   find_package(KF5Package CONFIG REQUIRED)
   kpackage_install_package(lookandfeel.dark org.kde.breezedark.desktop look-and-feel plasma)
