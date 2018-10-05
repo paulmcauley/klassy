@@ -445,8 +445,10 @@ namespace Breeze
 
         // cast event and check buttons/modifiers
         auto mouseEvent = static_cast<QMouseEvent*>( event );
+        #if BREEZE_USE_KDE4
         if (mouseEvent->source() != Qt::MouseEventNotSynthesized)
         { return false; }
+        #endif
         if( !( mouseEvent->modifiers() == Qt::NoModifier && mouseEvent->button() == Qt::LeftButton ) )
         { return false; }
 
@@ -511,8 +513,10 @@ namespace Breeze
 
         // cast event and check drag distance
         auto mouseEvent = static_cast<QMouseEvent*>( event );
+        #if BREEZE_USE_KDE4
         if (mouseEvent->source() != Qt::MouseEventNotSynthesized)
         { return false; }
+        #endif
         if( !_dragInProgress )
         {
 
