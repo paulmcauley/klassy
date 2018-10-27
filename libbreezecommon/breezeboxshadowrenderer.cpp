@@ -26,7 +26,12 @@
 
 // Qt
 #include <QPainter>
+
+#ifdef BREEZE_COMMON_USE_KDE4
+#include <QtCore/qmath.h>
+#else
 #include <QtMath>
+#endif
 
 namespace Breeze
 {

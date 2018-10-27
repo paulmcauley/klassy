@@ -22,6 +22,7 @@
 #include "breezecommon_export.h"
 
 // Qt
+#include <QColor>
 #include <QImage>
 #include <QPoint>
 #include <QSize>
