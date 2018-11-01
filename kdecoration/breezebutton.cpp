@@ -62,11 +62,14 @@ namespace Breeze
 
     //__________________________________________________________________
     Button::Button(QObject *parent, const QVariantList &args)
-        : DecorationButton(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
-        , m_flag(FlagStandalone)
-        , m_animation( new QPropertyAnimation( this ) )
-    {}
-
+        : Button(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
+    {
+        m_flag = FlagStandalone;
+        //! icon size must return to !valid because it was altered from the default constructor,
+        //! in Standalone mode the button is not using the decoration metrics but its geometry
+        m_iconSize = QSize(-1, -1);
+    }
+            
     //__________________________________________________________________
     Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
     {
