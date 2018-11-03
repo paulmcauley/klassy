@@ -589,7 +589,7 @@ namespace Breeze
             boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
             boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
             shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
-            shadowRect.bottom() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.y());
+            shadowRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
 
         if (widget->inherits("QBalloonTip")) {
             // Balloon tip needs special margins to deal with the arrow.
