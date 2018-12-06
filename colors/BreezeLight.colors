@@ -105,6 +105,14 @@ ForegroundVisited=61,174,230
 [General]
 ColorScheme=Breeze Light
 Name=Breeze Light
+Name[ca]=Brisa clara
+Name[ca@valencia]=Brisa clara
+Name[de]=Breeze Hell
+Name[nl]=Breeze Light
+Name[pt]=Brisa Clara
+Name[uk]=Світла Breeze
+Name[x-test]=xxBreeze Lightxx
+Name[zh_TW]=Breeze Light
 shadeSortColumn=true
 
 [KDE]

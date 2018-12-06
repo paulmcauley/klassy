@@ -105,6 +105,14 @@ ForegroundVisited=127,140,141
 [General]
 ColorScheme=Breeze High Conttrast
 Name=Breeze High Contrast
+Name[ca]=Brisa de contrast alt
+Name[ca@valencia]=Brisa de contrast alt
+Name[de]=Breeze Hoher Kontrast
+Name[nl]=Breeze met hoog contrast
+Name[pt]=Brisa de Alto Contraste
+Name[uk]=Висококонтрастна Breeze
+Name[x-test]=xxBreeze High Contrastxx
+Name[zh_TW]=Breeze 高對比
 shadeSortColumn=true
 
 [KDE]
