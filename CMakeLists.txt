@@ -65,6 +65,7 @@ else()
 
   ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in"
                                     "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
+                                    PATH_VARS KDE_INSTALL_FULL_DATADIR
                                     INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                                     )
 

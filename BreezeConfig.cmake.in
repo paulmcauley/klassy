@@ -8,3 +8,4 @@ else()
 endif()
 
 set(BREEZE_STYLE_NAME "breeze")
+set(BREEZE_COLOR_INSTALL_ROOT "@PACKAGE_KDE_INSTALL_FULL_DATADIR@/color-schemes/")
