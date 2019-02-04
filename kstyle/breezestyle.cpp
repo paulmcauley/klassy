@@ -60,6 +60,10 @@
 #include <QTreeView>
 #include <QWidgetAction>
 
+#if BREEZE_HAVE_QTQUICK
+#include <QQuickWindow>
+#endif
+
 namespace BreezePrivate
 {
 
@@ -4570,7 +4574,16 @@ namespace Breeze
                     mode = QIcon::Disabled;
                 }
 
-                const auto pixmap = cb->currentIcon.pixmap(widget->windowHandle(), cb->iconSize, mode);
+                QWindow *window = nullptr;
+                if (widget && widget->window()) {
+                    window = widget->window()->windowHandle();
+#if BREEZE_HAVE_QTQUICK
+                } else if (QQuickItem *quickItem = qobject_cast<QQuickItem *>(option->styleObject)) {
+                    window = quickItem->window();
+#endif
+                }
+
+                const auto pixmap = cb->currentIcon.pixmap(window, cb->iconSize, mode);
                 auto iconRect(editRect);
                 iconRect.setWidth(cb->iconSize.width() + 4);
                 iconRect = alignedRect(cb->direction,
