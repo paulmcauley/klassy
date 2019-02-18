@@ -28,7 +28,7 @@
     </entry>
 
     <entry name="ShadowColor" type = "Color">
-       <default>35, 38, 41</default>
+       <default>0, 0, 0</default>
     </entry>
 
     <!-- close button -->
