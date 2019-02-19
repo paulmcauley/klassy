@@ -58,24 +58,24 @@ namespace
         CompositeShadowParams(),
         // Small
         CompositeShadowParams(
-            QPoint(0, 6),
-            ShadowParams(QPoint(0, 0), 12, 0.2),
-            ShadowParams(QPoint(0, -3), 6, 0.16)),
+            QPoint(0, 3),
+            ShadowParams(QPoint(0, 0), 12, 0.26),
+            ShadowParams(QPoint(0, -2), 6, 0.16)),
         // Medium
         CompositeShadowParams(
-            QPoint(0, 8),
-            ShadowParams(QPoint(0, 0), 16, 0.21),
-            ShadowParams(QPoint(0, -4), 6, 0.14)),
+            QPoint(0, 4),
+            ShadowParams(QPoint(0, 0), 16, 0.24),
+            ShadowParams(QPoint(0, -2), 8, 0.14)),
         // Large
         CompositeShadowParams(
-            QPoint(0, 10),
-            ShadowParams(QPoint(0, 0), 20, 0.23),
-            ShadowParams(QPoint(0, -5), 8, 0.12)),
+            QPoint(0, 5),
+            ShadowParams(QPoint(0, 0), 20, 0.22),
+            ShadowParams(QPoint(0, -3), 10, 0.12)),
         // Very Large
         CompositeShadowParams(
-            QPoint(0, 12),
-            ShadowParams(QPoint(0, 0), 24, 0.26),
-            ShadowParams(QPoint(0, -5), 10, 0.12))
+            QPoint(0, 6),
+            ShadowParams(QPoint(0, 0), 24, 0.2),
+            ShadowParams(QPoint(0, -3), 12, 0.1))
     };
 }
 

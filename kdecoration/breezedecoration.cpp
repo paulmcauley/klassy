@@ -104,23 +104,23 @@ namespace
         // Small
         CompositeShadowParams(
             QPoint(0, 4),
-            ShadowParams(QPoint(0, 0), 16, 0.6),
-            ShadowParams(QPoint(0, -2), 4, 0.14)),
+            ShadowParams(QPoint(0, 0), 16, 1),
+            ShadowParams(QPoint(0, -2), 8, 0.4)),
         // Medium
         CompositeShadowParams(
             QPoint(0, 8),
-            ShadowParams(QPoint(0, 0), 32, 0.7),
-            ShadowParams(QPoint(0, -5), 14, 0.12)),
+            ShadowParams(QPoint(0, 0), 32, 0.9),
+            ShadowParams(QPoint(0, -4), 16, 0.3)),
         // Large
         CompositeShadowParams(
-            QPoint(0, 18),
-            ShadowParams(QPoint(0, 0), 64, 0.8),
-            ShadowParams(QPoint(0, -10), 24, 0.1)),
+            QPoint(0, 12),
+            ShadowParams(QPoint(0, 0), 48, 0.8),
+            ShadowParams(QPoint(0, -6), 24, 0.2)),
         // Very large
         CompositeShadowParams(
-            QPoint(0, 26),
-            ShadowParams(QPoint(0, 0), 96, 0.95),
-            ShadowParams(QPoint(0, -12), 28, 0.1))
+            QPoint(0, 16),
+            ShadowParams(QPoint(0, 0), 64, 0.7),
+            ShadowParams(QPoint(0, -8), 32, 0.1)),
     };
 
     inline CompositeShadowParams lookupShadowParams(int size)
