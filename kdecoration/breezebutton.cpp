@@ -276,7 +276,7 @@ namespace Breeze
                     if (isChecked())
                     {
 
-                        painter->drawLine( 4, 5, 14, 5 );
+                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) );
                         painter->drawPolyline( QVector<QPointF> {
                             QPointF( 4, 8 ),
                             QPointF( 9, 13 ),
@@ -284,7 +284,7 @@ namespace Breeze
 
                     } else {
 
-                        painter->drawLine( 4, 5, 14, 5 );
+                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) );
                         painter->drawPolyline(  QVector<QPointF> {
                             QPointF( 4, 13 ),
                             QPointF( 9, 8 ),
@@ -328,9 +328,9 @@ namespace Breeze
 
                 case DecorationButtonType::ApplicationMenu:
                 {
-                    painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
-                    painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
-                    painter->drawLine( QPointF( 3.5, 13 ), QPointF( 14.5, 13 ) );
+                    painter->drawRect( QRectF( 3.5, 4.5, 11, 1 ) );
+                    painter->drawRect( QRectF( 3.5, 8.5, 11, 1 ) );
+                    painter->drawRect( QRectF( 3.5, 12.5, 11, 1 ) );
                     break;
                 }
 
@@ -342,7 +342,7 @@ namespace Breeze
                     path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
                     painter->drawPath( path );
 
-                    painter->drawPoint( 9, 15 );
+                    painter->drawRect( QRectF( 9, 15, 0.5, 0.5 ) );
 
                     break;
                 }
