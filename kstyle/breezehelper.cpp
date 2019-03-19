@@ -1305,6 +1305,7 @@ namespace Breeze
             case ArrowDown: arrow = QVector<QPointF>{QPointF( -4, -2 ), QPointF( 0, 2 ), QPointF( 4, -2 )}; break;
             case ArrowLeft: arrow = QVector<QPointF>{QPointF( 2, -4 ), QPointF( -2, 0 ), QPointF( 2, 4 )}; break;
             case ArrowRight: arrow = QVector<QPointF>{QPointF( -2, -4 ), QPointF( 2, 0 ), QPointF( -2, 4 )}; break;
+            case ArrowDown_Small: arrow = QVector<QPointF>{QPointF( 2, 4 ), QPointF( 4, 6 ), QPointF( 6, 4 )}; break;
             default: break;
         }
 
