@@ -62,6 +62,7 @@
 #include <QMenuBar>
 #include <QMouseEvent>
 #include <QProgressBar>
+#include <QScreen>
 #include <QScrollBar>
 #include <QStatusBar>
 #include <QStyle>
@@ -906,11 +907,12 @@ namespace Breeze
         auto net_connection = connection;
         #endif
 
+        const QPoint origin = window->screen()->geometry().topLeft();
+        const QPoint native = (position - origin) * dpiRatio + origin;
+
         xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
         NETRootInfo( net_connection, NET::WMMoveResize ).moveResizeRequest(
-            window->winId(), position.x() * dpiRatio,
-            position.y() * dpiRatio,
-            NET::Move );
+            window->winId(), native.x(), native.y(), NET::Move );
 
         #else
 
