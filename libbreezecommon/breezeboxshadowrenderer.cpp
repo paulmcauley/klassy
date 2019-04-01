@@ -45,6 +45,7 @@ static inline int calculateBlurRadius(qreal stdDev)
 
 static inline qreal calculateBlurStdDev(int radius)
 {
+    // See https://www.w3.org/TR/css-backgrounds-3/#shadow-blur
     return radius * 0.5;
 }
 
