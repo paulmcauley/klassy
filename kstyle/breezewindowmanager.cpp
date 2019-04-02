@@ -895,20 +895,15 @@ namespace Breeze
         // connection
         auto connection( Helper::connection() );
 
-        #if QT_VERSION >= 0x050300
-        const qreal dpiRatio = window->devicePixelRatio();
-        #else
-        const qreal dpiRatio = 1;
-        #endif
-
         #if BREEZE_USE_KDE4
         auto net_connection = QX11Info::display();
+        const QPoint native = position;
         #else
         auto net_connection = connection;
-        #endif
-
+        const qreal dpiRatio = window->devicePixelRatio();
         const QPoint origin = window->screen()->geometry().topLeft();
         const QPoint native = (position - origin) * dpiRatio + origin;
+        #endif
 
         xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
         NETRootInfo( net_connection, NET::WMMoveResize ).moveResizeRequest(
