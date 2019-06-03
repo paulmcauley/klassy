@@ -423,10 +423,10 @@ namespace Breeze
         int extBottom = 0;
         if( hasNoBorders() )
         {
-            extSides = extSize;
-            extBottom = extSize;
+            if( !isMaximizedHorizontally() ) extSides = extSize;
+            if( !isMaximizedVertically() ) extBottom = extSize;
 
-        } else if( hasNoSideBorders() ) {
+        } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
 
