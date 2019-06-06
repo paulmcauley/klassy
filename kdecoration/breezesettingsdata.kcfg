@@ -54,7 +54,7 @@
           <choice name="BorderVeryHuge" />
           <choice name="BorderOversized" />
       </choices>
-      <default>BorderNoSides</default>
+      <default>BorderNone</default>
     </entry>
 
     <!-- title alignment -->
