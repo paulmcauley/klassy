@@ -41,11 +41,6 @@ namespace Breeze
     }
 
     //_________________________________________________
-    StylePlugin::~StylePlugin()
-    {
-    }
-
-    //_________________________________________________
     QStringList StylePlugin::keys() const
     { return QStringList( QStringLiteral( "Breeze" ) ); }
 

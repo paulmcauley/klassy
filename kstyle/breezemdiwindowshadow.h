@@ -64,7 +64,7 @@ namespace Breeze
         protected:
 
         //* painting
-        virtual void paintEvent(QPaintEvent *);
+        void paintEvent(QPaintEvent *) override;
 
         private:
 
@@ -90,10 +90,6 @@ namespace Breeze
         //* constructor
         explicit MdiWindowShadowFactory( QObject* );
 
-        //* destructor
-        virtual ~MdiWindowShadowFactory()
-        {}
-
         //* set shadow helper
         void setShadowHelper( ShadowHelper* shadowHelper )
         { _shadowHelper = shadowHelper; }
@@ -109,7 +105,7 @@ namespace Breeze
         { return _registeredWidgets.contains( widget ); }
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent*);
+        bool eventFilter( QObject*, QEvent*) override;
 
         protected:
 

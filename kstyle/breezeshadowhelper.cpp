@@ -110,14 +110,6 @@ namespace Breeze
     ShadowHelper::ShadowHelper( QObject* parent, Helper& helper ):
         QObject( parent ),
         _helper( helper )
-        #if BREEZE_HAVE_X11
-        ,_gc( 0 ),
-        _atom( 0 )
-        #endif
-        #if BREEZE_HAVE_KWAYLAND
-        , _shadowManager( nullptr )
-        , _shmPool( nullptr )
-        #endif
     {
         // delay till event dispatcher is running as Wayland is highly async
         QMetaObject::invokeMethod(this, "initializeWayland", Qt::QueuedConnection);

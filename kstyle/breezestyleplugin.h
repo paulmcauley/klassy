@@ -41,14 +41,11 @@ namespace Breeze
             QStylePlugin(parent)
         {}
 
-        //* destructor
-        ~StylePlugin();
-
         //* returns list of valid keys
         QStringList keys() const;
 
         //* create style
-        QStyle* create( const QString& );
+        QStyle* create( const QString& ) override;
 
     };
 

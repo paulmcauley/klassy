@@ -182,6 +182,8 @@ namespace Breeze
         { return standardIconImplementation( pixmap, option, widget ); }
         #endif
 
+        private:
+
         //* load configuration
         void loadConfiguration();
 
@@ -300,28 +302,28 @@ namespace Breeze
         bool emptyControl( const QStyleOption*, QPainter*, const QWidget* ) const
         { return true; }
 
-        virtual bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawToolButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
-        virtual bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawPushButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawToolButtonLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawCheckBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawComboBoxLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawMenuBarItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawMenuItemControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawProgressBarControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawProgressBarContentsControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawProgressBarGrooveControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawProgressBarLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawScrollBarSliderControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawTabBarTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawTabBarTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawToolBoxTabLabelControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawToolBoxTabShapeControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawDockWidgetTitleControl( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //*@}
 
@@ -480,12 +482,10 @@ namespace Breeze
         //* return true if passed widget is a menu title (KMenu::addTitle)
         bool hasAlteredBackground( const QWidget* ) const;
 
-        private:
-
         //*@name scrollbar button types (for addLine and subLine )
         //@{
-        ScrollBarButtonType _addLineButtons;
-        ScrollBarButtonType _subLineButtons;
+        ScrollBarButtonType _addLineButtons = SingleButton;
+        ScrollBarButtonType _subLineButtons = SingleButton;
         //@}
 
         //* helper

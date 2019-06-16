@@ -42,9 +42,6 @@ namespace Breeze
             QPropertyAnimation( parent )
         { setDuration( duration ); }
 
-        //* destructor
-        virtual ~Animation() = default;
-
         //* true if running
         bool isRunning() const
         { return state() == Animation::Running; }

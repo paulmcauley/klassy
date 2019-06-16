@@ -41,25 +41,21 @@ namespace Breeze
             BaseEngine( parent )
         {}
 
-        //* destructor
-        virtual ~TabBarEngine()
-        {}
-
         //* register tabbar
-        virtual bool registerWidget( QWidget* );
+        bool registerWidget( QWidget* );
 
         //* true if widget hover state is changed
-        virtual bool updateState( const QObject*, const QPoint&, AnimationMode, bool );
+        bool updateState( const QObject*, const QPoint&, AnimationMode, bool );
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject* object, const QPoint& point, AnimationMode );
+        bool isAnimated( const QObject* object, const QPoint& point, AnimationMode );
 
         //* animation opacity
-        virtual qreal opacity( const QObject* object, const QPoint& point, AnimationMode mode )
+        qreal opacity( const QObject* object, const QPoint& point, AnimationMode mode )
         { return isAnimated( object, point, mode ) ? data( object, mode ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
         //* enability
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _hoverData.setEnabled( value );
@@ -67,7 +63,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _hoverData.setDuration( value );
@@ -77,7 +73,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        bool unregisterWidget( QObject* object ) override
         {
             if( !object ) return false;
             bool found = false;

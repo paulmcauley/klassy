@@ -52,19 +52,17 @@ namespace Breeze
 
     struct ShadowParams
     {
-        ShadowParams()
-            : offset(QPoint(0, 0))
-            , radius(0)
-            , opacity(0) {}
+        ShadowParams() = default;
 
-        ShadowParams(const QPoint &offset, int radius, qreal opacity)
-            : offset(offset)
-            , radius(radius)
-            , opacity(opacity) {}
+        ShadowParams(const QPoint &offset, int radius, qreal opacity):
+            offset(offset),
+            radius(radius),
+            opacity(opacity)
+        {}
 
         QPoint offset;
-        int radius;
-        qreal opacity;
+        int radius = 0;
+        qreal opacity = 0;
     };
 
     struct CompositeShadowParams
@@ -104,11 +102,7 @@ namespace Breeze
         ShadowHelper( QObject*, Helper& );
 
         //* destructor
-        virtual ~ShadowHelper();
-
-        //* true if supported
-        bool isSupported() const
-        { return _supported; }
+        ~ShadowHelper() override;
 
         //* shadow params from size enum
         static CompositeShadowParams lookupShadowParams( int shadowSizeEnum );
@@ -126,7 +120,7 @@ namespace Breeze
         void unregisterWidget( QWidget* );
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* shadow tiles
         /** is public because it is also needed for mdi windows */
@@ -193,9 +187,6 @@ namespace Breeze
         //* helper
         Helper& _helper;
 
-        //* true if supported
-        bool _supported;
-
         //* registered widgets
         QMap<QWidget*, WId> _widgets;
 
@@ -211,10 +202,10 @@ namespace Breeze
         #if BREEZE_HAVE_X11
 
         //* graphical context
-        xcb_gcontext_t _gc;
+        xcb_gcontext_t _gc = 0;
 
         //* shadow atom
-        xcb_atom_t _atom;
+        xcb_atom_t _atom = 0;
 
         #endif
 

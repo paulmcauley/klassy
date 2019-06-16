@@ -31,9 +31,7 @@ namespace Breeze
 
     //________________________________________________
     WidgetExplorer::WidgetExplorer( QObject* parent ):
-        QObject( parent ),
-        _enabled( false ),
-        _drawWidgetRects( false )
+        QObject( parent )
     {
 
         _eventTypes.insert( QEvent::Enter, QStringLiteral( "Enter" ) );

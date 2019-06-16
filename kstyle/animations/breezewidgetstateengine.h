@@ -41,31 +41,27 @@ namespace Breeze
             BaseEngine( parent )
         {}
 
-        //* destructor
-        virtual ~WidgetStateEngine()
-        {}
-
         //* register widget
-        virtual bool registerWidget( QWidget*, AnimationModes );
+        bool registerWidget( QWidget*, AnimationModes );
 
         //* returns registered widgets
-        virtual WidgetList registeredWidgets( AnimationModes ) const;
+        WidgetList registeredWidgets( AnimationModes ) const;
 
         using BaseEngine::registeredWidgets;
 
         //* true if widget hover state is changed
-        virtual bool updateState( const QObject*, AnimationMode, bool );
+        bool updateState( const QObject*, AnimationMode, bool );
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject*, AnimationMode );
+        bool isAnimated( const QObject*, AnimationMode );
 
         //* animation opacity
-        virtual qreal opacity( const QObject* object, AnimationMode mode )
+        qreal opacity( const QObject* object, AnimationMode mode )
         { return isAnimated( object, mode ) ? data( object, mode ).data()->opacity(): AnimationData::OpacityInvalid; }
 
         //* animation mode
         /** precedence on focus */
-        virtual AnimationMode frameAnimationMode( const QObject* object )
+        AnimationMode frameAnimationMode( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
             else if( isAnimated( object, AnimationFocus ) ) return AnimationFocus;
@@ -75,7 +71,7 @@ namespace Breeze
 
         //* animation opacity
         /** precedence on focus */
-        virtual qreal frameOpacity( const QObject* object )
+        qreal frameOpacity( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
             else if( isAnimated( object, AnimationFocus ) ) return data( object, AnimationFocus ).data()->opacity();
@@ -85,7 +81,7 @@ namespace Breeze
 
         //* animation mode
         /** precedence on mouseOver */
-        virtual AnimationMode buttonAnimationMode( const QObject* object )
+        AnimationMode buttonAnimationMode( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return AnimationEnable;
             else if( isAnimated( object, AnimationHover ) ) return AnimationHover;
@@ -95,7 +91,7 @@ namespace Breeze
 
         //* animation opacity
         /** precedence on mouseOver */
-        virtual qreal buttonOpacity( const QObject* object )
+        qreal buttonOpacity( const QObject* object )
         {
             if( isAnimated( object, AnimationEnable ) ) return data( object, AnimationEnable ).data()->opacity();
             else if( isAnimated( object, AnimationHover ) ) return data( object, AnimationHover ).data()->opacity();
@@ -104,7 +100,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _hoverData.setEnabled( value );
@@ -114,7 +110,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _hoverData.setDuration( value );
@@ -126,7 +122,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        bool unregisterWidget( QObject* object ) override
         {
             if( !object ) return false;
             bool found = false;

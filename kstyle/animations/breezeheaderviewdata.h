@@ -41,12 +41,8 @@ namespace Breeze
         //* constructor
         HeaderViewData( QObject* parent, QWidget* target, int duration );
 
-        //* destructor
-        virtual ~HeaderViewData()
-        {}
-
         //* duration
-        void setDuration( int duration )
+        void setDuration( int duration ) override
         {
             currentIndexAnimation().data()->setDuration( duration );
             previousIndexAnimation().data()->setDuration( duration );
@@ -59,11 +55,11 @@ namespace Breeze
         //@{
 
         //* current opacity
-        virtual qreal currentOpacity() const
+        qreal currentOpacity() const
         { return _current._opacity; }
 
         //* current opacity
-        virtual void setCurrentOpacity( qreal value )
+        void setCurrentOpacity( qreal value )
         {
             value = digitize( value );
             if( _current._opacity == value ) return;
@@ -72,15 +68,15 @@ namespace Breeze
         }
 
         //* current index
-        virtual int currentIndex() const
+        int currentIndex() const
         { return _current._index; }
 
         //* current index
-        virtual void setCurrentIndex( int index )
+        void setCurrentIndex( int index )
         { _current._index = index; }
 
         //* current index animation
-        virtual const Animation::Pointer& currentIndexAnimation() const
+        const Animation::Pointer& currentIndexAnimation() const
         { return _current._animation; }
 
         //@}
@@ -89,11 +85,11 @@ namespace Breeze
         //@{
 
         //* previous opacity
-        virtual qreal previousOpacity() const
+        qreal previousOpacity() const
         { return _previous._opacity; }
 
         //* previous opacity
-        virtual void setPreviousOpacity( qreal value )
+        void setPreviousOpacity( qreal value )
         {
             value = digitize( value );
             if( _previous._opacity == value ) return;
@@ -102,29 +98,29 @@ namespace Breeze
         }
 
         //* previous index
-        virtual int previousIndex() const
+        int previousIndex() const
         { return _previous._index; }
 
         //* previous index
-        virtual void setPreviousIndex( int index )
+        void setPreviousIndex( int index )
         { _previous._index = index; }
 
         //* previous index Animation
-        virtual const Animation::Pointer& previousIndexAnimation() const
+        const Animation::Pointer& previousIndexAnimation() const
         { return _previous._animation; }
 
         //@}
 
         //* return Animation associated to action at given position, if any
-        virtual Animation::Pointer animation( const QPoint& position ) const;
+        Animation::Pointer animation( const QPoint& position ) const;
 
         //* return opacity associated to action at given position, if any
-        virtual qreal opacity( const QPoint& position ) const;
+        qreal opacity( const QPoint& position ) const;
 
         protected:
 
         //* dirty
-        virtual void setDirty() const;
+        void setDirty() const override;
 
         private:
 

@@ -53,9 +53,6 @@ namespace Breeze
         //* constructor
         TransitionWidget( QWidget* parent, int duration );
 
-        //* destructor
-        virtual ~TransitionWidget() = default;
-
         //*@name flags
         //@{
         enum Flag
@@ -100,10 +97,10 @@ namespace Breeze
         //*@name opacity
         //@{
 
-        virtual qreal opacity() const
+        qreal opacity() const
         { return _opacity; }
 
-        virtual void setOpacity( qreal value )
+        void setOpacity( qreal value )
         {
             value = digitize( value );
             if( _opacity == value ) return;
@@ -153,15 +150,15 @@ namespace Breeze
         QPixmap grab( QWidget* = nullptr, QRect = QRect() );
 
         //* true if animated
-        virtual bool isAnimated() const
+        bool isAnimated() const
         { return _animation.data()->isRunning(); }
 
         //* end animation
-        virtual void endAnimation()
+        void endAnimation()
         { if( _animation.data()->isRunning() ) _animation.data()->stop(); }
 
         //* animate transition
-        virtual void animate()
+        void animate()
         {
             if( _animation.data()->isRunning() ) _animation.data()->stop();
             _animation.data()->start();
@@ -173,10 +170,10 @@ namespace Breeze
         protected:
 
         //* generic event filter
-        virtual bool event( QEvent* );
+        bool event( QEvent* ) override;
 
         //* paint event
-        virtual void paintEvent( QPaintEvent* );
+        void paintEvent( QPaintEvent* ) override;
 
         //* grab widget background
         /*!
@@ -184,16 +181,16 @@ namespace Breeze
         Use home-made grabber instead. This is directly inspired from bespin.
         Copyright (C) 2007 Thomas Luebking <thomas.luebking@web.de>
         */
-        virtual void grabBackground( QPixmap&, QWidget*, QRect& ) const;
+        void grabBackground( QPixmap&, QWidget*, QRect& ) const;
 
         //* grab widget
-        virtual void grabWidget( QPixmap&, QWidget*, QRect& ) const;
+        void grabWidget( QPixmap&, QWidget*, QRect& ) const;
 
         //* fade pixmap
-        virtual void fade( const QPixmap& source, QPixmap& target, qreal opacity, const QRect& ) const;
+        void fade( const QPixmap& source, QPixmap& target, qreal opacity, const QRect& ) const;
 
         //* apply step
-        virtual qreal digitize( const qreal& value ) const
+        qreal digitize( const qreal& value ) const
         {
             if( _steps > 0 ) return std::floor( value*_steps )/_steps;
             else return value;

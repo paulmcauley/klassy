@@ -50,10 +50,6 @@ namespace Breeze
             _enabled( false )
             {}
 
-        //* destructor
-        virtual ~SplitterFactory()
-        {}
-
         //* enabled state
         void setEnabled( bool );
 
@@ -91,11 +87,8 @@ namespace Breeze
         //* constructor
         explicit SplitterProxy( QWidget*, bool = false );
 
-        //* destructor
-        virtual ~SplitterProxy();
-
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* enable state
         void setEnabled( bool );
@@ -107,7 +100,7 @@ namespace Breeze
         protected:
 
         //* event handler
-        virtual bool event( QEvent* );
+        bool event( QEvent* ) override;
 
         protected:
 

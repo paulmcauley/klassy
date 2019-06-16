@@ -41,25 +41,21 @@ namespace Breeze
         //* constructor
         ScrollBarData( QObject* parent, QWidget* target, int );
 
-        //* destructor
-        virtual ~ScrollBarData()
-        {}
-
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* needed to avoid warning about virtual function being hidden
         using WidgetStateData::animation;
         using WidgetStateData::opacity;
 
         //* return animation for a given subcontrol
-        virtual const Animation::Pointer& animation( QStyle::SubControl ) const;
+        const Animation::Pointer& animation( QStyle::SubControl ) const;
 
         //* return default opacity for a given subcontrol
-        virtual qreal opacity( QStyle::SubControl ) const;
+        qreal opacity( QStyle::SubControl ) const;
 
         //* return default opacity for a given subcontrol
-        virtual bool isHovered( QStyle::SubControl control ) const
+        bool isHovered( QStyle::SubControl control ) const
         {
             switch( control )
             {
@@ -73,7 +69,7 @@ namespace Breeze
         }
 
         //* subControlRect
-        virtual QRect subControlRect( QStyle::SubControl control ) const
+        QRect subControlRect( QStyle::SubControl control ) const
         {
             switch( control )
             {
@@ -85,7 +81,7 @@ namespace Breeze
 
 
         //* subcontrol rect
-        virtual void setSubControlRect( QStyle::SubControl control, const QRect& rect )
+        void setSubControlRect( QStyle::SubControl control, const QRect& rect )
         {
             switch( control )
             {
@@ -102,7 +98,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int duration )
+        void setDuration( int duration ) override
         {
             WidgetStateData::setDuration( duration );
             addLineAnimation().data()->setDuration( duration );
@@ -111,7 +107,7 @@ namespace Breeze
         }
 
         //* addLine opacity
-        virtual void setAddLineOpacity( qreal value )
+        void setAddLineOpacity( qreal value )
         {
             value = digitize( value );
             if( _addLineData._opacity == value ) return;
@@ -120,11 +116,11 @@ namespace Breeze
         }
 
         //* addLine opacity
-        virtual qreal addLineOpacity() const
+        qreal addLineOpacity() const
         { return _addLineData._opacity; }
 
         //* subLine opacity
-        virtual void setSubLineOpacity( qreal value )
+        void setSubLineOpacity( qreal value )
         {
             value = digitize( value );
             if( _subLineData._opacity == value ) return;
@@ -133,11 +129,11 @@ namespace Breeze
         }
 
         //* subLine opacity
-        virtual qreal subLineOpacity() const
+        qreal subLineOpacity() const
         { return _subLineData._opacity; }
 
         //* groove opacity
-        virtual void setGrooveOpacity( qreal value )
+        void setGrooveOpacity( qreal value )
         {
             value = digitize( value );
             if( _grooveData._opacity == value ) return;
@@ -146,7 +142,7 @@ namespace Breeze
         }
 
         //* groove opacity
-        virtual qreal grooveOpacity() const
+        qreal grooveOpacity() const
         { return _grooveData._opacity; }
 
         //* mouse position
@@ -169,56 +165,54 @@ namespace Breeze
             { _subLineData._rect = QRect(); }
         }
 
-        protected:
+        private:
 
         //* hoverMoveEvent
-        virtual void hoverMoveEvent( QObject*, QEvent* );
+        void hoverMoveEvent( QObject*, QEvent* );
 
         //* hoverMoveEvent
-        virtual void hoverLeaveEvent( QObject*, QEvent* );
+        void hoverLeaveEvent( QObject*, QEvent* );
 
         //*@name hover flags
         //@{
 
-        virtual bool addLineArrowHovered() const
+        bool addLineArrowHovered() const
         { return _addLineData._hovered; }
 
-        virtual void setAddLineArrowHovered( bool value )
+        void setAddLineArrowHovered( bool value )
         { _addLineData._hovered = value; }
 
-        virtual bool subLineArrowHovered() const
+        bool subLineArrowHovered() const
         { return _subLineData._hovered; }
 
-        virtual void setSubLineArrowHovered( bool value )
+        void setSubLineArrowHovered( bool value )
         { _subLineData._hovered = value; }
 
-        virtual bool grooveHovered() const
+        bool grooveHovered() const
         { return _grooveData._hovered; }
 
-        virtual void setGrooveHovered( bool value )
+        void setGrooveHovered( bool value )
         { _grooveData._hovered = value; }
 
         //@}
 
         //* update add line arrow
-        virtual void updateAddLineArrow( QStyle::SubControl );
+        void updateAddLineArrow( QStyle::SubControl );
 
         //* update sub line arrow
-        virtual void updateSubLineArrow( QStyle::SubControl );
+        void updateSubLineArrow( QStyle::SubControl );
 
         //*@name timelines
         //@{
 
-        virtual const Animation::Pointer& addLineAnimation() const
+        const Animation::Pointer& addLineAnimation() const
         { return _addLineData._animation; }
 
-        virtual const Animation::Pointer& subLineAnimation() const
+        const Animation::Pointer& subLineAnimation() const
         { return _subLineData._animation; }
 
-        virtual const Animation::Pointer& grooveAnimation() const
+        const Animation::Pointer& grooveAnimation() const
         { return _grooveData._animation; }
-
-        private:
 
         //* stores sub control data
         class Data

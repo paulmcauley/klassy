@@ -43,24 +43,20 @@ namespace Breeze
         //* constructor
         GenericData( QObject* parent, QWidget* widget, int duration );
 
-        //* destructor
-        virtual ~GenericData()
-        {}
-
         //* return animation object
-        virtual const Animation::Pointer& animation() const
+        const Animation::Pointer& animation() const
         { return _animation; }
 
         //* duration
-        virtual void setDuration( int duration )
+        void setDuration( int duration ) override
         { _animation.data()->setDuration( duration ); }
 
         //* opacity
-        virtual qreal opacity() const
+        qreal opacity() const
         { return _opacity; }
 
         //* opacity
-        virtual void setOpacity( qreal value )
+        void setOpacity( qreal value )
         {
 
             value = digitize( value );
@@ -77,7 +73,7 @@ namespace Breeze
         Animation::Pointer _animation;
 
         //* opacity variable
-        qreal _opacity;
+        qreal _opacity = 0;
 
     };
 

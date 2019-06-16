@@ -215,11 +215,7 @@ namespace Breeze
     //____________________________________________________________________________________
     FrameShadow::FrameShadow( Side area, Helper& helper ):
         _helper( helper ),
-        _area( area ),
-        _hasFocus( false ),
-        _mouseOver( false ),
-        _opacity( -1 ),
-        _mode( AnimationNone )
+        _area( area )
     {
 
         setAttribute(Qt::WA_OpaquePaintEvent, false);

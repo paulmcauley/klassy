@@ -48,10 +48,6 @@ namespace Breeze
         QObject( parent )
         {}
 
-        //* destructor
-        virtual ~FrameShadowFactory()
-        {}
-
         //* register widget
         bool registerWidget( QWidget*, Helper& );
 
@@ -63,7 +59,7 @@ namespace Breeze
         { return _registeredWidgets.contains( widget ); }
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent*);
+        bool eventFilter( QObject*, QEvent*) override;
 
         //* update state
         void updateState( const QWidget*, bool focus, bool hover, qreal opacity, AnimationMode ) const;
@@ -114,10 +110,6 @@ namespace Breeze
         //* constructor
         FrameShadow( Side, Helper& );
 
-        //* destructor
-        virtual ~FrameShadow()
-        {}
-
         //* update geometry
         virtual void updateGeometry( QRect );
 
@@ -127,10 +119,10 @@ namespace Breeze
         protected:
 
         //* painting
-        virtual void paintEvent(QPaintEvent *);
+        void paintEvent( QPaintEvent* ) override;
 
         //* return viewport associated to parent widget
-        virtual QWidget* viewport() const;
+        QWidget* viewport() const;
 
         private:
 
@@ -146,10 +138,10 @@ namespace Breeze
 
         //*@name widget state
         //@{
-        bool _hasFocus;
-        bool _mouseOver;
-        qreal _opacity;
-        AnimationMode _mode;
+        bool _hasFocus = false;
+        bool _mouseOver = false;
+        qreal _opacity = -1;
+        AnimationMode _mode = AnimationNone;
         //@}
 
     };

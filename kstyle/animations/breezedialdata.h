@@ -36,30 +36,24 @@ namespace Breeze
         //* constructor
         DialData( QObject* parent, QWidget* target, int );
 
-        //* destructor
-        virtual ~DialData()
-        {}
-
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* subcontrol rect
-        virtual void setHandleRect( const QRect& rect )
+        void setHandleRect( const QRect& rect )
         { _handleRect = rect; }
 
         //* mouse position
         QPoint position() const
         { return _position; }
 
-        protected:
-
-        //* hoverMoveEvent
-        virtual void hoverMoveEvent( QObject*, QEvent* );
-
-        //* hoverMoveEvent
-        virtual void hoverLeaveEvent( QObject*, QEvent* );
-
         private:
+
+        //* hoverMoveEvent
+        void hoverMoveEvent( QObject*, QEvent* );
+
+        //* hoverMoveEvent
+        void hoverLeaveEvent( QObject*, QEvent* );
 
         //* rect
         QRect _handleRect;

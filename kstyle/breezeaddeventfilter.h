@@ -38,13 +38,9 @@ namespace Breeze
             QObject()
             {}
 
-        //* destructor
-        virtual ~AddEventFilter()
-        {}
-
         //* event filter
         /** blocks all AddChild events */
-        virtual bool eventFilter( QObject*, QEvent* event )
+        bool eventFilter( QObject*, QEvent* event ) override
         { return event->type() == QEvent::ChildAdded; }
 
     };

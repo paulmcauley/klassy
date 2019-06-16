@@ -111,7 +111,7 @@ namespace BreezePrivate
         {}
 
         //* paint
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
         {
             // call either proxy or parent class
             if( _proxy ) _proxy.data()->paint( painter, option, index );
@@ -119,7 +119,7 @@ namespace BreezePrivate
         }
 
         //* size hint for index
-        virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+        QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override
         {
 
             // get size from either proxy or parent class
@@ -144,7 +144,6 @@ namespace BreezePrivate
     };
 
     //_______________________________________________________________
-
     #if !BREEZE_USE_KDE4
     bool isProgressBarHorizontal( const QStyleOptionProgressBar* option )
     {  return option && ( (option->state & QStyle::State_Horizontal ) || option->orientation == Qt::Horizontal ); }
@@ -157,13 +156,11 @@ namespace Breeze
 
     //______________________________________________________________
     Style::Style():
-        _addLineButtons( SingleButton )
-        , _subLineButtons( SingleButton )
 
         #if BREEZE_USE_KDE4
-        , _helper( new Helper( "breeze" ) )
+        _helper( new Helper( "breeze" ) )
         #else
-        , _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
+        _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
         #endif
 
         , _shadowHelper( new ShadowHelper( this, *_helper ) )

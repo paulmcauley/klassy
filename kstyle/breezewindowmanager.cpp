@@ -142,7 +142,7 @@ namespace Breeze
         {}
 
         //* event filter
-        virtual bool eventFilter( QObject* object, QEvent* event )
+        bool eventFilter( QObject* object, QEvent* event ) override
         {
 
             if( event->type() == QEvent::MouseButtonRelease )

@@ -52,10 +52,6 @@ namespace Breeze
         //! constructor
         BlurHelper( QObject* );
 
-        //! destructor
-        virtual ~BlurHelper()
-        {}
-
         //! register widget
         void registerWidget( QWidget* );
 
@@ -63,7 +59,7 @@ namespace Breeze
         void unregisterWidget( QWidget* );
 
         //! event filter
-        bool eventFilter( QObject*, QEvent* ) ;
+        bool eventFilter( QObject*, QEvent* ) override;
 
         protected:
 

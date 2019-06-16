@@ -40,18 +40,14 @@ namespace Breeze
             BaseEngine( parent )
         {}
 
-        //* destructor
-        virtual ~HeaderViewEngine()
-        {}
-
         //* register headerview
-        virtual bool registerWidget( QWidget* );
+        bool registerWidget( QWidget* );
 
         //* true if widget hover state is changed
-        virtual bool updateState( const QObject*, const QPoint&, bool );
+        bool updateState( const QObject*, const QPoint&, bool );
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject* object, const QPoint& point )
+        bool isAnimated( const QObject* object, const QPoint& point )
         {
             if( DataMap<HeaderViewData>::Value data = _data.find( object ) )
             { if( Animation::Pointer animation = data.data()->animation( point ) ) return animation.data()->isRunning(); }
@@ -59,18 +55,18 @@ namespace Breeze
         }
 
         //* animation opacity
-        virtual qreal opacity( const QObject* object, const QPoint& point )
+        qreal opacity( const QObject* object, const QPoint& point )
         { return isAnimated( object, point ) ? _data.find( object ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
 
         //* enability
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
@@ -79,7 +75,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        bool unregisterWidget( QObject* object ) override
         { return _data.unregisterWidget( object ); }
 
         private:

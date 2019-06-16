@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! generic data
+    //* generic data
     class StackedWidgetData: public TransitionData
     {
 
@@ -42,33 +42,29 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         StackedWidgetData( QObject*, QStackedWidget*, int );
-
-        //! destructor
-        virtual ~StackedWidgetData()
-        {}
 
         protected Q_SLOTS:
 
-        //! initialize animation
-        virtual bool initializeAnimation();
+        //* initialize animation
+        bool initializeAnimation() override;
 
-        //! animate
-        virtual bool animate();
+        //* animate
+        bool animate() override;
 
-        //! finish animation
-        virtual void finishAnimation();
+        //* finish animation
+        void finishAnimation();
 
-        //! called when target is destroyed
-        virtual void targetDestroyed();
+        //* called when target is destroyed
+        void targetDestroyed();
 
         private:
 
-        //! target
+        //* target
         WeakPointer<QStackedWidget> _target;
 
-        //! current index
+        //* current index
         int _index;
 
     };

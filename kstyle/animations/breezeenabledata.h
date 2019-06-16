@@ -35,15 +35,11 @@ namespace Breeze
 
         //* constructor
         EnableData( QObject* parent, QWidget* target, int duration, bool state = true ):
-        WidgetStateData( parent, target, duration, state )
+            WidgetStateData( parent, target, duration, state )
         { target->installEventFilter( this ); }
 
-        //* destructor
-        virtual ~EnableData()
-        {}
-
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
     };
 

@@ -51,7 +51,7 @@ namespace Breeze
         { _drawWidgetRects = value; }
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         protected:
 
@@ -64,10 +64,10 @@ namespace Breeze
         private:
 
         //* enable state
-        bool _enabled;
+        bool _enabled = false;
 
         //* widget rects
-        bool _drawWidgetRects;
+        bool _drawWidgetRects = false;
 
         //* map event types to string
         QMap<QEvent::Type, QString > _eventTypes;

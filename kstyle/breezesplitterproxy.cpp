@@ -144,10 +144,6 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    SplitterProxy::~SplitterProxy()
-    {}
-
-    //____________________________________________________________________
     void SplitterProxy::setEnabled( bool value )
     {
         // make sure status has changed

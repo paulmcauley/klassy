@@ -41,13 +41,8 @@ namespace Breeze
 
         //* constructor
         AnimationData( QObject* parent, QWidget* target ):
-        QObject( parent ),
-        _target( target ),
-        _enabled( true )
-        { Q_ASSERT( _target ); }
-
-        //* destructor
-        virtual ~AnimationData()
+            QObject( parent ),
+            _target( target )
         {}
 
         //* duration
@@ -94,7 +89,7 @@ namespace Breeze
         WeakPointer<QWidget> _target;
 
         //* enability
-        bool _enabled;
+        bool _enabled = true;
 
         //* steps
         static int _steps;

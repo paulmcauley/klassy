@@ -41,13 +41,7 @@ namespace Breeze
 
         //* constructor
         explicit BaseEngine( QObject* parent ):
-            QObject( parent ),
-            _enabled( true ),
-            _duration( 200 )
-        {}
-
-        //* destructor
-        virtual ~BaseEngine()
+            QObject( parent )
         {}
 
         //* enability
@@ -79,10 +73,10 @@ namespace Breeze
         private:
 
         //* engine enability
-        bool _enabled;
+        bool _enabled = true;
 
         //* animation duration
-        int _duration;
+        int _duration = 200;
 
     };
 

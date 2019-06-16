@@ -34,7 +34,7 @@
 namespace Breeze
 {
 
-    //! used for simple widgets
+    //* used for simple widgets
     class StackedWidgetEngine: public BaseEngine
     {
 
@@ -42,27 +42,23 @@ namespace Breeze
 
         public:
 
-        //! constructor
+        //* constructor
         explicit StackedWidgetEngine( QObject* parent ):
             BaseEngine( parent )
         {}
 
-        //! destructor
-        virtual ~StackedWidgetEngine()
-        {}
+        //* register widget
+        bool registerWidget( QStackedWidget* );
 
-        //! register widget
-        virtual bool registerWidget( QStackedWidget* );
-
-        //! duration
-        virtual void setEnabled( bool value )
+        //* duration
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
-        //! duration
-        virtual void setDuration( int value )
+        //* duration
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
@@ -70,13 +66,13 @@ namespace Breeze
 
         public Q_SLOTS:
 
-        //! remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        //* remove widget from map
+        bool unregisterWidget( QObject* object ) override
         { return _data.unregisterWidget( object ); }
 
         private:
 
-        //! maps
+        //* maps
         DataMap<StackedWidgetData> _data;
 
     };

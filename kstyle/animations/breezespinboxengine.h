@@ -40,15 +40,11 @@ namespace Breeze
             BaseEngine( parent )
         {}
 
-        //* destructor
-        virtual ~SpinBoxEngine()
-        {}
-
         //* register widget
-        virtual bool registerWidget( QWidget* );
+        bool registerWidget( QWidget* );
 
         //* state
-        virtual bool updateState( const QObject* object, QStyle::SubControl subControl, bool value )
+        bool updateState( const QObject* object, QStyle::SubControl subControl, bool value )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
             {
@@ -57,7 +53,7 @@ namespace Breeze
         }
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject* object, QStyle::SubControl subControl )
+        bool isAnimated( const QObject* object, QStyle::SubControl subControl )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
             {
@@ -67,7 +63,7 @@ namespace Breeze
         }
 
         //* animation opacity
-        virtual qreal opacity( const QObject* object, QStyle::SubControl subControl )
+        qreal opacity( const QObject* object, QStyle::SubControl subControl )
         {
             if( DataMap<SpinBoxData>::Value data = _data.find( object ) )
             {
@@ -76,14 +72,14 @@ namespace Breeze
         }
 
         //* enability
-        virtual void setEnabled( bool value )
+        void setEnabled( bool value ) override
         {
             BaseEngine::setEnabled( value );
             _data.setEnabled( value );
         }
 
         //* duration
-        virtual void setDuration( int value )
+        void setDuration( int value ) override
         {
             BaseEngine::setDuration( value );
             _data.setDuration( value );
@@ -93,7 +89,7 @@ namespace Breeze
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* object )
+        bool unregisterWidget( QObject* object ) override
         { return _data.unregisterWidget( object ); }
 
         private:

@@ -42,18 +42,14 @@ namespace Breeze
         //* constructor
         explicit BusyIndicatorEngine( QObject* );
 
-        //* destructor
-        virtual ~BusyIndicatorEngine()
-        {}
-
         //*@name accessors
         //@{
 
         //* true if widget is animated
-        virtual bool isAnimated( const QObject* );
+        bool isAnimated( const QObject* );
 
         //* value
-        virtual int value() const
+        int value() const
         { return _value; }
 
         //@}
@@ -62,23 +58,23 @@ namespace Breeze
         //@{
 
         //* register progressbar
-        virtual bool registerWidget( QObject* );
+        bool registerWidget( QObject* );
 
         //* duration
-        virtual void setDuration( int );
+        void setDuration( int ) override;
 
         //* set object as animated
-        virtual void setAnimated( const QObject*, bool );
+        void setAnimated( const QObject*, bool );
 
         //* opacity
-        virtual void setValue( int value );
+        void setValue( int value );
 
         //@}
 
         public Q_SLOTS:
 
         //* remove widget from map
-        virtual bool unregisterWidget( QObject* );
+        bool unregisterWidget( QObject* ) override;
 
         protected:
 

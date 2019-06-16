@@ -42,12 +42,8 @@ namespace Breeze
         //* constructor
         SpinBoxData( QObject*, QWidget*, int );
 
-        //* destructor
-        virtual ~SpinBoxData()
-        {}
-
         //* animation state
-        virtual bool updateState( QStyle::SubControl subControl, bool value )
+        bool updateState( QStyle::SubControl subControl, bool value )
         {
             if( subControl == QStyle::SC_SpinBoxUp ) return _upArrowData.updateState( value );
             else if( subControl == QStyle::SC_SpinBoxDown ) return _downArrowData.updateState( value );
@@ -55,7 +51,7 @@ namespace Breeze
         }
 
         //* animation state
-        virtual bool isAnimated( QStyle::SubControl subControl ) const
+        bool isAnimated( QStyle::SubControl subControl ) const
         {
             return(
                 ( subControl == QStyle::SC_SpinBoxUp && upArrowAnimation().data()->isRunning() ) ||
@@ -63,7 +59,7 @@ namespace Breeze
         }
 
         //* opacity
-        virtual qreal opacity( QStyle::SubControl subControl ) const
+        qreal opacity( QStyle::SubControl subControl ) const
         {
             if( subControl == QStyle::SC_SpinBoxUp ) return upArrowOpacity();
             else if( subControl == QStyle::SC_SpinBoxDown ) return downArrowOpacity();
@@ -71,7 +67,7 @@ namespace Breeze
         }
 
         //* duration
-        virtual void setDuration( int duration )
+        void setDuration( int duration ) override
         {
             upArrowAnimation().data()->setDuration( duration );
             downArrowAnimation().data()->setDuration( duration );

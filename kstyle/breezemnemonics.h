@@ -38,22 +38,17 @@ namespace Breeze
 
         //* constructor
         explicit Mnemonics( QObject* parent ):
-            QObject( parent ),
-            _enabled( true )
+            QObject( parent )
             {}
-
-        //* destructor
-        virtual ~Mnemonics()
-        {}
 
         //* set mode
         void setMode( int );
 
         //* event filter
-        virtual bool eventFilter( QObject*, QEvent* );
+        bool eventFilter( QObject*, QEvent* ) override;
 
         //* true if mnemonics are enabled
-        const bool& enabled() const
+        bool enabled() const
         { return _enabled; }
 
         //* alignment flag
@@ -68,7 +63,7 @@ namespace Breeze
         private:
 
         //* enable state
-        bool _enabled;
+        bool _enabled = true;
 
     };
 
