@@ -41,7 +41,6 @@ else()
   add_subdirectory(libbreezecommon)
   add_subdirectory(kstyle)
   add_subdirectory(misc)
-  add_subdirectory(qtquickcontrols)
 
   option(WITH_WALLPAPERS "Install Breeze default wallpapers" ON)
   if (WITH_WALLPAPERS)
