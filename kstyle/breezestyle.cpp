@@ -400,32 +400,6 @@ namespace Breeze
             auto font( scrollArea->font() );
             font.setBold( false );
             scrollArea->setFont( font );
-
-            // adjust background role
-            if( !StyleConfigData::sidePanelDrawFrame() )
-            {
-                scrollArea->setBackgroundRole( QPalette::Window );
-                scrollArea->setForegroundRole( QPalette::WindowText );
-
-                if( scrollArea->viewport() )
-                {
-                    scrollArea->viewport()->setBackgroundRole( QPalette::Window );
-                    scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
-                }
-
-                // QTreeView animates expanding/collapsing branches. It paints them into a
-                // temp pixmap whose background is unconditionally filled with the palette's
-                // *base* color which is usually different from the window's color
-                // cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
-                if ( auto treeView = qobject_cast<QTreeView *>( scrollArea ) ) {
-                    if (treeView->isAnimated()) {
-                        QPalette pal( treeView->palette() );
-                        pal.setColor( QPalette::Active, QPalette::Base, treeView->palette().color( treeView->backgroundRole() ) );
-                        treeView->setPalette(pal);
-                    }
-                }
-            }
-
         }
 
         // disable autofill background for flat (== NoFrame) scrollareas, with QPalette::Window as a background
@@ -445,6 +419,22 @@ namespace Breeze
         {
             if( child->parent() == viewport && child->backgroundRole() == QPalette::Window )
             { child->setAutoFillBackground( false ); }
+        }
+
+        /*
+        QTreeView animates expanding/collapsing branches. It paints them into a
+        temp pixmap whose background is unconditionally filled with the palette's
+        *base* color which is usually different from the window's color
+        cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
+        */
+        if( auto treeView = qobject_cast<QTreeView *>( scrollArea ) )
+        {
+            if (treeView->isAnimated())
+            {
+                QPalette pal( treeView->palette() );
+                pal.setColor( QPalette::Active, QPalette::Base, treeView->palette().color( treeView->backgroundRole() ) );
+                treeView->setPalette(pal);
+            }
         }
 
     }
@@ -720,6 +710,7 @@ namespace Breeze
             case SE_ProgressBarGroove: return progressBarGrooveRect( option, widget );
             case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
             case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
+            case SE_FrameContents: return frameContentsRect( option, widget );
             case SE_HeaderArrow: return headerArrowRect( option, widget );
             case SE_HeaderLabel: return headerLabelRect( option, widget );
             case SE_TabBarTabLeftButton: return tabBarTabLeftButtonRect( option, widget );
@@ -1596,6 +1587,25 @@ namespace Breeze
 
         return indicatorRect;
 
+    }
+
+    //___________________________________________________________________________________________________________________
+    QRect Style::frameContentsRect( const QStyleOption* option, const QWidget* widget ) const
+    {
+        if( !StyleConfigData::sidePanelDrawFrame() &&
+            qobject_cast<const QAbstractScrollArea*>( widget ) &&
+            widget->property( PropertyNames::sidePanelView ).toBool() )
+        {
+
+            // adjust margins for sidepanel widgets
+            return option->rect.adjusted( 0, 0, -1, 0 );
+
+        } else {
+
+            // base class implementation
+            return ParentStyleClass::subElementRect( SE_FrameContents, option, widget );
+
+        }
     }
 
     //___________________________________________________________________________________________________________________

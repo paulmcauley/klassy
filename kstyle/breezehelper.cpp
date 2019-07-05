@@ -534,7 +534,7 @@ namespace Breeze
         if( !outline.isValid() ) return;
 
         // adjust rect
-        QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
+        QRectF frameRect( rect );
         frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
         // setup painter
@@ -546,22 +546,18 @@ namespace Breeze
         {
             default:
             case SideLeft:
-            frameRect.adjust( 0, 1, 0, -1 );
             painter->drawLine( frameRect.topRight(), frameRect.bottomRight() );
             break;
 
             case SideTop:
-            frameRect.adjust( 1, 0, -1, 0 );
             painter->drawLine( frameRect.topLeft(), frameRect.topRight() );
             break;
 
             case SideRight:
-            frameRect.adjust( 0, 1, 0, -1 );
             painter->drawLine( frameRect.topLeft(), frameRect.bottomLeft() );
             break;
 
             case SideBottom:
-            frameRect.adjust( 1, 0, -1, 0 );
             painter->drawLine( frameRect.bottomLeft(), frameRect.bottomRight() );
             break;
 

@@ -200,6 +200,7 @@ namespace Breeze
         QRect progressBarGrooveRect( const QStyleOption*, const QWidget* ) const;
         QRect progressBarContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect progressBarLabelRect( const QStyleOption*, const QWidget* ) const;
+        QRect frameContentsRect( const QStyleOption*, const QWidget* ) const;
         QRect headerArrowRect( const QStyleOption*, const QWidget* ) const;
         QRect headerLabelRect( const QStyleOption*, const QWidget* ) const;
         QRect tabBarTabLeftButtonRect( const QStyleOption*, const QWidget* ) const;
