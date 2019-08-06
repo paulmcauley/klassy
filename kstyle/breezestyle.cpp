@@ -1125,7 +1125,6 @@ namespace Breeze
                     QMouseEvent copy(
                         mouseEvent->type(),
                         position,
-                        scrollBar->mapToGlobal( position ),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
