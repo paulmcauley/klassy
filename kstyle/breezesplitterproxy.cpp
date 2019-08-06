@@ -254,7 +254,6 @@ namespace Breeze
                     QMouseEvent copy(
                         mouseEvent->type(),
                         _hook,
-                        _splitter.data()->mapToGlobal(_hook),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
@@ -266,7 +265,6 @@ namespace Breeze
                    QMouseEvent copy(
                         mouseEvent->type(),
                         _splitter.data()->mapFromGlobal( mouseEvent->globalPos() ),
-                        mouseEvent->globalPos(),
                         mouseEvent->button(),
                         mouseEvent->buttons(), mouseEvent->modifiers());
 
