@@ -60,9 +60,9 @@ namespace Breeze
     //____________________________________________________________________
     void Helper::loadConfig()
     {
-        _viewFocusBrush = KStatefulBrush( KColorScheme::View, KColorScheme::FocusColor, _config );
-        _viewHoverBrush = KStatefulBrush( KColorScheme::View, KColorScheme::HoverColor, _config );
-        _viewNegativeTextBrush = KStatefulBrush( KColorScheme::View, KColorScheme::NegativeText, _config );
+        _viewFocusBrush = KStatefulBrush( KColorScheme::View, KColorScheme::FocusColor );
+        _viewHoverBrush = KStatefulBrush( KColorScheme::View, KColorScheme::HoverColor );
+        _viewNegativeTextBrush = KStatefulBrush( KColorScheme::View, KColorScheme::NegativeText );
 
         const QPalette palette( QApplication::palette() );
         const KConfigGroup group( _config->group( "WM" ) );

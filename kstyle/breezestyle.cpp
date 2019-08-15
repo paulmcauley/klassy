@@ -194,9 +194,13 @@ namespace Breeze
             QStringLiteral( "/BreezeDecoration" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
-#if !BREEZE_USE_KDE4
+        #if !BREEZE_USE_KDE4
+        #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
+        this->addEventFilter(qApp);
+        #else
         connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
-#endif
+        #endif
+        #endif
         // call the slot directly; this initial call will set up things that also
         // need to be reset when the system palette changes
         loadConfiguration();
@@ -1023,6 +1027,9 @@ namespace Breeze
         else if( auto subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
         #if QT_VERSION >= 0x050000
         else if( auto commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
+        #endif
+        #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
+        else if( object == qApp && event->type() == QEvent::ApplicationPaletteChange ) { configurationChanged(); }
         #endif
         // cast to QWidget
         QWidget *widget = static_cast<QWidget*>( object );
