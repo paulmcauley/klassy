@@ -6088,6 +6088,7 @@ namespace Breeze
         // frame
         if( toolButtonOption->subControls & SC_ToolButton )
         {
+            if( !flat ) copy.rect = buttonRect;
             if( inTabBar ) drawTabBarPanelButtonToolPrimitive( &copy, painter, widget );
             else drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
         }
