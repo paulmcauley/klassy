@@ -3574,10 +3574,22 @@ namespace Breeze
         if( !autoRaise )
         {
 
+            // need to check widget for popup mode, because option is not set properly
+            const auto toolButton( qobject_cast<const QToolButton*>( widget ) );
+            const bool hasPopupMenu( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
+
             // render as push button
             const auto shadow( _helper->shadowColor( palette ) );
             const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+
+            // adjust frame in case of menu
+            if( hasPopupMenu )
+            {
+                painter->setClipRect( rect );
+                rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 2, 0 );
+                rect = visualRect( option, rect );
+            }
 
             // render
             _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
@@ -3953,7 +3965,6 @@ namespace Breeze
         auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
         separatorRect.setWidth( 1 );
         separatorRect = visualRect( option, separatorRect );
-        if( sunken ) separatorRect.translate( 1, 1 );
         _helper->renderSeparator( painter, separatorRect, outline, true );
 
         return true;
