@@ -3965,6 +3965,7 @@ namespace Breeze
         auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
         separatorRect.setWidth( 1 );
         separatorRect = visualRect( option, separatorRect );
+        if( sunken ) separatorRect.translate( 1, 1 );
         _helper->renderSeparator( painter, separatorRect, outline, true );
 
         return true;
