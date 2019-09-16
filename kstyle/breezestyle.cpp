@@ -6521,8 +6521,12 @@ namespace Breeze
             // groove
             const auto grooveColor( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
 
+            // angles
+            const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
+            const qreal last( dialAngle( sliderOption, sliderOption->maximum ) );
+            
             // render groove
-            _helper->renderDialGroove( painter, grooveRect, grooveColor );
+            _helper->renderDialGroove( painter, grooveRect, grooveColor, first, last );
 
             if( enabled )
             {
@@ -6531,7 +6535,6 @@ namespace Breeze
                 const auto highlight( palette.color( QPalette::Highlight ) );
 
                 // angles
-                const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
                 const qreal second( dialAngle( sliderOption, sliderOption->sliderPosition ) );
 
                 // render contents

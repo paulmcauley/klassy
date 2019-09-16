@@ -1052,7 +1052,8 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderDialGroove(
         QPainter* painter, const QRect& rect,
-        const QColor& color ) const
+        const QColor& color,
+        qreal first, qreal last ) const
     {
 
         // setup painter
@@ -1066,9 +1067,19 @@ namespace Breeze
             const qreal penWidth( Metrics::Slider_GrooveThickness );
             const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
 
-            painter->setPen( QPen( color, penWidth ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawEllipse( grooveRect );
+            // setup angles
+            const int angleStart( first * 180 * 16 / M_PI );
+            const int angleSpan( (last - first ) * 180 * 16 / M_PI );
+            
+            // setup pen
+            if( angleSpan != 0 )
+            {
+                QPen pen( color, penWidth );
+                pen.setCapStyle( Qt::RoundCap );
+                painter->setPen( pen );
+                painter->setBrush( Qt::NoBrush );
+                painter->drawArc( grooveRect, angleStart, angleSpan );
+            }
         }
 
         
