@@ -3425,9 +3425,12 @@ namespace Breeze
 
             // cast option
             const QStyleOptionToolButton* toolButtonOption( static_cast<const QStyleOptionToolButton*>( option ) );
-            const bool hasPopupMenu( toolButtonOption->subControls & SC_ToolButtonMenu );
+            const bool hasMenu(
+                ( toolButtonOption->subControls & SC_ToolButtonMenu ) ||
+                ( toolButtonOption->features&QStyleOptionToolButton::HasMenu
+                && toolButtonOption->features&QStyleOptionToolButton::PopupDelay ) );
             const bool sunken( state & (State_On | State_Sunken) );
-            if( flat && hasPopupMenu )
+            if( flat && hasMenu )
             {
 
                 if( sunken && !mouseOver ) color = palette.color( QPalette::HighlightedText );
