@@ -33,7 +33,7 @@ namespace Breeze
 {
 
     //____________________________________________________________________
-    MdiWindowShadow::MdiWindowShadow( QWidget* parent, TileSet shadowTiles ):
+    MdiWindowShadow::MdiWindowShadow( QWidget* parent, const TileSet &shadowTiles ):
         QWidget( parent ),
         _shadowTiles( shadowTiles )
     {

@@ -3112,7 +3112,7 @@ namespace Breeze
         if( rect.height() < 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height())
         {
 
-            const auto background( palette.color( QPalette::Base ) );
+            const auto &background = palette.color( QPalette::Base );
 
             painter->setPen( Qt::NoPen );
             painter->setBrush( background );
@@ -3136,7 +3136,7 @@ namespace Breeze
             const qreal opacity( _animations->inputWidgetEngine().frameOpacity( widget ) );
 
             // render
-            const auto background( palette.color( QPalette::Base ) );
+            const auto &background = palette.color( QPalette::Base );
             const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             _helper->renderFrame( painter, rect, background, outline );
 
@@ -3729,7 +3729,7 @@ namespace Breeze
         { _shadowHelper->registerWidget( widget->window(), true ); }
 
         const auto& palette( option->palette );
-        const auto background( palette.color( QPalette::ToolTipBase ) );
+        const auto &background = palette.color( QPalette::ToolTipBase );
         const auto outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
 
@@ -5043,7 +5043,7 @@ namespace Breeze
 
             const qreal progress( _animations->busyIndicatorEngine().value() );
 
-            const auto first( palette.color( QPalette::Highlight ) );
+            const auto &first = palette.color( QPalette::Highlight );
             const auto second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
             _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, reverse, progress );
 
@@ -5271,7 +5271,7 @@ namespace Breeze
 
         // colors
         const auto& palette( option->palette );
-        const auto background( palette.color( QPalette::Window ) );
+        const auto &background = palette.color( QPalette::Window );
 
         // adjust rect, based on number of buttons to be drawn
         const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
@@ -5425,7 +5425,7 @@ namespace Breeze
         const qreal opacity( _animations->headerViewEngine().opacity( widget, rect.topLeft() ) );
 
         // fill
-        const auto normal( palette.color( QPalette::Button ) );
+        const auto &normal = palette.color( QPalette::Button );
         const auto focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
         const auto hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
 
@@ -6194,7 +6194,7 @@ namespace Breeze
                 if( flat )
                 {
 
-                    const auto background( palette.color( QPalette::Base ) );
+                    const auto &background = palette.color( QPalette::Base );
 
                     painter->setBrush( background );
                     painter->setPen( Qt::NoPen );
@@ -6322,7 +6322,7 @@ namespace Breeze
             if( flat )
             {
 
-                const auto background( palette.color( QPalette::Base ) );
+                const auto &background = palette.color( QPalette::Base );
 
                 painter->setBrush( background );
                 painter->setPen( Qt::NoPen );
@@ -6395,7 +6395,7 @@ namespace Breeze
 
                 // colors
                 const auto base( _helper->separatorColor( palette ) );
-                const auto highlight( palette.color( QPalette::Highlight ) );
+                const auto &highlight = palette.color( QPalette::Highlight );
 
                 while( current <= sliderOption->maximum )
                 {
@@ -6437,7 +6437,7 @@ namespace Breeze
                 auto handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
 
                 // highlight color
-                const auto highlight( palette.color( QPalette::Highlight ) );
+                const auto &highlight = palette.color( QPalette::Highlight );
 
                 if( sliderOption->orientation == Qt::Horizontal )
                 {
@@ -6484,7 +6484,7 @@ namespace Breeze
             const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
 
             // define colors
-            const auto background( palette.color( QPalette::Button ) );
+            const auto &background = palette.color( QPalette::Button );
             const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
             const auto shadow( _helper->shadowColor( palette ) );
 
@@ -6535,7 +6535,7 @@ namespace Breeze
             {
 
                 // highlight
-                const auto highlight( palette.color( QPalette::Highlight ) );
+                const auto &highlight = palette.color( QPalette::Highlight );
 
                 // angles
                 const qreal second( dialAngle( sliderOption, sliderOption->sliderPosition ) );
@@ -6567,7 +6567,7 @@ namespace Breeze
             const qreal opacity( _animations->dialEngine().buttonOpacity( widget ) );
 
             // define colors
-            const auto background( palette.color( QPalette::Button ) );
+            const auto &background = palette.color( QPalette::Button );
             const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
             const auto shadow( _helper->shadowColor( palette ) );
 

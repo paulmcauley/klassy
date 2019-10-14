@@ -151,7 +151,7 @@ namespace Breeze
     void FrameShadowFactory::updateShadowsGeometry( const QObject* object, QRect rect ) const
     {
 
-        const QList<QObject *> children = object->children();
+        const QList<QObject *> &children = object->children();
         foreach( QObject *child, children )
         {
             if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
@@ -164,7 +164,7 @@ namespace Breeze
     void FrameShadowFactory::raiseShadows( QObject* object ) const
     {
 
-        const QList<QObject *> children = object->children();
+        const QList<QObject *> &children = object->children();
         foreach( QObject *child, children )
         {
             if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
@@ -177,7 +177,7 @@ namespace Breeze
     void FrameShadowFactory::update( QObject* object ) const
     {
 
-        const QList<QObject* > children = object->children();
+        const QList<QObject* > &children = object->children();
         foreach( QObject *child, children )
         {
             if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )
@@ -190,7 +190,7 @@ namespace Breeze
     void FrameShadowFactory::updateState( const QWidget* widget, bool focus, bool hover, qreal opacity, AnimationMode mode ) const
     {
 
-        const QList<QObject *> children = widget->children();
+        const QList<QObject *> &children = widget->children();
         foreach( QObject *child, children )
         {
             if( FrameShadow* shadow = qobject_cast<FrameShadow *>(child) )

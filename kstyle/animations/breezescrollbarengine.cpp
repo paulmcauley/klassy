@@ -52,7 +52,7 @@ namespace Breeze
             {
 
                 const ScrollBarData* scrollBarData( static_cast<const ScrollBarData*>( data.data() ) );
-                Animation::Pointer animation = scrollBarData->animation( control );
+                const Animation::Pointer &animation = scrollBarData->animation( control );
                 return animation.data()->isRunning();
 
             } else return false;

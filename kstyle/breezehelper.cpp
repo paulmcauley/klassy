@@ -42,7 +42,7 @@ namespace Breeze
 
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config ):
-        _config( config )
+        _config( std::move( config ) )
     { init(); }
 
     //____________________________________________________________________
@@ -128,7 +128,7 @@ namespace Breeze
     {
 
         QColor outline( palette.color( QPalette::Inactive, QPalette::Highlight ) );
-        QColor focus( palette.color( QPalette::Active, QPalette::Highlight ) );
+        const QColor &focus = palette.color( QPalette::Active, QPalette::Highlight );
 
         if( mode == AnimationFocus )
         {

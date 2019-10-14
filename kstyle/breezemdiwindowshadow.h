@@ -45,7 +45,7 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit MdiWindowShadow( QWidget*, TileSet );
+        explicit MdiWindowShadow( QWidget*, const TileSet & );
 
         //* update geometry
         void updateGeometry();
