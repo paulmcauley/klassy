@@ -314,7 +314,7 @@ namespace Breeze
         //* The Wayland pointer object where we get pointer events on.
         KWayland::Client::Pointer* _pointer = nullptr;
 
-        //* latest searial which needs to be passed to the move requests.
+        //* latest serial which needs to be passed to the move requests.
         quint32 _waylandSerial = 0;
         #endif
 

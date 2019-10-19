@@ -63,7 +63,7 @@ namespace Breeze
 
         Q_SIGNALS:
 
-        //* emmited when changed
+        //* emitted when changed
         void changed( bool );
 
         protected:

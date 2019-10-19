@@ -105,7 +105,7 @@ namespace Breeze
 
         if( !widget ) return;
 
-        // check against noAnimations propery
+        // check against noAnimations property
         QVariant propertyValue( widget->property( PropertyNames::noAnimations ) );
         if( propertyValue.isValid() && propertyValue.toBool() ) return;
 

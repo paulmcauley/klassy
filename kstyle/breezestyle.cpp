@@ -2163,7 +2163,7 @@ namespace Breeze
             case SC_ToolButtonMenu:
             {
 
-                // check fratures
+                // check features
                 if( !(hasPopupMenu || hasInlineIndicator ) ) return QRect();
 
                 // check features
@@ -6074,7 +6074,7 @@ namespace Breeze
         const bool isMenuTitle( this->isMenuTitle( widget ) );
         if( isMenuTitle )
         {
-            // copy option to adust state, and set font as not-bold
+            // copy option to adjust state, and set font as not-bold
             QStyleOptionToolButton copy( *toolButtonOption );
             copy.font.setBold( false );
             copy.state = State_Enabled;

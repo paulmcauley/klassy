@@ -91,7 +91,7 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         /*
-        directly from bespin code. Supposibly prevent playing with some 'pseudo-widgets'
+        directly from bespin code. Supposedly prevent playing with some 'pseudo-widgets'
         that have winId matching some other -random- window
         */
         if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId()))

@@ -340,7 +340,7 @@ namespace Breeze
         bool drawTitleBarComplexControl( const QStyleOptionComplex*, QPainter*, const QWidget* ) const;
         //@}
 
-        //!*@name various utilty functions
+        //!*@name various utility functions
         //@{
 
         //* spinbox arrows

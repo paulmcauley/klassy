@@ -140,7 +140,7 @@ namespace Breeze
         // store in set
         _registeredWidgets.insert( widget );
 
-        // create shadow immediatly if widget is already visible
+        // create shadow immediately if widget is already visible
         if( widget->isVisible() )
         {
             installShadow( widget );

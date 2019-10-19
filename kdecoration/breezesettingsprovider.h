@@ -54,7 +54,7 @@ namespace Breeze
 
         private:
 
-        //* contructor
+        //* constructor
         SettingsProvider();
 
         //* default configuration

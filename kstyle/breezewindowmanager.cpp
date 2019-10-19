@@ -632,7 +632,7 @@ namespace Breeze
     bool WindowManager::isBlackListed( QWidget* widget )
     {
 
-        // check against noAnimations propery
+        // check against noAnimations property
         const auto propertyValue( widget->property( PropertyNames::noWindowGrab ) );
         if( propertyValue.isValid() && propertyValue.toBool() ) return true;
 

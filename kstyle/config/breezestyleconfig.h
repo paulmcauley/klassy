@@ -41,7 +41,7 @@ namespace Breeze
 
         Q_SIGNALS:
 
-        //* emmited whenever one option is changed.
+        //* emitted whenever one option is changed.
         void changed(bool);
 
         public Q_SLOTS:

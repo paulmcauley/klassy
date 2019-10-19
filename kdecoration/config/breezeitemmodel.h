@@ -73,7 +73,7 @@ namespace Breeze
         void privateSort()
         { privateSort( m_sortColumn, m_sortOrder ); }
 
-        //* private sort, with no signals emmitted
+        //* private sort, with no signals emitted
         virtual void privateSort( int column, Qt::SortOrder order ) = 0;
 
         //* used to sort items in list
