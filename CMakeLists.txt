@@ -28,6 +28,8 @@ else()
   include(KDEInstallDirs)
   include(KDECMakeSettings)
   include(KDECompilerSettings NO_POLICY_SCOPE)
+  include(KDEClangFormat)
+
   include(GtkUpdateIconCache)
 
   option(WITH_DECORATIONS "Build Breeze window decorations for KWin" ON)
@@ -67,6 +69,10 @@ else()
                                     PATH_VARS KDE_INSTALL_FULL_DATADIR
                                     INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                                     )
+
+  # add clang-format target for all our real source files
+  file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
+  kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 
   install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
                  "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfigVersion.cmake"
