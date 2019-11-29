@@ -30,8 +30,9 @@
 #include <KDecoration2/DecorationSettings>
 
 #include <QPalette>
-#include <QPropertyAnimation>
 #include <QVariant>
+
+class QVariantAnimation;
 
 namespace KDecoration2
 {
@@ -45,9 +46,6 @@ namespace Breeze
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
-
-        //* declare active state opacity
-        Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
         public:
 
@@ -145,7 +143,7 @@ namespace Breeze
         SizeGrip *m_sizeGrip = nullptr;
 
         //* active state change animation
-        QPropertyAnimation *m_animation;
+        QVariantAnimation *m_animation;
 
         //* active state change opacity
         qreal m_opacity = 0;

@@ -26,7 +26,8 @@
 
 #include <QHash>
 #include <QImage>
-#include <QPropertyAnimation>
+
+class QVariantAnimation;
 
 namespace Breeze
 {
@@ -34,9 +35,6 @@ namespace Breeze
     class Button : public KDecoration2::DecorationButton
     {
         Q_OBJECT
-
-        //* declare active state opacity
-        Q_PROPERTY( qreal opacity READ opacity WRITE setOpacity )
 
         public:
 
@@ -123,7 +121,7 @@ namespace Breeze
         Flag m_flag = FlagNone;
 
         //* active state change animation
-        QPropertyAnimation *m_animation;
+        QVariantAnimation *m_animation;
 
         //* vertical offset (for rendering)
         QPointF m_offset;

@@ -24,6 +24,7 @@
 #include <KColorUtils>
 
 #include <QPainter>
+#include <QVariantAnimation>
 
 namespace Breeze
 {
@@ -36,15 +37,17 @@ namespace Breeze
     //__________________________________________________________________
     Button::Button(DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
-        , m_animation( new QPropertyAnimation( this ) )
+        , m_animation( new QVariantAnimation( this ) )
     {
 
         // setup animation
-        m_animation->setStartValue( 0 );
+        // It is important start and end value are of the same type, hence 0.0 and not just 0
+        m_animation->setStartValue( 0.0 );
         m_animation->setEndValue( 1.0 );
-        m_animation->setTargetObject( this );
-        m_animation->setPropertyName( "opacity" );
         m_animation->setEasingCurve( QEasingCurve::InOutQuad );
+        connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+            setOpacity(value.toReal());
+        });
 
         // setup default geometry
         const int height = decoration->buttonHeight();
@@ -375,7 +378,7 @@ namespace Breeze
 
             return d->titleBarColor();
 
-        } else if( m_animation->state() == QPropertyAnimation::Running ) {
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
 
             return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
 
@@ -411,7 +414,7 @@ namespace Breeze
 
             return d->fontColor();
 
-        } else if( m_animation->state() == QPropertyAnimation::Running ) {
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
 
             if( type() == DecorationButtonType::Close )
             {
@@ -470,8 +473,8 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>(decoration());
         if( !(d && d->internalSettings()->animationsEnabled() ) ) return;
 
-        m_animation->setDirection( hovered ? QPropertyAnimation::Forward : QPropertyAnimation::Backward );
-        if( m_animation->state() != QPropertyAnimation::Running ) m_animation->start();
+        m_animation->setDirection( hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
+        if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
     }
 
