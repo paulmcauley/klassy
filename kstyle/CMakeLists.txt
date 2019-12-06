@@ -19,7 +19,7 @@ if(BREEZE_USE_KDE4)
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(XCB xcb x11-xcb)
     add_feature_info("x11-xcb" XCB_FOUND "Required to pass style properties to native Windows on X11 Platform")
-    set_feature_info("x11-xcb" "Required to pass style properties to native Windows on X11 Platform" "http://xcb.freedesktop.org")
+    set_feature_info("x11-xcb" "Required to pass style properties to native Windows on X11 Platform" "https://xcb.freedesktop.org")
     set(BREEZE_HAVE_X11 ${XCB_FOUND})
   else()
     set(BREEZE_HAVE_X11 FALSE)
@@ -56,7 +56,7 @@ else()
   find_package(XCB COMPONENTS XCB)
   set_package_properties(XCB PROPERTIES
       DESCRIPTION "X protocol C-language Binding"
-      URL "http://xcb.freedesktop.org"
+      URL "https://xcb.freedesktop.org"
       TYPE OPTIONAL
       PURPOSE "Required to pass style properties to native Windows on X11 Platform"
   )
@@ -171,7 +171,7 @@ else()
   endif()
 
   if (WIN32)
-    # As stated in http://msdn.microsoft.com/en-us/library/4hwaceh6.aspx M_PI only gets defined
+    # As stated in https://docs.microsoft.com/en-us/cpp/c-runtime-library/math-constants M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
     target_compile_definitions(breeze PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
   endif()

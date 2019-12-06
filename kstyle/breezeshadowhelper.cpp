@@ -397,7 +397,7 @@ namespace Breeze
 
         /**
         shadow atom and property specification available at
-        http://community.kde.org/KWin/Shadow
+        https://community.kde.org/KWin/Shadow
         */
 
         // create atom
