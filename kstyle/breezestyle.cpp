@@ -2578,6 +2578,7 @@ namespace Breeze
 
         // add button width and spacing
         size.rwidth() += Metrics::MenuButton_IndicatorWidth+2;
+        size.rwidth() += Metrics::Button_ItemSpacing;
 
         return size;
 
