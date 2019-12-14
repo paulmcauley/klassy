@@ -1301,6 +1301,7 @@ namespace Breeze
             case ArrowDown: arrow = QVector<QPointF>{QPointF( -4, -2 ), QPointF( 0, 2 ), QPointF( 4, -2 )}; break;
             case ArrowLeft: arrow = QVector<QPointF>{QPointF( 2, -4 ), QPointF( -2, 0 ), QPointF( 2, 4 )}; break;
             case ArrowRight: arrow = QVector<QPointF>{QPointF( -2, -4 ), QPointF( 2, 0 ), QPointF( -2, 4 )}; break;
+            case ArrowDown_Small: arrow = QVector<QPointF>{QPointF( 1.5, 3.5 ), QPointF( 3.5, 5.5 ), QPointF( 5.5, 3.5 )}; break;
             default: break;
         }
 
@@ -1308,7 +1309,10 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         painter->translate( QRectF( rect ).center() );
         painter->setBrush( Qt::NoBrush );
-        painter->setPen( QPen( color, 1.1 ) );
+        QPen pen( color, 1.1 );
+        pen.setCapStyle(Qt::SquareCap);
+        pen.setJoinStyle(Qt::MiterJoin);
+        painter->setPen( pen );
         painter->drawPolyline( arrow );
         painter->restore();
    }

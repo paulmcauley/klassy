@@ -234,7 +234,8 @@ namespace Breeze
         ArrowUp,
         ArrowDown,
         ArrowLeft,
-        ArrowRight
+        ArrowRight,
+        ArrowDown_Small,
     };
 
     //* button type
