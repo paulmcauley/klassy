@@ -5396,7 +5396,7 @@ namespace Breeze
         QPen pen = KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) );
         pen.setJoinStyle(Qt::RoundJoin);
         painter->setPen( pen );
-        color.setAlpha( 50 );
+        color.setAlpha( 51 ); // 20% opacity
         painter->setBrush( color );
         painter->drawRect( _helper->strokedRect( option->rect ) );
 
