@@ -5388,15 +5388,19 @@ namespace Breeze
     bool Style::drawRubberBandControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
     {
 
-        const auto& palette( option->palette );
-        const auto rect( option->rect );
+        painter->save();
 
+        painter->setRenderHints( QPainter::Antialiasing );
+        const auto& palette( option->palette );
         auto color = palette.color( QPalette::Highlight );
-        painter->setPen( KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) ) );
+        QPen pen = KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) );
+        pen.setJoinStyle(Qt::RoundJoin);
+        painter->setPen( pen );
         color.setAlpha( 50 );
         painter->setBrush( color );
-        painter->setClipRegion( rect );
-        painter->drawRect( rect.adjusted( 0, 0, -1, -1 ) );
+        painter->drawRect( _helper->strokedRect( option->rect ) );
+
+        painter->restore();
         return true;
 
     }

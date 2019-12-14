@@ -1437,9 +1437,28 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    QRectF Helper::strokedRect( const QRect &rect, const int penWidth ) const
+    {
+        /* With a pen stroke width of 1, the rectangle should have each of its
+         * sides moved inwards by half a pixel. This allows the stroke to be
+         * pixel perfect instead of blurry from sitting between pixels and
+         * prevents the rectangle with a stroke from becoming larger than the
+         * original size of the rectangle.
+         */
+        qreal adjustment = 0.5 * penWidth;
+        return QRectF( rect ).adjusted( adjustment, adjustment, -adjustment, -adjustment );
+    }
+    
+    QRectF Helper::strokedRect( const QRectF &rect, const int penWidth ) const
+    {
+        qreal adjustment = 0.5 * penWidth;
+        return rect.adjusted( adjustment, adjustment, -adjustment, -adjustment );
+    }
+    
+    //______________________________________________________________________________
     QRectF Helper::shadowRect( const QRectF& rect ) const
     { return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0.5, 0.5 ); }
-
+    
     //______________________________________________________________________________
     QPainterPath Helper::roundedPath( const QRectF& rect, Corners corners, qreal radius ) const
     {
