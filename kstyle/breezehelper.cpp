@@ -641,12 +641,9 @@ namespace Breeze
 
             frameRect.translate( 1, 1 );
 
-        } else if( shadow.isValid() ) {
+        } else {
 
-            const qreal shadowRadius = qMax( radius - 1, qreal( 0.0 ) );
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawRoundedRect( shadowRect( frameRect ), shadowRadius, shadowRadius );
+            renderRoundedRectShadow( painter, frameRect, shadow, radius );
 
         }
 
@@ -875,11 +872,7 @@ namespace Breeze
 
         } else {
 
-            painter->setPen( QPen( shadow, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-
-            const qreal shadowRadius( radius + 0.5 );
-            painter->drawRoundedRect( shadowRect( frameRect ).adjusted( -0.5, -0.5, 0.5, 0.5 ), shadowRadius, shadowRadius );
+            renderRoundedRectShadow( painter, frameRect, shadow, radius );
 
         }
 
@@ -982,9 +975,7 @@ namespace Breeze
 
         } else {
 
-            painter->setPen( QPen( shadow, 1 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawEllipse( shadowRect( frameRect ).adjusted( -0.5, -0.5, 0.5, 0.5 ) );
+            renderEllipseShadow( painter, frameRect, shadow );
 
         }
 
@@ -1141,12 +1132,10 @@ namespace Breeze
         frameRect.adjust( 1, 1, -1, -1 );
 
         // shadow
-        if( shadow.isValid() && !sunken )
+        if( !sunken )
         {
 
-            painter->setPen( QPen( shadow, 2 ) );
-            painter->setBrush( Qt::NoBrush );
-            painter->drawEllipse( shadowRect( frameRect ) );
+            renderEllipseShadow( painter, frameRect, shadow );
 
         }
 
@@ -1408,7 +1397,61 @@ namespace Breeze
         painter->restore();
 
     }
+    
+    //______________________________________________________________________________
+    void Helper::renderRoundedRectShadow( QPainter* painter, const QRectF& rect, const QColor& color, qreal radius ) const
+    {
+        if( !color.isValid() ) return;
+        
+        painter->save();
+        
+        /* Clipping prevents shadows from being visible inside checkboxes.
+         * Clipping away unneeded parts here also improves performance by 40-60%
+         * versus using just an outline of a rectangle.
+         * Tested by looking at the paint analyser in GammaRay.
+         */
+        // Right side
+        QRegion clip( rect.right() - std::ceil( radius ), rect.top(), 
+                      std::ceil( radius ) + 1, rect.height() );
+        // Bottom side
+        clip = clip.united( QRegion( rect.left(), rect.bottom() - std::ceil( radius ), 
+                                     rect.width(), std::ceil( radius ) + 1 ) );
 
+        painter->setClipRegion( clip );
+        painter->setPen( color );
+        painter->setBrush( Qt::NoBrush );
+        painter->drawRoundedRect( rect.translated( 0.5, 0.5 ), radius, radius );
+        
+        painter->restore();
+    }
+    
+    //______________________________________________________________________________
+    void Helper::renderEllipseShadow( QPainter* painter, const QRectF& rect, const QColor& color ) const
+    {
+        if( !color.isValid() ) return;
+        
+        painter->save();
+
+        // Clipping does not improve performance here
+
+        // 0.5 is subtracted because of the pen
+        qreal radius = rect.width() / 2 - 0.5;
+        
+        /* The right side is offset by +0.5 for the visible part of the shadow.
+         * The other sides are offset by +0.5 or -0.5 because of the pen.
+         */
+        QRectF shadowRect = rect.adjusted( 0.5, 0.5, 0.5, -0.5 );
+        
+        painter->translate( rect.center() );
+        painter->rotate( 45 );
+        painter->translate( -rect.center() );
+        painter->setPen( color );
+        painter->setBrush( Qt::NoBrush );
+        painter->drawRoundedRect( shadowRect, radius, radius );
+        
+        painter->restore();
+    }
+    
     //______________________________________________________________________________
     bool Helper::isX11()
     {
@@ -1454,11 +1497,7 @@ namespace Breeze
         qreal adjustment = 0.5 * penWidth;
         return rect.adjusted( adjustment, adjustment, -adjustment, -adjustment );
     }
-    
-    //______________________________________________________________________________
-    QRectF Helper::shadowRect( const QRectF& rect ) const
-    { return rect.adjusted( 0.5, 0.5, -0.5, -0.5 ).translated( 0.5, 0.5 ); }
-    
+
     //______________________________________________________________________________
     QPainterPath Helper::roundedPath( const QRectF& rect, Corners corners, qreal radius ) const
     {

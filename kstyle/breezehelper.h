@@ -251,6 +251,12 @@ namespace Breeze
         //* generic button (for mdi decorations, tabs and dock widgets)
         void renderDecorationButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted ) const;
 
+        //* generic shadow for rounded rectangles
+        void renderRoundedRectShadow ( QPainter*, const QRectF&, const QColor&, qreal radius = Metrics::Frame_FrameRadius - 0.5 ) const;
+        
+        //* generic shadow for ellipses
+        void renderEllipseShadow( QPainter*, const QRectF&, const QColor& ) const;
+        
         //@}
 
         //*@name compositing utilities
@@ -318,9 +324,6 @@ namespace Breeze
 
         //* initialize
         void init();
-
-        //* return rectangle for widgets shadow, offset depending on light source
-        QRectF shadowRect( const QRectF& ) const;
 
         //* return rounded path in a given rect, with only selected corners rounded, and for a given radius
         QPainterPath roundedPath( const QRectF&, Corners, qreal ) const;
