@@ -875,7 +875,7 @@ namespace Breeze
         // content
         {
 
-            painter->setPen( QPen( color, 1 ) );
+            painter->setPen( QPen( color, PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
             radius = qMax( radius-1, qreal( 0.0 ) );
@@ -978,7 +978,7 @@ namespace Breeze
         // content
         {
 
-            painter->setPen( QPen( color, 1 ) );
+            painter->setPen( QPen( color, PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
             const QRectF contentRect( strokedRect( frameRect ) );
@@ -1309,7 +1309,7 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         painter->translate( QRectF( rect ).center() );
         painter->setBrush( Qt::NoBrush );
-        QPen pen( color, 1.1 );
+        QPen pen( color, PenWidth::Symbol );
         pen.setCapStyle(Qt::SquareCap);
         pen.setJoinStyle(Qt::MiterJoin);
         painter->setPen( pen );
@@ -1352,7 +1352,7 @@ namespace Breeze
 
         pen.setCapStyle( Qt::RoundCap );
         pen.setJoinStyle( Qt::MiterJoin );
-        pen.setWidthF( 1.1*qMax(1.0, 18.0/rect.width() ) );
+        pen.setWidthF( PenWidth::Symbol*qMax(1.0, 18.0/rect.width() ) );
         painter->setPen( pen );
 
         switch( buttonType )
@@ -1409,6 +1409,8 @@ namespace Breeze
         
         painter->save();
         
+        qreal translation = 0.5 * PenWidth::Shadow; // Translate for the pen
+        
         /* Clipping prevents shadows from being visible inside checkboxes.
          * Clipping away unneeded parts here also improves performance by 40-60%
          * versus using just an outline of a rectangle.
@@ -1416,15 +1418,15 @@ namespace Breeze
          */
         // Right side
         QRegion clip( rect.right() - std::ceil( radius ), rect.top(), 
-                      std::ceil( radius ) + 1, rect.height() );
+                      std::ceil( radius ) + PenWidth::Shadow, rect.height() );
         // Bottom side
         clip = clip.united( QRegion( rect.left(), rect.bottom() - std::ceil( radius ), 
-                                     rect.width(), std::ceil( radius ) + 1 ) );
+                                     rect.width(), std::ceil( radius ) + PenWidth::Shadow ) );
 
         painter->setClipRegion( clip );
         painter->setPen( color );
         painter->setBrush( Qt::NoBrush );
-        painter->drawRoundedRect( rect.translated( 0.5, 0.5 ), radius, radius );
+        painter->drawRoundedRect( rect.translated( translation, translation ), radius, radius );
         
         painter->restore();
     }
@@ -1438,13 +1440,14 @@ namespace Breeze
 
         // Clipping does not improve performance here
 
-        // 0.5 is subtracted because of the pen
-        qreal radius = rect.width() / 2 - 0.5;
+        qreal adjustment = 0.5 * PenWidth::Shadow; // Adjust for the pen
+
+        qreal radius = rect.width() / 2 - adjustment;
         
         /* The right side is offset by +0.5 for the visible part of the shadow.
          * The other sides are offset by +0.5 or -0.5 because of the pen.
          */
-        QRectF shadowRect = rect.adjusted( 0.5, 0.5, 0.5, -0.5 );
+        QRectF shadowRect = rect.adjusted( adjustment, adjustment, adjustment, -adjustment );
         
         painter->translate( rect.center() );
         painter->rotate( 45 );

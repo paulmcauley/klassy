@@ -315,10 +315,10 @@ namespace Breeze
         { return qMax( qreal( Metrics::Frame_FrameRadius ) - 0.5 + bias, 0.0 ); }
         
         //* return a QRectF with the appropriate size for a rectangle with a pen stroke
-        QRectF strokedRect( const QRectF &rect, const int penWidth = 1 ) const;
+        QRectF strokedRect( const QRectF &rect, const int penWidth = PenWidth::Frame ) const;
         
         //* return a QRectF with the appropriate size for a rectangle with a pen stroke
-        QRectF strokedRect( const QRect &rect, const int penWidth = 1 ) const;
+        QRectF strokedRect( const QRect &rect, const int penWidth = PenWidth::Frame ) const;
 
         protected:
 

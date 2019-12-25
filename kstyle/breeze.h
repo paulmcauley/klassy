@@ -170,6 +170,23 @@ namespace Breeze
 
     };
 
+    //* standard pen widths
+    namespace PenWidth
+    {
+        /* Using 1 instead of slightly more than 1 causes symbols drawn with
+         * pen strokes to look skewed. The exact amount added does not matter
+         * as long as it isn't too visible.
+         */
+        // The standard pen stroke width for symbols.
+        static constexpr qreal Symbol = 1.1;
+
+        // The standard pen stroke width for frames.
+        static constexpr int Frame = 1;
+
+        // The standard pen stroke width for shadows.
+        static constexpr int Shadow = 1;
+    }
+    
     //* animation mode
     enum AnimationMode
     {
