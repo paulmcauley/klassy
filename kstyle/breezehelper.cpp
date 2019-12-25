@@ -1488,7 +1488,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    QRectF Helper::strokedRect( const QRect &rect, const int penWidth ) const
+    QRectF Helper::strokedRect( const QRectF &rect, const int penWidth ) const
     {
         /* With a pen stroke width of 1, the rectangle should have each of its
          * sides moved inwards by half a pixel. This allows the stroke to be
@@ -1500,10 +1500,9 @@ namespace Breeze
         return QRectF( rect ).adjusted( adjustment, adjustment, -adjustment, -adjustment );
     }
     
-    QRectF Helper::strokedRect( const QRectF &rect, const int penWidth ) const
+    QRectF Helper::strokedRect( const QRect &rect, const int penWidth ) const
     {
-        qreal adjustment = 0.5 * penWidth;
-        return rect.adjusted( adjustment, adjustment, -adjustment, -adjustment );
+        return strokedRect(QRectF(rect), penWidth);
     }
 
     //______________________________________________________________________________
