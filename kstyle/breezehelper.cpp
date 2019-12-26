@@ -436,7 +436,7 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         painter->setBrush( Qt::NoBrush );
         painter->setPen( Qt::red );
-        painter->drawRect( QRectF( rect ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+        painter->drawRect( strokedRect( rect ) );
         painter->restore();
     }
 
@@ -459,8 +459,7 @@ namespace Breeze
 
             painter->setClipRect( rect );
 
-            QRectF copy( rect );
-            copy.adjust( 0.5, 0.5, -0.5, -0.5 );
+            QRectF copy( strokedRect( rect ) );
 
             const qreal radius( frameRadius( -1.0 ) );
             if( !(sides&SideTop) ) copy.adjust( 0, -radius, 0, 0 );
@@ -508,7 +507,7 @@ namespace Breeze
         {
 
             painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            frameRect = strokedRect( frameRect );
             radius = qMax( radius - 1, qreal( 0.0 ) );
 
         } else {
@@ -534,8 +533,7 @@ namespace Breeze
         if( !outline.isValid() ) return;
 
         // adjust rect
-        QRectF frameRect( rect );
-        frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+        QRectF frameRect( strokedRect( rect ) );
 
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing );
@@ -595,7 +593,7 @@ namespace Breeze
             {
 
                 painter->setPen( outline );
-                frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+                frameRect = strokedRect( frameRect );
                 radius = qMax( radius - 1, qreal( 0.0 ) );
 
             } else painter->setPen( Qt::NoPen );
@@ -655,7 +653,7 @@ namespace Breeze
             gradient.setColorAt( 1, outline.darker( hasFocus ? 110:103 ) );
             painter->setPen( QPen( QBrush( gradient ), 1.0 ) );
 
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            frameRect = strokedRect( frameRect );
             radius = qMax( radius - 1, qreal( 0.0 ) );
 
         } else painter->setPen( Qt::NoPen );
@@ -688,7 +686,7 @@ namespace Breeze
         // setup painter
         painter->setRenderHints( QPainter::Antialiasing );
 
-        const QRectF baseRect( rect );
+        const QRectF baseRect( rect.adjusted( 1, 1, -1, -1 ) );
 
         if( sunken )
         {
@@ -698,8 +696,7 @@ namespace Breeze
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
 
-            const QRectF contentRect( baseRect.adjusted( 1, 1, -1, -1 ) );
-            painter->drawRoundedRect( contentRect, radius, radius );
+            painter->drawRoundedRect( baseRect, radius, radius );
 
         } else {
 
@@ -707,7 +704,7 @@ namespace Breeze
 
             painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
-            const QRectF outlineRect( baseRect.adjusted( 1.5, 1.5, -1.5, -1.5 ) );
+            const QRectF outlineRect( strokedRect( baseRect ) );
             painter->drawRoundedRect( outlineRect, radius, radius );
 
         }
@@ -731,8 +728,7 @@ namespace Breeze
         if( !((rect.width() - tabWidth)%2) ) ++tabWidth;
 
         // adjust rect for antialiasing
-        QRectF baseRect( rect );
-        baseRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+        QRectF baseRect( strokedRect( rect ) );
 
         // create path
         QPainterPath path;
@@ -772,7 +768,7 @@ namespace Breeze
         {
 
             painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            frameRect = strokedRect( frameRect );
             radius = qMax( radius-1, qreal( 0.0 ) );
 
         } else painter->setPen( Qt::NoPen );
@@ -883,7 +879,7 @@ namespace Breeze
             painter->setBrush( Qt::NoBrush );
 
             radius = qMax( radius-1, qreal( 0.0 ) );
-            const QRectF contentRect( frameRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+            const QRectF contentRect( strokedRect( frameRect ) );
             painter->drawRoundedRect( contentRect, radius, radius );
 
         }
@@ -985,7 +981,7 @@ namespace Breeze
             painter->setPen( QPen( color, 1 ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( frameRect.adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+            const QRectF contentRect( strokedRect( frameRect ) );
             painter->drawEllipse( contentRect );
 
         }
@@ -1144,7 +1140,7 @@ namespace Breeze
         {
 
             painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            frameRect = strokedRect( frameRect );
 
         } else painter->setPen( Qt::NoPen );
 
@@ -1274,7 +1270,7 @@ namespace Breeze
         {
 
             painter->setPen( outline );
-            frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
+            frameRect = strokedRect( frameRect );
             radius = qMax( radius-1, qreal( 0.0 ) );
 
         } else painter->setPen( Qt::NoPen );
