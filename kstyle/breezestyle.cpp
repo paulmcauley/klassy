@@ -2836,7 +2836,7 @@ namespace Breeze
                     if( !menuItemOption->text.isEmpty() )
                     {
                         size.setHeight( qMax( size.height(), textHeight ) );
-                        size.setWidth( qMax( size.width(), menuItemOption->fontMetrics.width( menuItemOption->text ) ) );
+                        size.setWidth( qMax( size.width(), menuItemOption->fontMetrics.boundingRect( menuItemOption->text ).width() ) );
                     }
 
                     return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
