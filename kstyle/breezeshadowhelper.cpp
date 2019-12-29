@@ -585,9 +585,8 @@ namespace Breeze
 
         if (widget->inherits("QBalloonTip")) {
             // Balloon tip needs special margins to deal with the arrow.
-            int top = 0;
-            int bottom = 0;
-            widget->getContentsMargins(nullptr, &top, nullptr, &bottom);
+            int top = widget->contentsMargins().top();
+            int bottom = widget->contentsMargins().bottom();
 
             // Need to decrement default size further due to extra hard coded round corner.
 #if BREEZE_USE_KDE4
