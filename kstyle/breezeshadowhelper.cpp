@@ -457,7 +457,7 @@ namespace Breeze
 
         // create image from QPixmap and assign to pixmap
         QImage image( source.toImage() );
-        xcb_put_image( Helper::connection(), XCB_IMAGE_FORMAT_Z_PIXMAP, pixmap, _gc, image.width(), image.height(), 0, 0, 0, 32, image.byteCount(), image.constBits());
+        xcb_put_image( Helper::connection(), XCB_IMAGE_FORMAT_Z_PIXMAP, pixmap, _gc, image.width(), image.height(), 0, 0, 0, 32, image.sizeInBytes(), image.constBits());
 
         return pixmap;
 
