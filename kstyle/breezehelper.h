@@ -311,8 +311,12 @@ namespace Breeze
         //@}
 
         //* frame radius
-        qreal frameRadius( qreal bias = 0 ) const
-        { return qMax( qreal( Metrics::Frame_FrameRadius ) - 0.5 + bias, 0.0 ); }
+        constexpr qreal frameRadius( const int penWidth = PenWidth::NoPen, const qreal bias = 0 ) const
+        { return qMax( Metrics::Frame_FrameRadius - (0.5 * penWidth) + bias, 0.0 ); }
+        
+        //* frame radius with new pen width
+        constexpr qreal frameRadiusForNewPenWidth( const qreal oldRadius, const int penWidth ) const
+        { return qMax( oldRadius - (0.5 * penWidth), 0.0 ); }
         
         //* return a QRectF with the appropriate size for a rectangle with a pen stroke
         QRectF strokedRect( const QRectF &rect, const int penWidth = PenWidth::Frame ) const;

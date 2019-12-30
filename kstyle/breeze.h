@@ -185,6 +185,9 @@ namespace Breeze
 
         // The standard pen stroke width for shadows.
         static constexpr int Shadow = 1;
+        
+        // A value for pen width arguments to make it clear that there is no pen stroke
+        static constexpr int NoPen = 0;
     }
     
     //* animation mode
