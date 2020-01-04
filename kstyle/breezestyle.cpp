@@ -5264,10 +5264,6 @@ namespace Breeze
         const bool horizontal( state & State_Horizontal );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
-        // colors
-        const auto& palette( option->palette );
-        const auto &background = palette.color( QPalette::Window );
-
         // adjust rect, based on number of buttons to be drawn
         const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
 
@@ -6525,7 +6521,7 @@ namespace Breeze
             // angles
             const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
             const qreal last( dialAngle( sliderOption, sliderOption->maximum ) );
-            
+
             // render groove
             _helper->renderDialGroove( painter, grooveRect, grooveColor, first, last );
 
