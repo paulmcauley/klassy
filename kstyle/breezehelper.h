@@ -28,10 +28,6 @@
 #include <KColorScheme>
 #include <KSharedConfig>
 
-#if BREEZE_USE_KDE4
-#include <KComponentData>
-#endif
-
 #include <QPainterPath>
 #include <QWidget>
 
@@ -51,11 +47,6 @@ namespace Breeze
 
         //* constructor
         explicit Helper( KSharedConfig::Ptr );
-
-        #if BREEZE_USE_KDE4
-        //* constructor
-        explicit Helper( const QByteArray& );
-        #endif
 
         //* destructor
         virtual ~Helper()
@@ -336,11 +327,6 @@ namespace Breeze
         QPainterPath roundedPath( const QRectF&, Corners, qreal ) const;
 
         private:
-
-        #if BREEZE_USE_KDE4
-        //* component data
-        KComponentData _componentData;
-        #endif
 
         //* configuration
         KSharedConfig::Ptr _config;

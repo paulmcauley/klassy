@@ -22,9 +22,6 @@
 #ifndef config_breeze_h
 #define config_breeze_h
 
-/* Define to 1 if breeze is compiled against KDE4 */
-#cmakedefine01 BREEZE_USE_KDE4
-
 /* Define to 1 if QtQuick is available */
 #cmakedefine01 BREEZE_HAVE_QTQUICK
 

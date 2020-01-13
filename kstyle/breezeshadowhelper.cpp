@@ -284,12 +284,7 @@ namespace Breeze
         const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
             .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-        #if QT_VERSION >= 0x050300
         const qreal dpr = qApp->devicePixelRatio();
-        #else
-        const qreal dpr = 1.0;
-        #endif
-
         const qreal frameRadius = _helper.frameRadius();
 
         BoxShadowRenderer shadowRenderer;
@@ -323,11 +318,7 @@ namespace Breeze
         painter.setBrush(Qt::black);
         painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
         painter.drawRoundedRect(
-#if BREEZE_USE_KDE4
-            outerRect.adjusted(margins.left(), margins.top(), -margins.right(), -margins.bottom()),
-#else
             outerRect - margins,
-#endif
             frameRadius,
             frameRadius);
 
@@ -595,14 +586,7 @@ namespace Breeze
             int bottom = widget->contentsMargins().bottom();
 
             // Need to decrement default size further due to extra hard coded round corner.
-#if BREEZE_USE_KDE4
-            margins.setLeft(margins.left() - 1);
-            margins.setTop(margins.top() - 1);
-            margins.setRight(margins.right() - 1);
-            margins.setBottom(margins.bottom() - 1);
-#else
             margins -= 1;
-#endif
 
             // Arrow can be either to the top or the bottom. Adjust margins accordingly.
             const int diff = qAbs(top - bottom);
@@ -613,15 +597,7 @@ namespace Breeze
             }
         }
 
-#if BREEZE_USE_KDE4
-        const qreal dpr = _helper.devicePixelRatio(_shadowTiles.pixmap(0));
-        margins.setLeft(margins.left() * dpr);
-        margins.setTop(margins.top() * dpr);
-        margins.setRight(margins.right() * dpr);
-        margins.setBottom(margins.bottom() * dpr);
-#else
         margins *= _helper.devicePixelRatio(_shadowTiles.pixmap(0));
-#endif
 
         return margins;
     }

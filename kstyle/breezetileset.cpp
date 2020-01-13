@@ -31,23 +31,13 @@ namespace Breeze
     //______________________________________________________________________________________
     inline qreal devicePixelRatio( const QPixmap& pixmap )
     {
-        #if QT_VERSION >= 0x050300
         return pixmap.devicePixelRatio();
-        #else
-        Q_UNUSED( pixmap );
-        return 1;
-        #endif
     }
 
     //______________________________________________________________________________________
     inline void setDevicePixelRatio( QPixmap& pixmap, qreal value )
     {
-        #if QT_VERSION >= 0x050300
         return pixmap.setDevicePixelRatio( value );
-        #else
-        Q_UNUSED( pixmap );
-        Q_UNUSED( value );
-        #endif
     }
 
     //______________________________________________________________

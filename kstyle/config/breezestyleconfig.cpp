@@ -27,10 +27,6 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 
-#if !BREEZE_USE_KDE4
-#include <Kdelibs4Migration>
-#endif
-
 extern "C"
 {
     Q_DECL_EXPORT QWidget* allocate_kstyle_config(QWidget* parent)
@@ -88,18 +84,7 @@ namespace Breeze
         StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex() );
         StyleConfigData::setMenuOpacity( _menuOpacity->value() );
 
-        #if BREEZE_USE_KDE4
-        StyleConfigData::self()->writeConfig();
-        #else
         StyleConfigData::self()->save();
-
-        //update the KDE4 config to match
-        Kdelibs4Migration migration;
-        const QString kde4ConfigDirPath = migration.saveLocation("config");
-
-        QScopedPointer<KConfig> kde4Config(StyleConfigData::self()->config()->copyTo(kde4ConfigDirPath+"/breezerc", nullptr));
-        kde4Config->sync();
-        #endif
 
         // emit dbus signal
         QDBusMessage message( QDBusMessage::createSignal( QStringLiteral( "/BreezeStyle" ),  QStringLiteral( "org.kde.Breeze.Style" ), QStringLiteral( "reparseConfiguration" ) ) );
@@ -118,11 +103,7 @@ namespace Breeze
     void StyleConfig::reset()
     {
         // reparse configuration
-        #if BREEZE_USE_KDE4
-        StyleConfigData::self()->readConfig();
-        #else
         StyleConfigData::self()->load();
-        #endif
 
         load();
     }

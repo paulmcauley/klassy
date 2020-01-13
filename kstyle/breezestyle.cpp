@@ -144,10 +144,8 @@ namespace BreezePrivate
     };
 
     //_______________________________________________________________
-    #if !BREEZE_USE_KDE4
     bool isProgressBarHorizontal( const QStyleOptionProgressBar* option )
     {  return option && ( (option->state & QStyle::State_Horizontal ) || option->orientation == Qt::Horizontal ); }
-    #endif
 
 }
 
@@ -157,27 +155,18 @@ namespace Breeze
     //______________________________________________________________
     Style::Style():
 
-        #if BREEZE_USE_KDE4
-        _helper( new Helper( "breeze" ) )
-        #else
         _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
-        #endif
-
         , _shadowHelper( new ShadowHelper( this, *_helper ) )
         , _animations( new Animations( this ) )
         , _mnemonics( new Mnemonics( this ) )
-
-        #if !BREEZE_USE_KDE4
         , _blurHelper( new BlurHelper( this ) )
-        #endif
-
         , _windowManager( new WindowManager( this ) )
         , _frameShadowFactory( new FrameShadowFactory( this ) )
         , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
         , _splitterFactory( new SplitterFactory( this ) )
         , _widgetExplorer( new WidgetExplorer( this ) )
         , _tabBarData( new BreezePrivate::TabBarData( this ) )
-        #if BREEZE_HAVE_KSTYLE||BREEZE_USE_KDE4
+        #if BREEZE_HAVE_KSTYLE
         , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
         , CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
         #endif
@@ -194,12 +183,10 @@ namespace Breeze
             QStringLiteral( "/BreezeDecoration" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
-        #if !BREEZE_USE_KDE4
         #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
         this->addEventFilter(qApp);
         #else
         connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
-        #endif
         #endif
         // call the slot directly; this initial call will set up things that also
         // need to be reset when the system palette changes
@@ -337,17 +324,14 @@ namespace Breeze
 
             setTranslucentBackground( widget );
 
-            #if !BREEZE_USE_KDE4
             if ( _helper->hasAlphaChannel( widget ) && StyleConfigData::menuOpacity() < 100 ) {
                 _blurHelper->registerWidget( widget->window() );
             }
-            #endif
 
-        #if QT_VERSION >= 0x050000
         } else if( qobject_cast<QCommandLinkButton*>( widget ) ) {
 
             addEventFilter( widget );
-        #endif
+
         } else if( auto comboBox = qobject_cast<QComboBox*>( widget ) ) {
 
             if( !hasParent( widget, "QWebView" ) )
@@ -454,10 +438,7 @@ namespace Breeze
         _shadowHelper->unregisterWidget( widget );
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
-
-        #if !BREEZE_USE_KDE4
         _blurHelper->unregisterWidget( widget );
-        #endif
 
         // remove event filter
         if( qobject_cast<QAbstractScrollArea*>( widget ) ||
@@ -482,7 +463,6 @@ namespace Breeze
             case PM_DefaultFrameWidth:
             if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
             if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
-            #if QT_VERSION >= 0x050000
             else if( isQtQuickControl( option, widget ) )
             {
                 const QString &elementType = option->styleObject->property( "elementType" ).toString();
@@ -497,7 +477,6 @@ namespace Breeze
                 }
 
             }
-            #endif
 
             // fallback
             return Metrics::Frame_FrameWidth;
@@ -668,14 +647,10 @@ namespace Breeze
             case SH_Menu_SubMenuPopupDelay: return 150;
             case SH_Menu_SloppySubMenus: return true;
 
-            #if QT_VERSION >= 0x050000
             // TODO Qt6: drop deprecated SH_Widget_Animate
             case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
             case SH_Menu_SupportsSections: return true;
-            #endif
-            #if QT_VERSION >= 0x050A00
             case SH_Widget_Animation_Duration: return StyleConfigData::animationsEnabled() ? StyleConfigData::animationsDuration() : 0;
-            #endif
 
             case SH_DialogButtonBox_ButtonsHaveIcons: return true;
 
@@ -891,7 +866,7 @@ namespace Breeze
 
         StyleControl fcn;
 
-        #if BREEZE_HAVE_KSTYLE||BREEZE_USE_KDE4
+        #if BREEZE_HAVE_KSTYLE
         if( element == CE_CapacityBar )
         {
             fcn = &Style::drawProgressBarControl;
@@ -1025,9 +1000,7 @@ namespace Breeze
 
         if( auto dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
         else if( auto subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
-        #if QT_VERSION >= 0x050000
         else if( auto commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
-        #endif
         #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
         else if( object == qApp && event->type() == QEvent::ApplicationPaletteChange ) { configurationChanged(); }
         #endif
@@ -1258,7 +1231,6 @@ namespace Breeze
     }
 
     //____________________________________________________________________________
-    #if QT_VERSION >= 0x050000
     bool Style::eventFilterCommandLinkButton( QCommandLinkButton* button, QEvent* event )
     {
 
@@ -1348,18 +1320,13 @@ namespace Breeze
         return false;
 
     }
-    #endif
 
     //_____________________________________________________________________
     void Style::configurationChanged()
     {
 
         // reload
-        #if BREEZE_USE_KDE4
-        StyleConfigData::self()->readConfig();
-        #else
         StyleConfigData::self()->load();
-        #endif
 
         // reload configuration
         loadConfiguration();
@@ -1399,11 +1366,7 @@ namespace Breeze
         {
 
             // do not cache parent style icon, since it may change at runtime
-            #if QT_VERSION >= 0x050000
             return  ParentStyleClass::standardIcon( standardPixmap, option, widget );
-            #else
-            return  ParentStyleClass::standardIconImplementation( standardPixmap, option, widget );
-            #endif
 
         } else {
             const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
@@ -1505,13 +1468,7 @@ namespace Breeze
         // get flags and orientation
         const bool textVisible( progressBarOption->textVisible );
         const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        #endif
 
         // copy rectangle and adjust
         auto rect( option->rect );
@@ -1558,19 +1515,10 @@ namespace Breeze
         if( busy ) return rect;
 
         // get orientation
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        #endif
 
         // check inverted appearance
-        #if BREEZE_USE_KDE4
-        const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
-        #else
         const bool inverted( progressBarOption->invertedAppearance );
-        #endif
 
         // get progress and steps
         const qreal progress( progressBarOption->progress - progressBarOption->minimum );
@@ -1628,12 +1576,7 @@ namespace Breeze
         if( !textVisible || busy ) return QRect();
 
         // get direction and check
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        #endif
         if( !horizontal ) return QRect();
 
         int textWidth = qMax(
@@ -1688,11 +1631,7 @@ namespace Breeze
     {
 
         // cast option and check
-        #if BREEZE_USE_KDE4
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
-        #else
         const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        #endif
         if( !tabOption || tabOption->leftButtonSize.isEmpty() ) return QRect();
 
         const auto rect( option->rect );
@@ -1736,11 +1675,7 @@ namespace Breeze
     {
 
         // cast option and check
-        #if BREEZE_USE_KDE4
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
-        #else
         const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        #endif
         if( !tabOption || tabOption->rightButtonSize.isEmpty() ) return QRect();
 
         const auto rect( option->rect );
@@ -2858,12 +2793,7 @@ namespace Breeze
         const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
         if( !progressBarOption ) return contentsSize;
 
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal( !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal );
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        #endif
 
         // make local copy
         QSize size( contentsSize );
@@ -2937,14 +2867,8 @@ namespace Breeze
         const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
         const bool hasText( tabOption && !tabOption->text.isEmpty() );
         const bool hasIcon( tabOption && !tabOption->icon.isNull() );
-        #if BREEZE_USE_KDE4
-        const auto tabOptionV3( qstyleoption_cast<const QStyleOptionTabV3*>( option ) );
-        const bool hasLeftButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
-        const bool hasRightButton( tabOptionV3 && !tabOptionV3->leftButtonSize.isEmpty() );
-        #else
         const bool hasLeftButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
         const bool hasRightButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
-        #endif
 
         // calculate width increment for horizontal tabs
         int widthIncrement = 0;
@@ -3046,12 +2970,8 @@ namespace Breeze
         const State& state( option->state );
         if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
 
-        #if QT_VERSION >= 0x050000
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
             ( isQtQuickControl( option, widget ) && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
-        #else
-        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) );
-        #endif
 
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && isInputWidget && ( state & State_MouseOver ) );
@@ -3151,10 +3071,8 @@ namespace Breeze
         if (widget && widget->inherits("QComboBoxListView"))
         { return true; }
 
-        #if QT_VERSION >= 0x050000
         if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
         { return true; }
-        #endif
 
         const State& state( option->state );
 
@@ -3215,12 +3133,7 @@ namespace Breeze
         if( !frameOption ) return true;
 
         // no frame for flat groupboxes
-        #if BREEZE_USE_KDE4
-        QStyleOptionFrameV2 frameOption2( *frameOption );
-        if( frameOption2.features & QStyleOptionFrameV2::Flat ) return true;
-        #else
         if( frameOption->features & QStyleOptionFrame::Flat ) return true;
-        #endif
 
         // normal frame
         const auto& palette( option->palette );
@@ -3244,11 +3157,7 @@ namespace Breeze
     {
 
         // cast option and check
-        #if BREEZE_USE_KDE4
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrameV2*>( option ) );
-        #else
         const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
-        #endif
         if( !tabOption ) return true;
 
         // do nothing if tabbar is hidden
@@ -3702,11 +3611,9 @@ namespace Breeze
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
         auto background( _helper->frameBackgroundColor( palette ) );
 
-        #if !BREEZE_USE_KDE4
         if ( hasAlpha ) {
             background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
         }
-        #endif
 
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
@@ -3737,11 +3644,7 @@ namespace Breeze
     {
 
         // cast option and check
-        #if BREEZE_USE_KDE4
-        const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItemV4*>( option );
-        #else
         const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
-        #endif
         if( !viewItemOption ) return false;
 
         // try cast widget
@@ -3760,11 +3663,7 @@ namespace Breeze
 
         const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !( state & State_Selected );
         const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
-        #if BREEZE_USE_KDE4
-        const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItemV2::Alternate );
-        #else
         const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItem::Alternate );
-        #endif
 
         // do nothing if no background is to be rendered
         if( !( mouseOver || selected || hasCustomBackground || hasAlternateBackground ) )
@@ -4548,7 +4447,6 @@ namespace Breeze
         if( sunken && !flat )
         { painter->translate( 1, 1 ); }
 
-        #if QT_VERSION >= 0x050000
         if (const auto cb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
         {
             auto editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
@@ -4596,10 +4494,6 @@ namespace Breeze
             }
             painter->restore();
         }
-        #else
-        // call base class method
-        ParentStyleClass::drawControl( CE_ComboBoxLabel, option, painter, widget );
-        #endif
 
         return true;
 
@@ -4931,30 +4825,20 @@ namespace Breeze
         if( !progressBarOption ) return true;
 
         // render groove
-        #if BREEZE_USE_KDE4
-        QStyleOptionProgressBarV2 progressBarOption2 = *progressBarOption;
-        #else
         QStyleOptionProgressBar progressBarOption2 = *progressBarOption;
-        #endif
         progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
         drawControl( CE_ProgressBarGroove, &progressBarOption2, painter, widget );
 
-        #if QT_VERSION >= 0x050000
         const QObject* styleObject( widget ? widget:progressBarOption->styleObject );
-        #else
-        const QObject* styleObject( widget );
-        #endif
 
         // enable busy animations
         // need to check both widget and passed styleObject, used for QML
         if( styleObject && _animations->busyIndicatorEngine().enabled() )
         {
 
-            #if QT_VERSION >= 0x050000
             // register QML object if defined
             if( !widget && progressBarOption->styleObject )
             { _animations->busyIndicatorEngine().registerWidget( progressBarOption->styleObject ); }
-            #endif
 
             _animations->busyIndicatorEngine().setAnimated( styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
 
@@ -4993,14 +4877,8 @@ namespace Breeze
         const auto& palette( option->palette );
 
         // get direction
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
-        const bool inverted( progressBarOption2 ? progressBarOption2->invertedAppearance : false );
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
         const bool inverted( progressBarOption->invertedAppearance );
-        #endif
         bool reverse = horizontal && option->direction == Qt::RightToLeft;
         if( inverted ) reverse = !reverse;
 
@@ -5069,12 +4947,7 @@ namespace Breeze
         if( !progressBarOption ) return true;
 
         // get direction and check
-        #if BREEZE_USE_KDE4
-        const auto progressBarOption2( qstyleoption_cast<const QStyleOptionProgressBarV2*>( option ) );
-        const bool horizontal = !progressBarOption2 || progressBarOption2->orientation == Qt::Horizontal;
-        #else
         const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        #endif
         if( !horizontal ) return true;
 
         // store rect and palette
@@ -5117,13 +4990,9 @@ namespace Breeze
         }
 
         //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
-        #if QT_VERSION >= 0x050000
         bool widgetMouseOver( ( option->state & State_MouseOver ) );
         if( widget ) widgetMouseOver = _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove );
         else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
-        #else
-        const bool widgetMouseOver( _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove ) );
-        #endif
 
         qreal grooveAnimationOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
         if( grooveAnimationOpacity == AnimationData::OpacityInvalid ) grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
@@ -5327,11 +5196,7 @@ namespace Breeze
     {
 
         // cast option and check
-        #if BREEZE_USE_KDE4
-        const auto frameOpt = qstyleoption_cast<const QStyleOptionFrameV3*>( option );
-        #else
         const auto frameOpt = qstyleoption_cast<const QStyleOptionFrame*>( option );
-        #endif
         if( !frameOpt ) return false;
 
         switch( frameOpt->frameShape )
@@ -5747,13 +5612,7 @@ namespace Breeze
         if( selected )
         {
 
-            #if QT_VERSION >= 0x050000
             bool documentMode = tabOption->documentMode;
-            #else
-            bool documentMode = false;
-            if( const auto tabOptionV3 = qstyleoption_cast<const QStyleOptionTabV3*>( option ) )
-            { documentMode = tabOptionV3->documentMode; }
-            #endif
 
             // flag passed to QStyleOptionTab is unfortunately not reliable enough
             // also need to check on parent widget
@@ -5937,12 +5796,7 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // cast to v2 to check vertical bar
-        #if BREEZE_USE_KDE4
-        const auto v2 = qstyleoption_cast<const QStyleOptionDockWidgetV2*>( option );
-        const bool verticalTitleBar( v2 ? v2->verticalTitleBar : false );
-        #else
         const bool verticalTitleBar( dockWidgetOption->verticalTitleBar );
-        #endif
 
         const auto buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
 
@@ -6885,10 +6739,8 @@ namespace Breeze
 
         bool widgetMouseOver( ( option->state & State_MouseOver ) );
         if( widget ) widgetMouseOver = widget->underMouse();
-        #if QT_VERSION >= 0x050000
         // in case this QStyle is used by QQuickControls QStyle wrapper
         else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
-        #endif
 
         // check enabled state
         const bool enabled( option->state & State_Enabled );
@@ -7194,12 +7046,7 @@ namespace Breeze
         const QAbstractItemView* itemView( itemViewParent( widget ) );
         if( !( itemView && itemView->hasFocus() && itemView->selectionModel() ) ) return false;
 
-        #if QT_VERSION >= 0x050000
         QPoint position = widget->mapTo( itemView, localPosition );
-        #else
-        // qt4 misses a const for mapTo argument, although nothing is actually changed to the passed widget
-        QPoint position = widget->mapTo( const_cast<QAbstractItemView*>( itemView ), localPosition );
-        #endif
 
         // get matching QModelIndex and check
         const QModelIndex index( itemView->indexAt( position ) );
@@ -7213,7 +7060,7 @@ namespace Breeze
     //____________________________________________________________________
     bool Style::isQtQuickControl( const QStyleOption* option, const QWidget* widget ) const
     {
-        #if QT_VERSION >= 0x050000 && BREEZE_HAVE_QTQUICK
+        #if BREEZE_HAVE_QTQUICK
         const bool is = (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickItem" );
         if ( is ) _windowManager->registerQuickItem( static_cast<QQuickItem*>( option->styleObject ) );
         return is;

@@ -21,17 +21,9 @@
 // own
 #include "breezeboxshadowrenderer.h"
 
-// auto-generated
-#include "config-breezecommon.h"
-
 // Qt
 #include <QPainter>
-
-#ifdef BREEZE_COMMON_USE_KDE4
-#include <QtCore/qmath.h>
-#else
 #include <QtMath>
-#endif
 
 namespace Breeze
 {
@@ -96,10 +88,7 @@ static QVector<BoxLobes> computeLobes(int radius)
         break;
 
     default:
-#if !BREEZE_COMMON_USE_KDE4
         Q_UNREACHABLE();
-#endif
-        break;
     }
 
     Q_ASSERT(major + minor + final == blurRadius);
@@ -258,16 +247,10 @@ static void renderShadow(QPainter *painter, const QRect &rect, qreal borderRadiu
     const QSize inflation = calculateBlurExtent(radius);
     const QSize size = rect.size() + 2 * inflation;
 
-#if BREEZE_COMMON_USE_KDE4
-    const qreal dpr = 1.0;
-#else
     const qreal dpr = painter->device()->devicePixelRatioF();
-#endif
 
     QImage shadow(size * dpr, QImage::Format_ARGB32_Premultiplied);
-#if !BREEZE_COMMON_USE_KDE4
     shadow.setDevicePixelRatio(dpr);
-#endif
     shadow.fill(Qt::transparent);
 
     QRect boxRect(QPoint(0, 0), rect.size());
@@ -335,30 +318,20 @@ QImage BoxShadowRenderer::render() const
     }
 
     QSize canvasSize;
-#if BREEZE_COMMON_USE_KDE4
-    foreach (const Shadow &shadow, m_shadows) {
-#else
     for (const Shadow &shadow : qAsConst(m_shadows)) {
-#endif
         canvasSize = canvasSize.expandedTo(
             calculateMinimumShadowTextureSize(m_boxSize, shadow.radius, shadow.offset));
     }
 
     QImage canvas(canvasSize * m_dpr, QImage::Format_ARGB32_Premultiplied);
-#if !BREEZE_COMMON_USE_KDE4
     canvas.setDevicePixelRatio(m_dpr);
-#endif
     canvas.fill(Qt::transparent);
 
     QRect boxRect(QPoint(0, 0), m_boxSize);
     boxRect.moveCenter(QRect(QPoint(0, 0), canvasSize).center());
 
     QPainter painter(&canvas);
-#if BREEZE_COMMON_USE_KDE4
-    foreach (const Shadow &shadow, m_shadows) {
-#else
     for (const Shadow &shadow : qAsConst(m_shadows)) {
-#endif
         renderShadow(&painter, boxRect, m_borderRadius, shadow.offset, shadow.radius, shadow.color);
     }
     painter.end();

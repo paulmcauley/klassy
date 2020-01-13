@@ -28,10 +28,6 @@
 #include <QApplication>
 #include <QPainter>
 
-#if BREEZE_HAVE_X11 && QT_VERSION < 0x050000
-#include <X11/Xlib-xcb.h>
-#endif
-
 #include <algorithm>
 
 namespace Breeze
@@ -44,14 +40,6 @@ namespace Breeze
     Helper::Helper( KSharedConfig::Ptr config ):
         _config( std::move( config ) )
     { init(); }
-
-    //____________________________________________________________________
-    #if BREEZE_USE_KDE4
-    Helper::Helper( const QByteArray& name ):
-        _componentData( name, nullptr, KComponentData::SkipMainComponentRegistration ),
-        _config( _componentData.config() )
-    { init(); }
-    #endif
 
     //____________________________________________________________________
     KSharedConfig::Ptr Helper::config() const
@@ -1480,12 +1468,8 @@ namespace Breeze
     bool Helper::isX11()
     {
         #if BREEZE_HAVE_X11
-        #if QT_VERSION >= 0x050000
         static const bool s_isX11 = KWindowSystem::isPlatformX11();
         return s_isX11;
-        #else
-        return true;
-        #endif
         #endif
 
         return false;
@@ -1495,12 +1479,8 @@ namespace Breeze
     //______________________________________________________________________________
     bool Helper::isWayland()
     {
-        #if QT_VERSION >= 0x050000
         static const bool s_isWayland = KWindowSystem::isPlatformWayland();
         return s_isWayland;
-        #else
-        return false;
-        #endif
     }
 
     //______________________________________________________________________________
@@ -1614,25 +1594,16 @@ namespace Breeze
     //______________________________________________________________________________________
     QPixmap Helper::highDpiPixmap( int width, int height ) const
     {
-        #if QT_VERSION >= 0x050300
         const qreal dpiRatio( qApp->devicePixelRatio() );
         QPixmap pixmap( width*dpiRatio, height*dpiRatio );
         pixmap.setDevicePixelRatio( dpiRatio );
         return pixmap;
-        #else
-        return QPixmap( width, height );
-        #endif
     }
 
     //______________________________________________________________________________________
     qreal Helper::devicePixelRatio( const QPixmap& pixmap ) const
     {
-        #if QT_VERSION >= 0x050300
         return pixmap.devicePixelRatio();
-        #else
-        Q_UNUSED(pixmap);
-        return 1;
-        #endif
     }
 
     #if BREEZE_HAVE_X11
@@ -1641,17 +1612,7 @@ namespace Breeze
     xcb_connection_t* Helper::connection()
     {
 
-        #if QT_VERSION >= 0x050000
         return QX11Info::connection();
-        #else
-        static xcb_connection_t* connection = nullptr;
-        if( !connection )
-        {
-            Display* display = QX11Info::display();
-            if( display ) connection = XGetXCBConnection( display );
-        }
-        return connection;
-        #endif
     }
 
     //____________________________________________________________________

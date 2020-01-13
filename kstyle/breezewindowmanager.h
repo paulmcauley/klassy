@@ -170,20 +170,14 @@ namespace Breeze
         //* reset drag
         void resetDrag();
 
-        #if QT_VERSION >= 0x050000
-        using Window = QWindow;
-        #else
-        using Window = QWidget;
-        #endif
-
         //* start drag
-        void startDrag( Window*, const QPoint& );
+        void startDrag( QWindow*, const QPoint& );
 
         //* X11 specific implementation for startDrag
-        void startDragX11( Window*, const QPoint& );
+        void startDragX11( QWindow*, const QPoint& );
 
         //* Wayland specific implementation for startDrag
-        void startDragWayland( Window*, const QPoint& );
+        void startDragWayland( QWindow*, const QPoint& );
 
         //* returns true if window manager is used for moving
         /** right now this is true only for X11 */

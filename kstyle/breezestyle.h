@@ -28,13 +28,10 @@
 #include <KStyle>
 #endif
 
-#if BREEZE_USE_KDE4
-#include "kstylekde4compat.h"
-#endif
-
 #include <QAbstractItemView>
 #include <QAbstractScrollArea>
 
+#include <QCommandLinkButton>
 #include <QCommonStyle>
 #include <QDockWidget>
 #include <QHash>
@@ -42,10 +39,6 @@
 #include <QMdiSubWindow>
 #include <QStyleOption>
 #include <QWidget>
-
-#if QT_VERSION >= 0x050000
-#include <QCommandLinkButton>
-#endif
 
 #include <functional>
 
@@ -66,14 +59,10 @@ namespace Breeze
     class SplitterFactory;
     class WidgetExplorer;
     class WindowManager;
-    #if !BREEZE_USE_KDE4
     class BlurHelper;
-    #endif
 
     //* convenience typedef for base class
-    #if BREEZE_USE_KDE4
-    using ParentStyleClass = KStyleKDE4Compat;
-    #elif !BREEZE_HAVE_KSTYLE
+    #if !BREEZE_HAVE_KSTYLE
     using ParentStyleClass = QCommonStyle;
     #else
     using ParentStyleClass = KStyle;
@@ -149,10 +138,7 @@ namespace Breeze
         bool eventFilterComboBoxContainer( QWidget*, QEvent* );
         bool eventFilterDockWidget( QDockWidget*, QEvent* );
         bool eventFilterMdiSubWindow( QMdiSubWindow*, QEvent* );
-
-        #if QT_VERSION >= 0x050000
         bool eventFilterCommandLinkButton( QCommandLinkButton*, QEvent* );
-        #endif
 
         //* install event filter to object, in a unique way
         void addEventFilter( QObject* object )
@@ -174,13 +160,8 @@ namespace Breeze
         protected:
 
         //* standard icons
-        #if BREEZE_USE_KDE4
-        QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const
-        { return standardIconImplementation( pixmap, option, widget ); }
-        #else
         QIcon standardIcon( StandardPixmap pixmap, const QStyleOption* option = nullptr, const QWidget* widget = nullptr) const override
         { return standardIconImplementation( pixmap, option, widget ); }
-        #endif
 
         private:
 
@@ -501,10 +482,8 @@ namespace Breeze
         //* keyboard accelerators
         Mnemonics* _mnemonics = nullptr;
 
-        #if !BREEZE_USE_KDE4
         //* blur helper
         BlurHelper* _blurHelper = nullptr;
-        #endif
 
         //* window manager
         WindowManager* _windowManager = nullptr;
