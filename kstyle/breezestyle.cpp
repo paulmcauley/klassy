@@ -3849,10 +3849,11 @@ namespace Breeze
         const auto shadow( _helper->shadowColor( palette ) );
         const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+        QColor background = itemViewParent( widget ) ? palette.color( QPalette::Base ) : palette.color( QPalette::Window );
         QColor color = _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && active, opacity, mode  );
 
         // render
-        _helper->renderCheckBoxBackground( painter, rect, palette.color( QPalette::Base ), sunken );
+        _helper->renderCheckBoxBackground( painter, rect, background, sunken );
         _helper->renderCheckBox( painter, rect, color, shadow, sunken, checkBoxState, animation );
         return true;
 
@@ -3886,10 +3887,11 @@ namespace Breeze
         const auto shadow( _helper->shadowColor( palette ) );
         const AnimationMode mode( _animations->widgetStateEngine().isAnimated( widget, AnimationHover ) ? AnimationHover:AnimationNone );
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
+        QColor background = itemViewParent( widget ) ? palette.color( QPalette::Base ) : palette.color( QPalette::Window );
         QColor color = _helper->checkBoxIndicatorColor( palette, mouseOver, enabled && checked, opacity, mode  );
 
         // render
-        _helper->renderRadioButtonBackground( painter, rect, palette.color( QPalette::Base ), sunken );
+        _helper->renderRadioButtonBackground( painter, rect, background, sunken );
         _helper->renderRadioButton( painter, rect, color, shadow, sunken, radioButtonState, animation );
 
         return true;
