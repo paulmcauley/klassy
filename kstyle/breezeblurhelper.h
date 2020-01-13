@@ -37,10 +37,6 @@
 #include <QHash>
 #include <QObject>
 
-#if BREEZE_HAVE_X11
-#include <xcb/xcb.h>
-#endif
-
 namespace Breeze
 {
     class BlurHelper: public QObject

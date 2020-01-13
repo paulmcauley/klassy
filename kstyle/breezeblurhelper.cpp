@@ -89,7 +89,6 @@ namespace Breeze
     //___________________________________________________________
     void BlurHelper::update(QWidget* widget) const
     {
-        #if BREEZE_HAVE_X11
         /*
         directly from bespin code. Supposedly prevent playing with some 'pseudo-widgets'
         that have winId matching some other -random- window
@@ -103,9 +102,5 @@ namespace Breeze
         if (widget->isVisible()) {
             widget->update();
         }
-
-        #else
-        Q_UNUSED( widget )
-        #endif
     }
 }
