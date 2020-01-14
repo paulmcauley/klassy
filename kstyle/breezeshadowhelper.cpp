@@ -1,6 +1,6 @@
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
- * Copyright (C) 2018 by Vlad Zagorodniy <vladzzag@gmail.com>            *
+ * Copyright (C) 2018 by Vlad Zagorodniy <vlad.zahorodnii@kde.org>       *
  *                                                                       *
  * This program is free software; you can redistribute it and/or modify  *
  * it under the terms of the GNU General Public License as published by  *
