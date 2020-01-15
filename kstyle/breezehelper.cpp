@@ -1255,6 +1255,23 @@ namespace Breeze
         
     }
 
+
+    //______________________________________________________________________________
+    void Helper::renderScrollBarBorder(
+        QPainter* painter, const QRect& rect,
+        const QColor& color ) const
+    {
+
+        // content
+        if( color.isValid() )
+        {
+            painter->setPen( Qt::NoPen );
+            painter->setBrush( color );
+            painter->drawRect( rect );
+        }
+
+    }
+
     //______________________________________________________________________________
     void Helper::renderTabBarTab( QPainter* painter, const QRect& rect, const QColor& color, const QColor& outline, Corners corners ) const
     {

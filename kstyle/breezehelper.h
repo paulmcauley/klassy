@@ -242,6 +242,9 @@ namespace Breeze
         void renderToolBarHandle( QPainter* painter, const QRect& rect, const QColor& color ) const
         { return renderProgressBarGroove( painter, rect, color ); }
 
+        //* separator between scrollbar and contents
+        void renderScrollBarBorder( QPainter*, const QRect&, const QColor& ) const;
+
         //* tabbar tab
         void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& outline, Corners ) const;
 

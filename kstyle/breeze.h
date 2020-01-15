@@ -103,7 +103,7 @@ namespace Breeze
         MenuBarItem_MarginHeight = 6,
 
         // scrollbars
-        ScrollBar_Extend = 20,
+        ScrollBar_Extend = 21,
         ScrollBar_SliderWidth = 6,
         ScrollBar_MinSliderHeight = 20,
         ScrollBar_NoButtonHeight = (ScrollBar_Extend-ScrollBar_SliderWidth)/2,

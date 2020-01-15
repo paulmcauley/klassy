@@ -2324,10 +2324,15 @@ namespace Breeze
     //___________________________________________________________________________________________________________________
     QRect Style::scrollBarInternalSubControlRect( const QStyleOptionComplex* option, SubControl subControl ) const
     {
-
-        const auto& rect = option->rect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
+
+        QRect rect = option->rect;
+        if (horizontal) {
+            rect.setTop(PenWidth::Frame);
+        } else {
+            rect.setLeft(PenWidth::Frame);
+        }
 
         switch( subControl )
         {
@@ -6556,6 +6561,17 @@ namespace Breeze
         const bool mouseOver( option->state & State_MouseOver );
 
         if( opacity == AnimationData::OpacityInvalid ) opacity = 1;
+
+        QRect separatorRect;
+        if ( option->state & State_Horizontal ) {
+            separatorRect = QRect(0, 0, option->rect.width(), 1);
+        } else {
+            separatorRect = alignedRect(option->direction,
+                                        Qt::AlignLeft,
+                                        QSize(1, option->rect.height()), option->rect);
+        }
+
+        _helper->renderScrollBarBorder( painter, separatorRect, _helper->alphaColor( option->palette.color( QPalette::WindowText ), 0.1 ));
 
         // render full groove directly, rather than using the addPage and subPage control element methods
         if( (!StyleConfigData::animationsEnabled() || mouseOver || animated) && option->subControls & SC_ScrollBarGroove )
