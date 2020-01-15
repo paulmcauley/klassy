@@ -6568,7 +6568,7 @@ namespace Breeze
         } else {
             separatorRect = alignedRect(option->direction,
                                         Qt::AlignLeft,
-                                        QSize(1, option->rect.height()), option->rect);
+                                        QSize(PenWidth::Frame, option->rect.height()), option->rect);
         }
 
         _helper->renderScrollBarBorder( painter, separatorRect, _helper->alphaColor( option->palette.color( QPalette::WindowText ), 0.1 ));
