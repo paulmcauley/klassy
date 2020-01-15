@@ -5117,14 +5117,13 @@ namespace Breeze
 
         qreal grooveAnimationOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
         if( grooveAnimationOpacity == AnimationData::OpacityInvalid ) grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
-        const qreal handleSize = StyleConfigData::animationsEnabled() ? ((Metrics::ScrollBar_SliderWidth / 2.0) * (1 - grooveAnimationOpacity) + Metrics::ScrollBar_SliderWidth  * grooveAnimationOpacity) : (int)Metrics::ScrollBar_SliderWidth;
 
         // define handle rect
         QRect handleRect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
-        if( horizontal ) handleRect = centerRect( rect, rect.width(), handleSize );
-        else handleRect = centerRect( rect, handleSize, rect.height() );
+        if( horizontal ) handleRect = centerRect( rect, rect.width(), Metrics::ScrollBar_SliderWidth );
+        else handleRect = centerRect( rect, Metrics::ScrollBar_SliderWidth, rect.height() );
 
         const bool enabled( state & State_Enabled );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
