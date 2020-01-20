@@ -2324,15 +2324,9 @@ namespace Breeze
     //___________________________________________________________________________________________________________________
     QRect Style::scrollBarInternalSubControlRect( const QStyleOptionComplex* option, SubControl subControl ) const
     {
+        const auto& rect = option->rect;
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
-
-        QRect rect = option->rect;
-        if (horizontal) {
-            rect.setTop(PenWidth::Frame);
-        } else {
-            rect.setLeft(PenWidth::Frame);
-        }
 
         switch( subControl )
         {
@@ -5108,8 +5102,19 @@ namespace Breeze
         if( !sliderOption ) return true;
 
         // copy rect and palette
-        const auto& rect( option->rect );
+        //const auto& rect( option->rect );
         const auto& palette( option->palette );
+
+        // need to make it center due to the thin line separator
+        QRect rect = option->rect;
+
+        if( option->state & State_Horizontal ) {
+            rect.setTop(PenWidth::Frame);
+        } else if (option->direction == Qt::RightToLeft) {
+            rect.setRight(rect.right() - PenWidth::Frame);
+        } else {
+            rect.setLeft(PenWidth::Frame);
+        }
 
         //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
         #if QT_VERSION >= 0x050000
@@ -5170,7 +5175,16 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
-        const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
+        auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
+
+        // need to make it center due to the thin line separator
+        if( option->state & State_Horizontal ) {
+            rect.setTop(PenWidth::Frame);
+        } else if (option->direction == Qt::RightToLeft) {
+            rect.setRight(rect.right() - PenWidth::Frame);
+        } else {
+            rect.setLeft(PenWidth::Frame);
+        }
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
@@ -5243,7 +5257,16 @@ namespace Breeze
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
         // adjust rect, based on number of buttons to be drawn
-        const auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
+        auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
+
+        // need to make it center due to the thin line separator
+        if( option->state & State_Horizontal ) {
+            rect.setTop(PenWidth::Frame);
+        } else if (option->direction == Qt::RightToLeft) {
+            rect.setRight(rect.right() - PenWidth::Frame);
+        } else {
+            rect.setLeft(PenWidth::Frame);
+        }
 
         QColor color;
         QStyleOptionSlider copy( *sliderOption );
@@ -6578,6 +6601,15 @@ namespace Breeze
         {
             // retrieve groove rectangle
             auto grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
+
+            // need to make it center due to the thin line separator
+            if( option->state & State_Horizontal ) {
+                grooveRect.setTop(PenWidth::Frame);
+            } else if (option->direction == Qt::RightToLeft) {
+                grooveRect.setRight(grooveRect.right() - PenWidth::Frame);
+            } else {
+                grooveRect.setLeft(PenWidth::Frame);
+            }
 
             const auto& palette( option->palette );
             const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 * (animated ? opacity : 1) ) );
