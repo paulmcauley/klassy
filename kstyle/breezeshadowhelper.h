@@ -80,11 +80,6 @@ namespace Breeze
 
         public:
 
-        //*@name property names
-        //@{
-        static const char netWMShadowAtomName[];
-        //@}
-
         //* constructor
         ShadowHelper( QObject*, Helper& );
 
