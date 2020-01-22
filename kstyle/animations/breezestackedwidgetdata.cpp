@@ -37,7 +37,7 @@ namespace Breeze
     {
 
         // configure transition
-        connect( _target.data(), SIGNAL(destroyed()), SLOT(targetDestroyed()) );
+        connect( _target.data(), &QObject::destroyed, this, &StackedWidgetData::targetDestroyed );
         connect( _target.data(), SIGNAL(currentChanged(int)), SLOT(animate()) );
 
         // disable focus

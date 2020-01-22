@@ -40,8 +40,8 @@ namespace Breeze
         _subLineData._animation = new Animation( duration, this );
         _grooveData._animation = new Animation( duration, this );
 
-        connect( addLineAnimation().data(), SIGNAL(finished()), SLOT(clearAddLineRect()) );
-        connect( subLineAnimation().data(), SIGNAL(finished()), SLOT(clearSubLineRect()) );
+        connect( addLineAnimation().data(), &QAbstractAnimation::finished, this, &ScrollBarData::clearAddLineRect );
+        connect( subLineAnimation().data(), &QAbstractAnimation::finished, this, &ScrollBarData::clearSubLineRect );
 
         // setup animation
         setupAnimation( addLineAnimation(), "addLineOpacity" );

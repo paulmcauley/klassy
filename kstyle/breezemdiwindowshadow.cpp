@@ -151,7 +151,7 @@ namespace Breeze
         widget->installEventFilter( this );
 
         // catch object destruction
-        connect( widget, SIGNAL(destroyed(QObject*)), SLOT(widgetDestroyed(QObject*)) );
+        connect( widget, &QObject::destroyed, this, &MdiWindowShadowFactory::widgetDestroyed );
 
         return true;
 

@@ -58,15 +58,15 @@ namespace Breeze
         m_ui.removeButton->setIcon( QIcon::fromTheme( QStringLiteral( "list-remove" ) ) );
         m_ui.editButton->setIcon( QIcon::fromTheme( QStringLiteral( "edit-rename" ) ) );
 
-        connect( m_ui.addButton, SIGNAL(clicked()), SLOT(add()) );
-        connect( m_ui.editButton, SIGNAL(clicked()), SLOT(edit()) );
-        connect( m_ui.removeButton, SIGNAL(clicked()), SLOT(remove()) );
-        connect( m_ui.moveUpButton, SIGNAL(clicked()), SLOT(up()) );
-        connect( m_ui.moveDownButton, SIGNAL(clicked()), SLOT(down()) );
+        connect( m_ui.addButton, &QAbstractButton::clicked, this, &ExceptionListWidget::add );
+        connect( m_ui.editButton, &QAbstractButton::clicked, this, &ExceptionListWidget::edit );
+        connect( m_ui.removeButton, &QAbstractButton::clicked, this, &ExceptionListWidget::remove );
+        connect( m_ui.moveUpButton, &QAbstractButton::clicked, this, &ExceptionListWidget::up );
+        connect( m_ui.moveDownButton, &QAbstractButton::clicked, this, &ExceptionListWidget::down );
 
-        connect( m_ui.exceptionListView, SIGNAL(activated(QModelIndex)), SLOT(edit()) );
-        connect( m_ui.exceptionListView, SIGNAL(clicked(QModelIndex)), SLOT(toggle(QModelIndex)) );
-        connect( m_ui.exceptionListView->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)), SLOT(updateButtons()) );
+        connect( m_ui.exceptionListView, &QAbstractItemView::activated, this, &ExceptionListWidget::edit );
+        connect( m_ui.exceptionListView, &QAbstractItemView::clicked, this, &ExceptionListWidget::toggle );
+        connect( m_ui.exceptionListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ExceptionListWidget::updateButtons );
 
         updateButtons();
         resizeColumns();

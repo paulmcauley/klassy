@@ -75,7 +75,7 @@ namespace Breeze
         _registeredWidgets.insert( widget );
 
         // catch object destruction
-        connect( widget, SIGNAL(destroyed(QObject*)), SLOT(widgetDestroyed(QObject*)) );
+        connect( widget, &QObject::destroyed, this, &FrameShadowFactory::widgetDestroyed );
 
         // install shadow
         installShadows( widget, helper );

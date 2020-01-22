@@ -45,22 +45,22 @@ namespace Breeze
         // load setup from configData
         load();
 
-        connect( _tabBarDrawCenteredTabs, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _toolBarDrawItemSeparator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _viewDrawFocusIndicator, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _dockWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _titleWidgetDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _sidePanelDrawFrame, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _menuItemDrawThinFocus, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _sliderDrawTickMarks, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
-        connect( _splitterProxyEnabled, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _tabBarDrawCenteredTabs, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _toolBarDrawItemSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _viewDrawFocusIndicator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _dockWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _titleWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _sidePanelDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _menuItemDrawThinFocus, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _sliderDrawTickMarks, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
+        connect( _splitterProxyEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _mnemonicsMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _animationsEnabled, SIGNAL(toggled(bool)), SLOT(updateChanged()) );
+        connect( _animationsEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _menuOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( _menuOpacity, &QAbstractSlider::valueChanged, this, &StyleConfig::updateChanged );
 
     }
 

@@ -41,23 +41,23 @@ namespace Breeze
 
         m_ui.setupUi( this );
 
-        connect( m_ui.buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL(clicked()), this, SLOT(close()) );
+        connect( m_ui.buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QWidget::close );
 
         // store checkboxes from ui into list
         m_checkboxes.insert( BorderSize, m_ui.borderSizeCheckBox );
 
         // detect window properties
-        connect( m_ui.detectDialogButton, SIGNAL(clicked()), SLOT(selectWindowProperties()) );
+        connect( m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties );
 
         // connections
         connect( m_ui.exceptionType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.exceptionEditor, SIGNAL(textChanged(QString)), SLOT(updateChanged()) );
+        connect( m_ui.exceptionEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged );
         connect( m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
 
         for( CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter )
-        { connect( iter.value(), SIGNAL(clicked()), SLOT(updateChanged()) ); }
+        { connect( iter.value(), &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged ); }
 
-        connect( m_ui.hideTitleBar, SIGNAL(clicked()), SLOT(updateChanged()) );
+        connect( m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged );
 
         // hide detection dialog on non X11 platforms
         #if BREEZE_HAVE_X11
@@ -140,7 +140,7 @@ namespace Breeze
         if( !m_detectDialog )
         {
             m_detectDialog = new DetectDialog( this );
-            connect( m_detectDialog, SIGNAL(detectionDone(bool)), SLOT(readWindowProperties(bool)) );
+            connect( m_detectDialog, &DetectDialog::detectionDone, this, &ExceptionDialog::readWindowProperties );
         }
 
         m_detectDialog->detect(0);

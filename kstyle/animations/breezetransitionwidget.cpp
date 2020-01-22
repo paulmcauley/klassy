@@ -58,7 +58,7 @@ namespace Breeze
         _animation.data()->setPropertyName( "opacity" );
 
         // hide when animation is finished
-        connect( _animation.data(), SIGNAL(finished()), SLOT(hide()) );
+        connect( _animation.data(), &QAbstractAnimation::finished, this, &QWidget::hide );
 
     }
 

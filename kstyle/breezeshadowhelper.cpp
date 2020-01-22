@@ -132,7 +132,7 @@ namespace Breeze
         widget->installEventFilter( this );
 
         // connect destroy signal
-        connect( widget, SIGNAL(destroyed(QObject*)), SLOT(objectDeleted(QObject*)) );
+        connect( widget, &QObject::destroyed, this, &ShadowHelper::objectDeleted );
 
         return true;
 
