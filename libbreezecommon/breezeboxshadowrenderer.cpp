@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Vlad Zagorodniy <vlad.zahorodnii@kde.org>
+ * Copyright (C) 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
  *
  * The box blur implementation is based on AlphaBoxBlur from Firefox.
  *
