@@ -377,7 +377,11 @@ namespace Breeze
 
         // we want the shadow to be deleted after the decorated window is destroyed
         if( !shadow )
-        { shadow = new KWindowShadow( widget->windowHandle() ); }
+        {
+            shadow = new KWindowShadow( widget->windowHandle() );
+
+            connect( shadow, &QObject::destroyed, this, [this, widget] { _shadows.remove( widget ); } );
+        }
 
         if( shadow->isCreated() )
         { shadow->destroy(); }
