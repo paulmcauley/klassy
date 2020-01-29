@@ -31,10 +31,6 @@
 #include <QPainterPath>
 #include <QWidget>
 
-#if BREEZE_HAVE_X11
-#include <xcb/xcb.h>
-#endif
-
 namespace Breeze
 {
 
@@ -288,18 +284,6 @@ namespace Breeze
 
         //@}
 
-        //*@name X11 utilities
-        //@{
-
-        #if BREEZE_HAVE_X11
-
-        //* create xcb atom
-        xcb_atom_t createAtom( const QString& ) const;
-
-        #endif
-
-        //@}
-
         //* frame radius
         constexpr qreal frameRadius( const int penWidth = PenWidth::NoPen, const qreal bias = 0 ) const
         { return qMax( Metrics::Frame_FrameRadius - (0.5 * penWidth) + bias, 0.0 ); }
@@ -315,9 +299,6 @@ namespace Breeze
         QRectF strokedRect( const QRect &rect, const int penWidth = PenWidth::Frame ) const;
 
         protected:
-
-        //* initialize
-        void init();
 
         //* return rounded path in a given rect, with only selected corners rounded, and for a given radius
         QPainterPath roundedPath( const QRectF&, Corners, qreal ) const;
@@ -341,13 +322,6 @@ namespace Breeze
         QColor _inactiveTitleBarColor;
         QColor _inactiveTitleBarTextColor;
         //@}
-
-        #if BREEZE_HAVE_X11
-
-        //* atom used for compositing manager
-        xcb_atom_t _compositingManagerAtom;
-
-        #endif
 
     };
 
