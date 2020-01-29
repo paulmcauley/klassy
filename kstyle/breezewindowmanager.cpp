@@ -846,7 +846,7 @@ namespace Breeze
     {
         #if BREEZE_HAVE_X11
         // connection
-        auto connection( Helper::connection() );
+        auto connection( QX11Info::connection() );
 
         auto net_connection = connection;
         const qreal dpiRatio = window->devicePixelRatio();

@@ -32,7 +32,6 @@
 #include <QWidget>
 
 #if BREEZE_HAVE_X11
-#include <QX11Info>
 #include <xcb/xcb.h>
 #endif
 
@@ -293,9 +292,6 @@ namespace Breeze
         //@{
 
         #if BREEZE_HAVE_X11
-
-        //* get xcb connection
-        static xcb_connection_t* connection();
 
         //* create xcb atom
         xcb_atom_t createAtom( const QString& ) const;
