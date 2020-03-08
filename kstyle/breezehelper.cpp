@@ -7,6 +7,7 @@
 #include "breezehelper.h"
 
 #include "breezestyleconfigdata.h"
+#include "breezerenderdecorationbuttonicon.h"
 
 #include <KColorUtils>
 #include <KIconLoader>
@@ -1407,48 +1408,34 @@ namespace Breeze
 
         }
 
-        pen.setCapStyle( Qt::RoundCap );
-        pen.setJoinStyle( Qt::MiterJoin );
         pen.setWidthF( PenWidth::Symbol*qMax(1.0, 18.0/rect.width() ) );
-        painter->setPen( pen );
-
+        
+        std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
+        iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, StyleConfigData::buttonIconStyle(), true );
+        
         switch( buttonType )
         {
             case ButtonClose:
             {
-                painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
-                painter->drawLine( 13, 5, 5, 13 );
+                iconRenderer->renderCloseIcon();
                 break;
             }
 
             case ButtonMaximize:
             {
-                painter->drawPolyline( QVector<QPointF>{
-                    QPointF( 4, 11 ),
-                    QPointF( 9, 6 ),
-                    QPointF( 14, 11 )});
+                iconRenderer->renderMaximizeIcon();
                 break;
             }
 
             case ButtonMinimize:
             {
-
-                painter->drawPolyline(QVector<QPointF>{
-                    QPointF( 4, 7 ),
-                    QPointF( 9, 12 ),
-                    QPointF( 14, 7 )} );
+                iconRenderer->renderMinimizeIcon();
                 break;
             }
 
             case ButtonRestore:
             {
-                pen.setJoinStyle( Qt::RoundJoin );
-                painter->setPen( pen );
-                painter->drawPolygon( QVector<QPointF>{
-                    QPointF( 4.5, 9 ),
-                    QPointF( 9, 4.5 ),
-                    QPointF( 13.5, 9 ),
-                    QPointF( 9, 13.5 )});
+                iconRenderer->renderRestoreIcon();
                 break;
             }
 

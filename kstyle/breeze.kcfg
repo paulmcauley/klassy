@@ -35,6 +35,16 @@
     <entry name="OutlineCloseButton" type = "Bool">
         <default>true</default>
     </entry>
+    
+    <!-- button icon style -->
+    <entry name="ButtonIconStyle" type="Enum">
+      <choices>
+          <choice name="StyleClassic" />
+          <choice name="StyleOxygen" />
+          <choice name="StyleRedmond" />
+      </choices>
+      <default>StyleOxygen</default>
+    </entry>
 
   </group>
 

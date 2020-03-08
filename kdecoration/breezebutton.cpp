@@ -1,10 +1,12 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2020  Paul McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 #include "breezebutton.h"
+#include "breezerenderdecorationbuttonicon.h"
 
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
@@ -188,112 +190,48 @@ namespace Breeze
 
             // setup painter
             QPen pen( foregroundColor );
-            pen.setCapStyle( Qt::RoundCap );
-            pen.setJoinStyle( Qt::MiterJoin );
             pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
 
-            painter->setPen( pen );
-            painter->setBrush( Qt::NoBrush );
+            auto d = qobject_cast<Decoration*>( decoration() );
+
+            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
+            if (d) iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, d->internalSettings()->buttonIconStyle(), false );
+            else iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen );
 
             switch( type() )
             {
 
                 case DecorationButtonType::Close:
                 {
-                    painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
-                    painter->drawLine( 13, 5, 5, 13 );
+                    iconRenderer->renderCloseIcon();
                     break;
                 }
 
                 case DecorationButtonType::Maximize:
                 {
-                    if( isChecked() )
-                    {
-                        pen.setJoinStyle( Qt::RoundJoin );
-                        painter->setPen( pen );
-
-                        painter->drawPolygon( QVector<QPointF>{
-                            QPointF( 4, 9 ),
-                            QPointF( 9, 4 ),
-                            QPointF( 14, 9 ),
-                            QPointF( 9, 14 )} );
-
-                    } else {
-                        painter->drawPolyline( QVector<QPointF>{
-                            QPointF( 4, 11 ),
-                            QPointF( 9, 6 ),
-                            QPointF( 14, 11 )});
-                    }
+                    if( isChecked() ) iconRenderer->renderRestoreIcon();
+                    else iconRenderer->renderMaximizeIcon();
                     break;
                 }
 
                 case DecorationButtonType::Minimize:
                 {
-                    painter->drawPolyline( QVector<QPointF>{
-                        QPointF( 4, 7 ),
-                        QPointF( 9, 12 ),
-                        QPointF( 14, 7 ) });
+                    iconRenderer->renderMinimizeIcon();
                     break;
                 }
 
                 case DecorationButtonType::OnAllDesktops:
                 {
-                    painter->setPen( Qt::NoPen );
-                    painter->setBrush( foregroundColor );
-
-                    if( isChecked())
-                    {
-
-                        // outer ring
-                        painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
-
-                        // center dot
-                        QColor backgroundColor( this->backgroundColor() );
-                        auto d = qobject_cast<Decoration*>( decoration() );
-                        if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
-
-                        if( backgroundColor.isValid() )
-                        {
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 8, 8, 2, 2 ) );
-                        }
-
-                    } else {
-
-                        painter->drawPolygon( QVector<QPointF> {
-                            QPointF( 6.5, 8.5 ),
-                            QPointF( 12, 3 ),
-                            QPointF( 15, 6 ),
-                            QPointF( 9.5, 11.5 )} );
-
-                        painter->setPen( pen );
-                        painter->drawLine( QPointF( 5.5, 7.5 ), QPointF( 10.5, 12.5 ) );
-                        painter->drawLine( QPointF( 12, 6 ), QPointF( 4.5, 13.5 ) );
-                    }
+                    if( isChecked()) iconRenderer->renderPinnedOnAllDesktopsIcon();
+                    else iconRenderer->renderPinOnAllDesktopsIcon();
                     break;
                 }
 
                 case DecorationButtonType::Shade:
                 {
 
-                    if (isChecked())
-                    {
-
-                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) );
-                        painter->drawPolyline( QVector<QPointF> {
-                            QPointF( 4, 8 ),
-                            QPointF( 9, 13 ),
-                            QPointF( 14, 8 )} );
-
-                    } else {
-
-                        painter->drawLine( QPointF( 4, 5.5 ), QPointF( 14, 5.5 ) );
-                        painter->drawPolyline(  QVector<QPointF> {
-                            QPointF( 4, 13 ),
-                            QPointF( 9, 8 ),
-                            QPointF( 14, 13 ) });
-                    }
-
+                    if (isChecked()) iconRenderer->renderUnShadeIcon();
+                    else iconRenderer->renderShadeIcon();
                     break;
 
                 }
@@ -301,52 +239,27 @@ namespace Breeze
                 case DecorationButtonType::KeepBelow:
                 {
 
-                    painter->drawPolyline(  QVector<QPointF> {
-                        QPointF( 4, 5 ),
-                        QPointF( 9, 10 ),
-                        QPointF( 14, 5 ) });
-
-                    painter->drawPolyline(  QVector<QPointF> {
-                        QPointF( 4, 9 ),
-                        QPointF( 9, 14 ),
-                        QPointF( 14, 9 ) });
+                    iconRenderer->renderKeepBehindIcon();
                     break;
 
                 }
 
                 case DecorationButtonType::KeepAbove:
                 {
-                    painter->drawPolyline(  QVector<QPointF> {
-                        QPointF( 4, 9 ),
-                        QPointF( 9, 4 ),
-                        QPointF( 14, 9 ) });
-
-                    painter->drawPolyline(  QVector<QPointF> {
-                        QPointF( 4, 13 ),
-                        QPointF( 9, 8 ),
-                        QPointF( 14, 13 ) });
+                    iconRenderer->renderKeepInFrontIcon();
                     break;
                 }
 
 
                 case DecorationButtonType::ApplicationMenu:
                 {
-                    painter->drawRect( QRectF( 3.5, 4.5, 11, 1 ) );
-                    painter->drawRect( QRectF( 3.5, 8.5, 11, 1 ) );
-                    painter->drawRect( QRectF( 3.5, 12.5, 11, 1 ) );
+                    iconRenderer->renderApplicationMenuIcon();
                     break;
                 }
 
                 case DecorationButtonType::ContextHelp:
                 {
-                    QPainterPath path;
-                    path.moveTo( 5, 6 );
-                    path.arcTo( QRectF( 5, 3.5, 8, 5 ), 180, -180 );
-                    path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
-                    painter->drawPath( path );
-
-                    painter->drawRect( QRectF( 9, 15, 0.5, 0.5 ) );
-
+                   iconRenderer->renderContextHelpIcon();
                     break;
                 }
 

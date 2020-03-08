@@ -30,6 +30,7 @@ namespace Breeze
 
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -57,6 +58,7 @@ namespace Breeze
 
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
+        m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
@@ -89,6 +91,7 @@ namespace Breeze
 
         // apply modifications from ui
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
+        m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
         m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
         m_internalSettings->setOutlineCloseButton( m_ui.outlineCloseButton->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
@@ -135,6 +138,7 @@ namespace Breeze
 
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
+        m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
@@ -160,6 +164,7 @@ namespace Breeze
 
         if (m_ui.drawTitleBarSeparator->isChecked() != m_internalSettings->drawTitleBarSeparator()) modified = true;
         if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
+        else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
         else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
