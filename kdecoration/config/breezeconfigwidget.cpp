@@ -161,6 +161,7 @@ namespace Breeze
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
