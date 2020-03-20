@@ -25,6 +25,7 @@
 
 #include <QPainter>
 #include <QVariantAnimation>
+#include <QPainterPath>
 
 namespace Breeze
 {
