@@ -23,6 +23,7 @@
 #include "breezestyleconfigdata.h"
 
 #include <KColorUtils>
+#include <KIconLoader>
 #include <KWindowSystem>
 
 #include <QApplication>
@@ -1595,4 +1596,19 @@ namespace Breeze
         return pixmap.devicePixelRatio();
     }
 
+    QPixmap Helper::coloredIcon(const QIcon& icon,  const QPalette& palette, const QSize &size, QIcon::Mode mode, QIcon::State state)
+    {
+        const QPalette activePalette = KIconLoader::global()->customPalette();
+        const bool changePalette = activePalette != palette;
+        if (changePalette) {
+            KIconLoader::global()->setCustomPalette(palette);
+        }
+        const QPixmap pixmap = icon.pixmap(size, mode, state);
+        if (changePalette && activePalette == QPalette()) {
+            KIconLoader::global()->resetPalette();
+        } else {
+            KIconLoader::global()->setCustomPalette(palette);
+        }
+        return pixmap;
+    }
 }

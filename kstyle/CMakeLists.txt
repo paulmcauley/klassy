@@ -4,6 +4,7 @@ find_package(KF5 REQUIRED COMPONENTS
     I18n
     Config
     GuiAddons
+    IconThemes
     ConfigWidgets
     WindowSystem)
 
@@ -101,7 +102,7 @@ target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
 if( BREEZE_HAVE_QTQUICK )
     target_link_libraries(breeze Qt5::Quick)
 endif()
-target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::WindowSystem)
+target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
 target_link_libraries(breeze breezecommon5)
 
 if(KF5FrameworkIntegration_FOUND)

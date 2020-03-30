@@ -29,6 +29,7 @@
 #include <KSharedConfig>
 
 #include <QPainterPath>
+#include <QIcon>
 #include <QWidget>
 
 namespace Breeze
@@ -281,6 +282,9 @@ namespace Breeze
         
         //* return a QRectF with the appropriate size for a rectangle with a pen stroke
         QRectF strokedRect( const QRect &rect, const int penWidth = PenWidth::Frame ) const;
+        
+        QPixmap coloredIcon(const QIcon &icon, const QPalette& palette, const QSize &size,
+                            QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off);
 
         protected:
 

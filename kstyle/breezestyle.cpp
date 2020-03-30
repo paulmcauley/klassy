@@ -1276,9 +1276,9 @@ namespace Breeze
 
                 const auto pixmapSize( button->icon().actualSize( button->iconSize() ) );
                 const QRect pixmapRect( QPoint( offset.x(), button->description().isEmpty() ? (button->height() - pixmapSize.height())/2:offset.y() ), pixmapSize );
-                const QPixmap pixmap( button->icon().pixmap(pixmapSize,
+                const QPixmap pixmap(_helper->coloredIcon(button->icon(), button->palette(), pixmapSize,
                     enabled ? QIcon::Normal : QIcon::Disabled,
-                    button->isChecked() ? QIcon::On : QIcon::Off) );
+                    button->isChecked() ? QIcon::On : QIcon::Off));
                 drawItemPixmap( &painter, pixmapRect, Qt::AlignCenter, pixmap );
 
                 offset.rx() += pixmapSize.width() + Metrics::Button_ItemSpacing;
@@ -3888,7 +3888,7 @@ namespace Breeze
         const QSize iconSize( iconWidth, iconWidth );
 
         // get pixmap
-        const QPixmap pixmap( icon.pixmap( iconSize, iconMode, iconState ) );
+        const QPixmap pixmap(_helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState));
 
         // render
         drawItemPixmap( painter, option->rect, Qt::AlignCenter, pixmap );
@@ -4203,7 +4203,7 @@ namespace Breeze
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
-            const auto pixmap = buttonOption->icon.pixmap( iconSize, iconMode, iconState );
+            const auto pixmap = _helper->coloredIcon(buttonOption->icon, buttonOption->palette, iconSize, iconMode, iconState);
             drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
 
         }
@@ -4329,7 +4329,7 @@ namespace Breeze
             else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
-            const QPixmap pixmap = toolButtonOption->icon.pixmap( iconSize, iconMode, iconState );
+            const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon, toolButtonOption->palette, iconSize, iconMode, iconState);
             drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
 
         }
@@ -4378,7 +4378,7 @@ namespace Breeze
         if( !buttonOption->icon.isNull() )
         {
             const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
-            const QPixmap pixmap( buttonOption->icon.pixmap(  buttonOption->iconSize, mode ) );
+            const QPixmap pixmap(_helper->coloredIcon(buttonOption->icon, buttonOption->palette, buttonOption->iconSize, mode));
             drawItemPixmap( painter, rect, textFlags, pixmap );
 
             // adjust rect (copied from QCommonStyle)
@@ -4472,7 +4472,8 @@ namespace Breeze
 #endif
                 }
 
-                const auto pixmap = cb->currentIcon.pixmap(window, cb->iconSize, mode);
+                auto pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize * window->devicePixelRatio(), mode);
+                pixmap.setDevicePixelRatio(window->devicePixelRatio());
                 auto iconRect(editRect);
                 iconRect.setWidth(cb->iconSize.width() + 4);
                 iconRect = alignedRect(cb->direction,
@@ -4557,7 +4558,7 @@ namespace Breeze
 
             }
 
-            const auto pixmap = menuItemOption->icon.pixmap( iconSize, iconMode, iconState );
+            const auto pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), iconMode, iconState);
             drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
 
             // render outline
@@ -4736,7 +4737,7 @@ namespace Breeze
 
             // icon state
             const QIcon::State iconState( sunken ? QIcon::On:QIcon::Off );
-            const QPixmap icon = menuItemOption->icon.pixmap( iconRect.size(), mode, iconState );
+            const QPixmap icon = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), mode, iconState);
             painter->drawPixmap( iconRect, icon );
 
         }
@@ -5716,7 +5717,7 @@ namespace Breeze
 
             iconRect = visualRect( option, iconRect );
             const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
-            const QPixmap pixmap( toolBoxOption->icon.pixmap( iconSize, mode ) );
+            const QPixmap pixmap(_helper->coloredIcon(toolBoxOption->icon, toolBoxOption->palette, iconRect.size(), mode));
             drawItemPixmap( painter, iconRect, textFlags, pixmap );
 
         }
@@ -6598,7 +6599,7 @@ namespace Breeze
             }
 
             // get pixmap and render
-            const QPixmap pixmap = icon.pixmap( iconSize, iconMode, iconState );
+            const QPixmap pixmap = _helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState);
             painter->drawPixmap( iconRect, pixmap );
 
         }
