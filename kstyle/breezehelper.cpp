@@ -1590,15 +1590,6 @@ namespace Breeze
     { return compositingActive() && widget && widget->testAttribute( Qt::WA_TranslucentBackground ); }
 
     //______________________________________________________________________________________
-    QPixmap Helper::highDpiPixmap( int width, int height ) const
-    {
-        const qreal dpiRatio( qApp->devicePixelRatio() );
-        QPixmap pixmap( width*dpiRatio, height*dpiRatio );
-        pixmap.setDevicePixelRatio( dpiRatio );
-        return pixmap;
-    }
-
-    //______________________________________________________________________________________
     qreal Helper::devicePixelRatio( const QPixmap& pixmap ) const
     {
         return pixmap.devicePixelRatio();
