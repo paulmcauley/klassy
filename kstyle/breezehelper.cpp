@@ -1604,10 +1604,12 @@ namespace Breeze
             KIconLoader::global()->setCustomPalette(palette);
         }
         const QPixmap pixmap = icon.pixmap(size, mode, state);
-        if (changePalette && activePalette == QPalette()) {
-            KIconLoader::global()->resetPalette();
-        } else {
-            KIconLoader::global()->setCustomPalette(palette);
+        if (changePalette) {
+            if (activePalette == QPalette()) {
+                KIconLoader::global()->resetPalette();
+            } else {
+                KIconLoader::global()->setCustomPalette(palette);
+            }
         }
         return pixmap;
     }
