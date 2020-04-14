@@ -4463,17 +4463,7 @@ namespace Breeze
                     mode = QIcon::Disabled;
                 }
 
-                QWindow *window = nullptr;
-                if (widget && widget->window()) {
-                    window = widget->window()->windowHandle();
-#if BREEZE_HAVE_QTQUICK
-                } else if (QQuickItem *quickItem = qobject_cast<QQuickItem *>(option->styleObject)) {
-                    window = quickItem->window();
-#endif
-                }
-
-                auto pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize * window->devicePixelRatio(), mode);
-                pixmap.setDevicePixelRatio(window->devicePixelRatio());
+                const QPixmap pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize, mode);
                 auto iconRect(editRect);
                 iconRect.setWidth(cb->iconSize.width() + 4);
                 iconRect = alignedRect(cb->direction,
