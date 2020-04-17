@@ -4455,13 +4455,10 @@ namespace Breeze
             if (!cb->currentIcon.isNull()) {
                 QIcon::Mode mode;
 
-                if ((cb->state & QStyle::State_Selected) && (cb->state & QStyle::State_Active)) {
-                    mode = QIcon::Selected;
-                } else if (cb->state & QStyle::State_Enabled) {
-                    mode = QIcon::Normal;
-                } else {
-                    mode = QIcon::Disabled;
-                }
+                if( !enabled ) mode = QIcon::Disabled;
+                else if( !flat && hasFocus ) mode = QIcon::Selected;
+                else if( mouseOver && flat ) mode = QIcon::Active;
+                else mode = QIcon::Normal;
 
                 const QPixmap pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize, mode);
                 auto iconRect(editRect);
