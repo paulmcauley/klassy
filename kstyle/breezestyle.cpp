@@ -6655,14 +6655,19 @@ namespace Breeze
     void Style::renderMenuTitle( const QStyleOptionToolButton* option, QPainter* painter, const QWidget* ) const
     {
 
-        // render a separator at the bottom
+        // render a background rect for the title
         const auto& palette( option->palette );
-        const auto color( _helper->separatorColor( palette ) );
-        _helper->renderSeparator( painter, QRect( option->rect.bottomLeft()-QPoint( 0, Metrics::MenuItem_MarginHeight), QSize( option->rect.width(), 1 ) ), color );
+        QColor bgColor = palette.color( QPalette::Text );
+        bgColor.setAlphaF(0.04);
+        const auto separatorColor( _helper->separatorColor( palette ) );
+        _helper->renderMenuFrame( painter, option->rect, bgColor, separatorColor, true );
 
         // render text in the center of the rect
         // icon is discarded on purpose
-        painter->setFont( option->font );
+        // make text the same size as a level 4 heading so it looks more title-ish
+        auto font = option->font;
+        font.setPointSize( qRound( font.pointSize() * 1.1 ) );
+        painter->setFont( font );
         const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
