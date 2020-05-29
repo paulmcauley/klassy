@@ -8,8 +8,9 @@ find_package(KF5 REQUIRED COMPONENTS
     ConfigWidgets
     WindowSystem)
 
-find_package(Qt5 COMPONENTS Quick)
+find_package(Qt5 COMPONENTS Quick X11Extras)
 set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
+set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
 
 find_package( KF5FrameworkIntegration CONFIG )
 set_package_properties(KF5FrameworkIntegration PROPERTIES
@@ -19,26 +20,6 @@ set_package_properties(KF5FrameworkIntegration PROPERTIES
     PURPOSE "Required to use KStyle convenience functionalities in style")
 
 set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
-
-find_package(XCB COMPONENTS XCB)
-set_package_properties(XCB PROPERTIES
-    DESCRIPTION "X protocol C-language Binding"
-    URL "https://xcb.freedesktop.org"
-    TYPE OPTIONAL
-    PURPOSE "Required to pass style properties to native Windows on X11 Platform"
-)
-
-find_package(KF5Wayland CONFIG)
-set(BREEZE_HAVE_KWAYLAND ${KF5Wayland_FOUND})
-
-if(UNIX AND NOT APPLE)
-    set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
-    if (XCB_XCB_FOUND)
-        find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
-    endif()
-else()
-    set(BREEZE_HAVE_X11 FALSE)
-endif()
 
 
 ################# includes #################
@@ -102,6 +83,9 @@ target_link_libraries(breeze Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
 if( BREEZE_HAVE_QTQUICK )
     target_link_libraries(breeze Qt5::Quick)
 endif()
+if (BREEZE_HAVE_QTX11EXTRAS)
+    target_link_libraries(breeze Qt5::X11Extras)
+endif()
 target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
 target_link_libraries(breeze breezecommon5)
 
@@ -113,15 +97,6 @@ if (WIN32)
     # As stated in https://docs.microsoft.com/en-us/cpp/c-runtime-library/math-constants M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
     target_compile_definitions(breeze PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
-endif()
-
-if(BREEZE_HAVE_X11)
-    target_link_libraries(breeze ${XCB_LIBRARIES})
-    target_link_libraries(breeze Qt5::X11Extras)
-endif()
-
-if(BREEZE_HAVE_KWAYLAND)
-    target_link_libraries(breeze KF5::WaylandClient)
 endif()
 
 

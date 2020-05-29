@@ -15,7 +15,7 @@
 #include <QApplication>
 #include <QPainter>
 
-#if BREEZE_HAVE_X11
+#if BREEZE_HAVE_QTX11EXTRAS
 #include <QX11Info>
 #endif
 
@@ -1563,7 +1563,7 @@ namespace Breeze
     bool Helper::compositingActive() const
     {
 
-        #if BREEZE_HAVE_X11
+        #if BREEZE_HAVE_QTX11EXTRAS
         if( isX11() )
         { return QX11Info::isCompositingManagerRunning( QX11Info::appScreen() ); }
         #endif

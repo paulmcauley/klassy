@@ -47,22 +47,6 @@
 #include <QQuickWindow>
 #endif
 
-#if BREEZE_HAVE_X11
-#include <QX11Info>
-#include <xcb/xcb.h>
-
-#include <NETWM>
-
-#endif
-
-#if BREEZE_HAVE_KWAYLAND
-#include <KWayland/Client/connection_thread.h>
-#include <KWayland/Client/pointer.h>
-#include <KWayland/Client/registry.h>
-#include <KWayland/Client/shell.h>
-#include <KWayland/Client/seat.h>
-#endif
-
 namespace Util
 {
     template<class T>
@@ -115,7 +99,7 @@ namespace Breeze
             we trigger on the first MouseMove or MousePress events that are received
             by any widget in the application to detect that the drag is finished
             */
-            if( _parent->useWMMoveResize() && _parent->_dragInProgress && _parent->_target && ( event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonPress ) )
+            if( _parent->_dragInProgress && _parent->_target && ( event->type() == QEvent::MouseMove || event->type() == QEvent::MouseButtonPress ) )
             { return appMouseEvent( object, event ); }
 
             return false;
@@ -166,67 +150,12 @@ namespace Breeze
 
         setEnabled( StyleConfigData::windowDragMode() != StyleConfigData::WD_NONE );
         setDragMode( StyleConfigData::windowDragMode() );
-        setUseWMMoveResize( StyleConfigData::useWMMoveResize() );
-
         setDragDistance( QApplication::startDragDistance() );
         setDragDelay( QApplication::startDragTime() );
 
         initializeWhiteList();
         initializeBlackList();
-        initializeWayland();
 
-    }
-
-    //_______________________________________________________
-    void WindowManager::initializeWayland()
-    {
-        #if BREEZE_HAVE_KWAYLAND
-        if( !Helper::isWayland() ) return;
-        if( _seat )  return;
-
-        using namespace KWayland::Client;
-        auto connection = ConnectionThread::fromApplication( this );
-        if( !connection ) return;
-
-        auto registry = new Registry( this );
-        registry->create( connection );
-        connect(registry, &Registry::interfacesAnnounced, this,
-            [registry, this] {
-                const auto interface = registry->interface( Registry::Interface::Seat );
-                if( interface.name != 0 )
-                {
-                    _seat = registry->createSeat( interface.name, interface.version, this );
-                    connect(_seat, &Seat::hasPointerChanged, this, &WindowManager::waylandHasPointerChanged);
-                }
-            }
-        );
-
-        registry->setup();
-        connection->roundtrip();
-        #endif
-    }
-
-    //_______________________________________________________
-    void WindowManager::waylandHasPointerChanged(bool hasPointer)
-    {
-        #if BREEZE_HAVE_KWAYLAND
-        Q_ASSERT( _seat );
-        if( hasPointer )
-        {
-            if( !_pointer )
-            {
-                _pointer = _seat->createPointer(this);
-                connect(_pointer, &KWayland::Client::Pointer::buttonStateChanged, this,
-                    [this] (quint32 serial) { _waylandSerial = serial; }
-                );
-            }
-        } else {
-            delete _pointer;
-            _pointer = nullptr;
-        }
-        #else
-        Q_UNUSED( hasPointer );
-        #endif
     }
 
     //_____________________________________________________________
@@ -351,9 +280,9 @@ namespace Breeze
         {
 
             _dragTimer.stop();
-            if( _target ) startDrag( _target.data()->window()->windowHandle(), _globalDragPoint );
+            if( _target ) startDrag( _target.data()->window()->windowHandle() );
             #if BREEZE_HAVE_QTQUICK
-            else if( _quickTarget ) startDrag( _quickTarget.data()->window(), _globalDragPoint );
+            else if( _quickTarget ) startDrag( _quickTarget.data()->window() );
             #endif
 
         } else {
@@ -458,14 +387,6 @@ namespace Breeze
 
             }
 
-            return true;
-
-        } else if( !useWMMoveResize() && _target ) {
-
-            // use QWidget::move for the grabbing
-            /* this works only if the sending object and the target are identical */
-            auto window( _target.data()->window() );
-            window->move( window->pos() + mouseEvent->pos() - _dragPoint );
             return true;
 
         } else return false;
@@ -760,13 +681,6 @@ namespace Breeze
     void WindowManager::resetDrag()
     {
 
-        if( (!useWMMoveResize() ) && _target && _cursorOverride ) {
-
-          qApp->restoreOverrideCursor();
-          _cursorOverride = false;
-
-        }
-
         _target.clear();
         #if BREEZE_HAVE_QTQUICK
         _quickTarget.clear();
@@ -780,91 +694,13 @@ namespace Breeze
     }
 
     //____________________________________________________________
-    void WindowManager::startDrag( QWindow* window, const QPoint& position )
+    void WindowManager::startDrag( QWindow* window )
     {
 
         if( !( enabled() && window ) ) return;
         if( QWidget::mouseGrabber() ) return;
 
-        // ungrab pointer
-        if( useWMMoveResize() )
-        {
-
-            if( Helper::isX11() ) startDragX11( window, position );
-            else if( Helper::isWayland() ) startDragWayland( window, position );
-
-        } else if( !_cursorOverride ) {
-
-            qApp->setOverrideCursor( Qt::SizeAllCursor );
-            _cursorOverride = true;
-
-        }
-
-        _dragInProgress = true;
-
-    }
-
-    //_______________________________________________________
-    void WindowManager::startDragX11( QWindow* window, const QPoint& position )
-    {
-        #if BREEZE_HAVE_X11
-        // connection
-        auto connection( QX11Info::connection() );
-
-        auto net_connection = connection;
-        const qreal dpiRatio = window->devicePixelRatio();
-        const QPoint origin = window->screen()->geometry().topLeft();
-        const QPoint native = (position - origin) * dpiRatio + origin;
-
-        xcb_ungrab_pointer( connection, XCB_TIME_CURRENT_TIME );
-        NETRootInfo( net_connection, NET::WMMoveResize ).moveResizeRequest(
-            window->winId(), native.x(), native.y(), NET::Move );
-
-        #else
-
-        Q_UNUSED( window );
-        Q_UNUSED( position );
-
-        #endif
-    }
-
-    //_______________________________________________________
-    void WindowManager::startDragWayland( QWindow* window, const QPoint& )
-    {
-        #if BREEZE_HAVE_KWAYLAND
-        if( !_seat ) {
-            return;
-        }
-
-        auto shellSurface = KWayland::Client::ShellSurface::fromWindow(window);
-        if( !shellSurface )
-        {
-            // TODO: also check for xdg-shell in future
-            return;
-        }
-
-        shellSurface->requestMove( _seat, _waylandSerial );
-        #else
-        Q_UNUSED( window );
-        #endif
-    }
-
-    //____________________________________________________________
-    bool WindowManager::supportWMMoveResize() const
-    {
-
-        #if BREEZE_HAVE_KWAYLAND
-        if( Helper::isWayland() )
-        {
-            return true;
-        }
-        #endif
-
-        #if BREEZE_HAVE_X11
-        return Helper::isX11();
-        #else
-        return false;
-        #endif
+        _dragInProgress = window->startSystemMove();
 
     }
 

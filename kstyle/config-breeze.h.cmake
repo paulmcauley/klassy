@@ -12,12 +12,10 @@
 /* Define to 1 if QtQuick is available */
 #cmakedefine01 BREEZE_HAVE_QTQUICK
 
+/* Define to 1 if QtX11Extras is available */
+#cmakedefine01 BREEZE_HAVE_QTX11EXTRAS
+
 /* Define to 1 if FrameworkIntegration/Kstyle libraries are found */
 #cmakedefine01 BREEZE_HAVE_KSTYLE
-
-/* Define to 1 if XCB libraries are found */
-#cmakedefine01 BREEZE_HAVE_X11
-
-#cmakedefine01 BREEZE_HAVE_KWAYLAND
 
 #endif

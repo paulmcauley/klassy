@@ -164,11 +164,6 @@
        <default></default>
     </entry>
 
-    <!-- if true, move events are passed to the window manager (e.g. KWin) -->
-    <entry name="UseWMMoveResize" type="Bool">
-      <default>true</default>
-    </entry>
-
     <!-- splitter proxy -->
     <entry name="SplitterProxyEnabled" type="Bool">
       <default>true</default>
