@@ -10,6 +10,7 @@ X-KDE-ParentApp=kcontrol
 X-KDE-Weight=50
 
 Name=Breeze Widget Style
+Name[az]=Breeze Vidjet üslubu
 Name[ca]=Estil dels estris Brisa
 Name[ca@valencia]=Estil dels ginys («widgets») Brisa
 Name[cs]=Styl widgetů Breeze
@@ -51,6 +52,7 @@ Name[zh_CN]=微风部件样式
 Name[zh_TW]=Breeze 元件樣式
 Comment=Modify the appearance of widgets
 Comment[ar]=عدّل مظهر الودجات
+Comment[az]=Vidjetin görünüşünü dəyişin
 Comment[ca]=Modifica l'aparença dels estris
 Comment[ca@valencia]=Modifica l'aparença dels ginys
 Comment[cs]=Změnit vzhled widgetů
@@ -95,6 +97,7 @@ Comment[zh_TW]=變更元件外觀
 
 X-KDE-Keywords=breeze,widget,style
 X-KDE-Keywords[ar]=نسيم,ودجة,نمط
+X-KDE-Keywords[az]=breeze,vidjet,üslub
 X-KDE-Keywords[ca]=breeze,brisa,estri,estil
 X-KDE-Keywords[ca@valencia]=breeze,brisa,giny,estil
 X-KDE-Keywords[cs]=breeze,widget,styl

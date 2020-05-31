@@ -1,6 +1,7 @@
 [Misc]
 Name=Breeze
 Name[ar]=نسيم
+Name[az]=Breeze
 Name[bs]=Breeze
 Name[ca]=Brisa
 Name[ca@valencia]=Brisa
@@ -48,6 +49,7 @@ Name[zh_TW]=Breeze
 ConfigPage=kstyle_breeze_config
 Comment=Widget style for KDE Frameworks
 Comment[ar]=نمط ودجات أُطر عمل كدي
+Comment[az]=KDE Frameworks üçün Vidjet üslubu
 Comment[bs]=Stil kontrola za KDE Frameworks
 Comment[ca]=Estil per als estris dels Frameworks del KDE
 Comment[ca@valencia]=Estil per als ginys («widgets») dels Frameworks de KDE
