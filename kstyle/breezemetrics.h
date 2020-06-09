@@ -92,7 +92,7 @@ namespace Breeze
         static constexpr int ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend;
 
         // toolbars
-        static constexpr int ToolBar_FrameWidth = 2;
+        static constexpr int ToolBar_FrameWidth = 6;
         static constexpr int ToolBar_HandleExtent = 10;
         static constexpr int ToolBar_HandleWidth = 6;
         static constexpr int ToolBar_SeparatorWidth = 8;

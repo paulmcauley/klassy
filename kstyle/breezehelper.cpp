@@ -13,13 +13,22 @@
 #include <KWindowSystem>
 
 #include <QApplication>
+#include <QDBusConnection>
+#include <QFileInfo>
 #include <QPainter>
+#include <QMainWindow>
+#include <QMenuBar>
+#include <QMdiArea>
+#include <QDockWidget>
+#include <QWindow>
 
 #if BREEZE_HAVE_QTX11EXTRAS
 #include <QX11Info>
 #endif
 
 #include <algorithm>
+#include <QDialog>
+
 
 namespace Breeze
 {
@@ -28,13 +37,36 @@ namespace Breeze
     static const qreal arrowShade = 0.15;
 
     //____________________________________________________________________
-    Helper::Helper( KSharedConfig::Ptr config ):
-        _config( std::move( config ) )
-    {}
+    Helper::Helper( KSharedConfig::Ptr config, QObject *parent ) :
+        QObject ( parent ),
+        _config( std::move( config ) ),
+        _kwinConfig( KSharedConfig::openConfig("kwinrc") ),
+        _decorationConfig( new InternalSettings() )
+    {
+        if (qApp) {
+            connect(qApp, &QApplication::paletteChanged, this, [=]() {
+                if (qApp->property("KDE_COLOR_SCHEME_PATH").isValid()) {
+                    const auto path = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+                    KConfig config(path, KConfig::SimpleConfig);
+                    KConfigGroup group( config.group("WM") );
+                    const QPalette palette( QApplication::palette() );
+                    _activeTitleBarColor = group.readEntry( "activeBackground", palette.color( QPalette::Active, QPalette::Highlight ) );
+                    _activeTitleBarTextColor = group.readEntry( "activeForeground", palette.color( QPalette::Active, QPalette::HighlightedText ) );
+                    _inactiveTitleBarColor = group.readEntry( "inactiveBackground", palette.color( QPalette::Disabled, QPalette::Highlight ) );
+                    _inactiveTitleBarTextColor = group.readEntry( "inactiveForeground", palette.color( QPalette::Disabled, QPalette::HighlightedText ) );
+                }
+            });
+        }
+    }
 
     //____________________________________________________________________
     KSharedConfig::Ptr Helper::config() const
     { return _config; }
+
+
+    //____________________________________________________________________
+    QSharedPointer<InternalSettings> Helper::decorationConfig() const
+    { return _decorationConfig; }
 
     //____________________________________________________________________
     void Helper::loadConfig()
@@ -47,11 +79,18 @@ namespace Breeze
         _viewNeutralTextBrush = KStatefulBrush( KColorScheme::View, KColorScheme::NeutralText );
 
         const QPalette palette( QApplication::palette() );
-        const KConfigGroup group( _config->group( "WM" ) );
-        _activeTitleBarColor = group.readEntry( "activeBackground", palette.color( QPalette::Active, QPalette::Highlight ) );
-        _activeTitleBarTextColor = group.readEntry( "activeForeground", palette.color( QPalette::Active, QPalette::HighlightedText ) );
-        _inactiveTitleBarColor = group.readEntry( "inactiveBackground", palette.color( QPalette::Disabled, QPalette::Highlight ) );
-        _inactiveTitleBarTextColor = group.readEntry( "inactiveForeground", palette.color( QPalette::Disabled, QPalette::HighlightedText ) );
+        _config->reparseConfiguration();
+        _kwinConfig->reparseConfiguration();
+        _cachedAutoValid = false;
+        _decorationConfig->load();
+
+        KConfig config(qApp->property("KDE_COLOR_SCHEME_PATH").toString(), KConfig::SimpleConfig);
+        KConfigGroup appGroup( config.group("WM") );
+        KConfigGroup globalGroup( _config->group("WM") );
+        _activeTitleBarColor = appGroup.readEntry( "activeBackground", globalGroup.readEntry( "activeBackground", palette.color( QPalette::Active, QPalette::Highlight ) ) );
+        _activeTitleBarTextColor = appGroup.readEntry( "activeForeground", globalGroup.readEntry( "activeForeground", palette.color( QPalette::Active, QPalette::HighlightedText ) ) );
+        _inactiveTitleBarColor = appGroup.readEntry( "inactiveBackground", globalGroup.readEntry( "inactiveBackground", palette.color( QPalette::Disabled, QPalette::Highlight ) ) );
+        _inactiveTitleBarTextColor = appGroup.readEntry( "inactiveForeground", globalGroup.readEntry( "inactiveForeground", palette.color( QPalette::Disabled, QPalette::HighlightedText ) ) );
     }
 
     //____________________________________________________________________
@@ -1601,5 +1640,43 @@ namespace Breeze
             }
         }
         return pixmap;
+    }
+
+    bool Helper::shouldDrawToolsArea(const QWidget* widget) const {
+        if (!widget) {
+            return false;
+        }
+        static bool isAuto = false;
+        static QString borderSize;
+        if (!_cachedAutoValid) {
+            KConfigGroup kdecorationGroup(_kwinConfig->group("org.kde.kdecoration2"));
+            isAuto = kdecorationGroup.readEntry("BorderSizeAuto", true);
+            borderSize = kdecorationGroup.readEntry("BorderSize", "Normal");
+            _cachedAutoValid = true;
+        }
+        if (isAuto) {
+            auto window = widget->window();
+            if (qobject_cast<const QDialog*>(widget)) {
+                return true;
+            }
+            if (window) {
+                auto handle = window->windowHandle();
+                if (handle) {
+                    auto toolbar = qobject_cast<const QToolBar*>(widget);
+                    if (toolbar) {
+                        if (toolbar->isFloating()) {
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+        if (borderSize != "None" && borderSize != "NoSides") {
+            return false;
+        }
+        return true;
     }
 }

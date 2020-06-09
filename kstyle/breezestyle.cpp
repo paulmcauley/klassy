@@ -17,13 +17,17 @@
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
 #include "breezeblurhelper.h"
+#include "breezetoolsareamanager.h"
 
 #include <KColorUtils>
+#include <KIconLoader>
 
 #include <QApplication>
+#include <QBitmap>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDial>
+#include <QDialog>
 #include <QDBusConnection>
 #include <QDockWidget>
 #include <QFormLayout>
@@ -45,6 +49,7 @@
 #include <QToolButton>
 #include <QTreeView>
 #include <QWidgetAction>
+#include <QMdiArea>
 
 #if BREEZE_HAVE_QTQUICK
 #include <QQuickWindow>
@@ -190,6 +195,7 @@ namespace Breeze
         , _frameShadowFactory( new FrameShadowFactory( this ) )
         , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
         , _splitterFactory( new SplitterFactory( this ) )
+        , _toolsAreaManager ( new ToolsAreaManager( _helper, this ) )
         , _widgetExplorer( new WidgetExplorer( this ) )
         , _tabBarData( new BreezePrivate::TabBarData( this ) )
         #if BREEZE_HAVE_KSTYLE
@@ -209,10 +215,17 @@ namespace Breeze
             QStringLiteral( "/BreezeDecoration" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
+
         dbus.connect( QString(),
             QStringLiteral( "/KGlobalSettings" ),
             QStringLiteral( "org.kde.KGlobalSettings" ),
             QStringLiteral( "notifyChange" ), this, SLOT(configurationChanged()) );
+
+        dbus.connect( QString(),
+            QStringLiteral( "/KWin" ),
+            QStringLiteral( "org.kde.KWin" ),
+            QStringLiteral( "reloadConfig" ), this, SLOT(configurationChanged()));
+
         #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
         this->addEventFilter(qApp);
         #else
@@ -243,6 +256,7 @@ namespace Breeze
         _mdiWindowShadowFactory->registerWidget( widget );
         _shadowHelper->registerWidget( widget );
         _splitterFactory->registerWidget( widget );
+        _toolsAreaManager->registerWidget ( widget );
 
         // enable mouse over effects for all necessary widgets
         if(
@@ -380,11 +394,18 @@ namespace Breeze
 
             setTranslucentBackground( widget );
 
+        } else if ( qobject_cast<QMainWindow*> (widget) || qobject_cast<QDialog*> (widget) ) {
+            widget->setAttribute(Qt::WA_StyledBackground);
         }
-
         // base class polishing
         ParentStyleClass::polish( widget );
 
+    }
+
+    //______________________________________________________________
+    void Style::polish( QApplication *application )
+    {
+        _toolsAreaManager->registerApplication(application);
     }
 
     //______________________________________________________________
@@ -469,6 +490,7 @@ namespace Breeze
         _windowManager->unregisterWidget( widget );
         _splitterFactory->unregisterWidget( widget );
         _blurHelper->unregisterWidget( widget );
+        _toolsAreaManager->unregisterWidget ( widget );
 
         // remove event filter
         if( qobject_cast<QAbstractScrollArea*>( widget ) ||
@@ -874,6 +896,7 @@ namespace Breeze
             case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
             case PE_FrameWindow: fcn = &Style::drawFrameWindowPrimitive; break;
             case PE_FrameFocusRect: fcn = _frameFocusPrimitive; break;
+            case PE_Widget: fcn = &Style::drawWidgetPrimitive; break;
 
             // fallback
             default: break;
@@ -888,6 +911,43 @@ namespace Breeze
 
         painter->restore();
 
+    }
+
+    bool Style::drawWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const {
+        Q_UNUSED(option)
+        auto parent = widget;
+        if (!_helper->shouldDrawToolsArea(widget)) {
+            return true;
+        }
+        if (auto mw = qobject_cast<const QMainWindow*>(widget)) {
+            painter->save();
+
+            auto rect = _toolsAreaManager->toolsAreaRect(mw);
+
+            if (rect.height() == 0) {
+                painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+                painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
+                painter->restore();
+                return true;
+            }
+
+            auto color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+
+            painter->setPen(Qt::transparent);
+            painter->setBrush(color);
+            painter->drawRect(rect);
+
+            painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+
+            painter->restore();
+        } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
+        	auto margins = dialog->contentsMargins();
+            const_cast<QDialog*>(dialog)->setContentsMargins(margins.left(), margins.top(), margins.right(), qMax(margins.bottom(), 1));
+            painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+            painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
+        }
+        return true;
     }
 
     //______________________________________________________________
@@ -4300,7 +4360,6 @@ namespace Breeze
 
         // copy rect and palette
         const auto& rect = option->rect;
-        const auto& palette = option->palette;
 
         // state
         const State& state( option->state );
@@ -4424,6 +4483,8 @@ namespace Breeze
             QPalette::ColorRole textRole( QPalette::ButtonText );
             if( flat ) textRole = ( ((hasFocus&&sunken) || (state & State_Sunken))&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
             else if( hasFocus&&!mouseOver ) textRole = QPalette::HighlightedText;
+
+            auto palette = option->palette;
 
             painter->setFont(toolButtonOption->font);
             drawItemText( painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole );
@@ -4589,6 +4650,9 @@ namespace Breeze
         const bool sunken( enabled && (state & State_Sunken) );
         const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
 
+        painter->save();
+        painter->setRenderHints( QPainter::Antialiasing );
+
         // render hover and focus
         if( useStrongFocus && ( selected || sunken ) )
         {
@@ -4667,8 +4731,9 @@ namespace Breeze
 
         }
 
-        return true;
+        painter->restore();
 
+        return true;
     }
 
 

@@ -48,6 +48,7 @@ namespace Breeze
     class WidgetExplorer;
     class WindowManager;
     class BlurHelper;
+    class ToolsAreaManager;
 
     //* convenience typedef for base class
     #if !BREEZE_HAVE_KSTYLE
@@ -82,6 +83,9 @@ namespace Breeze
 
         //* widget unpolishing
         void unpolish( QWidget* ) override;
+
+        //* application polishing
+        void polish( QApplication* ) override;
 
         //* polish scrollarea
         void polishScrollArea( QAbstractScrollArea* );
@@ -267,6 +271,7 @@ namespace Breeze
         bool drawIndicatorToolBarHandlePrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorToolBarSeparatorPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawIndicatorBranchPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawWidgetPrimitive( const QStyleOption*, QPainter*, const QWidget* ) const;
 
         //@}
 
@@ -495,6 +500,9 @@ namespace Breeze
 
         //* splitter Factory, to extend splitters hit area
         SplitterFactory* _splitterFactory = nullptr;
+
+        //* signal manager for the tools area
+        ToolsAreaManager* _toolsAreaManager = nullptr;
 
         //* widget explorer
         WidgetExplorer* _widgetExplorer = nullptr;
