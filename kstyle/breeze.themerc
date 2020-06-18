@@ -43,6 +43,7 @@ Name[sv]=Breeze
 Name[tg]=Насим
 Name[tr]=Esinti
 Name[uk]=Breeze
+Name[x-test]=xxBreezexx
 Name[zh_CN]=微风
 Name[zh_TW]=Breeze
 ConfigPage=kstyle_breeze_config
@@ -89,6 +90,7 @@ Comment[sv]=Grafisk komponentstil för KDE Ramverk
 Comment[tg]=Услуби виҷет барои сохторҳои KDE
 Comment[tr]=KDE Frameworks için uygulama biçemi
 Comment[uk]=Стиль віджетів KDE Frameworks
+Comment[x-test]=xxWidget style for KDE Frameworksxx
 Comment[zh_CN]=KDE 框架的部件样式
 Comment[zh_TW]=KDE Frameworks 的元件樣式
 [KDE]
