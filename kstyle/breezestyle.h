@@ -21,6 +21,7 @@
  *************************************************************************/
 
 #include "breeze.h"
+#include "breezemetrics.h"
 #include "config-breeze.h"
 #include "breezehelper.h"
 

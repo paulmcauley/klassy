@@ -20,7 +20,7 @@
 
 #include "breezeshadowhelper.h"
 
-#include "breeze.h"
+#include "breezemetrics.h"
 #include "breezeboxshadowrenderer.h"
 #include "breezehelper.h"
 #include "breezepropertynames.h"

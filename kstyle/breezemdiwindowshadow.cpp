@@ -19,7 +19,7 @@
 
 #include "breezemdiwindowshadow.h"
 
-#include "breeze.h"
+#include "breezemetrics.h"
 #include "breezeboxshadowrenderer.h"
 #include "breezeshadowhelper.h"
 #include "breezestyleconfigdata.h"

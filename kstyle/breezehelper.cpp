@@ -19,7 +19,6 @@
 
 #include "breezehelper.h"
 
-#include "breeze.h"
 #include "breezestyleconfigdata.h"
 
 #include <KColorUtils>

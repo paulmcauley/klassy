@@ -22,6 +22,7 @@
 
 
 #include "breeze.h"
+#include "breezemetrics.h"
 #include "breezeanimationdata.h"
 #include "config-breeze.h"
 

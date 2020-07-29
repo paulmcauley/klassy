@@ -19,7 +19,6 @@
 
 #include "breezestyle.h"
 
-#include "breeze.h"
 #include "breezeanimations.h"
 #include "breezeframeshadow.h"
 #include "breezemdiwindowshadow.h"

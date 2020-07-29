@@ -19,7 +19,7 @@
 
 #include "breezebusyindicatorengine.h"
 
-#include "breeze.h"
+#include "breezemetrics.h"
 
 #include <QVariant>
 
