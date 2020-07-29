@@ -1,6 +1,8 @@
 #ifndef breezemetrics_h
 #define breezemetrics_h
 
+#include <QtCore>
+
 /*************************************************************************
  * Copyright (C) 2014 by Hugo Pereira Da Costa <hugo.pereira@free.fr>    *
  * Copyright (C) 2020 by Noah Davis <noahadvs@gmail.com>                 *
@@ -24,142 +26,142 @@
 namespace Breeze
 {
     //* standard pen widths
-    namespace PenWidth
+    struct PenWidth
     {
         /* Using 1 instead of slightly more than 1 causes symbols drawn with
          * pen strokes to look skewed. The exact amount added does not matter
          * as long as it isn't too visible.
          */
         // The standard pen stroke width for symbols.
-        static constexpr qreal Symbol = 1.01;
+        static const qreal Symbol;
 
         // The standard pen stroke width for frames.
-        static constexpr int Frame = 1;
+        static const int Frame;
 
         // The standard pen stroke width for shadows.
-        static constexpr int Shadow = 1;
+        static const int Shadow;
         
         // A value for pen width arguments to make it clear that there is no pen stroke
-        static constexpr int NoPen = 0;
-    }
+        static const int NoPen;
+    };
 
     //* metrics
-    enum Metrics
+    struct Metrics
     {
         // frames
-        Frame_FrameWidth = 2,
-        Frame_FrameRadius = 3,
+        static const int Frame_FrameWidth;
+        static const int Frame_FrameRadius;
 
         // layout
-        Layout_TopLevelMarginWidth = 10,
-        Layout_ChildMarginWidth = 6,
-        Layout_DefaultSpacing = 6,
+        static const int Layout_TopLevelMarginWidth;
+        static const int Layout_ChildMarginWidth;
+        static const int Layout_DefaultSpacing;
 
         // line editors
-        LineEdit_FrameWidth = 6,
+        static const int LineEdit_FrameWidth;
 
         // menu items
-        Menu_FrameWidth = 0,
-        MenuItem_MarginWidth = 5,
-        MenuItem_MarginHeight = 3,
-        MenuItem_ItemSpacing = 4,
-        MenuItem_AcceleratorSpace = 16,
-        MenuButton_IndicatorWidth = 20,
+        static const int Menu_FrameWidth;
+        static const int MenuItem_MarginWidth;
+        static const int MenuItem_MarginHeight;
+        static const int MenuItem_ItemSpacing;
+        static const int MenuItem_AcceleratorSpace;
+        static const int MenuButton_IndicatorWidth;
 
         // combobox
-        ComboBox_FrameWidth = 6,
+        static const int ComboBox_FrameWidth;
 
         // spinbox
-        SpinBox_FrameWidth = LineEdit_FrameWidth,
-        SpinBox_ArrowButtonWidth = 20,
+        static const int SpinBox_FrameWidth;
+        static const int SpinBox_ArrowButtonWidth;
 
         // groupbox title margin
-        GroupBox_TitleMarginWidth = 4,
+        static const int GroupBox_TitleMarginWidth;
 
         // buttons
-        Button_MinWidth = 80,
-        Button_MarginWidth = 6,
-        Button_ItemSpacing = 4,
+        static const int Button_MinWidth;
+        static const int Button_MarginWidth;
+        static const int Button_ItemSpacing;
 
         // tool buttons
-        ToolButton_MarginWidth = 6,
-        ToolButton_ItemSpacing = 4,
-        ToolButton_InlineIndicatorWidth = 12,
+        static const int ToolButton_MarginWidth;
+        static const int ToolButton_ItemSpacing;
+        static const int ToolButton_InlineIndicatorWidth;
 
         // checkboxes and radio buttons
-        CheckBox_Size = 20,
-        CheckBox_FocusMarginWidth = 2,
-        CheckBox_ItemSpacing = 4,
+        static const int CheckBox_Size;
+        static const int CheckBox_FocusMarginWidth;
+        static const int CheckBox_ItemSpacing;
 
         // menubar items
-        MenuBarItem_MarginWidth = 10,
-        MenuBarItem_MarginHeight = 6,
+        static const int MenuBarItem_MarginWidth;
+        static const int MenuBarItem_MarginHeight;
 
         // scrollbars
-        ScrollBar_Extend = 21,
-        ScrollBar_SliderWidth = 6,
-        ScrollBar_MinSliderHeight = 20,
-        ScrollBar_NoButtonHeight = (ScrollBar_Extend-ScrollBar_SliderWidth)/2,
-        ScrollBar_SingleButtonHeight = ScrollBar_Extend,
-        ScrollBar_DoubleButtonHeight = 2*ScrollBar_Extend,
+        static const int ScrollBar_Extend;
+        static const int ScrollBar_SliderWidth;
+        static const int ScrollBar_MinSliderHeight;
+        static const int ScrollBar_NoButtonHeight;
+        static const int ScrollBar_SingleButtonHeight;
+        static const int ScrollBar_DoubleButtonHeight;
 
         // toolbars
-        ToolBar_FrameWidth = 2,
-        ToolBar_HandleExtent = 10,
-        ToolBar_HandleWidth = 6,
-        ToolBar_SeparatorWidth = 8,
-        ToolBar_ExtensionWidth = 20,
-        ToolBar_ItemSpacing = 0,
+        static const int ToolBar_FrameWidth;
+        static const int ToolBar_HandleExtent;
+        static const int ToolBar_HandleWidth;
+        static const int ToolBar_SeparatorWidth;
+        static const int ToolBar_ExtensionWidth;
+        static const int ToolBar_ItemSpacing;
 
         // progressbars
-        ProgressBar_BusyIndicatorSize = 14,
-        ProgressBar_Thickness = 6,
-        ProgressBar_ItemSpacing = 4,
+        static const int ProgressBar_BusyIndicatorSize;
+        static const int ProgressBar_Thickness;
+        static const int ProgressBar_ItemSpacing;
 
         // mdi title bar
-        TitleBar_MarginWidth = 4,
+        static const int TitleBar_MarginWidth;
 
         // sliders
-        Slider_TickLength = 8,
-        Slider_TickMarginWidth = 2,
-        Slider_GrooveThickness = 6,
-        Slider_ControlThickness = 20,
+        static const int Slider_TickLength;
+        static const int Slider_TickMarginWidth;
+        static const int Slider_GrooveThickness;
+        static const int Slider_ControlThickness;
 
         // tabbar
-        TabBar_TabMarginHeight = 4,
-        TabBar_TabMarginWidth = 8,
-        TabBar_TabMinWidth = 80,
-        TabBar_TabMinHeight = 30,
-        TabBar_TabItemSpacing = 8,
-        TabBar_TabOverlap = 1,
-        TabBar_BaseOverlap = 2,
+        static const int TabBar_TabMarginHeight;
+        static const int TabBar_TabMarginWidth;
+        static const int TabBar_TabMinWidth;
+        static const int TabBar_TabMinHeight;
+        static const int TabBar_TabItemSpacing;
+        static const int TabBar_TabOverlap;
+        static const int TabBar_BaseOverlap;
 
         // tab widget
-        TabWidget_MarginWidth = 4,
+        static const int TabWidget_MarginWidth;
 
         // toolbox
-        ToolBox_TabMinWidth = 80,
-        ToolBox_TabItemSpacing = 4,
-        ToolBox_TabMarginWidth = 8,
+        static const int ToolBox_TabMinWidth;
+        static const int ToolBox_TabItemSpacing;
+        static const int ToolBox_TabMarginWidth;
 
         // tooltips
-        ToolTip_FrameWidth = 3,
+        static const int ToolTip_FrameWidth;
 
         // list headers
-        Header_MarginWidth = 6,
-        Header_ItemSpacing = 4,
-        Header_ArrowSize = 10,
+        static const int Header_MarginWidth;
+        static const int Header_ItemSpacing;
+        static const int Header_ArrowSize;
 
         // tree view
-        ItemView_ArrowSize = 10,
-        ItemView_ItemMarginWidth = 3,
-        SidePanel_ItemMarginWidth = 4,
+        static const int ItemView_ArrowSize;
+        static const int ItemView_ItemMarginWidth;
+        static const int SidePanel_ItemMarginWidth;
 
         // splitter
-        Splitter_SplitterWidth = 1,
+        static const int Splitter_SplitterWidth;
 
         // shadow dimensions
-        Shadow_Overlap = 2
+        static const int Shadow_Overlap;
     };
 }
 #endif
