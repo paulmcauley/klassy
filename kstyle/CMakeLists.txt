@@ -94,7 +94,6 @@ set(breeze_PART_SRCS
     breezestyleplugin.cpp
     breezetileset.cpp
     breezewindowmanager.cpp
-    breezemetrics.cpp
 )
 
 kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
