@@ -155,6 +155,10 @@ namespace Breeze
         //* update configuration
         void configurationChanged();
 
+        //* global configuration changed
+        void globalConfigurationChanged(int type, int arg);
+        void loadGlobalAnimationSettings();
+
         //* standard icons
         QIcon standardIconImplementation( StandardPixmap, const QStyleOption*, const QWidget* ) const;
 

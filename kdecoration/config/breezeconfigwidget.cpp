@@ -125,6 +125,15 @@ namespace Breeze
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
         m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
 
+        // Store in the global animation settings
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        KConfigGroup cg(config, QStringLiteral("KDE"));
+        if (m_ui.animationsEnabled->isChecked()) {
+            cg.writeEntry("AnimationDurationFactor", float(m_ui.animationsDuration->value()) / m_ui.animationsDuration->maximum());
+        } else {
+            cg.writeEntry("AnimationDurationFactor", 0.f);
+        }
+
         // save configuration
         m_internalSettings->save();
 

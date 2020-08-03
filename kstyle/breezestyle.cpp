@@ -182,6 +182,10 @@ namespace Breeze
             QStringLiteral( "/BreezeDecoration" ),
             QStringLiteral( "org.kde.Breeze.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
+        dbus.connect( QString(),
+            QStringLiteral( "/KGlobalSettings" ),
+            QStringLiteral( "org.kde.KGlobalSettings" ),
+            QStringLiteral( "notifyChange" ), this, SLOT(configurationChanged()) );
         #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
         this->addEventFilter(qApp);
         #else
@@ -1332,6 +1336,47 @@ namespace Breeze
 
     }
 
+    //_____________________________________________________________________
+    void Style::loadGlobalAnimationSettings()
+    {
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        const KConfigGroup cg(config, QStringLiteral("KDE"));
+
+        // Don't override if it isn't set by the user
+        if (!cg.hasKey("AnimationDurationFactor")) {
+            return;
+        }
+
+        const int animationsDuration = cg.readEntry("AnimationDurationFactor", StyleConfigData::animationsDuration() / 100.0f) * 100;
+        if (animationsDuration > 0) {
+            StyleConfigData::setAnimationsDuration(animationsDuration);
+            StyleConfigData::setAnimationsEnabled(true);
+        } else {
+            StyleConfigData::setAnimationsEnabled(false);
+        }
+    }
+
+    //_____________________________________________________________________
+    void Style::globalConfigurationChanged(int type, int arg)
+    {
+        Q_UNUSED(arg);
+
+        // 3 == SettingsChanged, which is manually redefined in
+        // plasma-integration/src/platformtheme/khintssettings.h and fetched
+        // from KGlobalConfig in kdelibs4support in plasma-desktop/kcms/*,
+        // seems to be agreed on by everything in plasma is what sets the
+        // animation duration
+        if (type != 3) {
+            return;
+        }
+
+        // Reload the new values
+        loadGlobalAnimationSettings();
+
+        // reinitialize engines
+        _animations->setupEngines();
+    }
+
     //____________________________________________________________________
     QIcon Style::standardIconImplementation( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
     {
@@ -1380,6 +1425,8 @@ namespace Breeze
 
         // load helper configuration
         _helper->loadConfig();
+
+        loadGlobalAnimationSettings();
 
         // reinitialize engines
         _animations->setupEngines();
