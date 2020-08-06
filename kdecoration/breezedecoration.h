@@ -31,6 +31,7 @@
 
 #include <QPalette>
 #include <QVariant>
+#include <QVariantAnimation>
 
 class QVariantAnimation;
 
@@ -61,6 +62,9 @@ namespace Breeze
         //* internal settings
         InternalSettingsPtr internalSettings() const
         { return m_internalSettings; }
+
+        qreal animationsDuration() const
+        { return m_animation->duration();}
 
         //* caption height
         int captionHeight() const;

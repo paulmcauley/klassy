@@ -101,15 +101,6 @@
       <default>false</default>
     </entry>
 
-    <!-- animations -->
-    <entry name="AnimationsEnabled" type = "Bool">
-       <default>true</default>
-    </entry>
-
-    <entry name="AnimationsDuration" type = "Int">
-       <default>150</default>
-    </entry>
-
     <!-- hide title bar -->
     <entry name="HideTitleBar" type = "Bool">
        <default>false</default>

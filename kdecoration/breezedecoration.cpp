@@ -45,7 +45,7 @@
 #include <QPainter>
 #include <QTextStream>
 #include <QTimer>
-#include <QVariantAnimation>
+#include <QDBusConnection>
 
 #if BREEZE_HAVE_X11
 #include <QX11Info>
@@ -243,10 +243,18 @@ namespace Breeze
         // It is important start and end value are of the same type, hence 0.0 and not just 0
         m_animation->setStartValue( 0.0 );
         m_animation->setEndValue( 1.0 );
-        m_animation->setEasingCurve( QEasingCurve::InOutQuad );
+        // Linear to have the same easing as Breeze animations
+        m_animation->setEasingCurve( QEasingCurve::Linear );
         connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             setOpacity(value.toReal());
         });
+
+        // use DBus connection to update on breeze configuration change
+        auto dbus = QDBusConnection::sessionBus();
+        dbus.connect( QString(),
+            QStringLiteral( "/KGlobalSettings" ),
+            QStringLiteral( "org.kde.KGlobalSettings" ),
+            QStringLiteral( "notifyChange" ), this, SLOT(reconfigure()) );
 
         reconfigure();
         updateTitleBar();
@@ -309,7 +317,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateAnimationState()
     {
-        if( m_internalSettings->animationsEnabled() )
+        if( m_animation->duration() > 0 )
         {
 
             auto c = client().data();
@@ -376,7 +384,11 @@ namespace Breeze
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
 
         // animation
-        m_animation->setDuration( m_internalSettings->animationsDuration() );
+
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        const KConfigGroup cg(config, QStringLiteral("KDE"));
+
+        m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
 
         // borders
         recalculateBorders();

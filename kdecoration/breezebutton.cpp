@@ -476,7 +476,7 @@ namespace Breeze
 
         // animation
         auto d = qobject_cast<Decoration*>(decoration());
-        if( d )  m_animation->setDuration( d->internalSettings()->animationsDuration() );
+        if( d )  m_animation->setDuration( d->animationsDuration() );
 
     }
 
@@ -485,7 +485,7 @@ namespace Breeze
     {
 
         auto d = qobject_cast<Decoration*>(decoration());
-        if( !(d && d->internalSettings()->animationsEnabled() ) ) return;
+        if( !(d && d->animationsDuration() > 0 ) ) return;
 
         m_animation->setDirection( hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
         if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();

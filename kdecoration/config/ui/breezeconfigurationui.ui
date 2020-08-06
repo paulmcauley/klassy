@@ -11,7 +11,16 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -163,75 +172,6 @@
           <string>Draw titlebar background gradient</string>
          </property>
         </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2">
-      <attribute name="title">
-       <string>Animations</string>
-      </attribute>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="1" column="0">
-        <widget class="QLabel" name="animationsDurationLabel">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="text">
-          <string>Anima&amp;tions duration:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-         <property name="buddy">
-          <cstring>animationsDuration</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="1">
-        <widget class="QSpinBox" name="animationsDuration">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="suffix">
-          <string> ms</string>
-         </property>
-         <property name="maximum">
-          <number>500</number>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="2">
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QCheckBox" name="animationsEnabled">
-         <property name="text">
-          <string>Enable animations</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" colspan="3">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -392,45 +332,10 @@
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawSizeGrip</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
-  <tabstop>animationsEnabled</tabstop>
-  <tabstop>animationsDuration</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>animationsEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>animationsDurationLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>34</x>
-     <y>194</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>84</x>
-     <y>221</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>animationsEnabled</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>animationsDuration</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>108</x>
-     <y>194</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>141</x>
-     <y>229</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
