@@ -469,6 +469,13 @@ namespace Breeze
         //* return true if passed widget is a menu title (KMenu::addTitle)
         bool hasAlteredBackground( const QWidget* ) const;
 
+        /*
+         * return true if the widget should be highlighted with neutral color
+         * if widget is null, check for the styleObject in option
+         * return false if the widget has the mouse hover or is focused.
+         */
+        bool hasHighlightNeutral( const QObject* widget, const QStyleOption* option, bool mouseOver, bool focus = false ) const;
+
         //*@name scrollbar button types (for addLine and subLine )
         //@{
         ScrollBarButtonType _addLineButtons = SingleButton;

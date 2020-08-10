@@ -73,6 +73,10 @@ namespace Breeze
         QColor negativeText( const QPalette& palette ) const
         { return _viewNegativeTextBrush.brush( palette ).color(); }
 
+        //* neutral text color
+        QColor neutralText( const QPalette& palette ) const
+        { return _viewNeutralTextBrush.brush( palette ).color(); }
+
         //* shadow
         QColor shadowColor( const QPalette& palette ) const
         { return alphaColor( palette.color( QPalette::Shadow ), 0.15 ); }
@@ -302,6 +306,7 @@ namespace Breeze
         KStatefulBrush _viewFocusBrush;
         KStatefulBrush _viewHoverBrush;
         KStatefulBrush _viewNegativeTextBrush;
+        KStatefulBrush _viewNeutralTextBrush;
         //@}
 
         //*@name windeco colors
