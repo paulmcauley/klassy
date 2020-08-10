@@ -146,6 +146,46 @@ namespace BreezePrivate
     bool isProgressBarHorizontal( const QStyleOptionProgressBar* option )
     {  return option && ( (option->state & QStyle::State_Horizontal ) || option->orientation == Qt::Horizontal ); }
 
+    enum class ToolButtonMenuArrowStyle {
+        None,
+        InlineLarge,
+        InlineSmall,
+        SubControl
+    };
+
+    ToolButtonMenuArrowStyle toolButtonMenuArrowStyle( const QStyleOption* option )
+    {
+        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
+        if (!toolButtonOption) {
+            return ToolButtonMenuArrowStyle::None;
+        }
+
+        const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
+        const bool hasInlineIndicator( toolButtonOption->features&QStyleOptionToolButton::HasMenu && !hasPopupMenu );
+        const bool hasDelayedMenu( hasInlineIndicator && toolButtonOption->features & QStyleOptionToolButton::PopupDelay );
+
+        const bool hasIcon = !toolButtonOption->icon.isNull() || ( toolButtonOption->features & QStyleOptionToolButton::Arrow );
+        const bool iconOnly = toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly
+                              || (toolButtonOption->text.isEmpty() && hasIcon);
+
+        if( hasPopupMenu )
+        {
+            return ToolButtonMenuArrowStyle::SubControl;
+        }
+
+        if( hasDelayedMenu )
+        {
+            return ToolButtonMenuArrowStyle::InlineSmall;
+        }
+
+        if ( hasInlineIndicator && !iconOnly )
+        {
+            return ToolButtonMenuArrowStyle::InlineLarge;
+        }
+
+        return ToolButtonMenuArrowStyle::None;
+    }
+
 }
 
 namespace Breeze
@@ -2130,11 +2170,7 @@ namespace Breeze
         const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
         if( !toolButtonOption ) return ParentStyleClass::subControlRect( CC_ToolButton, option, subControl, widget );
 
-        const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
-        const bool hasInlineIndicator(
-            toolButtonOption->features&QStyleOptionToolButton::HasMenu
-            && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
-            && !hasPopupMenu );
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
 
         // store rect
         const auto& rect( option->rect );
@@ -2145,12 +2181,12 @@ namespace Breeze
             {
 
                 // check features
-                if( !(hasPopupMenu || hasInlineIndicator ) ) return QRect();
+                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::None ) return QRect();
 
                 // check features
                 auto menuRect( rect );
                 menuRect.setLeft( rect.right() - menuButtonWidth + 1 );
-                if( hasInlineIndicator )
+                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall )
                 { menuRect.setTop( menuRect.bottom() - menuButtonWidth + 1 ); }
 
                 return visualRect( option, menuRect );
@@ -2159,7 +2195,7 @@ namespace Breeze
             case SC_ToolButton:
             {
 
-                if( hasPopupMenu )
+                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
                 {
 
                     auto contentsRect( rect );
@@ -2722,6 +2758,12 @@ namespace Breeze
         // get relevant state flags
         const State& state( option->state );
         const bool autoRaise( state & State_AutoRaise );
+
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
+        if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
+        {
+            size.rwidth() += Metrics::MenuButton_IndicatorWidth;
+        }
 
         const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
 
@@ -3374,12 +3416,9 @@ namespace Breeze
 
             // cast option
             const QStyleOptionToolButton* toolButtonOption( static_cast<const QStyleOptionToolButton*>( option ) );
-            const bool hasMenu(
-                ( toolButtonOption->subControls & SC_ToolButtonMenu ) ||
-                ( toolButtonOption->features&QStyleOptionToolButton::HasMenu
-                && toolButtonOption->features&QStyleOptionToolButton::PopupDelay ) );
+            const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
             const bool sunken( state & (State_On | State_Sunken) );
-            if( flat && hasMenu )
+            if( flat && menuStyle != BreezePrivate::ToolButtonMenuArrowStyle::None )
             {
 
                 if( sunken && !mouseOver ) color = palette.color( QPalette::HighlightedText );
@@ -3532,10 +3571,7 @@ namespace Breeze
 
         if( !autoRaise )
         {
-
-            // need to check widget for popup mode, because option is not set properly
-            const auto toolButton( qobject_cast<const QToolButton*>( widget ) );
-            const bool hasPopupMenu( toolButton && toolButton->popupMode() == QToolButton::MenuButtonPopup );
+            const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
 
             // render as push button
             const auto shadow( _helper->shadowColor( palette ) );
@@ -3543,7 +3579,7 @@ namespace Breeze
             const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // adjust frame in case of menu
-            if( hasPopupMenu )
+            if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
             {
                 painter->setClipRect( rect );
                 rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 2, 0 );
@@ -4303,6 +4339,14 @@ namespace Breeze
         // adjust text and icon rect based on options
         QRect iconRect;
         QRect textRect;
+
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
+        if ( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
+        {
+            // Place contents to the left of the menu arrow.
+            const auto arrowRect = toolButtonSubControlRect( toolButtonOption, SC_ToolButtonMenu, widget );
+            contentsRect.setRight( contentsRect.right() - arrowRect.width() );
+        }
 
         if( hasText && ( !(hasArrow||hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly ) )
         {
@@ -5974,8 +6018,9 @@ namespace Breeze
         const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
         const bool hasInlineIndicator(
             toolButtonOption->features&QStyleOptionToolButton::HasMenu
-            && toolButtonOption->features&QStyleOptionToolButton::PopupDelay
             && !hasPopupMenu );
+
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
 
         const auto buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
         const auto menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
@@ -5989,7 +6034,7 @@ namespace Breeze
         }
 
         // arrow
-        if( hasPopupMenu )
+        if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
         {
 
             copy.rect = menuRect;
@@ -5998,12 +6043,20 @@ namespace Breeze
             if( sunken && !flat ) copy.rect.translate( 1, 1 );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
-        } else if( hasInlineIndicator ) {
+        } else if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall
+                   || menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
+        {
 
             copy.rect = menuRect;
-
             if( sunken && !flat ) copy.rect.translate( 1, 1 );
-            drawIndicatorArrowPrimitive( ArrowDown_Small, &copy, painter, widget );
+
+            if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall )
+            {
+                drawIndicatorArrowPrimitive( ArrowDown_Small, &copy, painter, widget );
+            } else {
+                copy.rect.translate( -Metrics::Button_ItemSpacing, 0 );
+                drawIndicatorArrowPrimitive( ArrowDown, &copy, painter, widget );
+            }
 
         }
 
