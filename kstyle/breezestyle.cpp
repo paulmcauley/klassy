@@ -3888,10 +3888,8 @@ namespace Breeze
 
         // store state
         const State& state( option->state );
-        const bool autoRaise( state & State_AutoRaise );
 
-        // do nothing for autoraise buttons
-        if( autoRaise || !(toolButtonOption->subControls & SC_ToolButtonMenu) ) return true;
+        if( !(toolButtonOption->subControls & SC_ToolButtonMenu) ) return true;
 
         // store palette and rect
         const auto& palette( option->palette );
@@ -3902,6 +3900,7 @@ namespace Breeze
         const bool hasFocus( enabled && ( state & ( State_HasFocus | State_Sunken ) ) );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
         const bool sunken( enabled && ( state & State_Sunken ) );
+        const bool flat( state & State_AutoRaise );
 
         // update animation state
         // mouse over takes precedence over focus
@@ -3922,14 +3921,20 @@ namespace Breeze
         frameRect = visualRect( option, frameRect );
 
         // render
-        _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
+        if ( !flat )
+        {
+            _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
+        }
 
         // also render separator
         auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
         separatorRect.setWidth( 1 );
         separatorRect = visualRect( option, separatorRect );
         if( sunken ) separatorRect.translate( 1, 1 );
-        _helper->renderSeparator( painter, separatorRect, outline, true );
+        if ( !flat || mouseOver || hasFocus )
+        {
+            _helper->renderSeparator( painter, separatorRect, outline, true );
+        }
 
         return true;
 
@@ -6038,7 +6043,7 @@ namespace Breeze
         {
 
             copy.rect = menuRect;
-            if( !flat ) drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
+            drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
 
             if( sunken && !flat ) copy.rect.translate( 1, 1 );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
