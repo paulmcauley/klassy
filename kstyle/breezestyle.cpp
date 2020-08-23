@@ -3689,12 +3689,13 @@ namespace Breeze
         if( widget && !widget->isWindow() ) return true;
 
         const auto& palette( option->palette );
-        const auto outline( _helper->frameOutlineColor( palette ) );
         const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
         auto background( _helper->frameBackgroundColor( palette ) );
+        auto outline( _helper->frameOutlineColor( palette ) );
 
         if ( hasAlpha ) {
             background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
+            outline = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
         }
 
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
@@ -4704,9 +4705,18 @@ namespace Breeze
             // normal separator
             if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
             {
-
-                const auto color( _helper->separatorColor( palette ) );
-                _helper->renderSeparator( painter, rect, color );
+                
+                auto color( _helper->separatorColor( palette ) );
+                QRect copy( rect );
+                
+                if( StyleConfigData::menuOpacity() < 100 ) 
+                {
+                    color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) ;
+                    // don`t overlap with menu border
+                    copy.adjust( 1, 0, -1, 0 );
+                }
+                
+                _helper->renderSeparator( painter, copy, color );
                 return true;
 
             } else {
