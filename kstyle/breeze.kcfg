@@ -108,6 +108,8 @@
       <default>true</default>
     </entry>
 
+    <!-- Direction of sort order arrow in table view headers -->
+    <!-- True means the arrow points down when biggest stuff is on top -->
     <entry name="ViewInvertSortIndicator" type="Bool">
       <default>false</default>
     </entry>
