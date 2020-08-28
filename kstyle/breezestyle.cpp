@@ -2933,7 +2933,7 @@ namespace Breeze
                 if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
                 {
 
-                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
+                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_SeparatorPadding );
 
                 } else {
 
