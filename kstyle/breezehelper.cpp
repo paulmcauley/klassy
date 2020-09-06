@@ -6,6 +6,7 @@
 
 #include "breezehelper.h"
 
+#include "breeze.h"
 #include "breezestyleconfigdata.h"
 #include "renderdecorationbuttonicon.h"
 #include "colortools.h"
@@ -93,6 +94,13 @@ namespace Breeze
         _activeTitleBarTextColor = appGroup.readEntry( "activeForeground", globalGroup.readEntry( "activeForeground", palette.color( QPalette::Active, QPalette::HighlightedText ) ) );
         _inactiveTitleBarColor = appGroup.readEntry( "inactiveBackground", globalGroup.readEntry( "inactiveBackground", palette.color( QPalette::Disabled, QPalette::Highlight ) ) );
         _inactiveTitleBarTextColor = appGroup.readEntry( "inactiveForeground", globalGroup.readEntry( "inactiveForeground", palette.color( QPalette::Disabled, QPalette::HighlightedText ) ) );
+    }
+
+    QColor transparentize(const QColor& color, qreal amount)
+    {
+        auto clone = color;
+        clone.setAlphaF(amount);
+        return clone;
     }
 
     //____________________________________________________________________
@@ -864,133 +872,145 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderCheckBoxBackground(
         QPainter* painter, const QRect& rect,
-        const QColor& color, bool sunken ) const
+        const QPalette& palette,
+        CheckBoxState state, qreal animation ) const
     {
-
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        // copy rect and radius
+        // copy rect
         QRectF frameRect( rect );
-        frameRect.adjust( 3, 3, -3, -3 );
+        frameRect.adjust( 2, 2, -2, -2 );
+        frameRect = strokedRect(frameRect);
 
-        if( sunken ) frameRect.translate(1, 1);
+        auto transparent = palette.highlight().color();
+        transparent.setAlphaF(0.50);
 
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( color );
-        painter->drawRect( frameRect );
+        painter->setPen( transparentize( palette.text().color(), 0.5 ) );
+        if (state == CheckOn || state == CheckPartial) {
+            painter->setPen( palette.highlight().color() );
+        }
+
+        const auto radius = Metrics::CheckBox_Radius;
+
+        switch (state) {
+        case CheckOff:
+            painter->setBrush( palette.base() );
+            painter->drawRoundedRect( frameRect, radius, radius );
+            break;
+
+        case CheckPartial:
+        case CheckOn:
+            painter->setBrush( transparent );
+            painter->drawRoundedRect( frameRect, radius, radius );
+            break;
+
+        case CheckAnimated:
+            painter->setBrush( palette.base() );
+            painter->drawRoundedRect( frameRect, radius, radius );
+            painter->setBrush( transparent );
+            painter->setOpacity( animation );
+            painter->drawRoundedRect( frameRect, radius, radius );
+            break;
+        }
 
     }
 
     //______________________________________________________________________________
     void Helper::renderCheckBox(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& shadow,
-        bool sunken, CheckBoxState state, qreal animation ) const
+        const QPalette& palette, bool mouseOver,
+        CheckBoxState state, CheckBoxState target,
+        qreal animation, qreal hoverAnimation ) const
     {
-
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         // copy rect and radius
         QRectF frameRect( rect );
         frameRect.adjust( 2, 2, -2, -2 );
-        qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
 
-        // shadow
-        if( sunken )
-        {
+        if ( mouseOver ) {
+            painter->save();
 
-            frameRect.translate(1, 1);
+            if (hoverAnimation != AnimationData::OpacityInvalid) {
+                painter->setOpacity(hoverAnimation);
+            }
 
-        } else {
-
-            renderRoundedRectShadow( painter, frameRect, shadow, radius );
-
-        }
-
-        // content
-        {
-
-            painter->setPen( QPen( color, PenWidth::Frame ) );
+            painter->setPen( QPen( focusColor(palette), PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
-            radius = frameRadiusForNewPenWidth( radius, PenWidth::Frame );
-            const QRectF contentRect( strokedRect( frameRect ) );
-            painter->drawRoundedRect( contentRect, radius, radius );
+            painter->drawRoundedRect( frameRect.adjusted(0.5, 0.5, -0.5, -0.5), Metrics::CheckBox_Radius, Metrics::CheckBox_Radius );
 
+            painter->restore();
         }
 
-        // mark
-        if( state == CheckOn )
-        {
+        // check
+        auto leftPoint = frameRect.center();
+        leftPoint.setX(frameRect.left()+4);
 
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
+        auto bottomPoint = frameRect.center();
+        bottomPoint.setX(bottomPoint.x() - 1);
+        bottomPoint.setY(frameRect.bottom() - 5);
 
-            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
-            painter->drawRect( markerRect );
+        auto rightPoint = frameRect.center();
+        rightPoint.setX(rightPoint.x() + 4.5);
+        rightPoint.setY(frameRect.top() + 5.5);
 
-        } else if( state == CheckPartial ) {
+        QPainterPath path;
+        path.moveTo(leftPoint);
+        path.lineTo(bottomPoint);
+        path.lineTo(rightPoint);
 
-            QPen pen( color, 2 );
-            pen.setJoinStyle( Qt::MiterJoin );
-            painter->setPen( pen );
+        // dots
+        auto centerDot = QRectF(frameRect.center(), QSize(2, 2));
+        centerDot.adjust(-1, -1, -1, -1);
+        auto leftDot = centerDot.adjusted(-4, 0, -4, 0);
+        auto rightDot = centerDot.adjusted(4, 0, 4, 0);
 
-            const QRectF markerRect( frameRect.adjusted( 4, 4, -4, -4 ) );
-            painter->drawRect( markerRect );
+        painter->setPen(Qt::transparent);
+        painter->setBrush(Qt::transparent);
 
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-            painter->setRenderHint( QPainter::Antialiasing, false );
+        auto checkPen = QPen( palette.text(), PenWidth::Frame * 2 );
+        checkPen.setJoinStyle(Qt::MiterJoin);
 
-            QPainterPath path;
-            path.moveTo( markerRect.topLeft() );
-            path.lineTo( markerRect.right() - 1, markerRect.top() );
-            path.lineTo( markerRect.left(), markerRect.bottom()-1 );
+        switch (state) {
+        case CheckOff:
+            break;
+        case CheckOn:
+            painter->setPen( checkPen );
             painter->drawPath( path );
+            break;
+        case CheckPartial:
+            painter->setBrush( palette.text() );
+            painter->drawRect(leftDot);
+            painter->drawRect(centerDot);
+            painter->drawRect(rightDot);
+            break;
+        case CheckAnimated:
+            checkPen.setDashPattern({ path.length() * animation, path.length() });
 
-        } else if( state == CheckAnimated ) {
-
-            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
-            QPainterPath path;
-            path.moveTo( markerRect.topRight() );
-            path.lineTo( markerRect.center() + animation*( markerRect.topLeft() - markerRect.center() ) );
-            path.lineTo( markerRect.bottomLeft() );
-            path.lineTo( markerRect.center() + animation*( markerRect.bottomRight() - markerRect.center() ) );
-            path.closeSubpath();
-
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
-            painter->drawPath( path );
-
+            switch (target) {
+            case CheckOff:
+                break;
+            case CheckOn:
+                painter->setPen( checkPen );
+                painter->drawPath( path );
+                break;
+            case CheckPartial:
+                if (animation >= 3/3) painter->drawRect(rightDot);
+                if (animation >= 2/3) painter->drawRect(centerDot);
+                if (animation >= 1/3) painter->drawRect(leftDot);
+                break;
+            case CheckAnimated:
+                break;
+            }
+            break;
         }
-
     }
 
     //______________________________________________________________________________
-    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QColor& color, bool sunken ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        // copy rect
-        QRectF frameRect( rect );
-        frameRect.adjust( 3, 3, -3, -3 );
-        if( sunken ) frameRect.translate(1, 1);
-
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( color );
-        painter->drawEllipse( frameRect );
-
-    }
-
-    //______________________________________________________________________________
-    void Helper::renderRadioButton(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& shadow,
-        bool sunken, RadioButtonState state, qreal animation ) const
+    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QPalette& palette, RadioButtonState state, qreal animation ) const
     {
 
         // setup painter
@@ -999,55 +1019,87 @@ namespace Breeze
         // copy rect
         QRectF frameRect( rect );
         frameRect.adjust( 2, 2, -2, -2 );
+        frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
-        // shadow
-        if( sunken )
-        {
+        auto transparent = palette.highlight().color();
+        transparent.setAlphaF(0.50);
 
-            frameRect.translate( 1, 1 );
-
-        } else {
-
-            renderEllipseShadow( painter, frameRect, shadow );
-
+        painter->setPen( transparentize( palette.text().color(), 0.5 ) );
+        if (state == RadioOn) {
+            painter->setPen( palette.highlight().color() );
         }
 
-        // content
-        {
+        switch (state) {
+        case RadioOff:
+            painter->setBrush( palette.base() );
+            painter->drawEllipse( frameRect );
+            break;
+        case RadioOn:
+            painter->setBrush( transparent );
+            painter->drawEllipse( frameRect );
+            break;
+        case RadioAnimated:
+            painter->setBrush( palette.base() );
+            painter->drawEllipse( frameRect );
+            painter->setBrush( transparent );
+            painter->setOpacity( animation );
+            painter->drawEllipse( frameRect );
+            break;
+        }
+    }
 
-            painter->setPen( QPen( color, PenWidth::Frame ) );
+    //______________________________________________________________________________
+    void Helper::renderRadioButton(
+        QPainter* painter, const QRect& rect,
+        const QPalette& palette, bool mouseOver,
+        RadioButtonState state, qreal animation, qreal animationHover ) const
+    {
+        // setup painter
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        // copy rect
+        QRectF frameRect( rect );
+        frameRect.adjust( 1, 1, -1, -1 );
+
+        if ( mouseOver ) {
+            painter->save();
+
+            if (animationHover != AnimationData::OpacityInvalid) {
+                painter->setOpacity(animationHover);
+            }
+
+            painter->setPen( QPen( focusColor(palette), PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
-            const QRectF contentRect( strokedRect( frameRect ) );
+            const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ).adjusted( 0.5 , 0.5, -0.5, -0.5 ) );
             painter->drawEllipse( contentRect );
 
+            painter->restore();
         }
+
+        painter->setBrush( palette.text() );
+        painter->setPen( Qt::NoPen );
+
+        QRectF markerRect;
+        markerRect = frameRect.adjusted( 5, 5, -5, -5 );
+        
+        qreal adjustFactor;
 
         // mark
-        if( state == RadioOn )
-        {
-
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
-
-            const QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
+        switch (state) {
+        case RadioOn:
             painter->drawEllipse( markerRect );
 
-        } else if( state == RadioAnimated ) {
-
-            painter->setBrush( color );
-            painter->setPen( Qt::NoPen );
-            QRectF markerRect( frameRect.adjusted( 3, 3, -3, -3 ) );
-
-            painter->translate( markerRect.center() );
-            painter->rotate( 45 );
-
-            markerRect.setWidth( markerRect.width()*animation );
-            markerRect.translate( -markerRect.center() );
+            break;
+        case RadioAnimated:
+            adjustFactor = markerRect.height() * (1 - animation);
+            markerRect.adjust(adjustFactor, adjustFactor, -adjustFactor, -adjustFactor);
             painter->drawEllipse( markerRect );
 
+            break;
+        default:
+            break;
         }
-
     }
 
     //______________________________________________________________________________

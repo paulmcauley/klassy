@@ -80,6 +80,7 @@ namespace Breeze
         static constexpr int CheckBox_Size = 20;
         static constexpr int CheckBox_FocusMarginWidth = 2;
         static constexpr int CheckBox_ItemSpacing = 4;
+        static constexpr int CheckBox_Radius = Frame_FrameRadius - 1;
 
         // menubar items
         static constexpr int MenuBarItem_MarginWidth = 10;

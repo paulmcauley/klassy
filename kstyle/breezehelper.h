@@ -192,16 +192,16 @@ namespace Breeze
         void renderSeparator( QPainter*, const QRect&, const QColor&, bool vertical = false ) const;
 
         //* checkbox
-        void renderCheckBoxBackground( QPainter*, const QRect&, const QColor& color, bool sunken ) const;
+        void renderCheckBoxBackground( QPainter*, const QRect&, const QPalette& palette, CheckBoxState state, qreal animation = AnimationData::OpacityInvalid ) const;
 
         //* checkbox
-        void renderCheckBox( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, CheckBoxState state, qreal animation = AnimationData::OpacityInvalid ) const;
+        void renderCheckBox( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, CheckBoxState state, CheckBoxState target, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
 
         //* radio button
-        void renderRadioButtonBackground( QPainter*, const QRect&, const QColor& color, bool sunken ) const;
+        void renderRadioButtonBackground( QPainter*, const QRect&, const QPalette& palette, RadioButtonState state, qreal animation = AnimationData::OpacityInvalid ) const;
 
         //* radio button
-        void renderRadioButton( QPainter*, const QRect&, const QColor& color, const QColor& shadow, bool sunken, RadioButtonState state, qreal animation = AnimationData::OpacityInvalid ) const;
+        void renderRadioButton( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, RadioButtonState state, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
 
         //* slider groove
         void renderSliderGroove( QPainter*, const QRect&, const QColor& ) const;
