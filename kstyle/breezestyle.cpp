@@ -3521,7 +3521,7 @@ namespace Breeze
             }
 
             const auto shadow( _helper->shadowColor( palette ) );
-            const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const QColor outline = hasHighlightNeutral( widget, option, mouseOver ) ? _helper->neutralText( palette ) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode );
             const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // render
