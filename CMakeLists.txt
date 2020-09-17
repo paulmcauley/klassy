@@ -3,7 +3,7 @@ project(breeze)
 set(PROJECT_VERSION "5.19.80")
 set(PROJECT_VERSION_MAJOR 5)
 
-set(KF5_MIN_VERSION "5.66.0")
+set(KF5_MIN_VERSION "5.74")
 
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
