@@ -1,5 +1,5 @@
 ################# Qt/KDE #################
-find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets DBus)
+find_package(Qt5 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
 find_package(KF5 REQUIRED COMPONENTS
     I18n
     Config

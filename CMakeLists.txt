@@ -4,6 +4,7 @@ set(PROJECT_VERSION "5.19.90")
 set(PROJECT_VERSION_MAJOR 5)
 
 set(KF5_MIN_VERSION "5.74")
+set(QT_MIN_VERSION "5.15.0")
 
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
