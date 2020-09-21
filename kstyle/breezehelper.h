@@ -55,6 +55,14 @@ namespace Breeze
         QColor focusColor( const QPalette& palette ) const
         { return _viewFocusBrush.brush( palette ).color(); }
 
+        //* mouse over color for buttons
+        QColor buttonHoverColor( const QPalette& palette ) const
+        { return _buttonHoverBrush.brush( palette ).color(); }
+
+        //* focus color for buttons
+        QColor buttonFocusColor( const QPalette& palette ) const
+        { return _buttonFocusBrush.brush( palette ).color(); }
+
         //* negative text color (used for close button)
         QColor negativeText( const QPalette& palette ) const
         { return _viewNegativeTextBrush.brush( palette ).color(); }
@@ -291,6 +299,8 @@ namespace Breeze
         //@{
         KStatefulBrush _viewFocusBrush;
         KStatefulBrush _viewHoverBrush;
+        KStatefulBrush _buttonFocusBrush;
+        KStatefulBrush _buttonHoverBrush;
         KStatefulBrush _viewNegativeTextBrush;
         KStatefulBrush _viewNeutralTextBrush;
         //@}
