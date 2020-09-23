@@ -377,7 +377,10 @@ namespace Breeze
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         const KConfigGroup cg(config, QStringLiteral("KDE"));
 
-        m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
+        m_animation->setDuration(0);
+        // Syncing anis between client and decoration is troublesome, so we're not using
+        // any animations right now.
+        // m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
 
         // borders
         recalculateBorders();
