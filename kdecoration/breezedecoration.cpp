@@ -142,6 +142,7 @@ namespace Breeze
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
+    static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
     //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -233,6 +234,7 @@ namespace Breeze
         m_animation->setEasingCurve( QEasingCurve::Linear );
         connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             setOpacity(value.toReal());
+            updateShadow();
         });
 
         // use DBus connection to update on breeze configuration change
@@ -284,7 +286,7 @@ namespace Breeze
         connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
         createButtons();
-        createShadow();
+        updateShadow();
     }
 
     //________________________________________________________________
@@ -312,6 +314,7 @@ namespace Breeze
 
         } else {
 
+            updateShadow();
             update();
 
         }
@@ -380,7 +383,7 @@ namespace Breeze
         recalculateBorders();
 
         // shadow
-        createShadow();
+        updateShadow();
 
         // size grip
         if( hasNoBorders() && m_internalSettings->drawSizeGrip() ) createSizeGrip();
@@ -707,88 +710,107 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    void Decoration::createShadow()
+    void Decoration::updateShadow()
     {
-        if (!g_sShadow
-                ||g_shadowSizeEnum != m_internalSettings->shadowSize()
+        // Animated case, no cached shadow object
+        if ( (m_animation->state() == QAbstractAnimation::Running) && (m_opacity != 0.0) && (m_opacity != 1.0) )
+        {
+            setShadow(createShadowObject(m_internalSettings, 0.5 + m_opacity * 0.5));
+            return;
+        }
+
+        if (g_shadowSizeEnum != m_internalSettings->shadowSize()
                 || g_shadowStrength != m_internalSettings->shadowStrength()
                 || g_shadowColor != m_internalSettings->shadowColor())
         {
+            g_sShadow.clear();
+            g_sShadowInactive.clear();
             g_shadowSizeEnum = m_internalSettings->shadowSize();
             g_shadowStrength = m_internalSettings->shadowStrength();
             g_shadowColor = m_internalSettings->shadowColor();
-
-            const CompositeShadowParams params = lookupShadowParams(g_shadowSizeEnum);
-            if (params.isNone()) {
-                g_sShadow.clear();
-                setShadow(g_sShadow);
-                return;
-            }
-
-            auto withOpacity = [](const QColor &color, qreal opacity) -> QColor {
-                QColor c(color);
-                c.setAlphaF(opacity);
-                return c;
-            };
-
-            const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
-                .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
-
-            BoxShadowRenderer shadowRenderer;
-            shadowRenderer.setBorderRadius(Metrics::Frame_FrameRadius + 0.5);
-            shadowRenderer.setBoxSize(boxSize);
-            shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
-
-            const qreal strength = static_cast<qreal>(g_shadowStrength) / 255.0;
-            shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
-                withOpacity(g_shadowColor, params.shadow1.opacity * strength));
-            shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius,
-                withOpacity(g_shadowColor, params.shadow2.opacity * strength));
-
-            QImage shadowTexture = shadowRenderer.render();
-
-            QPainter painter(&shadowTexture);
-            painter.setRenderHint(QPainter::Antialiasing);
-
-            const QRect outerRect = shadowTexture.rect();
-
-            QRect boxRect(QPoint(0, 0), boxSize);
-            boxRect.moveCenter(outerRect.center());
-
-            // Mask out inner rect.
-            const QMargins padding = QMargins(
-                boxRect.left() - outerRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
-                boxRect.top() - outerRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
-                outerRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
-                outerRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
-            const QRect innerRect = outerRect - padding;
-
-            painter.setPen(Qt::NoPen);
-            painter.setBrush(Qt::black);
-            painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
-            painter.drawRoundedRect(
-                innerRect,
-                Metrics::Frame_FrameRadius + 0.5,
-                Metrics::Frame_FrameRadius + 0.5);
-
-            // Draw outline.
-            painter.setPen(withOpacity(g_shadowColor, 0.2 * strength));
-            painter.setBrush(Qt::NoBrush);
-            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-            painter.drawRoundedRect(
-                innerRect,
-                Metrics::Frame_FrameRadius - 0.5,
-                Metrics::Frame_FrameRadius - 0.5);
-
-            painter.end();
-
-            g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
-            g_sShadow->setPadding(padding);
-            g_sShadow->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
-            g_sShadow->setShadow(shadowTexture);
         }
 
-        setShadow(g_sShadow);
+        auto c = client().toStrongRef();
+        auto& shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
+        if ( !shadow )
+        {
+            shadow = createShadowObject(m_internalSettings, c->isActive() ? 1.0 : 0.5);
+        }
+        setShadow(shadow);
+    }
+
+    //________________________________________________________________
+    QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const InternalSettingsPtr& internalSettings, const float strengthScale)
+    {
+          const CompositeShadowParams params = lookupShadowParams(internalSettings->shadowSize());
+          if (params.isNone())
+          {
+              return nullptr;
+          }
+
+          auto withOpacity = [](const QColor& color, qreal opacity) -> QColor {
+              QColor c(color);
+              c.setAlphaF(opacity);
+              return c;
+          };
+
+
+          const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
+              .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
+
+          BoxShadowRenderer shadowRenderer;
+          shadowRenderer.setBorderRadius(Metrics::Frame_FrameRadius + 0.5);
+          shadowRenderer.setBoxSize(boxSize);
+          shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
+
+          const qreal strength = internalSettings->shadowStrength() / 255.0 * strengthScale;
+          shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
+              withOpacity(internalSettings->shadowColor(), params.shadow1.opacity * strength));
+          shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius,
+              withOpacity(internalSettings->shadowColor(), params.shadow2.opacity * strength));
+
+          QImage shadowTexture = shadowRenderer.render();
+
+          QPainter painter(&shadowTexture);
+          painter.setRenderHint(QPainter::Antialiasing);
+
+          const QRect outerRect = shadowTexture.rect();
+
+          QRect boxRect(QPoint(0, 0), boxSize);
+          boxRect.moveCenter(outerRect.center());
+
+          // Mask out inner rect.
+          const QMargins padding = QMargins(
+              boxRect.left() - outerRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
+              boxRect.top() - outerRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
+              outerRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
+              outerRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
+          const QRect innerRect = outerRect - padding;
+
+          painter.setPen(Qt::NoPen);
+          painter.setBrush(Qt::black);
+          painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
+          painter.drawRoundedRect(
+              innerRect,
+              Metrics::Frame_FrameRadius + 0.5,
+              Metrics::Frame_FrameRadius + 0.5);
+
+          // Draw outline.
+          painter.setPen(withOpacity(internalSettings->shadowColor(), 0.2 * strength));
+          painter.setBrush(Qt::NoBrush);
+          painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+          painter.drawRoundedRect(
+              innerRect,
+              Metrics::Frame_FrameRadius - 0.5,
+              Metrics::Frame_FrameRadius - 0.5);
+
+          painter.end();
+
+          auto ret = QSharedPointer<KDecoration2::DecorationShadow>::create();
+          ret->setPadding(padding);
+          ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
+          ret->setShadow(shadowTexture);
+          return ret;
     }
 
     //_________________________________________________________________

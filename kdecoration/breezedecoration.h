@@ -107,7 +107,8 @@ namespace Breeze
 
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-        void createShadow();
+        void updateShadow();
+        static QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const InternalSettingsPtr& internalSettings, const float strengthScale);
 
         //*@name border size
         //@{
