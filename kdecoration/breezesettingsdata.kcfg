@@ -93,7 +93,7 @@
 
     <!-- size grip -->
     <entry name="DrawBackgroundGradient" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <!-- size grip -->
