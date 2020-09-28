@@ -3464,16 +3464,22 @@ namespace Breeze
             // cast option
             const QStyleOptionToolButton* toolButtonOption( static_cast<const QStyleOptionToolButton*>( option ) );
             const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
-            const bool sunken( state & (State_On | State_Sunken) );
+            const bool sunken = state & State_Sunken;
+            const bool checked = state & State_On;
+            const bool arrowHover = mouseOver && (toolButtonOption->activeSubControls & SC_ToolButtonMenu);
             if( flat && menuStyle != BreezePrivate::ToolButtonMenuArrowStyle::None )
             {
 
-                if( sunken && !mouseOver ) color = palette.color( QPalette::HighlightedText );
-                else {
-
+                if(sunken && !mouseOver ) {
+                    color = palette.color(QPalette::HighlightedText);
+                } else if (checked  && !mouseOver) {
+                    color = _helper->arrowColor(palette, QPalette::WindowText);
+                } else if (checked && arrowHover) {
+                    // If the button is checked we have a focus color tinted background on hover
+                    color = palette.color(QPalette::HighlightedText);
+                } else {
                     // for menu arrows in flat toolbutton one uses animations to get the arrow color
                     // handle arrow over animation
-                    const bool arrowHover( mouseOver && ( toolButtonOption->activeSubControls & SC_ToolButtonMenu ) );
                     _animations->toolButtonEngine().updateState( widget, AnimationHover, arrowHover );
 
                     const bool animated( _animations->toolButtonEngine().isAnimated( widget, AnimationHover ) );
