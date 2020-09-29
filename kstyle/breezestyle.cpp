@@ -925,7 +925,7 @@ namespace Breeze
             auto rect = _toolsAreaManager->toolsAreaRect(mw);
 
             if (rect.height() == 0) {
-                painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+                painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
                 painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
                 painter->restore();
                 return true;
@@ -944,7 +944,7 @@ namespace Breeze
         } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
         	auto margins = dialog->contentsMargins();
             const_cast<QDialog*>(dialog)->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
-            painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+            painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
             painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
         }
         return true;
