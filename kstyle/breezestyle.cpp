@@ -943,7 +943,7 @@ namespace Breeze
             painter->restore();
         } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
         	auto margins = dialog->contentsMargins();
-            const_cast<QDialog*>(dialog)->setContentsMargins(margins.left(), margins.top(), margins.right(), qMax(margins.bottom(), 1));
+            const_cast<QDialog*>(dialog)->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
             painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
             painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
         }

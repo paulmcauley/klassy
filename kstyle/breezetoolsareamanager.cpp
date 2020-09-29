@@ -65,7 +65,7 @@ namespace Breeze {
 
         if (itemHeight == 0) {
             auto win = const_cast<QMainWindow*>(window);
-            win->setContentsMargins(0, 0, 0, 1);
+            win->setContentsMargins(0, 1, 0, 0);
         } else {
             auto win = const_cast<QMainWindow*>(window);
             win->setContentsMargins(0, 0, 0, 0);
