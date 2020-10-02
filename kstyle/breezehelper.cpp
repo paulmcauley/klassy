@@ -1500,13 +1500,8 @@ namespace Breeze
     //______________________________________________________________________________
     bool Helper::isX11()
     {
-        #if BREEZE_HAVE_X11
         static const bool s_isX11 = KWindowSystem::isPlatformX11();
         return s_isX11;
-        #endif
-
-        return false;
-
     }
 
     //______________________________________________________________________________
