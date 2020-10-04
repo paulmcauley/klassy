@@ -3746,13 +3746,20 @@ namespace Breeze
         auto background( _helper->frameBackgroundColor( palette ) );
         auto outline( _helper->frameOutlineColor( palette ) );
 
+        painter->save();
+        
         if ( hasAlpha ) {
+            if ( painter && widget && widget->isWindow() ) {
+                painter->setCompositionMode( QPainter::CompositionMode_Source );
+            }
             background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
             outline = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
         }
 
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
 
+        painter->restore();
+        
         return true;
 
     }
