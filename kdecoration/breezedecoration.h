@@ -135,9 +135,11 @@ namespace Breeze
 
         //* active state change animation
         QVariantAnimation *m_animation;
+        QVariantAnimation *m_shadowAnimation;
 
         //* active state change opacity
         qreal m_opacity = 0;
+        qreal m_shadowOpacity = 0;
 
     };
 

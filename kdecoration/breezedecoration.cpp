@@ -148,6 +148,7 @@ namespace Breeze
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
         , m_animation( new QVariantAnimation( this ) )
+        , m_shadowAnimation( new QVariantAnimation( this ) )
     {
         g_sDecoCount++;
     }
@@ -234,6 +235,13 @@ namespace Breeze
         m_animation->setEasingCurve( QEasingCurve::Linear );
         connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             setOpacity(value.toReal());
+        });
+
+        m_shadowAnimation->setStartValue( 0.0 );
+        m_shadowAnimation->setEndValue( 1.0 );
+        m_shadowAnimation->setEasingCurve( QEasingCurve::InCubic );
+        connect(m_shadowAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant& value) {
+            m_shadowOpacity = value.toReal();
             updateShadow();
         });
 
@@ -305,6 +313,19 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateAnimationState()
     {
+        if( m_shadowAnimation->duration() > 0 )
+        {
+
+            auto c = client().data();
+            m_shadowAnimation->setDirection( c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
+            if( m_shadowAnimation->state() != QAbstractAnimation::Running ) m_shadowAnimation->start();
+
+        } else {
+
+            updateShadow();
+
+        }
+
         if( m_animation->duration() > 0 )
         {
 
@@ -314,7 +335,6 @@ namespace Breeze
 
         } else {
 
-            updateShadow();
             update();
 
         }
@@ -381,6 +401,9 @@ namespace Breeze
         // Syncing anis between client and decoration is troublesome, so we're not using
         // any animations right now.
         // m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
+
+        // But the shadow is fine to animate like this!
+        m_shadowAnimation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
 
         // borders
         recalculateBorders();
@@ -716,9 +739,9 @@ namespace Breeze
     void Decoration::updateShadow()
     {
         // Animated case, no cached shadow object
-        if ( (m_animation->state() == QAbstractAnimation::Running) && (m_opacity != 0.0) && (m_opacity != 1.0) )
+        if ( (m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0) )
         {
-            setShadow(createShadowObject(m_internalSettings, 0.5 + m_opacity * 0.5));
+            setShadow(createShadowObject(m_internalSettings, 0.5 + m_shadowOpacity * 0.5));
             return;
         }
 
