@@ -214,8 +214,10 @@ namespace Breeze {
         } if (mainWindow == nullptr) {
             return;
         }
-
-        if (tryRegisterToolBar(mainWindow, widget)) return;
+        if (mainWindow != mainWindow->window()) {
+            return;
+        }
+        tryRegisterToolBar(mainWindow, widget);
     }
 
     void ToolsAreaManager::unregisterWidget(QWidget *widget)

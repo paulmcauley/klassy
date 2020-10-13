@@ -919,7 +919,8 @@ namespace Breeze
         if (!_helper->shouldDrawToolsArea(widget)) {
             return true;
         }
-        if (auto mw = qobject_cast<const QMainWindow*>(widget)) {
+        auto mw = qobject_cast<const QMainWindow*>(widget);
+        if (mw && mw == mw->window()) {
             painter->save();
 
             auto rect = _toolsAreaManager->toolsAreaRect(mw);
