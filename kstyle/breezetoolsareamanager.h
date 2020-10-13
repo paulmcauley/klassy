@@ -36,6 +36,7 @@ namespace Breeze {
         KConfigWatcher::Ptr _watcher;
         QPalette _palette = QPalette();
         AppListener* _listener;
+        bool _colorSchemeHasHeaderColor;
 
         friend class AppListener;
 
@@ -57,6 +58,8 @@ namespace Breeze {
         void unregisterWidget(QWidget *widget);
 
         QRect toolsAreaRect(const QMainWindow *window);
+
+        bool hasHeaderColors();
     };
 }
 

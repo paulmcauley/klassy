@@ -126,6 +126,8 @@ namespace Breeze {
                 }
             }
         }
+
+        _colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
     }
 
     bool AppListener::eventFilter(QObject *watched, QEvent *event)
@@ -243,5 +245,10 @@ namespace Breeze {
             }
             _windows[mainWindow].removeAll(toolbar);
         }
+    }
+
+    bool Breeze::ToolsAreaManager::hasHeaderColors()
+    {
+        return _colorSchemeHasHeaderColor;
     }
 }
