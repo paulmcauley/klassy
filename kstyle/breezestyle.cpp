@@ -5457,7 +5457,7 @@ namespace Breeze
 
         painter->setPen( outline );
         painter->setBrush( background );
-        painter->drawRect( _helper->strokedRect( option->rect ) );
+        painter->drawRoundedRect( _helper->strokedRect( option->rect ), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius );
 
         painter->restore();
         return true;
