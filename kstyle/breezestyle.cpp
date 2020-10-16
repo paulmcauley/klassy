@@ -5448,15 +5448,15 @@ namespace Breeze
     {
 
         painter->save();
-
         painter->setRenderHints( QPainter::Antialiasing );
+
         const auto& palette( option->palette );
-        auto color = palette.color( QPalette::Highlight );
-        QPen pen = KColorUtils::mix( color, palette.color( QPalette::Active, QPalette::WindowText ) );
-        pen.setJoinStyle(Qt::RoundJoin);
-        painter->setPen( pen );
-        color.setAlpha( 51 ); // 20% opacity
-        painter->setBrush( color );
+        const auto outline = palette.color( QPalette::Highlight );
+        auto background = outline;
+        background.setAlphaF( 0.20 );
+
+        painter->setPen( outline );
+        painter->setBrush( background );
         painter->drawRect( _helper->strokedRect( option->rect ) );
 
         painter->restore();
