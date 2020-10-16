@@ -5451,8 +5451,8 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
 
         const auto& palette( option->palette );
-        const auto outline = palette.color( QPalette::Highlight );
-        auto background = outline;
+        const auto outline = KColorUtils::lighten( palette.color( QPalette::Highlight ) );
+        auto background = palette.color( QPalette::Highlight );
         background.setAlphaF( 0.20 );
 
         painter->setPen( outline );
