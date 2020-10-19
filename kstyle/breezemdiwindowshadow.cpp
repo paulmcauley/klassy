@@ -165,14 +165,6 @@ namespace Breeze
             updateShadowZOrder( object );
             break;
 
-            case QEvent::Destroy:
-            if( isRegistered( object ) )
-            {
-                _registeredWidgets.remove( object );
-                removeShadow( object );
-            }
-            break;
-
             case QEvent::Hide:
             hideShadows( object );
             break;
@@ -245,6 +237,9 @@ namespace Breeze
 
     //____________________________________________________________________________________
     void MdiWindowShadowFactory::widgetDestroyed( QObject* object )
-    { _registeredWidgets.remove( object ); }
+    {
+        _registeredWidgets.remove( object );
+        removeShadow( object );
+    }
 
 }
