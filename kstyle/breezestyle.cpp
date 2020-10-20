@@ -926,6 +926,10 @@ namespace Breeze
             auto rect = _toolsAreaManager->toolsAreaRect(mw);
 
             if (rect.height() == 0) {
+                if (mw->property(PropertyNames::noSeparator).toBool()) {
+                    painter->restore();
+                    return true;
+                }
                 painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
                 painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
                 painter->restore();

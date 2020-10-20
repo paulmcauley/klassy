@@ -1,4 +1,5 @@
 #include "breezetoolsareamanager.h"
+#include "breezepropertynames.h"
 
 #include <QMainWindow>
 #include <QMdiArea>
@@ -63,7 +64,7 @@ namespace Breeze {
             }
         }
 
-        if (itemHeight == 0) {
+        if (itemHeight == 0 && !window->property(PropertyNames::noSeparator) {
             auto win = const_cast<QMainWindow*>(window);
             win->setContentsMargins(0, 1, 0, 0);
         } else {
