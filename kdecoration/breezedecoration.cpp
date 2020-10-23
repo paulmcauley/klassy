@@ -8,7 +8,6 @@
 
 #include "breezedecoration.h"
 
-#include "breeze.h"
 #include "breezesettingsprovider.h"
 #include "config-breeze.h"
 #include "config/breezeconfigwidget.h"
@@ -18,9 +17,7 @@
 
 #include "breezeboxshadowrenderer.h"
 
-#include <KDecoration2/DecoratedClient>
 #include <KDecoration2/DecorationButtonGroup>
-#include <KDecoration2/DecorationSettings>
 #include <KDecoration2/DecorationShadow>
 
 #include <KConfigGroup>

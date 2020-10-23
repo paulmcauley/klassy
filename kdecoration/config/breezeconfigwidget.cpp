@@ -9,7 +9,6 @@
 
 #include "breezeconfigwidget.h"
 #include "breezeexceptionlist.h"
-#include "breezesettings.h"
 
 #include <KLocalizedString>
 

@@ -6,7 +6,6 @@
 
 #include "breezegenericdata.h"
 
-#include <QTextStream>
 
 namespace Breeze
 {

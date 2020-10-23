@@ -6,7 +6,6 @@
 
 #include "breezesplitterproxy.h"
 
-#include "breeze.h"
 #include "breezestyleconfigdata.h"
 
 #include <QCoreApplication>

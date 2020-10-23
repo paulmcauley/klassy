@@ -6,7 +6,6 @@
 
 #include "breezeframeshadow.h"
 
-#include "breeze.h"
 #include "breezemetrics.h"
 
 #include <QDebug>

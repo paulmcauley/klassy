@@ -43,7 +43,6 @@
 
 #if BREEZE_HAVE_QTQUICK
 // needed to enable dragging from QQuickWindows
-#include <QQuickItem>
 #include <QQuickWindow>
 #endif
 

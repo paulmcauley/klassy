@@ -29,13 +29,11 @@
 #include <QDial>
 #include <QDialog>
 #include <QDBusConnection>
-#include <QDockWidget>
 #include <QFormLayout>
 #include <QGraphicsView>
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QMainWindow>
-#include <QMdiSubWindow>
 #include <QMenu>
 #include <QPainter>
 #include <QPushButton>

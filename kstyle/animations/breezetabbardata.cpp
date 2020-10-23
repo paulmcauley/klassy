@@ -10,7 +10,6 @@
 #include "breezetabbardata.h"
 
 #include <QHoverEvent>
-#include <QTabBar>
 
 namespace Breeze
 {
