@@ -1,6 +1,20 @@
 [Desktop Entry]
 Comment=Breeze Twilight by the KDE VDG
+Comment[ca]=Brisa crepuscular, creat pel VDG del KDE
+Comment[et]=Breeze videvik KDE VDG-lt
+Comment[nl]=Breeze Twilight door de KDE VDG
+Comment[pt]=Brisa da Madrugada da VDG do KDE
+Comment[sv]=Breeze skymning av KDE:s visuella designgrupp
+Comment[uk]=Сутінкова Breeze, автори — KDE VDG
+Comment[x-test]=xxBreeze Twilight by the KDE VDGxx
 Name=Breeze Twilight
+Name[ca]=Brisa crepuscular
+Name[et]=Breeze videvik
+Name[nl]=Breeze Twilight
+Name[pt]=Brisa da Madrugada
+Name[sv]=Breeze skymning
+Name[uk]=Сутінкова Breeze
+Name[x-test]=xxBreeze Twilightxx
 Type=Service
 
 X-KDE-ServiceTypes=Plasma/LookAndFeel
