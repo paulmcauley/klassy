@@ -955,7 +955,7 @@ namespace Breeze
     bool Style::drawWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const {
         Q_UNUSED(option)
         auto parent = widget;
-        if (!_toolsAreaManager->hasHeaderColors() || !_helper->shouldDrawToolsArea(widget)) {
+        if (!_helper->shouldDrawToolsArea(widget)) {
             return true;
         }
         auto mw = qobject_cast<const QMainWindow*>(widget);
