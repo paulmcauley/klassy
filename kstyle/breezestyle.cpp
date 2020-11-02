@@ -388,9 +388,19 @@ namespace Breeze
 
             setTranslucentBackground( widget );
 
-        } else if ( qobject_cast<QMainWindow*> (widget) || qobject_cast<QDialog*> (widget) ) {
+        } else if ( qobject_cast<QMainWindow*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
         }
+        else if ( qobject_cast<QDialog*> (widget) ) {
+            widget->setAttribute(Qt::WA_StyledBackground);
+
+            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+                const QMargins margins = widget->contentsMargins();
+                widget->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
+            }
+        }
+
+
         // base class polishing
         ParentStyleClass::polish( widget );
 
@@ -941,8 +951,6 @@ namespace Breeze
 
             painter->restore();
         } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
-        	auto margins = dialog->contentsMargins();
-            const_cast<QDialog*>(dialog)->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
             painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
             painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
         }
