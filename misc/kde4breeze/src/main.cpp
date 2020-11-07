@@ -27,7 +27,7 @@ void applyColorScheme(const QString &colorScheme, KConfig *other)
     foreach (const QString &grp, config->groupList()) {
         KConfigGroup cg(config, grp);
         KConfigGroup cg2(other, grp);
-        cg.copyTo(&cg2);
+        cg.copyTo(&cg2, KConfigBase::Notify);
     }
 }
 
