@@ -520,7 +520,7 @@ namespace Breeze
 
         painter->setRenderHint( QPainter::Antialiasing );
 
-        QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
+        QRectF frameRect( rect );
         qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
 
         // set pen
