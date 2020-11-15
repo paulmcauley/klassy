@@ -5478,7 +5478,6 @@ namespace Breeze
         if( !headerOption ) return true;
 
         const bool horizontal( headerOption->orientation == Qt::Horizontal );
-        const bool isFirst( horizontal && ( headerOption->position == QStyleOptionHeader::Beginning ) );
         const bool isCorner( widget && widget->inherits( "QTableCornerButton" ) );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
 
@@ -5528,17 +5527,22 @@ namespace Breeze
         // separators
         painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
 
+        // If the separator would be next to a "HeaderEmptyArea", skip it and let that draw
+        // the separator instead. This means that those separators are only visible when necessary.
+
         if( horizontal )
         {
-            if( headerOption->section != 0 || isFirst )
+            if ( headerOption->position != QStyleOptionHeader::OnlyOneSection )
             {
 
-                if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
-                else painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
+                if( reverseLayout && headerOption->position != QStyleOptionHeader::Beginning )
+                    painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
+                else if( !reverseLayout && headerOption->position != QStyleOptionHeader::End )
+                    painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
 
             }
 
-        } else {
+        } else if( headerOption->position != QStyleOptionHeader::End ) {
 
             if( reverseLayout ) painter->drawLine( rect.bottomLeft()+QPoint( 1, 0 ), rect.bottomRight() );
             else painter->drawLine( rect.bottomLeft(), rect.bottomRight() - QPoint( 1, 0 ) );
@@ -5578,6 +5582,23 @@ namespace Breeze
 
             if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
             else painter->drawLine( rect.topRight(), rect.bottomRight() );
+
+        }
+
+        // separators
+        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
+
+        if( horizontal )
+        {
+
+            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
+            else painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
+
+
+        } else {
+
+            if( reverseLayout ) painter->drawLine( rect.topLeft()+QPoint( 1, 0 ), rect.topRight() );
+            else painter->drawLine( rect.topLeft(), rect.topRight() - QPoint( 1, 0 ) );
 
         }
 
