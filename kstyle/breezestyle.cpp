@@ -5591,8 +5591,9 @@ namespace Breeze
         if( horizontal )
         {
 
-            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
-            else painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
+            // 26aa20407d in qtbase introduced a 1px empty area in reversed horizontal headers. Ignore it.
+            if( reverseLayout && rect.width() != 1 ) painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
+            else if ( !reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
 
 
         } else {
