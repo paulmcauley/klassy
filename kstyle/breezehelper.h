@@ -33,6 +33,14 @@ namespace Breeze
 
         public:
 
+        enum class FrameHint {
+            None       = 0,
+            DoubleRing = 1,
+        };
+
+        Q_ENUM(FrameHint)
+        Q_DECLARE_FLAGS(FrameHints, FrameHint)
+
         //* constructor
         explicit Helper( KSharedConfig::Ptr, QObject *parent = nullptr );
 
@@ -165,7 +173,7 @@ namespace Breeze
         void renderFocusLine( QPainter*, const QRect&, const QColor& ) const;
 
         //* generic frame
-        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor() ) const;
+        void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor(), FrameHints hints = FrameHint::None ) const;
 
         //* side panel frame
         void renderSidePanelFrame( QPainter*, const QRect&, const QColor& outline, Side ) const;

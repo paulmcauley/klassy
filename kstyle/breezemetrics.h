@@ -44,7 +44,12 @@ namespace Breeze
         static constexpr int Layout_DefaultSpacing = 6;
 
         // line editors
-        static constexpr int LineEdit_FrameWidth = 6;
+        struct LineEdit {
+            static constexpr int FrameWidth = 6;
+            static constexpr int Margin = 2;
+
+            static constexpr int TotalExpansion = FrameWidth + Margin;
+        };
 
         // menu items
         static constexpr int Menu_FrameWidth = 0;
@@ -58,7 +63,7 @@ namespace Breeze
         static constexpr int ComboBox_FrameWidth = 6;
 
         // spinbox
-        static constexpr int SpinBox_FrameWidth = LineEdit_FrameWidth;
+        static constexpr int SpinBox_FrameWidth = LineEdit::TotalExpansion;
         static constexpr int SpinBox_ArrowButtonWidth = 20;
 
         // groupbox title margin

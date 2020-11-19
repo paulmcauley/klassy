@@ -39,6 +39,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QScrollBar>
+#include <QSpinBox>
 #include <QItemDelegate>
 #include <QSplitterHandle>
 #include <QTextEdit>
@@ -518,14 +519,14 @@ namespace Breeze
             // frame width
             case PM_DefaultFrameWidth:
             if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
-            if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
+            if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit::TotalExpansion;
             else if( isQtQuickControl( option, widget ) )
             {
                 const QString &elementType = option->styleObject->property( "elementType" ).toString();
                 if( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
                 {
 
-                    return Metrics::LineEdit_FrameWidth;
+                    return Metrics::LineEdit::TotalExpansion;
 
                 } else if( elementType == QLatin1String( "combobox" ) ) {
 
@@ -540,7 +541,7 @@ namespace Breeze
             case PM_ComboBoxFrameWidth:
             {
                 const auto comboBoxOption( qstyleoption_cast< const QStyleOptionComboBox*>( option ) );
-                return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
+                return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit::TotalExpansion : Metrics::ComboBox_FrameWidth;
             }
 
             case PM_SpinBoxFrameWidth: return Metrics::SpinBox_FrameWidth;
@@ -864,6 +865,39 @@ namespace Breeze
 
     }
 
+    bool Style::drawPanelLineEditPrimitive( const QStyleOption* opts, QPainter* painter, const QWidget* wid ) const
+    {
+        if (wid != nullptr) {
+            if (qobject_cast<QSpinBox*>(wid->parent()) || qobject_cast<QComboBox*>(wid->parent())) {
+                return true;
+            }
+        }
+
+
+        auto rect = opts->rect.adjusted( Metrics::LineEdit::Margin, Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin );
+        auto palette = opts->palette;
+
+        if (qobject_cast<const QLineEdit*>(wid)) {
+            rect.adjust(1, 1, -1, -1);
+        } else if (wid == nullptr) {
+            rect.adjust(Metrics::LineEdit::Margin, Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin);
+        }
+
+        auto radius = _helper->frameRadius( PenWidth::NoPen, -1 );
+
+        painter->save();
+        {
+            painter->setPen(QPen(palette.button().color()));
+            painter->setBrush(palette.button());
+            painter->drawRoundedRect(rect, radius, radius);
+        }
+        painter->restore();
+
+        drawFrameLineEditPrimitive(opts, painter, wid);
+
+        return true;
+    }
+
     //______________________________________________________________
     void Style::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
@@ -876,6 +910,7 @@ namespace Breeze
             case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
             case PE_PanelScrollAreaCorner: fcn = &Style::drawPanelScrollAreaCornerPrimitive; break;
             case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
+            case PE_PanelLineEdit: fcn = &Style::drawPanelLineEditPrimitive; break;
             case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
             case PE_PanelItemViewItem: fcn = &Style::drawPanelItemViewItemPrimitive; break;
             case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
@@ -3162,10 +3197,12 @@ namespace Breeze
     {
         // copy palette and rect
         const auto& palette( option->palette );
-        const auto& rect( option->rect );
+        auto rect( option->rect );
+
+        rect.adjust( Metrics::LineEdit::Margin, Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin, -Metrics::LineEdit::Margin );
 
         // make sure there is enough room to render frame
-        if( rect.height() < 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height())
+        if( rect.height() < 2*Metrics::LineEdit::FrameWidth + option->fontMetrics.height())
         {
 
             const auto &background = palette.color( QPalette::Base );
@@ -3194,7 +3231,7 @@ namespace Breeze
             // render
             const auto &background = palette.color( QPalette::Base );
             const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            _helper->renderFrame( painter, rect, background, outline );
+            _helper->renderFrame( painter, rect, background, outline, hasFocus ? Helper::FrameHint::DoubleRing : Helper::FrameHint::None );
 
         }
 
