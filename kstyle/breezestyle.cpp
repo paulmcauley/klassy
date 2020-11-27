@@ -5424,7 +5424,8 @@ namespace Breeze
             case QFrame::StyledPanel:
             {
 
-                if( isQtQuickControl( option, widget ) )
+                if( isQtQuickControl( option, widget )
+                    && option->styleObject->property( "elementType" ).toString() == QLatin1String( "combobox" ) )
                 {
 
                     // ComboBox popup frame
