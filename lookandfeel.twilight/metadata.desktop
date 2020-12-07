@@ -20,6 +20,7 @@ Comment[sl]=Sapica ob mraku s strani KDE VDG
 Comment[sv]=Breeze skymning av KDE:s visuella designgrupp
 Comment[uk]=Сутінкова Breeze, автори — KDE VDG
 Comment[x-test]=xxBreeze Twilight by the KDE VDGxx
+Comment[zh_CN]=暮色微风，由 KDE VDG 创作
 Name=Breeze Twilight
 Name[ca]=Brisa crepuscular
 Name[da]=Breeze twilight
@@ -41,6 +42,7 @@ Name[sl]=Sapica ob mraku
 Name[sv]=Breeze skymning
 Name[uk]=Сутінкова Breeze
 Name[x-test]=xxBreeze Twilightxx
+Name[zh_CN]=暮色微风
 Type=Service
 
 X-KDE-ServiceTypes=Plasma/LookAndFeel
