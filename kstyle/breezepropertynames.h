@@ -22,6 +22,7 @@ namespace Breeze
         static const char alteredBackground[];
         static const char highlightNeutral[];
         static const char noSeparator[];
+        static const char isTopMenu[];
     };
 
 }

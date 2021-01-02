@@ -19,5 +19,6 @@ namespace Breeze
     const char PropertyNames::alteredBackground[] = "_breeze_altered_background";
     const char PropertyNames::highlightNeutral[] = "_kde_highlight_neutral";
     const char PropertyNames::noSeparator[] = "_breeze_no_separator";
+    const char PropertyNames::isTopMenu[] = "_breeze_menu_is_top";
 
 }

@@ -596,13 +596,21 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderMenuFrame(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline, bool roundCorners ) const
+        const QColor& color, const QColor& outline, bool roundCorners, bool isTopMenu ) const
     {
 
+
+        painter->save();
 
         // set brush
         if( color.isValid() ) painter->setBrush( color );
         else painter->setBrush( Qt::NoBrush );
+
+        // We simulate being able to independently adjust corner radii by
+        // setting a clip region and then extending the rectangle beyond it.
+        if ( isTopMenu ) {
+            painter->setClipRect( rect );
+        }
 
         if( roundCorners )
         {
@@ -610,6 +618,8 @@ namespace Breeze
             painter->setRenderHint( QPainter::Antialiasing );
             QRectF frameRect( rect );
             qreal radius( frameRadius( PenWidth::NoPen ) );
+
+            if( isTopMenu ) frameRect.adjust(0, -radius, 0, 0);
 
             // set pen
             if( outline.isValid() )
@@ -628,6 +638,8 @@ namespace Breeze
 
             painter->setRenderHint( QPainter::Antialiasing, false );
             QRect frameRect( rect );
+            if( isTopMenu ) frameRect.adjust(0, 1, 0, 0);
+
             if( outline.isValid() )
             {
 
@@ -639,6 +651,8 @@ namespace Breeze
             painter->drawRect( frameRect );
 
         }
+
+        painter->restore();
 
     }
 
