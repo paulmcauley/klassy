@@ -482,7 +482,7 @@ namespace Breeze
 
             QRectF copy( strokedRect( rect ) );
 
-            const qreal radius( frameRadius( PenWidth::Frame, -1 ) );
+            const qreal radius( frameRadius( PenWidth::Frame ) );
             if( !(sides&SideTop) ) copy.adjust( 0, -radius, 0, 0 );
             if( !(sides&SideBottom) ) copy.adjust( 0, 0, 0, radius );
             if( !(sides&SideLeft) ) copy.adjust( -radius, 0, 0, 0 );
@@ -621,7 +621,7 @@ namespace Breeze
 
             painter->setRenderHint( QPainter::Antialiasing );
             QRectF frameRect( rect );
-            qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
+            qreal radius( frameRadius( PenWidth::NoPen ) );
 
             // set pen
             if( outline.isValid() )
