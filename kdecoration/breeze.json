@@ -43,7 +43,7 @@
         "Description[tr]": "Breeze görsel biçemini Plasma Masaüstü için kullanan pencere dekorasyonu",
         "Description[uk]": "Обрамлення вікон з використанням візуального стилю Breeze для стільничного середовища Плазми",
         "Description[x-test]": "xxWindow decoration using the Breeze visual style for the Plasma Desktopxx",
-        "Description[zh_CN]": "微风视觉主题的 Plasma 桌面窗口装饰",
+        "Description[zh_CN]": "Breeze 微风视觉风格的 Plasma 桌面窗口装饰",
         "Description[zh_TW]": "使用 Plasma 桌面 Breeze 視覺樣式的視窗裝飾",
         "EnabledByDefault": true,
         "Id": "org.kde.breeze",
@@ -90,7 +90,7 @@
         "Name[tr]": "Esinti",
         "Name[uk]": "Breeze",
         "Name[x-test]": "xxBreezexx",
-        "Name[zh_CN]": "微风",
+        "Name[zh_CN]": "Breeze 微风",
         "Name[zh_TW]": "Breeze",
         "ServiceTypes": [
             "org.kde.kdecoration2"

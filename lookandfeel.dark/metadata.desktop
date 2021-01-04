@@ -34,7 +34,7 @@ Comment[sv]=Breeze mörk av KDE:s visuella designgrupp
 Comment[tg]=Насими торик аз KDE VDG
 Comment[uk]=Темна Breeze, автори — KDE VDG
 Comment[x-test]=xxBreeze Dark by the KDE VDGxx
-Comment[zh_CN]=暗色微风，由 KDE VDG 创作
+Comment[zh_CN]=Breeze 微风暗色主题，由 KDE VDG (视觉设计团队) 设计制作
 Comment[zh_TW]=由 KDE VDG 製作的 Breeze Dark
 Name=Breeze Dark
 Name[ar]=نسيم داكن
@@ -80,7 +80,7 @@ Name[tg]=Насими торик
 Name[tr]=Koyu Esinti
 Name[uk]=Темна Breeze
 Name[x-test]=xxBreeze Darkxx
-Name[zh_CN]=暗色微风
+Name[zh_CN]=Breeze 微风暗色
 Name[zh_TW]=Breeze Dark
 Type=Service
 
