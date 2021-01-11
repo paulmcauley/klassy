@@ -44,6 +44,7 @@
 #if BREEZE_HAVE_QTQUICK
 // needed to enable dragging from QQuickWindows
 #include <QQuickWindow>
+#include <QQuickRenderControl>
 #endif
 
 namespace Util
@@ -184,7 +185,7 @@ namespace Breeze
         if ( !item ) return;
 
         auto window = item->window();
-        if( window && !window->inherits("QQuickOffScreenWindow"))
+        if( window && window->objectName() != QStringLiteral("QQuickOffScreenWindow"))
         {
             auto contentItem = window->contentItem();
             contentItem->setAcceptedMouseButtons( Qt::LeftButton );
