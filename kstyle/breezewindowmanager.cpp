@@ -183,7 +183,8 @@ namespace Breeze
     {
         if ( !item ) return;
 
-        if( auto window = item->window() )
+        auto window = item->window();
+        if( window && !window->inherits("QQuickOffScreenWindow"))
         {
             auto contentItem = window->contentItem();
             contentItem->setAcceptedMouseButtons( Qt::LeftButton );
@@ -279,10 +280,12 @@ namespace Breeze
         {
 
             _dragTimer.stop();
+            setLocked( false );
             if( _target ) startDrag( _target.data()->window()->windowHandle() );
             #if BREEZE_HAVE_QTQUICK
             else if( _quickTarget ) startDrag( _quickTarget.data()->window() );
             #endif
+            resetDrag();
 
         } else {
 
