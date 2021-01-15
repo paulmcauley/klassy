@@ -3791,8 +3791,8 @@ namespace Breeze
         auto outline( _helper->frameOutlineColor( palette ) );
 
         painter->save();
-        
-        if ( hasAlpha ) {
+
+        if ( StyleConfigData::menuOpacity() < 100) {
             if ( painter && widget && widget->isWindow() ) {
                 painter->setCompositionMode( QPainter::CompositionMode_Source );
             }
