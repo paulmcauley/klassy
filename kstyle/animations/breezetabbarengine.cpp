@@ -18,10 +18,7 @@ namespace Breeze
         if( !widget ) return false;
 
         // create new data class
-
-        // Stripping out the hover code causes a lot of problems due to the code's architecture being highly dependent on the animation engines to keep track of stuff like
-        // subcontrol rects and whatnot, so simply hardcoding this value to 0 will suffice for now.
-        if( !_hoverData.contains( widget ) ) _hoverData.insert( widget, new TabBarData( this, widget, 0 ), enabled() );
+        if( !_hoverData.contains( widget ) ) _hoverData.insert( widget, new TabBarData( this, widget, duration() ), enabled() );
         if( !_focusData.contains( widget ) ) _focusData.insert( widget, new TabBarData( this, widget, duration() ), enabled() );
 
         // connect destruction signal
