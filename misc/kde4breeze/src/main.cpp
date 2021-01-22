@@ -88,7 +88,7 @@ void updateKdeGlobals()
     }
 
     const QString widgetStyle = readConfigValue(lnfConfig, defaultLnfConfig, "KDE", "widgetStyle", "Breeze").toString();
-    const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "Breeze").toString();
+    const QString colorScheme = readConfigValue(lnfConfig, defaultLnfConfig, "General", "ColorScheme", "BreezeLight").toString();
     const QString icons = readConfigValue(lnfConfig, defaultLnfConfig, "Icons", "Theme", "breeze").toString();
 
     cloneColorScheme(colorScheme);
