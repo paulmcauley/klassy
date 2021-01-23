@@ -965,7 +965,7 @@ namespace Breeze
             auto rect = _toolsAreaManager->toolsAreaRect(mw);
 
             if (rect.height() == 0) {
-                if (mw->property(PropertyNames::noSeparator).toBool()) {
+                if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
                     painter->restore();
                     return true;
                 }
@@ -986,6 +986,9 @@ namespace Breeze
 
             painter->restore();
         } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
+            if (dialog->isFullScreen()) {
+                return true;
+            }
             painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
             painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
         }

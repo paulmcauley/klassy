@@ -64,7 +64,7 @@ namespace Breeze {
             }
         }
 
-        if (itemHeight == 0 && !(window->property(PropertyNames::noSeparator).toBool())) {
+        if (itemHeight == 0 && !(window->property(PropertyNames::noSeparator).toBool()) && !window->isFullScreen()) {
             auto win = const_cast<QMainWindow*>(window);
             win->setContentsMargins(0, 1, 0, 0);
         } else {
