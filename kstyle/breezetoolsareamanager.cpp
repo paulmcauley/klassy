@@ -53,16 +53,25 @@ namespace Breeze {
         configUpdated();
     }
 
-    QRect ToolsAreaManager::toolsAreaRect(const QMainWindow *window) const
+    QRect ToolsAreaManager::toolsAreaRect(const QMainWindow *window)
     {
         Q_ASSERT(window);
 
         int itemHeight = window->menuWidget() ? window->menuWidget()->height() : 0;
-        for (auto item : _windows[window]) {
+        for (auto item : _windows[const_cast<QMainWindow*>(window)]) {
             if (!item.isNull() && item->isVisible() && window->toolBarArea(item) == Qt::TopToolBarArea) {
                 itemHeight = qMax(item->mapTo(window, item->rect().bottomLeft()).y(), itemHeight);
             }
         }
+
+        if (itemHeight == 0 && !(window->property(PropertyNames::noSeparator).toBool())) {
+            auto win = const_cast<QMainWindow*>(window);
+            win->setContentsMargins(0, 1, 0, 0);
+        } else {
+            auto win = const_cast<QMainWindow*>(window);
+            win->setContentsMargins(0, 0, 0, 0);
+        }
+
         return QRect(0, 0, window->width(), itemHeight);
     }
 

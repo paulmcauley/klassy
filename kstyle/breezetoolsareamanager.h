@@ -31,7 +31,7 @@ namespace Breeze {
 
     private:
         Helper* _helper;
-        QHash<const QMainWindow*,QVector<QPointer<QToolBar>>> _windows;
+        QHash<QMainWindow*,QVector<QPointer<QToolBar>>> _windows;
         KSharedConfigPtr _config;
         KConfigWatcher::Ptr _watcher;
         QPalette _palette = QPalette();
@@ -57,7 +57,7 @@ namespace Breeze {
         void registerWidget(QWidget *widget);
         void unregisterWidget(QWidget *widget);
 
-        QRect toolsAreaRect(const QMainWindow *window) const;
+        QRect toolsAreaRect(const QMainWindow *window);
 
         bool hasHeaderColors();
     };

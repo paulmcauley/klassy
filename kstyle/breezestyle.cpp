@@ -391,13 +391,7 @@ namespace Breeze
 
         } else if ( qobject_cast<QMainWindow*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
-            const QRect toolsAreaRect = _toolsAreaManager->toolsAreaRect(static_cast<QMainWindow*>(widget));
-            if (toolsAreaRect.height() == 0 && !(widget->property(PropertyNames::noSeparator).toBool())) {
-                const QMargins margins = widget->contentsMargins();
-                widget->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
-            }
         }
-
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
 
