@@ -395,7 +395,7 @@ namespace Breeze
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
 
-            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+            if (_helper->shouldDrawToolsArea(widget)) {
                 const QMargins margins = widget->contentsMargins();
                 widget->setContentsMargins(margins.left(), qMax(margins.top(), 1), margins.right(), margins.bottom());
             }
