@@ -32,7 +32,7 @@ if( KF5KCMUtils_FOUND )
     target_link_libraries(breeze-settings5 Qt5::Core Qt5::Gui Qt5::Widgets )
     target_link_libraries(breeze-settings5 KF5::I18n KF5::KCMUtils)
 
-    install(TARGETS breeze-settings5 ${INSTALL_TARGETS_DEFAULT_ARGS})
+    install(TARGETS breeze-settings5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
     # icon
     ecm_install_icons(ICONS sc-apps-breeze-settings.svgz
