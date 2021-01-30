@@ -71,9 +71,9 @@ add_library(breezedecoration MODULE
 
 target_link_libraries(breezedecoration
     PUBLIC
-        Qt5::Core
-        Qt5::Gui
-        Qt5::DBus
+        Qt::Core
+        Qt::Gui
+        Qt::DBus
     PRIVATE
         breezecommon5
         KDecoration2::KDecoration
@@ -88,7 +88,7 @@ target_link_libraries(breezedecoration
 if(BREEZE_HAVE_X11)
   target_link_libraries(breezedecoration
     PUBLIC
-      Qt5::X11Extras
+      Qt::X11Extras
       XCB::XCB)
 endif()
 

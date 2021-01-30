@@ -15,8 +15,8 @@ generate_export_header(breezecommon5
 
 target_link_libraries(breezecommon5
     PUBLIC
-        Qt5::Core
-        Qt5::Gui)
+        Qt::Core
+        Qt::Gui)
 
 set_target_properties(breezecommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}

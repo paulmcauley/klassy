@@ -13,7 +13,7 @@ add_library(kstyle_breeze_config MODULE
     ${kstyle_breeze_config_PART_FORMS_HEADERS}
 )
 
-target_link_libraries(kstyle_breeze_config Qt5::Core Qt5::Gui Qt5::Widgets Qt5::DBus)
+target_link_libraries(kstyle_breeze_config Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(kstyle_breeze_config KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
 install(TARGETS kstyle_breeze_config DESTINATION ${QT_PLUGIN_INSTALL_DIR})
 install(FILES breezestyleconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
@@ -29,7 +29,7 @@ set_package_properties(KF5KCMUtils PROPERTIES
 if( KF5KCMUtils_FOUND )
     set(breeze_settings_SOURCES main.cpp)
     add_executable(breeze-settings5 ${breeze_settings_SOURCES} )
-    target_link_libraries(breeze-settings5 Qt5::Core Qt5::Gui Qt5::Widgets )
+    target_link_libraries(breeze-settings5 Qt::Core Qt::Gui Qt::Widgets )
     target_link_libraries(breeze-settings5 KF5::I18n KF5::KCMUtils)
 
     install(TARGETS breeze-settings5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
