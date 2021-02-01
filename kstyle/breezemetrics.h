@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2020 Noah Davis <noahadvs@gmail.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
