@@ -1294,8 +1294,11 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderTabBarTab( QPainter* painter, const QRect& rect, const QColor& color, const QColor& outline, Corners corners ) const
-    {
+    void Helper::renderTabBarTab(QPainter *painter, const QRect &rect,
+                                const QColor &color, const QColor &highlight,
+                                const QColor &outline, Corners corners,
+                                bool document, bool bottom) const {
+
 
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
@@ -1321,6 +1324,22 @@ namespace Breeze
         // render
         QPainterPath path( roundedPath( frameRect, corners, radius ) );
         painter->drawPath( path );
+
+        if (highlight.isValid() && document) {
+            auto rect = frameRect;
+            rect.setHeight(2);
+            if (bottom) {
+                rect.setTop(frameRect.bottom()-2);
+                rect.setBottom(frameRect.bottom());
+            }
+
+            QPainterPath rectAsPath;
+            rectAsPath.addRect(rect);
+
+            painter->setClipPath(path.intersected(rectAsPath));
+            painter->setBrush(highlight);
+            painter->drawRect(frameRect);
+        }
 
     }
 

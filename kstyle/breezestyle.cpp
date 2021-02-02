@@ -5707,6 +5707,8 @@ namespace Breeze
         // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
         const int overlap( isQtQuickControl ? 0:Metrics::TabBar_TabOverlap );
 
+        bool bottom = false;
+
         // adjust rect and define corners based on tabbar orientation
         Corners corners;
         switch( tabOption->shape )
@@ -5738,6 +5740,7 @@ namespace Breeze
 
                 corners = CornerBottomLeft|CornerBottomRight;
                 rect.adjust( 0, - 1, 0, 0 );
+                bottom = true;
 
             } else {
 
@@ -5820,18 +5823,24 @@ namespace Breeze
         // outline
         const auto outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
 
+        QColor accent;
+        if ( selected )
+        {
+            accent = palette.color( QPalette::Active, QPalette::Highlight );
+        }
+
         // render
         if( selected )
         {
 
             QRegion oldRegion( painter->clipRegion() );
             painter->setClipRect( option->rect, Qt::IntersectClip );
-            _helper->renderTabBarTab( painter, rect, color, outline, corners );
+            _helper->renderTabBarTab( painter, rect, color, accent, outline, corners, true, bottom );
             painter->setClipRegion( oldRegion );
 
         } else {
 
-            _helper->renderTabBarTab( painter, rect, color, outline, corners );
+            _helper->renderTabBarTab( painter, rect, color, accent, outline, corners, true, bottom );
 
         }
 
