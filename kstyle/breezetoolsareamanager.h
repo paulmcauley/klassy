@@ -31,7 +31,7 @@ namespace Breeze {
 
     private:
         Helper* _helper;
-        QHash<QMainWindow*,QVector<QPointer<QToolBar>>> _windows;
+        QHash<const QMainWindow*,QVector<QPointer<QToolBar>>> _windows;
         KSharedConfigPtr _config;
         KConfigWatcher::Ptr _watcher;
         QPalette _palette = QPalette();
