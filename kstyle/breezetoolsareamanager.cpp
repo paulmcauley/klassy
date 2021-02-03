@@ -63,6 +63,9 @@ namespace Breeze {
                 itemHeight = qMax(item->mapTo(window, item->rect().bottomLeft()).y(), itemHeight);
             }
         }
+        if (itemHeight > 0) {
+            itemHeight += window->devicePixelRatio();
+        }
 
         return QRect(0, 0, window->width(), itemHeight);
     }
