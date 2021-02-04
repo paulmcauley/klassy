@@ -103,7 +103,7 @@ ForegroundPositive=39,174,96
 ForegroundVisited=127,140,141
 
 [General]
-ColorScheme=Breeze High Conttrast
+ColorScheme=BreezeHighContrast
 Name=Breeze High Contrast
 Name[az]=Breeze - Yüksək Kontrastlı
 Name[ca]=Brisa de contrast alt
