@@ -103,8 +103,8 @@ endif()
 
 
 ########### install files ###############
-install(TARGETS breeze DESTINATION ${QT_PLUGIN_INSTALL_DIR}/styles/)
-install(FILES breeze.themerc  DESTINATION  ${DATA_INSTALL_DIR}/kstyle/themes)
+install(TARGETS breeze DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
+install(FILES breeze.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
 
 ########### subdirectories ###############
 add_subdirectory(config)
