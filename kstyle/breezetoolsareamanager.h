@@ -18,6 +18,7 @@ namespace Breeze {
     class AppListener : public QObject
     {
         Q_OBJECT
+        using QObject::QObject;
 
         bool eventFilter(QObject *watched, QEvent *event) override;
 

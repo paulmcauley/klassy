@@ -41,7 +41,7 @@ namespace Breeze {
 
     void ToolsAreaManager::registerApplication(QApplication *application)
     {
-        _listener = new AppListener;
+        _listener = new AppListener(this);
         _listener->manager = this;
         if (application->property(colorProperty).isValid()) {
             auto path = application->property(colorProperty).toString();
