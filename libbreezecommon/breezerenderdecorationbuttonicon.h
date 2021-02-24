@@ -24,6 +24,7 @@
 #include "breezecommon_export.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <memory>
 
 namespace Breeze
