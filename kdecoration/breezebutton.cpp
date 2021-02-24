@@ -322,7 +322,7 @@ namespace Breeze
 
         if( isPressed() ) {
 
-            if( type() == DecorationButtonType::Close ) return redColor.darker();
+            if( type() == DecorationButtonType::Close ) return redColor;
             else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
 
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
@@ -336,7 +336,7 @@ namespace Breeze
                 if( d->internalSettings()->outlineCloseButton() )
                 {
 
-                    return c->isActive() ? KColorUtils::mix( redColor, redColor.lighter(), m_opacity ) : KColorUtils::mix( redColor.lighter(), redColor, m_opacity );
+                    return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter(), m_opacity );
 
                 } else {
 
@@ -356,12 +356,12 @@ namespace Breeze
 
         } else if( isHovered() ) {
 
-            if( type() == DecorationButtonType::Close ) return c->isActive() ? redColor.lighter() : redColor;
+            if( type() == DecorationButtonType::Close ) return redColor.lighter();
             else return d->fontColor();
 
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
 
-            return c->isActive() ? redColor : d->fontColor();
+            return d->fontColor();
 
         } else {
 

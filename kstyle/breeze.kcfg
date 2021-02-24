@@ -33,7 +33,7 @@
 
     <!-- close button -->
     <entry name="OutlineCloseButton" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
     
     <!-- button icon style -->
