@@ -162,7 +162,7 @@ namespace Breeze
     void WindowManager::registerWidget( QWidget* widget )
     {
 
-        if( isBlackListed( widget ) || isDragable( widget ) )
+        if( isBlackListed( widget ) || isDragable( widget ) || widget->inherits( "QQuickWidget" ) )
         {
 
             /*
@@ -184,8 +184,7 @@ namespace Breeze
     {
         if ( !item ) return;
 
-        auto window = item->window();
-        if( window && window->objectName() != QStringLiteral("QQuickOffScreenWindow"))
+        if( auto window = item->window() )
         {
             auto contentItem = window->contentItem();
             contentItem->setAcceptedMouseButtons( Qt::LeftButton );
@@ -284,10 +283,12 @@ namespace Breeze
             setLocked( false );
             if( _target ) startDrag( _target.data()->window()->windowHandle() );
             #if BREEZE_HAVE_QTQUICK
-            else if( _quickTarget ) startDrag( _quickTarget.data()->window() );
+            else if( _quickTarget ) {
+                _quickTarget.data()->ungrabMouse();
+                startDrag( _quickTarget.data()->window() );
+            }
             #endif
             resetDrag();
-
         } else {
 
             return QObject::timerEvent( event );
@@ -306,6 +307,15 @@ namespace Breeze
         { return false; }
         if( !( mouseEvent->modifiers() == Qt::NoModifier && mouseEvent->button() == Qt::LeftButton ) )
         { return false; }
+
+        // If we are in a QQuickWidget we don't want to ever do dragging from a qwidget in the
+        // hyerarchy, but only from an internal item, if any. If any event handler will manage
+        // the event, we don't want the drag to start
+        if( object->inherits( "QQuickWidget" ) ) {
+            _eventInQQuickWidget = true;
+            event->setAccepted(false);
+            return false;
+        }
 
         // check lock
         if( isLocked() ) return false;
@@ -326,6 +336,12 @@ namespace Breeze
             return true;
         }
         #endif
+
+        if (_eventInQQuickWidget) {
+            event->setAccepted(true);
+            return false;
+        }
+        _eventInQQuickWidget = false;
 
         // cast to widget
         auto widget = static_cast<QWidget*>( object );
@@ -703,7 +719,22 @@ namespace Breeze
         if( !( enabled() && window ) ) return;
         if( QWidget::mouseGrabber() ) return;
 
-        _dragInProgress = window->startSystemMove();
+#if BREEZE_HAVE_QTQUICK
+        if( _quickTarget )
+        {
+            if (QQuickWindow *qw = qobject_cast<QQuickWindow *>(window)) {
+                QWindow *renderWindow = QQuickRenderControl::renderWindowFor(qw);
+                if( renderWindow ) {
+                    _dragInProgress = renderWindow->startSystemMove();
+                } else {
+                    _dragInProgress = window->startSystemMove();
+                }
+            }
+        } else
+#endif
+        {
+            _dragInProgress = window->startSystemMove();
+        }
 
     }
 
