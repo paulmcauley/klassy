@@ -2,13 +2,16 @@
 widgetStyle=Breeze
 
 [kdeglobals][General]
-ColorScheme=Breeze Dark
+ColorScheme=BreezeDark
 
 [kdeglobals][Icons]
 Theme=breeze-dark
 
 [plasmarc][Theme]
 name=breeze-dark
+
+[Wallpaper]
+Image=Next
 
 [kcminputrc][Mouse]
 cursorTheme=breeze_cursors
@@ -21,3 +24,6 @@ LayoutName=org.kde.breeze.desktop
 
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.breeze
+
+[KSplash]
+Theme=org.kde.Breeze
