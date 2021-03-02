@@ -5,10 +5,11 @@ find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
 ################# breezestyle target #################
 set(breezecommon_LIB_SRCS
     breezeboxshadowrenderer.cpp
-    breezerenderdecorationbuttonicon.cpp
-    breezestyleclassic.cpp
-    breezestyleoxygen.cpp
-    breezestyleredmond.cpp
+    renderdecorationbuttonicon.cpp
+    styleclassik.cpp
+    stylekite.cpp
+    styleoxygen.cpp
+    styleredmond.cpp
 )
 
 add_library(breezecommon5 ${breezecommon_LIB_SRCS})

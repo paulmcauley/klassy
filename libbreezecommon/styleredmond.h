@@ -1,8 +1,8 @@
-#ifndef BREEZE_STYLECLASSIC_H
-#define BREEZE_STYLECLASSIC_H
+#ifndef BREEZE_STYLEREDMOND_H
+#define BREEZE_STYLEREDMOND_H
 
 /*
- * Copyright 2020  Paul McAuley <kde@paulmcauley.com>
+ * Copyright 2017  Paul McAuley <kde@paulmcauley.com>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -21,14 +21,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "breezerenderdecorationbuttonicon.h"
+#include "renderdecorationbuttonicon.h"
 
 #include <QPainter>
 
 namespace Breeze
 {
     
-    class RenderStyleClassic18By18 : public RenderDecorationButtonIcon18By18
+    class RenderStyleRedmond18By18 : public RenderDecorationButtonIcon18By18
     {
         public:
             /**
@@ -36,9 +36,9 @@ namespace Breeze
              * 
              * @param painter A QPainter object already initialised with an 18x18 reference window.
              * @param pen QPen with width and color already initialised.
-             * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
+             * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller 
              */
-            RenderStyleClassic18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar){};
+            RenderStyleRedmond18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar){};
             
             void renderCloseIcon() override;
             void renderMaximizeIcon() override;

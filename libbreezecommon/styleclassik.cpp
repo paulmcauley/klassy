@@ -18,18 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "breezestyleredmond.h"
+#include "styleclassik.h"
 
 namespace Breeze
 {
-    void RenderStyleRedmond18By18::renderCloseIcon()
+    void RenderStyleClassik18By18::renderCloseIcon()
     {
         // slightly larger X to tie-in with design of square maximize button
         painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
         painter->drawLine( QPointF(13.5, 4.5), QPointF(4.5, 13.5) );
     }
-
-    void RenderStyleRedmond18By18::renderMaximizeIcon()
+    
+    void RenderStyleClassik18By18::renderMaximizeIcon()
     {
         //large square
         pen.setJoinStyle( Qt::RoundJoin );
@@ -37,8 +37,8 @@ namespace Breeze
 
         painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
     }
-
-    void RenderStyleRedmond18By18::renderRestoreIcon()
+    
+    void RenderStyleClassik18By18::renderRestoreIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -46,7 +46,7 @@ namespace Breeze
         if(this->notInTitlebar){
             //disable antialiasing to remove blur at small sizes
             painter->setRenderHints( QPainter::Antialiasing, false );
-            
+           
             //overlapping windows icon
             painter->drawRect( QRectF( QPointF( 4, 6 ), QPointF( 11, 13 ) ) );
             painter->drawPolyline( QVector<QPointF>{
@@ -69,16 +69,19 @@ namespace Breeze
         }
     }
     
-    void RenderStyleRedmond18By18::renderMinimizeIcon()
+    void RenderStyleClassik18By18::renderMinimizeIcon()
     {
-        //horizontal line
-        painter->drawLine( QPointF( 4.5, 9.5 ), QPointF( 13.5, 9.5 ) );
-        
+        //tiny filled square
+        pen.setJoinStyle( Qt::RoundJoin );
+        painter->setBrush( pen.color() );
+        painter->setPen( pen );
+
+        painter->drawRect( QRectF( QPointF( 7.5, 7.5 ), QPointF( 10.5, 10.5 ) ) );
     }
 
     
 /*//Experimental 3 squares
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleClassik18By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -101,7 +104,7 @@ namespace Breeze
         );
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleClassik18By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -117,7 +120,7 @@ namespace Breeze
 */
 
 /*//Experimental 2 squares
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleClassik18By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -138,7 +141,7 @@ namespace Breeze
         
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleClassik18By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -152,8 +155,44 @@ namespace Breeze
     }
 */
 
+/* //Experimental filled arrows
+    void RenderStyleClassik18By18::renderKeepBehindIcon()
+    {
+        //horizontal lines
+        painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
+        painter->drawLine( QPointF( 9.5, 9.5 ), QPointF( 13.5, 9.5 ) );
+        painter->drawLine( QPointF( 9.5, 5.5 ), QPointF( 13.5, 5.5 ) );
+        
+        //arrow
+        painter->drawLine( QPointF( 4.5, 3.5 ), QPointF( 4.5, 11.5 ) );
+        
+        painter->setBrush( pen.color() );
+        painter->drawConvexPolygon( QPolygonF()
+            << QPointF( 2.5, 8.5 )
+            << QPointF( 4.5, 11.5 )
+            << QPointF( 6.5, 8.5 ) );
+    }
+    
+    void RenderStyleClassik18By18::renderKeepInFrontIcon()
+    {
+        //horizontal lines
+        painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 4.5 ) );
+        painter->drawLine( QPointF( 4.5, 8.5 ), QPointF( 8.5, 8.5 ) );
+        painter->drawLine( QPointF( 4.5, 12.5 ), QPointF( 8.5, 12.5 ) );
+        
+        //arrow
+        painter->drawLine( QPointF( 13.5, 6.5 ), QPointF( 13.5, 14.5 ) );
+        
+        painter->setBrush( pen.color() );
+        painter->drawConvexPolygon( QPolygonF()
+            << QPointF( 11.5, 9.5 )
+            << QPointF( 13.5, 6.5 )
+            << QPointF( 15.5, 9.5 ) );
+    }
+*/
+
 // For consistency with breeze icon set
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleClassik18By18::renderKeepBehindIcon()
     {
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
@@ -169,7 +208,7 @@ namespace Breeze
             QPointF( 6.5, 9.5 )} );
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleClassik18By18::renderKeepInFrontIcon()
     {
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 4.5 ) );
@@ -184,5 +223,7 @@ namespace Breeze
             QPointF( 13.5, 6.5 ),
             QPointF( 15.5, 8.5 )} );
     }
-    
+
+
+
 }

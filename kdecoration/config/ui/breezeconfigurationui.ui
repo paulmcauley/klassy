@@ -142,12 +142,17 @@
         <widget class="QComboBox" name="buttonIconStyle">
          <item>
           <property name="text">
-           <string>Classic</string>
+           <string>Classik</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Oxygen</string>
+           <string>Kite</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Oxygen/Breeze</string>
           </property>
          </item>
          <item>

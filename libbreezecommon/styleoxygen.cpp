@@ -1,6 +1,3 @@
-#ifndef BREEZE_STYLEOXYGEN_H
-#define BREEZE_STYLEOXYGEN_H
-
 /*
  * Copyright 2017  Paul McAuley <kde@paulmcauley.com>
  *
@@ -21,26 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "breezerenderdecorationbuttonicon.h"
-
-#include <QPainter>
+#include "styleoxygen.h"
 
 namespace Breeze
 {
     
-    class RenderStyleOxygen18By18 : public RenderDecorationButtonIcon18By18
-    {
-        public:
-            /**
-             * @brief Constructor - calls constructor of base class
-             * 
-             * @param painter A QPainter object already initialised with an 18x18 reference window.
-             * @param pen QPen with width and color already initialised.
-             * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-             */
-            RenderStyleOxygen18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar){};
-    };
-    
 }
-
-#endif

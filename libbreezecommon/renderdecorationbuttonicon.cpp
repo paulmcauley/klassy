@@ -18,10 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "breezerenderdecorationbuttonicon.h"
-#include "breezestyleclassic.h"
-#include "breezestyleoxygen.h"
-#include "breezestyleredmond.h"
+#include "renderdecorationbuttonicon.h"
+#include "styleclassik.h"
+#include "stylekite.h"
+#include "styleoxygen.h"
+#include "styleredmond.h"
 
 namespace Breeze
 {
@@ -30,10 +31,12 @@ namespace Breeze
     {
         switch( EnumButtonIconStyle(buttonIconStyle) )
         {
-            case StyleClassic:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassic18By18(painter, pen, notInTitlebar) );
-            case StyleOxygen:
+            case StyleClassik:
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(painter, pen, notInTitlebar) );
+            case StyleKite:
                 default:
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(painter, pen, notInTitlebar) );
+            case StyleOxygen:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(painter, pen, notInTitlebar) );
             case StyleRedmond:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(painter, pen, notInTitlebar) );

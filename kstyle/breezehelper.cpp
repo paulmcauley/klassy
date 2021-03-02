@@ -7,7 +7,7 @@
 #include "breezehelper.h"
 
 #include "breezestyleconfigdata.h"
-#include "breezerenderdecorationbuttonicon.h"
+#include "renderdecorationbuttonicon.h"
 
 #include <KColorUtils>
 #include <KIconLoader>
