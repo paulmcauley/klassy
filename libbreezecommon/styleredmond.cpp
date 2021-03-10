@@ -185,4 +185,15 @@ namespace Breeze
             QPointF( 15.5, 8.5 )} );
     }
     
+    void RenderStyleRedmond18By18::renderContextHelpIcon()
+    {        
+        QPainterPath path;
+        path.moveTo( 7, 5 );
+        path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
+        path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
+        painter->drawPath( path );
+        
+        painter->setBrush( pen.color() );
+        painter->drawEllipse( QRectF( 9, 15, 0.5, 0.5 ) );
+    }
 }

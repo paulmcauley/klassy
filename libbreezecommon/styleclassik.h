@@ -46,6 +46,7 @@ namespace Breeze
             void renderMinimizeIcon() override;
             void renderKeepBehindIcon() override;
             void renderKeepInFrontIcon() override;
+            void renderContextHelpIcon() override;
     };
     
 }

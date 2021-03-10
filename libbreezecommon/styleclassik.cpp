@@ -24,18 +24,40 @@ namespace Breeze
 {
     void RenderStyleClassik18By18::renderCloseIcon()
     {
-        // slightly larger X to tie-in with design of square maximize button
-        painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
-        painter->drawLine( QPointF(13.5, 4.5), QPointF(4.5, 13.5) );
+        if(notInTitlebar) {
+            
+            RenderDecorationButtonIcon18By18::renderCloseIcon();
+            
+        } else {
+        
+            //thicker pen in titlebar
+            QPen thickerPen = pen;
+            thickerPen.setWidthF( thickerPen.widthF() *1.75 );
+            painter->setPen( thickerPen );
+            
+            // slightly larger X to tie-in with design of square maximize button
+            painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
+            painter->drawLine( QPointF(13.5, 4.5), QPointF(4.5, 13.5) );
+        }
     }
     
     void RenderStyleClassik18By18::renderMaximizeIcon()
     {
+        if(!notInTitlebar) {
+            
+            //thicker pen in titlebar
+            QPen thickerPen = pen;
+            thickerPen.setWidthF( thickerPen.widthF() *1.6 );
+            thickerPen.setJoinStyle( Qt::RoundJoin );
+            painter->setPen( thickerPen );
+            
+        }  else {
+            pen.setJoinStyle( Qt::RoundJoin );
+            painter->setPen( pen );
+        }
+        
         //large square
-        pen.setJoinStyle( Qt::RoundJoin );
-        painter->setPen( pen );
-
-        painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
+        painter->drawRoundedRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ), 0.025, 0.025, Qt::RelativeSize);
     }
     
     void RenderStyleClassik18By18::renderRestoreIcon()
@@ -57,7 +79,11 @@ namespace Breeze
                 QPointF( 11, 11 )} );
             
         } else {
-
+            //thicker pen in titlebar
+            QPen thickerPen = pen;
+            thickerPen.setWidthF( thickerPen.widthF() *1.3 );
+            painter->setPen( thickerPen );
+            
             //overlapping windows icon
             painter->drawRect( QRectF( QPointF( 4.5, 6.5 ), QPointF( 11.5, 13.5 ) ) );
             painter->drawPolyline( QVector<QPointF>{
@@ -224,6 +250,22 @@ namespace Breeze
             QPointF( 15.5, 8.5 )} );
     }
 
-
+    void RenderStyleClassik18By18::renderContextHelpIcon()
+    {
+        //thicker pen in titlebar
+        QPen thickerPen = pen;
+        thickerPen.setWidthF( thickerPen.widthF() *1.6 );
+        thickerPen.setJoinStyle( Qt::RoundJoin );
+        painter->setPen( thickerPen );
+        
+        QPainterPath path;
+        path.moveTo( 7, 5 );
+        path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
+        path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
+        painter->drawPath( path );
+        
+        painter->setBrush( thickerPen.color() );
+        painter->drawEllipse( QRectF( 9, 15, 0.5, 0.5 ) );
+    }
 
 }
