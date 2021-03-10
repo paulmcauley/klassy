@@ -47,7 +47,7 @@ namespace Breeze
             
             //thicker pen in titlebar
             QPen thickerPen = pen;
-            thickerPen.setWidthF( thickerPen.widthF() *1.6 );
+            thickerPen.setWidthF( thickerPen.widthF() *1.666666 );
             thickerPen.setJoinStyle( Qt::RoundJoin );
             painter->setPen( thickerPen );
             
@@ -77,7 +77,7 @@ namespace Breeze
         } else {
             //thicker pen in titlebar
             QPen thickerPen = pen;
-            thickerPen.setWidthF( thickerPen.widthF() *1.6 );
+            thickerPen.setWidthF( thickerPen.widthF() *1.75 );
             thickerPen.setJoinStyle( Qt::RoundJoin );
             painter->setPen( thickerPen );
            
