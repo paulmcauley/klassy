@@ -102,7 +102,7 @@
     
     <!-- left button spacing -->
     <entry name="ButtonSpacingLeft" type = "Int">
-       <default>2</default>
+       <default>3</default>
        <min>0</min>
        <max>50</max>
     </entry>
