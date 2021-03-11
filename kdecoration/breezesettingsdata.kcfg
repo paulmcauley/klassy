@@ -43,7 +43,7 @@
           <choice name="StyleOxygen" />
           <choice name="StyleRedmond" />
       </choices>
-      <default>StyleKite</default>
+      <default>StyleClassik</default>
     </entry>
 
   </group>
@@ -91,6 +91,20 @@
           <choice name="ButtonVeryLarge" />
       </choices>
       <default>ButtonDefault</default>
+    </entry>
+    
+    <!-- right button spacing -->
+    <entry name="ButtonSpacingRight" type = "Int">
+       <default>5</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+    
+    <!-- left button spacing -->
+    <entry name="ButtonSpacingLeft" type = "Int">
+       <default>2</default>
+       <min>0</min>
+       <max>50</max>
     </entry>
 
     <!-- maximized windows -->

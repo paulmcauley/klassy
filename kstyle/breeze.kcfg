@@ -44,7 +44,7 @@
           <choice name="StyleOxygen" />
           <choice name="StyleRedmond" />
       </choices>
-      <default>StyleKite</default>
+      <default>StyleClassik</default>
     </entry>
 
   </group>
