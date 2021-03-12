@@ -13,6 +13,7 @@ include(FeatureSummary)
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake)
 
+include(CMakePackageConfigHelpers)
 include(ECMInstallIcons)
 include(ECMPackageConfigHelpers)
 include(KDEInstallDirs)
@@ -55,7 +56,7 @@ ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE
 # create a Config.cmake and a ConfigVersion.cmake file and install them
 set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Breeze")
 
-ecm_configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in"
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in"
                                   "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
                                   PATH_VARS KDE_INSTALL_FULL_DATADIR
                                   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
