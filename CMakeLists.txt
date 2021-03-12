@@ -50,14 +50,14 @@ endif()
 
 include(ECMSetupVersion)
 ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE
-                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfigVersion.cmake"
+                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/ClassikstylesConfigVersion.cmake"
                   )
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Breeze")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Classikstyles")
 
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in"
-                                  "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/ClassikstylesConfig.cmake.in"
+                                  "${CMAKE_CURRENT_BINARY_DIR}/ClassikstylesConfig.cmake"
                                   PATH_VARS KDE_INSTALL_FULL_DATADIR
                                   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                                   )
@@ -66,8 +66,8 @@ configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/BreezeConfig.cmake.in
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 
-install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfig.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/BreezeConfigVersion.cmake"
+install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/ClassikstylesConfig.cmake"
+               "${CMAKE_CURRENT_BINARY_DIR}/ClassikstylesConfigVersion.cmake"
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
         )

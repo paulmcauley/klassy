@@ -1,0 +1,14 @@
+[Desktop Entry]
+Exec=kcmshell5 classikstylesdecorationconfig
+Icon=preferences-system-windows
+Type=Service
+X-KDE-ServiceTypes=KCModule
+
+X-KDE-Library=org.kde.kdecoration2/classikstylesdecoration
+X-KDE-PluginKeyword=kcmodule
+X-KDE-ParentApp=kcontrol
+X-KDE-Weight=60
+
+Name=Classik Styles: Window Decoration
+
+X-KDE-Keywords=classikstyles,decoration

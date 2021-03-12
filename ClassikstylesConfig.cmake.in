@@ -2,10 +2,10 @@
 
 set(BREEZE_WITH_KDECORATION @WITH_DECORATIONS@)
 if(${BREEZE_WITH_KDECORATION})
-    set(BREEZE_KDECORATION_PLUGIN_ID "org.kde.breeze")
+    set(BREEZE_KDECORATION_PLUGIN_ID "org.kde.classikstyles")
 else()
     set(BREEZE_KDECORATION_PLUGIN_ID "")
 endif()
 
-set(BREEZE_STYLE_NAME "breeze")
+set(BREEZE_STYLE_NAME "classikstyles")
 set(BREEZE_COLOR_INSTALL_ROOT "@PACKAGE_KDE_INSTALL_FULL_DATADIR@/color-schemes/")

@@ -12,19 +12,20 @@ set(breezecommon_LIB_SRCS
     styleredmond.cpp
 )
 
-add_library(breezecommon5 ${breezecommon_LIB_SRCS})
+add_library(classikstylescommon5 ${breezecommon_LIB_SRCS})
 
-generate_export_header(breezecommon5
+# PAM: check BASE_NAME 
+generate_export_header(classikstylescommon5
     BASE_NAME breezecommon
     EXPORT_FILE_NAME breezecommon_export.h)
 
-target_link_libraries(breezecommon5
+target_link_libraries(classikstylescommon5
     PUBLIC
         Qt::Core
         Qt::Gui)
 
-set_target_properties(breezecommon5 PROPERTIES
+set_target_properties(classikstylescommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR})
 
-install(TARGETS breezecommon5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
+install(TARGETS classikstylescommon5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)

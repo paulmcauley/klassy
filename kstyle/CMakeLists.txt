@@ -80,31 +80,31 @@ set(breeze_PART_SRCS
 
 kconfig_add_kcfg_files(breeze_PART_SRCS ../kdecoration/breezesettings.kcfgc)
 kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
-add_library(breeze MODULE ${breeze_PART_SRCS})
-target_link_libraries(breeze Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
+add_library(classikstyles MODULE ${breeze_PART_SRCS})
+target_link_libraries(classikstyles Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 if( BREEZE_HAVE_QTQUICK )
-    target_link_libraries(breeze Qt::Quick)
+    target_link_libraries(classikstyles Qt::Quick)
 endif()
 if (BREEZE_HAVE_QTX11EXTRAS)
-    target_link_libraries(breeze Qt::X11Extras)
+    target_link_libraries(classikstyles Qt::X11Extras)
 endif()
-target_link_libraries(breeze KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
-target_link_libraries(breeze breezecommon5)
+target_link_libraries(classikstyles KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
+target_link_libraries(classikstyles classikstylescommon5)
 
 if(KF5FrameworkIntegration_FOUND)
-    target_link_libraries(breeze KF5::Style)
+    target_link_libraries(classikstyles KF5::Style)
 endif()
 
 if (WIN32)
     # As stated in https://docs.microsoft.com/en-us/cpp/c-runtime-library/math-constants M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
-    target_compile_definitions(breeze PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
+    target_compile_definitions(classikstyles PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
 endif()
 
 
 ########### install files ###############
-install(TARGETS breeze DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
-install(FILES breeze.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
+install(TARGETS classikstyles DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
+install(FILES classikstyles.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
 
 ########### subdirectories ###############
 add_subdirectory(config)

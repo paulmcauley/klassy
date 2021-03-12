@@ -64,18 +64,18 @@ set(breezedecoration_config_PART_FORMS
 ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
 
 ### build library
-add_library(breezedecoration MODULE
+add_library(classikstylesdecoration MODULE
     ${breezedecoration_SRCS}
     ${breezedecoration_config_SRCS}
     ${breezedecoration_config_PART_FORMS_HEADERS})
 
-target_link_libraries(breezedecoration
+target_link_libraries(classikstylesdecoration
     PUBLIC
         Qt::Core
         Qt::Gui
         Qt::DBus
     PRIVATE
-        breezecommon5
+        classikstylescommon5
         KDecoration2::KDecoration
         KF5::ConfigCore
         KF5::CoreAddons
@@ -86,12 +86,12 @@ target_link_libraries(breezedecoration
         KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
-  target_link_libraries(breezedecoration
+  target_link_libraries(classikstylesdecoration
     PUBLIC
       Qt::X11Extras
       XCB::XCB)
 endif()
 
 
-install(TARGETS breezedecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(TARGETS classikstylesdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
+install(FILES config/classikstylesdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
