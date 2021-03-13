@@ -29,11 +29,10 @@ namespace Breeze
             RenderDecorationButtonIcon18By18::renderCloseIcon();
             
         } else {
-        
-            //thicker pen in titlebar
-            QPen thickerPen = pen;
-            thickerPen.setWidthF( thickerPen.widthF() *1.75 );
-            painter->setPen( thickerPen );
+            if(boldButtonIcons) {
+                pen.setWidthF( pen.widthF() *1.75 );
+                painter->setPen( pen );
+            }
             
             // slightly larger X to tie-in with design of square maximize button
             painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
@@ -45,17 +44,15 @@ namespace Breeze
     {
         if(!notInTitlebar) {
             
-            //thicker pen in titlebar
-            QPen thickerPen = pen;
-            thickerPen.setWidthF( thickerPen.widthF() *1.666666 );
-            thickerPen.setJoinStyle( Qt::RoundJoin );
-            painter->setPen( thickerPen );
+            if(boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.666666 );
+            }
             
-        }  else {
-            pen.setJoinStyle( Qt::RoundJoin );
-            painter->setPen( pen );
         }
         
+        pen.setJoinStyle( Qt::RoundJoin );
+        painter->setPen( pen );
         //large square
         painter->drawRoundedRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ), 0.025, 0.025, Qt::RelativeSize);
     }
@@ -79,10 +76,11 @@ namespace Breeze
                 QPointF( 11, 11 )} );
             
         } else {
-            //thicker pen in titlebar
-            QPen thickerPen = pen;
-            thickerPen.setWidthF( thickerPen.widthF() *1.3 );
-            painter->setPen( thickerPen );
+            if(boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.3 );
+                painter->setPen( pen );
+            }
             
             //overlapping windows icon
             painter->drawRect( QRectF( QPointF( 4.5, 6.5 ), QPointF( 11.5, 13.5 ) ) );
@@ -220,6 +218,12 @@ namespace Breeze
 // For consistency with breeze icon set
     void RenderStyleClassik18By18::renderKeepBehindIcon()
     {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.1 );
+            painter->setPen( pen );
+        }
+        
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
         painter->drawLine( QPointF( 9.5, 9.5 ), QPointF( 13.5, 9.5 ) );
@@ -236,6 +240,12 @@ namespace Breeze
     
     void RenderStyleClassik18By18::renderKeepInFrontIcon()
     {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.1 );
+            painter->setPen( pen );
+        }
+        
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 4.5 ) );
         painter->drawLine( QPointF( 4.5, 8.5 ), QPointF( 8.5, 8.5 ) );
@@ -252,11 +262,13 @@ namespace Breeze
 
     void RenderStyleClassik18By18::renderContextHelpIcon()
     {
-        //thicker pen in titlebar
-        QPen thickerPen = pen;
-        thickerPen.setWidthF( thickerPen.widthF() *1.6 );
-        thickerPen.setJoinStyle( Qt::RoundJoin );
-        painter->setPen( thickerPen );
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.6 );
+        }
+        
+        pen.setJoinStyle( Qt::RoundJoin );
+        painter->setPen( pen );
         
         QPainterPath path;
         path.moveTo( 7, 5 );
@@ -264,8 +276,28 @@ namespace Breeze
         path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
         painter->drawPath( path );
         
-        painter->setBrush( thickerPen.color() );
+        painter->setBrush( pen.color() );
         painter->drawEllipse( QRectF( 9, 15, 0.5, 0.5 ) );
+    }
+    
+    void RenderStyleClassik18By18::renderShadeIcon()
+    {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.3 );
+            painter->setPen( pen );
+        }
+        RenderDecorationButtonIcon18By18::renderShadeIcon();
+    }
+    
+    void RenderStyleClassik18By18::renderUnShadeIcon()
+    {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.3 );
+            painter->setPen( pen );
+        }
+        RenderDecorationButtonIcon18By18::renderUnShadeIcon();
     }
 
 }

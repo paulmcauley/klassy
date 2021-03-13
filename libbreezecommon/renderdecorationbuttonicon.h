@@ -54,9 +54,10 @@ namespace Breeze
              * @param pen QPen with width and color already initialized.
              * @param buttonIconStyle The desired icon style as equivalent to type EnumButtonIconStyle.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
+             * @param boldButtonIcons Indicates to draw the main buttons in a bold style for HiDPI displays
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( QPainter* painter, const QPen& pen, int buttonIconStyle = int(StyleKite), const bool notInTitlebar = false);
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( QPainter* painter, const QPen& pen, int buttonIconStyle = int(StyleKite), const bool notInTitlebar = false, const bool boldButtonIcons = false);
             
             virtual ~RenderDecorationButtonIcon18By18(){};
             
@@ -82,7 +83,7 @@ namespace Breeze
              * @param pen QPen with width and color already initialised.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
              */
-            RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar);
+            RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons);
             
             
             /**
@@ -94,6 +95,7 @@ namespace Breeze
             QPainter* painter;
             QPen pen;
             bool notInTitlebar;
+            bool boldButtonIcons;
             
     };
     

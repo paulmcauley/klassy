@@ -27,29 +27,30 @@
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( QPainter* painter, const QPen& pen, int buttonIconStyle,  const bool notInTitlebar)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( QPainter* painter, const QPen& pen, int buttonIconStyle,  const bool notInTitlebar, const bool boldButtonIcons)
     {
         switch( EnumButtonIconStyle(buttonIconStyle) )
         {
             case StyleClassik:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(painter, pen, notInTitlebar) );
-            case StyleKite:
                 default:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(painter, pen, notInTitlebar) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(painter, pen, notInTitlebar, boldButtonIcons) );
+            case StyleKite:
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(painter, pen, notInTitlebar, boldButtonIcons) );
             case StyleOxygen:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(painter, pen, notInTitlebar) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(painter, pen, notInTitlebar, boldButtonIcons) );
             case StyleRedmond:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(painter, pen, notInTitlebar) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(painter, pen, notInTitlebar, boldButtonIcons) );
         }
     }
 
 
     
-    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar )
+    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons )
     {
         this->painter = painter;
         this->pen = pen;
         this->notInTitlebar = notInTitlebar;
+        this->boldButtonIcons = boldButtonIcons;
         
         initPainter();
     }
@@ -65,7 +66,7 @@ namespace Breeze
     }
     
     
-    /* base methods are based on Oxygen style -- override with other styles */
+    /* base methods here are KDE's default Breeze/Oxygen style -- override with other styles */
     void RenderDecorationButtonIcon18By18::renderCloseIcon()
     {
         painter->drawLine( 5, 5, 13, 13 );
@@ -148,7 +149,7 @@ namespace Breeze
     }
     
     void RenderDecorationButtonIcon18By18::renderUnShadeIcon()
-    {
+    {        
         painter->drawLine( QPointF( 4, 4.5 ), QPointF( 14, 4.5 ) );
         painter->drawPolyline( QVector<QPointF>{
             QPointF( 4, 8 ),

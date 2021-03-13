@@ -24,18 +24,38 @@ namespace Breeze
 {
     void RenderStyleRedmond18By18::renderCloseIcon()
     {
-        // slightly larger X to tie-in with design of square maximize button
-        painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
-        painter->drawLine( QPointF(13.5, 4.5), QPointF(4.5, 13.5) );
+        if(notInTitlebar) {
+            
+            RenderDecorationButtonIcon18By18::renderCloseIcon();
+            
+        } else {
+            if(boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.75 );
+                painter->setPen( pen );
+            }
+            
+            // slightly larger X to tie-in with design of square maximize button
+            painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) );
+            painter->drawLine( QPointF(13.5, 4.5), QPointF(4.5, 13.5) );
+        }
     }
 
     void RenderStyleRedmond18By18::renderMaximizeIcon()
     {
-        //large square
+        if(!notInTitlebar) {
+            
+            if(boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.666666 );
+            }
+            
+        }
+        
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
-
-        painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
+        //large square
+        painter->drawRoundedRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ), 0.025, 0.025, Qt::RelativeSize);
     }
 
     void RenderStyleRedmond18By18::renderRestoreIcon()
@@ -46,7 +66,7 @@ namespace Breeze
         if(this->notInTitlebar){
             //disable antialiasing to remove blur at small sizes
             painter->setRenderHints( QPainter::Antialiasing, false );
-            
+           
             //overlapping windows icon
             painter->drawRect( QRectF( QPointF( 4, 6 ), QPointF( 11, 13 ) ) );
             painter->drawPolyline( QVector<QPointF>{
@@ -57,7 +77,12 @@ namespace Breeze
                 QPointF( 11, 11 )} );
             
         } else {
-
+            if(boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.3 );
+                painter->setPen( pen );
+            }
+            
             //overlapping windows icon
             painter->drawRect( QRectF( QPointF( 4.5, 6.5 ), QPointF( 11.5, 13.5 ) ) );
             painter->drawPolyline( QVector<QPointF>{
@@ -71,6 +96,12 @@ namespace Breeze
     
     void RenderStyleRedmond18By18::renderMinimizeIcon()
     {
+        if( (!notInTitlebar) && boldButtonIcons) {
+                //thicker pen in titlebar
+                pen.setWidthF( pen.widthF() *1.75 );
+                painter->setPen( pen );
+        }
+        
         //horizontal line
         painter->drawLine( QPointF( 4.5, 9.5 ), QPointF( 13.5, 9.5 ) );
         
@@ -155,6 +186,12 @@ namespace Breeze
 // For consistency with breeze icon set
     void RenderStyleRedmond18By18::renderKeepBehindIcon()
     {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.1 );
+            painter->setPen( pen );
+        }
+        
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
         painter->drawLine( QPointF( 9.5, 9.5 ), QPointF( 13.5, 9.5 ) );
@@ -171,6 +208,12 @@ namespace Breeze
     
     void RenderStyleRedmond18By18::renderKeepInFrontIcon()
     {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.1 );
+            painter->setPen( pen );
+        }
+        
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 4.5 ) );
         painter->drawLine( QPointF( 4.5, 8.5 ), QPointF( 8.5, 8.5 ) );
@@ -186,7 +229,15 @@ namespace Breeze
     }
     
     void RenderStyleRedmond18By18::renderContextHelpIcon()
-    {        
+    {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.6 );
+        }
+        
+        pen.setJoinStyle( Qt::RoundJoin );
+        painter->setPen( pen );
+        
         QPainterPath path;
         path.moveTo( 7, 5 );
         path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
@@ -195,5 +246,25 @@ namespace Breeze
         
         painter->setBrush( pen.color() );
         painter->drawEllipse( QRectF( 9, 15, 0.5, 0.5 ) );
+    }
+    
+    void RenderStyleRedmond18By18::renderShadeIcon()
+    {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.3 );
+            painter->setPen( pen );
+        }
+        RenderDecorationButtonIcon18By18::renderShadeIcon();
+    }
+    
+    void RenderStyleRedmond18By18::renderUnShadeIcon()
+    {
+        if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
+            pen.setWidthF( pen.widthF() *1.3 );
+            painter->setPen( pen );
+        }
+        RenderDecorationButtonIcon18By18::renderUnShadeIcon();
     }
 }

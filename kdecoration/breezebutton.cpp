@@ -195,7 +195,7 @@ namespace Breeze
             auto d = qobject_cast<Decoration*>( decoration() );
 
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
-            if (d) iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, d->internalSettings()->buttonIconStyle(), false );
+            if (d) iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, d->internalSettings()->buttonIconStyle(), false, d->internalSettings()->boldButtonIcons() );
             else iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen );
 
             switch( type() )

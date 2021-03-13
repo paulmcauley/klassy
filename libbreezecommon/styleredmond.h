@@ -37,8 +37,9 @@ namespace Breeze
              * @param painter A QPainter object already initialised with an 18x18 reference window.
              * @param pen QPen with width and color already initialised.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller 
+             * @param boldButtonIcons Indicates to draw the main buttons in a bold style for HiDPI displays
              */
-            RenderStyleRedmond18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar){};
+            RenderStyleRedmond18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar, boldButtonIcons){};
             
             void renderCloseIcon() override;
             void renderMaximizeIcon() override;
@@ -47,6 +48,8 @@ namespace Breeze
             void renderKeepBehindIcon() override;
             void renderKeepInFrontIcon() override;
             void renderContextHelpIcon() override;
+            void renderShadeIcon() override;
+            void renderUnShadeIcon() override;
     };
     
 }
