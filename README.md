@@ -11,6 +11,7 @@ Fork of KDE Breeze to provide Classik and Kite window decoration styles in a bin
 OpenSUSE Tumbleweed repository:
 > https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles
 
+
 RPM package for OpenSUSE Tumbleweed/Leap 15.2 (Leap works with newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories and this RPM package may also work in other distributions):
 
 > https://download.opensuse.org/repositories/home:/paul4us/openSUSE_Tumbleweed/x86_64/classikstyles-1.0.breeze5.21.80-20.1.x86_64.rpm (x64)
@@ -20,6 +21,7 @@ RPM package for OpenSUSE Tumbleweed/Leap 15.2 (Leap works with newer KDE package
 > https://download.opensuse.org/repositories/home:/paul4us/openSUSE_Factory_ARM/aarch64/classikstyles-1.0.breeze5.21.80-20.1.aarch64.rpm (ARM64)
 
 > https://download.opensuse.org/repositories/home:/paul4us/openSUSE_Factory_ARM/armv7hl/classikstyles-1.0.breeze5.21.80-20.1.armv7hl.rpm (ARM32)
+
 
 
 ### Compile from source
