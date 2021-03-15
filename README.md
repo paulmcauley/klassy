@@ -8,10 +8,10 @@ Fork of KDE Breeze to provide Classik and Kite window decoration styles in a bin
 
 ## Installation
 ### Pre-built packages
-OpenSUSE Tumbleweed / Leap 15.2 repository:
+OpenSUSE Tumbleweed / Leap repository:
 > https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles
 
-> NB: for Leap 15.2 you may need newer KDE packages first from https://en.opensuse.org/SDB:KDE_repositories
+> NB: for Leap 15.2/15.3 you may first need newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories
 
 &nbsp;
 &nbsp;
