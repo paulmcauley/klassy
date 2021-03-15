@@ -14,7 +14,7 @@ OpenSUSE Tumbleweed repository:
 &nbsp;
 &nbsp;
 
-RPM binary package for OpenSUSE Tumbleweed/Leap 15.2 (Leap works with newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories and this RPM package may also work in other distributions):
+RPM binary package for OpenSUSE Tumbleweed/Leap 15.2 (Leap works with newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories, and this RPM package may also work in other distributions):
 
 > https://download.opensuse.org/repositories/home:/paul4us/openSUSE_Tumbleweed/x86_64/classikstyles-1.0.breeze5.21.80-20.1.x86_64.rpm (x64)
 
