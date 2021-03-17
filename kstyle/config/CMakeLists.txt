@@ -24,15 +24,15 @@ set_package_properties(KF5KCMUtils PROPERTIES
     DESCRIPTION "KF5 KCM utils Framework"
     URL "https://projects.kde.org/projects/frameworks/kcmutils"
     TYPE OPTIONAL
-    PURPOSE "Required for classikstyles-settings5 application to build")
+    PURPOSE "Required for classikstyles-settings application to build")
 
 if( KF5KCMUtils_FOUND )
     set(breeze_settings_SOURCES main.cpp)
-    add_executable(classikstyles-settings5 ${breeze_settings_SOURCES} )
-    target_link_libraries(classikstyles-settings5 Qt::Core Qt::Gui Qt::Widgets )
-    target_link_libraries(classikstyles-settings5 KF5::I18n KF5::KCMUtils)
+    add_executable(classikstyles-settings ${breeze_settings_SOURCES} )
+    target_link_libraries(classikstyles-settings Qt::Core Qt::Gui Qt::Widgets )
+    target_link_libraries(classikstyles-settings KF5::I18n KF5::KCMUtils)
 
-    install(TARGETS classikstyles-settings5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
+    install(TARGETS classikstyles-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
     # icon
     ecm_install_icons(ICONS sc-apps-classikstyles-settings.svgz
