@@ -14,7 +14,7 @@ add_library(kstyle_breeze_config MODULE
 )
 
 target_link_libraries(kstyle_breeze_config Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
-target_link_libraries(kstyle_breeze_config KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
+target_link_libraries(kstyle_breeze_config KF5::CoreAddons KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
 install(TARGETS kstyle_breeze_config DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
 install(FILES breezestyleconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
 
