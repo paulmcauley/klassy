@@ -22,6 +22,7 @@ namespace Breeze {
         } else {
             _config = KSharedConfig::openConfig();
         }
+        _translucent = false;
         _watcher = KConfigWatcher::create(_config);
         connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated);
         configUpdated();
@@ -37,6 +38,22 @@ namespace Breeze {
             }
         }
         list->append(item);
+    }
+
+    inline void doTranslucency(QMainWindow* win, bool on)
+    {
+        if (on) {
+            if (win->property("_breeze_was_translucent_set").toBool())
+                return;
+
+            win->setProperty("_breeze_was_translucent", win->testAttribute(Qt::WA_TranslucentBackground));
+            win->setProperty("_breeze_was_translucent_set", true);
+            win->setAttribute(Qt::WA_TranslucentBackground, true);
+        } else {
+            win->setAttribute(Qt::WA_TranslucentBackground, win->property("_breeze_was_translucent").toBool());
+            win->setProperty("_breeze_was_translucent", QVariant());
+            win->setProperty("_breeze_was_translucent_set", false);
+        }
     }
 
     void ToolsAreaManager::registerApplication(QApplication *application)
@@ -74,6 +91,8 @@ namespace Breeze {
     {
         Q_ASSERT(!widget.isNull());
 
+        doTranslucency(window, _translucent);
+
         QPointer<QToolBar> toolbar;
         if (!(toolbar = qobject_cast<QToolBar*>(widget))) return false;
 
@@ -90,6 +109,8 @@ namespace Breeze {
     {
         Q_ASSERT(!widget.isNull());
 
+        doTranslucency(window, false);
+
         QPointer<QToolBar> toolbar;
         if (!(toolbar = qobject_cast<QToolBar*>(widget))) return;
 
@@ -101,9 +122,25 @@ namespace Breeze {
 
     void ToolsAreaManager::configUpdated()
     {
+        auto translucent = false;
+
         auto active = KColorScheme(QPalette::Active, KColorScheme::Header, _config);
+        translucent = translucent || !active.background().isOpaque();
+
         auto inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
+        translucent = translucent || !inactive.background().isOpaque();
+
         auto disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
+        translucent = translucent || !disabled.background().isOpaque();
+
+        if (translucent != _translucent) {
+            if (translucent)
+                becomeTransparent();
+            else
+                becomeOpaque();
+        }
+
+        _translucent = translucent;
 
         _palette = KColorScheme::createApplicationPalette(_config);
 
@@ -123,6 +160,20 @@ namespace Breeze {
         }
 
         _colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
+    }
+
+    void ToolsAreaManager::becomeOpaque()
+    {
+        for (auto window : _windows.keys()) {
+            doTranslucency(const_cast<QMainWindow*>(window), false);
+        }
+    }
+
+    void ToolsAreaManager::becomeTransparent()
+    {
+        for (auto window : _windows.keys()) {
+            doTranslucency(const_cast<QMainWindow*>(window), true);
+        }
     }
 
     bool AppListener::eventFilter(QObject *watched, QEvent *event)

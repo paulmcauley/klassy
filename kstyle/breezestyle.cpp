@@ -419,6 +419,7 @@ namespace Breeze
 
         } else if ( qobject_cast<QMainWindow*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
+            addEventFilter( widget );
         }
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
@@ -987,34 +988,7 @@ namespace Breeze
         if (!_toolsAreaManager->hasHeaderColors() || !_helper->shouldDrawToolsArea(widget)) {
             return true;
         }
-        auto mw = qobject_cast<const QMainWindow*>(widget);
-        if (mw && mw == mw->window()) {
-            painter->save();
-
-            auto rect = _toolsAreaManager->toolsAreaRect(mw);
-
-            if (rect.height() == 0) {
-                if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
-                    painter->restore();
-                    return true;
-                }
-                painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
-                painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
-                painter->restore();
-                return true;
-            }
-
-            auto color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
-
-            painter->setPen(Qt::transparent);
-            painter->setBrush(color);
-            painter->drawRect(rect);
-
-            painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
-            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
-
-            painter->restore();
-        } else if (auto dialog = qobject_cast<const QDialog*>(widget)) {
+        if (auto dialog = qobject_cast<const QDialog*>(widget)) {
             if (dialog->isFullScreen()) {
                 return true;
             }
@@ -1205,6 +1179,31 @@ namespace Breeze
         return ParentStyleClass::event(e);
     }
 
+    void drawToolsAreaSeparator(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw)
+    {
+        if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
+            painter->restore();
+            return;
+        }
+        painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * mw->devicePixelRatio()));
+        painter->drawLine(mw->rect().topLeft(), mw->rect().topRight());
+        painter->restore();
+    }
+
+    void drawToolsAreaBackground(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw, const QRect& rect)
+    {
+        auto color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+
+        painter->setPen(Qt::transparent);
+        painter->setBrush(color);
+        painter->drawRect(rect);
+
+        painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+        painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+
+        painter->restore();
+    }
+
     //_____________________________________________________________________
     bool Style::eventFilter( QObject *object, QEvent *event )
     {
@@ -1219,6 +1218,28 @@ namespace Breeze
         QWidget *widget = static_cast<QWidget*>( object );
         if( widget->inherits( "QAbstractScrollArea" ) || widget->inherits( "KTextEditor::View" ) ) { return eventFilterScrollArea( widget, event ); }
         else if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
+
+        auto mw = qobject_cast<QMainWindow*>(object);
+        if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
+            QPainter painter( mw );
+            painter.setClipRegion(static_cast<QPaintEvent*>( event )->region());
+            painter.save();
+
+            auto bg = mw->rect();
+            auto rect = _toolsAreaManager->toolsAreaRect(mw);
+            bg.setTop(rect.height());
+
+            painter.setPen(mw->palette().color(QPalette::Window));
+            painter.setBrush(mw->palette().color(QPalette::Window));
+            painter.drawRect(bg);
+
+            if (rect.height() == 0) {
+                drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
+            } else {
+                drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
+            }
+
+        }
 
         // fallback
         return ParentStyleClass::eventFilter( object, event );
