@@ -27,18 +27,18 @@
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( QPainter* painter, const QPen& pen, int buttonIconStyle,  const bool notInTitlebar, const bool boldButtonIcons)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( QPainter* painter, const QPen& pen, const int buttonIconStyle,  const bool notInTitlebar, const bool boldButtonIcons)
     {
-        switch( EnumButtonIconStyle(buttonIconStyle) )
+        switch( InternalSettings::EnumButtonIconStyle(buttonIconStyle) )
         {
-            case StyleClassik:
+            case InternalSettings::StyleClassik:
                 default:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(painter, pen, notInTitlebar, boldButtonIcons) );
-            case StyleKite:
+            case InternalSettings::StyleKite:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(painter, pen, notInTitlebar, boldButtonIcons) );
-            case StyleOxygen:
+            case InternalSettings::StyleOxygen:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(painter, pen, notInTitlebar, boldButtonIcons) );
-            case StyleRedmond:
+            case InternalSettings::StyleRedmond:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(painter, pen, notInTitlebar, boldButtonIcons) );
         }
     }

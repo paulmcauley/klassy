@@ -22,6 +22,7 @@
  */
 
 #include "breezecommon_export.h"
+#include "breezesettings.h"
 
 #include <QPainter>
 #include <QPainterPath>
@@ -41,11 +42,6 @@ namespace Breeze
     
         public:
             
-            /**
-             * @brief Button Icon styles as defined in the .kcfg files.
-             */
-            enum EnumButtonIconStyle { StyleClassik, StyleKite, StyleOxygen, StyleRedmond };
-            
 
             /**
              * @brief Factory to return a pointer to a new inherited object to render in the specified style.
@@ -57,7 +53,7 @@ namespace Breeze
              * @param boldButtonIcons Indicates to draw the main buttons in a bold style for HiDPI displays
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( QPainter* painter, const QPen& pen, int buttonIconStyle = int(StyleKite), const bool notInTitlebar = false, const bool boldButtonIcons = false);
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( QPainter* painter, const QPen& pen, const int buttonIconStyle = int(InternalSettings::StyleKite), const bool notInTitlebar = false, const bool boldButtonIcons = false);
             
             virtual ~RenderDecorationButtonIcon18By18(){};
             
