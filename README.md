@@ -2,7 +2,7 @@
 ## Overview
 Fork of KDE Breeze to provide Classik and Kite window decoration styles in a binary.
 * Also provides Oxygen/Breeze and Redmond button icon styles;
-* Provides both a Window Decoration and an Application Style so that icons in dockable panels in applications match the titlebar icons;
+* Provides both a Window Decoration and an Application Style so that icons in dockable panels match the titlebar icons;
 * Configurable button spacing (left and right);
 * Configurable whether to draw bold button icons for HiDPI displays.
 
