@@ -38,6 +38,7 @@ namespace Breeze {
         QPalette _palette = QPalette();
         AppListener* _listener;
         bool _colorSchemeHasHeaderColor;
+        bool _translucent;
 
         friend class AppListener;
 
@@ -61,6 +62,10 @@ namespace Breeze {
         QRect toolsAreaRect(const QMainWindow *window);
 
         bool hasHeaderColors();
+
+        // sets the translucency of a window for translucent tools area purposes
+        void becomeTransparent();
+        void becomeOpaque();
     };
 }
 
