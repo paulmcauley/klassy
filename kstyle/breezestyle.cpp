@@ -4819,7 +4819,7 @@ namespace Breeze
             const auto color = _helper->focusColor( palette );
             const auto outlineColor = _helper->focusOutlineColor( palette );
 
-            Sides sides = nullptr;
+            Sides sides;
             if( !menuItemOption->menuRect.isNull() )
             {
                 if( rect.top() <= menuItemOption->menuRect.top() ) sides |= SideTop;
