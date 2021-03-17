@@ -59,7 +59,7 @@ namespace Breeze
 //             if( !type.isEmpty() )
 //             {
 //                 QTextStream( stdout ) << "Breeze::WidgetExplorer::eventFilter - widget: " << object << " (" << object->metaObject()->className() << ")";
-//                 QTextStream( stdout ) << " type: " << type  << endl;
+//                 QTextStream( stdout ) << " type: " << type  << Qt::endl;
 //             }
 //         }
 
@@ -95,16 +95,16 @@ namespace Breeze
                     << "Breeze::WidgetExplorer::eventFilter -"
                     << " event: " << event << " type: " << eventType( event->type() )
                     << " widget: " << widgetInformation( widget )
-                    << endl;
+                    << Qt::endl;
 
                 // print parent information
                 QWidget* parent( widget->parentWidget() );
                 while( parent )
                 {
-                    QTextStream( stdout ) << "    parent: " << widgetInformation( parent ) << endl;
+                    QTextStream( stdout ) << "    parent: " << widgetInformation( parent ) << Qt::endl;
                     parent = parent->parentWidget();
                 }
-                QTextStream( stdout ) << "" << endl;
+                QTextStream( stdout ) << "" << Qt::endl;
 
             }
             break;
