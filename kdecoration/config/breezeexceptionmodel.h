@@ -29,7 +29,7 @@ namespace Breeze
         enum ColumnType {
             ColumnEnabled,
             ColumnType,
-            ColumnRegExp
+            ColumnRegExp,
         };
 
 

@@ -59,7 +59,7 @@ namespace Breeze
             Ring = Top|Left|Bottom|Right,
             Horizontal = Left|Right|Center,
             Vertical = Top|Bottom|Center,
-            Full = Ring|Center
+            Full = Ring|Center,
         };
         Q_DECLARE_FLAGS(Tiles, Tile)
 

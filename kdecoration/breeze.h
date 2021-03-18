@@ -52,7 +52,7 @@ namespace Breeze
     enum ExceptionMask
     {
         None = 0,
-        BorderSize = 1<<4
+        BorderSize = 1<<4,
     };
 }
 

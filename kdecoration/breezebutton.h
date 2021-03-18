@@ -42,7 +42,7 @@ namespace Breeze
             FlagNone,
             FlagStandalone,
             FlagFirstInList,
-            FlagLastInList
+            FlagLastInList,
         };
 
         //* flag

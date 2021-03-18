@@ -68,7 +68,7 @@ namespace Breeze
         //* grip size
         enum {
             Offset = 0,
-            GripSize = 14
+            GripSize = 14,
         };
 
         //* decoration

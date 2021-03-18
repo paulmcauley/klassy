@@ -44,7 +44,7 @@ namespace Breeze
             None = 0,
             GrabFromWindow = 1<<0,
             Transparent = 1<<1,
-            PaintOnWidget = 1<<2
+            PaintOnWidget = 1<<2,
         };
 
         Q_DECLARE_FLAGS(Flags, Flag)

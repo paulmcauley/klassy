@@ -140,7 +140,7 @@ namespace BreezePrivate
         None,
         InlineLarge,
         InlineSmall,
-        SubControl
+        SubControl,
     };
 
     ToolButtonMenuArrowStyle toolButtonMenuArrowStyle( const QStyleOption* option )

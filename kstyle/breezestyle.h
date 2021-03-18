@@ -342,7 +342,7 @@ namespace Breeze
         {
             NoButton,
             SingleButton,
-            DoubleButton
+            DoubleButton,
         };
 
         //* returns height for scrollbar buttons depending of button types

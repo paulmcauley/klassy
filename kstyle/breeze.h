@@ -33,7 +33,7 @@ namespace Breeze
         AnimationHover = 0x1,
         AnimationFocus = 0x2,
         AnimationEnable = 0x4,
-        AnimationPressed = 0x8
+        AnimationPressed = 0x8,
     };
 
     Q_DECLARE_FLAGS(AnimationModes, AnimationMode)
@@ -49,7 +49,7 @@ namespace Breeze
         CornersBottom = CornerBottomLeft|CornerBottomRight,
         CornersLeft = CornerTopLeft|CornerBottomLeft,
         CornersRight = CornerTopRight|CornerBottomRight,
-        AllCorners = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight
+        AllCorners = CornerTopLeft|CornerTopRight|CornerBottomLeft|CornerBottomRight,
     };
 
     Q_DECLARE_FLAGS( Corners, Corner )
@@ -61,7 +61,7 @@ namespace Breeze
         SideTop = 0x2,
         SideRight = 0x4,
         SideBottom = 0x8,
-        AllSides = SideLeft|SideTop|SideRight|SideBottom
+        AllSides = SideLeft|SideTop|SideRight|SideBottom,
     };
 
     Q_DECLARE_FLAGS( Sides, Side )
@@ -72,7 +72,7 @@ namespace Breeze
         CheckOff,
         CheckPartial,
         CheckOn,
-        CheckAnimated
+        CheckAnimated,
     };
 
     //* radio button state
@@ -80,7 +80,7 @@ namespace Breeze
     {
         RadioOff,
         RadioOn,
-        RadioAnimated
+        RadioAnimated,
     };
 
     //* arrow orientation
@@ -100,7 +100,7 @@ namespace Breeze
         ButtonClose,
         ButtonMaximize,
         ButtonMinimize,
-        ButtonRestore
+        ButtonRestore,
     };
 
 }
