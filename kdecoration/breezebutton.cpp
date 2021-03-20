@@ -1,7 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2020 Paul McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021 Paul McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -121,16 +121,38 @@ namespace Breeze
 
         painter->save();
 
-        // translate from offset
-        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
-        else painter->translate( 0, m_offset.y() );
+        
 
         if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
 
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-
+            auto d = qobject_cast<Decoration*>( decoration() );
+            //draw a background only with square highlight style; translation required if using Square buttonHighlightStyle
+            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+            {                
+                const QColor backgroundColor( this->backgroundColor() );
+                if( backgroundColor.isValid() )
+                {            
+                    painter->save();
+                    painter->setRenderHints( QPainter::Antialiasing );
+                    
+                    painter->setPen( Qt::NoPen );
+                    painter->setBrush( backgroundColor );
+                    painter->drawRect( geometry() );
+                    
+                    painter->restore();
+                }
+                
+                //if square highlight, must add a translation due to larger geometry
+                painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
+            }
+            
+            // translate from offset
+            if( m_flag == FlagFirstInList ) painter->translate( m_offset );
+            else painter->translate( 0, m_offset.y() );
+            
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
             if (auto deco =  qobject_cast<Decoration*>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
@@ -161,8 +183,32 @@ namespace Breeze
     void Button::drawIcon( QPainter *painter ) const
     {
 
-        painter->setRenderHints( QPainter::Antialiasing );
-
+        auto d = qobject_cast<Decoration*>( decoration() );
+        const QColor backgroundColor( this->backgroundColor() );
+                
+        // render background if Square button highlight style
+        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        {
+            if( backgroundColor.isValid() )
+            {            
+                painter->save();
+                painter->setRenderHints( QPainter::Antialiasing );
+                    
+                painter->setPen( Qt::NoPen );
+                painter->setBrush( backgroundColor );
+                painter->drawRect( geometry() );
+                
+                painter->restore();
+            }
+            
+            //if square highlight, must add a translation due to larger geometry
+            painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
+        }
+        
+        // translate from offset
+        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
+        else painter->translate( 0, m_offset.y() );
+        
         /*
         scale painter so that its window matches QRect( -1, -1, 20, 20 )
         this makes all further rendering and scaling simpler
@@ -173,16 +219,18 @@ namespace Breeze
         const qreal width( m_iconSize.width() );
         painter->scale( width/20, width/20 );
         painter->translate( 1, 1 );
-
-        // render background
-        const QColor backgroundColor( this->backgroundColor() );
-        if( backgroundColor.isValid() )
+        painter->setRenderHints( QPainter::Antialiasing );
+        
+        
+        // render background if Circle button highlight style
+        if((d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) && backgroundColor.isValid() )
         {
             painter->setPen( Qt::NoPen );
             painter->setBrush( backgroundColor );
             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
         }
-
+        
+        
         // render mark
         const QColor foregroundColor( this->foregroundColor() );
         if( foregroundColor.isValid() )
@@ -192,7 +240,6 @@ namespace Breeze
             QPen pen( foregroundColor );
             pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
 
-            auto d = qobject_cast<Decoration*>( decoration() );
 
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
             if (d) iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, d->internalSettings()->buttonIconStyle(), false, d->internalSettings()->boldButtonIcons() );
@@ -392,5 +439,5 @@ namespace Breeze
         if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
     }
-
+    
 } // namespace

@@ -46,6 +46,15 @@
       </choices>
       <default>StyleClassik</default>
     </entry>
+    
+    <!-- button highlight style -->
+    <entry name="ButtonHighlightStyle" type="Enum">
+      <choices>
+          <choice name="HighlightCircle" />
+          <choice name="HighlightSquare" />
+      </choices>
+      <default>HighlightCircle</default>
+    </entry>
 
   </group>
 

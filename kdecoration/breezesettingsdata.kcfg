@@ -28,12 +28,7 @@
 
     <entry name="ShadowColor" type = "Color">
        <default>0, 0, 0</default>
-    </entry>
-
-    <!-- bold main buttons -->
-    <entry name="BoldButtonIcons" type = "Bool">
-        <default>true</default>
-    </entry>    
+    </entry>  
     
     <!-- close button -->
     <entry name="OutlineCloseButton" type = "Bool">
@@ -49,6 +44,15 @@
           <choice name="StyleRedmond" />
       </choices>
       <default>StyleClassik</default>
+    </entry>
+    
+    <!-- button highlight style -->
+    <entry name="ButtonHighlightStyle" type="Enum">
+      <choices>
+          <choice name="HighlightCircle" />
+          <choice name="HighlightSquare" />
+      </choices>
+      <default>HighlightCircle</default>
     </entry>
 
   </group>
@@ -112,6 +116,11 @@
        <max>50</max>
     </entry>
 
+    <!-- bold button icons -->
+    <entry name="BoldButtonIcons" type = "Bool">
+        <default>true</default>
+    </entry>
+    
     <!-- maximized windows -->
     <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
         <default>false</default>

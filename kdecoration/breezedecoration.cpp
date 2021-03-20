@@ -2,6 +2,7 @@
 * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
 * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
 * SPDX-FileCopyrightText: 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
+* SPDX-FileCopyrightText: 2021 Paul McAuley <kde@paulmcauley.com>
 *
 * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
@@ -480,14 +481,57 @@ namespace Breeze
         const auto s = settings();
 
         // adjust button position
-        const int bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
-        const int bWidth = buttonHeight();
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
-        foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() + m_rightButtons->buttons() )
+        int bHeight;
+        int bWidth=0;
+        int iconWidth = buttonHeight();
+        int verticalOffset;
+        int squareButtonIconVerticalTranslation;
+        int squareButtonIconHorizontalTranslation;
+        
+        if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
+            bHeight = borderTop();
+            verticalOffset = 0;
+            squareButtonIconVerticalTranslation = s->smallSpacing()*Metrics::TitleBar_TopMargin + (captionHeight()-buttonHeight())/2;
+        } else 
+        {   
+            bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
+            verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
+            squareButtonIconVerticalTranslation = 0;
+        }
+        
+        foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
+        {
+            
+            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+                bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
+                squareButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
+            } else {
+                bWidth = buttonHeight();
+                squareButtonIconHorizontalTranslation = 0;
+            }
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
             static_cast<Button*>( button.data() )->setOffset( QPointF( 0, verticalOffset ) );
-            static_cast<Button*>( button.data() )->setIconSize( QSize( bWidth, bWidth ) );
+            static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
+            static_cast<Button*>( button.data() )->setSquareButtonIconVerticalTranslation( squareButtonIconVerticalTranslation );
+            static_cast<Button*>( button.data() )->setSquareButtonIconHorizontalTranslation( squareButtonIconHorizontalTranslation );
+        }
+        
+        foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
+        {
+            
+            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+                bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
+                squareButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
+            } else {
+                bWidth = buttonHeight();
+                squareButtonIconHorizontalTranslation = 0;
+            }
+            button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
+            static_cast<Button*>( button.data() )->setOffset( QPointF( 0, verticalOffset ) );
+            static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
+            static_cast<Button*>( button.data() )->setSquareButtonIconVerticalTranslation( squareButtonIconVerticalTranslation );
+            static_cast<Button*>( button.data() )->setSquareButtonIconHorizontalTranslation( squareButtonIconHorizontalTranslation );
         }
 
         // left buttons
@@ -496,19 +540,25 @@ namespace Breeze
 
             // spacing
             // originally m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-            m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
+            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+                m_leftButtons->setSpacing( 0 );
+            } else {
+                m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
+            }
 
             // padding
-            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            int vPadding;
+            if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
+            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
             if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
-                button->setFlag( Button::FlagFirstInList );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( button->geometry().width() + hPadding, button->geometry().height() ) ) );
                 button->setHorizontalOffset( hPadding );
-
+                button->setFlag( Button::FlagFirstInList );
+                
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
             } else m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
@@ -520,17 +570,23 @@ namespace Breeze
         {
 
             // spacing
-            //originally m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-            m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
+            // originally m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
+            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+                m_rightButtons->setSpacing( 0 );
+            } else {
+                m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
+            }
 
             // padding
-            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            int vPadding;
+            if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
+            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
             if( isRightEdge() )
             {
 
                 auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
+                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( button->geometry().width() + hPadding, button->geometry().height() ) ) );
                 button->setFlag( Button::FlagLastInList );
 
                 m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
@@ -675,6 +731,8 @@ namespace Breeze
         }
 
     }
+
+
 
     //________________________________________________________________
     int Decoration::captionHeight() const

@@ -46,7 +46,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>B&amp;utton size:</string>
@@ -59,7 +59,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="3" column="1">
         <widget class="QComboBox" name="buttonSize">
          <item>
           <property name="text">
@@ -88,7 +88,7 @@
          </item>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_7">
          <property name="text">
           <string>Right button spacing:</string>
@@ -101,7 +101,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="4" column="1">
         <widget class="QSpinBox" name="buttonSpacingRight">
          <property name="suffix">
           <string/>
@@ -111,7 +111,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item row="5" column="0">
         <widget class="QLabel" name="label_8">
          <property name="text">
           <string>Left button spacing:</string>
@@ -124,7 +124,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="5" column="1">
         <widget class="QSpinBox" name="buttonSpacingLeft">
          <property name="suffix">
           <string/>
@@ -208,7 +208,34 @@
          </item>
         </widget>
        </item>
-       <item row="11" column="0" colspan="3">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Button &amp;highlight style:</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>buttonHighlightStyle</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="buttonHighlightStyle">
+         <item>
+          <property name="text">
+           <string>Circle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Square</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="12" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -221,42 +248,42 @@
          </property>
         </spacer>
        </item>
-       <item row="9" column="0" colspan="3">
+       <item row="10" column="0" colspan="3">
         <widget class="QCheckBox" name="drawSizeGrip">
          <property name="text">
           <string>Add handle to resize windows with no border</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="0" colspan="3">
+       <item row="11" column="0" colspan="3">
         <widget class="QCheckBox" name="drawTitleBarSeparator">
          <property name="text">
           <string>Draw separator under active window's titlebar</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0" colspan="3">
+       <item row="8" column="0" colspan="3">
         <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
          <property name="text">
           <string>Allow resizing maximized windows from window edges</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="3">
+       <item row="6" column="0" colspan="3">
         <widget class="QCheckBox" name="boldButtonIcons">
          <property name="text">
           <string>Bold button icons (for HiDPI)</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="3">
+       <item row="7" column="0" colspan="3">
         <widget class="QCheckBox" name="outlineCloseButton">
          <property name="text">
-          <string>Draw a circle around close button</string>
+          <string>Outline close button</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0" colspan="3">
+       <item row="9" column="0" colspan="3">
         <widget class="QCheckBox" name="drawBackgroundGradient">
          <property name="text">
           <string>Draw titlebar background gradient</string>
@@ -417,6 +444,7 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>titleAlignment</tabstop>
   <tabstop>buttonIconStyle</tabstop>
+  <tabstop>buttonHighlightStyle</tabstop>
   <tabstop>buttonSize</tabstop>
   <tabstop>buttonSpacingRight</tabstop>
   <tabstop>buttonSpacingLeft</tabstop>

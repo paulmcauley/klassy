@@ -67,6 +67,12 @@ namespace Breeze
         //* set icon size
         void setIconSize( const QSize& value )
         { m_iconSize = value; }
+        
+        void setSquareButtonIconVerticalTranslation( int value )
+        { m_squareHighlightIconVerticalTranslation = value; }
+        
+        void setSquareButtonIconHorizontalTranslation( int value )
+        { m_squareHighlightIconHorizontalTranslation = value; }
 
         //*@name active state change animation
         //@{
@@ -117,6 +123,9 @@ namespace Breeze
 
         //* active state change opacity
         qreal m_opacity = 0;
+        
+        int m_squareHighlightIconVerticalTranslation = 0;
+        int m_squareHighlightIconHorizontalTranslation = 0;
     };
 
 } // namespace
