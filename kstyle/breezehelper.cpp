@@ -1391,10 +1391,14 @@ namespace Breeze
 
         if( inverted )
         {
-            // render circle
+            // render circle or square highlight
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
-            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            
+            if ( StyleConfigData::buttonHighlightStyle() == StyleConfigData::EnumButtonHighlightStyle::HighlightSquare )
+                painter->drawRect( QRectF( 0, 0, 18, 18 ) );
+            else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            
 
             // take out the inner part
             painter->setCompositionMode( QPainter::CompositionMode_DestinationOut );
