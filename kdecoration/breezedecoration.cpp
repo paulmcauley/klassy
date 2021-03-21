@@ -301,10 +301,25 @@ namespace Breeze
         auto s = settings();
         auto c = client().data();
         const bool maximized = isMaximized();
-        const int width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
-        const int height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
-        const int x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
-        const int y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+        int width, height, x, y;
+        
+        //prevents resize handles appearing in button for large square buttons
+        if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        {
+            width = c->width();
+            height = borderTop();
+            x = 0;
+            y = 0;
+            
+        } else 
+        {   
+            // for smaller circular buttons increase the resizable area
+            width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+        }
+        
         setTitleBar(QRect(x, y, width, height));
     }
 
@@ -435,11 +450,18 @@ namespace Breeze
 
             // padding below
             // extra pixel is used for the active window outline
+            top += 1;
+            
+            
             const int baseSize = s->smallSpacing();
-            top += baseSize*Metrics::TitleBar_BottomMargin + 1;
+           // if( !isMaximized() ) //PAM: add as a feature later
+           // {
+                // padding below
+                top += baseSize*Metrics::TitleBar_BottomMargin;
 
-            // padding above
-            top += baseSize*TitleBar_TopMargin;
+                // padding above
+                top += baseSize*Metrics::TitleBar_TopMargin;
+           // }
 
         }
 
@@ -449,10 +471,16 @@ namespace Breeze
         const int extSize = s->largeSpacing();
         int extSides = 0;
         int extBottom = 0;
+        int extTop = 0;
         if( hasNoBorders() )
         {
             if( !isMaximizedHorizontally() ) extSides = extSize;
-            if( !isMaximizedVertically() ) extBottom = extSize;
+            if( !isMaximizedVertically() ) { 
+                extBottom = extSize;
+                
+                //Add resize handles for sqaure highlight as they cannot overlap with larger square buttons
+                if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize; 
+            }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
@@ -460,7 +488,7 @@ namespace Breeze
 
         }
 
-        setResizeOnlyBorders(QMargins(extSides, 0, extSides, extBottom));
+        setResizeOnlyBorders(QMargins(extSides, extTop, extSides, extBottom));
     }
 
     //________________________________________________________________
