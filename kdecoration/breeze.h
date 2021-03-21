@@ -30,7 +30,9 @@ namespace Breeze
         TitleBar_TopMargin = 2,
         TitleBar_BottomMargin = 2,
         TitleBar_SideMargin = 2,
-        TitleBar_ButtonSpacing = 2,
+        
+        //Paul McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()
+        //TitleBar_ButtonSpacing = 2,
 
         // shadow dimensions (pixels)
         Shadow_Overlap = 3,
