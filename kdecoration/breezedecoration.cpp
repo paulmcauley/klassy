@@ -303,12 +303,12 @@ namespace Breeze
         const bool maximized = isMaximized();
         int width, height, x, y;
         
-        //prevents resize handles appearing in button for large square buttons
+        //prevents resize handles appearing in button at top window edge for large square buttons
         if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
-            width = c->width();
+            width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
             height = borderTop();
-            x = 0;
+            x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
             y = 0;
             
         } else 
