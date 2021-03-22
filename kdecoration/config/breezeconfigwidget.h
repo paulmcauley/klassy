@@ -50,6 +50,7 @@ namespace Breeze
 
         //* update changed state
         virtual void updateChanged();
+        void setEnabledRedOutline();
 
         protected:
 

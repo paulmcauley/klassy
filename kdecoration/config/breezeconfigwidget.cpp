@@ -35,12 +35,34 @@ namespace Breeze
         connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.titlebarSideMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.cornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.boldButtonIcons, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.inheritSystemHighlightColors, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawSizeGrip, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawTitleBarSeparator, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.useTitlebarColorForAllBorders, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        
+        //connect dual controls with same values
+        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(int)), m_ui.titlebarTopBottomMargins_2, SLOT(setValue(int)) );
+        connect( m_ui.titlebarTopBottomMargins_2, SIGNAL(valueChanged(int)), m_ui.titlebarTopBottomMargins, SLOT(setValue(int)) );
+        connect( m_ui.titlebarSideMargins, SIGNAL(valueChanged(int)), m_ui.titlebarSideMargins_2, SLOT(setValue(int)) );
+        connect( m_ui.titlebarSideMargins_2, SIGNAL(valueChanged(int)), m_ui.titlebarSideMargins, SLOT(setValue(int)) );
+        connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity_2, SLOT(setValue(int)) );
+        connect( m_ui.activeTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity, SLOT(setValue(int)) );
+        connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity_2, SLOT(setValue(int)) );
+        connect( m_ui.inactiveTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity, SLOT(setValue(int)) );
+        
+        //only enable redOutline when outlineCloseButton is checked
+        connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledRedOutline );
 
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -67,13 +89,27 @@ namespace Breeze
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
+        m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
+        m_ui.titlebarTopBottomMargins_2->setValue( m_internalSettings->titlebarTopBottomMargins() );
+        m_ui.percentMaximizedTopBottomMargins->setValue( m_internalSettings->percentMaximizedTopBottomMargins() );
+        m_ui.titlebarSideMargins->setValue( m_internalSettings->titlebarSideMargins() );
+        m_ui.titlebarSideMargins_2->setValue( m_internalSettings->titlebarSideMargins() );
+        m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
+        m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
+        m_ui.activeTitlebarOpacity_2->setValue( m_internalSettings->activeTitlebarOpacity() );
+        m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
+        m_ui.inactiveTitlebarOpacity_2->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setChecked( m_internalSettings->boldButtonIcons() );
+        m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
+        setEnabledRedOutline();
+        m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
-
+        m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
+        
         // load shadows
         if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge ) m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         else m_ui.shadowSize->setCurrentIndex( InternalSettings::ShadowLarge );
@@ -104,12 +140,21 @@ namespace Breeze
         m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
         m_internalSettings->setButtonSpacingRight( m_ui.buttonSpacingRight->value() );
         m_internalSettings->setButtonSpacingLeft( m_ui.buttonSpacingLeft->value() );
+        m_internalSettings->setTitlebarTopBottomMargins( m_ui.titlebarTopBottomMargins->value() );
+        m_internalSettings->setPercentMaximizedTopBottomMargins( m_ui.percentMaximizedTopBottomMargins->value() );
+        m_internalSettings->setTitlebarSideMargins( m_ui.titlebarSideMargins->value() );
+        m_internalSettings->setCornerRadius( m_ui.cornerRadius->value() );
+        m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
+        m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
         m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->isChecked() );
+        m_internalSettings->setInheritSystemHighlightColors( m_ui.inheritSystemHighlightColors->isChecked() );
         m_internalSettings->setOutlineCloseButton( m_ui.outlineCloseButton->isChecked() );
+        m_internalSettings->setRedOutline( m_ui.redOutline->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setDrawBackgroundGradient( m_ui.drawBackgroundGradient->isChecked() );
         m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
+        m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
 
         m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
@@ -155,12 +200,22 @@ namespace Breeze
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
+        m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
+        m_ui.percentMaximizedTopBottomMargins->setValue( m_internalSettings->percentMaximizedTopBottomMargins() );
+        m_ui.titlebarSideMargins->setValue( m_internalSettings->titlebarSideMargins() );
+        m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
+        m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
+        m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         m_ui.boldButtonIcons->setChecked( m_internalSettings->boldButtonIcons() );
+        m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
+        setEnabledRedOutline();
+        m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
+        m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
 
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
@@ -179,15 +234,26 @@ namespace Breeze
         bool modified( false );
 
         if (m_ui.drawTitleBarSeparator->isChecked() != m_internalSettings->drawTitleBarSeparator()) modified = true;
+        else if (m_ui.useTitlebarColorForAllBorders->isChecked() != m_internalSettings->useTitlebarColorForAllBorders()) modified = true;
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonHighlightStyle->currentIndex() != m_internalSettings->buttonHighlightStyle() ) modified = true;
         else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
         else if( m_ui.boldButtonIcons->isChecked() != m_internalSettings->boldButtonIcons() ) modified = true;
+        else if( m_ui.inheritSystemHighlightColors->isChecked() != m_internalSettings->inheritSystemHighlightColors() ) modified = true;
         else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;
+        else if( m_ui.redOutline->isChecked() != m_internalSettings->redOutline() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
         else if( m_ui.drawBackgroundGradient->isChecked() !=  m_internalSettings->drawBackgroundGradient() ) modified = true;
+        else if( m_ui.buttonSpacingRight->value() != m_internalSettings->buttonSpacingRight() ) modified = true;
+        else if( m_ui.buttonSpacingLeft->value() != m_internalSettings->buttonSpacingLeft() ) modified = true;
+        else if( m_ui.titlebarTopBottomMargins->value() != m_internalSettings->titlebarTopBottomMargins() ) modified = true;
+        else if( m_ui.percentMaximizedTopBottomMargins->value() != m_internalSettings->percentMaximizedTopBottomMargins() ) modified = true;
+        else if( m_ui.titlebarSideMargins->value() != m_internalSettings->titlebarSideMargins() ) modified = true;
+        else if( m_ui.cornerRadius->value() != m_internalSettings->cornerRadius() ) modified = true;
+        else if( m_ui.activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity() ) modified = true;
+        else if( m_ui.inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity() ) modified = true;
 
         // shadows
         else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
@@ -205,6 +271,12 @@ namespace Breeze
     void ConfigWidget::setChanged( bool value )
     {
         emit changed( value );
+    }
+    
+    //only enable redOutline when outlineCloseButton is checked
+    void ConfigWidget::setEnabledRedOutline()
+    {
+        m_ui.redOutline->setEnabled(m_ui.outlineCloseButton->isChecked());
     }
 
 }
