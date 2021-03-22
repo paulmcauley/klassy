@@ -69,7 +69,7 @@ namespace Breeze
         StyleConfigData::self()->save();
 
         // emit dbus signal
-        QDBusMessage message( QDBusMessage::createSignal( QStringLiteral( "/BreezeStyle" ),  QStringLiteral( "org.kde.Breeze.Style" ), QStringLiteral( "reparseConfiguration" ) ) );
+        QDBusMessage message( QDBusMessage::createSignal( QStringLiteral( "/ClassikstylesStyle" ),  QStringLiteral( "org.kde.Classikstyles.Style" ), QStringLiteral( "reparseConfiguration" ) ) );
         QDBusConnection::sessionBus().send(message);
 
     }

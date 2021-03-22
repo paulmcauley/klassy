@@ -134,7 +134,7 @@ namespace Breeze
 
         // needed for breeze style to reload shadows
         {
-            QDBusMessage message( QDBusMessage::createSignal("/BreezeDecoration",  "org.kde.Breeze.Style", "reparseConfiguration") );
+            QDBusMessage message( QDBusMessage::createSignal("/ClassikstylesDecoration",  "org.kde.Classikstyles.Style", "reparseConfiguration") );
             QDBusConnection::sessionBus().send(message);
         }
 
