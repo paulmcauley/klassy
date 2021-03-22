@@ -29,7 +29,9 @@ namespace Breeze
         //* titlebar metrics, in units of small spacing
         TitleBar_TopMargin = 2,
         TitleBar_BottomMargin = 2,
-        TitleBar_SideMargin = 2,
+        
+        //Paul McAuley: No longer used - now InternalSettings::titlebarSideMargins()
+        //TitleBar_SideMargin = 2,
         
         //Paul McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()
         //TitleBar_ButtonSpacing = 2,

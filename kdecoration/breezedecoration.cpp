@@ -304,19 +304,20 @@ namespace Breeze
         int width, height, x, y;
         
         //prevents resize handles appearing in button at top window edge for large square buttons
-        if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
-            width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             height = borderTop();
-            x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             y = 0;
             
         } else 
         {   
             // for smaller circular buttons increase the resizable area
-            width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            // Paul McAuley: was 2*s->largeSpacing()* for side margins -- no idea why as side margins use small spacing
+            width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
-            x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
+            x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
         }
         
@@ -479,7 +480,7 @@ namespace Breeze
                 extBottom = extSize;
                 
                 //Add resize handles for sqaure highlight as they cannot overlap with larger square buttons
-                if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize; 
+                if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize; 
             }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
@@ -516,7 +517,7 @@ namespace Breeze
         int squareButtonIconVerticalTranslation;
         int squareButtonIconHorizontalTranslation;
         
-        if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
             bHeight = borderTop();
             verticalOffset = 0;
@@ -531,7 +532,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
         {
             
-            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
                 squareButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
             } else {
@@ -548,7 +549,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
         {
             
-            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
                 squareButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
             } else {
@@ -568,7 +569,7 @@ namespace Breeze
 
             // spacing
             // originally m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 m_leftButtons->setSpacing( 0 );
             } else {
                 m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
@@ -576,9 +577,9 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
+            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
@@ -596,10 +597,9 @@ namespace Breeze
         // right buttons
         if( !m_rightButtons->buttons().isEmpty() )
         {
-
             // spacing
             // originally m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
-            if ( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 m_rightButtons->setSpacing( 0 );
             } else {
                 m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
@@ -607,9 +607,9 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
+            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             if( isRightEdge() )
             {
 
@@ -774,12 +774,12 @@ namespace Breeze
 
             auto c = client().data();
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing():
-                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
+                m_internalSettings->titlebarSideMargins()*settings()->smallSpacing():
+                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
 
             const int rightOffset = m_rightButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing() :
-                size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
+                m_internalSettings->titlebarSideMargins()*settings()->smallSpacing() :
+                size().width() - m_rightButtons->geometry().x() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
 
             const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
