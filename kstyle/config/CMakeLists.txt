@@ -1,5 +1,5 @@
 ### configuration plugin
-add_definitions(-DTRANSLATION_DOMAIN=\"breeze_style_config\")
+add_definitions(-DTRANSLATION_DOMAIN=\"classikstyles_style_config\")
 set(kstyle_breeze_config_PART_SRCS breezestyleconfig.cpp)
 
 set(kstyle_breeze_config_PART_SRCS ${kstyle_breeze_config_PART_SRCS} breezestyleconfigmodule.cpp)
