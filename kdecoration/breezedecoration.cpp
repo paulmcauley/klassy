@@ -283,8 +283,9 @@ namespace Breeze
 
         connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
         connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
+        
+        connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setTitleBarOpacity);
         connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
-        connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
         connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
         connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
@@ -490,7 +491,11 @@ namespace Breeze
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
-
+            //Add resize handles for sqaure highlight as they cannot overlap with larger square buttons
+            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize;
+        } else if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
+            
+            extTop = extSize;
         }
 
         setResizeOnlyBorders(QMargins(extSides, extTop, extSides, extBottom));
@@ -983,7 +988,7 @@ namespace Breeze
     int Decoration::getTitleBarTopBottomMargins() const
     {
         // access client
-        auto c = client().data();
+        auto c = client().toStrongRef().data();
         if( !c ) return 0;
         
         double topBottomMargins;
@@ -998,8 +1003,21 @@ namespace Breeze
     
     void Decoration::setTitleBarOpacity()
     {
-        m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
-        m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
+        auto c = client().toStrongRef().data();
+        if( !c ) return;
+        
+        if( !c->isMaximized() ) {
+            m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
+            m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
+        } else {
+            if( m_internalSettings->opaqueMaximizedWindows() ) {
+                m_titleBarOpacityActive = 255;
+                m_titleBarOpacityInactive = 255;
+            } else {
+                m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
+                m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
+            }
+        }
     }
 
 } // namespace

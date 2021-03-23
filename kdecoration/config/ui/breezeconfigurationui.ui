@@ -891,6 +891,19 @@ Button icon st&amp;yle:   </string>
         <number>0</number>
        </property>
       </widget>
+      <widget class="QCheckBox" name="opaqueMaximizedWindows">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>270</y>
+         <width>201</width>
+         <height>22</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Opaque maximized windows</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">

@@ -194,6 +194,11 @@
        <min>0</min>
        <max>100</max>
     </entry>
+    
+    <!-- opaque maximized windows -->
+    <entry name="OpaqueMaximizedWindows" type = "Bool">
+        <default>true</default>
+    </entry>
 
     <!-- hide title bar -->
     <entry name="HideTitleBar" type = "Bool">
