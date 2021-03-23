@@ -35,7 +35,7 @@ namespace Breeze
         connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
         connect( m_ui.percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarSideMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.cornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -52,8 +52,8 @@ namespace Breeze
         connect( m_ui.useTitlebarColorForAllBorders, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         
         //connect dual controls with same values
-        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(int)), m_ui.titlebarTopBottomMargins_2, SLOT(setValue(int)) );
-        connect( m_ui.titlebarTopBottomMargins_2, SIGNAL(valueChanged(int)), m_ui.titlebarTopBottomMargins, SLOT(setValue(int)) );
+        connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), m_ui.titlebarTopBottomMargins_2, SLOT(setValue(double)) );
+        connect( m_ui.titlebarTopBottomMargins_2, SIGNAL(valueChanged(double)), m_ui.titlebarTopBottomMargins, SLOT(setValue(double)) );
         connect( m_ui.titlebarSideMargins, SIGNAL(valueChanged(int)), m_ui.titlebarSideMargins_2, SLOT(setValue(int)) );
         connect( m_ui.titlebarSideMargins_2, SIGNAL(valueChanged(int)), m_ui.titlebarSideMargins, SLOT(setValue(int)) );
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity_2, SLOT(setValue(int)) );

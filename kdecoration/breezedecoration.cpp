@@ -302,6 +302,7 @@ namespace Breeze
         auto c = client().data();
         const bool maximized = isMaximized();
         int width, height, x, y;
+        int titlebarTopMargin = getTitleBarTopBottomMargins();
         
         //prevents resize handles appearing in button at top window edge for large square buttons
         if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
@@ -316,9 +317,9 @@ namespace Breeze
             // for smaller circular buttons increase the resizable area
             // Paul McAuley: was 2*s->largeSpacing()* for side margins -- no idea why as side margins use small spacing
             width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
-            height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            height = maximized ? borderTop() : borderTop() - s->smallSpacing()*titlebarTopMargin;
             x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
-            y = maximized ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            y = maximized ? 0 : s->smallSpacing()*titlebarTopMargin;
         }
         
         setTitleBar(QRect(x, y, width, height));
@@ -428,7 +429,8 @@ namespace Breeze
         // size grip
         if( hasNoBorders() && m_internalSettings->drawSizeGrip() ) createSizeGrip();
         else deleteSizeGrip();
-
+        
+        setTitleBarOpacity();
     }
 
     //________________________________________________________________
@@ -441,6 +443,11 @@ namespace Breeze
         const int left   = isLeftEdge() ? 0 : borderSize();
         const int right  = isRightEdge() ? 0 : borderSize();
         const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
+        
+
+        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarBottomMargin = titleBarTopMargin;
+                
 
         int top = 0;
         if( hideTitleBar() ) top = bottom;
@@ -453,16 +460,13 @@ namespace Breeze
             // extra pixel is used for the active window outline
             top += 1;
             
-            
             const int baseSize = s->smallSpacing();
-           // if( !isMaximized() ) //PAM: add as a feature later
-           // {
-                // padding below
-                top += baseSize*Metrics::TitleBar_BottomMargin;
 
-                // padding above
-                top += baseSize*Metrics::TitleBar_TopMargin;
-           // }
+            // padding below
+            top += baseSize*titleBarBottomMargin;
+
+            // padding above
+            top += baseSize*titleBarTopMargin;
 
         }
 
@@ -516,16 +520,18 @@ namespace Breeze
         int verticalOffset;
         int squareButtonIconVerticalTranslation;
         int squareButtonIconHorizontalTranslation;
+        int titleBarTopMargin = getTitleBarTopBottomMargins();
         
         if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
             bHeight = borderTop();
+            if( m_internalSettings->drawTitleBarSeparator() ) bHeight -= 1;
             verticalOffset = 0;
-            squareButtonIconVerticalTranslation = s->smallSpacing()*Metrics::TitleBar_TopMargin + (captionHeight()-buttonHeight())/2;
+            squareButtonIconVerticalTranslation = s->smallSpacing()*titleBarTopMargin + (captionHeight()-buttonHeight())/2;
         } else 
         {   
-            bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
-            verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
+            bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*titleBarTopMargin:0);
+            verticalOffset = (isTopEdge() ? s->smallSpacing()*titleBarTopMargin:0) + (captionHeight()-buttonHeight())/2;
             squareButtonIconVerticalTranslation = 0;
         }
         
@@ -568,7 +574,6 @@ namespace Breeze
         {
 
             // spacing
-            // originally m_leftButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
             if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 m_leftButtons->setSpacing( 0 );
             } else {
@@ -578,7 +583,7 @@ namespace Breeze
             // padding
             int vPadding;
             if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
-            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             if( isLeftEdge() )
             {
@@ -598,7 +603,6 @@ namespace Breeze
         if( !m_rightButtons->buttons().isEmpty() )
         {
             // spacing
-            // originally m_rightButtons->setSpacing(s->smallSpacing()*Metrics::TitleBar_ButtonSpacing);
             if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
                 m_rightButtons->setSpacing( 0 );
             } else {
@@ -608,7 +612,7 @@ namespace Breeze
             // padding
             int vPadding;
             if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
-            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
+            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             if( isRightEdge() )
             {
@@ -641,12 +645,19 @@ namespace Breeze
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setPen(Qt::NoPen);
-            painter->setBrush( c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame ) );
+            
+            QColor windowBorderColor;
+            if( m_internalSettings->useTitlebarColorForAllBorders() ) {
+                windowBorderColor = titleBarColor();
+                windowBorderColor.setAlpha( c->isActive() ? m_titleBarOpacityActive : m_titleBarOpacityInactive);
+            } else windowBorderColor = c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame );
+            
+            painter->setBrush( windowBorderColor );
 
             // clip away the top part
             if( !hideTitleBar() ) painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
 
-            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), m_internalSettings->cornerRadius(), m_internalSettings->cornerRadius());
             else painter->drawRect( rect() );
 
             painter->restore();
@@ -680,19 +691,22 @@ namespace Breeze
         painter->save();
         painter->setPen(Qt::NoPen);
 
+        QColor titleBarColor( this->titleBarColor() );
+        
         // render a linear gradient on title area
         if( c->isActive() && m_internalSettings->drawBackgroundGradient() )
         {
 
-            const QColor titleBarColor( this->titleBarColor() );
+            titleBarColor.setAlpha( m_titleBarOpacityActive );
+            
             QLinearGradient gradient( 0, 0, 0, titleRect.height() );
             gradient.setColorAt(0.0, titleBarColor.lighter( 120 ) );
             gradient.setColorAt(0.8, titleBarColor);
             painter->setBrush(gradient);
 
         } else {
-
-            painter->setBrush( titleBarColor() );
+            titleBarColor.setAlpha( c->isActive() ? m_titleBarOpacityActive : m_titleBarOpacityInactive);
+            painter->setBrush( titleBarColor );
 
         }
 
@@ -704,7 +718,7 @@ namespace Breeze
 
         } else if( c->isShaded() ) {
 
-            painter->drawRoundedRect(titleRect, Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            painter->drawRoundedRect(titleRect, m_internalSettings->cornerRadius(), m_internalSettings->cornerRadius());
 
         } else {
 
@@ -712,11 +726,11 @@ namespace Breeze
 
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
             painter->drawRoundedRect(titleRect.adjusted(
-                isLeftEdge() ? -Metrics::Frame_FrameRadius:0,
-                isTopEdge() ? -Metrics::Frame_FrameRadius:0,
-                isRightEdge() ? Metrics::Frame_FrameRadius:0,
-                Metrics::Frame_FrameRadius),
-                Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+                isLeftEdge() ? -m_internalSettings->cornerRadius():0,
+                isTopEdge() ? -m_internalSettings->cornerRadius():0,
+                isRightEdge() ? m_internalSettings->cornerRadius():0,
+                m_internalSettings->cornerRadius()),
+                m_internalSettings->cornerRadius(), m_internalSettings->cornerRadius());
 
         }
 
@@ -764,11 +778,18 @@ namespace Breeze
 
     //________________________________________________________________
     int Decoration::captionHeight() const
-    { return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1; }
+    { 
+        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarBottomMargin = titleBarTopMargin;
+        
+        return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(titleBarBottomMargin + titleBarTopMargin ) - 1;
+    }
 
     //________________________________________________________________
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
+        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
 
@@ -781,7 +802,7 @@ namespace Breeze
                 m_internalSettings->titlebarSideMargins()*settings()->smallSpacing() :
                 size().width() - m_rightButtons->geometry().x() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
 
-            const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
+            const int yOffset = settings()->smallSpacing()*titleBarTopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
 
             switch( m_internalSettings->titleAlignment() )
@@ -870,7 +891,7 @@ namespace Breeze
               .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
           BoxShadowRenderer shadowRenderer;
-          shadowRenderer.setBorderRadius(Metrics::Frame_FrameRadius + 0.5);
+          shadowRenderer.setBorderRadius(internalSettings->cornerRadius() + 0.5);
           shadowRenderer.setBoxSize(boxSize);
           shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
 
@@ -903,8 +924,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
           painter.drawRoundedRect(
               innerRect,
-              Metrics::Frame_FrameRadius + 0.5,
-              Metrics::Frame_FrameRadius + 0.5);
+              internalSettings->cornerRadius() + 0.5,
+              internalSettings->cornerRadius() + 0.5);
 
           // Draw outline.
           painter.setPen(withOpacity(internalSettings->shadowColor(), 0.2 * strength));
@@ -912,8 +933,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           painter.drawRoundedRect(
               innerRect,
-              Metrics::Frame_FrameRadius - 0.5,
-              Metrics::Frame_FrameRadius - 0.5);
+              internalSettings->cornerRadius() - 0.5,
+              internalSettings->cornerRadius() - 0.5);
 
           painter.end();
 
@@ -957,6 +978,28 @@ namespace Breeze
             m_sizeGrip->deleteLater();
             m_sizeGrip = nullptr;
         }
+    }
+    
+    int Decoration::getTitleBarTopBottomMargins() const
+    {
+        // access client
+        auto c = client().data();
+        if( !c ) return 0;
+        
+        double topBottomMargins;
+        if( c->isMaximized() ){
+            topBottomMargins = m_internalSettings->titlebarTopBottomMargins() * m_internalSettings->percentMaximizedTopBottomMargins()/100;
+        } else {
+            topBottomMargins = m_internalSettings->titlebarTopBottomMargins();
+        }
+        
+        return topBottomMargins;
+    }
+    
+    void Decoration::setTitleBarOpacity()
+    {
+        m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
+        m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
     }
 
 } // namespace

@@ -128,10 +128,10 @@
        <max>50</max>
     </entry>
     
-    <entry name="TitlebarTopBottomMargins" type = "Int">
+    <entry name="TitlebarTopBottomMargins" type = "Double">
        <default>2</default>
        <min>0</min>
-       <max>10</max>
+       <max>25</max>
     </entry>
     
     <!-- top bottom margins % for maximized windows -->
@@ -150,7 +150,7 @@
     <entry name="CornerRadius" type = "Int">
        <default>3</default>
        <min>0</min>
-       <max>10</max>
+       <max>100</max>
     </entry>
     
     <!-- bold button icons -->

@@ -24,11 +24,14 @@ namespace Breeze
     {
 
         //* corner radius (pixels)
-        Frame_FrameRadius = 3,
+        //Paul McAuley: No longer used - now InternalSettings::cornerRadius()
+        //Frame_FrameRadius = 3,
 
         //* titlebar metrics, in units of small spacing
-        TitleBar_TopMargin = 2,
-        TitleBar_BottomMargin = 2,
+        
+        //Paul McAuley: No longer used - now InternalSettings::titlebarTopBottomMargins()
+        //TitleBar_TopMargin = 2,
+        //TitleBar_BottomMargin = 2,
         
         //Paul McAuley: No longer used - now InternalSettings::titlebarSideMargins()
         //TitleBar_SideMargin = 2,

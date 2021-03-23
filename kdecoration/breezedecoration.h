@@ -125,6 +125,9 @@ namespace Breeze
         SizeGrip* sizeGrip() const
         { return m_sizeGrip; }
         //@}
+        
+        int getTitleBarTopBottomMargins() const;
+        void setTitleBarOpacity();
 
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -140,6 +143,10 @@ namespace Breeze
         //* active state change opacity
         qreal m_opacity = 0;
         qreal m_shadowOpacity = 0;
+        
+        //*tilebar main state opacity
+        int m_titleBarOpacityActive = 255;
+        int m_titleBarOpacityInactive = 255;
 
     };
 
