@@ -21,7 +21,7 @@ namespace Breeze
     //_________________________________________________________
     ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
         KCModule(parent, args),
-        m_configuration( KSharedConfig::openConfig( QStringLiteral( "breezerc" ) ) ),
+        m_configuration( KSharedConfig::openConfig( QStringLiteral( "classikstylesrc" ) ) ),
         m_changed( false )
     {
 
