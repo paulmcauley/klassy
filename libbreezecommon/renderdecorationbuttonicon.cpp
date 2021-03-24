@@ -27,34 +27,53 @@
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( QPainter* painter, const QPen& pen, const int buttonIconStyle,  const bool notInTitlebar, const bool boldButtonIcons)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar)
     {
-        switch( InternalSettings::EnumButtonIconStyle(buttonIconStyle) )
+        switch( internalSettings->buttonIconStyle() )
         {
             case InternalSettings::StyleClassik:
                 default:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(painter, pen, notInTitlebar, boldButtonIcons) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(internalSettings, painter, pen, notInTitlebar ) );
             case InternalSettings::StyleKite:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(painter, pen, notInTitlebar, boldButtonIcons) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(internalSettings, painter, pen, notInTitlebar ) );
             case InternalSettings::StyleOxygen:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(painter, pen, notInTitlebar, boldButtonIcons) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(internalSettings, painter, pen, notInTitlebar ) );
             case InternalSettings::StyleRedmond:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(painter, pen, notInTitlebar, boldButtonIcons) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(internalSettings, painter, pen, notInTitlebar ) );
         }
     }
 
 
     
-    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons )
+    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar )
     {
         this->painter = painter;
         this->pen = pen;
         this->notInTitlebar = notInTitlebar;
-        this->boldButtonIcons = boldButtonIcons;
         
+        
+        if ( internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsAuto ) {
+            // if > "100 DPI" use bold (value is not accurate, rather relative to 96DPI scaled)
+            if( qMin(painter->device()->physicalDpiX(), painter->device()->physicalDpiY()) > 100 )  this->boldButtonIcons = true;
+            else this->boldButtonIcons = false;
+            
+        } else if ( internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold ) this->boldButtonIcons = true;
+        else this->boldButtonIcons = false;
+        
+        /*
+        qDebug() << "Device pixel ratio: " << painter->device()->devicePixelRatioF(); ;
+        qDebug() << "Physical DPI X:" << painter->device()->physicalDpiX() << " Y: " << painter->device()->physicalDpiY();
+        qDebug() << "Logical DPI X:" << painter->device()->logicalDpiX() << " Y: " << painter->device()->logicalDpiY();
+        */
+        
+        painter->save();
         initPainter();
     }
     
+    RenderDecorationButtonIcon18By18::~RenderDecorationButtonIcon18By18()
+    {
+        painter->restore();
+    }
     
     
     void RenderDecorationButtonIcon18By18::initPainter()

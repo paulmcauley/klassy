@@ -154,8 +154,13 @@
     </entry>
     
     <!-- bold button icons -->
-    <entry name="BoldButtonIcons" type = "Bool">
-        <default>true</default>
+    <entry name="BoldButtonIcons" type="Enum">
+      <choices>
+          <choice name="BoldIconsAuto" />
+          <choice name="BoldIconsBold" />
+          <choice name="BoldIconsFine" />
+      </choices>
+      <default>BoldIconsAuto</default>
     </entry>
     
     <!-- maximized windows -->

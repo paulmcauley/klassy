@@ -26,6 +26,7 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QSharedPointer>
 #include <memory>
 
 namespace Breeze
@@ -45,17 +46,15 @@ namespace Breeze
 
             /**
              * @brief Factory to return a pointer to a new inherited object to render in the specified style.
-             * 
+             * @param internalSettings An InternalSettingsPtr from the Window decoration config
              * @param painter A QPainter object already initialised with an 18x18 reference window.
              * @param pen QPen with width and color already initialized.
-             * @param buttonIconStyle The desired icon style as equivalent to type EnumButtonIconStyle.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-             * @param boldButtonIcons Indicates to draw the main buttons in a bold style for HiDPI displays
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( QPainter* painter, const QPen& pen, const int buttonIconStyle = int(InternalSettings::StyleKite), const bool notInTitlebar = false, const bool boldButtonIcons = false);
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar = false );
             
-            virtual ~RenderDecorationButtonIcon18By18(){};
+            virtual ~RenderDecorationButtonIcon18By18();
             
             virtual void renderCloseIcon();
             virtual void renderMaximizeIcon();
@@ -75,11 +74,12 @@ namespace Breeze
             /**
              * @brief Constructor
              * 
+             * @param internalSettings An InternalSettingsPtr from the Window decoration config
              * @param painter A QPainter object already initialised with an 18x18 reference window.
              * @param pen QPen with width and color already initialised.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
              */
-            RenderDecorationButtonIcon18By18( QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons);
+            RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar );
             
             
             /**
@@ -92,7 +92,6 @@ namespace Breeze
             QPen pen;
             bool notInTitlebar;
             bool boldButtonIcons;
-            
     };
     
 }

@@ -34,12 +34,12 @@ namespace Breeze
             /**
              * @brief Constructor - calls constructor of base class
              * 
+             * @param internalSettings An InternalSettingsPtr from the Window decoration config
              * @param painter A QPainter object already initialised with an 18x18 reference window.
              * @param pen QPen with width and color already initialised.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-             * @param boldButtonIcons Indicates to draw the main buttons in a bold style for HiDPI displays
              */
-            RenderStyleOxygen18By18(QPainter* painter, const QPen& pen, const bool notInTitlebar, const bool boldButtonIcons) : RenderDecorationButtonIcon18By18(painter, pen, notInTitlebar, boldButtonIcons){};
+            RenderStyleOxygen18By18(const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar) : RenderDecorationButtonIcon18By18(internalSettings, painter, pen, notInTitlebar){};
             
             void renderCloseIcon() override;
             void renderMaximizeIcon() override;

@@ -242,78 +242,79 @@ namespace Breeze
 
 
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
-            if (d) iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, d->internalSettings()->buttonIconStyle(), false, d->internalSettings()->boldButtonIcons() );
-            else iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen );
+            if (d) { 
+                
+                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, pen, false );
 
-            switch( type() )
-            {
-
-                case DecorationButtonType::Close:
-                {
-                    iconRenderer->renderCloseIcon();
-                    break;
-                }
-
-                case DecorationButtonType::Maximize:
-                {
-                    if( isChecked() ) iconRenderer->renderRestoreIcon();
-                    else iconRenderer->renderMaximizeIcon();
-                    break;
-                }
-
-                case DecorationButtonType::Minimize:
-                {
-                    iconRenderer->renderMinimizeIcon();
-                    break;
-                }
-
-                case DecorationButtonType::OnAllDesktops:
-                {
-                    if( isChecked()) iconRenderer->renderPinnedOnAllDesktopsIcon();
-                    else iconRenderer->renderPinOnAllDesktopsIcon();
-                    break;
-                }
-
-                case DecorationButtonType::Shade:
+                switch( type() )
                 {
 
-                    if (isChecked()) iconRenderer->renderUnShadeIcon();
-                    else iconRenderer->renderShadeIcon();
-                    break;
+                    case DecorationButtonType::Close:
+                    {
+                        iconRenderer->renderCloseIcon();
+                        break;
+                    }
+
+                    case DecorationButtonType::Maximize:
+                    {
+                        if( isChecked() ) iconRenderer->renderRestoreIcon();
+                        else iconRenderer->renderMaximizeIcon();
+                        break;
+                    }
+
+                    case DecorationButtonType::Minimize:
+                    {
+                        iconRenderer->renderMinimizeIcon();
+                        break;
+                    }
+
+                    case DecorationButtonType::OnAllDesktops:
+                    {
+                        if( isChecked()) iconRenderer->renderPinnedOnAllDesktopsIcon();
+                        else iconRenderer->renderPinOnAllDesktopsIcon();
+                        break;
+                    }
+
+                    case DecorationButtonType::Shade:
+                    {
+
+                        if (isChecked()) iconRenderer->renderUnShadeIcon();
+                        else iconRenderer->renderShadeIcon();
+                        break;
+
+                    }
+
+                    case DecorationButtonType::KeepBelow:
+                    {
+
+                        iconRenderer->renderKeepBehindIcon();
+                        break;
+
+                    }
+
+                    case DecorationButtonType::KeepAbove:
+                    {
+                        iconRenderer->renderKeepInFrontIcon();
+                        break;
+                    }
+
+
+                    case DecorationButtonType::ApplicationMenu:
+                    {
+                        iconRenderer->renderApplicationMenuIcon();
+                        break;
+                    }
+
+                    case DecorationButtonType::ContextHelp:
+                    {
+                    iconRenderer->renderContextHelpIcon();
+                        break;
+                    }
+
+                    default: break;
 
                 }
-
-                case DecorationButtonType::KeepBelow:
-                {
-
-                    iconRenderer->renderKeepBehindIcon();
-                    break;
-
-                }
-
-                case DecorationButtonType::KeepAbove:
-                {
-                    iconRenderer->renderKeepInFrontIcon();
-                    break;
-                }
-
-
-                case DecorationButtonType::ApplicationMenu:
-                {
-                    iconRenderer->renderApplicationMenuIcon();
-                    break;
-                }
-
-                case DecorationButtonType::ContextHelp:
-                {
-                   iconRenderer->renderContextHelpIcon();
-                    break;
-                }
-
-                default: break;
-
             }
-
         }
 
     }

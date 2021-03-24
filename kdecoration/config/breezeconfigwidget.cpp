@@ -29,10 +29,10 @@ namespace Breeze
         m_ui.setupUi( this );
 
         // track ui changes
-        connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonHighlightStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(InternalSettings::EnumTitleAlignment)), SLOT(updateChanged()) );
+        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonIconStyle)), SLOT(updateChanged()) );
+        connect( m_ui.buttonHighlightStyle, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonHighlightStyle)), SLOT(updateChanged()) );
+        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonSize)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
@@ -41,7 +41,7 @@ namespace Breeze
         connect( m_ui.cornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.boldButtonIcons, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(InternalSettings::EnumBoldButtonIcons)), SLOT(updateChanged()) );
         connect( m_ui.inheritSystemHighlightColors, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -101,7 +101,7 @@ namespace Breeze
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity_2->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
-        m_ui.boldButtonIcons->setChecked( m_internalSettings->boldButtonIcons() );
+        m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         setEnabledRedOutline();
@@ -148,7 +148,7 @@ namespace Breeze
         m_internalSettings->setCornerRadius( m_ui.cornerRadius->value() );
         m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
         m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
-        m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->isChecked() );
+        m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->currentIndex() );
         m_internalSettings->setInheritSystemHighlightColors( m_ui.inheritSystemHighlightColors->isChecked() );
         m_internalSettings->setOutlineCloseButton( m_ui.outlineCloseButton->isChecked() );
         m_internalSettings->setRedOutline( m_ui.redOutline->isChecked() );
@@ -209,7 +209,7 @@ namespace Breeze
         m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
         m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
-        m_ui.boldButtonIcons->setChecked( m_internalSettings->boldButtonIcons() );
+        m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         setEnabledRedOutline();
@@ -244,7 +244,7 @@ namespace Breeze
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonHighlightStyle->currentIndex() != m_internalSettings->buttonHighlightStyle() ) modified = true;
         else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
-        else if( m_ui.boldButtonIcons->isChecked() != m_internalSettings->boldButtonIcons() ) modified = true;
+        else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
         else if( m_ui.inheritSystemHighlightColors->isChecked() != m_internalSettings->inheritSystemHighlightColors() ) modified = true;
         else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;
         else if( m_ui.redOutline->isChecked() != m_internalSettings->redOutline() ) modified = true;

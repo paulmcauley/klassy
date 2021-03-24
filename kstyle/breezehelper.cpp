@@ -1415,7 +1415,7 @@ namespace Breeze
         pen.setWidthF( PenWidth::Symbol*qMax(1.0, 18.0/rect.width() ) );
         
         std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
-        iconRenderer = RenderDecorationButtonIcon18By18::factory( painter, pen, StyleConfigData::buttonIconStyle(), true );
+        iconRenderer = RenderDecorationButtonIcon18By18::factory( decorationConfig(), painter, pen, true );
         
         switch( buttonType )
         {
