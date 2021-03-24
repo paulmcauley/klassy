@@ -29,10 +29,10 @@ namespace Breeze
         m_ui.setupUi( this );
 
         // track ui changes
-        connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(InternalSettings::EnumTitleAlignment)), SLOT(updateChanged()) );
-        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonIconStyle)), SLOT(updateChanged()) );
-        connect( m_ui.buttonHighlightStyle, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonHighlightStyle)), SLOT(updateChanged()) );
-        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(InternalSettings::EnumButtonSize)), SLOT(updateChanged()) );
+        connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonHighlightStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
@@ -41,7 +41,7 @@ namespace Breeze
         connect( m_ui.cornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(InternalSettings::EnumBoldButtonIcons)), SLOT(updateChanged()) );
+        connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inheritSystemHighlightColors, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
