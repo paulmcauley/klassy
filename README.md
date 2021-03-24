@@ -32,18 +32,18 @@ Raw RPM binary package from OpenSUSE Tumbleweed - these RPM packages may also wo
 ### Compile from source
 #### OpenSUSE Tumbleweed/Leap build dependencies
 (Leap requires newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories first):
-```sh
+```
 sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5DBus-devel libqt5-qtx11extras-devel libkdecoration2-devel kcoreaddons-devel kguiaddons-devel kconfigwidgets-devel kwindowsystem-devel ki18n-devel kiconthemes-devel kpackage-devel libQt5QuickControls2-devel frameworkintegration-devel kcmutils-devel
 ```
 
 Build and install from source script:
-```sh
+```
 chmod +x install.sh
 ./install.sh
 ```
 
 Uninstall build script:
-```sh
+```
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
