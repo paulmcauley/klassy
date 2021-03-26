@@ -2,23 +2,9 @@
 #define BREEZE_RENDERDECORATIONBUTTONICON_H
 
 /*
- * Copyright 2020  Paul McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021 Paul McAuley <kde@paulmcauley.com>
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
 #include "breezecommon_export.h"
@@ -47,12 +33,11 @@ namespace Breeze
             /**
              * @brief Factory to return a pointer to a new inherited object to render in the specified style.
              * @param internalSettings An InternalSettingsPtr from the Window decoration config
-             * @param painter A QPainter object already initialised with an 18x18 reference window.
-             * @param pen QPen with width and color already initialized.
+             * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar = false );
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar = false );
             
             virtual ~RenderDecorationButtonIcon18By18();
             
@@ -75,11 +60,10 @@ namespace Breeze
              * @brief Constructor
              * 
              * @param internalSettings An InternalSettingsPtr from the Window decoration config
-             * @param painter A QPainter object already initialised with an 18x18 reference window.
-             * @param pen QPen with width and color already initialised.
+             * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
              */
-            RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar );
+            RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar );
             
             
             /**

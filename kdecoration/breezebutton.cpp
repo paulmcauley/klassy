@@ -11,6 +11,7 @@
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
 #include <KIconLoader>
+#include <KColorScheme>
 
 #include <QPainter>
 #include <QVariantAnimation>
@@ -118,30 +119,50 @@ namespace Breeze
         Q_UNUSED(repaintRegion)
 
         if (!decoration()) return;
+        auto d = qobject_cast<Decoration*>( decoration() );
 
-        painter->save();
-
+        m_backgroundColor = this->backgroundColor();
+        m_foregroundColor = this->foregroundColor();
         
-
+        m_lowContrastBetweenTitleBarAndBackground = false;
+        if( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.4) )
+            m_lowContrastBetweenTitleBarAndBackground = true;
+        
+        painter->save();
+        
         if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
-
+        
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-            auto d = qobject_cast<Decoration*>( decoration() );
             //draw a background only with square highlight style; translation required if using Square buttonHighlightStyle
             if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
             {                
-                const QColor backgroundColor( this->backgroundColor() );
-                if( backgroundColor.isValid() )
+                if( m_backgroundColor.isValid() )
                 {            
                     painter->save();
                     painter->setRenderHints( QPainter::Antialiasing );
-                    
+                    painter->setBrush( m_backgroundColor );
                     painter->setPen( Qt::NoPen );
-                    painter->setBrush( backgroundColor );
                     painter->drawRect( geometry() );
                     
+                    
+                    if( shouldDrawBackgroundStroke() )
+                    {   
+                        QColor strokeColor = d->fontColor();
+                        if( m_animation->state() == QAbstractAnimation::Running ) {
+                            strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
+                        }
+                        QPen pen( strokeColor );
+                        pen.setWidthF( PenWidth::Symbol );
+                        painter->setPen(pen);
+                        painter->setBrush( Qt::NoBrush );
+                        
+                        //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
+                        QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
+                        painter->drawRect( strokeRect );
+                    } 
+                
                     painter->restore();
                 }
                 
@@ -184,19 +205,33 @@ namespace Breeze
     {
 
         auto d = qobject_cast<Decoration*>( decoration() );
-        const QColor backgroundColor( this->backgroundColor() );
                 
         // render background if Square button highlight style
         if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
-            if( backgroundColor.isValid() )
+            if( m_backgroundColor.isValid() )
             {            
                 painter->save();
                 painter->setRenderHints( QPainter::Antialiasing );
-                    
+                painter->setBrush( m_backgroundColor );
                 painter->setPen( Qt::NoPen );
-                painter->setBrush( backgroundColor );
                 painter->drawRect( geometry() );
+                
+                if( shouldDrawBackgroundStroke() )
+                {   
+                    QColor strokeColor = d->fontColor();
+                    if( m_animation->state() == QAbstractAnimation::Running ) {
+                        strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
+                    }
+                    QPen pen( strokeColor );
+                    pen.setWidthF( PenWidth::Symbol );
+                    painter->setPen(pen);
+                    painter->setBrush( Qt::NoBrush );
+                    
+                    //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
+                    QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
+                    painter->drawRect( strokeRect );
+                } 
                 
                 painter->restore();
             }
@@ -223,28 +258,35 @@ namespace Breeze
         
         
         // render background if Circle button highlight style
-        if((d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) && backgroundColor.isValid() )
+        if((d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) && m_backgroundColor.isValid() )
         {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( backgroundColor );
+            painter->save();
+            if( shouldDrawBackgroundStroke() )
+            {   
+                QPen pen( d->fontColor() );
+                pen.setWidthF( PenWidth::Symbol );
+                painter->setPen(pen);
+            } else painter->setPen( Qt::NoPen );;
+            painter->setBrush( m_backgroundColor );
             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            painter->restore();
         }
         
         
         // render mark
-        const QColor foregroundColor( this->foregroundColor() );
-        if( foregroundColor.isValid() )
+        if( m_foregroundColor.isValid() )
         {
 
             // setup painter
-            QPen pen( foregroundColor );
+            QPen pen( m_foregroundColor );
             pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+            painter->setPen(pen);
 
 
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
             if (d) { 
                 
-                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, pen, false );
+                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false );
 
                 switch( type() )
                 {
@@ -323,30 +365,40 @@ namespace Breeze
     QColor Button::foregroundColor() const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
-        if( !d ) {
-
-            return QColor();
-
-        } else if( isPressed() ) {
-
-            return d->titleBarColor();
-
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
-
-            return d->titleBarColor();
-
+        if( !d ) return QColor();
+        auto c = d->client().toStrongRef().data();
+        
+        QColor higherContrastFontColor = getHigherContrastForegroundColor( d->fontColor(), m_backgroundColor, 2.3 );
+        
+        if( isPressed() ) {
+            if( type() == DecorationButtonType::Close ) return Qt::GlobalColor::white;
+            else if( d->internalSettings()->inheritSystemHighlightColors() ) {
+                return higherContrastFontColor;
+            }
+            else return d->titleBarColor();
+            
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
-
-            return d->titleBarColor();
-
+            if( d->internalSettings()->inheritSystemHighlightColors() ) return higherContrastFontColor;
+            else return d->titleBarColor();
+        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && d->internalSettings()->inheritSystemHighlightColors() ){
+            return higherContrastFontColor;
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
-
-            return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
-
+            if( type() == DecorationButtonType::Close ){
+                if( d->internalSettings()->outlineCloseButton() ){
+                    return KColorUtils::mix (d->titleBarColor(), Qt::GlobalColor::white, m_opacity);
+                } else {
+                    return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
+                }
+            }
+            else if( d->internalSettings()->inheritSystemHighlightColors() ) return KColorUtils::mix (d->fontColor(), higherContrastFontColor, m_opacity);
+            else return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
+            
         } else if( isHovered() ) {
-
+            if( type() == DecorationButtonType::Close ) return Qt::GlobalColor::white;
+            else if( d->internalSettings()->inheritSystemHighlightColors()) return higherContrastFontColor;
+            else return d->titleBarColor();    
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
             return d->titleBarColor();
-
         } else {
 
             return d->fontColor();
@@ -365,53 +417,77 @@ namespace Breeze
 
         }
 
-        auto c = d->client().data();
+        auto c = d->client().toStrongRef().data();
         QColor redColor( c->color( ColorGroup::Warning, ColorRole::Foreground ) );
+        int redColorHsv[3];
+        redColor.getHsv(&redColorHsv[0], &redColorHsv[1], &redColorHsv[2]);
+        redColorHsv[1] = 255; //increase saturation to max
+        QColor redColorSaturated;
+        redColorSaturated.setHsv(redColorHsv[0], redColorHsv[1], redColorHsv[2]);
+        
+        QColor buttonHoverColor;
+        QColor buttonFocusColor;
+        
+        //set hover and focus colours
+        if( d->internalSettings()->inheritSystemHighlightColors() ){
+            if( type() == DecorationButtonType::Close ) { 
+                buttonHoverColor = redColor; 
+                buttonFocusColor = redColorSaturated;
+            }
+            else {
+                KStatefulBrush buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::FocusColor );
+                KStatefulBrush buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::HoverColor );
+                buttonFocusColor = buttonFocusStatefulBrush.brush( c->palette() ).color();
+                buttonHoverColor = buttonHoverStatefulBrush.brush( c->palette() ).color();
+            }
+        } else {
+            if( type() == DecorationButtonType::Close ) { 
+                buttonHoverColor = redColor;
+                buttonFocusColor = redColorSaturated;
+            } else {
+                buttonFocusColor = KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+                buttonHoverColor = d->fontColor();
+            }
+        }
 
         if( isPressed() ) {
-
-            if( type() == DecorationButtonType::Close ) {
-                if( d->internalSettings()->outlineCloseButton() && d->internalSettings()->redOutline() ) return redColor.darker();
-                else return redColor;
-            }
-            else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+            return buttonFocusColor;
 
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
-
-            return d->fontColor();
-
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            if( d->internalSettings()->inheritSystemHighlightColors() ) return buttonFocusColor;
+            else return buttonHoverColor;
+        
+        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && d->internalSettings()->inheritSystemHighlightColors() ){
+            return buttonFocusColor;
+        }else if( m_animation->state() == QAbstractAnimation::Running ) {
 
             if( type() == DecorationButtonType::Close )
             {
                 if( d->internalSettings()->outlineCloseButton() )
                 {
-                    if (d ->internalSettings()->redOutline() )  return c->isActive() ? KColorUtils::mix( redColor, redColor.lighter(), m_opacity ) : KColorUtils::mix( redColor.lighter(), redColor, m_opacity );
-                    else return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter(), m_opacity );
-
+                    if ( d->internalSettings()->redOutline() && !c->isActive() ){
+                        return KColorUtils::mix( d->fontColor(), redColor, m_opacity );
+                    } else if( d->internalSettings()->redOutline() && c->isActive() ) {
+                        return redColor; //non-hovered and hovered are both same red -- no animation in background, just in foreground
+                    } else {
+                        return KColorUtils::mix( d->fontColor(), redColor, m_opacity );
+                    }
                 } else {
-
-                    QColor color( redColor.lighter() );
+                    QColor color( redColor );
                     color.setAlpha( color.alpha()*m_opacity );
                     return color;
-
                 }
 
             } else {
 
-                QColor color( d->fontColor() );
+                QColor color( buttonHoverColor );
                 color.setAlpha( color.alpha()*m_opacity );
                 return color;
 
             }
 
         } else if( isHovered() ) {
-
-            if( type() == DecorationButtonType::Close ){
-                if( d->internalSettings()->redOutline() ) return c->isActive() ? redColor.lighter() : redColor;
-                else return redColor.lighter();
-            }
-            else return d->fontColor();
+            return buttonHoverColor;
 
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
             if( d->internalSettings()->redOutline() ) return c->isActive() ? redColor : d->fontColor();
@@ -446,5 +522,42 @@ namespace Breeze
         if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
     }
+    
+    bool Button::shouldDrawBackgroundStroke() const
+    {
+        auto d = qobject_cast<Decoration*>(decoration());
+        if(!d) return false;
+        
+        return ( m_lowContrastBetweenTitleBarAndBackground );
+    }
+    
+    QColor Button::getHigherContrastForegroundColor( const QColor& foregroundColor, const QColor& backgroundColor, double blackWhiteContrastThreshold ) const
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        
+        double contrastRatio = KColorUtils::contrastRatio(foregroundColor, backgroundColor);
+        /*
+        qDebug() << "Button type" << static_cast<int>(type()) ;
+        qDebug() << "Contrast ratio: " << contrastRatio;
+        */
+        if( contrastRatio < blackWhiteContrastThreshold ) return getBlackOrWhiteForegroundForHighContrast(backgroundColor);
+        else return foregroundColor;
+    }
+    
+    QColor Button::getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor ) const
+    {
+        // based on http://www.w3.org/TR/AERT#color-contrast
+        
+        if ( !backgroundColor.isValid() ) return QColor();
+        
+        int rgbBackground[3];
+        
+        backgroundColor.getRgb(&rgbBackground[0], &rgbBackground[1], &rgbBackground[2]);
+        
+        double brightness = qRound(static_cast<double>(( (rgbBackground[0] * 299) + (rgbBackground[1] *587) + (rgbBackground[2] * 114) ) /1000));
+        
+        return (brightness > 125) ? QColor(Qt::GlobalColor::black) : QColor(Qt::GlobalColor::white);
+    }
+    
     
 } // namespace

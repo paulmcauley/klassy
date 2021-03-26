@@ -1395,7 +1395,7 @@ namespace Breeze
             painter->setPen( Qt::NoPen );
             painter->setBrush( color );
             
-            if ( StyleConfigData::buttonHighlightStyle() == StyleConfigData::EnumButtonHighlightStyle::HighlightSquare )
+            if ( decorationConfig()->buttonHighlightStyle() ==  InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
                 painter->drawRect( QRectF( 0, 0, 18, 18 ) );
             else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
             
@@ -1413,9 +1413,10 @@ namespace Breeze
         }
 
         pen.setWidthF( PenWidth::Symbol*qMax(1.0, 18.0/rect.width() ) );
+        painter->setPen(pen);
         
         std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
-        iconRenderer = RenderDecorationButtonIcon18By18::factory( decorationConfig(), painter, pen, true );
+        iconRenderer = RenderDecorationButtonIcon18By18::factory( decorationConfig(), painter, true );
         
         switch( buttonType )
         {

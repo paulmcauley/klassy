@@ -1,22 +1,8 @@
 /*
- * Copyright 2020  Paul McAuley <kde@paulmcauley.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+* SPDX-FileCopyrightText: 2021 Paul McAuley <kde@paulmcauley.com>
+* 
+* SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
+*/
 
 #include "renderdecorationbuttonicon.h"
 #include "styleclassik.h"
@@ -27,28 +13,28 @@
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar)
     {
         switch( internalSettings->buttonIconStyle() )
         {
             case InternalSettings::StyleClassik:
                 default:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(internalSettings, painter, pen, notInTitlebar ) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleClassik18By18(internalSettings, painter, notInTitlebar ) );
             case InternalSettings::StyleKite:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(internalSettings, painter, pen, notInTitlebar ) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleKite18By18(internalSettings, painter, notInTitlebar ) );
             case InternalSettings::StyleOxygen:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(internalSettings, painter, pen, notInTitlebar ) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18(internalSettings, painter, notInTitlebar ) );
             case InternalSettings::StyleRedmond:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(internalSettings, painter, pen, notInTitlebar ) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18(internalSettings, painter, notInTitlebar ) );
         }
     }
 
 
     
-    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const QPen& pen, const bool notInTitlebar )
+    RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar )
     {
         this->painter = painter;
-        this->pen = pen;
+        this->pen = painter->pen();
         this->notInTitlebar = notInTitlebar;
         
         
@@ -88,8 +74,8 @@ namespace Breeze
     /* base methods here are KDE's default Breeze/Oxygen style -- override with other styles */
     void RenderDecorationButtonIcon18By18::renderCloseIcon()
     {
-        painter->drawLine( 5, 5, 13, 13 );
-        painter->drawLine( 13, 5, 5, 13 );
+        painter->drawLine( QPointF(5, 5), QPointF(13, 13) );
+        painter->drawLine( QPointF(13, 5), QPointF(5, 13) );
     }
     
     void RenderDecorationButtonIcon18By18::renderMaximizeIcon()

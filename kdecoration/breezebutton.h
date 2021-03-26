@@ -4,7 +4,8 @@
 /*
 * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
 * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-*
+* SPDX-FileCopyrightText: 2021 Paul McAuley <kde@paulmcauley.com>
+* 
 * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 #include <KDecoration2/DecorationButton>
@@ -109,6 +110,20 @@ namespace Breeze
         QColor foregroundColor() const;
         QColor backgroundColor() const;
         //@}
+        
+        /**
+        * @brief Checks the contrast ratio of the two given colours, and if is below the given threshold returns a higher contrast black or white foreground
+        * @param foregroundColor The foreground colour to potentially replace
+        * @param backgroundColor The background colour to compare with
+        * @param blackWhiteContrastThreshold The contrast threshold, below which a black or white foreground colour will be returned
+        * @return the higher contrast QColor
+        */
+        QColor getHigherContrastForegroundColor( const QColor& foregroundColor, const QColor& backgroundColor, double blackWhiteContrastThreshold ) const;
+        QColor getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor ) const;
+        bool shouldDrawBackgroundStroke() const;
+        
+        QColor m_foregroundColor;
+        QColor m_backgroundColor;
 
         Flag m_flag = FlagNone;
 
@@ -126,6 +141,7 @@ namespace Breeze
         
         int m_squareHighlightIconVerticalTranslation = 0;
         int m_squareHighlightIconHorizontalTranslation = 0;
+        bool m_lowContrastBetweenTitleBarAndBackground = false;
     };
 
 } // namespace
