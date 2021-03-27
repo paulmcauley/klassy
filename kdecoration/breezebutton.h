@@ -122,6 +122,18 @@ namespace Breeze
         QColor getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor ) const;
         bool shouldDrawBackgroundStroke() const;
         
+        /**
+        * @brief Paint the button background for the square highlight style; NB: applies a translation at end due to different square button geometries
+        * @param painter Current QPainter object. NB: will be modified at end with a translation
+        */
+        void paintSquareBackground( QPainter* painter ) const;
+        
+        /**
+        * @brief Paint the button background for the circle highlight style;
+        * @param painter Current QPainter object
+        */
+        void paintCircleBackground( QPainter* painter ) const;
+        
         QColor m_foregroundColor;
         QColor m_backgroundColor;
 

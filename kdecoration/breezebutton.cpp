@@ -135,42 +135,12 @@ namespace Breeze
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-            //draw a background only with square highlight style; translation required if using Square buttonHighlightStyle
-            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
-            {                
-                if( m_backgroundColor.isValid() )
-                {            
-                    painter->save();
-                    painter->setRenderHints( QPainter::Antialiasing );
-                    painter->setBrush( m_backgroundColor );
-                    painter->setPen( Qt::NoPen );
-                    painter->drawRect( geometry() );
-                    
-                    
-                    if( shouldDrawBackgroundStroke() )
-                    {   
-                        QColor strokeColor = d->fontColor();
-                        if( m_animation->state() == QAbstractAnimation::Running ) {
-                            strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
-                        }
-                        QPen pen( strokeColor );
-                        pen.setWidthF( PenWidth::Symbol );
-                        painter->setPen(pen);
-                        painter->setBrush( Qt::NoBrush );
-                        
-                        //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
-                        QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
-                        painter->drawRect( strokeRect );
-                    } 
-                
-                    painter->restore();
-                }
-                
-                //if square highlight, must add a translation due to larger geometry
-                painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
-            }
+            //draw a background only with square highlight style; 
+            //NB: paintSquareBackground function applies a translation to painter as different square button geometry
+            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) 
+                paintSquareBackground(painter);
             
-            // translate from offset
+            // translate from offset -- this is the main offset that applies to all button geometries to space each button correctly
             if( m_flag == FlagFirstInList ) painter->translate( m_offset );
             else painter->translate( 0, m_offset.y() );
             
@@ -206,39 +176,10 @@ namespace Breeze
 
         auto d = qobject_cast<Decoration*>( decoration() );
                 
-        // render background if Square button highlight style
-        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
-        {
-            if( m_backgroundColor.isValid() )
-            {            
-                painter->save();
-                painter->setRenderHints( QPainter::Antialiasing );
-                painter->setBrush( m_backgroundColor );
-                painter->setPen( Qt::NoPen );
-                painter->drawRect( geometry() );
-                
-                if( shouldDrawBackgroundStroke() )
-                {   
-                    QColor strokeColor = d->fontColor();
-                    if( m_animation->state() == QAbstractAnimation::Running ) {
-                        strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
-                    }
-                    QPen pen( strokeColor );
-                    pen.setWidthF( PenWidth::Symbol );
-                    painter->setPen(pen);
-                    painter->setBrush( Qt::NoBrush );
-                    
-                    //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
-                    QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
-                    painter->drawRect( strokeRect );
-                } 
-                
-                painter->restore();
-            }
-            
-            //if square highlight, must add a translation due to larger geometry
-            painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
-        }
+        //draw a background only with square highlight style; 
+        //NB: paintSquareBackground function applies a translation to painter as different larger square button geometry
+        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) 
+            paintSquareBackground(painter);
         
         // translate from offset
         if( m_flag == FlagFirstInList ) painter->translate( m_offset );
@@ -259,18 +200,7 @@ namespace Breeze
         
         // render background if Circle button highlight style
         if((d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) && m_backgroundColor.isValid() )
-        {
-            painter->save();
-            if( shouldDrawBackgroundStroke() )
-            {   
-                QPen pen( d->fontColor() );
-                pen.setWidthF( PenWidth::Symbol );
-                painter->setPen(pen);
-            } else painter->setPen( Qt::NoPen );;
-            painter->setBrush( m_backgroundColor );
-            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-            painter->restore();
-        }
+            paintCircleBackground(painter);
         
         
         // render mark
@@ -557,6 +487,63 @@ namespace Breeze
         double brightness = qRound(static_cast<double>(( (rgbBackground[0] * 299) + (rgbBackground[1] *587) + (rgbBackground[2] * 114) ) /1000));
         
         return (brightness > 125) ? QColor(Qt::GlobalColor::black) : QColor(Qt::GlobalColor::white);
+    }
+    
+    
+    void Button::paintSquareBackground(QPainter* painter) const
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        
+        if( m_backgroundColor.isValid() )
+        {            
+            painter->save();
+            painter->setRenderHints( QPainter::Antialiasing );
+            painter->setBrush( m_backgroundColor );
+            
+            if( shouldDrawBackgroundStroke() )
+            {   
+                QColor strokeColor = d->fontColor();
+                if( m_animation->state() == QAbstractAnimation::Running ) {
+                    strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
+                }
+                QPen pen( strokeColor );
+                pen.setWidthF( PenWidth::Symbol );
+                painter->setPen(pen);
+                
+                //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
+                QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
+                painter->drawRect( strokeRect );
+            } else {
+                painter->setPen( Qt::NoPen );
+                painter->drawRect( geometry() );
+            }
+            
+            painter->restore();
+        }
+        
+        
+        //NB: if square highlight, must add a translation due to larger geometry
+        painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
+    }
+    
+    void Button::paintCircleBackground(QPainter* painter) const
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        
+        painter->save();
+        if( shouldDrawBackgroundStroke() )
+        {   
+            QColor strokeColor = d->fontColor();
+            if( m_animation->state() == QAbstractAnimation::Running ) {
+                strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
+            }
+            QPen pen( strokeColor );
+            pen.setWidthF( PenWidth::Symbol );
+            painter->setPen(pen);
+        } else painter->setPen( Qt::NoPen );;
+        painter->setBrush( m_backgroundColor );
+        painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+        painter->restore();
     }
     
     
