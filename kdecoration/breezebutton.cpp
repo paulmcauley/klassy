@@ -349,11 +349,7 @@ namespace Breeze
 
         auto c = d->client().toStrongRef().data();
         QColor redColor( c->color( ColorGroup::Warning, ColorRole::Foreground ) );
-        int redColorHsv[3];
-        redColor.getHsv(&redColorHsv[0], &redColorHsv[1], &redColorHsv[2]);
-        redColorHsv[1] = 255; //increase saturation to max
-        QColor redColorSaturated;
-        redColorSaturated.setHsv(redColorHsv[0], redColorHsv[1], redColorHsv[2]);
+        QColor redColorSaturated = getDifferentiatedSaturatedColor(redColor);
         
         QColor buttonHoverColor;
         QColor buttonFocusColor;
@@ -396,14 +392,14 @@ namespace Breeze
                 if( d->internalSettings()->outlineCloseButton() )
                 {
                     if ( d->internalSettings()->redOutline() && !c->isActive() ){
-                        return KColorUtils::mix( d->fontColor(), redColor, m_opacity );
+                        return KColorUtils::mix( d->fontColor(), buttonHoverColor, m_opacity );
                     } else if( d->internalSettings()->redOutline() && c->isActive() ) {
-                        return redColor; //non-hovered and hovered are both same red -- no animation in background, just in foreground
+                        return buttonHoverColor; //non-hovered and hovered are both same red -- no animation in background, just in foreground
                     } else {
-                        return KColorUtils::mix( d->fontColor(), redColor, m_opacity );
+                        return KColorUtils::mix( d->fontColor(), buttonHoverColor, m_opacity );
                     }
                 } else {
-                    QColor color( redColor );
+                    QColor color( buttonHoverColor );
                     color.setAlpha( color.alpha()*m_opacity );
                     return color;
                 }
@@ -420,7 +416,7 @@ namespace Breeze
             return buttonHoverColor;
 
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
-            if( d->internalSettings()->redOutline() ) return c->isActive() ? redColor : d->fontColor();
+            if( d->internalSettings()->redOutline() ) return c->isActive() ? buttonHoverColor : d->fontColor();
             else return d->fontColor();
 
         } else {
@@ -451,6 +447,17 @@ namespace Breeze
         m_animation->setDirection( hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
         if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
+    }
+    
+    QColor Button::getDifferentiatedSaturatedColor( const QColor& inputColor ) const
+    {
+        int colorHsv[3];
+        inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
+        if( colorHsv[1] < 240 ) colorHsv[1] = 255; //increase saturation to max if not max
+        else colorHsv[1] = 175; // else reduce saturation if already high to provide differentiation/contrast
+        QColor redColorSaturated;
+        redColorSaturated.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
+        return redColorSaturated;
     }
     
     bool Button::shouldDrawBackgroundStroke() const
