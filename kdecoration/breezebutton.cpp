@@ -454,7 +454,7 @@ namespace Breeze
         int colorHsv[3];
         inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
         if( colorHsv[1] < 240 ) colorHsv[1] = 255; //increase saturation to max if not max
-        else colorHsv[1] = 175; // else reduce saturation if already high to provide differentiation/contrast
+        else colorHsv[1] -= 80; // else reduce saturation if already high to provide differentiation/contrast
         QColor redColorSaturated;
         redColorSaturated.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
         return redColorSaturated;
