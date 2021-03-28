@@ -249,7 +249,7 @@ namespace Breeze
         void renderArrow( QPainter*, const QRect&, const QColor&, ArrowOrientation ) const;
 
         //* generic button (for mdi decorations, tabs and dock widgets)
-        void renderDecorationButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted ) const;
+        void renderDecorationButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted, bool paintBackground = false, const QColor& backgroundColor = QColor() ) const;
 
         //* generic shadow for rounded rectangles
         void renderRoundedRectShadow ( QPainter*, const QRectF&, const QColor&, qreal radius = Metrics::Frame_FrameRadius - 0.5 ) const;

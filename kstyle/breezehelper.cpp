@@ -8,6 +8,7 @@
 
 #include "breezestyleconfigdata.h"
 #include "renderdecorationbuttonicon.h"
+#include "colortools.h"
 
 #include <KColorUtils>
 #include <KIconLoader>
@@ -1376,9 +1377,9 @@ namespace Breeze
    }
 
     //______________________________________________________________________________
-    void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted ) const
+    void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted, bool paintBackground, const QColor& backgroundColor ) const
     {
-
+        
         painter->save();
         painter->setViewport( rect );
         painter->setWindow( 0, 0, 18, 18 );
@@ -1387,23 +1388,34 @@ namespace Breeze
         // initialize pen
         QPen pen;
         pen.setCapStyle( Qt::RoundCap );
-        pen.setJoinStyle( Qt::MiterJoin );
-
-        if( inverted )
+        pen.setJoinStyle( Qt::RoundJoin );
+        
+        if( inverted ) paintBackground = true;
+        if( paintBackground )
         {
             // render circle or square highlight
             painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
+            
+            if( inverted ) painter->setBrush( color );
+            else painter->setBrush( backgroundColor );
             
             if ( decorationConfig()->buttonHighlightStyle() ==  InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
-                painter->drawRect( QRectF( 0, 0, 18, 18 ) );
+                painter->drawRoundedRect( QRectF( 0, 0, 18, 18 ), 20, 20, Qt::RelativeSize );
             else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
             
-
-            // take out the inner part
-            painter->setCompositionMode( QPainter::CompositionMode_DestinationOut );
-            painter->setBrush( Qt::NoBrush );
-            pen.setColor( Qt::black );
+            
+            if (inverted ){
+                // take out the inner part
+                painter->setCompositionMode( QPainter::CompositionMode_DestinationOut );
+                painter->setBrush( Qt::NoBrush );
+                pen.setColor( Qt::black );
+            } else {
+                painter->setBrush( Qt::NoBrush );
+                if (buttonType != ButtonClose ){ //don't want to ruin the nice white colour in the close button
+                    QColor higherContrastForegroundColor = ColorTools::getHigherContrastForegroundColor( color, backgroundColor, 2.7);
+                    pen.setColor( higherContrastForegroundColor );
+                } else pen.setColor( color );
+            }
 
         } else {
 

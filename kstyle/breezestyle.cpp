@@ -18,6 +18,7 @@
 #include "breezewindowmanager.h"
 #include "breezeblurhelper.h"
 #include "breezetoolsareamanager.h"
+#include "colortools.h"
 
 #include <KColorUtils>
 #include <KIconLoader>
@@ -7158,15 +7159,25 @@ namespace Breeze
         else if( widget ) palette = widget->palette();
         else palette = QApplication::palette();
 
-        const bool isCloseButton( buttonType == ButtonClose && StyleConfigData::outlineCloseButton() );
+        const bool isOutlinedCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->outlineCloseButton() );
 
         palette.setCurrentColorGroup( QPalette::Active );
+        const QColor redColor = _helper->negativeText( palette );
+        const QColor saturatedRedColor = ColorTools::getDifferentiatedSaturatedColor(redColor);
         const auto base( palette.color( QPalette::WindowText ) );
         const auto selected( palette.color( QPalette::HighlightedText ) );
-        const auto negative( buttonType == ButtonClose ? _helper->negativeText( palette ):base );
-        const auto negativeSelected( buttonType == ButtonClose ? _helper->negativeText( palette ):selected );
+        const auto negative( buttonType == ButtonClose ? redColor:base );
+        const auto negativeSelected( buttonType == ButtonClose ? saturatedRedColor:selected );
+        
+        //Colours used if Inherit system highlight colours is selected
+        const QColor negativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : base );
+        const QColor backgroundFocusInheritSystemHighlight( _helper->buttonFocusColor(palette) );
+        const QColor negativeBackgroundHoverInheritSystemHighlight( buttonType == ButtonClose ? redColor:_helper->buttonHoverColor(palette) );
+        const QColor negativeBackgroundFocusInheritSystemHighlight( buttonType == ButtonClose ? saturatedRedColor:backgroundFocusInheritSystemHighlight ); 
+        const QColor invertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : base );
+        const QColor invertedNormalStateBackgroundInheritSystemHighlight( base );
 
-        const bool invertNormalState( isCloseButton );
+        const bool invertNormalState( isOutlinedCloseButton );
 
         // convenience class to map color to icon mode
         struct IconData
@@ -7175,6 +7186,16 @@ namespace Breeze
             bool _inverted;
             QIcon::Mode _mode;
             QIcon::State _state;
+        };
+        
+        struct IconDataInheritSystemHighlightColors
+        {
+            QColor _foregroundColor;
+            bool _paintBackground;
+            QColor _backgroundColor;
+            QIcon::Mode _mode;
+            QIcon::State _state;
+            
         };
 
         // map colors to icon states
@@ -7194,34 +7215,73 @@ namespace Breeze
             { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
 
         };
+        
+        const QList<IconDataInheritSystemHighlightColors> iconTypesInheritSystemHighlightColors =
+        {
+            // state off icons
+            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight,  0.5 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight,  0.5 ), QIcon::Normal, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.5 ), invertNormalState, backgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.5 ), true, negativeBackgroundHoverInheritSystemHighlight, QIcon::Active, QIcon::Off },
+            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight, 0.2 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight,  0.2 ), QIcon::Disabled, QIcon::Off },
+
+            // state on icons
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Normal, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Active, QIcon::On },
+            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight, 0.2 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight, 0.2) , QIcon::Disabled, QIcon::On }
+        
+        };
 
         // default icon sizes
         static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
 
         // output icon
         QIcon icon;
-
-        foreach( const IconData& iconData, iconTypes )
-        {
-
-            foreach( const int& iconSize, iconSizes )
+        
+        if( _helper->decorationConfig()->inheritSystemHighlightColors() ) {
+            foreach( const IconDataInheritSystemHighlightColors& iconData, iconTypesInheritSystemHighlightColors )
             {
-                // create pixmap
-                QPixmap pixmap( iconSize, iconSize );
-                pixmap.fill( Qt::transparent );
 
-                // create painter and render
-                QPainter painter( &pixmap );
-                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
+                foreach( const int& iconSize, iconSizes )
+                {
+                    // create pixmap
+                    QPixmap pixmap( iconSize, iconSize );
+                    pixmap.fill( Qt::transparent );
 
-                painter.end();
+                    // create painter and render
+                    QPainter painter( &pixmap );
+                    _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, false, iconData._paintBackground,  iconData._backgroundColor );
 
-                // store
-                icon.addPixmap( pixmap, iconData._mode, iconData._state );
+                    painter.end();
+
+                    // store
+                    icon.addPixmap( pixmap, iconData._mode, iconData._state );
+                }
+
             }
+        } else
+        {
+            foreach( const IconData& iconData, iconTypes )
+            {
 
+                foreach( const int& iconSize, iconSizes )
+                {
+                    // create pixmap
+                    QPixmap pixmap( iconSize, iconSize );
+                    pixmap.fill( Qt::transparent );
+
+                    // create painter and render
+                    QPainter painter( &pixmap );
+                    _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
+
+                    painter.end();
+
+                    // store
+                    icon.addPixmap( pixmap, iconData._mode, iconData._state );
+                }
+
+            }
         }
-
         return icon;
 
     }

@@ -12,7 +12,6 @@
 
 #include <QPainter>
 #include <QPainterPath>
-#include <QSharedPointer>
 #include <memory>
 
 namespace Breeze

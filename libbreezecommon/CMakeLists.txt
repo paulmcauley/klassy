@@ -1,11 +1,12 @@
 ################# dependencies #################
 ### Qt/KDE
 find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
-find_package(KF5 REQUIRED COMPONENTS Config)
+find_package(KF5 REQUIRED COMPONENTS Config GuiAddons)
 
 ################# breezestyle target #################
 set(breezecommon_LIB_SRCS
     breezeboxshadowrenderer.cpp
+    colortools.cpp
     renderdecorationbuttonicon.cpp
     styleclassik.cpp
     stylekite.cpp
@@ -26,6 +27,7 @@ target_link_libraries(classikstylescommon5
         Qt::Core
         Qt::Gui
         
+        KF5::GuiAddons
         KF5::ConfigCore
         KF5::ConfigGui)
 

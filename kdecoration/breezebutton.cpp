@@ -7,6 +7,7 @@
  */
 #include "breezebutton.h"
 #include "renderdecorationbuttonicon.h"
+#include "colortools.h"
 
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
@@ -298,7 +299,7 @@ namespace Breeze
         if( !d ) return QColor();
         auto c = d->client().toStrongRef().data();
         
-        QColor higherContrastFontColor = getHigherContrastForegroundColor( d->fontColor(), m_backgroundColor, 2.3 );
+        QColor higherContrastFontColor = ColorTools::getHigherContrastForegroundColor( d->fontColor(), m_backgroundColor, 2.3 );
         
         if( isPressed() ) {
             if( type() == DecorationButtonType::Close ) return Qt::GlobalColor::white;
@@ -349,7 +350,7 @@ namespace Breeze
 
         auto c = d->client().toStrongRef().data();
         QColor redColor( c->color( ColorGroup::Warning, ColorRole::Foreground ) );
-        QColor redColorSaturated = getDifferentiatedSaturatedColor(redColor);
+        QColor redColorSaturated = ColorTools::getDifferentiatedSaturatedColor(redColor);
         
         QColor buttonHoverColor;
         QColor buttonFocusColor;
@@ -447,18 +448,7 @@ namespace Breeze
         m_animation->setDirection( hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
         if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
-    }
-    
-    QColor Button::getDifferentiatedSaturatedColor( const QColor& inputColor ) const
-    {
-        int colorHsv[3];
-        inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
-        if( colorHsv[1] < 240 ) colorHsv[1] = 255; //increase saturation to max if not max
-        else colorHsv[1] -= 80; // else reduce saturation if already high to provide differentiation/contrast
-        QColor redColorSaturated;
-        redColorSaturated.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
-        return redColorSaturated;
-    }
+    }  
     
     bool Button::shouldDrawBackgroundStroke() const
     {
@@ -467,35 +457,6 @@ namespace Breeze
         
         return ( m_lowContrastBetweenTitleBarAndBackground );
     }
-    
-    QColor Button::getHigherContrastForegroundColor( const QColor& foregroundColor, const QColor& backgroundColor, double blackWhiteContrastThreshold ) const
-    {
-        auto d = qobject_cast<Decoration*>( decoration() );
-        
-        double contrastRatio = KColorUtils::contrastRatio(foregroundColor, backgroundColor);
-        /*
-        qDebug() << "Button type" << static_cast<int>(type()) ;
-        qDebug() << "Contrast ratio: " << contrastRatio;
-        */
-        if( contrastRatio < blackWhiteContrastThreshold ) return getBlackOrWhiteForegroundForHighContrast(backgroundColor);
-        else return foregroundColor;
-    }
-    
-    QColor Button::getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor ) const
-    {
-        // based on http://www.w3.org/TR/AERT#color-contrast
-        
-        if ( !backgroundColor.isValid() ) return QColor();
-        
-        int rgbBackground[3];
-        
-        backgroundColor.getRgb(&rgbBackground[0], &rgbBackground[1], &rgbBackground[2]);
-        
-        double brightness = qRound(static_cast<double>(( (rgbBackground[0] * 299) + (rgbBackground[1] *587) + (rgbBackground[2] * 114) ) /1000));
-        
-        return (brightness > 125) ? QColor(Qt::GlobalColor::black) : QColor(Qt::GlobalColor::white);
-    }
-    
     
     void Button::paintSquareBackground(QPainter* painter) const
     {
