@@ -7164,18 +7164,33 @@ namespace Breeze
         palette.setCurrentColorGroup( QPalette::Active );
         const QColor redColor = _helper->negativeText( palette );
         const QColor saturatedRedColor = ColorTools::getDifferentiatedSaturatedColor(redColor);
-        const auto base( palette.color( QPalette::WindowText ) );
-        const auto selected( palette.color( QPalette::HighlightedText ) );
-        const auto negative( buttonType == ButtonClose ? redColor:base );
-        const auto negativeSelected( buttonType == ButtonClose ? saturatedRedColor:selected );
+        const QColor base( palette.color( QPalette::WindowText ) );
+        const QColor selected( palette.color( QPalette::HighlightedText ) );
+        
+        const QColor offNegative( buttonType == ButtonClose ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor onNegative( buttonType == ButtonClose ? saturatedRedColor : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 ) );
+        const QColor onNegativeSelected( buttonType == ButtonClose ? saturatedRedColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.7 ) );
+        QColor offNegativeSelected; //used for MDI window titlebars
+        if( isOutlinedCloseButton ){
+            offNegativeSelected = _helper->decorationConfig()->redOutline() ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
+        } else offNegativeSelected = KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
         
         //Colours used if Inherit system highlight colours is selected
-        const QColor negativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : base );
+        const QColor onNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 ) );
+        const QColor offNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.5 ) );
         const QColor backgroundFocusInheritSystemHighlight( _helper->buttonFocusColor(palette) );
         const QColor negativeBackgroundHoverInheritSystemHighlight( buttonType == ButtonClose ? redColor:_helper->buttonHoverColor(palette) );
         const QColor negativeBackgroundFocusInheritSystemHighlight( buttonType == ButtonClose ? saturatedRedColor:backgroundFocusInheritSystemHighlight ); 
-        const QColor invertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : base );
-        const QColor invertedNormalStateBackgroundInheritSystemHighlight( base );
+        const QColor offInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor disabledInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
+        const QColor offInvertedNormalStateBackgroundInheritSystemHighlight( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor disabledInvertedNormalStateBackgroundInheritSystemHighlight( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
+        
+        //used for MDI window titlebars
+        const QColor offNegativeSelectedInvertedNormalStateBackgroundInheritSystemHighlight( _helper->decorationConfig()->redOutline() ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ) );
+        const QColor offNegativeSelectedInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? _helper->titleBarColor( true ) : _helper->titleBarTextColor( true ) );
+        
+
 
         const bool invertNormalState( isOutlinedCloseButton );
 
@@ -7204,14 +7219,14 @@ namespace Breeze
 
             // state off icons
             { KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ), invertNormalState, QIcon::Selected, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.5 ), true, QIcon::Active, QIcon::Off },
+            { offNegativeSelected, invertNormalState, QIcon::Selected, QIcon::Off },
+            { offNegative, true, QIcon::Active, QIcon::Off },
             { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
 
             // state on icons
-            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.7 ), true, QIcon::Normal, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeSelected, 0.7 ), true, QIcon::Selected, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negative, 0.7 ), true, QIcon::Active, QIcon::On },
+            { onNegative, true, QIcon::Normal, QIcon::On },
+            { onNegativeSelected, true, QIcon::Selected, QIcon::On },
+            { onNegative, true, QIcon::Active, QIcon::On },
             { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
 
         };
@@ -7219,16 +7234,16 @@ namespace Breeze
         const QList<IconDataInheritSystemHighlightColors> iconTypesInheritSystemHighlightColors =
         {
             // state off icons
-            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight,  0.5 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight,  0.5 ), QIcon::Normal, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.5 ), invertNormalState, backgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.5 ), true, negativeBackgroundHoverInheritSystemHighlight, QIcon::Active, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight, 0.2 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight,  0.2 ), QIcon::Disabled, QIcon::Off },
+            { offInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, offInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Normal, QIcon::Off },
+            { offNegativeSelectedInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, offNegativeSelectedInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Selected, QIcon::Off },
+            { offNegativeForegroundInheritSystemHighlight, true, negativeBackgroundHoverInheritSystemHighlight, QIcon::Active, QIcon::Off },
+            { disabledInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, disabledInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Disabled, QIcon::Off },
 
             // state on icons
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Normal, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), negativeForegroundInheritSystemHighlight, 0.7 ), true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Active, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateForegroundInheritSystemHighlight, 0.2 ), invertNormalState, KColorUtils::mix( palette.color( QPalette::Window ), invertedNormalStateBackgroundInheritSystemHighlight, 0.2) , QIcon::Disabled, QIcon::On }
+            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Normal, QIcon::On },
+            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::On },
+            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Active, QIcon::On },
+            { disabledInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, disabledInvertedNormalStateBackgroundInheritSystemHighlight , QIcon::Disabled, QIcon::On }
         
         };
 
