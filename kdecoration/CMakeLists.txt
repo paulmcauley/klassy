@@ -95,3 +95,4 @@ endif()
 
 install(TARGETS classikstylesdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 install(FILES config/classikstylesdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(DIRECTORY config/ui/classikstyles_config_icons DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2 FILES_MATCHING PATTERN "*.png")
