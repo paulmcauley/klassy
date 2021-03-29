@@ -41,7 +41,8 @@ set(breezedecoration_SRCS
     breezesettingsprovider.cpp
     breezesizegrip.cpp)
 
-kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
+# This is removed as kdecoration InternalSettings is now generated from libbreezecommon
+#kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
 
 ### config classes
 ### they are kept separately because they might move in a separate library in the future
@@ -77,7 +78,7 @@ target_link_libraries(classikstylesdecoration
     PRIVATE
         classikstylescommon5
         KDecoration2::KDecoration
-        KF5::ConfigCore
+        #KF5::ConfigCore
         KF5::CoreAddons
         KF5::ConfigWidgets
         KF5::GuiAddons

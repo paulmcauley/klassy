@@ -78,7 +78,8 @@ set(breeze_PART_SRCS
     breezetoolsareamanager.cpp
 )
 
-kconfig_add_kcfg_files(breeze_PART_SRCS ../kdecoration/breezesettings.kcfgc)
+#removed as the kdecoration kfgc is now processed in libbreezecommon
+#kconfig_add_kcfg_files(breeze_PART_SRCS ../kdecoration/breezesettings.kcfgc)
 kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
 add_library(classikstyles MODULE ${breeze_PART_SRCS})
 target_link_libraries(classikstyles Qt::Core Qt::Gui Qt::Widgets Qt::DBus)

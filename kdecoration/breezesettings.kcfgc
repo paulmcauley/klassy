@@ -1,5 +1,7 @@
 File=breezesettingsdata.kcfg
 ClassName=InternalSettings
+Visibility=BREEZECOMMON_EXPORT
+IncludeFiles=\"breezecommon_export.h\"
 NameSpace=Breeze
 Singleton=false
 Mutators=true
