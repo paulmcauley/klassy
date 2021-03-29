@@ -198,7 +198,7 @@ namespace Breeze
         
         
         // render background if Circle button highlight style
-        if((d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) && m_backgroundColor.isValid() )
+        if( d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
             paintCircleBackground(painter);
         
         
@@ -496,20 +496,23 @@ namespace Breeze
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         
-        painter->save();
-        if( shouldDrawBackgroundStroke() )
-        {   
-            QColor strokeColor = d->fontColor();
-            if( m_animation->state() == QAbstractAnimation::Running ) {
-                strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
-            }
-            QPen pen( strokeColor );
-            pen.setWidthF( PenWidth::Symbol );
-            painter->setPen(pen);
-        } else painter->setPen( Qt::NoPen );;
-        painter->setBrush( m_backgroundColor );
-        painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
-        painter->restore();
+        if( m_backgroundColor.isValid() )
+        {
+            painter->save();
+            if( shouldDrawBackgroundStroke() )
+            {   
+                QColor strokeColor = d->fontColor();
+                if( m_animation->state() == QAbstractAnimation::Running ) {
+                    strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
+                }
+                QPen pen( strokeColor );
+                pen.setWidthF( PenWidth::Symbol );
+                painter->setPen(pen);
+            } else painter->setPen( Qt::NoPen );
+            painter->setBrush( m_backgroundColor );
+            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            painter->restore();
+        }
     }
     
     

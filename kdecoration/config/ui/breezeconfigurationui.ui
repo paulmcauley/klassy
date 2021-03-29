@@ -99,11 +99,11 @@
        </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="buttonIconStyle">
-         <property name="minimumSize">
-          <size>
-           <width>170</width>
-           <height>0</height>
-          </size>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="iconSize">
           <size>
@@ -472,6 +472,9 @@ Button icon st&amp;yle:   </string>
        <property name="prefix">
         <string/>
        </property>
+       <property name="maximum">
+        <number>50</number>
+       </property>
       </widget>
       <widget class="QLabel" name="label_7">
        <property name="geometry">
@@ -526,6 +529,9 @@ Button icon st&amp;yle:   </string>
        <property name="prefix">
         <string/>
        </property>
+       <property name="maximum">
+        <number>50</number>
+       </property>
       </widget>
       <widget class="QSpinBox" name="titlebarSideMargins">
        <property name="geometry">
@@ -535,6 +541,9 @@ Button icon st&amp;yle:   </string>
          <width>52</width>
          <height>32</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <number>30</number>
        </property>
       </widget>
       <widget class="QLabel" name="label_10">
@@ -565,6 +574,9 @@ Button icon st&amp;yle:   </string>
          <height>32</height>
         </rect>
        </property>
+       <property name="maximum">
+        <number>30</number>
+       </property>
       </widget>
       <widget class="QLabel" name="label_11">
        <property name="geometry">
@@ -590,6 +602,9 @@ Button icon st&amp;yle:   </string>
          <width>61</width>
          <height>32</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>25.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.010000000000000</double>
@@ -619,6 +634,9 @@ Button icon st&amp;yle:   </string>
          <width>61</width>
          <height>32</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>25.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.010000000000000</double>
@@ -667,6 +685,9 @@ Button icon st&amp;yle:   </string>
        </property>
        <property name="suffix">
         <string> px</string>
+       </property>
+       <property name="maximum">
+        <number>70</number>
        </property>
       </widget>
       <widget class="QSpinBox" name="percentMaximizedTopBottomMargins">
@@ -1021,6 +1042,9 @@ Button icon st&amp;yle:   </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>shadowColor</cstring>
          </property>
         </widget>
        </item>
