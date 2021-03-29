@@ -116,7 +116,7 @@
     
     <!-- right button spacing -->
     <entry name="ButtonSpacingRight" type = "Int">
-       <default>9</default>
+       <default>10</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -173,7 +173,7 @@
     </entry>
     
     <entry name="UseTitlebarColorForAllBorders" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <!-- background gradient -->
