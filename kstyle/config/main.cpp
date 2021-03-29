@@ -21,11 +21,11 @@ int main(int argc, char *argv[])
     KLocalizedString::setApplicationDomain("breeze_style_config");
 
     QApplication app( argc, argv );
-    app.setApplicationName( i18n( "Classik Styles Settings" ) );
+    app.setApplicationName( i18n( "ClassikStyles Settings" ) );
     app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "breeze-settings" ) ) );
 
     KCMultiDialog dialog;
-    dialog.setWindowTitle( i18n( "Classik Styles Settings" ) );
+    dialog.setWindowTitle( i18n( "ClassikStyles Settings" ) );
     dialog.addModule( QStringLiteral( "classikstylesstyleconfig" ) );
     dialog.addModule( QStringLiteral( "classikstylesdecorationconfig" ) );
     dialog.show();

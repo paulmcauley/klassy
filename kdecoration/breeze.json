@@ -1,9 +1,9 @@
 {
     "KPlugin": {
-        "Description": "Window decorations using the Classik or Kite visual styles for the Plasma Desktop",
+        "Description": "Customizable window decorations using the Classik, Kite, Breeze or Redmond visual styles for the Plasma Desktop",
         "EnabledByDefault": true,
         "Id": "org.kde.classikstyles",
-        "Name": "Classik Styles",
+        "Name": "ClassikStyles",
         "ServiceTypes": [
             "org.kde.kdecoration2"
         ]
