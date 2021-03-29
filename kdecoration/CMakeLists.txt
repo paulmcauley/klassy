@@ -25,6 +25,8 @@ else()
 
 endif()
 
+set(CMAKE_AUTORCC ON)
+
 ################# configuration #################
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
@@ -53,6 +55,7 @@ set(breezedecoration_config_SRCS
     config/breezeexceptionlistwidget.cpp
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
+    config/ui/classikstylesdecoration_config.qrc
 )
 
 set(breezedecoration_config_PART_FORMS
@@ -96,4 +99,3 @@ endif()
 
 install(TARGETS classikstylesdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 install(FILES config/classikstylesdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
-install(DIRECTORY config/ui/classikstyles_config_icons DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2 FILES_MATCHING PATTERN "*.png")

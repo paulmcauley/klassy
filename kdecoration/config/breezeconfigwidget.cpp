@@ -74,19 +74,6 @@ namespace Breeze
         // track exception changes
         connect( m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged );
         
-        
-        QIcon classikIcon("/usr/lib64/qt5/plugins/org.kde.kdecoration2/classikstyles_config_icons/Classik.png");
-        m_ui.buttonIconStyle->setItemIcon(0,classikIcon);
-        
-        QIcon kiteIcon("/usr/lib64/qt5/plugins/org.kde.kdecoration2/classikstyles_config_icons/Kite.png");
-        m_ui.buttonIconStyle->setItemIcon(1,kiteIcon);
-        
-        QIcon oxygenIcon("/usr/lib64/qt5/plugins/org.kde.kdecoration2/classikstyles_config_icons/Oxygen.png");
-        m_ui.buttonIconStyle->setItemIcon(2,oxygenIcon);
-        
-        QIcon redmondIcon("/usr/lib64/qt5/plugins/org.kde.kdecoration2/classikstyles_config_icons/Redmond.png");
-        m_ui.buttonIconStyle->setItemIcon(3,redmondIcon);
-
     }
 
     //_________________________________________________________

@@ -115,20 +115,36 @@
           <property name="text">
            <string>  Classik</string>
           </property>
+          <property name="icon">
+           <iconset resource="classikstylesdecoration_config.qrc">
+            <normaloff>:/classikstyles_config_icons/Classik.png</normaloff>:/classikstyles_config_icons/Classik.png</iconset>
+          </property>
          </item>
          <item>
           <property name="text">
            <string>  Kite</string>
+          </property>
+          <property name="icon">
+           <iconset resource="classikstylesdecoration_config.qrc">
+            <normaloff>:/classikstyles_config_icons/Kite.png</normaloff>:/classikstyles_config_icons/Kite.png</iconset>
           </property>
          </item>
          <item>
           <property name="text">
            <string>  Oxygen/Breeze</string>
           </property>
+          <property name="icon">
+           <iconset resource="classikstylesdecoration_config.qrc">
+            <normaloff>:/classikstyles_config_icons/Oxygen.png</normaloff>:/classikstyles_config_icons/Oxygen.png</iconset>
+          </property>
          </item>
          <item>
           <property name="text">
            <string>  Redmond</string>
+          </property>
+          <property name="icon">
+           <iconset resource="classikstylesdecoration_config.qrc">
+            <normaloff>:/classikstyles_config_icons/Redmond.png</normaloff>:/classikstyles_config_icons/Redmond.png</iconset>
           </property>
          </item>
         </widget>
@@ -1121,6 +1137,8 @@ Button icon st&amp;yle:   </string>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="classikstylesdecoration_config.qrc"/>
+ </resources>
  <connections/>
 </ui>
