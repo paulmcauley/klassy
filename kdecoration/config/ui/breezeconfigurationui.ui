@@ -607,7 +607,7 @@ Button icon st&amp;yle:   </string>
         <double>25.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.010000000000000</double>
+        <double>0.050000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_12">
@@ -639,7 +639,7 @@ Button icon st&amp;yle:   </string>
         <double>25.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.010000000000000</double>
+        <double>0.050000000000000</double>
        </property>
       </widget>
       <widget class="QLabel" name="label_13">
@@ -674,7 +674,7 @@ Button icon st&amp;yle:   </string>
         <cstring>cornerRadius</cstring>
        </property>
       </widget>
-      <widget class="QSpinBox" name="cornerRadius">
+      <widget class="QDoubleSpinBox" name="cornerRadius">
        <property name="geometry">
         <rect>
          <x>590</x>
@@ -683,11 +683,11 @@ Button icon st&amp;yle:   </string>
          <height>32</height>
         </rect>
        </property>
-       <property name="suffix">
-        <string> px</string>
-       </property>
        <property name="maximum">
-        <number>70</number>
+        <double>25.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
        </property>
       </widget>
       <widget class="QSpinBox" name="percentMaximizedTopBottomMargins">

@@ -39,7 +39,7 @@ namespace Breeze
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
         connect( m_ui.percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarSideMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.cornerRadius, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
