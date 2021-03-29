@@ -99,6 +99,12 @@
        </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="buttonIconStyle">
+         <property name="minimumSize">
+          <size>
+           <width>170</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="iconSize">
           <size>
            <width>115</width>
