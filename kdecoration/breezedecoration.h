@@ -18,6 +18,7 @@
 #include <QPalette>
 #include <QVariant>
 #include <QVariantAnimation>
+#include <QPainterPath>
 
 class QVariantAnimation;
 
@@ -87,6 +88,8 @@ namespace Breeze
 
         inline bool hideTitleBar() const;
         //@}
+        
+        QPainterPath* titleBarPath(){return &m_titleBarPath;}
 
         public Q_SLOTS:
         void init() override;
@@ -147,6 +150,8 @@ namespace Breeze
         //*tilebar main state opacity
         int m_titleBarOpacityActive = 255;
         int m_titleBarOpacityInactive = 255;
+        
+        QPainterPath m_titleBarPath;
 
     };
 

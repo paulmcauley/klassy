@@ -42,8 +42,10 @@ namespace Breeze
         {
             FlagNone,
             FlagStandalone,
-            FlagFirstInList,
-            FlagLastInList,
+            FlagLeftmostNotAtEdge,
+            FlagLeftmostAndAtEdge,
+            FlagRightmostNotAtEdge,
+            FlagRightmostAndAtEdge,
         };
 
         //* flag
@@ -51,7 +53,7 @@ namespace Breeze
         { m_flag = value; }
 
         //* standalone buttons
-        bool isStandAlone() const { return m_flag == FlagStandalone; }
+        bool isStandAlone() const { return ( m_flag == FlagStandalone || m_flag == FlagLeftmostNotAtEdge || m_flag == FlagRightmostNotAtEdge); }
 
         //* offset
         void setOffset( const QPointF& value )

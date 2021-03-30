@@ -139,8 +139,8 @@ namespace Breeze
             if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) 
                 paintSquareBackground(painter);
             
-            // translate from offset -- this is the main offset that applies to all button geometries to space each button correctly
-            if( m_flag == FlagFirstInList ) painter->translate( m_offset );
+            // translate from offset
+            if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
             else painter->translate( 0, m_offset.y() );
             
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
@@ -181,7 +181,7 @@ namespace Breeze
             paintSquareBackground(painter);
         
         // translate from offset
-        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
+        if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
         else painter->translate( 0, m_offset.y() );
         
         /*
@@ -459,12 +459,18 @@ namespace Breeze
     void Button::paintSquareBackground(QPainter* painter) const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
+        auto s = d->settings();
+        QPainterPath* titlebarPath = d->titleBarPath();
         
         if( m_backgroundColor.isValid() )
         {            
             painter->save();
             painter->setRenderHints( QPainter::Antialiasing );
             painter->setBrush( m_backgroundColor );
+            
+            //clip the rounded corners using the titlebar path
+            if( !d->isMaximized() && s->isAlphaChannelSupported() && (m_flag == FlagLeftmostNotAtEdge || m_flag == FlagRightmostNotAtEdge) )
+                painter->setClipPath(*titlebarPath, Qt::IntersectClip);
             
             if( shouldDrawBackgroundStroke() )
             {   

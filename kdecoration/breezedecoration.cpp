@@ -590,13 +590,15 @@ namespace Breeze
             if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            
+            auto firstButton = static_cast<Button*>( m_leftButtons->buttons().front().data() );
+            firstButton->setFlag( Button::FlagLeftmostNotAtEdge);
             if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
-                auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( button->geometry().width() + hPadding, button->geometry().height() ) ) );
-                button->setHorizontalOffset( hPadding );
-                button->setFlag( Button::FlagFirstInList );
+                firstButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( firstButton->geometry().width() + hPadding, firstButton->geometry().height() ) ) );
+                firstButton->setHorizontalOffset( hPadding );
+                firstButton->setFlag( Button::FlagLeftmostAndAtEdge );
                 
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
@@ -619,12 +621,13 @@ namespace Breeze
             if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            
+            auto lastButton = static_cast<Button*>( m_rightButtons->buttons().back().data() );
+            lastButton->setFlag( Button::FlagRightmostNotAtEdge );
             if( isRightEdge() )
             {
-
-                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( button->geometry().width() + hPadding, button->geometry().height() ) ) );
-                button->setFlag( Button::FlagLastInList );
+                lastButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( lastButton->geometry().width() + hPadding, lastButton->geometry().height() ) ) );
+                lastButton->setFlag( Button::FlagRightmostAndAtEdge );
 
                 m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 
@@ -718,26 +721,29 @@ namespace Breeze
 
         auto s = settings();
         double cornerRadiusScaled = m_internalSettings->cornerRadius()*s->smallSpacing();
+        
+        m_titleBarPath.clear(); //clear the path for subsequent calls to this function
         if( isMaximized() || !s->isAlphaChannelSupported() )
         {
-
-            painter->drawRect(titleRect);
+            m_titleBarPath.addRect(titleRect);
+            painter->drawPath(m_titleBarPath);
 
         } else if( c->isShaded() ) {
-
-            painter->drawRoundedRect(titleRect, cornerRadiusScaled, cornerRadiusScaled);
+            m_titleBarPath.addRoundedRect(titleRect, cornerRadiusScaled, cornerRadiusScaled);
+            painter->drawPath(m_titleBarPath);
 
         } else {
-
+            
             painter->setClipRect(titleRect, Qt::IntersectClip);
-
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
-            painter->drawRoundedRect(titleRect.adjusted(
+            m_titleBarPath.addRoundedRect(titleRect.adjusted(
                 isLeftEdge() ? -cornerRadiusScaled:0,
                 isTopEdge() ? -cornerRadiusScaled:0,
                 isRightEdge() ? cornerRadiusScaled:0,
                 cornerRadiusScaled),
                 cornerRadiusScaled, cornerRadiusScaled);
+            
+            painter->drawPath(m_titleBarPath);
 
         }
 
