@@ -1,4 +1,4 @@
-# classikstyles
+# ClassikStyles
 ## Overview
 Fork of KDE Breeze to provide Classik and Kite window decoration styles in a binary.
 * Also provides Oxygen/Breeze and Redmond button icon styles;
