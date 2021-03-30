@@ -36,7 +36,7 @@ sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5
 sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev
 ```
 
-#### Arh/Manjaro build dependencies
+#### Arch/Manjaro build dependencies
 ```
 sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cmake-modules
 ```
