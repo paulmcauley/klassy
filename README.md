@@ -47,6 +47,11 @@ then install the following dependencies:
 sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev
 ```
 
+#### Arh/Manjaro build dependencies
+```
+sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cmake-modules
+```
+
 ### Step 2: Then build and install
 Build and install from source script:
 ```
