@@ -30,6 +30,7 @@ Raw RPM binary package from OpenSUSE Tumbleweed - these RPM packages may also wo
 &nbsp;
 
 ### Compile from source
+### Step 1: Build dependencies
 #### OpenSUSE Tumbleweed/Leap build dependencies
 (Leap requires newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories first):
 ```
@@ -37,7 +38,7 @@ sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5
 ```
 
 #### Ubuntu/KDE Neon build dependencies
-For Ubuntu-based distributions you will first need to edit the install.sh file and set the DKDE_INSTALL_LIBDIR as follows:
+For Ubuntu-based distributions you will need to edit the install.sh file and set the DKDE_INSTALL_LIBDIR as follows:
 ```
 -DKDE_INSTALL_LIBDIR=lib
 ```
@@ -46,6 +47,7 @@ then install the following dependencies:
 sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev
 ```
 
+### Step 2: Then build and install
 Build and install from source script:
 ```
 chmod +x install.sh
