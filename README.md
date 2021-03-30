@@ -24,7 +24,7 @@ https://software.opensuse.org//download.html?project=home%3Apaul4us&package=clas
 &nbsp;
 
 ### Compile from source
-### Step 1: First Install Dependencies
+### Step 1: First, Install Dependencies
 #### OpenSUSE Tumbleweed/Leap build dependencies
 (Leap requires newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories first):
 ```
@@ -41,7 +41,7 @@ sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11
 sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cmake-modules
 ```
 
-### Step 2: Then build and install
+### Step 2: Then, build and install
 First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR``` corresponds to your /usr/lib64 or /usr/lib directory (distribution dependent):
 
 > For OpenSUSE:
