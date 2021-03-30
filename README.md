@@ -16,9 +16,7 @@ OpenSUSE Tumbleweed/Leap repository:
 &nbsp;
 &nbsp;
 
-Raw RPM binary package from OpenSUSE Open Build Service - these RPM packages may also work in other distributions:
-
-https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles#directopenSUSE
+Raw RPM binary packages are also available from the first OpenSUSE Open Build Service link above under -- select OpenSUSE and then "Grab binary packages directly" - these RPMs will also work in other RPM-based distributions such as Fedora or Mageia.
 
 &nbsp;
 &nbsp;
