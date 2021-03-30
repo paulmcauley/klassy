@@ -41,10 +41,16 @@ sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11
 sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cmake-modules
 ```
 
+#### Fedora build dependencies
+```
+sudo dnf install cmake extra-cmake-modules
+sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11Extras)" "cmake(KF5GuiAddons)" "cmake(KF5WindowSystem)" "cmake(KF5I18n)" "cmake(KDecoration2)" "cmake(KF5CoreAddons)" "cmake(KF5ConfigWidgets)" "cmake(KF5IconThemes)" "cmake(KF5Package)" "cmake(Qt5Quick)" "cmake(KF5FrameworkIntegration)" "cmake(KF5KCMUtils)"
+```
+
 ### Step 2: Then, build and install
 First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR``` corresponds to your /usr/lib64 or /usr/lib directory (distribution dependent):
 
-> For OpenSUSE:
+> For OpenSUSE/Fedora:
 > ```
 > -DKDE_INSTALL_LIBDIR=lib64
 > ```
