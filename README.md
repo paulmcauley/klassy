@@ -42,16 +42,16 @@ sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cm
 ```
 
 ### Step 2: Then build and install
-First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR``` corresponds to your /usr/lib64 or /usr/lib directory, depending upon your distribution:
+First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR``` corresponds to your /usr/lib64 or /usr/lib directory (distribution dependent):
 
-For OpenSUSE:
-```
--DKDE_INSTALL_LIBDIR=lib64
-```
-For Ubuntu:
-```
--DKDE_INSTALL_LIBDIR=lib
-```
+> For OpenSUSE:
+> ```
+> -DKDE_INSTALL_LIBDIR=lib64
+> ```
+> For Ubuntu:
+> ```
+> -DKDE_INSTALL_LIBDIR=lib
+> ```
 
 Then build and install from source script:
 ```
