@@ -24,7 +24,7 @@ https://software.opensuse.org//download.html?project=home%3Apaul4us&package=clas
 &nbsp;
 
 ### Compile from source
-### Step 1: Build dependencies
+### Step 1: Install Dependencies
 #### OpenSUSE Tumbleweed/Leap build dependencies
 (Leap requires newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories first):
 ```
