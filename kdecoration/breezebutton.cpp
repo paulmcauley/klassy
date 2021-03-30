@@ -125,7 +125,7 @@ namespace Breeze
         m_backgroundColor = this->backgroundColor();
         m_foregroundColor = this->foregroundColor();
         
-        m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.4) );
+        m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
         
         painter->save();
         

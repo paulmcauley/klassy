@@ -40,7 +40,7 @@ namespace Breeze
         
         if ( internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsAuto ) {
             // if > "100 DPI" use bold (value is not accurate, rather relative to 96DPI scaled)
-            if( qMin(painter->device()->physicalDpiX(), painter->device()->physicalDpiY()) > 100 )  this->boldButtonIcons = true;
+            if( qMin(painter->device()->physicalDpiX(), painter->device()->physicalDpiY()) > 119 )  this->boldButtonIcons = true;
             else this->boldButtonIcons = false;
             
         } else if ( internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold ) this->boldButtonIcons = true;
