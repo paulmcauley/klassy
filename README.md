@@ -1,8 +1,8 @@
 # ClassikStyles
 ## Overview
-[Inspired by the classic style of KDE1](https://forum.kde.org/viewtopic.php?f=285&t=138602), _ClassikStyles_ is an attempt to update that classic style with fork of KDE Breeze to provide highly customizable _Classik_ and _Kite_ window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
+[Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602), _ClassikStyles_ is an attempt to update that classic style with fork of KDE Breeze to provide highly customizable _Classik_ and _Kite_ window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
-![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png)
+![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!);
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
@@ -14,8 +14,8 @@
 * Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled;
 
 ### Known issues
-* GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them.
-* If you have _Bold button icons_ set to _Auto_, GTK apps' titlebar buttons will be rendered as _Fine_. Workaround: explicitly select _Bold_ if you want bold.
+* GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
+* If you have _Bold button icons_ set to _Auto_, GTK apps' titlebar buttons will be rendered as _Fine_. Workaround: explicitly select _Bold_ if you want bold;
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
 ## Installation
