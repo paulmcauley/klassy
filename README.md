@@ -25,7 +25,7 @@ OpenSUSE Tumbleweed/Leap repository:
 &nbsp;
 &nbsp;
 
-Raw RPM binary packages are also available from the first OpenSUSE Open Build Service link above -- select OpenSUSE and then "Grab binary packages directly" -- these RPMs will also work in other RPM-based distributions such as Fedora or Mageia.
+Raw RPM binary packages are also available at https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80 -- these RPMs will also work in other RPM-based distributions such as Fedora or Mageia.
 
 &nbsp;
 &nbsp;
