@@ -1,10 +1,19 @@
 # ClassikStyles
 ## Overview
-Fork of KDE Breeze to provide highly customizable Classik and Kite window decoration styles in a binary.
+Fork of KDE Breeze to provide highly customizable Classik and Kite window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 * Also provides Oxygen/Breeze and Redmond button icon styles;
-* Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications match the titlebar icons;
-* Configurable button spacing (left and right);
-* Configurable whether to draw bold button icons for HiDPI displays.
+* Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!);
+* Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
+* Square or circular button highlights (square is now default as has a larger clickable area).
+* Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
+* Option to have matching titlebar colour and border colour;
+* Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI;
+* Configurable corner radius, also scales with different DPIs;
+* Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled;
+
+### Known issues
+* GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them.
+* If you have _Bold button icons_ set to _Auto_, GTK apps' titlebar buttons will be rendered as _Fine_. Workaround: explicitly select _Bold_ if you want bold.
 
 ## Installation
 ### Pre-built packages
