@@ -11,7 +11,8 @@
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;
-* Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI;
+* Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
+![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png "Screenshot of Sizing & Spacing tab")
 * Configurable corner radius, also scales with different DPIs;
 * Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled;
 
