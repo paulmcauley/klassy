@@ -1,6 +1,6 @@
 # ClassikStyles
 ## Overview
-[Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassikStyles_ is an attempt to update that classic style using a fork of KDE Breeze to provide highly customizable _Classik_ and _Kite_ window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
+ClassikStyles is a highly customizable binary window decoration and application style theme for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassikStyles_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
 ![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
