@@ -1,8 +1,8 @@
 # ClassikStyles
 ## Overview
-[Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602), _ClassikStyles_ is an attempt to update that classic style using a fork of KDE Breeze to provide highly customizable _Classik_ and _Kite_ window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
+[Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassikStyles_ is an attempt to update that classic style using a fork of KDE Breeze to provide highly customizable _Classik_ and _Kite_ window decoration styles in a binary. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
-![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png "Screenshot of Button icon style menu")
+![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!);
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
@@ -15,11 +15,11 @@
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
-![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png "Screenshot of Sizing & Spacing tab")
+![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png?raw=true "Screenshot of Sizing & Spacing tab")
 * Configurable corner radius, also scales with different DPIs:
-![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png "Increased corner radius")
+![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png?raw=true "Increased corner radius")
 * Transparency/opacity configurable for both active/inactive windows; setting to make maximized windows opaque; blur is enabled:
-![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png "Screenshot of Transparency tab")
+![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
 
 ### Known issues
 * GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
