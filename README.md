@@ -34,16 +34,19 @@
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
 ## Installation
+ClassikStyles requires an up-to-date version of KDE Frameworks (5.78), as well as Qt 5.15, so please check you have these in kinfocenter before trying to install.
 ### Pre-built packages
-OpenSUSE Tumbleweed/Leap repository:
+[Raw binary packages of version 2.0 are available for download here](https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80). The .rpm files will work in distributions such as OpenSUSE, Fedora or Mageia and the .deb files will work in KDE Neon, and Debian Testing/Unstable.
+
+&nbsp;
+&nbsp;
+
+
+Respositories are also available from the Open Build Service to keep you on the latest version
+OpenSUSE Tumbleweed/Leap and Debian Unstable/Testing repository:
 > https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles
 >
-> NB: for Leap you will first need to install newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories
-
-&nbsp;
-&nbsp;
-
-Raw RPM binary packages are also available at https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80 -- these RPMs will also work in other RPM-based distributions such as Fedora or Mageia.
+> NB: for OpenSUSE Leap you will first need to install newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories otherwise you could corrupt your system!
 
 &nbsp;
 &nbsp;
