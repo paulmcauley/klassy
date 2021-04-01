@@ -13,7 +13,8 @@
 * Option to have matching titlebar colour and border colour;
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
 ![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png "Screenshot of Sizing & Spacing tab")
-* Configurable corner radius, also scales with different DPIs;
+* Configurable corner radius, also scales with different DPIs:
+![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png "Increased corner radius")
 * Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled:
 ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png "Screenshot of Transparency tab")
 
