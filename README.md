@@ -42,11 +42,8 @@ ClassikStyles requires an up-to-date version of KDE Frameworks (5.78), as well a
 &nbsp;
 
 
-Respositories are also available from the Open Build Service to keep you on the latest version
-OpenSUSE Tumbleweed/Leap and Debian Unstable/Testing repository:
-> https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles
->
-> NB: for OpenSUSE Leap you will first need to install newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories otherwise you could corrupt your system!
+[Respositories are also available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles) for OpenSUSE and Debian to keep you on the latest version
+> NB: for OpenSUSE Leap you will [first need to install newer KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
 &nbsp;
