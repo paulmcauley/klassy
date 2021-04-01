@@ -5,7 +5,7 @@
 ![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!):
-> [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png)](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
+> [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png "Watch the demo video on enabling the Application Style")](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
 
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
 
