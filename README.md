@@ -12,9 +12,9 @@
 * Square or circular button highlights (square is now default as has a larger clickable area):
 > ![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Square button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
 > 
-> (Above square configuration: Button highlight style: square, Titlebar side margins: 0, Right-hand button spacing: 10
+> (Above-left square configuration: Button highlight style: square, Titlebar side margins: 0, Right-hand button spacing: 10
 >
-> Above circular configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
+> Above-right circular configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;
