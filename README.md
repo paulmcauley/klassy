@@ -34,7 +34,7 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
 ## Installation
-ClassikStyles requires an up-to-date version of KDE Frameworks (5.78), as well as Qt 5.15, so please check you have these in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+ClassikStyles requires at least Qt version 5.15, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 ### Pre-built packages
 [Raw binary packages of version 2.0 are available for download here](https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80). The .rpm files will work in distributions such as OpenSUSE, Fedora or Mageia, and the .deb files will work in KDE Neon and Debian Testing/Unstable.
 
