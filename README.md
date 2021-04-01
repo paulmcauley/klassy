@@ -5,22 +5,27 @@
 ![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!):
-* [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png)](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
+> [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png)](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
+
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
+
 * Square or circular button highlights (square is now default as has a larger clickable area):
-![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Square button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
->> (Above square configuration: Button highlight style: square, Titlebar side margins: 0, Right-hand button spacing: 10
->>
->> Above circular configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
+> ![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Square button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
+> (Above square configuration: Button highlight style: square, Titlebar side margins: 0, Right-hand button spacing: 10
+>
+> Above circular configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;
+
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
-![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png?raw=true "Screenshot of Sizing & Spacing tab")
+> ![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png?raw=true "Screenshot of Sizing & Spacing tab")
+
 * Configurable corner radius, also scales with different DPIs:
-![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png?raw=true "Increased corner radius")
+> ![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png?raw=true "Increased corner radius")
+
 * Transparency/opacity configurable for both active/inactive windows; setting to make maximized windows opaque; blur is enabled:
-![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
+> ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
 
 ### Known issues
 * GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
