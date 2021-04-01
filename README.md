@@ -79,7 +79,7 @@ First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR
 > ```
 > -DKDE_INSTALL_LIBDIR=lib64
 > ```
-> For Ubuntu:
+> For Debian/Ubuntu/KDE Neon:
 > ```
 > -DKDE_INSTALL_LIBDIR=lib
 > ```
