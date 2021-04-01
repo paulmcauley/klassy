@@ -34,9 +34,9 @@
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
 ## Installation
-ClassikStyles requires an up-to-date version of KDE Frameworks (5.78), as well as Qt 5.15, so please check you have these in kinfocenter before trying to install.
+ClassikStyles requires an up-to-date version of KDE Frameworks (5.78), as well as Qt 5.15, so please check you have these in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 ### Pre-built packages
-[Raw binary packages of version 2.0 are available for download here](https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80). The .rpm files will work in distributions such as OpenSUSE, Fedora or Mageia, and the .deb files will work in KDE Neon, and Debian Testing/Unstable.
+[Raw binary packages of version 2.0 are available for download here](https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80). The .rpm files will work in distributions such as OpenSUSE, Fedora or Mageia, and the .deb files will work in KDE Neon and Debian Testing/Unstable.
 
 &nbsp;
 &nbsp;
@@ -59,7 +59,7 @@ OpenSUSE Tumbleweed/Leap and Debian Unstable/Testing repository:
 sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5DBus-devel libqt5-qtx11extras-devel libkdecoration2-devel kcoreaddons-devel kguiaddons-devel kconfigwidgets-devel kwindowsystem-devel ki18n-devel kiconthemes-devel kpackage-devel libQt5QuickControls2-devel frameworkintegration-devel kcmutils-devel
 ```
 
-#### Ubuntu/KDE Neon build dependencies
+#### Debian/Ubuntu/KDE Neon build dependencies
 ```
 sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev
 ```
