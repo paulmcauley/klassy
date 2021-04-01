@@ -15,7 +15,7 @@
 ![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png "Screenshot of Sizing & Spacing tab")
 * Configurable corner radius, also scales with different DPIs:
 ![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png "Increased corner radius")
-* Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled:
+* Transparency/opacity configurable for both active/inactive windows; setting to make maximized windows opaque; blur is enabled:
 ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png "Screenshot of Transparency tab")
 
 ### Known issues
