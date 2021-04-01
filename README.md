@@ -14,7 +14,8 @@
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
 ![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png "Screenshot of Sizing & Spacing tab")
 * Configurable corner radius, also scales with different DPIs;
-* Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled;
+* Transparency/opacity configurable for both active/inactive windows; setting to turn off opacity for maximized windows; blur is enabled:
+![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png "Screenshot of Transparency tab")
 
 ### Known issues
 * GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
