@@ -5575,7 +5575,13 @@ namespace Breeze
     {
 
         // call parent style method
+
+        // we draw the focus ourselves so we don't need the parent to do it for us.
+        auto old = option->state;
+        // clear the State_HasFocus bit
+        const_cast<QStyleOption*>(option)->state &= ~State_HasFocus;
         ParentStyleClass::drawControl( CE_TabBarTabLabel, option, painter, widget );
+        const_cast<QStyleOption*>(option)->state = old;
 
         // store rect and palette
         const auto& rect( option->rect );
