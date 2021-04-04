@@ -468,9 +468,9 @@ namespace Breeze
             painter->setRenderHints( QPainter::Antialiasing );
             painter->setBrush( m_backgroundColor );
             
-            //clip the rounded corners using the titlebar path
-            if( !d->isMaximized() && s->isAlphaChannelSupported() && (m_flag == FlagLeftmostNotAtEdge || m_flag == FlagRightmostNotAtEdge) )
-                painter->setClipPath(*titlebarPath, Qt::IntersectClip);
+            
+            QPainterPath background;
+            
             
             if( shouldDrawBackgroundStroke() )
             {   
@@ -484,11 +484,19 @@ namespace Breeze
                 
                 //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
                 QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
-                painter->drawRect( strokeRect );
+                
+                background.addRect(strokeRect);
             } else {
                 painter->setPen( Qt::NoPen );
-                painter->drawRect( geometry() );
+                background.addRect( geometry() );
             }
+            
+            //clip the rounded corners using the titlebar path
+            //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
+            if( !d->isMaximized() && s->isAlphaChannelSupported() )
+                background = background.intersected( *titlebarPath );
+            
+            painter->drawPath( background );
             
             painter->restore();
         }
