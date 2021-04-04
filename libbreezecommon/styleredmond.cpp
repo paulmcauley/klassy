@@ -35,18 +35,18 @@ namespace Breeze
                 //thicker pen in titlebar
                 pen.setWidthF( pen.widthF() *1.666666 );
             }
-            
         }
         
-        pen.setJoinStyle( Qt::RoundJoin );
+        pen.setJoinStyle( Qt::BevelJoin );
         painter->setPen( pen );
         //large square
         painter->drawRoundedRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ), 0.025, 0.025, Qt::RelativeSize);
+        //painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
     }
 
     void RenderStyleRedmond18By18::renderRestoreIcon()
     {
-        pen.setJoinStyle( Qt::RoundJoin );
+        pen.setJoinStyle( Qt::BevelJoin );
         painter->setPen( pen );
         
         if(this->notInTitlebar){
@@ -70,13 +70,17 @@ namespace Breeze
             }
             
             //overlapping windows icon
+            //foregreound square
             painter->drawRect( QRectF( QPointF( 4.5, 6.5 ), QPointF( 11.5, 13.5 ) ) );
+            
+            //background square
             painter->drawPolyline( QVector<QPointF>{
-                QPointF( 6.5, 6.5 ),
+                QPointF( 6.5, 6 ),
                 QPointF( 6.5, 4.5 ),
                 QPointF( 13.5, 4.5 ),
                 QPointF( 13.5, 11.5 ),
-                QPointF( 11.5, 11.5 )} );
+                QPointF( 12, 11.5 )} );
+
         }
     }
     
