@@ -734,7 +734,9 @@ namespace Breeze
 
         } else {
             
-            painter->setClipRect(titleRect, Qt::IntersectClip);
+            QPainterPath clipRect;
+            clipRect.addRect(titleRect);
+            
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
             m_titleBarPath.addRoundedRect(titleRect.adjusted(
                 isLeftEdge() ? -cornerRadiusScaled:0,
@@ -742,6 +744,8 @@ namespace Breeze
                 isRightEdge() ? cornerRadiusScaled:0,
                 cornerRadiusScaled),
                 cornerRadiusScaled, cornerRadiusScaled);
+            
+            m_titleBarPath = m_titleBarPath.intersected(clipRect);
             
             painter->drawPath(m_titleBarPath);
 
