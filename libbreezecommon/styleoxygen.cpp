@@ -70,12 +70,22 @@ namespace Breeze
     
     void RenderStyleOxygen18By18::renderContextHelpIcon()
     {
-        if( (!notInTitlebar) && boldButtonIcons ){
+        //thicker pen in titlebar
+        if((!notInTitlebar) && boldButtonIcons) {
             pen.setWidthF( pen.widthF() *1.6 );
-            painter->setPen( pen );
         }
+        pen.setJoinStyle( Qt::RoundJoin );
+        painter->setPen( pen );
         
-        RenderDecorationButtonIcon18By18::renderContextHelpIcon();
+        QPainterPath path;
+        path.moveTo( 7, 5 );
+        path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
+        path.cubicTo( QPointF(12, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
+        painter->drawPath( path );
+        
+        painter->setPen( Qt::NoPen );
+        painter->setBrush( pen.color() );
+        painter->drawEllipse( QRectF( 8, 14, 2, 2 ) );
     }
     
     void RenderStyleOxygen18By18::renderShadeIcon()
