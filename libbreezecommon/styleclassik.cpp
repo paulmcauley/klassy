@@ -259,11 +259,12 @@ namespace Breeze
         QPainterPath path;
         path.moveTo( 7, 5 );
         path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
-        path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
+        path.cubicTo( QPointF(12, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
         painter->drawPath( path );
         
+        painter->setPen( Qt::NoPen );
         painter->setBrush( pen.color() );
-        painter->drawEllipse( QRectF( 9, 15, 0.5, 0.5 ) );
+        painter->drawEllipse( QRectF( 8, 14, 2, 2 ) );
     }
     
     void RenderStyleClassik18By18::renderShadeIcon()
