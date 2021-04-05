@@ -36,7 +36,7 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 ## Installation
 _ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt version 5.15__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 ### Pre-built packages
-[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles) for OpenSUSE, Debian/KDE Neon and Arch/Manjaro to keep you on the latest version.
+[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles) for OpenSUSE, Debian/KDE Neon, Fedora and Arch/Manjaro to keep you on the latest version.
 > NB: for OpenSUSE Leap you will [first need to install newer KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
