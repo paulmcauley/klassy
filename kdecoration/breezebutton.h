@@ -147,6 +147,7 @@ namespace Breeze
         int m_squareHighlightIconVerticalTranslation = 0;
         int m_squareHighlightIconHorizontalTranslation = 0;
         bool m_lowContrastBetweenTitleBarAndBackground = false;
+        bool m_isGtkCsdButton;
     };
 
 } // namespace

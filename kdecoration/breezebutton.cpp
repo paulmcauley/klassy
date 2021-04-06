@@ -30,6 +30,7 @@ namespace Breeze
     Button::Button(DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
         , m_animation( new QVariantAnimation( this ) )
+        , m_isGtkCsdButton( false )
     {
 
         // setup animation
@@ -40,6 +41,13 @@ namespace Breeze
         connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             setOpacity(value.toReal());
         });
+        
+        //detect the kde-gtk-config-daemon
+        if (QCoreApplication::applicationName() == QStringLiteral("kded5")) {
+            // From Chris Holland https://github.com/Zren/material-decoration/
+            // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk.
+            m_isGtkCsdButton = true;
+        }
 
         // setup default geometry
         const int height = decoration->buttonHeight();
@@ -493,7 +501,8 @@ namespace Breeze
             
             //clip the rounded corners using the titlebar path
             //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
-            if( !d->isMaximized() && s->isAlphaChannelSupported() )
+            //kde-gtk-config does not like button clipping and therefore does not draw background for maximize/close
+            if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
                 background = background.intersected( *titlebarPath );
             
             painter->drawPath( background );
