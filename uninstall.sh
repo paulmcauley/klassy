@@ -1,4 +1,5 @@
 #!/bin/sh
+# Modified from https://github.com/kupiqu/SierraBreezeEnhanced
 
 ORIGINAL_DIR=$(pwd)
 

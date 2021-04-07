@@ -56,7 +56,7 @@ sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5
 
 #### Debian/Ubuntu/KDE Neon build dependencies
 ```
-sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev
+sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev libkf5style-dev libkf5kcmutils-dev
 ```
 
 #### Arch/Manjaro build dependencies
@@ -71,18 +71,7 @@ sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11
 ```
 
 ### Step 2: Then, build and install
-First, edit the ```install.sh``` file and check that the ```-DKDE_INSTALL_LIBDIR``` corresponds to your KDE /usr/lib64 or /usr/lib directory (distribution dependent):
-
-> For OpenSUSE/Fedora:
-> ```
-> -DKDE_INSTALL_LIBDIR=lib64
-> ```
-> For Debian/Ubuntu/KDE Neon:
-> ```
-> -DKDE_INSTALL_LIBDIR=lib
-> ```
-
-Then build and install from source script:
+Build and install from source script:
 ```
 chmod +x install.sh
 ./install.sh
