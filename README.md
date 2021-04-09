@@ -85,7 +85,7 @@ chmod +x uninstall.sh
 
 ## System icon theme
 To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, for example, _Classik with Square highlight_:
-> ![Screenshot of Classik with Square highlight icon theme](screenshots/classik_square_icons.png?raw=true "Screenshot of Classik with Square highlight icon theme")
+> <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/classik_square_icons.png" alt="Screenshot of Classik with Square highlight icon theme" width="512">
 
 To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "classikstyles". Then download your theme of choice to match your Button icon style and Button highlight style:
 > ![Screenshot of downloading matching ClassikStyles system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassikStyles system icons")
