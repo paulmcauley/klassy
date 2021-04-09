@@ -33,6 +33,8 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 * If you have _Bold button icons_ set to _Auto_, GTK apps' titlebar buttons will be rendered as _Fine_. Workaround: explicitly select _Bold_ if you want bold;
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
+&nbsp;
+
 ## Installation
 _ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt version 5.15__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 ### Pre-built packages
@@ -82,6 +84,8 @@ Uninstall build script:
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
+
+&nbsp;
 
 ## System icon theme
 To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, for example, _Classik with Square highlight_:
