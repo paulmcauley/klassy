@@ -49,9 +49,11 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 &nbsp;
 
 <a name="installation"/>
+
 ## Installation
 _ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt version 5.15__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
+
 ### Pre-built packages
 [Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classikstyles) for OpenSUSE, Debian/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
 > NB: for OpenSUSE Leap you will [first need to install newer KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
@@ -63,6 +65,7 @@ _ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt versi
 &nbsp;
 &nbsp;
 <a name="compile"/>
+
 ### Compile from source
 ### Step 1: First, Install Dependencies
 #### OpenSUSE Tumbleweed/Leap build dependencies
@@ -102,6 +105,7 @@ chmod +x uninstall.sh
 
 &nbsp;
 <a name="icons"/>
+
 ## System icon theme
 To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, for example, _Classik-with-Square-highlight_:
 > <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/classik_square_icons.png" alt="Screenshot of Classik with Square highlight icon theme" width="512">
