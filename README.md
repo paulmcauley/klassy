@@ -82,3 +82,12 @@ Uninstall build script:
 chmod +x uninstall.sh
 ./uninstall.sh
 ```
+
+## System icon theme
+To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, for example, _Classik with Square highlight_:
+> ![Screenshot of Classik with Square highlight icon theme](screenshots/classik_square_icons.png?raw=true "Screenshot of Classik with Square highlight icon theme")
+
+To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "classikstyles". Then download your theme of choice to match your Button icon style and Button highlight style:
+> ![Screenshot of downloading matching ClassikStyles system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassikStyles system icons")
+
+These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
