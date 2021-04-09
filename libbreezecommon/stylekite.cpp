@@ -142,22 +142,27 @@ namespace Breeze
     
     void RenderStyleKite18By18::renderContextHelpIcon()
     {
-        //thicker pen in titlebar
         if((!notInTitlebar) && boldButtonIcons) {
+            //thicker pen in titlebar
             pen.setWidthF( pen.widthF() *1.6 );
         }
+        
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
         
+        //main body of question mark
         QPainterPath path;
         path.moveTo( 7, 5 );
         path.arcTo( QRectF( 6.5, 3.5, 5.5, 5 ), 150, -160 );
         path.cubicTo( QPointF(12, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
         painter->drawPath( path );
         
+        
+        //dot of question mark
         painter->setPen( Qt::NoPen );
         painter->setBrush( pen.color() );
-        painter->drawEllipse( QRectF( 8, 14, 2, 2 ) );
+        if((!notInTitlebar) && boldButtonIcons) painter->drawEllipse( QRectF( 8, 14, 2, 2 ) );
+        else painter->drawEllipse( QRectF( 8.25, 14.25, 1.5, 1.5 ) );
     }
 
     void RenderStyleKite18By18::renderShadeIcon()
