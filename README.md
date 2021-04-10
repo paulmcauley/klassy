@@ -43,7 +43,6 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 
 ### Known issues
 * GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
-* If you have _Bold button icons_ set to _Auto_, GTK apps' titlebar buttons will be rendered as _Fine_. Workaround: explicitly select _Bold_ if you want bold;
 * Changing the corner radius will sometimes require a logout and login again before updating properly.
 
 &nbsp;
