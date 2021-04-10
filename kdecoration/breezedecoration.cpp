@@ -30,8 +30,6 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QDBusConnection>
-#include <stdio.h>
-#include <string>
 
 #if BREEZE_HAVE_X11
 #include <QX11Info>
@@ -226,8 +224,6 @@ namespace Breeze
     void Decoration::init()
     {
         auto c = client().data();
-
-        loadSystemScaleFactor();
         
         // active state change animation
         // It is important start and end value are of the same type, hence 0.0 and not just 0
@@ -412,11 +408,15 @@ namespace Breeze
 
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
 
-        // animation
-
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        
+        // loads system ScaleFactor from ~/.config/kdeglobals
+        const KConfigGroup cgKScreen(config, QStringLiteral("KScreen"));
+        m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
+        
         const KConfigGroup cg(config, QStringLiteral("KDE"));
-
+        
+        // animation
         m_animation->setDuration(0);
         // Syncing anis between client and decoration is troublesome, so we're not using
         // any animations right now.
@@ -1036,35 +1036,6 @@ namespace Breeze
                 m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
             }
         }
-    }
-    
-    /* loads ScaleFactor from ~/.config/kdeglobals
-     * 
-     * Previous method used painter->device()->physicalDpiX but this Qt device value
-     * did not work for kde-gtk-config kded5 daemon nor preview in Window Decorations, and returned 96DPI no matter what.
-     * Previous version with 2.5x scaling set would also set both logical and physical DPI to the same value even when not 
-     * (and set devicePixelRatio to 1 no matter what).
-     */
-    void Decoration::loadSystemScaleFactor()
-    {
-        FILE *fp;
-        char commandOutput[8];
-        m_systemScaleFactor = 1;
-        
-        //pipe the output of kreadconfig5 to commandOutput;
-        fp = popen("kreadconfig5 --group KScreen --key ScaleFactor", "r");
-        if (fp == NULL ) return;
-        fgets(commandOutput, sizeof(commandOutput), fp);
-        pclose(fp);
-        
-        //convert the output string to a number
-        try{
-            m_systemScaleFactor = std::stod(commandOutput);
-        } catch (const std::invalid_argument& ia) { //if not a number we don't care and just say scale factor is 1
-            m_systemScaleFactor = 1;
-            return;
-        }
-        
     }
 
 } // namespace
