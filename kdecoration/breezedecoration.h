@@ -90,7 +90,7 @@ namespace Breeze
         //@}
         
         QPainterPath* titleBarPath(){ return &m_titleBarPath; }
-        double systemScaleFactor(){ return m_systemScaleFactor; }
+        qreal systemScaleFactor(){ return m_systemScaleFactor; }
 
         public Q_SLOTS:
         void init() override;
@@ -132,7 +132,6 @@ namespace Breeze
         
         int getTitleBarTopBottomMargins() const;
         void setTitleBarOpacity();
-        void loadSystemScaleFactor();
 
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -155,7 +154,7 @@ namespace Breeze
         
         QPainterPath m_titleBarPath;
         
-        double m_systemScaleFactor = 1;
+        qreal m_systemScaleFactor = 1;
 
     };
 
