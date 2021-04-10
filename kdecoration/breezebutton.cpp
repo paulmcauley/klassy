@@ -48,6 +48,8 @@ namespace Breeze
             // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk.
             m_isGtkCsdButton = true;
         }
+        
+        setShouldDrawBoldButtonIcons();
 
         // setup default geometry
         const int height = decoration->buttonHeight();
@@ -223,7 +225,7 @@ namespace Breeze
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
             if (d) { 
                 
-                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false );
+                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons );
 
                 switch( type() )
                 {
@@ -501,7 +503,7 @@ namespace Breeze
             
             //clip the rounded corners using the titlebar path
             //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
-            //kde-gtk-config does not like button clipping and therefore does not draw background for maximize/close
+            //kde-gtk-config (via kded5) does not like button clipping and therefore does not draw background for maximize/close
             if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
                 background = background.intersected( *titlebarPath );
             
@@ -538,5 +540,27 @@ namespace Breeze
         }
     }
     
+    
+    void Button::setShouldDrawBoldButtonIcons()
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        
+        m_boldButtonIcons = false;
+        switch( d->internalSettings()->boldButtonIcons() )
+        {
+            case InternalSettings::BoldIconsFine:
+            default:
+                break;
+            case InternalSettings::BoldIconsBold:
+                m_boldButtonIcons = true;
+                break;
+            case InternalSettings::BoldIconsAuto:
+                // If HiDPI system scaling use bold icons
+                if ( d->systemScaleFactor()  > 1.2 )
+                    m_boldButtonIcons = true;
+                break;
+        }
+        
+    }
     
 } // namespace

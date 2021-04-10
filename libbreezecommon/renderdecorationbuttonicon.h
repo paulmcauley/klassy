@@ -34,9 +34,10 @@ namespace Breeze
              * @param internalSettings An InternalSettingsPtr from the Window decoration config
              * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
+             * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar = false );
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar = false, const bool boldButtonIcons = false );
             
             virtual ~RenderDecorationButtonIcon18By18();
             
@@ -60,9 +61,10 @@ namespace Breeze
              * 
              * @param internalSettings An InternalSettingsPtr from the Window decoration config
              * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-             * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
+             * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
+             * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
              */
-            RenderDecorationButtonIcon18By18( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar );
+            RenderDecorationButtonIcon18By18( QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons );
             
             
             /**

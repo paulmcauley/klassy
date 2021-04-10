@@ -89,7 +89,8 @@ namespace Breeze
         inline bool hideTitleBar() const;
         //@}
         
-        QPainterPath* titleBarPath(){return &m_titleBarPath;}
+        QPainterPath* titleBarPath(){ return &m_titleBarPath; }
+        double systemScaleFactor(){ return m_systemScaleFactor; }
 
         public Q_SLOTS:
         void init() override;
@@ -131,6 +132,7 @@ namespace Breeze
         
         int getTitleBarTopBottomMargins() const;
         void setTitleBarOpacity();
+        void loadSystemScaleFactor();
 
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -152,6 +154,8 @@ namespace Breeze
         int m_titleBarOpacityInactive = 255;
         
         QPainterPath m_titleBarPath;
+        
+        double m_systemScaleFactor = 1;
 
     };
 
