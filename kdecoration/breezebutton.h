@@ -114,6 +114,7 @@ namespace Breeze
         //@}
         
         bool shouldDrawBackgroundStroke() const;
+        void setShouldDrawBoldButtonIcons();
         
         /**
         * @brief Paint the button background for the square highlight style; NB: applies a translation at end due to different square button geometries
@@ -148,6 +149,7 @@ namespace Breeze
         int m_squareHighlightIconHorizontalTranslation = 0;
         bool m_lowContrastBetweenTitleBarAndBackground = false;
         bool m_isGtkCsdButton;
+        bool m_boldButtonIcons;
     };
 
 } // namespace

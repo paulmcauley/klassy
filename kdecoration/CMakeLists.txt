@@ -25,6 +25,7 @@ else()
 
 endif()
 
+set (CMAKE_CXX_FLAGS "-fexceptions")
 set(CMAKE_AUTORCC ON)
 
 ################# configuration #################
