@@ -59,7 +59,7 @@ _ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt versi
 
 &nbsp;
 
-[Raw binary packages of version 2.0 are also available for download here](https://github.com/paulmcauley/classikstyles/releases/tag/2.0.breeze5.21.80). The .rpm files will work in distributions such as OpenSUSE, Fedora or Mageia; the .deb files will work in KDE Neon and Debian Testing/Unstable; the pkg.tar.zst file is for Arch Linux/Manjaro.
+Raw binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly" -- a .rpm or .deb file from one of the selected distributions should also work on other distributions.
 
 &nbsp;
 &nbsp;
