@@ -500,10 +500,11 @@ namespace Breeze
                 background.addRect( geometry() );
             }
             
-            //clip the rounded corners using the window path
+            //clip the rounded corners using the windowPath
             //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
-            //used to use titlebarPath for clipping but kde-gtk-config kwin_bridge (via kded5) does not draw all buttons if we clip with titlebarPath
-            if( !d->isMaximized() && s->isAlphaChannelSupported() )
+            //kde-gtk-config kwin_bridge (via kded5) does not draw all buttons if we clip with titlebarPath
+            //      -kwin_bridge works if we use windowPath, but cannot be sure either detection method will work in future so use both methods
+            if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
                 background = background.intersected( *(d->windowPath()) );
             
             painter->drawPath( background );
