@@ -407,6 +407,8 @@ namespace Breeze
     {
 
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
+        
+        setScaledCornerRadius();
 
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         
@@ -672,8 +674,7 @@ namespace Breeze
             // use clipRect for clipping away the top part
             if( !hideTitleBar() ) clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
             
-            double cornerRadiusScaled = m_internalSettings->cornerRadius()*s->smallSpacing();
-            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), cornerRadiusScaled, cornerRadiusScaled);
+            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             else m_windowPath.addRect( rect() );
             
             //clip off the titlebar and draw bottom part
@@ -734,7 +735,6 @@ namespace Breeze
         }
 
         auto s = settings();
-        double cornerRadiusScaled = m_internalSettings->cornerRadius()*s->smallSpacing();
         
         m_titleBarPath.clear(); //clear the path for subsequent calls to this function
         //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
@@ -743,7 +743,7 @@ namespace Breeze
             m_titleBarPath.addRect(titleRect);
 
         } else if( c->isShaded() ) {
-            m_titleBarPath.addRoundedRect(titleRect, cornerRadiusScaled, cornerRadiusScaled);
+            m_titleBarPath.addRoundedRect(titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
             m_windowPath = m_titleBarPath; //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
 
         } else {
@@ -753,11 +753,11 @@ namespace Breeze
             
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
             m_titleBarPath.addRoundedRect(titleRect.adjusted(
-                isLeftEdge() ? -cornerRadiusScaled:0,
-                isTopEdge() ? -cornerRadiusScaled:0,
-                isRightEdge() ? cornerRadiusScaled:0,
-                cornerRadiusScaled),
-                cornerRadiusScaled, cornerRadiusScaled);
+                isLeftEdge() ? -m_scaledCornerRadius:0,
+                isTopEdge() ? -m_scaledCornerRadius:0,
+                isRightEdge() ? m_scaledCornerRadius:0,
+                m_scaledCornerRadius),
+                m_scaledCornerRadius, m_scaledCornerRadius);
             
             m_titleBarPath = m_titleBarPath.intersected(clipRect);
         }
@@ -877,7 +877,7 @@ namespace Breeze
         // Animated case, no cached shadow object
         if ( (m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0) )
         {
-            setShadow(createShadowObject(m_internalSettings, s, 0.5 + m_shadowOpacity * 0.5));
+            setShadow(createShadowObject(m_internalSettings, s, m_scaledCornerRadius, 0.5 + m_shadowOpacity * 0.5));
             return;
         }
 
@@ -896,13 +896,13 @@ namespace Breeze
         auto& shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
         if ( !shadow )
         {
-            shadow = createShadowObject(m_internalSettings, s, c->isActive() ? 1.0 : 0.5);
+            shadow = createShadowObject(m_internalSettings, s, m_scaledCornerRadius, c->isActive() ? 1.0 : 0.5);
         }
         setShadow(shadow);
     }
 
     //________________________________________________________________
-    QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const InternalSettingsPtr& internalSettings, const QSharedPointer<KDecoration2::DecorationSettings> decorationSettings, const float strengthScale)
+    QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const InternalSettingsPtr& internalSettings, const QSharedPointer<KDecoration2::DecorationSettings> decorationSettings, qreal scaledFrameCornerRadius, const float strengthScale)
     {
         const CompositeShadowParams params = lookupShadowParams(internalSettings->shadowSize());
           if (params.isNone())
@@ -921,8 +921,7 @@ namespace Breeze
               .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
         
           BoxShadowRenderer shadowRenderer;
-          double scaledCornerRadiusSetting = internalSettings->cornerRadius()*decorationSettings->smallSpacing();
-          shadowRenderer.setBorderRadius(scaledCornerRadiusSetting + 0.5);
+          shadowRenderer.setBorderRadius(scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing());
           shadowRenderer.setBoxSize(boxSize);
           shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
 
@@ -955,8 +954,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
           painter.drawRoundedRect(
               innerRect,
-              scaledCornerRadiusSetting + 0.5,
-              scaledCornerRadiusSetting + 0.5);
+              scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing(),
+              scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing());
 
           // Draw outline.
           painter.setPen(withOpacity(internalSettings->shadowColor(), 0.2 * strength));
@@ -964,8 +963,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           painter.drawRoundedRect(
               innerRect,
-              scaledCornerRadiusSetting - 0.5,
-              scaledCornerRadiusSetting - 0.5);
+              scaledFrameCornerRadius - 0.5*decorationSettings->smallSpacing(),
+              scaledFrameCornerRadius - 0.5*decorationSettings->smallSpacing());
 
           painter.end();
 
@@ -1044,6 +1043,11 @@ namespace Breeze
                 m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
             }
         }
+    }
+    
+    void Decoration::setScaledCornerRadius()
+    {
+        m_scaledCornerRadius = m_internalSettings->cornerRadius()*settings()->smallSpacing();
     }
 
 } // namespace
