@@ -490,14 +490,14 @@ namespace Breeze
             if( !isMaximizedVertically() ) { 
                 extBottom = extSize;
                 
-                //Add resize handles for sqaure highlight as they cannot overlap with larger square buttons
+                //Add resize handles for square highlight as they cannot overlap with larger square buttons
                 if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize; 
             }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
-            //Add resize handles for sqaure highlight as they cannot overlap with larger square buttons
+            //Add resize handles for square highlight as they cannot overlap with larger square buttons
             if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) extTop = extSize;
         } else if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) {
             
@@ -652,8 +652,8 @@ namespace Breeze
         auto c = client().data();
         auto s = settings();
         
-        m_windowPath.clear(); //clear the path for subsequent calls to this function
-        //Paul McAuley TODO: move all path geometry definitions to another preceding function -- calculate the geometries first, then paint
+        setWindowAndTitleBarGeometries();
+        
         // paint background
         if( !c->isShaded() )
         {
@@ -673,9 +673,6 @@ namespace Breeze
             QPainterPath clipRect;
             // use clipRect for clipping away the top part
             if( !hideTitleBar() ) clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
-            
-            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
-            else m_windowPath.addRect( rect() );
             
             //clip off the titlebar and draw bottom part
             QPainterPath windowPathMinusTitleBar = m_windowPath.intersected(clipRect);
@@ -703,14 +700,56 @@ namespace Breeze
         }
 
     }
+    
+    void Decoration::setWindowAndTitleBarGeometries()
+    {
+        auto c = client().toStrongRef().data();
+        auto s = settings();
+        
+        //set titleBar geometry and path
+        m_titleRect = QRect(QPoint(0, 0), QSize(size().width(), borderTop()));
+        m_titleBarPath.clear(); //clear the path for subsequent calls to this function
+        if( isMaximized() || !s->isAlphaChannelSupported() )
+        {
+            m_titleBarPath.addRect(m_titleRect);
+
+        } else if( c->isShaded() ) {
+            m_titleBarPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
+
+        } else {
+            QPainterPath clipRect;
+            clipRect.addRect(m_titleRect);
+            
+            // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
+            m_titleBarPath.addRoundedRect(m_titleRect.adjusted(
+                isLeftEdge() ? -m_scaledCornerRadius:0,
+                isTopEdge() ? -m_scaledCornerRadius:0,
+                isRightEdge() ? m_scaledCornerRadius:0,
+                m_scaledCornerRadius),
+                m_scaledCornerRadius, m_scaledCornerRadius);
+            
+            m_titleBarPath = m_titleBarPath.intersected(clipRect);
+        }
+        
+        //set windowPath
+        m_windowPath.clear(); //clear the path for subsequent calls to this function
+        if( !c->isShaded() )
+        {
+            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
+            else m_windowPath.addRect( rect() );
+            
+        } else {
+            m_windowPath = m_titleBarPath;
+        }
+        
+    }
 
     //________________________________________________________________
     void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     {
         const auto c = client().data();
-        const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
 
-        if ( !titleRect.intersects(repaintRegion) ) return;
+        if ( !m_titleRect.intersects(repaintRegion) ) return;
 
         painter->save();
         painter->setPen(Qt::NoPen);
@@ -723,7 +762,7 @@ namespace Breeze
 
             titleBarColor.setAlpha( m_titleBarOpacityActive );
             
-            QLinearGradient gradient( 0, 0, 0, titleRect.height() );
+            QLinearGradient gradient( 0, 0, 0, m_titleRect.height() );
             gradient.setColorAt(0.0, titleBarColor.lighter( 120 ) );
             gradient.setColorAt(0.8, titleBarColor);
             painter->setBrush(gradient);
@@ -736,31 +775,6 @@ namespace Breeze
 
         auto s = settings();
         
-        m_titleBarPath.clear(); //clear the path for subsequent calls to this function
-        //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
-        if( isMaximized() || !s->isAlphaChannelSupported() )
-        {
-            m_titleBarPath.addRect(titleRect);
-
-        } else if( c->isShaded() ) {
-            m_titleBarPath.addRoundedRect(titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
-            m_windowPath = m_titleBarPath; //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
-
-        } else {
-            
-            QPainterPath clipRect;
-            clipRect.addRect(titleRect);
-            
-            // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
-            m_titleBarPath.addRoundedRect(titleRect.adjusted(
-                isLeftEdge() ? -m_scaledCornerRadius:0,
-                isTopEdge() ? -m_scaledCornerRadius:0,
-                isRightEdge() ? m_scaledCornerRadius:0,
-                m_scaledCornerRadius),
-                m_scaledCornerRadius, m_scaledCornerRadius);
-            
-            m_titleBarPath = m_titleBarPath.intersected(clipRect);
-        }
         painter->drawPath(m_titleBarPath);
 
         const QColor outlineColor( this->outlineColor() );
@@ -770,7 +784,7 @@ namespace Breeze
             painter->setRenderHint( QPainter::Antialiasing, false );
             painter->setBrush( Qt::NoBrush );
             painter->setPen( outlineColor );
-            painter->drawLine( titleRect.bottomLeft(), titleRect.bottomRight() );
+            painter->drawLine( m_titleRect.bottomLeft(), m_titleRect.bottomRight() );
         }
 
         painter->restore();

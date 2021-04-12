@@ -111,6 +111,7 @@ namespace Breeze
         QPair<QRect,Qt::Alignment> captionRect() const;
 
         void createButtons();
+        void setWindowAndTitleBarGeometries();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void updateShadow();
         static QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const InternalSettingsPtr& internalSettings, const QSharedPointer<KDecoration2::DecorationSettings> decorationSettings, const qreal frameCornerRadius, const float strengthScale);
@@ -150,14 +151,19 @@ namespace Breeze
         qreal m_opacity = 0;
         qreal m_shadowOpacity = 0;
         
-        //*tilebar main state opacity
+        //* tilebar main state opacity
         int m_titleBarOpacityActive = 255;
         int m_titleBarOpacityInactive = 255;
         
-        //*frame corner radius, scaled according to DPI
+        //* frame corner radius, scaled according to DPI
         qreal m_scaledCornerRadius = 3;
         
+        //* Rectangular area of titlebar without clipped corners
+        QRect m_titleRect;
+        
+        //* Exact titlebar path, with clipped rounded corners
         QPainterPath m_titleBarPath;
+        //* Exact window path, with clipped rounded corners
         QPainterPath m_windowPath;
         
         qreal m_systemScaleFactor = 1;
