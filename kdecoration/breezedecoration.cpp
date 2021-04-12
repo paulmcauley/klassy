@@ -649,7 +649,9 @@ namespace Breeze
         // TODO: optimize based on repaintRegion
         auto c = client().data();
         auto s = settings();
-
+        
+        m_windowPath.clear(); //clear the path for subsequent calls to this function
+        //Paul McAuley TODO: move all path geometry definitions to another preceding function -- calculate the geometries first, then paint
         // paint background
         if( !c->isShaded() )
         {
@@ -665,18 +667,26 @@ namespace Breeze
             } else windowBorderColor = c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame );
             
             painter->setBrush( windowBorderColor );
-
-            // clip away the top part
-            if( !hideTitleBar() ) painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
+            
+            QPainterPath clipRect;
+            // use clipRect for clipping away the top part
+            if( !hideTitleBar() ) clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
             
             double cornerRadiusScaled = m_internalSettings->cornerRadius()*s->smallSpacing();
-            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), cornerRadiusScaled, cornerRadiusScaled);
-            else painter->drawRect( rect() );
-
+            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), cornerRadiusScaled, cornerRadiusScaled);
+            else m_windowPath.addRect( rect() );
+            
+            //clip off the titlebar and draw bottom part
+            QPainterPath windowPathMinusTitleBar = m_windowPath.intersected(clipRect);
+            painter->drawPath(windowPathMinusTitleBar);
+            
             painter->restore();
         }
-
-        if( !hideTitleBar() ) paintTitleBar(painter, repaintRegion);
+        
+        
+        if( !hideTitleBar() ){
+            paintTitleBar(painter, repaintRegion);
+        }
 
         if( hasBorders() && !s->isAlphaChannelSupported() )
         {
@@ -727,14 +737,14 @@ namespace Breeze
         double cornerRadiusScaled = m_internalSettings->cornerRadius()*s->smallSpacing();
         
         m_titleBarPath.clear(); //clear the path for subsequent calls to this function
+        //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
         if( isMaximized() || !s->isAlphaChannelSupported() )
         {
             m_titleBarPath.addRect(titleRect);
-            painter->drawPath(m_titleBarPath);
 
         } else if( c->isShaded() ) {
             m_titleBarPath.addRoundedRect(titleRect, cornerRadiusScaled, cornerRadiusScaled);
-            painter->drawPath(m_titleBarPath);
+            m_windowPath = m_titleBarPath; //Paul McAuley TODO: move this and all other path geometry definitions to another preceding function
 
         } else {
             
@@ -750,10 +760,8 @@ namespace Breeze
                 cornerRadiusScaled, cornerRadiusScaled);
             
             m_titleBarPath = m_titleBarPath.intersected(clipRect);
-            
-            painter->drawPath(m_titleBarPath);
-
         }
+        painter->drawPath(m_titleBarPath);
 
         const QColor outlineColor( this->outlineColor() );
         if( !c->isShaded() && outlineColor.isValid() )

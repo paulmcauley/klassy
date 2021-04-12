@@ -470,7 +470,6 @@ namespace Breeze
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         auto s = d->settings();
-        QPainterPath* titlebarPath = d->titleBarPath();
         
         if( m_backgroundColor.isValid() )
         {            
@@ -501,11 +500,11 @@ namespace Breeze
                 background.addRect( geometry() );
             }
             
-            //clip the rounded corners using the titlebar path
+            //clip the rounded corners using the window path
             //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
-            //kde-gtk-config (via kded5) does not like button clipping and therefore does not draw background for maximize/close
-            if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
-                background = background.intersected( *titlebarPath );
+            //used to use titlebarPath for clipping but kde-gtk-config kwin_bridge (via kded5) does not draw all buttons if we clip with titlebarPath
+            if( !d->isMaximized() && s->isAlphaChannelSupported() )
+                background = background.intersected( *(d->windowPath()) );
             
             painter->drawPath( background );
             
