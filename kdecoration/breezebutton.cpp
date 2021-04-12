@@ -48,8 +48,6 @@ namespace Breeze
             // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk.
             m_isGtkCsdButton = true;
         }
-        
-        setShouldDrawBoldButtonIcons();
 
         // setup default geometry
         const int height = decoration->buttonHeight();
@@ -136,6 +134,8 @@ namespace Breeze
         m_foregroundColor = this->foregroundColor();
         
         m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
+        
+        setShouldDrawBoldButtonIcons();
         
         painter->save();
         
@@ -548,16 +548,15 @@ namespace Breeze
         m_boldButtonIcons = false;
         switch( d->internalSettings()->boldButtonIcons() )
         {
+            case InternalSettings::BoldIconsAuto:
+                // If HiDPI system scaling use bold icons
+                if ( d->systemScaleFactor()  > 1.2 ) m_boldButtonIcons = true;
+                break;
             case InternalSettings::BoldIconsFine:
             default:
                 break;
             case InternalSettings::BoldIconsBold:
                 m_boldButtonIcons = true;
-                break;
-            case InternalSettings::BoldIconsAuto:
-                // If HiDPI system scaling use bold icons
-                if ( d->systemScaleFactor()  > 1.2 )
-                    m_boldButtonIcons = true;
                 break;
         }
         
