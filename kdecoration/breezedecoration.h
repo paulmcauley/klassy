@@ -90,6 +90,7 @@ namespace Breeze
         //@}
         
         QPainterPath* titleBarPath(){ return &m_titleBarPath; }
+        QPainterPath* windowPath(){ return &m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
 
         public Q_SLOTS:
@@ -153,6 +154,7 @@ namespace Breeze
         int m_titleBarOpacityInactive = 255;
         
         QPainterPath m_titleBarPath;
+        QPainterPath m_windowPath;
         
         qreal m_systemScaleFactor = 1;
 
