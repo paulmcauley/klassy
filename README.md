@@ -7,6 +7,7 @@
 >[Compile from source](#compile)
 
 [System icon theme](#icons)
+[Donations](#donations)
 
 &nbsp;
 
@@ -113,3 +114,10 @@ To obtain these icon themes go to System Settings->Appearance->Icons->Get New Ic
 > ![Screenshot of downloading matching ClassikStyles system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassikStyles system icons")
 
 These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
+
+
+<a name="donations"/>
+
+## Donations
+[![Donate using Liberapay](https://liberapay.com/assets/widgets/donate.svg "Donate using Liberapay")](https://liberapay.com/paulmcauley/donate)
+or [![Donate using Paypal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_100x26.png "Donate using Paypal")](https://www.paypal.com/donate?business=6N9RP4LDLNZCC&currency_code=GBP)
