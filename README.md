@@ -6,7 +6,7 @@
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)
 
-[System icon theme](#icons)
+[System icon theme](#icons)   
 [Donations](#donations)
 
 &nbsp;
