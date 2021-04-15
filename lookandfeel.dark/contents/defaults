@@ -8,7 +8,7 @@ ColorScheme=BreezeDark
 Theme=breeze-dark
 
 [plasmarc][Theme]
-name=breeze-dark
+name=default
 
 [Wallpaper]
 Image=Next
