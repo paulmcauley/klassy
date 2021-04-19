@@ -150,7 +150,7 @@
     <entry name="CornerRadius" type = "Double">
        <default>1</default>
        <min>0</min>
-       <max>25</max>
+       <max>12</max>
     </entry>
     
     <!-- bold button icons -->

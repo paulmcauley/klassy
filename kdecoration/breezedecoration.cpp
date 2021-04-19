@@ -139,6 +139,7 @@ namespace Breeze
     static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
+    static qreal g_shadowCornerRadius = 3;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
@@ -224,7 +225,7 @@ namespace Breeze
     void Decoration::init()
     {
         auto c = client().data();
-        
+                
         // active state change animation
         // It is important start and end value are of the same type, hence 0.0 and not just 0
         m_animation->setStartValue( 0.0 );
@@ -407,8 +408,6 @@ namespace Breeze
     {
 
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
-        
-        setScaledCornerRadius();
 
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         
@@ -706,6 +705,8 @@ namespace Breeze
         auto c = client().toStrongRef().data();
         auto s = settings();
         
+        setScaledCornerRadius();
+        
         //set titleBar geometry and path
         m_titleRect = QRect(QPoint(0, 0), QSize(size().width(), borderTop()));
         m_titleBarPath.clear(); //clear the path for subsequent calls to this function
@@ -888,6 +889,7 @@ namespace Breeze
     void Decoration::updateShadow()
     {
         auto s = settings();
+        setScaledCornerRadius();
         // Animated case, no cached shadow object
         if ( (m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0) )
         {
@@ -897,13 +899,15 @@ namespace Breeze
 
         if (g_shadowSizeEnum != m_internalSettings->shadowSize()
                 || g_shadowStrength != m_internalSettings->shadowStrength()
-                || g_shadowColor != m_internalSettings->shadowColor())
+                || g_shadowColor != m_internalSettings->shadowColor()
+                || g_shadowCornerRadius != m_scaledCornerRadius )
         {
             g_sShadow.clear();
             g_sShadowInactive.clear();
             g_shadowSizeEnum = m_internalSettings->shadowSize();
             g_shadowStrength = m_internalSettings->shadowStrength();
             g_shadowColor = m_internalSettings->shadowColor();
+            g_shadowCornerRadius = m_scaledCornerRadius;
         }
 
         auto c = client().toStrongRef();
@@ -935,7 +939,7 @@ namespace Breeze
               .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
         
           BoxShadowRenderer shadowRenderer;
-          shadowRenderer.setBorderRadius(scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing());
+          shadowRenderer.setBorderRadius(scaledFrameCornerRadius + 0.5);
           shadowRenderer.setBoxSize(boxSize);
           shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
 
@@ -968,8 +972,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
           painter.drawRoundedRect(
               innerRect,
-              scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing(),
-              scaledFrameCornerRadius + 0.5*decorationSettings->smallSpacing());
+              scaledFrameCornerRadius + 0.5,
+              scaledFrameCornerRadius + 0.5);
 
           // Draw outline.
           painter.setPen(withOpacity(internalSettings->shadowColor(), 0.2 * strength));
@@ -977,8 +981,8 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           painter.drawRoundedRect(
               innerRect,
-              scaledFrameCornerRadius - 0.5*decorationSettings->smallSpacing(),
-              scaledFrameCornerRadius - 0.5*decorationSettings->smallSpacing());
+              scaledFrameCornerRadius - 0.5,
+              scaledFrameCornerRadius - 0.5);
 
           painter.end();
 
