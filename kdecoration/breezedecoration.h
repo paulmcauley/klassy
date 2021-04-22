@@ -93,7 +93,6 @@ namespace Breeze
         QPainterPath* windowPath(){ return &m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
         
-        bool eventFilter(QObject *obj, QEvent *event) override;
 
         public Q_SLOTS:
         void init() override;

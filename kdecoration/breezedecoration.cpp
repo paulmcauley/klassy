@@ -298,8 +298,7 @@ namespace Breeze
         connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
         connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
         
-        // tap to QApplication object for color palette changes -- needed to update outline colour in shadows
-        qApp->installEventFilter(this);
+        connect(c, &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::updateShadow);
 
         createButtons();
         updateShadow();
@@ -1111,17 +1110,6 @@ namespace Breeze
     void Decoration::setScaledCornerRadius()
     {
         m_scaledCornerRadius = m_internalSettings->cornerRadius() * settings()->smallSpacing();
-    }
-    
-    bool Decoration::eventFilter(QObject *obj, QEvent *event)
-    {
-        //update the shadows if the colour scheme changes (the cached shadow outline colour needs to be refreshed)
-        if (obj == qApp && event->type() == QEvent::ApplicationPaletteChange) {
-            // only update the shadow outline colour once for the event that belongs to the qApp
-            updateShadow();
-        }
-
-        return false; // always continue processing
     }
 
 } // namespace
