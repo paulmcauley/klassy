@@ -8,6 +8,7 @@
 #include "breezebutton.h"
 #include "renderdecorationbuttonicon.h"
 #include "colortools.h"
+#include "config-breeze.h" //defines BREEZE_HAVE_X11
 
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
@@ -17,6 +18,11 @@
 #include <QPainter>
 #include <QVariantAnimation>
 #include <QPainterPath>
+
+
+#if BREEZE_HAVE_X11
+#include <QX11Info>
+#endif
 
 namespace Breeze
 {
@@ -135,8 +141,7 @@ namespace Breeze
         
         m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
         
-        setShouldDrawBoldButtonIcons();
-        
+        setShouldDrawBoldButtonIcons(painter);
         painter->save();
         
         if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
@@ -488,7 +493,7 @@ namespace Breeze
                     strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
                 }
                 QPen pen( strokeColor );
-                pen.setWidthF( PenWidth::Symbol );
+                pen.setWidthF( m_devicePixelRatio );
                 painter->setPen(pen);
                 
                 //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
@@ -541,16 +546,26 @@ namespace Breeze
     }
     
     
-    void Button::setShouldDrawBoldButtonIcons()
+    void Button::setShouldDrawBoldButtonIcons(QPainter* painter)
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         
         m_boldButtonIcons = false;
+        
+        //determine DPR
+        m_devicePixelRatio = painter->device()->devicePixelRatioF();
+        // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
+        #if BREEZE_HAVE_X11
+        if( QX11Info::isPlatformX11() ) m_devicePixelRatio = d->systemScaleFactor();
+        #endif
+        
+        if ( m_isGtkCsdButton ) m_devicePixelRatio = d->systemScaleFactor(); 
+        
         switch( d->internalSettings()->boldButtonIcons() )
         {
             case InternalSettings::BoldIconsAuto:
                 // If HiDPI system scaling use bold icons
-                if ( d->systemScaleFactor()  > 1.2 ) m_boldButtonIcons = true;
+                if ( m_devicePixelRatio  > 1.2 ) m_boldButtonIcons = true;
                 break;
             case InternalSettings::BoldIconsFine:
             default:
