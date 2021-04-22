@@ -311,7 +311,7 @@ namespace Breeze
         auto c = client().data();
         const bool maximized = isMaximized();
         int width, height, x, y;
-        int titlebarTopMargin = getTitleBarTopBottomMargins();
+        int titlebarTopMargin = titleBarTopBottomMargins();
         
         //prevents resize handles appearing in button at top window edge for large square buttons
         if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
@@ -458,7 +458,7 @@ namespace Breeze
         const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
         
 
-        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarTopMargin = titleBarTopBottomMargins();
         int titleBarBottomMargin = titleBarTopMargin;
                 
 
@@ -537,7 +537,7 @@ namespace Breeze
         int verticalOffset;
         int squareButtonIconVerticalTranslation;
         int squareButtonIconHorizontalTranslation;
-        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarTopMargin = titleBarTopBottomMargins();
         
         if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
         {
@@ -830,7 +830,7 @@ namespace Breeze
     //________________________________________________________________
     int Decoration::captionHeight() const
     { 
-        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarTopMargin = titleBarTopBottomMargins();
         int titleBarBottomMargin = titleBarTopMargin;
         
         return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(titleBarBottomMargin + titleBarTopMargin ) - 1;
@@ -839,7 +839,7 @@ namespace Breeze
     //________________________________________________________________
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
-        int titleBarTopMargin = getTitleBarTopBottomMargins();
+        int titleBarTopMargin = titleBarTopBottomMargins();
         
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
@@ -1072,7 +1072,7 @@ namespace Breeze
         }
     }
     
-    int Decoration::getTitleBarTopBottomMargins() const
+    int Decoration::titleBarTopBottomMargins() const
     {
         // access client
         auto c = client().toStrongRef();
