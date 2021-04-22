@@ -92,6 +92,8 @@ namespace Breeze
         QPainterPath* titleBarPath(){ return &m_titleBarPath; }
         QPainterPath* windowPath(){ return &m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
+        
+        bool eventFilter(QObject *obj, QEvent *event) override;
 
         public Q_SLOTS:
         void init() override;
@@ -114,7 +116,7 @@ namespace Breeze
         void setWindowAndTitleBarGeometries();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void updateShadow();
-        static QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const InternalSettingsPtr& internalSettings, const QSharedPointer<KDecoration2::DecorationSettings> decorationSettings, const qreal frameCornerRadius, const float strengthScale);
+        QSharedPointer<KDecoration2::DecorationShadow> createShadowObject( const float strengthScale );
         void setScaledCornerRadius();
         
         //*@name border size
@@ -166,7 +168,7 @@ namespace Breeze
         //* Exact window path, with clipped rounded corners
         QPainterPath m_windowPath;
         
-        qreal m_systemScaleFactor = 1;
+        qreal m_systemScaleFactor = 1.0;
 
     };
 
