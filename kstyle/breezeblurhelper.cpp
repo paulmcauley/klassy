@@ -80,7 +80,8 @@ namespace Breeze
         if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId()))
             return;
 
-        KWindowEffects::enableBlurBehind(widget->winId(), true);
+        widget->winId(); // force creation of the window handle
+        KWindowEffects::enableBlurBehind(widget->windowHandle(), true);
 
         // force update
         if (widget->isVisible()) {
