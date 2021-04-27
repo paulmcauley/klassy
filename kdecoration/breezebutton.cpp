@@ -8,21 +8,16 @@
 #include "breezebutton.h"
 #include "renderdecorationbuttonicon.h"
 #include "colortools.h"
-#include "config-breeze.h" //defines BREEZE_HAVE_X11
 
 #include <KDecoration2/DecoratedClient>
 #include <KColorUtils>
 #include <KIconLoader>
 #include <KColorScheme>
+#include <KWindowSystem>
 
 #include <QPainter>
 #include <QVariantAnimation>
 #include <QPainterPath>
-
-
-#if BREEZE_HAVE_X11
-#include <QX11Info>
-#endif
 
 namespace Breeze
 {
@@ -310,7 +305,6 @@ namespace Breeze
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
-        auto c = d->client().toStrongRef().data();
         
         QColor higherContrastFontColor = ColorTools::getHigherContrastForegroundColor( d->fontColor(), m_backgroundColor, 2.3 );
         
@@ -554,11 +548,9 @@ namespace Breeze
         
         //determine DPR
         m_devicePixelRatio = painter->device()->devicePixelRatioF();
-        // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
-        #if BREEZE_HAVE_X11
-        if( QX11Info::isPlatformX11() ) m_devicePixelRatio = d->systemScaleFactor();
-        #endif
         
+        // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
+        if( KWindowSystem::isPlatformX11() ) m_devicePixelRatio = d->systemScaleFactor();
         if ( m_isGtkCsdButton ) m_devicePixelRatio = d->systemScaleFactor(); 
         
         switch( d->internalSettings()->boldButtonIcons() )
