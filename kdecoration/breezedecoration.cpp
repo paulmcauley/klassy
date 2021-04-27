@@ -415,7 +415,9 @@ namespace Breeze
     {
         
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
-
+        
+        setScaledCornerRadius();
+        
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         
         // loads system ScaleFactor from ~/.config/kdeglobals
@@ -709,10 +711,9 @@ namespace Breeze
     
     void Decoration::setWindowAndTitleBarGeometries()
     {
-        auto c = client().toStrongRef().data();
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
         auto s = settings();
-        
-        setScaledCornerRadius();
         
         //set titleBar geometry and path
         m_titleRect = QRect(QPoint(0, 0), QSize(size().width(), borderTop()));
@@ -899,7 +900,6 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        setScaledCornerRadius();
         // Animated case, no cached shadow object
         if ( (m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0) )
         {
@@ -911,7 +911,7 @@ namespace Breeze
                 || g_shadowStrength != m_internalSettings->shadowStrength()
                 || g_shadowColor != m_internalSettings->shadowColor()
                 || g_fontColor != fontColor()
-                || g_cornerRadius != m_scaledCornerRadius
+                || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
                 || g_hasNoBorders != hasNoBorders()
                 || g_isShaded != c->isShaded() )
         {
@@ -1090,8 +1090,8 @@ namespace Breeze
     
     void Decoration::setTitleBarOpacity()
     {
-        auto c = client().toStrongRef().data();
-        if( !c ) return;
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
         
         if( !c->isMaximized() ) {
             m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
