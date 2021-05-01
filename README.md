@@ -43,8 +43,7 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 > ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
 
 ### Known issues
-* GTK apps' titlebar buttons will not update if you change a setting. Workaround: you need to select another window decoration or colour and then select ClassikStyles again to generate them;
-* Changing the corner radius will sometimes require a logout and login again before updating properly.
+* GTK apps' titlebar buttons will not always update if you change a _ClassikStyles_ setting. Workaround: you need to select another window decoration and then select _ClassikStyles_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
 
 &nbsp;
 
