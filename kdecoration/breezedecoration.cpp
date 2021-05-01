@@ -984,14 +984,14 @@ namespace Breeze
               boxRect.top() - outerRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
               outerRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
               outerRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
-          const QRect innerRect = outerRect - padding;
+          const QRectF innerRect = outerRect - padding;
 
           painter.setPen(Qt::NoPen);
           painter.setBrush(Qt::black);
           painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
           
           
-          QRect innerRectPotentiallyTaller = innerRect;
+          QRectF innerRectPotentiallyTaller = innerRect;
           
           QPainterPath innerRectPath;
           innerRectPath.addRect(innerRect);
@@ -1006,25 +1006,36 @@ namespace Breeze
               m_scaledCornerRadius + 0.5);
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectMask = roundedRectMask.intersected(innerRectPath);
-        
+
+
           painter.drawPath(roundedRectMask);
 
-          // Draw outline
-          QPen p(withOpacity(fontColor(), 0.25));
-          //1px wide line
-          if ( KWindowSystem::isPlatformWayland() ) p.setWidthF(1); //Wayland aligns shadows differently to X11 and see all of the stroke line
-          else p.setWidthF(2); //*2 because you only see half of the stroke line on X11
+
+          //make 1px outline rect larger so all 1px is outside window
+          QRectF outlineRect;
+          if (KWindowSystem::isPlatformWayland() ) outlineRect = innerRect; // on Wayland innerRect is already larger than window
+          else outlineRect = innerRect.adjusted(-0.5, -0.5, 0.5, 0.5); // on X11 innerRect is half in window so increase size by 0.5 so is outside
+          QPainterPath outlineRectPath;
+          outlineRectPath.addRect(outlineRect);
+
+          QRectF outlineRectPotentiallyTaller;
+
+          // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
+          if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
+
+          // Draw 1px wide outline
+          QPen p(withOpacity(fontColor(), 0.25), 1.0);
           painter.setPen(p);
           painter.setBrush(Qt::NoBrush);
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           
           QPainterPath roundedRectOutline;
           roundedRectOutline.addRoundedRect(
-              innerRectPotentiallyTaller,
+              outlineRectPotentiallyTaller,
               m_scaledCornerRadius - 0.5,
               m_scaledCornerRadius - 0.5);
           
-          if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(innerRectPath);
+          if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
           
           painter.drawPath(roundedRectOutline);
 
