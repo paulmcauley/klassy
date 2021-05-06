@@ -210,17 +210,10 @@ namespace Breeze
         void renderSliderHandle( QPainter*, const QRect&, const QColor&, const QColor& outline, const QColor& shadow, bool sunken ) const;
 
         //* dial groove
-        void renderDialGroove( QPainter*, const QRect&, const QColor&, qreal first, qreal last ) const;
-
-        //* dial groove
-        void renderDialContents( QPainter*, const QRect&, const QColor&, qreal first, qreal second ) const;
+        void renderDialGroove( QPainter*, const QRect&, const QColor& fg, const QColor& bg, qreal first, qreal last ) const;
 
         //* progress bar groove
-        void renderProgressBarGroove( QPainter*, const QRect&, const QColor& ) const;
-
-        //* progress bar contents
-        void renderProgressBarContents( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderProgressBarGroove( painter, rect, color ); }
+        void renderProgressBarGroove( QPainter*, const QRect&, const QColor& fg, const QColor& bg) const;
 
         //* progress bar contents (animated)
         void renderProgressBarBusyContents( QPainter* painter, const QRect& rect, const QColor& first, const QColor& second, bool horizontal, bool reverse, int progress  ) const;
@@ -231,10 +224,6 @@ namespace Breeze
 
         //* scrollbar handle
         void renderScrollBarHandle( QPainter*, const QRect&, const QColor& ) const;
-
-        //* toolbar handle
-        void renderToolBarHandle( QPainter* painter, const QRect& rect, const QColor& color ) const
-        { return renderProgressBarGroove( painter, rect, color ); }
 
         //* separator between scrollbar and contents
         void renderScrollBarBorder( QPainter*, const QRect&, const QColor& ) const;

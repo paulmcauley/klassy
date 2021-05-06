@@ -1111,14 +1111,17 @@ namespace Breeze
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        const QRectF baseRect( rect );
+        QRectF baseRect( rect );
+        baseRect.adjust(0.5, 0.5, -0.5, -0.5);
         const qreal radius( 0.5*Metrics::Slider_GrooveThickness );
 
         // content
         if( color.isValid() )
         {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
+            painter->setPen( color );
+            auto bg = color;
+            bg.setAlphaF(bg.alphaF() / 2);
+            painter->setBrush( bg );
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
@@ -1128,7 +1131,7 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderDialGroove(
         QPainter* painter, const QRect& rect,
-        const QColor& color,
+        const QColor& fg, const QColor& bg,
         qreal first, qreal last ) const
     {
 
@@ -1138,7 +1141,7 @@ namespace Breeze
         const QRectF baseRect( rect );
 
         // content
-        if( color.isValid() )
+        if( fg.isValid() )
         {
             const qreal penWidth( Metrics::Slider_GrooveThickness );
             const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
@@ -1146,58 +1149,20 @@ namespace Breeze
             // setup angles
             const int angleStart( first * 180 * 16 / M_PI );
             const int angleSpan( (last - first ) * 180 * 16 / M_PI );
+
+            const QPen bgPen( fg, penWidth, Qt::SolidLine, Qt::RoundCap );
+            const QPen fgPen( KColorUtils::overlayColors( bg, alphaColor( fg, 0.5) ), penWidth - 2, Qt::SolidLine, Qt::RoundCap );
             
             // setup pen
             if( angleSpan != 0 )
             {
-                QPen pen( color, penWidth );
-                pen.setCapStyle( Qt::RoundCap );
-                painter->setPen( pen );
+                painter->setPen( bgPen );
                 painter->setBrush( Qt::NoBrush );
+                painter->drawArc( grooveRect, angleStart, angleSpan );
+                painter->setPen( fgPen );
                 painter->drawArc( grooveRect, angleStart, angleSpan );
             }
         }
-
-        
-    }
-
-    //______________________________________________________________________________
-    void Helper::renderDialContents(
-        QPainter* painter, const QRect& rect,
-        const QColor& color,
-        qreal first, qreal second ) const
-    {
-
-        // setup painter
-        painter->setRenderHint( QPainter::Antialiasing, true );
-
-        const QRectF baseRect( rect );
-
-        // content
-        if( color.isValid() )
-        {
-
-            // setup groove rect
-            const qreal penWidth( Metrics::Slider_GrooveThickness );
-            const QRectF grooveRect( rect.adjusted( penWidth/2, penWidth/2, -penWidth/2, -penWidth/2 ) );
-
-            // setup angles
-            const int angleStart( first * 180 * 16 / M_PI );
-            const int angleSpan( (second - first ) * 180 * 16 / M_PI );
-
-            // setup pen
-            if( angleSpan != 0 )
-            {
-                QPen pen( color, penWidth );
-                pen.setCapStyle( Qt::RoundCap );
-                painter->setPen( pen );
-                painter->setBrush( Qt::NoBrush );
-                painter->drawArc( grooveRect, angleStart, angleSpan );
-            }
-
-        }
-
-        
     }
 
     //______________________________________________________________________________
@@ -1245,20 +1210,21 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderProgressBarGroove(
         QPainter* painter, const QRect& rect,
-        const QColor& color ) const
+        const QColor& fg, const QColor& bg ) const
     {
 
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
-        const QRectF baseRect( rect );
+        QRectF baseRect( rect );
+        baseRect.adjust(0.5,0.5,-0.5,-0.5);
         const qreal radius( 0.5*Metrics::ProgressBar_Thickness );
 
         // content
-        if( color.isValid() )
+        if( fg.isValid() )
         {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
+            painter->setPen( fg );
+            painter->setBrush( KColorUtils::overlayColors(bg, alphaColor(fg, 0.5)) );
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
