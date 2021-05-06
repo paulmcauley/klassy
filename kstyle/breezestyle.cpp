@@ -3969,7 +3969,7 @@ namespace Breeze
         // render as push button
         const auto shadow( _helper->shadowColor( palette ) );
         const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
+        const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
         auto frameRect( rect );
         painter->setClipRect( rect );
@@ -5072,7 +5072,7 @@ namespace Breeze
                 palette.color( QPalette::HighlightedText ) :
                 palette.color( QPalette::Highlight ) );
 
-            _helper->renderProgressBarContents( painter, rect, contentsColor );
+            _helper->renderProgressBarGroove( painter, rect, contentsColor, palette.color(QPalette::Window) );
             painter->setClipRegion( oldClipRegion );
         }
 
@@ -5085,7 +5085,7 @@ namespace Breeze
     {
         const auto& palette( option->palette );
         const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        _helper->renderProgressBarGroove( painter, option->rect, color );
+        _helper->renderProgressBarGroove( painter, option->rect, color, palette.color(QPalette::Window) );
         return true;
     }
 
@@ -6576,7 +6576,7 @@ namespace Breeze
             const qreal last( dialAngle( sliderOption, sliderOption->maximum ) );
 
             // render groove
-            _helper->renderDialGroove( painter, grooveRect, grooveColor, first, last );
+            _helper->renderDialGroove( painter, grooveRect, grooveColor, palette.color(QPalette::Window), first, last );
 
             if( enabled )
             {
@@ -6588,7 +6588,7 @@ namespace Breeze
                 const qreal second( dialAngle( sliderOption, sliderOption->sliderPosition ) );
 
                 // render contents
-                _helper->renderDialContents( painter, grooveRect, highlight, first, second );
+                _helper->renderDialGroove( painter, grooveRect, highlight, palette.color(QPalette::Window), first, second );
 
             }
 
