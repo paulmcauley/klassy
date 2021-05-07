@@ -1018,7 +1018,7 @@ namespace Breeze
           QPainterPath outlineRectPath;
           outlineRectPath.addRect(outlineRect);
 
-          QRectF outlineRectPotentiallyTaller;
+          QRectF outlineRectPotentiallyTaller = outlineRect;
 
           // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
           if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
