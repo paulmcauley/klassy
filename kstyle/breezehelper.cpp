@@ -267,36 +267,15 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
+    QPair<QColor,QColor> Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
     {
 
         QColor background( sunken ?
-            KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.2 ):
+            KColorUtils::mix( palette.color( QPalette::Button ), Qt::black, KColorUtils::luma( palette.color(QPalette::Button) ) < 0.5 ? 0.3 : 0.10 ):
             palette.color( QPalette::Button ) );
+        auto base = palette.color(QPalette::Button);
 
-        if( mode == AnimationHover )
-        {
-
-            const QColor focus( buttonFocusColor( palette ) );
-            const QColor hover( buttonHoverColor( palette ) );
-            if( hasFocus ) background = KColorUtils::mix( focus, hover, opacity );
-
-        } else if( mouseOver && hasFocus ) {
-
-            background = buttonHoverColor( palette );
-
-        } else if( mode == AnimationFocus ) {
-
-            const QColor focus( buttonFocusColor( palette ) );
-            background = KColorUtils::mix( background, focus, opacity );
-
-        } else if( hasFocus ) {
-
-            background = buttonFocusColor( palette );
-
-        }
-
-        return background;
+        return {background, base};
 
     }
 
@@ -667,7 +646,7 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderButtonFrame(
         QPainter* painter, const QRect& rect,
-        const QColor& color, const QColor& outline, const QColor& shadow,
+        const QPair<QColor,QColor>& color, const QColor& outline, const QColor& shadow,
         bool hasFocus, bool sunken ) const
     {
 
@@ -677,7 +656,7 @@ namespace Breeze
         // copy rect
         QRectF frameRect( rect );
         frameRect.adjust( 1, 1, -1, -1 );
-        qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
+        qreal radius( frameRadius( PenWidth::NoPen ) );
 
         // shadow
         if( sunken ) {
@@ -704,12 +683,12 @@ namespace Breeze
         } else painter->setPen( Qt::NoPen );
 
         // content
-        if( color.isValid() )
+        if( color.first.isValid() && color.second.isValid() )
         {
 
             QLinearGradient gradient( frameRect.topLeft(), frameRect.bottomLeft() );
-            gradient.setColorAt( 0, color.lighter( hasFocus ? 103:101 ) );
-            gradient.setColorAt( 1, color.darker( hasFocus ? 110:103 ) );
+            gradient.setColorAt( 0, color.first );
+            gradient.setColorAt( 1, color.second );
             painter->setBrush( gradient );
 
         } else painter->setBrush( Qt::NoBrush );

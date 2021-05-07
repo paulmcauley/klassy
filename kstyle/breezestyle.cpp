@@ -3497,12 +3497,12 @@ namespace Breeze
 
             } else if( flat ) {
 
-                if( sunken && hasFocus && !mouseOver ) color = palette.color( QPalette::HighlightedText );
+                if( sunken && hasFocus && !mouseOver ) color = palette.color( QPalette::WindowText );
                 else color = _helper->arrowColor( palette, QPalette::WindowText );
 
             } else if( hasFocus && !mouseOver )  {
 
-                color = palette.color( QPalette::HighlightedText );
+                color = palette.color( QPalette::ButtonText );
 
             } else {
 
@@ -4272,10 +4272,10 @@ namespace Breeze
         if( flat )
         {
 
-            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
+            if( hasFocus && sunken ) textRole = QPalette::WindowText;
             else textRole = QPalette::WindowText;
 
-        } else if( hasFocus ) textRole = QPalette::HighlightedText;
+        } else if( hasFocus ) textRole = QPalette::ButtonText;
         else textRole = QPalette::ButtonText;
 
         // menu arrow
@@ -4342,8 +4342,6 @@ namespace Breeze
             const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
             QIcon::Mode iconMode;
             if( !enabled ) iconMode = QIcon::Disabled;
-            else if( !flat && hasFocus ) iconMode = QIcon::Selected;
-            else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
             const auto pixmap = _helper->coloredIcon(buttonOption->icon, buttonOption->palette, iconSize, iconMode, iconState);
@@ -4475,8 +4473,6 @@ namespace Breeze
             const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
             QIcon::Mode iconMode;
             if( !enabled ) iconMode = QIcon::Disabled;
-            else if( (!flat && hasFocus) || (flat && (state & State_Sunken) && !mouseOver) ) iconMode = QIcon::Selected;
-            else if( mouseOver && flat ) iconMode = QIcon::Active;
             else iconMode = QIcon::Normal;
 
             const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon, toolButtonOption->palette, iconSize, iconMode, iconState);
@@ -4489,8 +4485,7 @@ namespace Breeze
         {
 
             QPalette::ColorRole textRole( QPalette::ButtonText );
-            if( flat ) textRole = ( ((hasFocus&&sunken) || (state & State_Sunken))&&!mouseOver) ? QPalette::HighlightedText: QPalette::WindowText;
-            else if( hasFocus&&!mouseOver ) textRole = QPalette::HighlightedText;
+            if( flat ) textRole = QPalette::WindowText;
 
             auto palette = option->palette;
 
@@ -4586,10 +4581,10 @@ namespace Breeze
         QPalette::ColorRole textRole;
         if( flat )  {
 
-            if( hasFocus && sunken ) textRole = QPalette::HighlightedText;
+            if( hasFocus && sunken ) textRole = QPalette::WindowText;
             else textRole = QPalette::WindowText;
 
-        } else if( hasFocus ) textRole = QPalette::HighlightedText;
+        } else if( hasFocus ) textRole = QPalette::ButtonText;
         else textRole = QPalette::ButtonText;
 
         // change pen color directly
@@ -4608,8 +4603,6 @@ namespace Breeze
                 QIcon::Mode mode;
 
                 if( !enabled ) mode = QIcon::Disabled;
-                else if( !flat && hasFocus ) mode = QIcon::Selected;
-                else if( mouseOver && flat ) mode = QIcon::Active;
                 else mode = QIcon::Normal;
 
                 const QPixmap pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize, mode);
@@ -6273,7 +6266,7 @@ namespace Breeze
                     // define colors
                     const auto shadow( _helper->shadowColor( palette ) );
                     const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                    const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, false, opacity, mode ) );
+                    const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
                     // render
                     _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
@@ -6326,11 +6319,11 @@ namespace Breeze
             } else if( flat )  {
 
                 if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::WindowText );
-                else if( hasFocus && !mouseOver && sunken ) arrowColor = palette.color( QPalette::HighlightedText );
+                else if( hasFocus && !mouseOver && sunken ) arrowColor = palette.color( QPalette::WindowText );
                 else arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
 
             } else if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::ButtonText );
-            else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::HighlightedText );
+            else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::WindowText );
             else arrowColor = _helper->arrowColor( palette, QPalette::ButtonText );
 
             // arrow rect
