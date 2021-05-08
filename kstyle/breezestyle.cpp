@@ -4799,7 +4799,8 @@ namespace Breeze
         if( useStrongFocus && ( selected || sunken ) )
         {
 
-            const auto color = _helper->focusColor( palette );
+            auto color = _helper->focusColor( palette );
+            color = _helper->alphaColor( color, 0.3 );
             const auto outlineColor = _helper->focusOutlineColor( palette );
 
             Sides sides;
@@ -4811,7 +4812,7 @@ namespace Breeze
                 if( rect.right() >= menuItemOption->menuRect.right() ) sides |= SideRight;
             }
 
-            _helper->renderFocusRect( painter, rect, color, outlineColor, sides );
+            _helper->renderFocusRect( painter, rect, color, outlineColor, SideTop | SideBottom | SideLeft | SideRight );
 
         }
 
@@ -4873,9 +4874,7 @@ namespace Breeze
 
             // icon mode
             QIcon::Mode mode;
-            if( selected && !useStrongFocus)  mode = QIcon::Active;
-            else if( selected ) mode = QIcon::Selected;
-            else if( enabled ) mode = QIcon::Normal;
+            if( enabled ) mode = QIcon::Normal;
             else mode = QIcon::Disabled;
 
             // icon state
@@ -4899,11 +4898,7 @@ namespace Breeze
             const ArrowOrientation orientation( reverseLayout ? ArrowLeft:ArrowRight );
 
             // color
-            QColor arrowColor;
-            if( useStrongFocus && ( selected || sunken ) ) arrowColor = palette.color( QPalette::HighlightedText );
-            else if( sunken ) arrowColor = _helper->focusColor( palette );
-            else if( selected ) arrowColor = _helper->hoverColor( palette );
-            else arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
+            const QColor arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
 
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
@@ -4925,7 +4920,7 @@ namespace Breeze
             painter->setFont( menuItemOption->font );
 
             // color role
-            const QPalette::ColorRole role = (useStrongFocus && ( selected || sunken )) ? QPalette::HighlightedText : QPalette::WindowText;
+            const QPalette::ColorRole role = QPalette::WindowText;
 
             // locate accelerator and render
             const int tabPosition( text.indexOf( QLatin1Char( '\t' ) ) );
