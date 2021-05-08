@@ -510,7 +510,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
-        qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
+        qreal radius( frameRadius( PenWidth::NoPen ) );
 
         // set pen
         if( outline.isValid() )
@@ -571,7 +571,7 @@ namespace Breeze
 
             case AllSides:
             {
-                const qreal radius( frameRadius( PenWidth::Frame, -1 ) );
+                const qreal radius( frameRadius( PenWidth::Frame ) );
                 painter->drawRoundedRect( frameRect, radius, radius );
                 break;
             }
@@ -785,7 +785,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing );
 
         QRectF frameRect( rect.adjusted( 1, 1, -1, -1 ) );
-        qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
+        qreal radius( frameRadius( PenWidth::NoPen ) );
 
         // set pen
         if( outline.isValid() )
@@ -1317,7 +1317,7 @@ namespace Breeze
         painter->setRenderHint( QPainter::Antialiasing, true );
 
         QRectF frameRect( rect );
-        qreal radius( frameRadius( PenWidth::NoPen, -1 ) );
+        qreal radius( frameRadius( PenWidth::NoPen ) );
 
         // pen
         if( outline.isValid() )
