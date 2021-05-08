@@ -394,6 +394,8 @@ namespace Breeze
         }
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
+        } else if ( auto btn = qobject_cast<QPushButton*> (widget) ) {
+            btn->setAutoDefault(false);
         }
 
 
@@ -3587,8 +3589,8 @@ namespace Breeze
             QPalette palette( option->palette );
             if( enabled && buttonOption->features & QStyleOptionButton::DefaultButton )
             {
-                const auto button( palette.color( QPalette::Button ) );
-                const auto base( palette.color( QPalette::Base ) );
+                const auto button( palette.color( QPalette::Highlight ) );
+                const auto base( palette.color( QPalette::Button ) );
                 palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
             }
 
