@@ -140,10 +140,9 @@ namespace Breeze
     static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
-    static QColor g_fontColor = Qt::black;
     static qreal g_cornerRadius = 3;
     static bool g_hasNoBorders = true;
-    static bool g_isShaded = false;
+    static bool g_contrastingWindowOutline = true;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
@@ -278,7 +277,7 @@ namespace Breeze
         connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
         connect(c, &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
         connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
-        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateShadow);
+        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::forceUpdateShadow);
         connect(c, &KDecoration2::DecoratedClient::captionChanged, this,
             [this]()
             {
@@ -298,7 +297,7 @@ namespace Breeze
         connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
         connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
         
-        connect(c, &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::updateShadow);
+        connect(c, &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::forceUpdateShadow);
 
         createButtons();
         updateShadow();
@@ -894,7 +893,7 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    void Decoration::updateShadow()
+    void Decoration::updateShadow( const bool force )
     {
         auto s = settings();
         auto c = client().toStrongRef();
@@ -906,24 +905,23 @@ namespace Breeze
             setShadow(createShadowObject(0.5 + m_shadowOpacity * 0.5));
             return;
         }
-
+                
         if ( g_shadowSizeEnum != m_internalSettings->shadowSize()
                 || g_shadowStrength != m_internalSettings->shadowStrength()
                 || g_shadowColor != m_internalSettings->shadowColor()
-                || g_fontColor != fontColor()
                 || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
-                || g_hasNoBorders != hasNoBorders()
-                || g_isShaded != c->isShaded() )
+                || g_hasNoBorders != hasNoBorders() 
+                || g_contrastingWindowOutline != m_internalSettings->contrastingWindowOutline()
+                || force )
         {
             g_sShadow.clear();
             g_sShadowInactive.clear();
             g_shadowSizeEnum = m_internalSettings->shadowSize();
             g_shadowStrength = m_internalSettings->shadowStrength();
             g_shadowColor = m_internalSettings->shadowColor();
-            g_fontColor = fontColor();
             g_cornerRadius = m_scaledCornerRadius;
             g_hasNoBorders = hasNoBorders();
-            g_isShaded = c->isShaded();
+            g_contrastingWindowOutline = m_internalSettings->contrastingWindowOutline();
         }
 
         auto& shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
@@ -1024,7 +1022,10 @@ namespace Breeze
           if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
 
           // Draw 1px wide outline
-          QPen p(withOpacity(fontColor(), 0.25), 1.0);
+          QPen p;
+          if ( m_internalSettings->contrastingWindowOutline() ) p.setColor(withOpacity(fontColor(), 0.25));
+          else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
+          p.setWidthF(1.0);
           painter.setPen(p);
           painter.setBrush(Qt::NoBrush);
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
