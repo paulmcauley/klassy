@@ -90,7 +90,12 @@
       </choices>
       <default>BorderNone</default>
     </entry>
-
+    
+    <!-- Draw thin contrasting window outline -->
+    <entry name="ContrastingWindowOutline" type = "Bool">
+        <default>true</default>
+    </entry>
+    
     <!-- title alignment -->
     <entry name="TitleAlignment" type="Enum">
       <choices>
