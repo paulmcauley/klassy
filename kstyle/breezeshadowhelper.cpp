@@ -13,6 +13,8 @@
 #include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 
+#include <KWindowSystem>
+
 #include <QDockWidget>
 #include <QEvent>
 #include <QApplication>
@@ -212,7 +214,8 @@ namespace Breeze
         const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
             .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-        const qreal dpr = qApp->devicePixelRatio();
+        // On Wayland, the compositor will upscale the shadow tiles if necessary.
+        const qreal dpr = KWindowSystem::isPlatformWayland() ? 1 : qApp->devicePixelRatio();
         const qreal frameRadius = _helper.frameRadius();
 
         BoxShadowRenderer shadowRenderer;
