@@ -711,20 +711,17 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
 
         const QRectF baseRect( rect.adjusted( 1, 1, -1, -1 ) );
+        const qreal radius( frameRadius( PenWidth::Frame ) );
 
         if( sunken )
         {
 
-            const qreal radius( frameRadius( PenWidth::NoPen ) );
+            painter->setPen( color );
+            painter->setBrush( alphaColor(color, 0.35) );
 
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( color );
-
-            painter->drawRoundedRect( baseRect, radius, radius );
+            painter->drawRoundedRect( strokedRect ( baseRect ), radius, radius );
 
         } else {
-
-            const qreal radius( frameRadius( PenWidth::Frame ) );
 
             painter->setPen( color );
             painter->setBrush( Qt::NoBrush );
