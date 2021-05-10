@@ -1000,8 +1000,8 @@ namespace Breeze
           QPainterPath roundedRectMask;
           roundedRectMask.addRoundedRect(
               innerRectPotentiallyTaller,
-              m_scaledCornerRadius + 0.5,
-              m_scaledCornerRadius + 0.5);
+              m_scaledCornerRadius,
+              m_scaledCornerRadius);
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectMask = roundedRectMask.intersected(innerRectPath);
 
