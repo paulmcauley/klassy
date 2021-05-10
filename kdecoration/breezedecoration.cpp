@@ -1033,8 +1033,8 @@ namespace Breeze
           QPainterPath roundedRectOutline;
           roundedRectOutline.addRoundedRect(
               outlineRectPotentiallyTaller,
-              m_scaledCornerRadius - 0.5,
-              m_scaledCornerRadius - 0.5);
+              m_scaledCornerRadius,
+              m_scaledCornerRadius);
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
           
