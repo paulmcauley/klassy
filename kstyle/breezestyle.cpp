@@ -103,9 +103,32 @@ namespace BreezePrivate
         //* paint
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
         {
-            // call either proxy or parent class
-            if( _proxy ) _proxy.data()->paint( painter, option, index );
-            else QItemDelegate::paint( painter, option, index );
+            // if the app sets an item delegate that isn't the default, use its drawing...
+            if( _proxy && _proxy->metaObject()->className() != QStringLiteral("QComboBoxDelegate") ) {
+                _proxy.data()->paint( painter, option, index );
+                return;
+            }
+
+            // otherwise we draw the selected/highlighted background ourself...
+            if (option.showDecorationSelected && (option.state & QStyle::State_Selected))
+            {
+                using namespace Breeze;
+
+                auto c = option.palette.brush((option.state & QStyle::State_Enabled) ? QPalette::Normal : QPalette::Disabled, QPalette::Highlight).color();
+
+                painter->setPen( c );
+                c.setAlphaF(c.alphaF() * 0.3);
+                painter->setBrush( c );
+                auto radius = Metrics::Frame_FrameRadius - (0.5 * PenWidth::Frame);
+                painter->drawRoundedRect( QRectF(option.rect).adjusted(0.5, 0.5, -0.5, -0.5), radius, radius );
+            }
+
+            // and ask the base class to do everything else for us besides the selected/highlighted part which we just did
+            auto opt = option;
+            opt.showDecorationSelected = false;
+            opt.state &= ~QStyle::State_Selected;
+
+            QItemDelegate::paint( painter, opt, index );
         }
 
         //* size hint for index
