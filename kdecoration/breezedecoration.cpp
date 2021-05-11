@@ -998,10 +998,17 @@ namespace Breeze
           if ( hasNoBorders() && !c->isShaded() ) innerRectPotentiallyTaller.adjust(0,0,0,m_scaledCornerRadius); 
           
           QPainterPath roundedRectMask;
-          roundedRectMask.addRoundedRect(
-              innerRectPotentiallyTaller,
-              m_scaledCornerRadius,
-              m_scaledCornerRadius);
+          if( m_internalSettings->contrastingWindowOutline() ){
+            roundedRectMask.addRoundedRect(
+                innerRectPotentiallyTaller,
+                m_scaledCornerRadius,
+                m_scaledCornerRadius);
+          } else {
+            roundedRectMask.addRoundedRect(
+                innerRectPotentiallyTaller,
+                m_scaledCornerRadius + 0.5,
+                m_scaledCornerRadius + 0.5);
+          }
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectMask = roundedRectMask.intersected(innerRectPath);
 
@@ -1009,10 +1016,9 @@ namespace Breeze
           painter.drawPath(roundedRectMask);
 
 
-          //make 1px outline rect larger so all 1px is outside window
           QRectF outlineRect;
-          if (KWindowSystem::isPlatformWayland() ) outlineRect = innerRect; // on Wayland innerRect is already larger than window
-          else outlineRect = innerRect.adjusted(-0.5, -0.5, 0.5, 0.5); // on X11 innerRect is half in window so increase size by 0.5 so is outside
+          if ( !m_internalSettings->contrastingWindowOutline() ) outlineRect = innerRect;
+          else outlineRect = innerRect.adjusted(-0.5, -0.5, 0.5, 0.5); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
           QPainterPath outlineRectPath;
           outlineRectPath.addRect(outlineRect);
 
@@ -1031,10 +1037,17 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           
           QPainterPath roundedRectOutline;
-          roundedRectOutline.addRoundedRect(
-              outlineRectPotentiallyTaller,
-              m_scaledCornerRadius,
-              m_scaledCornerRadius);
+          if( m_internalSettings->contrastingWindowOutline() ){
+            roundedRectOutline.addRoundedRect(
+                outlineRectPotentiallyTaller,
+                m_scaledCornerRadius,
+                m_scaledCornerRadius);
+          } else {
+            roundedRectOutline.addRoundedRect(
+                outlineRectPotentiallyTaller,
+                m_scaledCornerRadius - 0.5,
+                m_scaledCornerRadius - 0.5);
+          }
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
           
