@@ -341,11 +341,14 @@ namespace Breeze
         // send hover event
         if( _splitter )
         {
-            QHoverEvent hoverEvent(
-                qobject_cast<QSplitterHandle*>(_splitter.data()) ? QEvent::HoverLeave : QEvent::HoverMove,
-                _splitter.data()->mapFromGlobal(QCursor::pos()), _hook);
-            QCoreApplication::sendEvent( _splitter.data(), &hoverEvent );
+            // SplitterProxy intercepts HoverLeave/HoverMove events to _splitter,
+            // but this is meant to reach it directly. Unset _splitter to stop interception.
+            auto splitter = _splitter;
             _splitter.clear();
+            QHoverEvent hoverEvent(
+                qobject_cast<QSplitterHandle*>(splitter.data()) ? QEvent::HoverLeave : QEvent::HoverMove,
+                splitter.data()->mapFromGlobal(QCursor::pos()), _hook);
+            QCoreApplication::sendEvent( splitter.data(), &hoverEvent );
         }
 
         // kill timer if any
