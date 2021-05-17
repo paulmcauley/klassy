@@ -4011,7 +4011,7 @@ namespace Breeze
         auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
         separatorRect.setWidth( 1 );
         separatorRect = visualRect( option, separatorRect );
-        if( sunken ) separatorRect.translate( 1, 1 );
+        if( sunken && !flat ) separatorRect.translate( 1, 1 );
         if ( !flat || mouseOver || hasFocus )
         {
             _helper->renderSeparator( painter, separatorRect, outline, true );
