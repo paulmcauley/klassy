@@ -3217,7 +3217,7 @@ namespace Breeze
 
             // render
             const auto &background = palette.color( QPalette::Base );
-            const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             _helper->renderFrame( painter, rect, background, outline );
 
         }
@@ -3618,7 +3618,7 @@ namespace Breeze
             }
 
             const auto shadow( _helper->shadowColor( palette ) );
-            const QColor outline = hasHighlightNeutral( widget, option, mouseOver ) ? _helper->neutralText( palette ) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode );
+            const QColor outline = hasHighlightNeutral( widget, option, mouseOver ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode );
             const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
             // render
@@ -6282,14 +6282,14 @@ namespace Breeze
                 if( flat ) {
 
                     // define colors and render
-                    const auto color( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+                    const auto color( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
                     _helper->renderToolButtonFrame( painter, rect, color, sunken );
 
                 } else {
 
                     // define colors
                     const auto shadow( _helper->shadowColor( palette ) );
-                    const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+                    const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
                     const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
 
                     // render
@@ -6549,7 +6549,10 @@ namespace Breeze
 
             // define colors
             const auto &background = palette.color( QPalette::Button );
-            const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
+            if (hasFocus || (handleActive && mouseOver)) {
+                outline = hasHighlightNeutral( widget, option, handleActive && mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : outline;
+            }
             const auto shadow( _helper->shadowColor( palette ) );
 
             // render
@@ -7435,10 +7438,6 @@ namespace Breeze
     bool Style::hasHighlightNeutral( const QObject* widget, const QStyleOption* option, bool mouseOver, bool focus) const
     {
         if ( !widget && ( !option || !option->styleObject ) ) {
-            return false;
-        }
-
-        if ( mouseOver || focus ) {
             return false;
         }
 
