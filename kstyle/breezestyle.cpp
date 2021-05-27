@@ -3920,8 +3920,8 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
         // render
-        _helper->renderCheckBoxBackground( painter, rect, palette, checkBoxState, animation );
-        _helper->renderCheckBox( painter, rect, palette, mouseOver, checkBoxState, target, animation, opacity );
+        _helper->renderCheckBoxBackground( painter, rect, palette, checkBoxState, hasHighlightNeutral( widget, option, mouseOver), animation );
+        _helper->renderCheckBox( painter, rect, palette, mouseOver, checkBoxState, target, hasHighlightNeutral( widget, option, mouseOver), animation, opacity );
         return true;
 
     }
@@ -3952,8 +3952,8 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
         // render
-        _helper->renderRadioButtonBackground( painter, rect, palette, radioButtonState, animation );
-        _helper->renderRadioButton( painter, rect, palette, mouseOver, radioButtonState, animation, opacity );
+        _helper->renderRadioButtonBackground( painter, rect, palette, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), animation );
+        _helper->renderRadioButton( painter, rect, palette, mouseOver, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), animation, opacity );
 
         return true;
 
@@ -4863,16 +4863,16 @@ namespace Breeze
             const bool active( menuItemOption->checked );
             const auto shadow( _helper->shadowColor( palette ) );
             const auto color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
-            _helper->renderCheckBoxBackground( painter, checkBoxRect, palette, state, AnimationData::OpacityInvalid );
-            _helper->renderCheckBox( painter, checkBoxRect, palette, false, state, state );
+            _helper->renderCheckBoxBackground( painter, checkBoxRect, palette, state, false, AnimationData::OpacityInvalid );
+            _helper->renderCheckBox( painter, checkBoxRect, palette, false, state, state, false );
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
 
             checkBoxRect = visualRect( option, checkBoxRect );
 
             const bool active( menuItemOption->checked );
-            _helper->renderRadioButtonBackground( painter, checkBoxRect, palette, active ? RadioOn : RadioOff, AnimationData::OpacityInvalid );
-            _helper->renderRadioButton( painter, checkBoxRect, palette, false, active ? RadioOn:RadioOff );
+            _helper->renderRadioButtonBackground( painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, AnimationData::OpacityInvalid );
+            _helper->renderRadioButton( painter, checkBoxRect, palette, false, active ? RadioOn:RadioOff, false );
 
         }
 
