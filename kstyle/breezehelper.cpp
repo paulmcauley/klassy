@@ -849,7 +849,7 @@ namespace Breeze
     void Helper::renderCheckBoxBackground(
         QPainter* painter, const QRect& rect,
         const QPalette& palette,
-        CheckBoxState state, qreal animation ) const
+        CheckBoxState state, bool neutalHighlight, qreal animation ) const
     {
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
@@ -859,12 +859,12 @@ namespace Breeze
         frameRect.adjust( 2, 2, -2, -2 );
         frameRect = strokedRect(frameRect);
 
-        auto transparent = palette.highlight().color();
+        auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
         transparent.setAlphaF(0.50);
 
         painter->setPen( transparentize( palette.text().color(), 0.5 ) );
         if (state == CheckOn || state == CheckPartial) {
-            painter->setPen( palette.highlight().color() );
+            painter->setPen( neutalHighlight ? neutralText(palette) : palette.highlight().color() );
         }
 
         const auto radius = Metrics::CheckBox_Radius;
@@ -897,6 +897,7 @@ namespace Breeze
         QPainter* painter, const QRect& rect,
         const QPalette& palette, bool mouseOver,
         CheckBoxState state, CheckBoxState target,
+        bool neutalHighlight,
         qreal animation, qreal hoverAnimation ) const
     {
         // setup painter
@@ -913,7 +914,7 @@ namespace Breeze
                 painter->setOpacity(hoverAnimation);
             }
 
-            painter->setPen( QPen( focusColor(palette), PenWidth::Frame ) );
+            painter->setPen( QPen( neutalHighlight ? neutralText(palette) : focusColor(palette), PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
             painter->drawRoundedRect( frameRect.adjusted(0.5, 0.5, -0.5, -0.5), Metrics::CheckBox_Radius, Metrics::CheckBox_Radius );
@@ -986,7 +987,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QPalette& palette, RadioButtonState state, qreal animation ) const
+    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QPalette& palette, RadioButtonState state, bool neutalHighlight, qreal animation ) const
     {
 
         // setup painter
@@ -997,12 +998,12 @@ namespace Breeze
         frameRect.adjust( 2, 2, -2, -2 );
         frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
-        auto transparent = palette.highlight().color();
+        auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
         transparent.setAlphaF(0.50);
 
         painter->setPen( transparentize( palette.text().color(), 0.5 ) );
         if (state == RadioOn) {
-            painter->setPen( palette.highlight().color() );
+            painter->setPen( neutalHighlight ? neutralText(palette) : palette.highlight().color() );
         }
 
         switch (state) {
@@ -1028,7 +1029,7 @@ namespace Breeze
     void Helper::renderRadioButton(
         QPainter* painter, const QRect& rect,
         const QPalette& palette, bool mouseOver,
-        RadioButtonState state, qreal animation, qreal animationHover ) const
+        RadioButtonState state, bool neutralHighlight, qreal animation, qreal animationHover ) const
     {
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
@@ -1044,7 +1045,7 @@ namespace Breeze
                 painter->setOpacity(animationHover);
             }
 
-            painter->setPen( QPen( focusColor(palette), PenWidth::Frame ) );
+            painter->setPen( QPen( neutralHighlight ? neutralText(palette) : focusColor(palette), PenWidth::Frame ) );
             painter->setBrush( Qt::NoBrush );
 
             const QRectF contentRect( frameRect.adjusted( 1, 1, -1, -1 ).adjusted( 0.5 , 0.5, -0.5, -0.5 ) );
