@@ -50,6 +50,7 @@ namespace Breeze
         // menu items
         static constexpr int Menu_FrameWidth = 0;
         static constexpr int MenuItem_MarginWidth = 8;
+        static constexpr int MenuItem_ExtraLeftMargin = 4;
         static constexpr int MenuItem_MarginHeight = 4;
         static constexpr int MenuItem_ItemSpacing = 4;
         static constexpr int MenuItem_SeparatorPadding = 0;
