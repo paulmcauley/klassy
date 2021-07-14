@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16)
 project(breeze)
-set(PROJECT_VERSION "2.1.breeze5.21.80")
+set(PROJECT_VERSION "2.6.breeze5.22.80")
 set(PROJECT_VERSION_MAJOR 5)
 
-set(KF5_MIN_VERSION "5.78")
+set(KF5_MIN_VERSION "5.82")
 set(QT_MIN_VERSION "5.15.0")
 
 include(GenerateExportHeader)
