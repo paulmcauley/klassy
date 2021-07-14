@@ -682,7 +682,7 @@ namespace Breeze
             if( !hideTitleBar() ) clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
             
             //clip off the titlebar and draw bottom part
-            QPainterPath windowPathMinusTitleBar = m_windowPath.intersected(clipRect);
+            QPainterPath windowPathMinusTitleBar = m_windowPath->intersected(clipRect);
             painter->drawPath(windowPathMinusTitleBar);
             
             painter->restore();
@@ -716,38 +716,38 @@ namespace Breeze
         
         //set titleBar geometry and path
         m_titleRect = QRect(QPoint(0, 0), QSize(size().width(), borderTop()));
-        m_titleBarPath.clear(); //clear the path for subsequent calls to this function
+        m_titleBarPath->clear(); //clear the path for subsequent calls to this function
         if( isMaximized() || !s->isAlphaChannelSupported() )
         {
-            m_titleBarPath.addRect(m_titleRect);
+            m_titleBarPath->addRect(m_titleRect);
 
         } else if( c->isShaded() ) {
-            m_titleBarPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
+            m_titleBarPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
 
         } else {
             QPainterPath clipRect;
             clipRect.addRect(m_titleRect);
             
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
-            m_titleBarPath.addRoundedRect(m_titleRect.adjusted(
+            m_titleBarPath->addRoundedRect(m_titleRect.adjusted(
                 isLeftEdge() ? -m_scaledCornerRadius:0,
                 isTopEdge() ? -m_scaledCornerRadius:0,
                 isRightEdge() ? m_scaledCornerRadius:0,
                 m_scaledCornerRadius),
                 m_scaledCornerRadius, m_scaledCornerRadius);
             
-            m_titleBarPath = m_titleBarPath.intersected(clipRect);
+            *m_titleBarPath = m_titleBarPath->intersected(clipRect);
         }
         
         //set windowPath
-        m_windowPath.clear(); //clear the path for subsequent calls to this function
+        m_windowPath->clear(); //clear the path for subsequent calls to this function
         if( !c->isShaded() )
         {
-            if( s->isAlphaChannelSupported() ) m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
-            else m_windowPath.addRect( rect() );
+            if( s->isAlphaChannelSupported() ) m_windowPath->addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
+            else m_windowPath->addRect( rect() );
             
         } else {
-            m_windowPath = m_titleBarPath;
+            *m_windowPath = *m_titleBarPath;
         }
         
     }
@@ -783,7 +783,7 @@ namespace Breeze
 
         auto s = settings();
         
-        painter->drawPath(m_titleBarPath);
+        painter->drawPath(*m_titleBarPath);
 
         const QColor outlineColor( this->outlineColor() );
         if( !c->isShaded() && outlineColor.isValid() )

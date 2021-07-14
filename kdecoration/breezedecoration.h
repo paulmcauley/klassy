@@ -20,6 +20,8 @@
 #include <QVariantAnimation>
 #include <QPainterPath>
 
+#include <memory>
+
 class QVariantAnimation;
 
 namespace KDecoration2
@@ -89,8 +91,8 @@ namespace Breeze
         inline bool hideTitleBar() const;
         //@}
         
-        QPainterPath* titleBarPath(){ return &m_titleBarPath; }
-        QPainterPath* windowPath(){ return &m_windowPath; }
+        std::shared_ptr<QPainterPath> titleBarPath(){ return m_titleBarPath; }
+        std::shared_ptr<QPainterPath> windowPath(){ return m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
         
 
@@ -164,9 +166,9 @@ namespace Breeze
         QRect m_titleRect;
         
         //* Exact titlebar path, with clipped rounded corners
-        QPainterPath m_titleBarPath;
+        std::shared_ptr<QPainterPath> m_titleBarPath = std::make_shared<QPainterPath>();
         //* Exact window path, with clipped rounded corners
-        QPainterPath m_windowPath;
+        std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
         
         qreal m_systemScaleFactor = 1.0;
 
