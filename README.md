@@ -50,7 +50,7 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 <a name="installation"/>
 
 ## Installation
-_ClassikStyles_ requires a recent version of KDE Plasma with __at least Qt version 5.15__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_ClassikStyles_ from version 2.6 onwards requires a recent version of KDE Plasma with __at least KDE Frameworks 5.82__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
