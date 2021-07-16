@@ -178,7 +178,7 @@
     </entry>
     
     <entry name="UseTitlebarColorForAllBorders" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <!-- background gradient -->
