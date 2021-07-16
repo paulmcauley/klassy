@@ -181,10 +181,10 @@ namespace Breeze
     //________________________________________________________________
     QColor Decoration::titleBarColor() const
     {
-
+        
         auto c = client().toStrongRef();
         Q_ASSERT(c);
-        if( hideTitleBar() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
+        if( hideTitleBar() && !m_internalSettings->useTitlebarColorForAllBorders() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
         else if( m_animation->state() == QAbstractAnimation::Running )
         {
             return KColorUtils::mix(
@@ -689,11 +689,13 @@ namespace Breeze
             
             QPainterPath clipRect;
             // use clipRect for clipping away the top part
-            if( !hideTitleBar() ) clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
-            
-            //clip off the titlebar and draw bottom part
-            QPainterPath windowPathMinusTitleBar = m_windowPath->intersected(clipRect);
-            painter->drawPath(windowPathMinusTitleBar);
+            if( !hideTitleBar() ) 
+            {
+                clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
+                //clip off the titlebar and draw bottom part
+                QPainterPath windowPathMinusTitleBar = m_windowPath->intersected(clipRect);
+                painter->drawPath(windowPathMinusTitleBar);
+            } else painter->drawPath(*m_windowPath);
             
             painter->restore();
         }
