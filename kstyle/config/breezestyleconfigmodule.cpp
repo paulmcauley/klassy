@@ -11,7 +11,7 @@
 
 K_PLUGIN_FACTORY(
     BreezeStyleConfigFactory,
-    registerPlugin<Breeze::ConfigurationModule>(QStringLiteral("kcmodule"));
+    registerPlugin<Breeze::ConfigurationModule>();
 )
 
 #include "breezestyleconfigmodule.moc"

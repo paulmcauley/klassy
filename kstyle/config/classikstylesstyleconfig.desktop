@@ -5,7 +5,6 @@ Type=Service
 X-KDE-ServiceTypes=KCModule
 
 X-KDE-Library=kstyle_classikstyles_config
-X-KDE-PluginKeyword=kcmodule
 X-KDE-ParentApp=kcontrol
 X-KDE-Weight=50
 
