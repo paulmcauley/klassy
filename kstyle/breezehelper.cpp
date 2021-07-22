@@ -1058,7 +1058,7 @@ namespace Breeze
         painter->setPen( Qt::NoPen );
 
         QRectF markerRect;
-        markerRect = frameRect.adjusted( 5, 5, -5, -5 );
+        markerRect = frameRect.adjusted( 6, 6, -6, -6 );
         
         qreal adjustFactor;
 
