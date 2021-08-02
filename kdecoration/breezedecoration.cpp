@@ -318,7 +318,7 @@ namespace Breeze
         int titlebarTopMargin = titleBarTopBottomMargins();
         
         //prevents resize handles appearing in button at top window edge for large square buttons
-        if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        if( (m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare) && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
         {
             width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             height = borderTop();
