@@ -158,6 +158,9 @@ namespace Breeze
         //* generic frame
         void renderFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline = QColor() ) const;
 
+        //* generic frame, with separators only on the side
+        void renderFrameWithSides( QPainter*, const QRect&, const QColor& color, Qt::Edges edges, const QColor& outline = QColor() ) const;
+
         //* side panel frame
         void renderSidePanelFrame( QPainter*, const QRect&, const QColor& outline, Side ) const;
 

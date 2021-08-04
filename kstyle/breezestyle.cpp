@@ -1706,6 +1706,29 @@ namespace Breeze
     //___________________________________________________________________________________________________________________
     QRect Style::frameContentsRect( const QStyleOption* option, const QWidget* widget ) const
     {
+        if ( widget ) {
+            const auto borders = widget->property( PropertyNames::bordersSides );
+            if ( borders.isValid() && borders.canConvert<Qt::Edges>() ) {
+                const auto value = borders.value<Qt::Edges>();
+                auto rect = option->rect;
+
+                if ( value & Qt::LeftEdge ) {
+                    rect.adjust( 1, 0, 0, 0 );
+                }
+                if ( value & Qt::RightEdge ) {
+                    rect.adjust( 0, 0, -1, 0 );
+                }
+                if ( value & Qt::TopEdge ) {
+                    rect.adjust( 0, 1, 0, 0 );
+                }
+                if ( value & Qt::BottomEdge ) {
+                    rect.adjust( 0, 0, 0, -1 );
+                }
+
+                return rect;
+            }
+        }
+
         if( !StyleConfigData::sidePanelDrawFrame() &&
             qobject_cast<const QAbstractScrollArea*>( widget ) &&
             widget->property( PropertyNames::sidePanelView ).toBool() )
@@ -3145,6 +3168,16 @@ namespace Breeze
         // retrieve animation mode and opacity
         const AnimationMode mode( _animations->inputWidgetEngine().frameAnimationMode( widget ) );
         const qreal opacity( _animations->inputWidgetEngine().frameOpacity( widget ) );
+
+        if ( widget && widget->property( PropertyNames::bordersSides ).isValid() )
+        {
+
+            const auto background( palette.base().color() );
+            const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            _helper->renderFrameWithSides( painter, rect, background, widget->property( PropertyNames::bordersSides ).value<Qt::Edges>(), outline );
+
+            return true;
+        }
 
         // render
         if( !StyleConfigData::sidePanelDrawFrame() && widget && widget->property( PropertyNames::sidePanelView ).toBool() )

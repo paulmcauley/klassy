@@ -410,6 +410,62 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
+    void Helper::renderFrameWithSides(
+        QPainter* painter, const QRect& rect,
+        const QColor& color, Qt::Edges edges,
+        const QColor& outline ) const
+    {
+
+        painter->save();
+
+        painter->setRenderHint( QPainter::Antialiasing );
+
+        QRectF frameRect( rect );
+
+        // set brush
+        painter->setBrush( color );
+        painter->setPen( Qt::NoPen );
+
+        // render
+        painter->drawRect( frameRect );
+
+        // set brush again
+        painter->setBrush( Qt::NoBrush );
+        painter->setPen( outline );
+
+        // manually apply the effects of StrokedRect here but only to the edges with a frame
+        if ( edges & Qt::LeftEdge ) {
+            frameRect.adjust(0.5, 0.0, 0.0, 0.0);
+        }
+        if ( edges & Qt::RightEdge ) {
+            frameRect.adjust(0.0, 0, -0.5, 0.0);
+        }
+        if ( edges & Qt::TopEdge ) {
+            frameRect.adjust(0.0, 0.5, 0.0, 0.0);
+        }
+        if ( edges & Qt::BottomEdge ) {
+            frameRect.adjust(0.0, 0.0, 0.0, -0.5);
+        }
+
+        // draw lines
+        if ( edges & Qt::LeftEdge ) {
+            painter->drawLine( QLineF(frameRect.topLeft(), frameRect.bottomLeft()) );
+        }
+        if ( edges & Qt::RightEdge ) {
+            painter->drawLine( QLineF(frameRect.topRight(), frameRect.bottomRight()) );
+        }
+        if ( edges & Qt::TopEdge ) {
+            painter->drawLine( QLineF(frameRect.topLeft(), frameRect.topRight()) );
+        }
+        if ( edges & Qt::BottomEdge ) {
+            painter->drawLine( QLineF(frameRect.bottomLeft(), frameRect.bottomRight()) );
+        }
+
+        painter->restore();
+
+    }
+
+    //______________________________________________________________________________
     void Helper::renderFrame(
         QPainter* painter, const QRect& rect,
         const QColor& color, const QColor& outline ) const
