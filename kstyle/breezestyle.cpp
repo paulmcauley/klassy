@@ -7034,6 +7034,17 @@ namespace Breeze
 
             }
 
+        } else if (option->state & State_MouseOver) {
+            const bool activeIsSub = option->activeSubControls & SC_ScrollBarSubLine;
+            const bool activeIsAdd = option->activeSubControls & SC_ScrollBarAddLine;
+            const bool drawingSub = control == SC_ScrollBarSubLine;
+            const bool drawingAdd = control == SC_ScrollBarAddLine;
+
+            if ((activeIsSub && drawingSub) || (activeIsAdd && drawingAdd)) {
+                const auto highlight = _helper->hoverColor( palette );
+
+                color = highlight;
+            }
         }
 
         if( StyleConfigData::animationsEnabled() ) {
