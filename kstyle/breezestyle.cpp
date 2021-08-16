@@ -2364,6 +2364,9 @@ namespace Breeze
         if( !spinBoxOption ) return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
+        const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
+        const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
+
         // copy rect
         auto rect( option->rect );
 
@@ -2374,30 +2377,31 @@ namespace Breeze
             case SC_SpinBoxUp:
             {
                 auto r = rect;
-                r.setLeft(r.width()-r.height());
+                r.setLeft(r.width()-buttonSize);
                 return r;
             }
 
             case SC_SpinBoxDown:
             {
                 auto r = rect;
-                r.setRight(r.height());
+                r.setRight(buttonSize);
                 return r;
             }
 
             case SC_SpinBoxEditField:
             {
                 const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
+                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
+                const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
 
                 QRect r = rect;
                 if( showButtons ) {
                     auto w = r.width();
-                    r.setLeft(r.height());
-                    r.setRight(w-r.height());
+                    r.setLeft(buttonSize);
+                    r.setRight(w-buttonSize);
                 }
 
                 // remove right side line editor margins
-                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
                 if( !flat && r.height() >= option->fontMetrics.height() + 2*frameWidth )
                 { r.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth ); }
 
@@ -2697,7 +2701,8 @@ namespace Breeze
 
         // add in the buttons, which are square w/ length of height, and we have two of them
         const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-        if( showButtons ) size.rwidth() += size.height()*2;
+        const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
+        if( showButtons ) size.rwidth() += buttonSize*2;
 
         return size;
 
