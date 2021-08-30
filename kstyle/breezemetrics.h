@@ -17,17 +17,18 @@ namespace Breeze
     {
         /* Using 1 instead of slightly more than 1 causes symbols drawn with
          * pen strokes to look skewed. The exact amount added does not matter
-         * as long as it isn't too visible.
+         * as long as it isn't too visible. Even with QPen::setCosmetic(true),
+         * 1px pen widths still look slightly worse.
          */
         // The standard pen stroke width for symbols.
-        static constexpr qreal Symbol = 1.01;
+        static constexpr qreal Symbol = 1.001;
 
         // The standard pen stroke width for frames.
-        static constexpr int Frame = 1;
+        static constexpr qreal Frame = 1.001;
 
         // The standard pen stroke width for shadows.
-        static constexpr int Shadow = 1;
-        
+        static constexpr qreal Shadow = 1.001;
+
         // A value for pen width arguments to make it clear that there is no pen stroke
         static constexpr int NoPen = 0;
     };
