@@ -185,13 +185,6 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="_titleWidgetDrawFrame">
-         <property name="text">
-          <string>Draw frame around page titles</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QCheckBox" name="_sidePanelDrawFrame">
          <property name="text">
           <string>Draw frame around side panels</string>
@@ -464,7 +457,6 @@
   <tabstop>_mnemonicsMode</tabstop>
   <tabstop>_windowDragMode</tabstop>
   <tabstop>_dockWidgetDrawFrame</tabstop>
-  <tabstop>_titleWidgetDrawFrame</tabstop>
   <tabstop>_sidePanelDrawFrame</tabstop>
   <tabstop>_menuItemDrawThinFocus</tabstop>
   <tabstop>_scrollBarSubLineButtons</tabstop>

@@ -35,7 +35,6 @@ namespace Breeze
         connect( _toolBarDrawItemSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _viewDrawFocusIndicator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _dockWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _titleWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _sidePanelDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _menuItemDrawThinFocus, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
         connect( _sliderDrawTickMarks, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
@@ -55,7 +54,6 @@ namespace Breeze
         StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
         StyleConfigData::setViewDrawFocusIndicator( _viewDrawFocusIndicator->isChecked() );
         StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
-        StyleConfigData::setTitleWidgetDrawFrame( _titleWidgetDrawFrame->isChecked() );
         StyleConfigData::setSidePanelDrawFrame( _sidePanelDrawFrame->isChecked() );
         StyleConfigData::setMenuItemDrawStrongFocus( !_menuItemDrawThinFocus->isChecked() );
         StyleConfigData::setSliderDrawTickMarks( _sliderDrawTickMarks->isChecked() );
@@ -101,7 +99,6 @@ namespace Breeze
         else if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
         else if( _viewDrawFocusIndicator->isChecked() != StyleConfigData::viewDrawFocusIndicator() ) modified = true;
         else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
-        else if( _titleWidgetDrawFrame->isChecked() != StyleConfigData::titleWidgetDrawFrame() ) modified = true;
         else if( _sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame() ) modified = true;
         else if( _menuItemDrawThinFocus->isChecked() == StyleConfigData::menuItemDrawStrongFocus() ) modified = true;
         else if( _sliderDrawTickMarks->isChecked() != StyleConfigData::sliderDrawTickMarks() ) modified = true;
@@ -124,7 +121,6 @@ namespace Breeze
         _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
         _viewDrawFocusIndicator->setChecked( StyleConfigData::viewDrawFocusIndicator() );
         _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
-        _titleWidgetDrawFrame->setChecked( StyleConfigData::titleWidgetDrawFrame() );
         _sidePanelDrawFrame->setChecked( StyleConfigData::sidePanelDrawFrame() );
         _menuItemDrawThinFocus->setChecked( !StyleConfigData::menuItemDrawStrongFocus() );
         _sliderDrawTickMarks->setChecked( StyleConfigData::sliderDrawTickMarks() );

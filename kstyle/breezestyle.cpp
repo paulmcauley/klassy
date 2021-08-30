@@ -328,12 +328,6 @@ namespace Breeze
 
             widget->setAttribute( Qt::WA_Hover );
 
-        } else if( qobject_cast<QFrame*>( widget ) && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) ) {
-
-            widget->setAutoFillBackground( false );
-            if( !StyleConfigData::titleWidgetDrawFrame() )
-            { widget->setBackgroundRole( QPalette::Window ); }
-
         }
 
         if( qobject_cast<QScrollBar*>( widget ) )
@@ -3135,16 +3129,9 @@ namespace Breeze
         const auto& palette( option->palette );
         const auto& rect( option->rect );
 
-        // detect title widgets
-        const bool isTitleWidget(
-            StyleConfigData::titleWidgetDrawFrame() &&
-            widget &&
-            widget->parent() &&
-            widget->parent()->inherits( "KTitleWidget" ) );
-
         // copy state
         const State& state( option->state );
-        if( !isTitleWidget && !( state & (State_Sunken | State_Raised ) ) ) return true;
+        if( !( state & (State_Sunken | State_Raised ) ) ) return true;
 
         const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
             ( isQtQuickControl( option, widget ) && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
@@ -3181,7 +3168,7 @@ namespace Breeze
 
             }
 
-            const auto background( isTitleWidget ? palette.color( widget->backgroundRole() ): palette.base().color() );
+            const auto background( palette.base().color() );
             const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
             _helper->renderFrame( painter, rect, background, outline );
 
