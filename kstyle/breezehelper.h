@@ -80,8 +80,8 @@ namespace Breeze
         { return _viewNeutralTextBrush.brush( palette ).color(); }
 
         //* shadow
-        QColor shadowColor( const QPalette& palette ) const
-        { return alphaColor( palette.color( QPalette::Shadow ), 0.15 ); }
+        QColor shadowColor( const QPalette& palette, qreal opacity = 0.125 ) const
+        { return QColor::fromRgbF(0, 0, 0, opacity); }
 
         //* titlebar color
         const QColor& titleBarColor( bool active ) const
@@ -126,15 +126,6 @@ namespace Breeze
         //* arrow outline color, using animations
         QColor arrowColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
-        //* button outline color, using animations
-        QColor buttonOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
-
-        //* button panel color, using animations
-        QPair<QColor,QColor> buttonBackgroundColor( const QPalette&, bool mouseOver, bool hasFocus, bool sunken, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
-
-        //* tool button color
-        QColor toolButtonColor( const QPalette&, bool mouseOver, bool hasFocus, bool sunken, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
-
         //* slider outline color, using animations
         QColor sliderOutlineColor( const QPalette&, bool mouseOver, bool hasFocus, qreal opacity = AnimationData::OpacityInvalid, AnimationMode = AnimationNone ) const;
 
@@ -174,10 +165,7 @@ namespace Breeze
         void renderMenuFrame( QPainter*, const QRect&, const QColor& color, const QColor& outline, bool roundCorners = true, bool isTopMenu = false ) const;
 
         //* button frame
-        void renderButtonFrame( QPainter*, const QRect&, const QPair<QColor,QColor>& highlightAndBase, const QColor& outline, const QColor& shadow, bool focus, bool sunken ) const;
-
-        //* toolbutton frame
-        void renderToolButtonFrame( QPainter*, const QRect&, const QColor& color, bool sunken ) const;
+        void renderButtonFrame(QPainter* painter, const QRect& rect, const QPalette& palette, const QHash<QByteArray, bool>& stateProperties, qreal bgAnimation = AnimationData::OpacityInvalid, qreal penAnimation = AnimationData::OpacityInvalid) const;
 
         //* toolbutton frame
         void renderToolBoxFrame( QPainter*, const QRect&, int tabWidth, const QColor& color ) const;
@@ -241,7 +229,7 @@ namespace Breeze
         void renderDecorationButton( QPainter*, const QRect&, const QColor&, ButtonType, bool inverted, bool paintBackground = false, const QColor& backgroundColor = QColor() ) const;
 
         //* generic shadow for rounded rectangles
-        void renderRoundedRectShadow ( QPainter*, const QRectF&, const QColor&, qreal radius = Metrics::Frame_FrameRadius - 0.5 ) const;
+        void renderRoundedRectShadow( QPainter*, const QRectF&, const QColor&, qreal radius = Metrics::Frame_FrameRadius - PenWidth::Shadow / 2 ) const;
         
         //* generic shadow for ellipses
         void renderEllipseShadow( QPainter*, const QRectF&, const QColor& ) const;
@@ -274,17 +262,18 @@ namespace Breeze
         //* frame radius
         constexpr qreal frameRadius( const int penWidth = PenWidth::NoPen, const qreal bias = 0 ) const
         { return qMax( Metrics::Frame_FrameRadius - (0.5 * penWidth) + bias, 0.0 ); }
-        
+
         //* frame radius with new pen width
         constexpr qreal frameRadiusForNewPenWidth( const qreal oldRadius, const int penWidth ) const
         { return qMax( oldRadius - (0.5 * penWidth), 0.0 ); }
-        
+
         //* return a QRectF with the appropriate size for a rectangle with a pen stroke
-        QRectF strokedRect( const QRectF &rect, const int penWidth = PenWidth::Frame ) const;
-        
-        //* return a QRectF with the appropriate size for a rectangle with a pen stroke
-        QRectF strokedRect( const QRect &rect, const int penWidth = PenWidth::Frame ) const;
-        
+        QRectF strokedRect( const QRectF &rect, const qreal penWidth = PenWidth::Frame ) const;
+
+        //* return a QRectF with the appropriate size for a rectangle with a shadow around it
+        QRectF shadowedRect( const QRectF &rect, const qreal shadowSize = PenWidth::Shadow ) const
+        { return rect.adjusted(shadowSize, shadowSize, -shadowSize, -shadowSize); }
+
         QPixmap coloredIcon(const QIcon &icon, const QPalette& palette, const QSize &size,
                             QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off);
 

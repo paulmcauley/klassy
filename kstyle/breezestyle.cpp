@@ -1380,9 +1380,6 @@ namespace Breeze
             const int margin( Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
             QPoint offset( margin, margin );
 
-            if( button->isDown() && !isFlat ) painter.translate( 1, 1 );
-            { offset += QPoint( 1, 1 ); }
-
             // state
             const State& state( option.state );
             const bool enabled( state & State_Enabled );
@@ -3571,57 +3568,57 @@ namespace Breeze
     //______________________________________________________________
     bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
-
-        // cast option and check
-        const auto buttonOption( qstyleoption_cast< const QStyleOptionButton* >( option ) );
-        if( !buttonOption ) return true;
-
-        // rect and palette
-        const auto& rect( option->rect );
-
         // button state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( ( enabled && ( state & State_HasFocus ) ) && !( widget && widget->focusProxy()));
-        const bool sunken( state & ( State_On|State_Sunken ) );
-        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
+        bool enabled = option->state & QStyle::State_Enabled;
+        bool activeFocus = option->state & QStyle::State_HasFocus;
+        // Using `widget->focusProxy() == nullptr` to work around a possible Qt bug
+        // where buttons that have a focusProxy still show focus.
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool hovered = option->state & QStyle::State_MouseOver;
+        bool down = option->state & QStyle::State_Sunken;
+        bool checked = option->state & QStyle::State_On;
+        bool flat = false;
+        bool hasMenu = false;
+        // Use to determine if this button is a default button.
+        bool defaultButton = false;
+        // Use to determine if this button is capable of being a default button when focused.
+        bool autoDefault = false;
+        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
 
-        // update animation state
-        // mouse over takes precedence over focus
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
-
-        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
-
-        if( flat )
-        {
-
-            // define colors and render
-            const auto& palette( option->palette );
-            const auto color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-            _helper->renderToolButtonFrame( painter, rect, color, sunken );
-
-        } else {
-
-            // update button color from palette in case button is default
-            QPalette palette( option->palette );
-            if( enabled && buttonOption->features & QStyleOptionButton::DefaultButton )
-            {
-                const auto button( palette.color( QPalette::Highlight ) );
-                const auto base( palette.color( QPalette::Button ) );
-                palette.setColor( QPalette::Button, KColorUtils::mix( button, base, 0.7 ) );
-            }
-
-            const auto shadow( _helper->shadowColor( palette ) );
-            const QColor outline = hasHighlightNeutral( widget, option, mouseOver ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode );
-            const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-
-            // render
-            _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
-
+        const auto buttonOption = qstyleoption_cast<const QStyleOptionButton*>(option);
+        if (buttonOption) {
+            flat = buttonOption->features & QStyleOptionButton::Flat;
+            hasMenu = buttonOption->features & QStyleOptionButton::HasMenu;
+            // If autoDefault is re-enabled by undoing a change to this file and
+            // we decide that the default button highlight moving around outside
+            // of the QDialogButtonBox is annoying, we could add
+            // ` && widget->parentWidget()->inherits("QDialogButtonBox")`.
+            // The downside would be that you can't see which button is the
+            // default button when a QPushButton in a QDialog outside of a
+            // QDialogButtonBox is focused.
+            defaultButton = buttonOption->features & QStyleOptionButton::DefaultButton;
+            autoDefault = buttonOption->features & QStyleOptionButton::AutoDefaultButton;
         }
+
+        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
+
+        QHash<QByteArray, bool> stateProperties;
+        stateProperties["enabled"] = enabled;
+        stateProperties["visualFocus"] = visualFocus;
+        stateProperties["hovered"] = hovered;
+        stateProperties["down"] = down;
+        stateProperties["checked"] = checked;
+        stateProperties["flat"] = flat;
+        stateProperties["hasMenu"] = hasMenu;
+        stateProperties["defaultButton"] = defaultButton;
+        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+
+        _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
 
         return true;
 
@@ -3631,50 +3628,45 @@ namespace Breeze
     bool Style::drawPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // copy palette and rect
-        const auto& palette( option->palette );
-        auto rect( option->rect );
+        // button state
+        bool enabled = option->state & QStyle::State_Enabled;
+        bool activeFocus = option->state & QStyle::State_HasFocus;
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+        bool hovered = option->state & QStyle::State_MouseOver;
+        bool down = option->state & QStyle::State_Sunken;
+        bool checked = option->state & QStyle::State_On;
+        bool flat = option->state & QStyle::State_AutoRaise;
+        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
 
-        // store relevant flags
-        const State& state( option->state );
-        const bool autoRaise( state & State_AutoRaise );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & (State_On | State_Sunken) );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && (option->state & (State_HasFocus | State_Sunken)) );
+        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
-        /*
-         * get animation state
-         * no need to update, this was already done in drawToolButtonComplexControl
-         */
-        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+        QRect baseRect = option->rect;
+        // adjust frame in case of menu
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
+        if(menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+            // NOTE: working around weird issue with flat toolbuttons having unusually wide rects
+            painter->setClipRect(baseRect.adjusted(0,0,flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0,0));
+            baseRect.adjust(0, 0, Metrics::Frame_FrameRadius + PenWidth::Shadow, 0);
+            baseRect = visualRect(option, baseRect);
+        }
 
-        if( !autoRaise )
-        {
-            const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
+        QHash<QByteArray, bool> stateProperties;
+        stateProperties["enabled"] = enabled;
+        stateProperties["visualFocus"] = visualFocus;
+        stateProperties["hovered"] = hovered;
+        stateProperties["down"] = down;
+        stateProperties["checked"] = checked;
+        stateProperties["flat"] = flat;
+        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
 
-            // render as push button
-            const auto shadow( _helper->shadowColor( palette ) );
-            const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-
-            // adjust frame in case of menu
-            if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
-            {
-                painter->setClipRect( rect );
-                rect.adjust( 0, 0, Metrics::Frame_FrameRadius + 2, 0 );
-                rect = visualRect( option, rect );
-            }
-
-            // render
-            _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
-
-        } else {
-
-            const auto color( _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-            _helper->renderToolButtonFrame( painter, rect, color, sunken );
-
+        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
+        if (painter->hasClipping()) {
+            painter->setClipping(false);
         }
 
         return true;
@@ -3963,57 +3955,58 @@ namespace Breeze
     {
 
         // cast option and check
-        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
-        if( !toolButtonOption ) return true;
+        const auto complexOption( qstyleoption_cast<const QStyleOptionComplex*>( option ) );
+        if( !complexOption && !(complexOption->subControls & SC_ToolButtonMenu) ) return true;
 
-        // store state
-        const State& state( option->state );
-
-        if( !(toolButtonOption->subControls & SC_ToolButtonMenu) ) return true;
-
-        // store palette and rect
-        const auto& palette( option->palette );
-        const auto& rect( option->rect );
-
-        // store state
-        const bool enabled( state & State_Enabled );
-        const bool hasFocus( enabled && ( state & ( State_HasFocus | State_Sunken ) ) );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool sunken( enabled && ( state & State_Sunken ) );
-        const bool flat( state & State_AutoRaise );
+        // button state
+        bool enabled = option->state & QStyle::State_Enabled;
+        bool activeFocus = option->state & QStyle::State_HasFocus;
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool hovered = option->state & QStyle::State_MouseOver;
+        bool down = option->state & QStyle::State_Sunken;
+        bool checked = option->state & QStyle::State_On;
+        bool flat = option->state & QStyle::State_AutoRaise;
+        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
 
         // update animation state
-        // mouse over takes precedence over focus
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
-        const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-        const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
+        QRect baseRect = option->rect;
+        painter->setClipRect(baseRect);
+        baseRect.adjust(-Metrics::Frame_FrameRadius - PenWidth::Shadow, 0, 0, 0);
+        baseRect = visualRect(option, baseRect);
 
-        // render as push button
-        const auto shadow( _helper->shadowColor( palette ) );
-        const auto outline( _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-        const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
+        QHash<QByteArray, bool> stateProperties;
+        stateProperties["enabled"] = enabled;
+        stateProperties["visualFocus"] = visualFocus;
+        stateProperties["hovered"] = hovered;
+        stateProperties["down"] = down;
+        stateProperties["checked"] = checked;
+        stateProperties["flat"] = flat;
+        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
 
-        auto frameRect( rect );
-        painter->setClipRect( rect );
-        frameRect.adjust( -Metrics::Frame_FrameRadius - 1, 0, 0, 0 );
-        frameRect = visualRect( option, frameRect );
+        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
 
-        // render
-        if ( !flat )
-        {
-            _helper->renderButtonFrame( painter, frameRect, background, outline, shadow, hasFocus, sunken );
-        }
+        QRectF frameRect = _helper->strokedRect(_helper->shadowedRect(baseRect));
 
         // also render separator
-        auto separatorRect( rect.adjusted( 0, 2, -2, -2 ) );
-        separatorRect.setWidth( 1 );
-        separatorRect = visualRect( option, separatorRect );
-        if( sunken && !flat ) separatorRect.translate( 1, 1 );
-        if ( !flat || mouseOver || hasFocus )
-        {
-            _helper->renderSeparator( painter, separatorRect, outline, true );
+        if ( !flat || activeFocus || hovered || down || checked || penAnimation != AnimationData::OpacityInvalid ) {
+            QRectF separatorRect = frameRect.adjusted(Metrics::Frame_FrameRadius + PenWidth::Shadow,0,0,0);
+            painter->setBrush( Qt::NoBrush );
+            if (option->direction == Qt::RightToLeft) {
+                painter->drawLine( separatorRect.topRight(), separatorRect.bottomRight() );
+            } else {
+                painter->drawLine( separatorRect.topLeft(), separatorRect.bottomLeft() );
+            }
+        }
+
+        if (painter->hasClipping()) {
+            painter->setClipping(false);
         }
 
         return true;
@@ -4289,7 +4282,6 @@ namespace Breeze
 
         // contents
         auto contentsRect( rect );
-        if( sunken && !flat ) contentsRect.translate( 1, 1 );
 
         // color role
         QPalette::ColorRole textRole;
@@ -4409,7 +4401,6 @@ namespace Breeze
 
         // contents
         auto contentsRect( rect );
-        if( sunken && !flat ) contentsRect.translate( 1, 1 );
 
         // icon size
         const QSize iconSize( toolButtonOption->iconSize );
@@ -4615,10 +4606,6 @@ namespace Breeze
 
         // change pen color directly
         painter->setPen( QPen( option->palette.color( textRole ), 1 ) );
-
-        // translate painter for pressed down comboboxes
-        if( sunken && !flat )
-        { painter->translate( 1, 1 ); }
 
         if (const auto cb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
         {
@@ -6112,17 +6099,18 @@ namespace Breeze
         if( !toolButtonOption ) return true;
 
         // need to alter palette for focused buttons
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && (option->state & State_HasFocus) );
-        const bool sunken( state & (State_On | State_Sunken) );
-        const bool flat( state & State_AutoRaise );
+        const bool enabled = option->state & QStyle::State_Enabled;
+        const bool activeFocus = option->state & QStyle::State_HasFocus;
+        const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+        const bool hovered = option->state & QStyle::State_MouseOver;
+        const bool down = option->state & QStyle::State_Sunken;
+        const bool checked = option->state & QStyle::State_On;
+        bool flat = option->state & QStyle::State_AutoRaise;
 
         // update animation state
         // mouse over takes precedence over focus
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
+        _animations->widgetStateEngine().updateState( widget, AnimationHover, hovered );
+        _animations->widgetStateEngine().updateState( widget, AnimationFocus, activeFocus && !hovered );
 
         // detect buttons in tabbar, for which special rendering is needed
         const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
@@ -6170,7 +6158,6 @@ namespace Breeze
             copy.state &= ~State_MouseOver;
             copy.state &= ~State_Sunken;
             copy.state &= ~State_On;
-            if( sunken && !flat ) copy.rect.translate( 1, 1 );
             drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
 
         } else if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall
@@ -6181,7 +6168,6 @@ namespace Breeze
             copy.state &= ~State_MouseOver;
             copy.state &= ~State_Sunken;
             copy.state &= ~State_On;
-            if( sunken && !flat ) copy.rect.translate( 1, 1 );
 
             if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall )
             {
@@ -6197,7 +6183,7 @@ namespace Breeze
         {
 
             // restore state
-            copy.state = state;
+            copy.state = option->state;
 
             // define contents rect
             auto contentsRect( buttonRect );
@@ -6235,139 +6221,111 @@ namespace Breeze
     bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
     {
 
-        // cast option and check
-        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
-        if( !comboBoxOption ) return true;
-
-        // rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
         // state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & (State_HasFocus | State_Sunken ) ) );
-        const bool editable( comboBoxOption->editable );
-        const bool sunken( state & (State_On|State_Sunken) );
-        bool flat( !comboBoxOption->frame );
+        bool enabled = option->state & QStyle::State_Enabled;
+        bool activeFocus = option->state & QStyle::State_HasFocus;
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool hovered = option->state & QStyle::State_MouseOver;
+        // Only true if the arrow (SC_ComboBoxArrow) is pressed
+        bool down = option->state & QStyle::State_Sunken;
+        // Only true if the background (QComboBoxPrivateContainer) is pressed
+        bool checked = option->state & QStyle::State_On;
+        bool flat = false;
+        bool editable = false;
+        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
+
+        // cast option and check
+        const auto comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox*>(option);
+        if (comboBoxOption) {
+            flat = !comboBoxOption->frame;
+            editable = comboBoxOption->editable;
+        }
 
         // frame
-        if( option->subControls & SC_ComboBoxFrame )
-        {
-
-            if( editable )
-            {
-
-                flat |= ( rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
-                if( flat )
-                {
-
-                    const auto &background = palette.color( QPalette::Base );
-
+        if( option->subControls & SC_ComboBoxFrame ) {
+            if( editable ) {
+                flat |= ( option->rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
+                if( flat ) {
+                    const auto &background = option->palette.color( QPalette::Base );
                     painter->setBrush( background );
                     painter->setPen( Qt::NoPen );
-                    painter->drawRect( rect );
-
+                    painter->drawRect( option->rect );
                 } else {
-
                     drawPrimitive( PE_FrameLineEdit, option, painter, widget );
-
                 }
-
             } else {
+                // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+                _animations->widgetStateEngine().updateState(widget, AnimationFocus, (down || checked) && enabled);
+                // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+                _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down || checked) && enabled);
+                qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+                qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
-                // update animation state
-                // hover takes precedence over focus
-                _animations->inputWidgetEngine().updateState( widget, AnimationHover, mouseOver );
-                _animations->inputWidgetEngine().updateState( widget, AnimationFocus, hasFocus && !mouseOver );
-                const AnimationMode mode( _animations->inputWidgetEngine().buttonAnimationMode( widget ) );
-                const qreal opacity( _animations->inputWidgetEngine().buttonOpacity( widget ) );
+                QHash<QByteArray, bool> stateProperties;
+                stateProperties["enabled"] = enabled;
+                stateProperties["visualFocus"] = visualFocus;
+                stateProperties["hovered"] = hovered;
+                // See notes for down and checked above.
+                stateProperties["down"] = down || checked;
+                stateProperties["flat"] = flat;
+                stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
 
-                if( flat ) {
-
-                    // define colors and render
-                    const auto color( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->toolButtonColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-                    _helper->renderToolButtonFrame( painter, rect, color, sunken );
-
-                } else {
-
-                    // define colors
-                    const auto shadow( _helper->shadowColor( palette ) );
-                    const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->buttonOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-                    const auto background( _helper->buttonBackgroundColor( palette, mouseOver, hasFocus, sunken, opacity, mode ) );
-
-                    // render
-                    _helper->renderButtonFrame( painter, rect, background, outline, shadow, hasFocus, sunken );
-
-                }
-
+                _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
             }
-
         }
 
         // arrow
-        if( option->subControls & SC_ComboBoxArrow )
-        {
-
+        if( option->subControls & SC_ComboBoxArrow ) {
             // detect empty comboboxes
             const auto comboBox = qobject_cast<const QComboBox*>( widget );
             const bool empty( comboBox && !comboBox->count() );
 
             // arrow color
             QColor arrowColor;
-            if( editable )
-            {
-
-                if( empty || !enabled ) arrowColor = palette.color( QPalette::Disabled, QPalette::Text );
-                else {
-
+            if( editable ) {
+                if( empty || !enabled ) {
+                    arrowColor = option->palette.color( QPalette::Disabled, QPalette::Text );
+                } else {
                     // check animation state
-                    const bool subControlHover( enabled && mouseOver && comboBoxOption->activeSubControls&SC_ComboBoxArrow );
+                    const bool subControlHover( enabled && hovered && option->activeSubControls&SC_ComboBoxArrow );
                     _animations->comboBoxEngine().updateState( widget, AnimationHover, subControlHover  );
 
                     const bool animated( enabled && _animations->comboBoxEngine().isAnimated( widget, AnimationHover ) );
                     const qreal opacity( _animations->comboBoxEngine().opacity( widget, AnimationHover ) );
 
                     // color
-                    const auto normal( _helper->arrowColor( palette, QPalette::WindowText ) );
-                    const auto hover( _helper->hoverColor( palette ) );
+                    const auto normal( _helper->arrowColor( option->palette, QPalette::WindowText ) );
+                    const auto hover( _helper->hoverColor( option->palette ) );
 
-                    if( animated )
-                    {
+                    if( animated ) {
                         arrowColor = KColorUtils::mix( normal, hover, opacity );
-
                     } else if( subControlHover ) {
-
                         arrowColor = hover;
-
                     } else arrowColor = normal;
-
                 }
-
-            } else if( flat )  {
-
-                if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::WindowText );
-                else if( hasFocus && !mouseOver && sunken ) arrowColor = palette.color( QPalette::WindowText );
-                else arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
-
-            } else if( empty || !enabled ) arrowColor = _helper->arrowColor( palette, QPalette::Disabled, QPalette::ButtonText );
-            else if( hasFocus && !mouseOver ) arrowColor = palette.color( QPalette::WindowText );
-            else arrowColor = _helper->arrowColor( palette, QPalette::ButtonText );
+            } else if( flat ) {
+                if( empty || !enabled ) {
+                    arrowColor = _helper->arrowColor( option->palette, QPalette::Disabled, QPalette::WindowText );
+                } else if( activeFocus && !hovered && down ) {
+                    arrowColor = option->palette.color( QPalette::WindowText );
+                } else {
+                    arrowColor = _helper->arrowColor( option->palette, QPalette::WindowText );
+                }
+            } else if( empty || !enabled ) {
+                arrowColor = _helper->arrowColor( option->palette, QPalette::Disabled, QPalette::ButtonText );
+            } else if( activeFocus && !hovered ) {
+                arrowColor = option->palette.color( QPalette::WindowText );
+            } else {
+                arrowColor = _helper->arrowColor( option->palette, QPalette::ButtonText );
+            }
 
             // arrow rect
             auto arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
 
-            // translate for non editable, non flat, sunken comboboxes
-            if( sunken && !flat && !editable ) arrowRect.translate( 1, 1 );
-
             // render
             _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
-
         }
-
         return true;
-
     }
 
     //______________________________________________________________

@@ -228,100 +228,6 @@ namespace Breeze
     }
 
     //____________________________________________________________________
-    QColor Helper::buttonOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
-    {
-
-        QColor outline( KColorUtils::mix( palette.color( QPalette::Button ), palette.color( QPalette::ButtonText ), 0.3 ) );
-        if( mode == AnimationHover )
-        {
-
-            if( hasFocus )
-            {
-                const QColor focus( buttonFocusOutlineColor( palette ) );
-                const QColor hover( buttonHoverOutlineColor( palette ) );
-                outline = KColorUtils::mix( focus, hover, opacity );
-
-            } else {
-
-                const QColor hover( buttonHoverColor( palette ) );
-                outline = KColorUtils::mix( outline, hover, opacity );
-
-            }
-
-        } else if( mouseOver ) {
-
-            if( hasFocus ) outline = buttonHoverOutlineColor( palette );
-            else outline = buttonHoverColor( palette );
-
-        } else if( mode == AnimationFocus ) {
-
-            const QColor focus( buttonFocusOutlineColor( palette ) );
-            outline = KColorUtils::mix( outline, focus, opacity );
-
-        } else if( hasFocus ) {
-
-            outline = buttonFocusOutlineColor( palette );
-
-        }
-
-        return outline;
-
-    }
-
-    //____________________________________________________________________
-    QPair<QColor,QColor> Helper::buttonBackgroundColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
-    {
-
-        QColor background( sunken ?
-            KColorUtils::mix( palette.color( QPalette::Button ), Qt::black, KColorUtils::luma( palette.color(QPalette::Button) ) < 0.5 ? 0.3 : 0.10 ):
-            palette.color( QPalette::Button ) );
-        auto base = palette.color(QPalette::Button);
-
-        return {background, base};
-
-    }
-
-    //____________________________________________________________________
-    QColor Helper::toolButtonColor( const QPalette& palette, bool mouseOver, bool hasFocus, bool sunken, qreal opacity, AnimationMode mode ) const
-    {
-
-        QColor outline;
-        const QColor hoverColor( buttonHoverColor( palette ) );
-        const QColor focusColor( buttonFocusColor( palette ) );
-        const QColor sunkenColor = alphaColor( palette.color( QPalette::WindowText ), 0.2 );
-
-        // hover takes precedence over focus
-        if( mode == AnimationHover )
-        {
-
-            if( hasFocus ) outline = KColorUtils::mix( focusColor, hoverColor, opacity );
-            else if( sunken ) outline = sunkenColor;
-            else outline = alphaColor( hoverColor, opacity );
-
-        } else if( mouseOver ) {
-
-            outline = hoverColor;
-
-        } else if( mode == AnimationFocus ) {
-
-            if( sunken ) outline = KColorUtils::mix( sunkenColor, focusColor, opacity );
-            else outline = alphaColor( focusColor, opacity );
-
-        } else if( hasFocus ) {
-
-            outline = focusColor;
-
-        } else if( sunken ) {
-
-            outline = sunkenColor;
-
-        }
-
-        return outline;
-
-    }
-
-    //____________________________________________________________________
     QColor Helper::sliderOutlineColor( const QPalette& palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode ) const
     {
 
@@ -646,92 +552,115 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderButtonFrame(
-        QPainter* painter, const QRect& rect,
-        const QPair<QColor,QColor>& color, const QColor& outline, const QColor& shadow,
-        bool hasFocus, bool sunken ) const
+    void Helper::renderButtonFrame(QPainter* painter, const QRect& rect, const QPalette& palette, const QHash<QByteArray, bool>& stateProperties, qreal bgAnimation, qreal penAnimation) const
     {
+        bool enabled = stateProperties.value("enabled", true);
+        bool visualFocus = stateProperties.value("visualFocus");
+        bool hovered = stateProperties.value("hovered");
+        bool down = stateProperties.value("down");
+        bool checked = stateProperties.value("checked");
+        bool flat = stateProperties.value("flat");
+        bool defaultButton = stateProperties.value("defaultButton");
+        bool hasNeutralHighlight = stateProperties.value("hasNeutralHighlight");
 
-        // setup painter
+        // don't render background if flat and not hovered, down, checked, or given visual focus
+        if (flat && !(hovered || down || checked || visualFocus)
+            && bgAnimation == AnimationData::OpacityInvalid
+            && penAnimation == AnimationData::OpacityInvalid
+        ) {
+            return;
+        }
+
+        QRectF shadowedRect = this->shadowedRect(rect);
+        QRectF frameRect = strokedRect(shadowedRect);
+        qreal radius = frameRadius( PenWidth::Frame );
+        // setting color group to work around KColorScheme feature
+        const QColor &highlightColor = palette.color(!enabled ? QPalette::Disabled : QPalette::Active, QPalette::Highlight);
+        QBrush bgBrush;
+        QBrush penBrush;
+
+        // Colors
+        if (flat) {
+            if (down) {
+                bgBrush = alphaColor(highlightColor, 0.333);
+            } else if (checked) {
+                bgBrush = hasNeutralHighlight ? alphaColor(neutralText(palette), 0.333)
+                    : alphaColor(palette.buttonText().color(), 0.125);
+                penBrush = hasNeutralHighlight ? neutralText(palette)
+                    : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            } else if (defaultButton) {
+                bgBrush = alphaColor(highlightColor, 0.125);
+                penBrush = KColorUtils::mix(
+                    highlightColor,
+                    KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.333),
+                    0.5
+                );
+            } else {
+                bgBrush = alphaColor(highlightColor, 0);
+                penBrush = hasNeutralHighlight ? neutralText(palette) : bgBrush;
+            }
+        } else {
+            if (down) {
+                bgBrush = KColorUtils::mix(palette.button().color(), highlightColor, 0.333);
+            } else if (checked) {
+                bgBrush = hasNeutralHighlight ? KColorUtils::mix(palette.button().color(), neutralText(palette), 0.333)
+                    : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.125);
+                penBrush = hasNeutralHighlight ? neutralText(palette)
+                    : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            } else if (defaultButton) {
+                bgBrush = KColorUtils::mix(palette.button().color(), highlightColor, 0.2);
+                penBrush = KColorUtils::mix(
+                    highlightColor,
+                    KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.333),
+                    0.5
+                );
+            } else {
+                bgBrush = palette.button().color();
+                penBrush = hasNeutralHighlight ? neutralText(palette)
+                    : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            }
+        }
+
+        if (hovered || visualFocus || down) {
+            penBrush = highlightColor;
+        }
+
+        // Animations
+        if (bgAnimation != AnimationData::OpacityInvalid) {
+            QColor color1 = bgBrush.color();
+            QColor color2 = flat ? alphaColor(highlightColor, 0.333)
+                : KColorUtils::mix(palette.button().color(), highlightColor, 0.333);
+            bgBrush = KColorUtils::mix(color1, color2, bgAnimation);
+        }
+        if (penAnimation != AnimationData::OpacityInvalid) {
+            QColor color1 = penBrush.color();
+            QColor color2 = highlightColor;
+            penBrush = KColorUtils::mix(color1, color2, penAnimation);
+        }
+
+        // Gradient
+        if (!(flat || down || hovered || checked) && enabled) {
+            QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
+            bgGradient.setColorAt(0, KColorUtils::mix(bgBrush.color(), Qt::white, 0.03125));
+            bgGradient.setColorAt(0.5, bgBrush.color());
+            bgGradient.setColorAt(1, KColorUtils::mix(bgBrush.color(), Qt::black, 0.03125));
+            QLinearGradient penGradient(frameRect.topLeft(), frameRect.bottomLeft());
+            penGradient.setColorAt(0, KColorUtils::mix(penBrush.color(), Qt::white, 0.03125));
+            penGradient.setColorAt(1, KColorUtils::mix(penBrush.color(), Qt::black, 0.0625));
+            bgBrush = bgGradient;
+            penBrush = penGradient;
+        }
+
+        // Shadow
+        if (!(flat || down || checked) && enabled) {
+            renderRoundedRectShadow(painter, shadowedRect, shadowColor(palette));
+        }
+
+        // Render button
         painter->setRenderHint( QPainter::Antialiasing, true );
-
-        // copy rect
-        QRectF frameRect( rect );
-        frameRect.adjust( 1, 1, -1, -1 );
-        qreal radius( frameRadius( PenWidth::NoPen ) );
-
-        // shadow
-        if( sunken ) {
-
-            frameRect.translate( 1, 1 );
-
-        } else {
-
-            renderRoundedRectShadow( painter, frameRect, shadow, radius );
-
-        }
-
-        if( outline.isValid() )
-        {
-
-            QLinearGradient gradient( frameRect.topLeft(), frameRect.bottomLeft() );
-            gradient.setColorAt( 0, outline.lighter( hasFocus ? 103:101 ) );
-            gradient.setColorAt( 1, outline.darker( hasFocus ? 110:103 ) );
-            painter->setPen( QPen( QBrush( gradient ), 1.0 ) );
-
-            frameRect = strokedRect( frameRect );
-            radius = frameRadiusForNewPenWidth( radius, PenWidth::Frame );
-
-        } else painter->setPen( Qt::NoPen );
-
-        // content
-        if( color.first.isValid() && color.second.isValid() )
-        {
-
-            QLinearGradient gradient( frameRect.topLeft(), frameRect.bottomLeft() );
-            gradient.setColorAt( 0, color.first );
-            gradient.setColorAt( 1, color.second );
-            painter->setBrush( gradient );
-
-        } else painter->setBrush( Qt::NoBrush );
-
-        // render
-        painter->drawRoundedRect( frameRect, radius, radius );
-
-    }
-
-    //______________________________________________________________________________
-    void Helper::renderToolButtonFrame(
-        QPainter* painter, const QRect& rect,
-        const QColor& color, bool sunken ) const
-    {
-
-        // do nothing for invalid color
-        if( !color.isValid() ) return;
-
-        // setup painter
-        painter->setRenderHints( QPainter::Antialiasing );
-
-        const QRectF baseRect( rect.adjusted( 1, 1, -1, -1 ) );
-        const qreal radius( frameRadius( PenWidth::Frame ) );
-
-        if( sunken )
-        {
-
-            painter->setPen( color );
-            painter->setBrush( alphaColor(color, 0.35) );
-
-            painter->drawRoundedRect( strokedRect ( baseRect ), radius, radius );
-
-        } else {
-
-            painter->setPen( color );
-            painter->setBrush( Qt::NoBrush );
-            const QRectF outlineRect( strokedRect( baseRect ) );
-            painter->drawRoundedRect( outlineRect, radius, radius );
-
-        }
-
+        painter->setBrush(bgBrush);
+        painter->setPen(QPen(penBrush, PenWidth::Frame));
+        painter->drawRoundedRect(frameRect, radius, radius);
     }
 
     //______________________________________________________________________________
@@ -1482,36 +1411,22 @@ namespace Breeze
         painter->restore();
 
     }
-    
+
     //______________________________________________________________________________
     void Helper::renderRoundedRectShadow( QPainter* painter, const QRectF& rect, const QColor& color, qreal radius ) const
     {
         if( !color.isValid() ) return;
-        
-        painter->save();
-        
-        qreal translation = 0.5 * PenWidth::Shadow; // Translate for the pen
-        
-        /* Clipping prevents shadows from being visible inside checkboxes.
-         * Clipping away unneeded parts here also improves performance by 40-60%
-         * versus using just an outline of a rectangle.
-         * Tested by looking at the paint analyser in GammaRay.
-         */
-        // Right side
-        QRegion clip( rect.right() - std::ceil( radius ), rect.top(), 
-                      std::ceil( radius ) + PenWidth::Shadow, rect.height() );
-        // Bottom side
-        clip = clip.united( QRegion( rect.left(), rect.bottom() - std::ceil( radius ), 
-                                     rect.width(), std::ceil( radius ) + PenWidth::Shadow ) );
 
-        painter->setClipRegion( clip );
-        painter->setPen( color );
+        painter->setRenderHint( QPainter::Antialiasing, true );
+
+        qreal adjustment = 0.5 * PenWidth::Shadow; // Translate for the pen
+        QRectF shadowRect = rect.adjusted( adjustment, adjustment, -adjustment, adjustment );
+
+        painter->setPen( QPen(color, PenWidth::Shadow) );
         painter->setBrush( Qt::NoBrush );
-        painter->drawRoundedRect( rect.translated( translation, translation ), radius, radius );
-        
-        painter->restore();
+        painter->drawRoundedRect( shadowRect, radius, radius );
     }
-    
+
     //______________________________________________________________________________
     void Helper::renderEllipseShadow( QPainter* painter, const QRectF& rect, const QColor& color ) const
     {
@@ -1555,7 +1470,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    QRectF Helper::strokedRect( const QRectF &rect, const int penWidth ) const
+    QRectF Helper::strokedRect( const QRectF &rect, const qreal penWidth ) const
     {
         /* With a pen stroke width of 1, the rectangle should have each of its
          * sides moved inwards by half a pixel. This allows the stroke to be
@@ -1564,12 +1479,7 @@ namespace Breeze
          * original size of the rectangle.
          */
         qreal adjustment = 0.5 * penWidth;
-        return QRectF( rect ).adjusted( adjustment, adjustment, -adjustment, -adjustment );
-    }
-    
-    QRectF Helper::strokedRect( const QRect &rect, const int penWidth ) const
-    {
-        return strokedRect(QRectF(rect), penWidth);
+        return rect.adjusted( adjustment, adjustment, -adjustment, -adjustment );
     }
 
     //______________________________________________________________________________
