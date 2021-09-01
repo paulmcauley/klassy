@@ -1309,53 +1309,93 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderTabBarTab(QPainter *painter, const QRect &rect,
-                                const QColor &color, const QColor &highlight,
-                                const QColor &outline, Corners corners,
-                                bool document, bool bottom) const {
-
+    void Helper::renderTabBarTab(QPainter *painter, const QRect &rect, const QPalette& palette,
+                                 const QHash<QByteArray, bool>& stateProperties, Corners corners, qreal animation) const
+    {
+        bool enabled = stateProperties.value("enabled", true);
+        bool visualFocus = stateProperties.value("visualFocus");
+        bool hovered = stateProperties.value("hovered");
+        bool down = stateProperties.value("down");
+        bool selected = stateProperties.value("selected");
+        bool documentMode = stateProperties.value("documentMode");
+        bool north = stateProperties.value("north");
+        bool south = stateProperties.value("south");
+        bool west = stateProperties.value("west");
+        bool east = stateProperties.value("east");
+        bool animated = animation != AnimationData::OpacityInvalid;
+        bool isQtQuickControl = stateProperties.value("isQtQuickControl");
+        bool hasAlteredBackground = stateProperties.value("hasAlteredBackground");
 
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
+        QRectF frameRect = rect;
+        QColor bgBrush;
 
-        QRectF frameRect( rect );
-        qreal radius( frameRadius( PenWidth::NoPen ) );
-
-        // pen
-        if( outline.isValid() )
-        {
-
-            painter->setPen( outline );
-            frameRect = strokedRect( frameRect );
-            radius = frameRadiusForNewPenWidth( radius, PenWidth::Frame );
-
-        } else painter->setPen( Qt::NoPen );
-
-
-        // brush
-        if( color.isValid() ) painter->setBrush( color );
-        else painter->setBrush( Qt::NoBrush );
-
-        // render
-        QPainterPath path( roundedPath( frameRect, corners, radius ) );
-        painter->drawPath( path );
-
-        if (highlight.isValid() && document) {
-            auto rect = frameRect;
-            rect.setHeight(2);
-            if (bottom) {
-                rect.setTop(frameRect.bottom()-2);
-                rect.setBottom(frameRect.bottom());
+        if (selected) {
+            if (north) {
+                // overlap bottom border
+                frameRect.adjust(0, 0, 0, 1);
+            } else if (south) {
+                // overlap top border
+                frameRect.adjust(0, -1, 0, 0);
+            } else if (west) {
+                // overlap right border
+                frameRect.adjust(0, 0, 1, 0);
+            } else if (east) {
+                // overlap left border
+                frameRect.adjust(-1, 0, 0, 0);
             }
-
-            QPainterPath rectAsPath;
-            rectAsPath.addRect(rect);
-
-            painter->setClipPath(path.intersected(rectAsPath));
-            painter->setBrush(highlight);
-            painter->drawRect(frameRect);
+            if (documentMode && !isQtQuickControl && !hasAlteredBackground) {
+                bgBrush = palette.color(QPalette::Window);
+            } else {
+                bgBrush = frameBackgroundColor(palette);
+            }
+            QColor penBrush = KColorUtils::mix(bgBrush, palette.color(QPalette::WindowText), 0.25);
+            painter->setBrush(bgBrush);
+            painter->setPen(QPen(penBrush, PenWidth::Frame));
+            QRectF highlightRect = frameRect;
+            if (north || south) {
+                highlightRect.setHeight(Metrics::Frame_FrameRadius);
+            } else if (west || east) {
+                highlightRect.setWidth(Metrics::Frame_FrameRadius);
+            }
+            if (south) {
+                highlightRect.moveBottom(frameRect.bottom());
+            } else if (east) {
+                highlightRect.moveRight(frameRect.right());
+            }
+            QPainterPath path = roundedPath(strokedRect(frameRect), corners, frameRadius(PenWidth::Frame));
+            painter->drawPath(path);
+            QPainterPath highlightPath = roundedPath(highlightRect, corners, Metrics::Frame_FrameRadius);
+            painter->setBrush(palette.color(QPalette::Highlight));
+            painter->setPen(Qt::NoPen);
+            painter->drawPath(highlightPath);
+        } else {
+            if (north) {
+                // don't overlap bottom border
+                frameRect.adjust(0, 0, 0, -1);
+            } else if (south) {
+                // don't overlap top border
+                frameRect.adjust(0, 1, 0, 0);
+            } else if (west) {
+                // don't overlap right border
+                frameRect.adjust(0, 0, -1, 0);
+            } else if (east) {
+                // don't overlap left border
+                frameRect.adjust(1, 0, 0, 0);
+            }
+            bgBrush = alphaColor(palette.color(QPalette::Shadow), 0.2);
+            const auto hover = alphaColor(hoverColor(palette), 0.2);
+            if (animated) {
+                bgBrush = KColorUtils::mix(bgBrush, hover, animation);
+            } else if (enabled && hovered && !selected) {
+                bgBrush = hover;
+            }
+            painter->setBrush(bgBrush);
+            painter->setPen(Qt::NoPen);
+            QPainterPath path = roundedPath(frameRect, corners, Metrics::Frame_FrameRadius);
+            painter->drawPath(path);
         }
-
     }
 
     //______________________________________________________________________________

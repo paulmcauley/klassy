@@ -220,7 +220,7 @@ namespace Breeze
         void renderScrollBarBorder( QPainter*, const QRect&, const QColor& ) const;
 
         //* tabbar tab
-        void renderTabBarTab( QPainter*, const QRect&, const QColor& color, const QColor& highlight, const QColor& outline, Corners, bool document, bool bottom ) const;
+        void renderTabBarTab( QPainter*, const QRect&, const QPalette& palette, const QHash<QByteArray, bool>& stateProperties, Corners corners, qreal animation ) const;
         // TODO(janet): document should be set based on whether or not we consider the
         // tab user-editable, but Qt apps often misuse or don't use documentMode property
         // so we're currently just always setting it to true for now

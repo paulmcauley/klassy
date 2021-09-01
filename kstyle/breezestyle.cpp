@@ -5692,11 +5692,16 @@ namespace Breeze
         if( !tabOption ) return true;
 
         // palette and state
-        const auto& palette( option->palette );
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool selected( state & State_Selected );
-        const bool mouseOver( enabled && !selected && ( state & State_MouseOver ) );
+        const bool enabled = option->state & State_Enabled;
+        const bool activeFocus = option->state & State_HasFocus;
+        const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+        const bool hovered = option->state & State_MouseOver;
+        const bool down = option->state & State_Sunken;
+        const bool selected = option->state & State_Selected;
+        const bool north = tabOption->shape == QTabBar::RoundedNorth || tabOption->shape == QTabBar::TriangularNorth;
+        const bool south = tabOption->shape == QTabBar::RoundedSouth || tabOption->shape == QTabBar::TriangularSouth;
+        const bool west = tabOption->shape == QTabBar::RoundedWest || tabOption->shape == QTabBar::TriangularWest;
+        const bool east = tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast;
 
         // check if tab is being dragged
         const bool isDragged( widget && selected && painter->device() != widget );
@@ -5706,9 +5711,8 @@ namespace Breeze
         auto rect( option->rect );
 
         // update mouse over animation state
-        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationHover, mouseOver );
-        const bool animated( enabled && !selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft(), AnimationHover ) );
-        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft(), AnimationHover ) );
+        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationHover, hovered && !selected && enabled );
+        const qreal animation = _animations->tabBarEngine().opacity(widget, rect.topLeft(), AnimationHover);
 
         // lock state
         if( selected && widget && isDragged ) _tabBarData->lock( widget );
@@ -5739,144 +5743,72 @@ namespace Breeze
 
         // overlap
         // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
-        const int overlap( isQtQuickControl ? 0:Metrics::TabBar_TabOverlap );
-
-        bool bottom = false;
+        const int overlap = isQtQuickControl ? 0 : Metrics::TabBar_TabOverlap;
 
         // adjust rect and define corners based on tabbar orientation
         Corners corners;
-        switch( tabOption->shape )
-        {
+        switch(tabOption->shape) {
             case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            if( selected )
-            {
-
-                corners = CornerTopLeft|CornerTopRight;
-                rect.adjust( 0, 0, 0, 1 );
-
+            case QTabBar::TriangularNorth: if (selected) {
+                corners = CornersTop;
             } else {
-
-                rect.adjust( 0, 0, 0, -1 );
-                if( isFirst ) corners |= CornerTopLeft;
-                if( isLast ) corners |= CornerTopRight;
-                if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                else if( !isLast ) rect.adjust( 0, 0, overlap, 0 );
-
-            }
-            break;
+                if(isFirst) corners |= CornerTopLeft;
+                if(isLast) corners |= CornerTopRight;
+                if(isRightOfSelected) rect.adjust(-Metrics::Frame_FrameRadius, 0, 0, 0);
+                if(isLeftOfSelected) rect.adjust(0, 0, Metrics::Frame_FrameRadius, 0);
+                else if(!isLast) rect.adjust(0, 0, overlap, 0);
+            } break;
 
             case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            if( selected )
-            {
-
-                corners = CornerBottomLeft|CornerBottomRight;
-                rect.adjust( 0, - 1, 0, 0 );
-                bottom = true;
-
+            case QTabBar::TriangularSouth: if (selected) {
+                corners = CornersBottom;
             } else {
-
-                rect.adjust( 0, 1, 0, 0 );
                 if( isFirst ) corners |= CornerBottomLeft;
                 if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
                 else if( !isLast ) rect.adjust( 0, 0, overlap, 0 );
-
-            }
-            break;
+            } break;
 
             case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            if( selected )
-            {
-                corners = CornerTopLeft|CornerBottomLeft;
-                rect.adjust( 0, 0, 1, 0 );
-
+            case QTabBar::TriangularWest: if (selected) {
+                corners = CornersLeft;
             } else {
-
-                rect.adjust( 0, 0, -1, 0 );
                 if( isFirst ) corners |= CornerTopLeft;
                 if( isLast ) corners |= CornerBottomLeft;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
-
-            }
-            break;
+            } break;
 
             case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            if( selected )
-            {
-
-                corners = CornerTopRight|CornerBottomRight;
-                rect.adjust( -1, 0, 0, 0 );
-
+            case QTabBar::TriangularEast: if (selected) {
+                corners = CornersRight;
             } else {
-
-                rect.adjust( 1, 0, 0, 0 );
                 if( isFirst ) corners |= CornerTopRight;
                 if( isLast ) corners |= CornerBottomRight;
                 if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
                 if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
                 else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
-
-            }
-            break;
+            } break;
 
             default: break;
         }
 
-        // color
-        QColor color;
-        if( selected )
-        {
-
-            bool documentMode = tabOption->documentMode;
-
-            // flag passed to QStyleOptionTab is unfortunately not reliable enough
-            // also need to check on parent widget
-            const auto tabWidget = ( widget && widget->parentWidget() ) ? qobject_cast<const QTabWidget *>( widget->parentWidget() ) : nullptr;
-            documentMode |= ( tabWidget ? tabWidget->documentMode() : true );
-
-            color = (documentMode&&!isQtQuickControl&&!hasAlteredBackground(widget)) ? palette.color( QPalette::Window ) : _helper->frameBackgroundColor( palette );
-
-        } else {
-
-            const auto normal( _helper->alphaColor( palette.color( QPalette::Shadow ), 0.2 ) );
-            const auto hover( _helper->alphaColor( _helper->hoverColor( palette ), 0.2 ) );
-            if( animated ) color = KColorUtils::mix( normal, hover, opacity );
-            else if( mouseOver ) color = hover;
-            else color = normal;
-
-        }
-
-        // outline
-        const auto outline( selected ? _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) : QColor() );
-
-        QColor accent;
-        if ( selected )
-        {
-            accent = palette.color( QPalette::Active, QPalette::Highlight );
-        }
-
-        // render
-        if( selected )
-        {
-
-            QRegion oldRegion( painter->clipRegion() );
-            painter->setClipRect( option->rect, Qt::IntersectClip );
-            _helper->renderTabBarTab( painter, rect, color, accent, outline, corners, true, bottom );
-            painter->setClipRegion( oldRegion );
-
-        } else {
-
-            _helper->renderTabBarTab( painter, rect, color, accent, outline, corners, true, bottom );
-
-        }
+        QHash<QByteArray, bool> stateProperties;
+        stateProperties["enabled"] = enabled;
+        stateProperties["visualFocus"] = visualFocus;
+        stateProperties["hovered"] = hovered;
+        stateProperties["down"] = down;
+        stateProperties["selected"] = selected;
+        stateProperties["documentMode"] = true;
+        stateProperties["north"] = north;
+        stateProperties["south"] = south;
+        stateProperties["west"] = west;
+        stateProperties["east"] = east;
+        stateProperties["isQtQuickControl"] = isQtQuickControl;
+        stateProperties["hasAlteredBackground"] = hasAlteredBackground(widget);
+        _helper->renderTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
 
         return true;
 
