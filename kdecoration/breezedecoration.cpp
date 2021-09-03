@@ -291,6 +291,7 @@ namespace Breeze
         );
 
         connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
+        connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateBlur);
         connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
         
         connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setTitleBarOpacity);
@@ -316,6 +317,7 @@ namespace Breeze
         const bool maximized = isMaximized();
         int width, height, x, y;
         int titlebarTopMargin = titleBarTopBottomMargins();
+        updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large square buttons
         if( (m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare) && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
@@ -424,6 +426,7 @@ namespace Breeze
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
         
         setScaledCornerRadius();
+        updateBlur();
         
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         
@@ -793,6 +796,7 @@ namespace Breeze
             painter->setBrush( titleBarColor );
 
         }
+        
 
         auto s = settings();
         
@@ -1138,7 +1142,7 @@ namespace Breeze
             m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
             m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
         } else {
-            if( m_internalSettings->opaqueMaximizedWindows() ) {
+            if( m_internalSettings->opaqueMaximizedTitlebars() ) {
                 m_titleBarOpacityActive = 255;
                 m_titleBarOpacityInactive = 255;
             } else {
@@ -1151,6 +1155,19 @@ namespace Breeze
     void Decoration::setScaledCornerRadius()
     {
         m_scaledCornerRadius = m_internalSettings->cornerRadius() * settings()->smallSpacing();
+    }
+    
+    void Decoration::updateBlur()
+    {
+        // access client
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        int titleBarOpacity = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
+        
+        //disable blur if the titlebar is opaque
+        if( (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized() ) || !m_internalSettings->blurTransparentTitlebars() || titleBarOpacity == 100 ) setOpaque(true);
+        else setOpaque(false); 
     }
 
 } // namespace

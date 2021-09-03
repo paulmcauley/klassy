@@ -102,6 +102,7 @@ namespace Breeze
         private Q_SLOTS:
         void reconfigure();
         void recalculateBorders();
+        void updateBlur();
         void updateButtonsGeometry();
         void updateButtonsGeometryDelayed();
         void updateTitleBar();
