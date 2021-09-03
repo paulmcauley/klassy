@@ -120,6 +120,11 @@ Button icon st&amp;yle:   </string>
          </item>
          <item>
           <property name="text">
+           <string>Full-sized Rectangle</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Square</string>
           </property>
          </item>

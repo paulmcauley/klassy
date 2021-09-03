@@ -1408,7 +1408,7 @@ namespace Breeze
             if( inverted ) painter->setBrush( color );
             else painter->setBrush( backgroundColor );
             
-            if ( decorationConfig()->buttonHighlightStyle() ==  InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+            if ( decorationConfig()->buttonHighlightStyle() ==  InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle || decorationConfig()->buttonHighlightStyle() ==  InternalSettings::EnumButtonHighlightStyle::HighlightSquare)
                 painter->drawRoundedRect( QRectF( 2, 2, 14, 14 ), 20, 20, Qt::RelativeSize );
             else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
             

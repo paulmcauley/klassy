@@ -55,9 +55,10 @@
     <entry name="ButtonHighlightStyle" type="Enum">
       <choices>
           <choice name="HighlightCircle" />
+          <choice name="HighlightFullSizedRectangle" />
           <choice name="HighlightSquare" />
       </choices>
-      <default>HighlightSquare</default>
+      <default>HighlightFullSizedRectangle</default>
     </entry>
     
     <!-- Inherit system highlight colors -->
