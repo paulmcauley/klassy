@@ -1152,22 +1152,6 @@ Button icon st&amp;yle:   </string>
        <string>Transparency</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_13">
-       <item row="0" column="1">
-        <spacer name="horizontalSpacer_35">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Minimum</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>120</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <property name="spacing">
@@ -1412,9 +1396,16 @@ Button icon st&amp;yle:   </string>
           </layout>
          </item>
          <item>
-          <widget class="QCheckBox" name="opaqueMaximizedWindows">
+          <widget class="QCheckBox" name="opaqueMaximizedTitlebars">
            <property name="text">
-            <string>Opaque maximized windows</string>
+            <string>Opaque maximized titlebars</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="blurTransparentTitlebars">
+           <property name="text">
+            <string>Blur titlebars that have transparency  (introduces infamous Plasma Kornerbug #395725)</string>
            </property>
           </widget>
          </item>
@@ -1429,6 +1420,22 @@ Button icon st&amp;yle:   </string>
           <size>
            <width>20</width>
            <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer_35">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Minimum</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>120</width>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -1636,7 +1643,8 @@ Button icon st&amp;yle:   </string>
   <tabstop>activeTitlebarOpacity</tabstop>
   <tabstop>inactiveTitlebarOpacity_2</tabstop>
   <tabstop>inactiveTitlebarOpacity</tabstop>
-  <tabstop>opaqueMaximizedWindows</tabstop>
+  <tabstop>opaqueMaximizedTitlebars</tabstop>
+  <tabstop>blurTransparentTitlebars</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>

@@ -205,8 +205,13 @@
        <max>100</max>
     </entry>
     
-    <!-- opaque maximized windows -->
-    <entry name="OpaqueMaximizedWindows" type = "Bool">
+    <!-- opaque maximized titlebars -->
+    <entry name="OpaqueMaximizedTitlebars" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <!-- blur transparent titlebars -->
+    <entry name="BlurTransparentTitlebars" type = "Bool">
         <default>true</default>
     </entry>
 
