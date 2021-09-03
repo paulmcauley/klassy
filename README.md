@@ -23,12 +23,12 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
 
-* Square or circular button highlights (square is now default as has a larger clickable area):
-> ![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Square button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
+* Full-sized Rectanglar or Circular button highlights (Full-sized Rectangle is now default as has a larger clickable area):
+> ![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Full-sized Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
 > 
-> (Above-left square configuration: Button highlight style: square, Titlebar side margins: 0, Right-hand button spacing: 10
+> (Above-left configuration: Button highlight style: Full-sized Rectangle, Titlebar side margins: 0, Right-hand button spacing: 10
 >
-> Above-right circular configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
+> Above-right configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;

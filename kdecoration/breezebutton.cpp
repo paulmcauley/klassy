@@ -144,10 +144,10 @@ namespace Breeze
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-            //draw a background only with square highlight style; 
-            //NB: paintSquareBackground function applies a translation to painter as different square button geometry
-            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) 
-                paintSquareBackground(painter);
+            //draw a background only with Full-sized Rectangle highlight style; 
+            //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
+            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) 
+                paintFullSizedRectangleBackground(painter);
             
             // translate from offset
             if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
@@ -185,10 +185,10 @@ namespace Breeze
 
         auto d = qobject_cast<Decoration*>( decoration() );
                 
-        //draw a background only with square highlight style; 
-        //NB: paintSquareBackground function applies a translation to painter as different larger square button geometry
-        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare ) 
-            paintSquareBackground(painter);
+        //draw a background only with Full-sized Rectangle highlight style; 
+        //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
+        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) 
+            paintFullSizedRectangleBackground(painter);
         
         // translate from offset
         if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
@@ -208,9 +208,12 @@ namespace Breeze
         
         
         // render background if Circle button highlight style
-        if( d->internalSettings()->buttonHighlightStyle() != InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
-            paintCircleBackground(painter);
+        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightCircle )
+            paintCircleOrSquareBackground(painter, false);
         
+        // render background if Square button highlight style
+        else if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+            paintCircleOrSquareBackground(painter, true);
         
         // render mark
         if( m_foregroundColor.isValid() )
@@ -465,7 +468,7 @@ namespace Breeze
         return ( m_lowContrastBetweenTitleBarAndBackground );
     }
     
-    void Button::paintSquareBackground(QPainter* painter) const
+    void Button::paintFullSizedRectangleBackground(QPainter* painter) const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         auto s = d->settings();
@@ -512,11 +515,11 @@ namespace Breeze
         }
         
         
-        //NB: if square highlight, must add a translation due to larger geometry
-        painter->translate( m_squareHighlightIconHorizontalTranslation, m_squareHighlightIconVerticalTranslation );
+        //NB: if full-sized highlight, must add a translation due to larger geometry
+        painter->translate( m_fullSizedRectangleHighlightIconHorizontalTranslation, m_fullSizedRectangleHighlightIconVerticalTranslation );
     }
     
-    void Button::paintCircleBackground(QPainter* painter) const
+    void Button::paintCircleOrSquareBackground(QPainter* painter, bool square) const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         
@@ -534,7 +537,10 @@ namespace Breeze
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
-            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            
+            if(square) painter->drawRect( QRectF( 0, 0, 18, 18 ) );
+            else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            
             painter->restore();
         }
     }
