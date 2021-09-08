@@ -415,8 +415,6 @@ namespace Breeze
         }
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
-        } else if ( auto btn = qobject_cast<QPushButton*> (widget) ) {
-            btn->setAutoDefault(false);
         } else if ( auto spbx = qobject_cast<QAbstractSpinBox*> (widget) ) {
             spbx->setAlignment(Qt::AlignCenter);
         }
