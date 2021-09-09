@@ -39,6 +39,8 @@ namespace Breeze
     //* contrast for arrow and treeline rendering
     static const qreal arrowShade = 0.15;
 
+    static const auto radioCheckSunkenDarkeningFactor = 110;
+
     //____________________________________________________________________
     Helper::Helper( KSharedConfig::Ptr config, QObject *parent ) :
         QObject ( parent ),
@@ -849,7 +851,8 @@ namespace Breeze
     void Helper::renderCheckBoxBackground(
         QPainter* painter, const QRect& rect,
         const QPalette& palette,
-        CheckBoxState state, bool neutalHighlight, qreal animation ) const
+        CheckBoxState state, bool neutalHighlight,
+        bool sunken, qreal animation ) const
     {
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
@@ -871,7 +874,7 @@ namespace Breeze
 
         switch (state) {
         case CheckOff:
-            painter->setBrush( palette.base() );
+            painter->setBrush( palette.base().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100) );
             painter->drawRoundedRect( frameRect, radius, radius );
             break;
 
@@ -882,7 +885,7 @@ namespace Breeze
             break;
 
         case CheckAnimated:
-            painter->setBrush( palette.base() );
+            painter->setBrush( palette.base().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100) );
             painter->drawRoundedRect( frameRect, radius, radius );
             painter->setBrush( transparent );
             painter->setOpacity( animation );
@@ -897,9 +900,11 @@ namespace Breeze
         QPainter* painter, const QRect& rect,
         const QPalette& palette, bool mouseOver,
         CheckBoxState state, CheckBoxState target,
-        bool neutalHighlight,
+        bool neutalHighlight, bool sunken,
         qreal animation, qreal hoverAnimation ) const
     {
+        Q_UNUSED(sunken)
+
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
@@ -987,7 +992,7 @@ namespace Breeze
     }
 
     //______________________________________________________________________________
-    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QPalette& palette, RadioButtonState state, bool neutalHighlight, qreal animation ) const
+    void Helper::renderRadioButtonBackground( QPainter* painter, const QRect& rect, const QPalette& palette, RadioButtonState state, bool neutalHighlight, bool sunken, qreal animation ) const
     {
 
         // setup painter
@@ -1008,7 +1013,7 @@ namespace Breeze
 
         switch (state) {
         case RadioOff:
-            painter->setBrush( palette.base() );
+            painter->setBrush( palette.base().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100) );
             painter->drawEllipse( frameRect );
             break;
         case RadioOn:
@@ -1016,7 +1021,7 @@ namespace Breeze
             painter->drawEllipse( frameRect );
             break;
         case RadioAnimated:
-            painter->setBrush( palette.base() );
+            painter->setBrush( palette.base().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100) );
             painter->drawEllipse( frameRect );
             painter->setBrush( transparent );
             painter->setOpacity( animation );
@@ -1029,8 +1034,10 @@ namespace Breeze
     void Helper::renderRadioButton(
         QPainter* painter, const QRect& rect,
         const QPalette& palette, bool mouseOver,
-        RadioButtonState state, bool neutralHighlight, qreal animation, qreal animationHover ) const
+        RadioButtonState state, bool neutralHighlight, bool sunken, qreal animation, qreal animationHover ) const
     {
+        Q_UNUSED(sunken)
+
         // setup painter
         painter->setRenderHint( QPainter::Antialiasing, true );
 
