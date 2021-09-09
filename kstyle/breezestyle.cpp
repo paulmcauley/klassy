@@ -3900,6 +3900,7 @@ namespace Breeze
         // store flags
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
+        const bool sunken( state & State_Sunken );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         // checkbox state
@@ -3917,8 +3918,8 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
         // render
-        _helper->renderCheckBoxBackground( painter, rect, palette, checkBoxState, hasHighlightNeutral( widget, option, mouseOver), animation );
-        _helper->renderCheckBox( painter, rect, palette, mouseOver, checkBoxState, target, hasHighlightNeutral( widget, option, mouseOver), animation, opacity );
+        _helper->renderCheckBoxBackground( painter, rect, palette, checkBoxState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation );
+        _helper->renderCheckBox( painter, rect, palette, mouseOver, checkBoxState, target, hasHighlightNeutral( widget, option, mouseOver), sunken, animation, opacity );
         return true;
 
     }
@@ -3934,6 +3935,7 @@ namespace Breeze
         // store flags
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
+        const bool sunken( state & State_Sunken );
         const bool mouseOver( enabled && ( state & State_MouseOver ) );
 
         // radio button state
@@ -3949,8 +3951,8 @@ namespace Breeze
         const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
 
         // render
-        _helper->renderRadioButtonBackground( painter, rect, palette, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), animation );
-        _helper->renderRadioButton( painter, rect, palette, mouseOver, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), animation, opacity );
+        _helper->renderRadioButtonBackground( painter, rect, palette, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation );
+        _helper->renderRadioButton( painter, rect, palette, mouseOver, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation, opacity );
 
         return true;
 
@@ -4815,7 +4817,7 @@ namespace Breeze
         const State& state( option->state );
         const bool enabled( state & State_Enabled );
         const bool selected( enabled && (state & State_Selected) );
-        const bool sunken( enabled && (state & (State_On|State_Sunken) ) );
+        const bool sunken( enabled && (state & (State_Sunken) ) );
         const bool reverseLayout( option->direction == Qt::RightToLeft );
         const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
 
@@ -4864,16 +4866,16 @@ namespace Breeze
             const bool active( menuItemOption->checked );
             const auto shadow( _helper->shadowColor( palette ) );
             const auto color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
-            _helper->renderCheckBoxBackground( painter, checkBoxRect, palette, state, false, AnimationData::OpacityInvalid );
-            _helper->renderCheckBox( painter, checkBoxRect, palette, false, state, state, false );
+            _helper->renderCheckBoxBackground( painter, checkBoxRect, palette, state, false, sunken );
+            _helper->renderCheckBox( painter, checkBoxRect, palette, false, state, state, false, sunken );
 
         } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
 
             checkBoxRect = visualRect( option, checkBoxRect );
 
             const bool active( menuItemOption->checked );
-            _helper->renderRadioButtonBackground( painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, AnimationData::OpacityInvalid );
-            _helper->renderRadioButton( painter, checkBoxRect, palette, false, active ? RadioOn:RadioOff, false );
+            _helper->renderRadioButtonBackground( painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, sunken );
+            _helper->renderRadioButton( painter, checkBoxRect, palette, false, active ? RadioOn:RadioOff, false, sunken );
 
         }
 

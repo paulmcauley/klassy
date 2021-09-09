@@ -192,16 +192,16 @@ namespace Breeze
         void renderSeparator( QPainter*, const QRect&, const QColor&, bool vertical = false ) const;
 
         //* checkbox
-        void renderCheckBoxBackground( QPainter*, const QRect&, const QPalette& palette, CheckBoxState state, bool neutalHighlight, qreal animation = AnimationData::OpacityInvalid ) const;
+        void renderCheckBoxBackground( QPainter*, const QRect&, const QPalette& palette, CheckBoxState state, bool neutalHighlight, bool sunken, qreal animation = AnimationData::OpacityInvalid ) const;
 
         //* checkbox
-        void renderCheckBox( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, CheckBoxState state, CheckBoxState target, bool neutalHighlight, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
+        void renderCheckBox( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, CheckBoxState state, CheckBoxState target, bool neutalHighlight, bool sunken, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
 
         //* radio button
-        void renderRadioButtonBackground( QPainter*, const QRect&, const QPalette& palette, RadioButtonState state, bool neutalHighlight, qreal animation = AnimationData::OpacityInvalid ) const;
+        void renderRadioButtonBackground( QPainter*, const QRect&, const QPalette& palette, RadioButtonState state, bool neutalHighlight, bool sunken, qreal animation = AnimationData::OpacityInvalid ) const;
 
         //* radio button
-        void renderRadioButton( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, RadioButtonState state, bool neutalHighlight, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
+        void renderRadioButton( QPainter*, const QRect&, const QPalette& palette, bool mouseOver, RadioButtonState state, bool neutalHighlight, bool sunken, qreal animation = AnimationData::OpacityInvalid, qreal hoverAnimation = AnimationData::OpacityInvalid ) const;
 
         //* slider groove
         void renderSliderGroove( QPainter*, const QRect&, const QColor& ) const;
