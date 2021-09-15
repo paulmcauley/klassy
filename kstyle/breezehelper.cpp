@@ -935,9 +935,9 @@ namespace Breeze
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
         transparent.setAlphaF(0.50);
 
-        painter->setPen( transparentize( palette.text().color(), 0.5 ) );
+        painter->setPen( QPen(transparentize( palette.text().color(), 0.5 ), PenWidth::Frame) );
         if (state == RadioOn) {
-            painter->setPen( neutalHighlight ? neutralText(palette) : palette.highlight().color() );
+            painter->setPen( QPen(neutalHighlight ? neutralText(palette) : palette.highlight().color(), PenWidth::Frame) );
         }
 
         switch (state) {
@@ -1031,7 +1031,7 @@ namespace Breeze
         // content
         if( color.isValid() )
         {
-            painter->setPen( color );
+            painter->setPen( QPen(color, PenWidth::Frame) );
             auto bg = color;
             bg.setAlphaF(bg.alphaF() / 2);
             painter->setBrush( bg );
@@ -1106,7 +1106,7 @@ namespace Breeze
         if( outline.isValid() )
         {
 
-            painter->setPen( outline );
+            painter->setPen( QPen(outline, PenWidth::Frame) );
             frameRect = strokedRect( frameRect );
 
         } else painter->setPen( Qt::NoPen );
@@ -1136,7 +1136,7 @@ namespace Breeze
         // content
         if( fg.isValid() )
         {
-            painter->setPen( fg );
+            painter->setPen( QPen(fg, PenWidth::Frame) );
             painter->setBrush( KColorUtils::overlayColors(bg, alphaColor(fg, 0.5)) );
             painter->drawRoundedRect( baseRect, radius, radius );
         }
