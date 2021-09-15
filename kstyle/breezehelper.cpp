@@ -581,7 +581,7 @@ namespace Breeze
 
         // Colors
         if (flat) {
-            if (down) {
+            if (down && enabled) {
                 bgBrush = alphaColor(highlightColor, 0.333);
             } else if (checked) {
                 bgBrush = hasNeutralHighlight ? alphaColor(neutralText(palette), 0.333)
@@ -600,7 +600,7 @@ namespace Breeze
                 penBrush = hasNeutralHighlight ? neutralText(palette) : bgBrush;
             }
         } else {
-            if (down) {
+            if (down && enabled) {
                 bgBrush = KColorUtils::mix(palette.button().color(), highlightColor, 0.333);
             } else if (checked) {
                 bgBrush = hasNeutralHighlight ? KColorUtils::mix(palette.button().color(), neutralText(palette), 0.333)
@@ -621,18 +621,18 @@ namespace Breeze
             }
         }
 
-        if (hovered || visualFocus || down) {
+        if ((hovered || visualFocus || down) && enabled) {
             penBrush = highlightColor;
         }
 
         // Animations
-        if (bgAnimation != AnimationData::OpacityInvalid) {
+        if (bgAnimation != AnimationData::OpacityInvalid && enabled) {
             QColor color1 = bgBrush.color();
             QColor color2 = flat ? alphaColor(highlightColor, 0.333)
                 : KColorUtils::mix(palette.button().color(), highlightColor, 0.333);
             bgBrush = KColorUtils::mix(color1, color2, bgAnimation);
         }
-        if (penAnimation != AnimationData::OpacityInvalid) {
+        if (penAnimation != AnimationData::OpacityInvalid && enabled) {
             QColor color1 = penBrush.color();
             QColor color2 = highlightColor;
             penBrush = KColorUtils::mix(color1, color2, penAnimation);
