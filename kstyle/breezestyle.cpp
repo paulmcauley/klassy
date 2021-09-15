@@ -54,6 +54,7 @@
 
 #if BREEZE_HAVE_QTQUICK
 #include <QQuickWindow>
+#include <KCoreAddons>
 #endif
 
 namespace BreezePrivate
@@ -3573,7 +3574,7 @@ namespace Breeze
         bool activeFocus = option->state & QStyle::State_HasFocus;
         // Using `widget->focusProxy() == nullptr` to work around a possible Qt bug
         // where buttons that have a focusProxy still show focus.
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
         bool hovered = option->state & QStyle::State_MouseOver;
         bool down = option->state & QStyle::State_Sunken;
         bool checked = option->state & QStyle::State_On;
@@ -3631,7 +3632,7 @@ namespace Breeze
         // button state
         bool enabled = option->state & QStyle::State_Enabled;
         bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
         bool hovered = option->state & QStyle::State_MouseOver;
         bool down = option->state & QStyle::State_Sunken;
         bool checked = option->state & QStyle::State_On;
@@ -3961,7 +3962,7 @@ namespace Breeze
         // button state
         bool enabled = option->state & QStyle::State_Enabled;
         bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
         bool hovered = option->state & QStyle::State_MouseOver;
         bool down = option->state & QStyle::State_Sunken;
         bool checked = option->state & QStyle::State_On;
@@ -6101,7 +6102,7 @@ namespace Breeze
         // need to alter palette for focused buttons
         const bool enabled = option->state & QStyle::State_Enabled;
         const bool activeFocus = option->state & QStyle::State_HasFocus;
-        const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
         const bool hovered = option->state & QStyle::State_MouseOver;
         const bool down = option->state & QStyle::State_Sunken;
         const bool checked = option->state & QStyle::State_On;
@@ -6224,7 +6225,7 @@ namespace Breeze
         // state
         bool enabled = option->state & QStyle::State_Enabled;
         bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && !widget->focusProxy();
+        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
         bool hovered = option->state & QStyle::State_MouseOver;
         // Only true if the arrow (SC_ComboBoxArrow) is pressed
         bool down = option->state & QStyle::State_Sunken;
