@@ -106,6 +106,7 @@ namespace BreezePrivate
         //* paint
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
         {
+            painter->setRenderHints( QPainter::Antialiasing );
             // if the app sets an item delegate that isn't the default, use its drawing...
             if( _proxy && _proxy->metaObject()->className() != QStringLiteral("QComboBoxDelegate") ) {
                 _proxy.data()->paint( painter, option, index );
