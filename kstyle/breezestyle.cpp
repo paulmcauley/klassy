@@ -2017,27 +2017,31 @@ namespace Breeze
 
         }
 
-        // vertical positioning
+        // expand the tab bar towards the frame to cover the frame's border
         switch( tabOption->shape )
         {
             case QTabBar::RoundedNorth:
             case QTabBar::TriangularNorth:
-            tabBarRect.moveTop( rect.top()+1 );
+            tabBarRect.moveTop( rect.top() );
+            tabBarRect.setBottom( tabBarRect.bottom() + 1 );
             break;
 
             case QTabBar::RoundedSouth:
             case QTabBar::TriangularSouth:
-            tabBarRect.moveBottom( rect.bottom()-1 );
+            tabBarRect.moveBottom( rect.bottom() );
+            tabBarRect.setTop( tabBarRect.top() - 1 );
             break;
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            tabBarRect.moveLeft( rect.left()+1 );
+            tabBarRect.moveLeft( rect.left() );
+            tabBarRect.setRight( tabBarRect.right() + 1 );
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            tabBarRect.moveRight( rect.right()-1 );
+            tabBarRect.moveRight( rect.right() );
+            tabBarRect.setLeft( tabBarRect.left() - 1 );
             break;
 
             default: break;
@@ -6061,6 +6065,24 @@ namespace Breeze
             } break;
 
             default: break;
+        }
+        switch (tabOption->shape) {
+        case QTabBar::RoundedNorth:
+        case QTabBar::TriangularNorth:
+            rect.adjust( 0, 0, 0, 1 );
+            break;
+        case QTabBar::RoundedSouth:
+        case QTabBar::TriangularSouth:
+            rect.adjust( 0, 0, 0, -1 );
+            break;
+        case QTabBar::RoundedWest:
+        case QTabBar::TriangularWest:
+            rect.adjust( 0, 0, 1, 0 );
+            break;
+        case QTabBar::RoundedEast:
+        case QTabBar::TriangularEast:
+            rect.adjust( 0, 0, -1, 0 );
+            break;
         }
 
         QHash<QByteArray, bool> stateProperties;
