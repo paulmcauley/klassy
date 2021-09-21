@@ -103,8 +103,8 @@ ForegroundPositive=46,204,113
 ForegroundVisited=61,174,230
 
 [General]
-ColorScheme=Breeze
-Name=Breeze
+ColorScheme=BreezeClassic
+Name=Breeze Classic
 Name[ar]=نسيم
 Name[az]=Breeze
 Name[bs]=Breeze
