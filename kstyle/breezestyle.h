@@ -22,6 +22,7 @@
 #include <QCommandLinkButton>
 #include <QCommonStyle>
 #include <QDockWidget>
+#include <QFocusFrame>
 #include <QHash>
 #include <QIcon>
 #include <QMdiSubWindow>
@@ -121,6 +122,8 @@ namespace Breeze
         void drawItemText(
             QPainter*, const QRect&, int alignment, const QPalette&, bool enabled,
             const QString&, QPalette::ColorRole = QPalette::NoRole) const override;
+
+        bool event( QEvent* ) override;
 
         //*@name event filters
         //@{
@@ -295,6 +298,7 @@ namespace Breeze
         bool drawScrollBarAddLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawScrollBarSubLineControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawShapedFrameControl( const QStyleOption*, QPainter*, const QWidget* ) const;
+        bool drawFocusFrame( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawRubberBandControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawHeaderSectionControl( const QStyleOption*, QPainter*, const QWidget* ) const;
         bool drawHeaderEmptyAreaControl( const QStyleOption*, QPainter*, const QWidget* ) const;
@@ -473,6 +477,9 @@ namespace Breeze
         ScrollBarButtonType _addLineButtons = SingleButton;
         ScrollBarButtonType _subLineButtons = SingleButton;
         //@}
+
+        //* focus frame
+        QPointer<QFocusFrame> _focusFrame = nullptr;
 
         //* helper
         Helper* _helper = nullptr;
