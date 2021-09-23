@@ -330,6 +330,10 @@ namespace Breeze
 
             widget->setAttribute( Qt::WA_Hover );
 
+        } else if( qobject_cast<QFrame*>( widget ) && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) ) {
+
+            widget->setAutoFillBackground( false );
+
         }
 
         if( qobject_cast<QScrollBar*>( widget ) )
