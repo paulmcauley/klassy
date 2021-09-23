@@ -2467,33 +2467,43 @@ namespace Breeze
             case SC_SpinBoxFrame: return flat ? QRect():rect;
 
             case SC_SpinBoxUp:
-            {
-                auto r = rect;
-                r.setLeft(r.width()-r.height());
-                return r;
-            }
-
             case SC_SpinBoxDown:
             {
-                auto r = rect;
-                r.setRight(r.height());
-                return r;
+
+                // take out frame width
+                if( !flat && rect.height() >= 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect arrowRect;
+                arrowRect = QRect(
+                    rect.right() - Metrics::SpinBox_ArrowButtonWidth + 1,
+                    rect.top(),
+                    Metrics::SpinBox_ArrowButtonWidth,
+                    rect.height() );
+
+                const int arrowHeight( qMin( rect.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, arrowHeight );
+                arrowRect.setHeight( arrowHeight/2 );
+                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, arrowHeight/2 );
+
+                return visualRect( option, arrowRect );
+
             }
 
             case SC_SpinBoxEditField:
             {
 
-                QRect r = rect;
-                auto w = r.width();
-                r.setLeft(r.height());
-                r.setRight(w-r.height());
+                QRect labelRect;
+                labelRect = QRect(
+                    rect.left(), rect.top(),
+                    rect.width() - Metrics::SpinBox_ArrowButtonWidth,
+                    rect.height() );
 
                 // remove right side line editor margins
                 const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
-                if( !flat && r.height() >= option->fontMetrics.height() + 2*frameWidth )
-                { r.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
+                if( !flat && labelRect.height() >= option->fontMetrics.height() + 2*frameWidth )
+                { labelRect.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
 
-                return visualRect( option, r );
+                return visualRect( option, labelRect );
 
             }
 
@@ -2787,8 +2797,8 @@ namespace Breeze
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
 
-        // add in the buttons, which are square w/ length of height, and we have two of them
-        size.rwidth() += size.height()*2;
+        // add button width and spacing
+        size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
 
         return size;
 
@@ -7083,13 +7093,6 @@ namespace Breeze
 
         // render
         _helper->renderArrow( painter, arrowRect, color, orientation );
-
-        painter->setPen( _helper->separatorColor( palette ));
-        if (subControl == SC_SpinBoxUp) {
-            painter->drawLine(QLine(arrowRect.topLeft()+QPoint(1, 4), arrowRect.bottomLeft()-QPoint(-1, 4)));
-        } else {
-            painter->drawLine(QLine(arrowRect.topRight()+QPoint(0, 4), arrowRect.bottomRight()-QPoint(0, 4)));
-        }
 
     }
 
