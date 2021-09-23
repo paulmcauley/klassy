@@ -2485,19 +2485,16 @@ namespace Breeze
 
             case SC_SpinBoxEditField:
             {
-                const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
 
                 QRect r = rect;
-                if( showButtons ) {
-                    auto w = r.width();
-                    r.setLeft(r.height());
-                    r.setRight(w-r.height());
-                }
+                auto w = r.width();
+                r.setLeft(r.height());
+                r.setRight(w-r.height());
 
                 // remove right side line editor margins
                 const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
                 if( !flat && r.height() >= option->fontMetrics.height() + 2*frameWidth )
-                { r.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth ); }
+                { r.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
 
                 return visualRect( option, r );
 
@@ -2794,8 +2791,7 @@ namespace Breeze
         size.setHeight( qMax( size.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
 
         // add in the buttons, which are square w/ length of height, and we have two of them
-        const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-        if( showButtons ) size.rwidth() += size.height()*2;
+        size.rwidth() += size.height()*2;
 
         return size;
 
