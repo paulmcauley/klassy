@@ -2466,11 +2466,6 @@ namespace Breeze
         // copy rect
         auto rect( option->rect );
 
-        if (subControl == SC_SpinBoxUp || subControl == SC_SpinBoxDown) {
-            // compensate for 1px margin + 1px border
-            rect.adjust( 2, 2, -2, -2 );
-        }
-
         switch( subControl )
         {
             case SC_SpinBoxFrame: return flat ? QRect():rect;
@@ -2478,16 +2473,14 @@ namespace Breeze
             case SC_SpinBoxUp:
             {
                 auto r = rect;
-                r.setWidth(buttonSize);
-                r.moveRight(rect.right());
+                r.setLeft(r.width()-buttonSize);
                 return r;
             }
 
             case SC_SpinBoxDown:
             {
                 auto r = rect;
-                r.setWidth(buttonSize);
-                r.moveLeft(rect.left());
+                r.setRight(buttonSize);
                 return r;
             }
 
@@ -7103,9 +7096,9 @@ namespace Breeze
 
         painter->setPen( _helper->separatorColor( palette ));
         if (subControl == SC_SpinBoxUp) {
-            painter->drawLine(QLine(arrowRect.topLeft()+QPoint(0, 2), arrowRect.bottomLeft()-QPoint(0, 2)));
+            painter->drawLine(QLine(arrowRect.topLeft()+QPoint(1, 4), arrowRect.bottomLeft()-QPoint(-1, 4)));
         } else {
-            painter->drawLine(QLine(arrowRect.topRight()+QPoint(0, 2), arrowRect.bottomRight()-QPoint(0, 2)));
+            painter->drawLine(QLine(arrowRect.topRight()+QPoint(0, 4), arrowRect.bottomRight()-QPoint(0, 4)));
         }
 
     }
