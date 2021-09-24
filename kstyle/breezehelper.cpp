@@ -848,7 +848,7 @@ namespace Breeze
         frameRect = strokedRect(frameRect);
 
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
-        transparent.setAlphaF(0.50);
+        transparent.setAlphaF(0.33);
 
         QBrush penBrush;
         if (neutalHighlight) {
@@ -856,7 +856,7 @@ namespace Breeze
         } else if (state == CheckOn || state == CheckPartial) {
             penBrush = palette.highlight().color();
         } else {
-            penBrush = transparentize(palette.text().color(), 0.5);
+            penBrush = transparentize(palette.text().color(), 0.33);
         }
         painter->setPen(QPen(penBrush, PenWidth::Frame));
 
@@ -994,7 +994,7 @@ namespace Breeze
         frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
-        transparent.setAlphaF(0.50);
+        transparent.setAlphaF(0.33);
 
         QBrush penBrush;
         if (neutalHighlight) {
@@ -1002,7 +1002,7 @@ namespace Breeze
         } else if (state == RadioOn) {
             penBrush = palette.highlight().color();
         } else {
-            penBrush = transparentize(palette.text().color(), 0.5);
+            penBrush = transparentize(palette.text().color(), 0.33);
         }
         painter->setPen(QPen(penBrush, PenWidth::Frame));
 
