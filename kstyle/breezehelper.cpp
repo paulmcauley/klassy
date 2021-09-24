@@ -850,10 +850,15 @@ namespace Breeze
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
         transparent.setAlphaF(0.50);
 
-        painter->setPen( transparentize( palette.text().color(), 0.5 ) );
-        if (state == CheckOn || state == CheckPartial) {
-            painter->setPen( neutalHighlight ? neutralText(palette) : palette.highlight().color() );
+        QBrush penBrush;
+        if (neutalHighlight) {
+            penBrush = neutralText(palette);
+        } else if (state == CheckOn || state == CheckPartial) {
+            penBrush = palette.highlight().color();
+        } else {
+            penBrush = transparentize(palette.text().color(), 0.5);
         }
+        painter->setPen(QPen(penBrush, PenWidth::Frame));
 
         const auto radius = Metrics::CheckBox_Radius;
 
@@ -991,10 +996,15 @@ namespace Breeze
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
         transparent.setAlphaF(0.50);
 
-        painter->setPen( QPen(transparentize( palette.text().color(), 0.5 ), PenWidth::Frame) );
-        if (state == RadioOn) {
-            painter->setPen( QPen(neutalHighlight ? neutralText(palette) : palette.highlight().color(), PenWidth::Frame) );
+        QBrush penBrush;
+        if (neutalHighlight) {
+            penBrush = neutralText(palette);
+        } else if (state == RadioOn) {
+            penBrush = palette.highlight().color();
+        } else {
+            penBrush = transparentize(palette.text().color(), 0.5);
         }
+        painter->setPen(QPen(penBrush, PenWidth::Frame));
 
         switch (state) {
         case RadioOff:
