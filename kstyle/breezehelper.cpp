@@ -39,6 +39,8 @@ namespace Breeze
     //* contrast for arrow and treeline rendering
     static const qreal arrowShade = 0.15;
 
+    static const qreal highlightBackgroundAlpha = 0.33;
+
     static const auto radioCheckSunkenDarkeningFactor = 110;
 
     //____________________________________________________________________
@@ -638,9 +640,9 @@ namespace Breeze
         // Colors
         if (flat) {
             if (down && enabled) {
-                bgBrush = alphaColor(highlightColor, 0.333);
+                bgBrush = alphaColor(highlightColor, highlightBackgroundAlpha);
             } else if (checked) {
-                bgBrush = hasNeutralHighlight ? alphaColor(neutralText(palette), 0.333)
+                bgBrush = hasNeutralHighlight ? alphaColor(neutralText(palette), highlightBackgroundAlpha)
                     : alphaColor(palette.buttonText().color(), 0.125);
                 penBrush = hasNeutralHighlight ? neutralText(palette)
                     : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
@@ -684,7 +686,7 @@ namespace Breeze
         // Animations
         if (bgAnimation != AnimationData::OpacityInvalid && enabled) {
             QColor color1 = bgBrush.color();
-            QColor color2 = flat ? alphaColor(highlightColor, 0.333)
+            QColor color2 = flat ? alphaColor(highlightColor, highlightBackgroundAlpha)
                 : KColorUtils::mix(palette.button().color(), highlightColor, 0.333);
             bgBrush = KColorUtils::mix(color1, color2, bgAnimation);
         }
@@ -848,7 +850,7 @@ namespace Breeze
         frameRect = strokedRect(frameRect);
 
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
-        transparent.setAlphaF(0.33);
+        transparent.setAlphaF(highlightBackgroundAlpha);
 
         QBrush penBrush;
         if (neutalHighlight) {
@@ -856,7 +858,7 @@ namespace Breeze
         } else if (state == CheckOn || state == CheckPartial) {
             penBrush = palette.highlight().color();
         } else {
-            penBrush = transparentize(palette.text().color(), 0.33);
+            penBrush = transparentize(palette.text().color(), highlightBackgroundAlpha);
         }
         painter->setPen(QPen(penBrush, PenWidth::Frame));
 
@@ -994,7 +996,7 @@ namespace Breeze
         frameRect.adjust( 0.5, 0.5, -0.5, -0.5 );
 
         auto transparent = neutalHighlight ? neutralText(palette) : palette.highlight().color();
-        transparent.setAlphaF(0.33);
+        transparent.setAlphaF(highlightBackgroundAlpha);
 
         QBrush penBrush;
         if (neutalHighlight) {
@@ -1002,7 +1004,7 @@ namespace Breeze
         } else if (state == RadioOn) {
             penBrush = palette.highlight().color();
         } else {
-            penBrush = transparentize(palette.text().color(), 0.33);
+            penBrush = transparentize(palette.text().color(), highlightBackgroundAlpha);
         }
         painter->setPen(QPen(penBrush, PenWidth::Frame));
 
