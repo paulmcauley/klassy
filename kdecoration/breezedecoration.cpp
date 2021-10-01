@@ -1076,8 +1076,6 @@ namespace Breeze
           
           shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
           shadowRenderer.setBoxSize(boxSize);
-          shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
-
           const qreal strength = m_internalSettings->shadowStrength() / 255.0 * strengthScale;
           shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
               withOpacity(m_internalSettings->shadowColor(), params.shadow1.opacity * strength));

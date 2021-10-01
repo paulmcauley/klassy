@@ -36,12 +36,6 @@ public:
     void setBorderRadius(qreal radius);
 
     /**
-     * Set the device pixel ratio of the resulting shadow texture.
-     * @param dpr The device pixel ratio.
-     **/
-    void setDevicePixelRatio(qreal dpr);
-
-    /**
      * Add a shadow.
      * @param offset The offset of the shadow.
      * @param radius The blur radius.
@@ -79,7 +73,6 @@ public:
 private:
     QSize m_boxSize;
     qreal m_borderRadius = 0.0;
-    qreal m_dpr = 1.0;
 
     struct Shadow {
         QPoint offset;

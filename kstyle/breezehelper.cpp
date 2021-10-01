@@ -1675,10 +1675,6 @@ namespace Breeze
     { return compositingActive() && widget && widget->testAttribute( Qt::WA_TranslucentBackground ); }
 
     //______________________________________________________________________________________
-    qreal Helper::devicePixelRatio( const QPixmap& pixmap ) const
-    {
-        return pixmap.devicePixelRatio();
-    }
 
     QPixmap Helper::coloredIcon(const QIcon& icon,  const QPalette& palette, const QSize &size, QIcon::Mode mode, QIcon::State state)
     {

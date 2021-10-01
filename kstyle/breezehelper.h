@@ -259,9 +259,6 @@ namespace Breeze
 
         //@}
 
-        //* return device pixel ratio for a given pixmap
-        virtual qreal devicePixelRatio( const QPixmap& ) const;
-
         //* frame radius
         constexpr qreal frameRadius( const int penWidth = PenWidth::NoPen, const qreal bias = 0 ) const
         { return qMax( Metrics::Frame_FrameRadius - (0.5 * penWidth) + bias, 0.0 ); }
