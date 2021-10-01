@@ -192,15 +192,18 @@ namespace Breeze
     }
 
     //_______________________________________________________
-    TileSet ShadowHelper::shadowTiles()
+    TileSet ShadowHelper::shadowTiles(QWidget *widget)
     {
-        const CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+        CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
 
         if (params.isNone()) {
             return TileSet();
         } else if (_shadowTiles.isValid()) {
             return _shadowTiles;
         }
+
+        const qreal dpr = devicePixelRatio(widget);
+        params *= dpr;
 
         auto withOpacity = [](const QColor &color, qreal opacity) -> QColor {
             QColor c(color);
@@ -214,14 +217,11 @@ namespace Breeze
         const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
             .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-        // On Wayland, the compositor will upscale the shadow tiles if necessary.
-        const qreal dpr = KWindowSystem::isPlatformWayland() ? 1 : qApp->devicePixelRatio();
         const qreal frameRadius = _helper.frameRadius();
 
         BoxShadowRenderer shadowRenderer;
         shadowRenderer.setBorderRadius(frameRadius);
         shadowRenderer.setBoxSize(boxSize);
-        shadowRenderer.setDevicePixelRatio(dpr);
 
         shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
             withOpacity(color, params.shadow1.opacity * strength));
@@ -230,7 +230,7 @@ namespace Breeze
 
         QImage shadowTexture = shadowRenderer.render();
 
-        const QRect outerRect(QPoint(0, 0), shadowTexture.size() / dpr);
+        const QRect outerRect(QPoint(0, 0), shadowTexture.size());
 
         QRect boxRect(QPoint(0, 0), boxSize);
         boxRect.moveCenter(outerRect.center());
@@ -369,7 +369,7 @@ namespace Breeze
         if( !widget->testAttribute( Qt::WA_WState_Created ) ) return;
 
         // create shadow tiles if needed
-        shadowTiles();
+        shadowTiles(widget);
         if( !_shadowTiles.isValid() ) return;
 
         // create platform shadow tiles if needed
@@ -410,10 +410,12 @@ namespace Breeze
     //_______________________________________________________
     QMargins ShadowHelper::shadowMargins( QWidget* widget ) const
     {
-        const CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+        CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
         if (params.isNone()) {
             return QMargins();
         }
+        qreal dpr = devicePixelRatio(widget);
+        params *= dpr;
 
         const QSize boxSize = BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius)
             .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
@@ -449,8 +451,6 @@ namespace Breeze
             }
         }
 
-        margins *= _helper.devicePixelRatio(_shadowTiles.pixmap(0));
-
         return margins;
     }
 
@@ -458,6 +458,12 @@ namespace Breeze
     void ShadowHelper::uninstallShadows( QWidget* widget )
     {
         delete _shadows.take( widget->windowHandle() );
+    }
+
+    //_______________________________________________________
+    qreal ShadowHelper::devicePixelRatio(QWidget *widget) {
+        // On Wayland, the compositor will upscale the shadow tiles if necessary.
+        return Helper::isWayland() ? 1 : widget->devicePixelRatioF();
     }
 
 }

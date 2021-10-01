@@ -220,7 +220,7 @@ namespace Breeze
         if ( !_shadowHelper ) return;
 
         // create new shadow
-        auto windowShadow( new MdiWindowShadow( widget->parentWidget(), _shadowHelper->shadowTiles() ) );
+        auto windowShadow( new MdiWindowShadow( widget->parentWidget(), _shadowHelper->shadowTiles(widget)) );
         windowShadow->setWidget( widget );
 
     }

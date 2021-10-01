@@ -37,6 +37,11 @@ namespace Breeze
         QPoint offset;
         int radius = 0;
         qreal opacity = 0;
+
+        void operator*=(qreal factor) {
+            offset *= factor;
+            radius = qRound(radius * factor);
+        }
     };
 
     struct CompositeShadowParams
@@ -57,6 +62,12 @@ namespace Breeze
         QPoint offset;
         ShadowParams shadow1;
         ShadowParams shadow2;
+
+        void operator*=(qreal factor) {
+            offset *= factor;
+            shadow1 *= factor;
+            shadow2 *= factor;
+        }
     };
 
     //* handle shadow pixmaps passed to window manager via X property
@@ -93,7 +104,10 @@ namespace Breeze
 
         //* shadow tiles
         /** is public because it is also needed for mdi windows */
-        TileSet shadowTiles();
+        TileSet shadowTiles(QWidget *);
+
+        //* return device pixel ratio for the window containing the widget
+        static qreal devicePixelRatio(QWidget *) ;
 
         protected Q_SLOTS:
 
