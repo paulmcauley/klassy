@@ -51,6 +51,7 @@
 #include <QWidgetAction>
 #include <QMdiArea>
 #include <memory>
+#include <QDialogButtonBox>
 
 #if BREEZE_HAVE_QTQUICK
 #include <QQuickWindow>
@@ -421,6 +422,24 @@ namespace Breeze
             widget->setAttribute(Qt::WA_StyledBackground);
         } else if ( auto spbx = qobject_cast<QAbstractSpinBox*> (widget) ) {
             spbx->setAlignment(Qt::AlignCenter);
+        } else if (auto pushButton = qobject_cast<QPushButton*>(widget)) {
+            QDialog *dialog = nullptr;
+            auto p = pushButton->parentWidget();
+            while (p && !p->isWindow()) {
+                p = p->parentWidget();
+                if (auto d = qobject_cast<QDialog*>(p)) {
+                    dialog = d;
+                }
+            }
+            // Internally, QPushButton::autoDefault can be explicitly on,
+            // explicitly off, or automatic (enabled if in a QDialog).
+            // If autoDefault is explicitly on and not in a dialog,
+            // or on/automatic in a dialog and has a QDialogButtonBox parent,
+            // explicitly enable autoDefault, else explicitly disable autoDefault.
+            bool autoDefaultNoDialog = pushButton->autoDefault() && !dialog;
+            bool autoDefaultInDialog = pushButton->autoDefault() && dialog;
+            auto dialogButtonBox = qobject_cast<QDialogButtonBox*>(pushButton->parent());
+            pushButton->setAutoDefault(autoDefaultNoDialog || (autoDefaultInDialog && dialogButtonBox));
         }
 
 
