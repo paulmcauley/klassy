@@ -134,8 +134,7 @@
           <item row="1" column="0" rowspan="2">
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>
-Button glyphs:   </string>
+             <string>Button icons:   </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -206,7 +205,7 @@ Button glyphs:   </string>
           <item row="2" column="4">
            <widget class="QLabel" name="label_16">
             <property name="text">
-             <string>Bold glyphs (for HiDPI):</string>
+             <string>Bold icons (for HiDPI):</string>
             </property>
             <property name="buddy">
              <cstring>boldButtonIcons</cstring>
@@ -261,7 +260,7 @@ Button glyphs:   </string>
           <item row="1" column="4">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Glyph size:</string>
+             <string>Icon size:</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
