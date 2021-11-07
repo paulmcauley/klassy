@@ -52,6 +52,7 @@ namespace Breeze
         virtual void updateChanged();
         void setEnabledRedOutline();
         void setEnabledAnimationsSpeed();
+        void setEnabledTransparentTitlebarOptions();
 
         protected:
 
