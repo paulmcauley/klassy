@@ -376,6 +376,8 @@ namespace Breeze
                 KStatefulBrush buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::HoverColor );
                 buttonFocusColor = buttonFocusStatefulBrush.brush( c->palette() ).color();
                 buttonHoverColor = buttonHoverStatefulBrush.brush( c->palette() ).color();
+                
+                if(buttonFocusColor == buttonHoverColor) buttonHoverColor = ColorTools::getDifferentiatedLessSaturatedColor(buttonHoverColor);
             }
         } else {
             if( type() == DecorationButtonType::Close ) { 

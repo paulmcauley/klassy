@@ -21,6 +21,17 @@ namespace Breeze
         return redColorSaturated;
     }
     
+    
+    QColor ColorTools::getDifferentiatedLessSaturatedColor( const QColor& inputColor )
+    {
+        int colorHsv[3];
+        inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
+        if( colorHsv[1] > 125 ) colorHsv[1] -= 80; //decrease saturation if not already low
+        else colorHsv[1] += 80; // else increase saturation if very low to provide differentiation/contrast
+        QColor outputColor;
+        outputColor.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
+        return outputColor;
+    }
 
     
     QColor ColorTools::getHigherContrastForegroundColor( const QColor& foregroundColor, const QColor& backgroundColor, double blackWhiteContrastThreshold )
