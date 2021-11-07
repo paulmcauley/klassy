@@ -73,7 +73,11 @@ namespace Breeze
         // track animations changes
         connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-
+        
+        //only enable transparency options when transparency is setActiveTitlebarOpacity
+        connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()) );
+        connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()) );
+        
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -110,6 +114,7 @@ namespace Breeze
         m_ui.activeTitlebarOpacity_2->setValue( m_internalSettings->activeTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity_2->setValue( m_internalSettings->inactiveTitlebarOpacity() );
+        setEnabledTransparentTitlebarOptions();
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
@@ -228,6 +233,7 @@ namespace Breeze
         m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
         m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
+        setEnabledTransparentTitlebarOptions();
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
@@ -322,5 +328,17 @@ namespace Breeze
         m_ui.animationsSpeedLabel2->setEnabled(m_ui.animationsEnabled->isChecked());
         m_ui.animationsSpeedLabel3->setEnabled(m_ui.animationsEnabled->isChecked());
         m_ui.animationsSpeedLabel4->setEnabled(m_ui.animationsEnabled->isChecked());
+    }
+    
+    //only enable blurTransparentTitlebars and opaqueMaximizedTitlebars options if transparent titlebars are enabled
+    void ConfigWidget::setEnabledTransparentTitlebarOptions()
+    {
+        if ( m_ui.activeTitlebarOpacity->value() != 100 ||  m_ui.inactiveTitlebarOpacity->value() != 100 ){
+            m_ui.opaqueMaximizedTitlebars->setEnabled(true);
+            m_ui.blurTransparentTitlebars->setEnabled(true);
+        } else {
+            m_ui.opaqueMaximizedTitlebars->setEnabled(false);
+            m_ui.blurTransparentTitlebars->setEnabled(false);
+        }
     }
 }

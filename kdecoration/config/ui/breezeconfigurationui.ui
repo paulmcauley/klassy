@@ -1542,6 +1542,19 @@ Button icon st&amp;yle:   </string>
           </layout>
          </item>
          <item>
+          <spacer name="verticalSpacer_17">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>10</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QCheckBox" name="opaqueMaximizedTitlebars">
            <property name="text">
             <string>Opaque maximized titlebars</string>
