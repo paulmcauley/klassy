@@ -7192,7 +7192,11 @@ namespace Breeze
         const QColor onNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 ) );
         const QColor offNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.5 ) );
         const QColor backgroundFocusInheritSystemHighlight( _helper->buttonFocusColor(palette) );
-        const QColor negativeBackgroundHoverInheritSystemHighlight( buttonType == ButtonClose ? redColor:_helper->buttonHoverColor(palette) );
+        
+        QColor buttonHoverColor = _helper->buttonHoverColor(palette);
+        if(_helper->buttonFocusColor(palette) == buttonHoverColor) buttonHoverColor = ColorTools::getDifferentiatedLessSaturatedColor(buttonHoverColor);
+        const QColor negativeBackgroundHoverInheritSystemHighlight( buttonType == ButtonClose ? redColor:buttonHoverColor );
+        
         const QColor negativeBackgroundFocusInheritSystemHighlight( buttonType == ButtonClose ? saturatedRedColor:backgroundFocusInheritSystemHighlight ); 
         const QColor offInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
         const QColor disabledInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
