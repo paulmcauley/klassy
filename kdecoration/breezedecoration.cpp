@@ -437,13 +437,16 @@ namespace Breeze
         const KConfigGroup cg(config, QStringLiteral("KDE"));
         
         // animation
-        m_animation->setDuration(0);
-        // Syncing anis between client and decoration is troublesome, so we're not using
-        // any animations right now.
-        // m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
-
-        // But the shadow is fine to animate like this!
-        m_shadowAnimation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 100.0f );
+        if( m_internalSettings->animationsEnabled() ) {
+            qreal animationsDurationFactorRelativeSystem = 1;
+            if ( m_internalSettings->animationsSpeedRelativeSystem() < 0 ) animationsDurationFactorRelativeSystem = ( -m_internalSettings->animationsSpeedRelativeSystem() + 2 ) / 2.0f;
+            else if ( m_internalSettings->animationsSpeedRelativeSystem() > 0 ) animationsDurationFactorRelativeSystem = 1 / ((m_internalSettings->animationsSpeedRelativeSystem() + 2) / 2.0f); 
+            m_animation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
+            m_shadowAnimation->setDuration( cg.readEntry("AnimationDurationFactor", 1.0f) * 150.0f * animationsDurationFactorRelativeSystem );
+        } else {
+            m_animation->setDuration(0);
+            m_shadowAnimation->setDuration(0);
+        }
 
         // borders
         recalculateBorders();
