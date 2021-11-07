@@ -189,7 +189,18 @@
 
     <!-- size grip -->
     <entry name="DrawSizeGrip" type = "Bool">
-      <default>false</default>
+        <default>false</default>
+    </entry>
+    
+    <!-- animations -->
+    <entry name="AnimationsEnabled" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <entry name="AnimationsSpeedRelativeSystem" type = "Int">
+        <default>0</default>
+        <min>-10</min>
+        <max>10</max>
     </entry>
     
     <!-- Titlebar opacity for active window -->

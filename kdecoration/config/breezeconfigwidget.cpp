@@ -67,6 +67,13 @@ namespace Breeze
         //only enable redOutline when outlineCloseButton is checked
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledRedOutline );
 
+        //only enable animationsSpeed when animationsEnabled is checked
+        connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledAnimationsSpeed );
+
+        // track animations changes
+        connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -112,6 +119,9 @@ namespace Breeze
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
+        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
+        m_ui.animationsSpeedRelativeSystem->setValue( m_internalSettings->animationsSpeedRelativeSystem() );
+        setEnabledAnimationsSpeed();
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
@@ -161,6 +171,8 @@ namespace Breeze
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setDrawBackgroundGradient( m_ui.drawBackgroundGradient->isChecked() );
         m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
+        m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
+        m_internalSettings->setAnimationsSpeedRelativeSystem( m_ui.animationsSpeedRelativeSystem->value() );
         m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
         m_internalSettings->setOpaqueMaximizedTitlebars(m_ui.opaqueMaximizedTitlebars->isChecked());
         m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
@@ -224,6 +236,9 @@ namespace Breeze
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
+        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
+        m_ui.animationsSpeedRelativeSystem->setValue( m_internalSettings->animationsSpeedRelativeSystem() );
+        setEnabledAnimationsSpeed();
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
@@ -270,6 +285,10 @@ namespace Breeze
         else if( m_ui.activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity() ) modified = true;
         else if( m_ui.inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity() ) modified = true;
 
+        // animations
+        else if( m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled() ) modified = true;
+        else if( m_ui.animationsSpeedRelativeSystem->value() != m_internalSettings->animationsSpeedRelativeSystem() ) modified = true;
+
         // shadows
         else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
@@ -295,4 +314,13 @@ namespace Breeze
         m_ui.redOutline->setEnabled(m_ui.outlineCloseButton->isChecked());
     }
 
+    //only enable animationsSpeedRelativeSystem and animationsSpeedLabelx when animationsEnabled is checked
+    void ConfigWidget::setEnabledAnimationsSpeed()
+    {
+        m_ui.animationsSpeedRelativeSystem->setEnabled(m_ui.animationsEnabled->isChecked());
+        m_ui.animationsSpeedLabel1->setEnabled(m_ui.animationsEnabled->isChecked());
+        m_ui.animationsSpeedLabel2->setEnabled(m_ui.animationsEnabled->isChecked());
+        m_ui.animationsSpeedLabel3->setEnabled(m_ui.animationsEnabled->isChecked());
+        m_ui.animationsSpeedLabel4->setEnabled(m_ui.animationsEnabled->isChecked());
+    }
 }
