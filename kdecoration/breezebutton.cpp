@@ -448,7 +448,7 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         
-        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) ) ) {
+        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade || type() == DecorationButtonType::OnAllDesktops) ) ) {
             return d->fontColor();
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             return KColorUtils::mix( d->titleBarColor(), d->fontColor(), m_opacity );
