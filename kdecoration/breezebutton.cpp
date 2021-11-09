@@ -131,12 +131,14 @@ namespace Breeze
         if (!decoration()) return;
         auto d = qobject_cast<Decoration*>( decoration() );
 
+        setDevicePixelRatio(painter);
+        setShouldDrawBoldButtonIcons();
         m_backgroundColor = this->backgroundColor();
         m_foregroundColor = this->foregroundColor();
+        m_outlineColor = this->outlineColor();
         
         m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
         
-        setShouldDrawBoldButtonIcons(painter);
         painter->save();
         
         if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
@@ -439,6 +441,22 @@ namespace Breeze
         }
 
     }
+    
+        //__________________________________________________________________
+    QColor Button::outlineColor() const
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        if( !d ) return QColor();
+        
+        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) ) ) {
+            return d->fontColor();
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            return KColorUtils::mix( d->titleBarColor(), d->fontColor(), m_opacity );
+        } else {
+            return d->fontColor();
+        }
+
+    }
 
     //________________________________________________________________
     void Button::reconfigure()
@@ -487,12 +505,8 @@ namespace Breeze
             
             if( shouldDrawBackgroundStroke() )
             {   
-                QColor strokeColor = d->fontColor();
-                if( m_animation->state() == QAbstractAnimation::Running ) {
-                    strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
-                }
-                QPen pen( strokeColor );
-                pen.setWidthF( m_devicePixelRatio );
+                QPen pen( m_outlineColor );
+                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
                 painter->setPen(pen);
                 
                 //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
@@ -523,18 +537,13 @@ namespace Breeze
     
     void Button::paintCircleOrSquareBackground(QPainter* painter, bool square) const
     {
-        auto d = qobject_cast<Decoration*>( decoration() );
         
         if( m_backgroundColor.isValid() )
         {
             painter->save();
             if( shouldDrawBackgroundStroke() )
             {   
-                QColor strokeColor = d->fontColor();
-                if( m_animation->state() == QAbstractAnimation::Running ) {
-                    strokeColor.setAlpha( strokeColor.alpha()*m_opacity );
-                }
-                QPen pen( strokeColor );
+                QPen pen( m_outlineColor );
                 pen.setWidthF( PenWidth::Symbol );
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
@@ -547,12 +556,10 @@ namespace Breeze
         }
     }
     
-    
-    void Button::setShouldDrawBoldButtonIcons(QPainter* painter)
+
+    void Button::setDevicePixelRatio(QPainter* painter)
     {
         auto d = qobject_cast<Decoration*>( decoration() );
-        
-        m_boldButtonIcons = false;
         
         //determine DPR
         m_devicePixelRatio = painter->device()->devicePixelRatioF();
@@ -560,6 +567,14 @@ namespace Breeze
         // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
         if( KWindowSystem::isPlatformX11() ) m_devicePixelRatio = d->systemScaleFactor();
         if ( m_isGtkCsdButton ) m_devicePixelRatio = d->systemScaleFactor(); 
+        
+    }
+    
+    void Button::setShouldDrawBoldButtonIcons()
+    {
+        auto d = qobject_cast<Decoration*>( decoration() );
+        
+        m_boldButtonIcons = false;
         
         switch( d->internalSettings()->boldButtonIcons() )
         {

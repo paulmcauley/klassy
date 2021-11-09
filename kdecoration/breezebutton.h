@@ -111,10 +111,12 @@ namespace Breeze
         //@{
         QColor foregroundColor() const;
         QColor backgroundColor() const;
+        QColor outlineColor() const;
         //@}
         
         bool shouldDrawBackgroundStroke() const;
-        void setShouldDrawBoldButtonIcons(QPainter* painter);
+        void setDevicePixelRatio(QPainter* painter);
+        void setShouldDrawBoldButtonIcons();
         
         /**
         * @brief Paint the button background for the Full-sized Rectangle highlight style; NB: applies a translation at end due to different full-sized button geometries
@@ -131,6 +133,7 @@ namespace Breeze
         
         QColor m_foregroundColor;
         QColor m_backgroundColor;
+        QColor m_outlineColor;
 
         Flag m_flag = FlagNone;
 
