@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>732</width>
-    <height>620</height>
+    <width>740</width>
+    <height>670</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -15,8 +15,8 @@
     <widget class="QTabWidget" name="tabWidget">
      <property name="minimumSize">
       <size>
-       <width>720</width>
-       <height>446</height>
+       <width>0</width>
+       <height>0</height>
       </size>
      </property>
      <property name="tabShape">
@@ -32,6 +32,12 @@
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
          <property name="title">
           <string>Button style</string>
          </property>
@@ -332,753 +338,742 @@
       <attribute name="title">
        <string>Alignment &amp;&amp; Spacing</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_9">
+      <layout class="QGridLayout" name="gridLayout_6">
        <item row="1" column="0">
-        <spacer name="verticalSpacer_8">
+        <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
          <property name="sizeHint" stdset="0">
           <size>
-           <width>0</width>
-           <height>0</height>
+           <width>20</width>
+           <height>40</height>
           </size>
          </property>
         </spacer>
        </item>
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout_main">
-         <property name="spacing">
-          <number>20</number>
+       <item row="0" column="0" colspan="3">
+        <widget class="QGroupBox" name="window_groupbox">
+         <property name="title">
+          <string/>
          </property>
-         <item>
-          <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Tit&amp;le alignment:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="buddy">
-              <cstring>titleAlignment</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QComboBox" name="titleAlignment">
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QGroupBox" name="titlebar_groupbox">
+            <property name="title">
+             <string/>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_7">
              <item>
-              <property name="text">
-               <string>Left</string>
-              </property>
+              <layout class="QGridLayout" name="gridLayout_8">
+               <item row="1" column="2" colspan="5">
+                <widget class="QLabel" name="label_13">
+                 <property name="text">
+                  <string>Titlebar top/bottom margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titlebarTopBottomMargins</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="7" colspan="2">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Corner radius:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>cornerRadius_2</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="8">
+                <widget class="QDoubleSpinBox" name="cornerRadius_2">
+                 <property name="maximum">
+                  <double>12.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.500000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="5" colspan="2">
+                <spacer name="horizontalSpacer_46">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QLabel" name="label_14">
+                 <property name="text">
+                  <string>Corner radius:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>cornerRadius</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="4">
+                <widget class="QDoubleSpinBox" name="titlebarTopBottomMargins">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="maximum">
+                  <double>25.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.050000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QDoubleSpinBox" name="cornerRadius">
+                 <property name="maximum">
+                  <double>12.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.500000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2" colspan="2">
+                <spacer name="horizontalSpacer_43">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="2" column="1">
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="2" column="7">
+                <spacer name="horizontalSpacer_7">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
              <item>
-              <property name="text">
-               <string>Centre</string>
-              </property>
+              <spacer name="verticalSpacer_4">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>60</height>
+                </size>
+               </property>
+              </spacer>
              </item>
              <item>
-              <property name="text">
-               <string>Centre (Full Width)</string>
-              </property>
+              <layout class="QGridLayout" name="gridLayout_3">
+               <property name="verticalSpacing">
+                <number>0</number>
+               </property>
+               <item row="0" column="17" colspan="2">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Titlebar
+side margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titlebarSideMargins_2</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4" colspan="2">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Left-hand
+button spacing:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>buttonSpacingLeft</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QSpinBox" name="titlebarSideMargins">
+                 <property name="maximum">
+                  <number>30</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <spacer name="horizontalSpacer_25">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="12" colspan="4">
+                <widget class="QSpinBox" name="buttonSpacingRight">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="8">
+                <widget class="QComboBox" name="titleAlignment">
+                 <item>
+                  <property name="text">
+                   <string>Left</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre (Full Width)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Right</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="1" colspan="2">
+                <spacer name="horizontalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="18">
+                <widget class="QSpinBox" name="titlebarSideMargins_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="maximum">
+                  <number>30</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="11">
+                <spacer name="horizontalSpacer_27">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="17">
+                <spacer name="horizontalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="5">
+                <widget class="QSpinBox" name="buttonSpacingLeft">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="9">
+                <spacer name="horizontalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="0" colspan="3">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>Titlebar
+side margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titlebarSideMargins</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="7" colspan="3">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Tit&amp;le alignment:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titleAlignment</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="7">
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="10">
+                <spacer name="horizontalSpacer_20">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="16">
+                <spacer name="horizontalSpacer_18">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="6">
+                <spacer name="horizontalSpacer_21">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="3">
+                <spacer name="horizontalSpacer_14">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="11" colspan="5">
+                <widget class="QLabel" name="label_7">
+                 <property name="text">
+                  <string>Right-hand
+button spacing:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>buttonSpacingRight</cstring>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
-              <property name="text">
-               <string>Right</string>
-              </property>
+              <spacer name="verticalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>60</height>
+                </size>
+               </property>
+              </spacer>
              </item>
-            </widget>
-           </item>
-          </layout>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_11">
+               <item row="1" column="1">
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="2">
+                <widget class="QDoubleSpinBox" name="titlebarTopBottomMargins_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="maximum">
+                  <double>25.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.050000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <spacer name="horizontalSpacer_11">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="4">
+                <spacer name="horizontalSpacer_50">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="1" colspan="3">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Titlebar top/bottom margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titlebarTopBottomMargins_2</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="3">
+                <spacer name="horizontalSpacer_12">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>60</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_9">
+            <item row="2" column="5" colspan="3">
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Corner radius:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>cornerRadius_3</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" colspan="3">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>Corner radius:</string>
+              </property>
+              <property name="buddy">
+               <cstring>cornerRadius_4</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <spacer name="horizontalSpacer_28">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>8</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="4" column="5" colspan="3">
+             <widget class="QLabel" name="label_21">
+              <property name="text">
+               <string>(border required to have effect)</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" colspan="3">
+             <widget class="QLabel" name="label_12">
+              <property name="text">
+               <string>(border required to have effect)</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="5">
+             <spacer name="horizontalSpacer_24">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="3">
+             <spacer name="horizontalSpacer_23">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="4">
+             <spacer name="horizontalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="1" colspan="2">
+             <widget class="QDoubleSpinBox" name="cornerRadius_4">
+              <property name="maximum">
+               <double>12.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.500000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="6" colspan="2">
+             <widget class="QDoubleSpinBox" name="cornerRadius_3">
+              <property name="maximum">
+               <double>12.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.500000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="8">
+             <spacer name="horizontalSpacer_29">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>8</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QFormLayout" name="formLayout_4">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>Titlebar top/bottom margins for maximized windows:</string>
+           </property>
+           <property name="buddy">
+            <cstring>percentMaximizedTopBottomMargins</cstring>
+           </property>
+          </widget>
          </item>
-         <item>
-          <spacer name="verticalSpacer_11">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+         <item row="0" column="1">
+          <widget class="QSpinBox" name="percentMaximizedTopBottomMargins">
+           <property name="suffix">
+            <string> %</string>
            </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
+           <property name="maximum">
+            <number>100</number>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0,0,0,0,0,0,0,0,0,0">
-           <property name="verticalSpacing">
-            <number>0</number>
-           </property>
-           <item row="2" column="3">
-            <widget class="QDoubleSpinBox" name="titlebarTopBottomMargins">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="maximum">
-              <double>25.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>0.050000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="5" colspan="3">
-            <spacer name="horizontalSpacer_22">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="0">
-            <spacer name="horizontalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Maximum</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>200</width>
-               <height>0</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="4">
-            <spacer name="horizontalSpacer_45">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="11">
-            <spacer name="horizontalSpacer_12">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>10</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="1" colspan="2">
-            <spacer name="horizontalSpacer_18">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>76</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="0">
-            <spacer name="horizontalSpacer_33">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>240</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer_34">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="1" colspan="4">
-            <widget class="QLabel" name="label_12">
-             <property name="text">
-              <string>Titlebar top/bottom margins:</string>
-             </property>
-             <property name="buddy">
-              <cstring>titlebarTopBottomMargins</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="5" colspan="3">
-            <spacer name="horizontalSpacer_44">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="8">
-            <spacer name="horizontalSpacer_19">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="8">
-            <spacer name="horizontalSpacer_41">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="5">
-            <spacer name="horizontalSpacer_11">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="10">
-            <widget class="QDoubleSpinBox" name="cornerRadius">
-             <property name="maximum">
-              <double>12.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>0.500000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="9">
-            <spacer name="horizontalSpacer_36">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="9" colspan="3">
-            <widget class="QLabel" name="label_14">
-             <property name="text">
-              <string>         Corner radius: </string>
-             </property>
-             <property name="buddy">
-              <cstring>cornerRadius</cstring>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_3">
-           <property name="verticalSpacing">
-            <number>0</number>
-           </property>
-           <item row="0" column="4" colspan="3">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>Left-hand button spacing:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="buddy">
-              <cstring>buttonSpacingLeft</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <spacer name="horizontalSpacer_24">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="4">
-            <spacer name="horizontalSpacer_25">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="13">
-            <widget class="QSpinBox" name="titlebarSideMargins_2">
-             <property name="enabled">
-              <bool>true</bool>
-             </property>
-             <property name="maximum">
-              <number>30</number>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="3">
-            <widget class="QLabel" name="label_10">
-             <property name="text">
-              <string>Titlebar side margins:</string>
-             </property>
-             <property name="buddy">
-              <cstring>titlebarSideMargins</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="6">
-            <spacer name="horizontalSpacer_30">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="8">
-            <spacer name="horizontalSpacer_27">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer_23">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="1">
-            <widget class="QSpinBox" name="titlebarSideMargins">
-             <property name="maximum">
-              <number>30</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="14">
-            <spacer name="horizontalSpacer_32">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="11">
-            <spacer name="horizontalSpacer_28">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>10</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="5">
-            <widget class="QSpinBox" name="buttonSpacingLeft">
-             <property name="suffix">
-              <string/>
-             </property>
-             <property name="prefix">
-              <string/>
-             </property>
-             <property name="maximum">
-              <number>50</number>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="10">
-            <spacer name="horizontalSpacer_31">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="7">
-            <spacer name="horizontalSpacer_26">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>10</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="9">
-            <widget class="QSpinBox" name="buttonSpacingRight">
-             <property name="suffix">
-              <string/>
-             </property>
-             <property name="prefix">
-              <string/>
-             </property>
-             <property name="maximum">
-              <number>50</number>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="12" colspan="3">
-            <widget class="QLabel" name="label_11">
-             <property name="text">
-              <string>Titlebar side margins:</string>
-             </property>
-             <property name="buddy">
-              <cstring>titlebarSideMargins_2</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="12">
-            <spacer name="horizontalSpacer_13">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="8" colspan="3">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Right-hand button spacing:</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-             <property name="buddy">
-              <cstring>buttonSpacingRight</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="3">
-            <spacer name="horizontalSpacer_14">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>10</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <property name="verticalSpacing">
-            <number>0</number>
-           </property>
-           <item row="2" column="5">
-            <spacer name="horizontalSpacer_8">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>245</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_21">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="6">
-            <spacer name="horizontalSpacer_37">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="5">
-            <spacer name="horizontalSpacer_39">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="1">
-            <spacer name="horizontalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>200</width>
-               <height>0</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="2">
-            <spacer name="horizontalSpacer_38">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>76</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="6">
-            <spacer name="horizontalSpacer_40">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="1">
-            <spacer name="horizontalSpacer_20">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Expanding</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>240</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="2" column="3">
-            <widget class="QDoubleSpinBox" name="titlebarTopBottomMargins_2">
-             <property name="maximum">
-              <double>25.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>0.050000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="4">
-            <spacer name="horizontalSpacer_29">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="2" colspan="3">
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Titlebar top/bottom margins:</string>
-             </property>
-             <property name="buddy">
-              <cstring>titlebarTopBottomMargins_2</cstring>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <spacer name="verticalSpacer_12">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_8">
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>Titlebar top/bottom margins for maximized windows:</string>
-             </property>
-             <property name="buddy">
-              <cstring>percentMaximizedTopBottomMargins</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <spacer name="horizontalSpacer_10">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>0</width>
-               <height>0</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="percentMaximizedTopBottomMargins">
-             <property name="suffix">
-              <string> %</string>
-             </property>
-             <property name="maximum">
-              <number>100</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          </widget>
          </item>
         </layout>
-       </item>
-       <item row="0" column="1">
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>
@@ -1755,14 +1750,17 @@
   <tabstop>useTitlebarColorForAllBorders</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>drawSizeGrip</tabstop>
-  <tabstop>titleAlignment</tabstop>
-  <tabstop>titlebarTopBottomMargins</tabstop>
   <tabstop>cornerRadius</tabstop>
+  <tabstop>titlebarTopBottomMargins</tabstop>
+  <tabstop>cornerRadius_2</tabstop>
   <tabstop>titlebarSideMargins</tabstop>
   <tabstop>buttonSpacingLeft</tabstop>
+  <tabstop>titleAlignment</tabstop>
   <tabstop>buttonSpacingRight</tabstop>
   <tabstop>titlebarSideMargins_2</tabstop>
   <tabstop>titlebarTopBottomMargins_2</tabstop>
+  <tabstop>cornerRadius_4</tabstop>
+  <tabstop>cornerRadius_3</tabstop>
   <tabstop>percentMaximizedTopBottomMargins</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
