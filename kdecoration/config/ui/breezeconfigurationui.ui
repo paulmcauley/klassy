@@ -26,260 +26,284 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="tab_general">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <attribute name="title">
        <string>General</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0" colspan="2">
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
-           <verstretch>1</verstretch>
+           <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="title">
           <string>Button style</string>
          </property>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Button shape:   </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>buttonShape</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1" rowspan="2" colspan="2">
-           <widget class="QComboBox" name="buttonIconStyle">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>115</width>
-              <height>72</height>
-             </size>
-            </property>
-            <item>
-             <property name="text">
-              <string>  Classik</string>
-             </property>
-             <property name="icon">
-              <iconset resource="classikstylesdecoration_config.qrc">
-               <normaloff>:/classikstyles_config_icons/Classik.png</normaloff>:/classikstyles_config_icons/Classik.png</iconset>
-             </property>
+         <layout class="QVBoxLayout" name="verticalLayout_9">
+          <item>
+           <layout class="QGridLayout" name="gridLayout_7">
+            <item row="0" column="0" rowspan="2" alignment="Qt::AlignTop">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>
+Button icons:   </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>buttonIconStyle</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>  Kite</string>
-             </property>
-             <property name="icon">
-              <iconset resource="classikstylesdecoration_config.qrc">
-               <normaloff>:/classikstyles_config_icons/Kite.png</normaloff>:/classikstyles_config_icons/Kite.png</iconset>
-             </property>
+            <item row="1" column="5">
+             <widget class="QComboBox" name="boldButtonIcons">
+              <item>
+               <property name="text">
+                <string>Auto</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Bold</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Fine</string>
+               </property>
+              </item>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>  Oxygen/Breeze</string>
-             </property>
-             <property name="icon">
-              <iconset resource="classikstylesdecoration_config.qrc">
-               <normaloff>:/classikstyles_config_icons/Oxygen.png</normaloff>:/classikstyles_config_icons/Oxygen.png</iconset>
-             </property>
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
-            <item>
-             <property name="text">
-              <string>  Redmond</string>
-             </property>
-             <property name="icon">
-              <iconset resource="classikstylesdecoration_config.qrc">
-               <normaloff>:/classikstyles_config_icons/Redmond.png</normaloff>:/classikstyles_config_icons/Redmond.png</iconset>
-             </property>
+            <item row="0" column="1" rowspan="2" colspan="2">
+             <widget class="QComboBox" name="buttonIconStyle">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>115</width>
+                <height>72</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>  Classik</string>
+               </property>
+               <property name="icon">
+                <iconset resource="classikstylesdecoration_config.qrc">
+                 <normaloff>:/classikstyles_config_icons/Classik.png</normaloff>:/classikstyles_config_icons/Classik.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>  Kite</string>
+               </property>
+               <property name="icon">
+                <iconset resource="classikstylesdecoration_config.qrc">
+                 <normaloff>:/classikstyles_config_icons/Kite.png</normaloff>:/classikstyles_config_icons/Kite.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>  Oxygen/Breeze</string>
+               </property>
+               <property name="icon">
+                <iconset resource="classikstylesdecoration_config.qrc">
+                 <normaloff>:/classikstyles_config_icons/Oxygen.png</normaloff>:/classikstyles_config_icons/Oxygen.png</iconset>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>  Redmond</string>
+               </property>
+               <property name="icon">
+                <iconset resource="classikstylesdecoration_config.qrc">
+                 <normaloff>:/classikstyles_config_icons/Redmond.png</normaloff>:/classikstyles_config_icons/Redmond.png</iconset>
+               </property>
+              </item>
+             </widget>
             </item>
-           </widget>
-          </item>
-          <item row="4" column="0">
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Fixed</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>10</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="0" colspan="2">
-           <widget class="QCheckBox" name="outlineCloseButton">
-            <property name="text">
-             <string>Permanently highlight close button</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
-           <widget class="QCheckBox" name="redOutline">
-            <property name="text">
-             <string>Red highlight</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" rowspan="2">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Button icons:   </string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>buttonIconStyle</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="6">
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="3" column="1" colspan="2">
-           <widget class="QComboBox" name="buttonShape">
-            <item>
-             <property name="text">
-              <string>Circle</string>
-             </property>
+            <item row="1" column="4">
+             <widget class="QLabel" name="label_16">
+              <property name="text">
+               <string>Bold icons (for HiDPI):</string>
+              </property>
+              <property name="buddy">
+               <cstring>boldButtonIcons</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Full-sized Rectangle</string>
-             </property>
+            <item row="5" column="0" colspan="2">
+             <widget class="QCheckBox" name="outlineCloseButton">
+              <property name="text">
+               <string>Permanently highlight close button</string>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Square</string>
-             </property>
+            <item row="5" column="2">
+             <widget class="QCheckBox" name="redOutline">
+              <property name="text">
+               <string>Red highlight</string>
+              </property>
+             </widget>
             </item>
-           </widget>
-          </item>
-          <item row="2" column="5">
-           <widget class="QComboBox" name="boldButtonIcons">
-            <item>
-             <property name="text">
-              <string>Auto</string>
-             </property>
+            <item row="0" column="4">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Icon size:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>iconSize</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Bold</string>
-             </property>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>Button shape:   </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>buttonShape</cstring>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string>Fine</string>
-             </property>
+            <item row="2" column="1" colspan="2">
+             <widget class="QComboBox" name="buttonShape">
+              <item>
+               <property name="text">
+                <string>Circle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Full-sized Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Square</string>
+               </property>
+              </item>
+             </widget>
             </item>
-           </widget>
-          </item>
-          <item row="5" column="0" colspan="3">
-           <widget class="QCheckBox" name="inheritSystemHighlightColors">
-            <property name="text">
-             <string>Use system accent colours for button backgrounds</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>Bold icons (for HiDPI):</string>
-            </property>
-            <property name="buddy">
-             <cstring>boldButtonIcons</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Preferred</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="5">
-           <widget class="QComboBox" name="iconSize">
-            <item>
-             <property name="text">
-              <string>Tiny</string>
-             </property>
+            <item row="0" column="6">
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
-            <item>
-             <property name="text">
-              <string comment="@item:inlistbox Button size:">Small</string>
-             </property>
+            <item row="0" column="5">
+             <widget class="QComboBox" name="iconSize">
+              <item>
+               <property name="text">
+                <string>Tiny</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string comment="@item:inlistbox Button size:">Small</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string comment="@item:inlistbox Button size:">Medium</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string comment="@item:inlistbox Button size:">Large</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string comment="@item:inlistbox Button size:">Very Large</string>
+               </property>
+              </item>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string comment="@item:inlistbox Button size:">Medium</string>
-             </property>
+            <item row="4" column="0" colspan="7">
+             <widget class="QCheckBox" name="inheritSystemHighlightColors">
+              <property name="text">
+               <string>Use system accent colours for button backgrounds</string>
+              </property>
+             </widget>
             </item>
-            <item>
-             <property name="text">
-              <string comment="@item:inlistbox Button size:">Large</string>
-             </property>
+            <item row="3" column="1">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>10</height>
+               </size>
+              </property>
+             </spacer>
             </item>
-            <item>
-             <property name="text">
-              <string comment="@item:inlistbox Button size:">Very Large</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Icon size:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>iconSize</cstring>
-            </property>
-           </widget>
+           </layout>
           </item>
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Titlebar style</string>
@@ -302,7 +326,20 @@
          </layout>
         </widget>
        </item>
-       <item row="8" column="0" colspan="2">
+       <item>
+        <spacer name="verticalSpacer_11">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>Borders</string>
@@ -364,6 +401,21 @@
           <bool>false</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_6">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item>
            <widget class="QGroupBox" name="titlebar_groupbox">
             <property name="title">
@@ -513,31 +565,17 @@
                <property name="verticalSpacing">
                 <number>0</number>
                </property>
-               <item row="0" column="17" colspan="2">
-                <widget class="QLabel" name="label_11">
+               <item row="0" column="11" colspan="5">
+                <widget class="QLabel" name="label_7">
                  <property name="text">
-                  <string>Titlebar
-side margins:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                 </property>
-                 <property name="buddy">
-                  <cstring>titlebarSideMargins_2</cstring>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="4" colspan="2">
-                <widget class="QLabel" name="label_8">
-                 <property name="text">
-                  <string>Left-hand
+                  <string>Right-hand
 button spacing:</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
                  <property name="buddy">
-                  <cstring>buttonSpacingLeft</cstring>
+                  <cstring>buttonSpacingRight</cstring>
                  </property>
                 </widget>
                </item>
@@ -548,131 +586,13 @@ button spacing:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="4">
-                <spacer name="horizontalSpacer_25">
+               <item row="1" column="16">
+                <spacer name="horizontalSpacer_18">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeType">
                   <enum>QSizePolicy::Expanding</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="12" colspan="4">
-                <widget class="QSpinBox" name="buttonSpacingRight">
-                 <property name="suffix">
-                  <string/>
-                 </property>
-                 <property name="prefix">
-                  <string/>
-                 </property>
-                 <property name="maximum">
-                  <number>50</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="8">
-                <widget class="QComboBox" name="titleAlignment">
-                 <item>
-                  <property name="text">
-                   <string>Left</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Centre</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Centre (Full Width)</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>Right</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="1" colspan="2">
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="18">
-                <widget class="QSpinBox" name="titlebarSideMargins_2">
-                 <property name="enabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="maximum">
-                  <number>30</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="11">
-                <spacer name="horizontalSpacer_27">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Expanding</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="17">
-                <spacer name="horizontalSpacer_13">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeType">
-                  <enum>QSizePolicy::Expanding</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="1" column="5">
-                <widget class="QSpinBox" name="buttonSpacingLeft">
-                 <property name="suffix">
-                  <string/>
-                 </property>
-                 <property name="prefix">
-                  <string/>
-                 </property>
-                 <property name="maximum">
-                  <number>50</number>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="9">
-                <spacer name="horizontalSpacer_22">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -693,6 +613,61 @@ side margins:</string>
                  </property>
                  <property name="buddy">
                   <cstring>titlebarSideMargins</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="5">
+                <widget class="QSpinBox" name="buttonSpacingLeft">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="11">
+                <spacer name="horizontalSpacer_27">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1" colspan="2">
+                <spacer name="horizontalSpacer_4">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="7" colspan="3">
+                <widget class="QLabel" name="label_3">
+                 <property name="text">
+                  <string>Tit&amp;le alignment:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titleAlignment</cstring>
                  </property>
                 </widget>
                </item>
@@ -725,8 +700,18 @@ side margins:</string>
                  </property>
                 </spacer>
                </item>
-               <item row="1" column="16">
-                <spacer name="horizontalSpacer_18">
+               <item row="1" column="18">
+                <widget class="QSpinBox" name="titlebarSideMargins_2">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="maximum">
+                  <number>30</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <spacer name="horizontalSpacer_25">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
                  </property>
@@ -757,6 +742,60 @@ side margins:</string>
                  </property>
                 </spacer>
                </item>
+               <item row="0" column="17" colspan="2">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Titlebar
+side margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>titlebarSideMargins_2</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="4" colspan="2">
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Left-hand
+button spacing:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>buttonSpacingLeft</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="12" colspan="4">
+                <widget class="QSpinBox" name="buttonSpacingRight">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="9">
+                <spacer name="horizontalSpacer_22">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
                <item row="1" column="3">
                 <spacer name="horizontalSpacer_14">
                  <property name="orientation">
@@ -773,31 +812,44 @@ side margins:</string>
                  </property>
                 </spacer>
                </item>
-               <item row="0" column="11" colspan="5">
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>Right-hand
-button spacing:</string>
+               <item row="1" column="17">
+                <spacer name="horizontalSpacer_13">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Expanding</enum>
                  </property>
-                 <property name="buddy">
-                  <cstring>buttonSpacingRight</cstring>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>20</height>
+                  </size>
                  </property>
-                </widget>
+                </spacer>
                </item>
-               <item row="0" column="7" colspan="3">
-                <widget class="QLabel" name="label_3">
-                 <property name="text">
-                  <string>Tit&amp;le alignment:</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                 <property name="buddy">
-                  <cstring>titleAlignment</cstring>
-                 </property>
+               <item row="1" column="8">
+                <widget class="QComboBox" name="titleAlignment">
+                 <item>
+                  <property name="text">
+                   <string>Left</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Centre (Full Width)</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>Right</string>
+                  </property>
+                 </item>
                 </widget>
                </item>
               </layout>
