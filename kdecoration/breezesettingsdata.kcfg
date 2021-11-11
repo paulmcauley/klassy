@@ -52,13 +52,13 @@
     </entry>
     
     <!-- button highlight style -->
-    <entry name="ButtonHighlightStyle" type="Enum">
+    <entry name="ButtonShape" type="Enum">
       <choices>
-          <choice name="HighlightCircle" />
-          <choice name="HighlightFullSizedRectangle" />
-          <choice name="HighlightSquare" />
+          <choice name="ShapeCircle" />
+          <choice name="ShapeFullSizedRectangle" />
+          <choice name="ShapeSquare" />
       </choices>
-      <default>HighlightFullSizedRectangle</default>
+      <default>ShapeFullSizedRectangle</default>
     </entry>
     
     <!-- Inherit system highlight colors -->
@@ -109,15 +109,15 @@
     </entry>
 
     <!-- button size -->
-    <entry name="ButtonSize" type="Enum">
+    <entry name="IconSize" type="Enum">
       <choices>
-          <choice name="ButtonTiny" />
-          <choice name="ButtonSmall" />
-          <choice name="ButtonDefault" />
-          <choice name="ButtonLarge" />
-          <choice name="ButtonVeryLarge" />
+          <choice name="IconTiny" />
+          <choice name="IconSmall" />
+          <choice name="IconDefault" />
+          <choice name="IconLarge" />
+          <choice name="IconVeryLarge" />
       </choices>
-      <default>ButtonDefault</default>
+      <default>IconDefault</default>
     </entry>
     
     <!-- right button spacing -->

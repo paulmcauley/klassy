@@ -32,8 +32,8 @@ namespace Breeze
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonHighlightStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
@@ -112,8 +112,8 @@ namespace Breeze
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
-        m_ui.buttonHighlightStyle->setCurrentIndex( m_internalSettings->buttonHighlightStyle() );
-        m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
         m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
@@ -170,8 +170,8 @@ namespace Breeze
         // apply modifications from ui
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
         m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
-        m_internalSettings->setButtonHighlightStyle( m_ui.buttonHighlightStyle->currentIndex() );
-        m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
+        m_internalSettings->setButtonShape( m_ui.buttonShape->currentIndex() );
+        m_internalSettings->setIconSize( m_ui.iconSize->currentIndex() );
         m_internalSettings->setButtonSpacingRight( m_ui.buttonSpacingRight->value() );
         m_internalSettings->setButtonSpacingLeft( m_ui.buttonSpacingLeft->value() );
         m_internalSettings->setTitlebarTopBottomMargins( m_ui.titlebarTopBottomMargins->value() );
@@ -235,8 +235,8 @@ namespace Breeze
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
-        m_ui.buttonHighlightStyle->setCurrentIndex( m_internalSettings->buttonHighlightStyle() );
-        m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
         m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
@@ -285,8 +285,8 @@ namespace Breeze
         else if( m_ui.blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars()) modified = true;
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
-        else if( m_ui.buttonHighlightStyle->currentIndex() != m_internalSettings->buttonHighlightStyle() ) modified = true;
-        else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
+        else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
+        else if( m_ui.iconSize->currentIndex() != m_internalSettings->iconSize() ) modified = true;
         else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
         else if( m_ui.inheritSystemHighlightColors->isChecked() != m_internalSettings->inheritSystemHighlightColors() ) modified = true;
         else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;

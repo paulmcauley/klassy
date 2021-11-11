@@ -320,7 +320,7 @@ namespace Breeze
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
-        if( (m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle) && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
+        if( (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle) && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
         {
             width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             height = borderTop();
@@ -513,15 +513,15 @@ namespace Breeze
                 extBottom = extSize;
                 
                 //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-                if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) extTop = extSize; 
+                if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) extTop = extSize; 
             }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
             //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) extTop = extSize;
-        } else if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) {
+            if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) extTop = extSize;
+        } else if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) {
             
             extTop = extSize;
         }
@@ -555,7 +555,7 @@ namespace Breeze
         int fullSizedRectangleButtonIconHorizontalTranslation;
         int titleBarTopMargin = titleBarTopBottomMargins();
         
-        if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle )
+        if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle )
         {
             bHeight = borderTop();
             if( m_internalSettings->drawTitleBarSeparator() ) bHeight -= 1;
@@ -571,7 +571,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
         {
             
-            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) {
+            if ( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
                 fullSizedRectangleButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
             } else {
@@ -588,7 +588,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
         {
             
-            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) {
+            if ( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
                 fullSizedRectangleButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
             } else {
@@ -607,7 +607,7 @@ namespace Breeze
         {
 
             // spacing
-            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) {
+            if ( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) {
                 m_leftButtons->setSpacing( 0 );
             } else {
                 m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
@@ -615,7 +615,7 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) vPadding = 0;
+            if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
@@ -638,7 +638,7 @@ namespace Breeze
         if( !m_rightButtons->buttons().isEmpty() )
         {
             // spacing
-            if ( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) {
+            if ( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) {
                 m_rightButtons->setSpacing( 0 );
             } else {
                 m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
@@ -646,7 +646,7 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( m_internalSettings->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) vPadding = 0;
+            if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
@@ -833,14 +833,14 @@ namespace Breeze
     int Decoration::buttonHeight() const
     {
         const int baseSize = settings()->gridUnit();
-        switch( m_internalSettings->buttonSize() )
+        switch( m_internalSettings->iconSize() )
         {
-            case InternalSettings::ButtonTiny: return baseSize;
-            case InternalSettings::ButtonSmall: return baseSize*1.5;
+            case InternalSettings::IconTiny: return baseSize;
+            case InternalSettings::IconSmall: return baseSize*1.5;
             default:
-            case InternalSettings::ButtonDefault: return baseSize*2;
-            case InternalSettings::ButtonLarge: return baseSize*2.5;
-            case InternalSettings::ButtonVeryLarge: return baseSize*3.5;
+            case InternalSettings::IconDefault: return baseSize*2;
+            case InternalSettings::IconLarge: return baseSize*2.5;
+            case InternalSettings::IconVeryLarge: return baseSize*3.5;
         }
 
     }
