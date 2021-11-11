@@ -148,7 +148,7 @@ namespace Breeze
         {
             //draw a background only with Full-sized Rectangle highlight style; 
             //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-            if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) 
+            if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) 
                 paintFullSizedRectangleBackground(painter);
             
             // translate from offset
@@ -189,7 +189,7 @@ namespace Breeze
                 
         //draw a background only with Full-sized Rectangle highlight style; 
         //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightFullSizedRectangle ) 
+        if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) 
             paintFullSizedRectangleBackground(painter);
         
         // translate from offset
@@ -210,11 +210,11 @@ namespace Breeze
         
         
         // render background if Circle button highlight style
-        if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightCircle )
+        if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeCircle )
             paintCircleOrSquareBackground(painter, false);
         
         // render background if Square button highlight style
-        else if( d->internalSettings()->buttonHighlightStyle() == InternalSettings::EnumButtonHighlightStyle::HighlightSquare )
+        else if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSquare )
             paintCircleOrSquareBackground(painter, true);
         
         // render mark
