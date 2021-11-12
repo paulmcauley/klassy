@@ -56,6 +56,7 @@
       <choices>
           <choice name="ShapeCircle" />
           <choice name="ShapeFullSizedRectangle" />
+          <choice name="ShapeFullSizedRoundedRectangle" />
           <choice name="ShapeSquare" />
       </choices>
       <default>ShapeFullSizedRectangle</default>

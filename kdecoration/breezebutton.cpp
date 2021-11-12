@@ -148,8 +148,8 @@ namespace Breeze
         {
             //draw a background only with Full-sized Rectangle highlight style; 
             //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-            if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) 
-                paintFullSizedRectangleBackground(painter);
+            if( d->fullSizedButton() ) 
+                paintFullSizedButtonBackground(painter);
             
             // translate from offset
             if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
@@ -187,10 +187,9 @@ namespace Breeze
 
         auto d = qobject_cast<Decoration*>( decoration() );
                 
-        //draw a background only with Full-sized Rectangle highlight style; 
+        //draw a background only with Full-sized Rectangle button shape; 
         //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-        if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle ) 
-            paintFullSizedRectangleBackground(painter);
+        if( d->fullSizedButton() ) paintFullSizedButtonBackground(painter);
         
         // translate from offset
         if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
@@ -209,13 +208,8 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         
         
-        // render background if Circle button highlight style
-        if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeCircle )
-            paintCircleOrSquareBackground(painter, false);
-        
-        // render background if Square button highlight style
-        else if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSquare )
-            paintCircleOrSquareBackground(painter, true);
+        // render background if normal sized button shape
+        if( !d->fullSizedButton() ) paintNormalSizedButtonBackground(painter);
         
         // render mark
         if( m_foregroundColor.isValid() )
@@ -488,7 +482,7 @@ namespace Breeze
         return ( m_lowContrastBetweenTitleBarAndBackground );
     }
     
-    void Button::paintFullSizedRectangleBackground(QPainter* painter) const
+    void Button::paintFullSizedButtonBackground(QPainter* painter) const
     {
         auto d = qobject_cast<Decoration*>( decoration() );
         auto s = d->settings();
@@ -499,9 +493,9 @@ namespace Breeze
             painter->setRenderHints( QPainter::Antialiasing );
             painter->setBrush( m_backgroundColor );
             
-            
+            QRectF backgroundBoundingRect;
             QPainterPath background;
-            
+            backgroundBoundingRect = geometry();
             
             if( shouldDrawBackgroundStroke() )
             {   
@@ -510,12 +504,16 @@ namespace Breeze
                 painter->setPen(pen);
                 
                 //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
-                QRectF strokeRect = QRectF( geometry().left() + pen.width()+0.5, geometry().top() + pen.width(), geometry().width() - pen.width()*2-1, geometry().height() - pen.width()*2);
+                QRectF strokeRect = QRectF( backgroundBoundingRect.left() + pen.width()+0.5, backgroundBoundingRect.top() + pen.width(), backgroundBoundingRect.width() - pen.width()*2-1, backgroundBoundingRect.height() - pen.width()*2);
                 
-                background.addRect(strokeRect);
+                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                    background.addRoundedRect(strokeRect,d->scaledCornerRadius(),d->scaledCornerRadius());
+                else background.addRect(strokeRect);
             } else {
                 painter->setPen( Qt::NoPen );
-                background.addRect( geometry() );
+                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                    background.addRoundedRect(backgroundBoundingRect,d->scaledCornerRadius(),d->scaledCornerRadius());
+                else background.addRect( backgroundBoundingRect );
             }
             
             //clip the rounded corners using the windowPath
@@ -532,11 +530,12 @@ namespace Breeze
         
         
         //NB: if full-sized highlight, must add a translation due to larger geometry
-        painter->translate( m_fullSizedRectangleHighlightIconHorizontalTranslation, m_fullSizedRectangleHighlightIconVerticalTranslation );
+        painter->translate( m_fullSizedButtonIconHorizontalTranslation, m_fullSizedButtonIconVerticalTranslation );
     }
     
-    void Button::paintCircleOrSquareBackground(QPainter* painter, bool square) const
+    void Button::paintNormalSizedButtonBackground(QPainter* painter) const
     {
+        auto d = qobject_cast<Decoration*>( decoration() );
         
         if( m_backgroundColor.isValid() )
         {
@@ -549,7 +548,8 @@ namespace Breeze
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
             
-            if(square) painter->drawRect( QRectF( 0, 0, 18, 18 ) );
+            if(d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSquare)
+                painter->drawRect( QRectF( 0, 0, 18, 18 ) );
             else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
             
             painter->restore();
