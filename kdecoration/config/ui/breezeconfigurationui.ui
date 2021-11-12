@@ -579,8 +579,8 @@ Button icons:   </string>
                <item row="0" column="11" colspan="2">
                 <widget class="QLabel" name="label_7">
                  <property name="text">
-                  <string>Right-hand
-button spacing:</string>
+                  <string>Right-hand icons'
+horizontal spacing:</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -690,8 +690,8 @@ button spacing:</string>
                <item row="0" column="4" colspan="2">
                 <widget class="QLabel" name="label_8">
                  <property name="text">
-                  <string>Left-hand
-button spacing:</string>
+                  <string>Left-hand icons'
+horizontal spacing:</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
