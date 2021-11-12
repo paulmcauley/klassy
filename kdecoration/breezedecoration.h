@@ -94,6 +94,9 @@ namespace Breeze
         std::shared_ptr<QPainterPath> titleBarPath(){ return m_titleBarPath; }
         std::shared_ptr<QPainterPath> windowPath(){ return m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
+        bool fullSizedButton(){ return m_fullSizedButton; }
+        qreal scaledCornerRadius(){ return m_scaledCornerRadius; }
+        
         
 
         public Q_SLOTS:
@@ -172,6 +175,8 @@ namespace Breeze
         std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
         
         qreal m_systemScaleFactor = 1.0;
+        
+        bool m_fullSizedButton = false;
 
     };
 

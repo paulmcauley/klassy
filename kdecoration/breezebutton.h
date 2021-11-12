@@ -71,11 +71,11 @@ namespace Breeze
         void setIconSize( const QSize& value )
         { m_iconSize = value; }
         
-        void setFullSizedRectangleButtonIconVerticalTranslation( int value )
-        { m_fullSizedRectangleHighlightIconVerticalTranslation = value; }
+        void setFullSizedButtonIconVerticalTranslation( int value )
+        { m_fullSizedButtonIconVerticalTranslation = value; }
         
-        void setFullSizedRectangleButtonIconHorizontalTranslation( int value )
-        { m_fullSizedRectangleHighlightIconHorizontalTranslation = value; }
+        void setFullSizedButtonIconHorizontalTranslation( int value )
+        { m_fullSizedButtonIconHorizontalTranslation = value; }
 
         //*@name active state change animation
         //@{
@@ -122,14 +122,13 @@ namespace Breeze
         * @brief Paint the button background for the Full-sized Rectangle highlight style; NB: applies a translation at end due to different full-sized button geometries
         * @param painter Current QPainter object. NB: will be modified at end with a translation
         */
-        void paintFullSizedRectangleBackground( QPainter* painter ) const;
+        void paintFullSizedButtonBackground( QPainter* painter ) const;
         
         /**
         * @brief Paint the button background for the circle highlight style;
         * @param painter Current QPainter object
-        * @param square If true draws a square highlight, else draws a circle
         */
-        void paintCircleOrSquareBackground( QPainter* painter, bool square) const;
+        void paintNormalSizedButtonBackground( QPainter* painter) const;
         
         QColor m_foregroundColor;
         QColor m_backgroundColor;
@@ -149,8 +148,8 @@ namespace Breeze
         //* active state change opacity
         qreal m_opacity = 0;
         
-        int m_fullSizedRectangleHighlightIconVerticalTranslation = 0;
-        int m_fullSizedRectangleHighlightIconHorizontalTranslation = 0;
+        int m_fullSizedButtonIconVerticalTranslation = 0;
+        int m_fullSizedButtonIconHorizontalTranslation = 0;
         bool m_lowContrastBetweenTitleBarAndBackground = false;
         bool m_isGtkCsdButton;
         qreal m_devicePixelRatio = 1.0;
