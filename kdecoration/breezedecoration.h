@@ -10,6 +10,7 @@
 
 #include "breeze.h"
 #include "breezesettings.h"
+#include "colortools.h"
 
 #include <KDecoration2/Decoration>
 #include <KDecoration2/DecoratedClient>
@@ -96,6 +97,7 @@ namespace Breeze
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
         bool fullSizedButton(){ return m_fullSizedButton; }
         qreal scaledCornerRadius(){ return m_scaledCornerRadius; }
+        std::shared_ptr<SystemButtonColors> systemAccentColors(){ return m_systemAccentColors; }
         
         
 
@@ -124,6 +126,7 @@ namespace Breeze
         void updateShadow( const bool force = false );
         QSharedPointer<KDecoration2::DecorationShadow> createShadowObject( const float strengthScale );
         void setScaledCornerRadius();
+        void setSystemAccentColors();
         
         //*@name border size
         //@{
@@ -175,6 +178,8 @@ namespace Breeze
         std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
         
         qreal m_systemScaleFactor = 1.0;
+        
+        std::shared_ptr<SystemButtonColors> m_systemAccentColors;
         
         bool m_fullSizedButton = false;
 

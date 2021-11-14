@@ -133,11 +133,13 @@ namespace Breeze
 
         setDevicePixelRatio(painter);
         setShouldDrawBoldButtonIcons();
+        
         m_backgroundColor = this->backgroundColor();
         m_foregroundColor = this->foregroundColor();
-        m_outlineColor = this->outlineColor();
         
-        m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->inheritSystemHighlightColors() && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
+        m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
+        
+        m_outlineColor = this->outlineColor();
         
         painter->save();
         
@@ -309,15 +311,15 @@ namespace Breeze
         
         if( isPressed() ) {
             if( type() == DecorationButtonType::Close ) return Qt::GlobalColor::white;
-            else if( d->internalSettings()->inheritSystemHighlightColors() ) {
+            else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) {
                 return higherContrastFontColor;
             }
             else return d->titleBarColor();
             
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
-            if( d->internalSettings()->inheritSystemHighlightColors() ) return higherContrastFontColor;
+            if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return higherContrastFontColor;
             else return d->titleBarColor();
-        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && d->internalSettings()->inheritSystemHighlightColors() ){
+        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ){
             return higherContrastFontColor;
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             if( type() == DecorationButtonType::Close ){
@@ -327,12 +329,12 @@ namespace Breeze
                     return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
                 }
             }
-            else if( d->internalSettings()->inheritSystemHighlightColors() ) return KColorUtils::mix (d->fontColor(), higherContrastFontColor, m_opacity);
+            else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return KColorUtils::mix (d->fontColor(), higherContrastFontColor, m_opacity);
             else return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
             
         } else if( isHovered() ) {
             if( type() == DecorationButtonType::Close ) return Qt::GlobalColor::white;
-            else if( d->internalSettings()->inheritSystemHighlightColors()) return higherContrastFontColor;
+            else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return higherContrastFontColor;
             else return d->titleBarColor();    
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
             return d->titleBarColor();
@@ -355,30 +357,29 @@ namespace Breeze
         }
 
         auto c = d->client().toStrongRef().data();
-        QColor redColor( c->color( ColorGroup::Warning, ColorRole::Foreground ) );
-        QColor redColorSaturated = ColorTools::getDifferentiatedSaturatedColor(redColor);
         
         QColor buttonHoverColor;
         QColor buttonFocusColor;
         
         //set hover and focus colours
-        if( d->internalSettings()->inheritSystemHighlightColors() ){
+        if( d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
             if( type() == DecorationButtonType::Close ) { 
-                buttonHoverColor = redColor; 
-                buttonFocusColor = redColorSaturated;
-            }
-            else {
-                KStatefulBrush buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::FocusColor );
-                KStatefulBrush buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::HoverColor );
-                buttonFocusColor = buttonFocusStatefulBrush.brush( c->palette() ).color();
-                buttonHoverColor = buttonHoverStatefulBrush.brush( c->palette() ).color();
-                
-                if(buttonFocusColor == buttonHoverColor) buttonHoverColor = ColorTools::getDifferentiatedLessSaturatedColor(buttonHoverColor);
+                buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                buttonHoverColor = d->systemAccentColors()->negative;
+            } else if ( type() == DecorationButtonType::Minimize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
+                buttonFocusColor = d->systemAccentColors()->neutral;
+                buttonHoverColor = d->systemAccentColors()->neutralLessSaturated;
+            } else if ( type() == DecorationButtonType::Maximize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
+                buttonFocusColor = d->systemAccentColors()->positive;
+                buttonHoverColor = d->systemAccentColors()->positiveLessSaturated;
+            } else {
+                buttonFocusColor = d->systemAccentColors()->buttonFocus;
+                buttonHoverColor = d->systemAccentColors()->buttonHover;
             }
         } else {
             if( type() == DecorationButtonType::Close ) { 
-                buttonHoverColor = redColor;
-                buttonFocusColor = redColorSaturated;
+                buttonHoverColor = d->systemAccentColors()->negative;
+                buttonFocusColor = d->systemAccentColors()->negativeSaturated;
             } else {
                 buttonFocusColor = KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
                 buttonHoverColor = d->fontColor();
@@ -389,10 +390,10 @@ namespace Breeze
             return buttonFocusColor;
 
         } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade ) && isChecked() ) {
-            if( d->internalSettings()->inheritSystemHighlightColors() ) return buttonFocusColor;
+            if( d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ) return buttonFocusColor;
             else return buttonHoverColor;
         
-        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && d->internalSettings()->inheritSystemHighlightColors() ){
+        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) ){
             return buttonFocusColor;
         }else if( m_animation->state() == QAbstractAnimation::Running ) {
 
@@ -442,14 +443,55 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         
-        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade || type() == DecorationButtonType::OnAllDesktops) ) ) {
-            return d->fontColor();
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
-            QColor color( d->fontColor() );
-            color.setAlpha( color.alpha()*m_opacity );
-            return color;
+        auto c = d->client().toStrongRef().data();
+        
+        QColor buttonFocusColor;
+        //set hover and focus colours
+        if( d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
+            if( type() == DecorationButtonType::Close ) { 
+                buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+            } else if ( type() == DecorationButtonType::Minimize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
+                buttonFocusColor = d->systemAccentColors()->neutral;
+            } else if ( type() == DecorationButtonType::Maximize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
+                buttonFocusColor = d->systemAccentColors()->positive;
+            } else {
+                buttonFocusColor = d->systemAccentColors()->buttonFocus;
+            }
         } else {
-            return d->fontColor();
+            if( type() == DecorationButtonType::Close ) { 
+                buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+            } else {
+                buttonFocusColor = KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+            }
+        }
+        
+        if( m_lowContrastBetweenTitleBarAndBackground && m_backgroundColor == buttonFocusColor )
+            buttonFocusColor = d->fontColor();
+        
+        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade || type() == DecorationButtonType::OnAllDesktops) ) ) {
+            return buttonFocusColor;
+        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+                if( !( d->internalSettings()->redOutline() && c->isActive() ) ) return KColorUtils::mix( KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 ), buttonFocusColor, m_opacity );
+                else return buttonFocusColor;
+            }
+            else {
+                QColor color( buttonFocusColor );
+                color.setAlpha( color.alpha()*m_opacity );
+                return color;
+            }
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+            if( d->internalSettings()->redOutline() ) {
+                if( c->isActive() ) return buttonFocusColor;
+                else if( isHovered() ){ 
+                     return buttonFocusColor;
+                } else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+            } else if( isHovered() ){
+                return buttonFocusColor;
+            } else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+
+        } else {
+            return buttonFocusColor;
         }
 
     }
@@ -481,7 +523,9 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>(decoration());
         if(!d) return false;
         
-        return ( m_lowContrastBetweenTitleBarAndBackground );
+        if ( d->internalSettings()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline )
+            return true;
+        else return ( m_lowContrastBetweenTitleBarAndBackground );
     }
     
     void Button::paintFullSizedButtonBackground(QPainter* painter) const

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>740</width>
-    <height>670</height>
+    <width>791</width>
+    <height>807</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -37,7 +37,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <item>
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="button_groupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -45,59 +45,30 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Button style</string>
+          <string>Button style and behaviour</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_9">
           <item>
            <layout class="QGridLayout" name="gridLayout_7">
-            <item row="0" column="0" rowspan="2" alignment="Qt::AlignTop">
-             <widget class="QLabel" name="label_6">
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_9">
               <property name="text">
-               <string>
-Button icons:   </string>
+               <string>&amp;Shape:   </string>
               </property>
               <property name="alignment">
                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
               <property name="buddy">
-               <cstring>buttonIconStyle</cstring>
+               <cstring>buttonShape</cstring>
               </property>
              </widget>
             </item>
-            <item row="1" column="5">
-             <widget class="QComboBox" name="boldButtonIcons">
-              <item>
-               <property name="text">
-                <string>Auto</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Bold</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Fine</string>
-               </property>
-              </item>
+            <item row="8" column="4">
+             <widget class="QCheckBox" name="redOutline">
+              <property name="text">
+               <string>&amp;Red highlight</string>
+              </property>
              </widget>
-            </item>
-            <item row="0" column="3">
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeType">
-               <enum>QSizePolicy::Preferred</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
             <item row="0" column="1" rowspan="2" colspan="2">
              <widget class="QComboBox" name="buttonIconStyle">
@@ -151,80 +122,6 @@ Button icons:   </string>
               </item>
              </widget>
             </item>
-            <item row="1" column="4">
-             <widget class="QLabel" name="label_16">
-              <property name="text">
-               <string>Bold icons (for HiDPI):</string>
-              </property>
-              <property name="buddy">
-               <cstring>boldButtonIcons</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
-             <widget class="QCheckBox" name="outlineCloseButton">
-              <property name="text">
-               <string>Permanently highlight close button</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="2">
-             <widget class="QCheckBox" name="redOutline">
-              <property name="text">
-               <string>Red highlight</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Icon size:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>iconSize</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_9">
-              <property name="text">
-               <string>Button shape:   </string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>buttonShape</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="1" colspan="2">
-             <widget class="QComboBox" name="buttonShape">
-              <item>
-               <property name="text">
-                <string>Circle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Full-sized Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Full-sized Rounded Rectangle</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Square</string>
-               </property>
-              </item>
-             </widget>
-            </item>
             <item row="0" column="6">
              <spacer name="horizontalSpacer">
               <property name="orientation">
@@ -232,11 +129,210 @@ Button icons:   </string>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
-                <width>40</width>
+                <width>10</width>
                 <height>20</height>
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_22">
+              <property name="text">
+               <string>Background colours:  </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>backgroundColors</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1" colspan="2">
+             <widget class="QComboBox" name="backgroundColors">
+              <item>
+               <property name="text">
+                <string>Titlebar text colour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Accent colours</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Accent colours with traffic lights</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="8" column="1" colspan="2">
+             <widget class="QCheckBox" name="outlineCloseButton">
+              <property name="text">
+               <string>Permanently highlight close button</string>
+              </property>
+             </widget>
+            </item>
+            <item row="7" column="0" colspan="7">
+             <widget class="QStackedWidget" name="stackedWidget">
+              <property name="inputMethodHints">
+               <set>Qt::ImhNone</set>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="lineWidth">
+               <number>0</number>
+              </property>
+              <property name="midLineWidth">
+               <number>0</number>
+              </property>
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="page_always_show_icon">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_26">
+                  <property name="minimumSize">
+                   <size>
+                    <width>133</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string>&amp;Highlight using:  </string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>alwaysShowIconHighlightUsing</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="alwaysShowIconHighlightUsing">
+                  <item>
+                   <property name="text">
+                    <string>Background</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Background and outline</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_19">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_always_show_icon_and_outline">
+               <layout class="QVBoxLayout" name="verticalLayout_11">
+                <item>
+                 <widget class="QComboBox" name="alwaysShowIconAndOutlineHighlightUsing">
+                  <item>
+                   <property name="text">
+                    <string>Background</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Background and different outline colour</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_always_show_icon_and_background">
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QComboBox" name="alwaysShowIconAndBackgroundHighlightUsing">
+                  <item>
+                   <property name="text">
+                    <string>Outline</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_always_show_background">
+               <layout class="QVBoxLayout" name="verticalLayout_13">
+                <item>
+                 <widget class="QComboBox" name="alwaysShowBackgroundHighlightUsing">
+                  <property name="frame">
+                   <bool>true</bool>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Icon</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Icon and outline</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+            <item row="6" column="1">
+             <widget class="QComboBox" name="alwaysShow">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <item>
+               <property name="text">
+                <string>Icon</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Icon and outline</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Icon and background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+             </widget>
             </item>
             <item row="0" column="5">
              <widget class="QComboBox" name="iconSize">
@@ -267,14 +363,113 @@ Button icons:   </string>
               </item>
              </widget>
             </item>
-            <item row="4" column="0" colspan="7">
-             <widget class="QCheckBox" name="inheritSystemHighlightColors">
+            <item row="0" column="3">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="4">
+             <widget class="QLabel" name="label_16">
               <property name="text">
-               <string>Use system accent colours for button backgrounds</string>
+               <string>&amp;Bold icons (for HiDPI):</string>
+              </property>
+              <property name="buddy">
+               <cstring>boldButtonIcons</cstring>
               </property>
              </widget>
             </item>
-            <item row="3" column="1">
+            <item row="0" column="0" rowspan="2" alignment="Qt::AlignTop">
+             <widget class="QLabel" name="label_6">
+              <property name="text">
+               <string>
+Icons:   </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>buttonIconStyle</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="5" column="1">
+             <spacer name="verticalSpacer_12">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>10</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="3" column="1" colspan="2">
+             <widget class="QComboBox" name="buttonShape">
+              <item>
+               <property name="text">
+                <string>Circle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Full-sized Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Full-sized Rounded Rectangle</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Square</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="6" column="0">
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>Always show:  </string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>alwaysShow</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4">
+             <widget class="QLabel" name="label_4">
+              <property name="text">
+               <string>Icon si&amp;ze:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>iconSize</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
              <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
@@ -289,6 +484,25 @@ Button icons:   </string>
                </size>
               </property>
              </spacer>
+            </item>
+            <item row="1" column="5">
+             <widget class="QComboBox" name="boldButtonIcons">
+              <item>
+               <property name="text">
+                <string>Auto</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Bold</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Fine</string>
+               </property>
+              </item>
+             </widget>
             </item>
            </layout>
           </item>
@@ -309,7 +523,7 @@ Button icons:   </string>
         </spacer>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_2">
+        <widget class="QGroupBox" name="titlebar_groupBox">
          <property name="title">
           <string>Titlebar style</string>
          </property>
@@ -317,7 +531,7 @@ Button icons:   </string>
           <item>
            <widget class="QCheckBox" name="drawBackgroundGradient">
             <property name="text">
-             <string>Draw titlebar background gradient</string>
+             <string>Draw titlebar background &amp;gradient</string>
             </property>
            </widget>
           </item>
@@ -345,7 +559,7 @@ Button icons:   </string>
         </spacer>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_3">
+        <widget class="QGroupBox" name="borders_groupBox">
          <property name="title">
           <string>Borders</string>
          </property>
@@ -378,7 +592,7 @@ Button icons:   </string>
      </widget>
      <widget class="QWidget" name="tab_alignment_spacing">
       <attribute name="title">
-       <string>Alignment &amp;&amp; Spacing</string>
+       <string>Alignment &amp;&amp; S&amp;pacing</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="1" column="0">
@@ -624,6 +838,9 @@ horizontal spacing:</string>
                  <property name="enabled">
                   <bool>true</bool>
                  </property>
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
                  <property name="maximum">
                   <number>30</number>
                  </property>
@@ -783,6 +1000,9 @@ side margins:</string>
                </item>
                <item row="1" column="0">
                 <widget class="QSpinBox" name="titlebarSideMargins">
+                 <property name="minimum">
+                  <number>0</number>
+                 </property>
                  <property name="maximum">
                   <number>30</number>
                  </property>
@@ -1148,7 +1368,7 @@ side margins:</string>
      </widget>
      <widget class="QWidget" name="tab_animations">
       <attribute name="title">
-       <string>Animations</string>
+       <string>&amp;Animations</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_12">
        <item row="5" column="0">
@@ -1811,7 +2031,12 @@ side margins:</string>
   <tabstop>iconSize</tabstop>
   <tabstop>boldButtonIcons</tabstop>
   <tabstop>buttonShape</tabstop>
-  <tabstop>inheritSystemHighlightColors</tabstop>
+  <tabstop>backgroundColors</tabstop>
+  <tabstop>alwaysShow</tabstop>
+  <tabstop>alwaysShowIconHighlightUsing</tabstop>
+  <tabstop>alwaysShowIconAndOutlineHighlightUsing</tabstop>
+  <tabstop>alwaysShowIconAndBackgroundHighlightUsing</tabstop>
+  <tabstop>alwaysShowBackgroundHighlightUsing</tabstop>
   <tabstop>outlineCloseButton</tabstop>
   <tabstop>redOutline</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>

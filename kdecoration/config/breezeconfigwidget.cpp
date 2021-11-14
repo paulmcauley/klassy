@@ -33,6 +33,8 @@ namespace Breeze
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -43,7 +45,6 @@ namespace Breeze
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.inheritSystemHighlightColors, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -113,6 +114,8 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
+        m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
@@ -129,7 +132,6 @@ namespace Breeze
         setEnabledTransparentTitlebarOptions();
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         setEnabledRedOutline();
         m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
@@ -171,6 +173,8 @@ namespace Breeze
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
         m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
         m_internalSettings->setButtonShape( m_ui.buttonShape->currentIndex() );
+        m_internalSettings->setBackgroundColors( m_ui.backgroundColors->currentIndex() );
+        m_internalSettings->setAlwaysShowIconHighlightUsing( m_ui.alwaysShowIconHighlightUsing->currentIndex() );
         m_internalSettings->setIconSize( m_ui.iconSize->currentIndex() );
         m_internalSettings->setButtonSpacingRight( m_ui.buttonSpacingRight->value() );
         m_internalSettings->setButtonSpacingLeft( m_ui.buttonSpacingLeft->value() );
@@ -181,7 +185,6 @@ namespace Breeze
         m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
         m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
         m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->currentIndex() );
-        m_internalSettings->setInheritSystemHighlightColors( m_ui.inheritSystemHighlightColors->isChecked() );
         m_internalSettings->setOutlineCloseButton( m_ui.outlineCloseButton->isChecked() );
         m_internalSettings->setRedOutline( m_ui.redOutline->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
@@ -236,6 +239,8 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
+        m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
@@ -247,7 +252,6 @@ namespace Breeze
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         setEnabledTransparentTitlebarOptions();
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.inheritSystemHighlightColors->setChecked( m_internalSettings->inheritSystemHighlightColors() );
         m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
         setEnabledRedOutline();
         m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
@@ -286,9 +290,10 @@ namespace Breeze
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
+        else if( m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors() ) modified = true;
+        else if( m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing() ) modified = true;
         else if( m_ui.iconSize->currentIndex() != m_internalSettings->iconSize() ) modified = true;
         else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
-        else if( m_ui.inheritSystemHighlightColors->isChecked() != m_internalSettings->inheritSystemHighlightColors() ) modified = true;
         else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;
         else if( m_ui.redOutline->isChecked() != m_internalSettings->redOutline() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;

@@ -1,7 +1,7 @@
 ################# dependencies #################
 ### Qt/KDE
 find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
-find_package(KF5 REQUIRED COMPONENTS Config GuiAddons)
+find_package(KF5 REQUIRED COMPONENTS Config GuiAddons ConfigWidgets)
 
 ################# breezestyle target #################
 set(breezecommon_LIB_SRCS
@@ -29,7 +29,8 @@ target_link_libraries(classikstylescommon5
         
         KF5::GuiAddons
         KF5::ConfigCore
-        KF5::ConfigGui)
+        KF5::ConfigGui
+        KF5::ConfigWidgets)
 
 set_target_properties(classikstylescommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}
