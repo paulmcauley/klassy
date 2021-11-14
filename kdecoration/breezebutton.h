@@ -125,7 +125,7 @@ namespace Breeze
         void paintFullSizedButtonBackground( QPainter* painter ) const;
         
         /**
-        * @brief Paint the button background for the circle highlight style;
+        * @brief Paint the button background for the circle highlight style as originally done in Breeze;
         * @param painter Current QPainter object
         */
         void paintNormalSizedButtonBackground( QPainter* painter) const;

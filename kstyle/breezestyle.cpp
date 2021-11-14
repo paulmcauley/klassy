@@ -49,6 +49,7 @@
 #include <QTreeView>
 #include <QWidgetAction>
 #include <QMdiArea>
+#include <memory>
 
 #if BREEZE_HAVE_QTQUICK
 #include <QQuickWindow>
@@ -7173,39 +7174,78 @@ namespace Breeze
         else palette = QApplication::palette();
 
         const bool isOutlinedCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->outlineCloseButton() );
+        const bool withTrafficLights( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights );
 
         palette.setCurrentColorGroup( QPalette::Active );
-        const QColor redColor = _helper->negativeText( palette );
-        const QColor saturatedRedColor = ColorTools::getDifferentiatedSaturatedColor(redColor);
+        
+        std::shared_ptr<SystemButtonColors> systemAccentColors = ColorTools::getSystemButtonColors( palette );
+        
         const QColor base( palette.color( QPalette::WindowText ) );
         const QColor selected( palette.color( QPalette::HighlightedText ) );
         
-        const QColor offNegative( buttonType == ButtonClose ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor onNegative( buttonType == ButtonClose ? saturatedRedColor : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 ) );
-        const QColor onNegativeSelected( buttonType == ButtonClose ? saturatedRedColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.7 ) );
+        const QColor offNegative( buttonType == ButtonClose ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor onNegative( buttonType == ButtonClose ? systemAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 ) );
+        const QColor onNegativeSelected( buttonType == ButtonClose ? systemAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.7 ) );
         QColor offNegativeSelected; //used for MDI window titlebars
         if( isOutlinedCloseButton ){
-            offNegativeSelected = _helper->decorationConfig()->redOutline() ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
+            offNegativeSelected = _helper->decorationConfig()->redOutline() ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
         } else offNegativeSelected = KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
         
-        //Colours used if Inherit system highlight colours is selected
-        const QColor onNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 ) );
-        const QColor offNegativeForegroundInheritSystemHighlight( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.5 ) );
-        const QColor backgroundFocusInheritSystemHighlight( _helper->buttonFocusColor(palette) );
+        //Colours used if Accent colours is selected
+        const QColor onNegativeForegroundAccent( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 ) );
+        const QColor offNegativeForegroundAccent( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.5 ) );
+        const QColor backgroundFocusAccent( _helper->buttonFocusColor(palette) );
         
         QColor buttonHoverColor = _helper->buttonHoverColor(palette);
-        if(_helper->buttonFocusColor(palette) == buttonHoverColor) buttonHoverColor = ColorTools::getDifferentiatedLessSaturatedColor(buttonHoverColor);
-        const QColor negativeBackgroundHoverInheritSystemHighlight( buttonType == ButtonClose ? redColor:buttonHoverColor );
         
-        const QColor negativeBackgroundFocusInheritSystemHighlight( buttonType == ButtonClose ? saturatedRedColor:backgroundFocusInheritSystemHighlight ); 
-        const QColor offInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor disabledInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
-        const QColor offInvertedNormalStateBackgroundInheritSystemHighlight( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor disabledInvertedNormalStateBackgroundInheritSystemHighlight( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
+        QColor negativeBackgroundHoverAccent;
+        switch ( buttonType ) {
+            case ButtonClose:
+                negativeBackgroundHoverAccent = systemAccentColors->negative;
+                break;
+            case ButtonMaximize:
+            case ButtonRestore:
+                if( withTrafficLights ){
+                    negativeBackgroundHoverAccent =  systemAccentColors->positiveLessSaturated;
+                    break;
+                }
+            case ButtonMinimize:
+                if( withTrafficLights ){
+                    negativeBackgroundHoverAccent =  systemAccentColors->neutralLessSaturated;
+                    break;
+                }
+            default:
+                negativeBackgroundHoverAccent = buttonHoverColor;
+        }
+         
+        QColor negativeBackgroundFocusAccent;
+        switch ( buttonType ) {
+            case ButtonClose:
+                negativeBackgroundFocusAccent = systemAccentColors->negativeSaturated;
+                break;
+            case ButtonMaximize:
+            case ButtonRestore:
+                if( withTrafficLights ){
+                    negativeBackgroundFocusAccent =  systemAccentColors->positive;
+                    break;
+                }
+            case ButtonMinimize:
+                if( withTrafficLights ){
+                    negativeBackgroundFocusAccent =  systemAccentColors->neutral;
+                    break;
+                }
+            default:
+                negativeBackgroundFocusAccent = backgroundFocusAccent;
+        }
+        
+        const QColor offInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor disabledInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
+        const QColor offInvertedNormalStateBackgroundAccent( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
+        const QColor disabledInvertedNormalStateBackgroundAccent( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
         
         //used for MDI window titlebars
-        const QColor offNegativeSelectedInvertedNormalStateBackgroundInheritSystemHighlight( _helper->decorationConfig()->redOutline() ? redColor : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ) );
-        const QColor offNegativeSelectedInvertedNormalStateForegroundInheritSystemHighlight( isOutlinedCloseButton ? _helper->titleBarColor( true ) : _helper->titleBarTextColor( true ) );
+        const QColor offNegativeSelectedInvertedNormalStateBackgroundAccent( _helper->decorationConfig()->redOutline() ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ) );
+        const QColor offNegativeSelectedInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? _helper->titleBarColor( true ) : _helper->titleBarTextColor( true ) );
         
 
 
@@ -7220,7 +7260,7 @@ namespace Breeze
             QIcon::State _state;
         };
         
-        struct IconDataInheritSystemHighlightColors
+        struct IconDataAccentColors
         {
             QColor _foregroundColor;
             bool _paintBackground;
@@ -7248,19 +7288,19 @@ namespace Breeze
 
         };
         
-        const QList<IconDataInheritSystemHighlightColors> iconTypesInheritSystemHighlightColors =
+        const QList<IconDataAccentColors> iconTypesAccentColors =
         {
             // state off icons
-            { offInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, offInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Normal, QIcon::Off },
-            { offNegativeSelectedInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, offNegativeSelectedInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Selected, QIcon::Off },
-            { offNegativeForegroundInheritSystemHighlight, true, negativeBackgroundHoverInheritSystemHighlight, QIcon::Active, QIcon::Off },
-            { disabledInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, disabledInvertedNormalStateBackgroundInheritSystemHighlight, QIcon::Disabled, QIcon::Off },
+            { offInvertedNormalStateForegroundAccent, invertNormalState, offInvertedNormalStateBackgroundAccent, QIcon::Normal, QIcon::Off },
+            { offNegativeSelectedInvertedNormalStateForegroundAccent, invertNormalState, offNegativeSelectedInvertedNormalStateBackgroundAccent, QIcon::Selected, QIcon::Off },
+            { offNegativeForegroundAccent, true, negativeBackgroundHoverAccent, QIcon::Active, QIcon::Off },
+            { disabledInvertedNormalStateForegroundAccent, invertNormalState, disabledInvertedNormalStateBackgroundAccent, QIcon::Disabled, QIcon::Off },
 
             // state on icons
-            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Normal, QIcon::On },
-            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Selected, QIcon::On },
-            { onNegativeForegroundInheritSystemHighlight, true, negativeBackgroundFocusInheritSystemHighlight, QIcon::Active, QIcon::On },
-            { disabledInvertedNormalStateForegroundInheritSystemHighlight, invertNormalState, disabledInvertedNormalStateBackgroundInheritSystemHighlight , QIcon::Disabled, QIcon::On }
+            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Normal, QIcon::On },
+            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Selected, QIcon::On },
+            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Active, QIcon::On },
+            { disabledInvertedNormalStateForegroundAccent, invertNormalState, disabledInvertedNormalStateBackgroundAccent , QIcon::Disabled, QIcon::On }
         
         };
 
@@ -7270,8 +7310,8 @@ namespace Breeze
         // output icon
         QIcon icon;
         
-        if( _helper->decorationConfig()->inheritSystemHighlightColors() ) {
-            foreach( const IconDataInheritSystemHighlightColors& iconData, iconTypesInheritSystemHighlightColors )
+        if( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ) {
+            foreach( const IconDataAccentColors& iconData, iconTypesAccentColors )
             {
 
                 foreach( const int& iconSize, iconSizes )

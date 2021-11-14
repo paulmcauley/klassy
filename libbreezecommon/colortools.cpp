@@ -10,6 +10,48 @@
 
 namespace Breeze
 {
+    std::shared_ptr<SystemButtonColors> ColorTools::getSystemButtonColors( const QPalette & palette )
+    {
+        
+        std::shared_ptr<SystemButtonColors> colors = std::make_shared<SystemButtonColors>();
+        
+        KStatefulBrush buttonFocusStatefulBrush;
+        KStatefulBrush buttonHoverStatefulBrush;
+        
+        buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NegativeText );
+        colors->negative = buttonFocusStatefulBrush.brush( palette ).color();
+        //this was too pale
+        //buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NegativeBackground );
+        //colors.negativeBackground = buttonHoverStatefulBrush.brush( palette ).color();
+        colors->negativeLessSaturated = getDifferentiatedLessSaturatedColor(colors->negative);
+        colors->negativeSaturated = getDifferentiatedSaturatedColor(colors->negative);
+        
+        buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NeutralText );
+        colors->neutral = buttonFocusStatefulBrush.brush( palette ).color();
+        //this was too pale
+        //buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NeutralBackground );
+        //colors.neutralLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
+        colors->neutralLessSaturated = getDifferentiatedLessSaturatedColor(colors->neutral);
+        
+        buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::PositiveText );
+        colors->positive = buttonFocusStatefulBrush.brush( palette ).color();
+        //this was too pale
+        //buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::PositiveBackground );
+        //colors.positiveLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
+        colors->positiveLessSaturated = getDifferentiatedLessSaturatedColor(colors->positive);
+        
+        
+        buttonFocusStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::FocusColor );
+        colors->buttonFocus = buttonFocusStatefulBrush.brush( palette ).color();
+        buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::HoverColor );
+        colors->buttonHover = buttonHoverStatefulBrush.brush( palette ).color();
+        
+        //this is required as the accent colours feature sets these the same
+        if( colors->buttonFocus == colors->buttonHover ) colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonHover);
+        
+        return colors;
+    }
+    
     QColor ColorTools::getDifferentiatedSaturatedColor( const QColor& inputColor )
     {
         int colorHsv[3];

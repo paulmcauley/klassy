@@ -303,6 +303,7 @@ namespace Breeze
         connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
         
         connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::forceUpdateShadow);
+        connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::reconfigure);
 
         createButtons();
         updateShadow();
@@ -427,6 +428,7 @@ namespace Breeze
         
         setScaledCornerRadius();
         updateBlur();
+        setSystemAccentColors();
         
         if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle
             || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle
@@ -933,14 +935,14 @@ namespace Breeze
             return;
         }
                 
-        if ( g_shadowSizeEnum != m_internalSettings->shadowSize()
+        if ( force
+                || g_shadowSizeEnum != m_internalSettings->shadowSize()
                 || g_shadowStrength != m_internalSettings->shadowStrength()
                 || g_shadowColor != m_internalSettings->shadowColor()
                 || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
                 || g_hasNoBorders != hasNoBorders() 
                 || g_contrastingWindowOutline != m_internalSettings->contrastingWindowOutline()
-                || force )
-        {
+        ){
             g_sShadow.clear();
             g_sShadowInactive.clear();
             g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1176,6 +1178,15 @@ namespace Breeze
         //disable blur if the titlebar is opaque
         if( (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized() ) || !m_internalSettings->blurTransparentTitlebars() || titleBarOpacity == 100 ) setOpaque(true);
         else setOpaque(false); 
+    }
+    
+    void Decoration::setSystemAccentColors()
+    {       
+        // access client
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        m_systemAccentColors = ColorTools::getSystemButtonColors( c->palette() );
     }
 
 } // namespace

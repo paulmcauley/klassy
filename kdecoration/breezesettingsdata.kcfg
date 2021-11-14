@@ -62,13 +62,25 @@
       <default>ShapeFullSizedRectangle</default>
     </entry>
     
-    <!-- Inherit system highlight colors -->
-    <entry name="InheritSystemHighlightColors" type = "Bool">
-        <default>true</default>
+    <!-- background colors -->
+    <entry name="BackgroundColors" type="Enum">
+        <choices>
+            <choice name="ColorsTitlebarText" />
+            <choice name="ColorsAccent" />
+            <choice name="ColorsAccentWithTrafficLights" />
+        </choices>
+        <default>ColorsAccent</default>
     </entry>
     
+    <!-- Always show icon highlight using -->
+    <entry name="AlwaysShowIconHighlightUsing" type="Enum">
+        <choices>
+            <choice name="AlwaysShowIconHighlightUsingBackground" />
+            <choice name="AlwaysShowIconHighlightUsingBackgroundAndOutline" />
+        </choices>
+        <default>AlwaysShowIconHighlightUsingBackgroundAndOutline</default>
+    </entry>
     
-
   </group>
 
   <group name="Windeco">

@@ -10,9 +10,24 @@
 #include "breezecommon_export.h"
 
 #include <QColor>
+#include <KColorScheme>
+#include <memory>
 
 namespace Breeze
 {
+    
+    struct BREEZECOMMON_EXPORT SystemButtonColors {
+        QColor buttonFocus;
+        QColor buttonHover;
+        QColor negative;
+        QColor negativeLessSaturated;
+        QColor negativeSaturated;
+        QColor neutral;
+        QColor neutralLessSaturated;
+        QColor positive;
+        QColor positiveLessSaturated;
+    };
+    
     
     /**
      * @brief Functions to manipulate colours within Breeze/ClassikStyles
@@ -24,6 +39,11 @@ namespace Breeze
         public:
             
 
+            /**
+             * @brief Returns a SystemButtonColors struct containing the colours set in the KDE color scheme
+             */
+            static std::shared_ptr<SystemButtonColors> getSystemButtonColors( const QPalette & palette );
+            
             static QColor getDifferentiatedSaturatedColor( const QColor& inputColor );
             
             static QColor getDifferentiatedLessSaturatedColor( const QColor& inputColor );
@@ -41,9 +61,9 @@ namespace Breeze
             * @brief Given a background colour, will return either a black or white foregreound colour, depending upon which gives the best contrast
             */
             static QColor getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor );
-            
         
     };
+        
     
 }
 
