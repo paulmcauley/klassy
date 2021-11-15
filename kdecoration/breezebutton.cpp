@@ -546,11 +546,23 @@ namespace Breeze
             if( shouldDrawBackgroundStroke() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
+                
+                qreal penWidth = PenWidth::Symbol;
+                
+                //Wayland scales lines by DPR already
+                if( !KWindowSystem::isPlatformWayland() ) penWidth *= m_devicePixelRatio;
+                
+                pen.setWidthF( penWidth );
                 painter->setPen(pen);
                 
-                //the size of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line outside the button
-                QRectF strokeRect = QRectF( backgroundBoundingRect.left() + pen.width()+0.5, backgroundBoundingRect.top() + pen.width(), backgroundBoundingRect.width() - pen.width()*2-1, backgroundBoundingRect.height() - pen.width()*2);
+                
+                QRectF strokeRect;
+                if( KWindowSystem::isPlatformWayland() && ( m_devicePixelRatio != static_cast<int>(m_devicePixelRatio) ) )
+                    //this is to work around an artefact at the top window edge on Wayland with fractional scaling
+                    strokeRect = QRectF( backgroundBoundingRect.adjusted( pen.width()*1.25 + 0.5, pen.width()*1.25 + 0.5, -pen.width()*1.25 -0.5, -pen.width()*1.25 - 0.5 ) );
+                //the width of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line artefact outside the button
+                else strokeRect= QRectF( backgroundBoundingRect.adjusted( pen.width()*1.25, pen.width()*1.25, -pen.width()*1.25, -pen.width()*1.25 ) );
+                
                 
                 if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
                     background.addRoundedRect(strokeRect,d->scaledCornerRadius(),d->scaledCornerRadius());
