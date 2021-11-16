@@ -1023,6 +1023,10 @@ namespace Breeze
           QPainterPath innerRectPath;
           innerRectPath.addRect(innerRect);
           
+          qreal outlinePenWidth = 1;
+          //Wayland auto-scales lines by DPR already but need to do this manually for X11
+          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth *= m_systemScaleFactor;
+          
           // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
           if ( hasNoBorders() && !c->isShaded() ) innerRectPotentiallyTaller.adjust(0,0,0,m_scaledCornerRadius); 
           
@@ -1035,8 +1039,8 @@ namespace Breeze
           } else {
             roundedRectMask.addRoundedRect(
                 innerRectPotentiallyTaller,
-                m_scaledCornerRadius + 0.5,
-                m_scaledCornerRadius + 0.5);
+                m_scaledCornerRadius + outlinePenWidth/2,
+                m_scaledCornerRadius + outlinePenWidth/2);
           }
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectMask = roundedRectMask.intersected(innerRectPath);
@@ -1044,10 +1048,9 @@ namespace Breeze
 
           painter.drawPath(roundedRectMask);
 
-
           QRectF outlineRect;
           if ( !m_internalSettings->contrastingWindowOutline() ) outlineRect = innerRect;
-          else outlineRect = innerRect.adjusted(-0.5, -0.5, 0.5, 0.5); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
+          else outlineRect = innerRect.adjusted(-outlinePenWidth/2, -outlinePenWidth/2, outlinePenWidth/2, outlinePenWidth/2); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
           QPainterPath outlineRectPath;
           outlineRectPath.addRect(outlineRect);
 
@@ -1060,7 +1063,8 @@ namespace Breeze
           QPen p;
           if ( m_internalSettings->contrastingWindowOutline() ) p.setColor(withOpacity(fontColor(), 0.25));
           else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
-          p.setWidthF(1.0);
+          
+          p.setWidthF(outlinePenWidth);
           painter.setPen(p);
           painter.setBrush(Qt::NoBrush);
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1074,8 +1078,8 @@ namespace Breeze
           } else {
             roundedRectOutline.addRoundedRect(
                 outlineRectPotentiallyTaller,
-                m_scaledCornerRadius - 0.5,
-                m_scaledCornerRadius - 0.5);
+                m_scaledCornerRadius - outlinePenWidth/2,
+                m_scaledCornerRadius - outlinePenWidth/2);
           }
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
