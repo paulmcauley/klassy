@@ -74,7 +74,8 @@ namespace Breeze
         //*@name colors
         //@{
         QColor titleBarColor() const;
-        QColor outlineColor() const;
+        QColor titlebarSeparatorColor() const;
+        QColor accentedWindowOutlineColor(const QColor& inactiveColor) const;
         QColor fontColor() const;
         //@}
 
@@ -95,7 +96,7 @@ namespace Breeze
         std::shared_ptr<QPainterPath> titleBarPath(){ return m_titleBarPath; }
         std::shared_ptr<QPainterPath> windowPath(){ return m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
-        bool fullSizedButton(){ return m_fullSizedButton; }
+        bool fullSizedButtons(){ return m_fullSizedButtons; }
         qreal scaledCornerRadius(){ return m_scaledCornerRadius; }
         std::shared_ptr<SystemButtonColors> systemAccentColors(){ return m_systemAccentColors; }
         
@@ -181,7 +182,9 @@ namespace Breeze
         
         std::shared_ptr<SystemButtonColors> m_systemAccentColors;
         
-        bool m_fullSizedButton = false;
+        bool m_fullSizedButtons = false;
+        bool m_colorSchemeHasHeaderColor = true;
+        bool m_toolsAreaWillBeDrawn = true;
 
     };
 

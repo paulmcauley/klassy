@@ -47,7 +47,10 @@ namespace Breeze
         colors->buttonHover = buttonHoverStatefulBrush.brush( palette ).color();
         
         //this is required as the accent colours feature sets these the same
-        if( colors->buttonFocus == colors->buttonHover ) colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonHover);
+        if( colors->buttonFocus == colors->buttonHover ) colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonFocus);
+        
+        colors->highlight = palette.color( QPalette::Highlight );
+        colors->highlightLessSaturated = getDifferentiatedLessSaturatedColor(colors->highlight);
         
         return colors;
     }

@@ -1,0 +1,28 @@
+<svg width="369.61" height="127.77" version="1.1" viewBox="0 0 369.61 127.77" xmlns="http://www.w3.org/2000/svg">
+ <defs>
+  <filter id="filter51184" x="-.078835" y="-.07446" width="1.1892" height="1.1824" color-interpolation-filters="sRGB">
+   <feFlood flood-color="rgb(0,0,0)" flood-opacity=".49804" result="flood"/>
+   <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"/>
+   <feGaussianBlur in="composite1" result="blur" stdDeviation="2.5"/>
+   <feOffset dx="2.4" dy="2.7" result="offset"/>
+   <feComposite in="SourceGraphic" in2="offset" result="composite2"/>
+  </filter>
+  <filter id="filter51196" x="-.25714" y="-.1197" width="1.6171" height="1.2933" color-interpolation-filters="sRGB">
+   <feFlood flood-color="rgb(0,0,0)" flood-opacity=".49804" result="flood"/>
+   <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"/>
+   <feGaussianBlur in="composite1" result="blur" stdDeviation="2.5"/>
+   <feOffset dx="2.4" dy="2.7" result="offset"/>
+   <feComposite in="SourceGraphic" in2="offset" result="composite2"/>
+  </filter>
+ </defs>
+ <filter id="d" x="-.050914" y="-.027844" width="1.1018" height="1.0557">
+  <feGaussianBlur stdDeviation="2.97"/>
+ </filter>
+ <filter id="e" x="-.0272" y="-.204" width="1.0544" height="1.408">
+  <feGaussianBlur stdDeviation="1.7000001"/>
+ </filter>
+ <path d="m255.19 35.822c-0.17844 0.0194-0.37131 0.0698-0.50481 0.20524l-6.1728 6.2423c-0.25921 0.26297-0.28889 0.66339-0.0957 0.97883l7.3207 11.936c-1.2759 2.1723-2.3087 4.5006-3.0312 6.9669l-13.311 2.8408c-0.37039 0.0788-0.63858 0.43323-0.63644 0.81323l0.0491 8.7714c2e-3 0.37087 0.2859 0.68689 0.64534 0.77236l12.939 3.0653c0.70693 2.8468 1.7897 5.5686 3.2163 8.0452l-7.4254 11.445c-0.20709 0.3197-0.16401 0.74434 0.10682 1.0117l6.2424 6.1727c0.26296 0.25908 0.66413 0.28967 0.97881 0.0957l11.701-7.1842c2.3101 1.3164 4.8092 2.3676 7.4394 3.0622l2.8064 13.142c0.0787 0.371 0.39975 0.63882 0.77943 0.6367l8.7715-0.0491c0.36812-2e-3 0.68717-0.25145 0.77246-0.61236l3.1649-13.243c2.7045-0.74553 5.2523-1.844 7.6066-3.2476l11.614 7.5259c0.32022 0.206 0.74258 0.1635 1.0115-0.10682l6.1391-6.2422c0.26078-0.26309 0.32326-0.66431 0.12943-0.9791l-4.256-6.926-1.3808 0.44641c-0.19938 0.0626-0.42119-0.0264-0.5409-0.19959 0 0-2.6858-3.9036-6.1905-8.9732-4.1118 8.1583-12.559 13.768-22.324 13.823-13.876 0.0778-25.196-11.117-25.275-24.993-0.0571-10.207 5.9974-19.008 14.716-22.99l-0.0362-6.4774c-1.5876 0.56567-3.1206 1.246-4.5768 2.0498-3e-3 -2e-3 3e-3 -0.0322-2.6e-4 -0.0337l-11.885-7.6931c-0.16009-0.10282-0.32827-0.11771-0.5067-0.0983zm35.706-16.056-15.78 1.6064 0.36418 65.043 15.606-2.4491-0.15536-27.731 21.19 30.65 16.434-5.3208-21.69-29.467 21.536-28.021s-16.822-3.7517-16.822-3.7517l-20.693 28.017 9e-3 -28.576z" fill="#37abc8" fill-opacity=".1658" stroke-width=".91709"/>
+ <path transform="rotate(30 364.56 65.763)" d="m313.31 102.7-16.323-7.7374 13.292 23.184-0.90474 0.8135c-1.9179 1.7245-9.9815 8.1534-10.901 8.6914l-0.96754 0.56585-32.676-56.314 6.0195-4.376c3.3107-2.4068 6.2215-4.5106 6.4684-4.6751 0.3457-0.23036 2.0837 2.4439 7.5616 11.635l7.1127 11.934 1.8064-15.894c0.99351-8.7418 1.8513-16.299 1.9062-16.794 0.092-0.8297 0.74125-1.105 8.2892-3.5151 4.5042-1.4382 8.2736-2.5996 8.3764-2.5808 0.10283 0.01874-0.8435 7.8165-2.103 17.328-1.2596 9.5119-2.2136 17.425-2.1202 17.585 0.0934 0.15983 7.4876 3.4924 16.431 7.4057 8.9438 3.9133 16.306 7.3062 16.36 7.5398 0.0791 0.34121-10.248 12.272-11.076 12.797-0.12589 0.0794-7.574-3.337-16.552-7.5926z" fill="#37abc8" filter="url(#filter51184)" stroke-linecap="round" stroke-width="1.4" style="paint-order:stroke fill markers"/>
+ <text transform="rotate(-.374 -17349 -14066)" x="-87.400444" y="202.56128" filter="url(#filter51196)" font-family="'Armalite Rifle'" font-size="85.333px" style="line-height:1.25" xml:space="preserve"><tspan x="-87.400444" y="202.56128" fill="#aa0000" font-family="'Segoe Script'" font-size="85.333px" font-weight="bold">Classi</tspan></text>
+ <text transform="rotate(-.374 -18884 -62356)" x="-87.400444" y="202.56128" filter="url(#filter51196)" font-family="'Armalite Rifle'" font-size="85.333px" style="line-height:1.25" xml:space="preserve"><tspan x="-87.400444" y="202.56128" fill="#aa0000" font-family="'Segoe Script'" font-size="85.333px" font-weight="bold">s</tspan></text>
+</svg>

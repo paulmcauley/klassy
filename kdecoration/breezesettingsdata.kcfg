@@ -30,6 +30,10 @@
        <default>0, 0, 0</default>
     </entry>  
     
+    <entry name="DrawTitleBarSeparator" type = "Bool">
+        <default>false</default>
+    </entry>
+    
     <!-- close button -->
     <entry name="OutlineCloseButton" type = "Bool">
         <default>false</default>
@@ -59,7 +63,7 @@
           <choice name="ShapeFullSizedRoundedRectangle" />
           <choice name="ShapeSquare" />
       </choices>
-      <default>ShapeFullSizedRectangle</default>
+      <default>ShapeFullSizedRoundedRectangle</default>
     </entry>
     
     <!-- background colors -->
@@ -102,12 +106,17 @@
           <choice name="BorderVeryHuge" />
           <choice name="BorderOversized" />
       </choices>
-      <default>BorderNone</default>
+      <default>BorderNoSides</default>
     </entry>
     
-    <!-- Draw thin contrasting window outline -->
-    <entry name="ContrastingWindowOutline" type = "Bool">
-        <default>true</default>
+    <!-- Draw thin window outline -->
+    <entry name="thinWindowOutlineStyle" type = "Enum">
+        <choices>
+            <choice name="WindowOutlineBlendToShadow" />
+            <choice name="WindowOutlineContrastTitleBarText" />
+            <choice name="WindowOutlineAccentColor" />
+        </choices>
+        <default>WindowOutlineAccentColor</default>
     </entry>
     
     <!-- title alignment -->
@@ -135,7 +144,7 @@
     
     <!-- right button spacing -->
     <entry name="ButtonSpacingRight" type = "Int">
-       <default>10</default>
+       <default>8</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -148,14 +157,14 @@
     </entry>
     
     <entry name="TitlebarTopBottomMargins" type = "Double">
-       <default>2.8</default>
+       <default>2.7</default>
        <min>0</min>
        <max>25</max>
     </entry>
     
     <!-- top bottom margins % for maximized windows -->
     <entry name="PercentMaximizedTopBottomMargins" type = "Int">
-       <default>85</default>
+       <default>74</default>
        <min>0</min>
        <max>100</max>
     </entry>
@@ -167,7 +176,7 @@
     </entry>
     
     <entry name="CornerRadius" type = "Double">
-       <default>1</default>
+       <default>1.6</default>
        <min>0</min>
        <max>12</max>
     </entry>
@@ -186,13 +195,9 @@
     <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
         <default>false</default>
     </entry>
-
-    <entry name="DrawTitleBarSeparator" type = "Bool">
-        <default>false</default>
-    </entry>
     
     <entry name="UseTitlebarColorForAllBorders" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <!-- background gradient -->
