@@ -50,7 +50,7 @@ namespace Breeze
         if( colors->buttonFocus == colors->buttonHover ) colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonFocus);
         
         colors->highlight = palette.color( QPalette::Highlight );
-        colors->highlightLessSaturated = getDifferentiatedLessSaturatedColor(colors->highlight);
+        colors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(colors->highlight,true);
         
         return colors;
     }
@@ -67,12 +67,26 @@ namespace Breeze
     }
     
     
-    QColor ColorTools::getDifferentiatedLessSaturatedColor( const QColor& inputColor )
+    QColor ColorTools::getDifferentiatedLessSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate )
     {
         int colorHsv[3];
         inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
-        if( colorHsv[1] > 125 ) colorHsv[1] -= 80; //decrease saturation if not already low
-        else colorHsv[1] += 80; // else increase saturation if very low to provide differentiation/contrast
+
+        if( colorHsv[1] >=100 ) colorHsv[1] -= 80; //decrease saturation if not already low
+        else if (! noMandatoryDifferentiate ) colorHsv[1] += 80; // else increase saturation if very low to provide differentiation/contrast
+        QColor outputColor;
+        outputColor.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
+        return outputColor;
+    }
+    
+    
+    QColor ColorTools::getLessSaturatedColorForWindowHighlight( const QColor& inputColor, bool noMandatoryDifferentiate )
+    {
+        int colorHsv[3];
+        inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
+
+        if( colorHsv[1] >=100 ) colorHsv[1] -= 30; //decrease saturation if not already low
+        else if (! noMandatoryDifferentiate ) colorHsv[1] += 30; // else increase saturation if very low to provide differentiation/contrast
         QColor outputColor;
         outputColor.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
         return outputColor;
