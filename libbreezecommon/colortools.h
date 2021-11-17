@@ -48,7 +48,9 @@ namespace Breeze
             
             static QColor getDifferentiatedSaturatedColor( const QColor& inputColor );
             
-            static QColor getDifferentiatedLessSaturatedColor( const QColor& inputColor );
+            static QColor getDifferentiatedLessSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate = false);
+            
+            static QColor getLessSaturatedColorForWindowHighlight( const QColor& inputColor, bool noMandatoryDifferentiate = false );
             
             /**
             * @brief Checks the contrast ratio of the two given colours, and if is below the given threshold returns a higher contrast black or white foreground
