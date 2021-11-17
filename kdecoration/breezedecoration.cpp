@@ -141,8 +141,9 @@ namespace Breeze
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
     static qreal g_cornerRadius = 3;
+    static qreal g_systemScaleFactor = 1;
     static bool g_hasNoBorders = true;
-    static bool g_contrastingWindowOutline = true;
+    static int g_thinWindowOutlineStyle = 0;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
@@ -185,7 +186,9 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         if( hideTitleBar() && !m_internalSettings->useTitlebarColorForAllBorders() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
-        else if( m_animation->state() == QAbstractAnimation::Running )
+        
+        //do not animate titlebar if there is a tools area/header area as it causes glitches
+        if( !m_toolsAreaWillBeDrawn && m_animation->state() == QAbstractAnimation::Running )
         {
             return KColorUtils::mix(
                 c->color( ColorGroup::Inactive, ColorRole::TitleBar ),
@@ -196,7 +199,7 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    QColor Decoration::outlineColor() const
+    QColor Decoration::titlebarSeparatorColor() const
     {
 
         auto c = client().toStrongRef();
@@ -204,11 +207,24 @@ namespace Breeze
         if( !m_internalSettings->drawTitleBarSeparator() ) return QColor();
         if( m_animation->state() == QAbstractAnimation::Running )
         {
-            QColor color( c->palette().color( QPalette::Highlight ) );
+            QColor color( m_systemAccentColors->highlight );
             color.setAlpha( color.alpha()*m_opacity );
             return color;
-        } else if( c->isActive() ) return c->palette().color( QPalette::Highlight );
+        } else if( c->isActive() ) return m_systemAccentColors->highlight;
         else return QColor();
+    }
+    
+    QColor Decoration::accentedWindowOutlineColor(const QColor& inactiveColor) const
+    {
+
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        if( m_animation->state() == QAbstractAnimation::Running )
+        {
+            return KColorUtils::mix( inactiveColor, m_systemAccentColors->highlight, m_opacity );
+        } else if( c->isActive() ) return m_systemAccentColors->highlight;
+        else return inactiveColor;
     }
 
     //________________________________________________________________
@@ -302,8 +318,8 @@ namespace Breeze
         connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
         connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
         
-        connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::forceUpdateShadow);
         connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::reconfigure);
+        connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::forceUpdateShadow);
 
         createButtons();
         updateShadow();
@@ -321,7 +337,7 @@ namespace Breeze
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
-        if( m_fullSizedButton && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
+        if( m_fullSizedButtons && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
         {
             width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             height = borderTop();
@@ -426,22 +442,26 @@ namespace Breeze
         
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
         
-        setScaledCornerRadius();
-        updateBlur();
-        setSystemAccentColors();
-        
-        if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle
-            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle
-        ) m_fullSizedButton = true;
-        else m_fullSizedButton = false;
-        
         KSharedConfig::Ptr config = KSharedConfig::openConfig();
         
         // loads system ScaleFactor from ~/.config/kdeglobals
         const KConfigGroup cgKScreen(config, QStringLiteral("KScreen"));
         m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
         
+        setScaledCornerRadius();
+        updateBlur();
+        setSystemAccentColors();
+        
+        if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle
+            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle
+        ) m_fullSizedButtons = true;
+        else m_fullSizedButtons = false;
+        
         const KConfigGroup cg(config, QStringLiteral("KDE"));
+        
+        m_colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(config, KColorScheme::Header);
+        m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() == KDecoration2::BorderSize::NoSides ) ); 
+        
         
         // animation
         if( m_internalSettings->animationsEnabled() ) {
@@ -494,7 +514,7 @@ namespace Breeze
 
             // padding below
             // extra pixel is used for the active window outline
-            top += 1;
+            if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() ) top += 1;
             
             const int baseSize = s->smallSpacing();
 
@@ -520,15 +540,15 @@ namespace Breeze
                 extBottom = extSize;
                 
                 //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-                if( m_fullSizedButton ) extTop = extSize; 
+                if( m_fullSizedButtons ) extTop = extSize; 
             }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
             //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-            if( m_fullSizedButton ) extTop = extSize;
-        } else if( m_fullSizedButton ) {
+            if( m_fullSizedButtons ) extTop = extSize;
+        } else if( m_fullSizedButtons ) {
             
             extTop = extSize;
         }
@@ -552,7 +572,9 @@ namespace Breeze
     void Decoration::updateButtonsGeometry()
     {
         const auto s = settings();
-
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
         // adjust button position
         int bHeight;
         int bWidth=0;
@@ -562,10 +584,10 @@ namespace Breeze
         int fullSizedButtonIconHorizontalTranslation;
         int titleBarTopMargin = titleBarTopBottomMargins();
         
-        if( m_fullSizedButton )
+        if( m_fullSizedButtons )
         {
             bHeight = borderTop();
-            if( m_internalSettings->drawTitleBarSeparator() ) bHeight -= 1;
+            if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() ) bHeight -= 1;
             verticalOffset = 0;
             fullSizedButtonIconVerticalTranslation = s->smallSpacing()*titleBarTopMargin + (captionHeight()-buttonHeight())/2;
         } else 
@@ -578,7 +600,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
         {
             
-            if ( m_fullSizedButton ) {
+            if ( m_fullSizedButtons ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
                 fullSizedButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
             } else {
@@ -595,7 +617,7 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
         {
             
-            if ( m_fullSizedButton ) {
+            if ( m_fullSizedButtons ) {
                 bWidth = buttonHeight() + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
                 fullSizedButtonIconHorizontalTranslation = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
             } else {
@@ -614,7 +636,7 @@ namespace Breeze
         {
 
             // spacing
-            if ( m_fullSizedButton ) {
+            if ( m_fullSizedButtons ) {
                 m_leftButtons->setSpacing( 0 );
             } else {
                 m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
@@ -622,7 +644,7 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( m_fullSizedButton ) vPadding = 0;
+            if( m_fullSizedButtons ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
@@ -645,7 +667,7 @@ namespace Breeze
         if( !m_rightButtons->buttons().isEmpty() )
         {
             // spacing
-            if ( m_fullSizedButton ) {
+            if ( m_fullSizedButtons ) {
                 m_rightButtons->setSpacing( 0 );
             } else {
                 m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
@@ -653,7 +675,7 @@ namespace Breeze
 
             // padding
             int vPadding;
-            if( m_fullSizedButton ) vPadding = 0;
+            if( m_fullSizedButtons ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
@@ -812,13 +834,13 @@ namespace Breeze
         
         painter->drawPath(*m_titleBarPath);
 
-        const QColor outlineColor( this->outlineColor() );
-        if( !c->isShaded() && outlineColor.isValid() )
+        const QColor titlebarSeparatorColor( this->titlebarSeparatorColor() );
+        if( !c->isShaded() && !c->isMaximized() && titlebarSeparatorColor.isValid() )
         {
             // outline
             painter->setRenderHint( QPainter::Antialiasing, false );
             painter->setBrush( Qt::NoBrush );
-            painter->setPen( outlineColor );
+            painter->setPen( titlebarSeparatorColor );
             painter->drawLine( m_titleRect.bottomLeft(), m_titleRect.bottomRight() );
         }
 
@@ -940,8 +962,9 @@ namespace Breeze
                 || g_shadowStrength != m_internalSettings->shadowStrength()
                 || g_shadowColor != m_internalSettings->shadowColor()
                 || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
+                || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001)
                 || g_hasNoBorders != hasNoBorders() 
-                || g_contrastingWindowOutline != m_internalSettings->contrastingWindowOutline()
+                || g_thinWindowOutlineStyle != m_internalSettings->thinWindowOutlineStyle()
         ){
             g_sShadow.clear();
             g_sShadowInactive.clear();
@@ -949,8 +972,9 @@ namespace Breeze
             g_shadowStrength = m_internalSettings->shadowStrength();
             g_shadowColor = m_internalSettings->shadowColor();
             g_cornerRadius = m_scaledCornerRadius;
+            g_systemScaleFactor = m_systemScaleFactor;
             g_hasNoBorders = hasNoBorders();
-            g_contrastingWindowOutline = m_internalSettings->contrastingWindowOutline();
+            g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
         }
 
         auto& shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
@@ -983,8 +1007,12 @@ namespace Breeze
           auto c = client().toStrongRef();
           Q_ASSERT(c);
           
-              
+          qreal outlinePenWidth = 1;
+          //Wayland auto-scales lines by DPR already but need to do this manually for X11
+          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth = qRound(outlinePenWidth * m_systemScaleFactor);
+          
           BoxShadowRenderer shadowRenderer;
+          
           shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
           shadowRenderer.setBoxSize(boxSize);
           shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
@@ -1023,19 +1051,15 @@ namespace Breeze
           QPainterPath innerRectPath;
           innerRectPath.addRect(innerRect);
           
-          qreal outlinePenWidth = 1;
-          //Wayland auto-scales lines by DPR already but need to do this manually for X11
-          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth *= m_systemScaleFactor;
-          
           // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
           if ( hasNoBorders() && !c->isShaded() ) innerRectPotentiallyTaller.adjust(0,0,0,m_scaledCornerRadius); 
           
           QPainterPath roundedRectMask;
-          if( m_internalSettings->contrastingWindowOutline() ){
+          if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
             roundedRectMask.addRoundedRect(
                 innerRectPotentiallyTaller,
-                m_scaledCornerRadius,
-                m_scaledCornerRadius);
+                m_scaledCornerRadius + outlinePenWidth,
+                m_scaledCornerRadius + outlinePenWidth);
           } else {
             roundedRectMask.addRoundedRect(
                 innerRectPotentiallyTaller,
@@ -1049,7 +1073,7 @@ namespace Breeze
           painter.drawPath(roundedRectMask);
 
           QRectF outlineRect;
-          if ( !m_internalSettings->contrastingWindowOutline() ) outlineRect = innerRect;
+          if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ) outlineRect = innerRect;
           else outlineRect = innerRect.adjusted(-outlinePenWidth/2, -outlinePenWidth/2, outlinePenWidth/2, outlinePenWidth/2); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
           QPainterPath outlineRectPath;
           outlineRectPath.addRect(outlineRect);
@@ -1061,7 +1085,10 @@ namespace Breeze
 
           // Draw 1px wide outline
           QPen p;
-          if ( m_internalSettings->contrastingWindowOutline() ) p.setColor(withOpacity(fontColor(), 0.25));
+          if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText )
+              p.setColor(withOpacity(fontColor(), 0.25));
+          else if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor )
+              p.setColor( accentedWindowOutlineColor(withOpacity(m_systemAccentColors->highlightLessSaturated, 0.4)) );
           else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
           
           p.setWidthF(outlinePenWidth);
@@ -1070,11 +1097,11 @@ namespace Breeze
           painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
           
           QPainterPath roundedRectOutline;
-          if( m_internalSettings->contrastingWindowOutline() ){
+          if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
             roundedRectOutline.addRoundedRect(
                 outlineRectPotentiallyTaller,
-                m_scaledCornerRadius,
-                m_scaledCornerRadius);
+                m_scaledCornerRadius + outlinePenWidth/2,
+                m_scaledCornerRadius + outlinePenWidth/2);
           } else {
             roundedRectOutline.addRoundedRect(
                 outlineRectPotentiallyTaller,

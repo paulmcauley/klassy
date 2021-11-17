@@ -150,7 +150,7 @@ namespace Breeze
         {
             //draw a background only with Full-sized Rectangle highlight style; 
             //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-            if( d->fullSizedButton() ) 
+            if( d->fullSizedButtons() ) 
                 paintFullSizedButtonBackground(painter);
             
             // translate from offset
@@ -191,7 +191,7 @@ namespace Breeze
                 
         //draw a background only with Full-sized Rectangle button shape; 
         //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-        if( d->fullSizedButton() ) paintFullSizedButtonBackground(painter);
+        if( d->fullSizedButtons() ) paintFullSizedButtonBackground(painter);
         
         // translate from offset
         if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
@@ -211,7 +211,7 @@ namespace Breeze
         
         
         // render background if normal sized button shape
-        if( !d->fullSizedButton() ) paintNormalSizedButtonBackground(painter);
+        if( !d->fullSizedButtons() ) paintNormalSizedButtonBackground(painter);
         
         // render mark
         if( m_foregroundColor.isValid() )

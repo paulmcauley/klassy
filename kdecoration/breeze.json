@@ -11,6 +11,6 @@
     "org.kde.kdecoration2": {
         "blur": true,
         "kcmodule": true,
-        "recommendedBorderSize": "None"
+        "recommendedBorderSize": "NoSides"
     }
 }

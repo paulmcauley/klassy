@@ -95,8 +95,8 @@ namespace Breeze
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged );
-        connect( m_ui.contrastingWindowOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-
+        connect( m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        
         // track exception changes
         connect( m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged );
         
@@ -151,8 +151,8 @@ namespace Breeze
 
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
-        m_ui.contrastingWindowOutline->setChecked( m_internalSettings->contrastingWindowOutline() );
-
+        m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
+        
         // load exceptions
         ExceptionList exceptions;
         exceptions.readConfig( m_configuration );
@@ -200,7 +200,7 @@ namespace Breeze
         m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
         m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
-        m_internalSettings->setContrastingWindowOutline( m_ui.contrastingWindowOutline->isChecked() );
+        m_internalSettings->setThinWindowOutlineStyle( m_ui.thinWindowOutlineStyle->currentIndex() );
 
         // save configuration
         m_internalSettings->save();
@@ -269,7 +269,7 @@ namespace Breeze
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
-        m_ui.contrastingWindowOutline->setChecked( m_internalSettings->contrastingWindowOutline() );
+        m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
 
     }
 
@@ -316,8 +316,8 @@ namespace Breeze
         else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
         else if( m_ui.shadowColor->color() != m_internalSettings->shadowColor() ) modified = true;
-        else if( m_ui.contrastingWindowOutline->isChecked() != m_internalSettings->contrastingWindowOutline() ) modified = true;
-
+        else if( m_ui.thinWindowOutlineStyle->currentIndex() != m_internalSettings->thinWindowOutlineStyle() ) modified = true;
+        
         // exceptions
         else if( m_ui.exceptions->isChanged() ) modified = true;
 

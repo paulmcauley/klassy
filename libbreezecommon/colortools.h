@@ -19,6 +19,8 @@ namespace Breeze
     struct BREEZECOMMON_EXPORT SystemButtonColors {
         QColor buttonFocus;
         QColor buttonHover;
+        QColor highlight;
+        QColor highlightLessSaturated;
         QColor negative;
         QColor negativeLessSaturated;
         QColor negativeSaturated;
