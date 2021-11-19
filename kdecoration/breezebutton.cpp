@@ -133,6 +133,7 @@ namespace Breeze
 
         setDevicePixelRatio(painter);
         setShouldDrawBoldButtonIcons();
+        setStandardScaledPenWidth();
         
         m_backgroundColor = this->backgroundColor();
         m_foregroundColor = this->foregroundColor();
@@ -219,7 +220,13 @@ namespace Breeze
 
             // setup painter
             QPen pen( m_foregroundColor );
-            pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+            
+            //this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
+            // TODO: fix aliased and clipped circle button
+            //pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+            
+            pen.setWidthF( m_standardScaledPenWidth );
+            pen.setCosmetic(true);
             painter->setPen(pen);
 
 
@@ -432,7 +439,6 @@ namespace Breeze
         } else {
 
             return QColor();
-
         }
 
     }
@@ -536,7 +542,7 @@ namespace Breeze
         if( m_backgroundColor.isValid() )
         {            
             painter->save();
-            painter->setRenderHints( QPainter::Antialiasing );
+            painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
             
             QRectF backgroundBoundingRect;
@@ -546,22 +552,18 @@ namespace Breeze
             if( shouldDrawBackgroundStroke() )
             {   
                 QPen pen( m_outlineColor );
-                
-                qreal penWidth = PenWidth::Symbol;
-                
-                //Wayland scales lines by DPR already
-                if( !KWindowSystem::isPlatformWayland() ) penWidth *= m_devicePixelRatio;
-                
-                pen.setWidthF( penWidth );
+                pen.setWidthF( m_standardScaledPenWidth );
+                pen.setCosmetic(true);
                 painter->setPen(pen);
                 
-                
                 QRectF strokeRect;
-                if( KWindowSystem::isPlatformWayland() && ( m_devicePixelRatio != static_cast<int>(m_devicePixelRatio) ) )
-                    //this is to work around an artefact at the top window edge on Wayland with fractional scaling
-                    strokeRect = QRectF( backgroundBoundingRect.adjusted( pen.width()*1.25 + 0.5, pen.width()*1.25 + 0.5, -pen.width()*1.25 -0.5, -pen.width()*1.25 - 0.5 ) );
-                //the width of the stroke rectangle needs to be smaller than the button geometry to prevent drawing a line artefact outside the button
-                else strokeRect= QRectF( backgroundBoundingRect.adjusted( pen.width()*1.25, pen.width()*1.25, -pen.width()*1.25, -pen.width()*1.25 ) );
+                
+                qreal geometryShrinkOffsetHorizontal = pen.widthF()*1.5;
+                if( KWindowSystem::isPlatformWayland() ) geometryShrinkOffsetHorizontal /= m_devicePixelRatio;
+                qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal * 1.1;
+                
+                //shrink the backgroundBoundingRect to make border more visible
+                strokeRect= QRectF( backgroundBoundingRect.adjusted( geometryShrinkOffsetHorizontal, geometryShrinkOffsetVertical, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical ) );
                 
                 
                 if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
@@ -601,7 +603,8 @@ namespace Breeze
             if( shouldDrawBackgroundStroke() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF( PenWidth::Symbol );
+                pen.setWidthF( m_standardScaledPenWidth );
+                pen.setCosmetic(true);
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
@@ -626,6 +629,12 @@ namespace Breeze
         if( KWindowSystem::isPlatformX11() ) m_devicePixelRatio = d->systemScaleFactor();
         if ( m_isGtkCsdButton ) m_devicePixelRatio = d->systemScaleFactor(); 
         
+    }
+    
+    void Button::setStandardScaledPenWidth()
+    {
+        m_standardScaledPenWidth = PenWidth::Symbol;
+        m_standardScaledPenWidth *= m_devicePixelRatio; //this is assuming you are going to use setCosmetic(true) for pen sizes
     }
     
     void Button::setShouldDrawBoldButtonIcons()

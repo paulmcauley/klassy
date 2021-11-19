@@ -117,6 +117,7 @@ namespace Breeze
         bool shouldDrawBackgroundStroke() const;
         void setDevicePixelRatio(QPainter* painter);
         void setShouldDrawBoldButtonIcons();
+        void setStandardScaledPenWidth();
         
         /**
         * @brief Paint the button background for the Full-sized Rectangle highlight style; NB: applies a translation at end due to different full-sized button geometries
@@ -154,6 +155,7 @@ namespace Breeze
         bool m_isGtkCsdButton;
         qreal m_devicePixelRatio = 1.0;
         bool m_boldButtonIcons;
+        qreal m_standardScaledPenWidth = 1.0;
     };
 
 } // namespace

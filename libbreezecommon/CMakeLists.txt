@@ -12,6 +12,7 @@ set(breezecommon_LIB_SRCS
     stylekite.cpp
     styleoxygen.cpp
     styleredmond.cpp
+    setqdebug_logging.h
 )
 
 kconfig_add_kcfg_files(breezecommon_LIB_SRCS ../kdecoration/breezesettings.kcfgc)

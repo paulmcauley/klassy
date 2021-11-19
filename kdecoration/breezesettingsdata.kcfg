@@ -157,14 +157,14 @@
     </entry>
     
     <entry name="TitlebarTopBottomMargins" type = "Double">
-       <default>2.7</default>
+       <default>1.7</default>
        <min>0</min>
        <max>25</max>
     </entry>
     
     <!-- top bottom margins % for maximized windows -->
     <entry name="PercentMaximizedTopBottomMargins" type = "Int">
-       <default>74</default>
+       <default>80</default>
        <min>0</min>
        <max>100</max>
     </entry>
