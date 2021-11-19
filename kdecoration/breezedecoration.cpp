@@ -7,7 +7,12 @@
 * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
 
+
 #include "breezedecoration.h"
+
+#if CLASSIKS_DECORATION_DEBUG_MODE
+#include "setqdebug_logging.h"
+#endif
 
 #include "breezesettingsprovider.h"
 #include "config-breeze.h"
@@ -154,6 +159,10 @@ namespace Breeze
         , m_shadowAnimation( new QVariantAnimation( this ) )
     {
         g_sDecoCount++;
+        
+#if CLASSIKS_DECORATION_DEBUG_MODE
+        setDebugOutput(CLASSIKS_QDEBUG_OUTPUT_PATH);
+#endif
     }
 
     //________________________________________________________________
@@ -199,7 +208,7 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    QColor Decoration::titlebarSeparatorColor() const
+    QColor Decoration::titleBarSeparatorColor() const
     {
 
         auto c = client().toStrongRef();
@@ -333,7 +342,7 @@ namespace Breeze
         Q_ASSERT(c);
         const bool maximized = isMaximized();
         int width, height, x, y;
-        int titlebarTopMargin = titleBarTopBottomMargins();
+        qreal titlebarTopMargin = titleBarTopBottomMargins();
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
@@ -501,8 +510,8 @@ namespace Breeze
         const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
         
 
-        int titleBarTopMargin = titleBarTopBottomMargins();
-        int titleBarBottomMargin = titleBarTopMargin;
+        qreal titleBarTopMargin = titleBarTopBottomMargins();
+        qreal titleBarBottomMargin = titleBarTopMargin;
                 
 
         int top = 0;
@@ -514,15 +523,11 @@ namespace Breeze
 
             // padding below
             // extra pixel is used for the active window outline
-            if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() ) top += 1;
+            top += titleBarSeparatorHeight();
             
             const int baseSize = s->smallSpacing();
 
-            // padding below
-            top += baseSize*titleBarBottomMargin;
-
-            // padding above
-            top += baseSize*titleBarTopMargin;
+            top += baseSize*(titleBarBottomMargin + titleBarTopMargin);
 
         }
 
@@ -582,12 +587,12 @@ namespace Breeze
         int verticalOffset;
         int fullSizedButtonIconVerticalTranslation;
         int fullSizedButtonIconHorizontalTranslation;
-        int titleBarTopMargin = titleBarTopBottomMargins();
+        qreal titleBarTopMargin = titleBarTopBottomMargins();
         
         if( m_fullSizedButtons )
         {
             bHeight = borderTop();
-            if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() ) bHeight -= 1;
+            bHeight -= titleBarSeparatorHeight();
             verticalOffset = 0;
             fullSizedButtonIconVerticalTranslation = s->smallSpacing()*titleBarTopMargin + (captionHeight()-buttonHeight())/2;
         } else 
@@ -704,7 +709,7 @@ namespace Breeze
         Q_ASSERT(c);
         auto s = settings();
         
-        setWindowAndTitleBarGeometries();
+        calculateWindowAndTitleBarShapes();
         
         // paint background
         if( !c->isShaded() )
@@ -755,7 +760,7 @@ namespace Breeze
         
     }
     
-    void Decoration::setWindowAndTitleBarGeometries()
+    void Decoration::calculateWindowAndTitleBarShapes()
     {
         auto c = client().toStrongRef();
         Q_ASSERT(c);
@@ -834,14 +839,27 @@ namespace Breeze
         
         painter->drawPath(*m_titleBarPath);
 
-        const QColor titlebarSeparatorColor( this->titlebarSeparatorColor() );
-        if( !c->isShaded() && !c->isMaximized() && titlebarSeparatorColor.isValid() )
+        const QColor titleBarSeparatorColor( this->titleBarSeparatorColor() );
+        if( titleBarSeparatorHeight() && titleBarSeparatorColor.isValid() )
         {
             // outline
             painter->setRenderHint( QPainter::Antialiasing, false );
             painter->setBrush( Qt::NoBrush );
-            painter->setPen( titlebarSeparatorColor );
-            painter->drawLine( m_titleRect.bottomLeft(), m_titleRect.bottomRight() );
+            QPen p(titleBarSeparatorColor);
+            p.setWidthF(titleBarSeparatorHeight());
+            //p.setCosmetic(true);
+            painter->setPen( p );
+            if ( m_internalSettings->useTitlebarColorForAllBorders() ){
+                painter->drawLine( 
+                    QPointF( m_titleRect.bottomLeft().x() + borderLeft() + titleBarSeparatorHeight()/2, m_titleRect.bottomLeft().y() - titleBarSeparatorHeight()/2 ),
+                    QPointF( m_titleRect.bottomRight().x() - borderRight() - titleBarSeparatorHeight()/2, m_titleRect.bottomRight().y() - titleBarSeparatorHeight()/2 )
+                );
+            } else{
+                painter->drawLine( 
+                    QPointF( m_titleRect.bottomLeft().x(), m_titleRect.bottomLeft().y() - titleBarSeparatorHeight()/2 ),
+                    QPointF( m_titleRect.bottomRight().x(), m_titleRect.bottomRight().y() - titleBarSeparatorHeight()/2 )
+                );
+            } 
         }
 
         painter->restore();
@@ -879,16 +897,16 @@ namespace Breeze
     //________________________________________________________________
     int Decoration::captionHeight() const
     { 
-        int titleBarTopMargin = titleBarTopBottomMargins();
-        int titleBarBottomMargin = titleBarTopMargin;
+        qreal titleBarTopMargin = titleBarTopBottomMargins();
+        qreal titleBarBottomMargin = titleBarTopMargin;
         
-        return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(titleBarBottomMargin + titleBarTopMargin ) - 1;
+        return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(titleBarBottomMargin + titleBarTopMargin ) - titleBarSeparatorHeight();
     }
 
     //________________________________________________________________
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
-        int titleBarTopMargin = titleBarTopBottomMargins();
+        qreal titleBarTopMargin = titleBarTopBottomMargins();
         
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
@@ -1008,7 +1026,7 @@ namespace Breeze
           Q_ASSERT(c);
           
           qreal outlinePenWidth = 1;
-          //Wayland auto-scales lines by DPR already but need to do this manually for X11
+          //We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11 this does not happen but we can use the system-set scaling value directly.
           if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth = qRound(outlinePenWidth * m_systemScaleFactor);
           
           BoxShadowRenderer shadowRenderer;
@@ -1158,13 +1176,13 @@ namespace Breeze
         }
     }
     
-    int Decoration::titleBarTopBottomMargins() const
+    qreal Decoration::titleBarTopBottomMargins() const
     {
         // access client
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        double topBottomMargins;
+        qreal topBottomMargins;
         if( c->isMaximized() ){
             topBottomMargins = m_internalSettings->titlebarTopBottomMargins() * m_internalSettings->percentMaximizedTopBottomMargins()/100;
         } else {
@@ -1218,6 +1236,16 @@ namespace Breeze
         Q_ASSERT(c);
         
         m_systemAccentColors = ColorTools::getSystemButtonColors( c->palette() );
+    }
+    
+    qreal Decoration::titleBarSeparatorHeight() const
+    {
+        // access client
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded() ) return 1;
+        else return 0;
     }
 
 } // namespace

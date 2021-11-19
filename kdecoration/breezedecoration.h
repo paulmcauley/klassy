@@ -9,6 +9,7 @@
  */
 
 #include "breeze.h"
+
 #include "breezesettings.h"
 #include "colortools.h"
 
@@ -74,7 +75,7 @@ namespace Breeze
         //*@name colors
         //@{
         QColor titleBarColor() const;
-        QColor titlebarSeparatorColor() const;
+        QColor titleBarSeparatorColor() const;
         QColor accentedWindowOutlineColor(const QColor& inactiveColor) const;
         QColor fontColor() const;
         //@}
@@ -122,7 +123,7 @@ namespace Breeze
         QPair<QRect,Qt::Alignment> captionRect() const;
 
         void createButtons();
-        void setWindowAndTitleBarGeometries();
+        void calculateWindowAndTitleBarShapes();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void updateShadow( const bool force = false );
         QSharedPointer<KDecoration2::DecorationShadow> createShadowObject( const float strengthScale );
@@ -145,8 +146,9 @@ namespace Breeze
         { return m_sizeGrip; }
         //@}
         
-        int titleBarTopBottomMargins() const;
+        qreal titleBarTopBottomMargins() const;
         void setTitleBarOpacity();
+        qreal titleBarSeparatorHeight() const;
 
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -168,7 +170,7 @@ namespace Breeze
         int m_titleBarOpacityInactive = 255;
         
         //* frame corner radius, scaled according to DPI
-        qreal m_scaledCornerRadius = 3;
+        qreal m_scaledCornerRadius = 3.0;
         
         //* Rectangular area of titlebar without clipped corners
         QRect m_titleRect;
