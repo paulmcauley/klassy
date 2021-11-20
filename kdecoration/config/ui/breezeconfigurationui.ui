@@ -1885,7 +1885,7 @@ side margins:</string>
             <item>
              <widget class="QCheckBox" name="opaqueMaximizedTitlebars">
               <property name="text">
-               <string>Opaque maximized titlebars</string>
+               <string>Always make maximized titlebars opaque</string>
               </property>
              </widget>
             </item>
