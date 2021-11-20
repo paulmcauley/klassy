@@ -33,6 +33,11 @@ namespace Breeze
             if(boldButtonIcons) {
                 //thicker pen in titlebar
                 pen.setWidthF( pen.widthF() *1.666666 );
+            } else {
+                QColor penColor = pen.color();
+                penColor.setAlphaF( penColor.alphaF() * 0.9 );
+                //close button appears more grey when fine so reduce maximize opacity slightly to give a balanced look
+                pen.setColor( penColor );
             }
         }
         
@@ -84,13 +89,30 @@ namespace Breeze
     }
     
     void RenderStyleClassik18By18::renderMinimizeIcon()
-    {
-        //tiny filled square
-        pen.setJoinStyle( Qt::BevelJoin );
-        painter->setBrush( pen.color() );
-        painter->setPen( pen );
+    {        
+        if( boldButtonIcons ) {
+        
+            //tiny filled square
+            pen.setJoinStyle( Qt::BevelJoin );
+            painter->setBrush( pen.color() );
+            painter->setPen( pen );
 
-        painter->drawRect( QRectF( QPointF( 7.5, 7.5 ), QPointF( 10.5, 10.5 ) ) );
+            painter->drawRect( QRectF( QPointF( 7.5, 7.5 ), QPointF( 10.5, 10.5 ) ) );
+            
+        } else { // in fine mode the dense minimize button appears bolder than the others so reduce its opacity to compensate
+            QColor penColor = pen.color();
+            QColor brushColor = penColor;
+            brushColor.setAlphaF(brushColor.alphaF()* 0.75);
+            penColor.setAlphaF(penColor.alphaF()* 0.6);
+            pen.setColor(penColor);
+            
+            //tiny filled square
+            pen.setJoinStyle( Qt::BevelJoin );
+            painter->setBrush( brushColor );
+            painter->setPen( pen );
+
+            painter->drawRect( QRectF( QPointF( 7.5, 7.5 ), QPointF( 10.5, 10.5 ) ) );
+        }
     }
 
     

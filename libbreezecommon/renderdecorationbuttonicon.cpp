@@ -109,10 +109,18 @@ namespace Breeze
     
     void RenderDecorationButtonIcon18By18::renderPinnedOnAllDesktopsIcon()
     {
-        // thick hollow ring
-        pen.setWidthF(5);
-        painter->setPen( pen );
-        painter->drawEllipse( QPointF( 9, 9 ), qreal(3.5), qreal(3.5) );
+        painter->setBrush( pen.color() );
+        painter->setPen( Qt::NoPen );
+        
+        QPainterPath outerRing;
+        outerRing.addEllipse( QRectF( 3, 3, 12, 12 ) );
+        
+        QPainterPath innerDot;
+        innerDot.addEllipse( QRectF( 8, 8, 2, 2 ) );
+        
+        outerRing = outerRing.subtracted(innerDot);
+        
+        painter->drawPath(outerRing);
     }
     
     void RenderDecorationButtonIcon18By18::renderPinOnAllDesktopsIcon()
