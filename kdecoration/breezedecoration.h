@@ -74,7 +74,8 @@ namespace Breeze
 
         //*@name colors
         //@{
-        QColor titleBarColor() const;
+        QColor titleBarColor(bool returnNonAnimatedColor=false) const;
+        QColor titleBarColorWithAddedTransparency() const;
         QColor titleBarSeparatorColor() const;
         QColor accentedWindowOutlineColor(const QColor& inactiveColor) const;
         QColor fontColor() const;
@@ -147,7 +148,7 @@ namespace Breeze
         //@}
         
         qreal titleBarTopBottomMargins() const;
-        void setTitleBarOpacity();
+        void setAddedTitleBarOpacity();
         qreal titleBarSeparatorHeight() const;
 
         InternalSettingsPtr m_internalSettings;
@@ -166,8 +167,8 @@ namespace Breeze
         qreal m_shadowOpacity = 0;
         
         //* tilebar main state opacity
-        int m_titleBarOpacityActive = 255;
-        int m_titleBarOpacityInactive = 255;
+        qreal m_addedTitleBarOpacityActive = 1;
+        qreal m_addedTitleBarOpacityInactive = 1;
         
         //* frame corner radius, scaled according to DPI
         qreal m_scaledCornerRadius = 3.0;

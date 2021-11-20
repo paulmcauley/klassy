@@ -189,22 +189,36 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    QColor Decoration::titleBarColor() const
+    QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
     {
         
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         if( hideTitleBar() && !m_internalSettings->useTitlebarColorForAllBorders() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
         
+        QColor activeTitleBarColor = c->color( ColorGroup::Active, ColorRole::TitleBar );
+        QColor inactiveTitlebarColor = c->color( ColorGroup::Inactive, ColorRole::TitleBar );
+        if( m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized() ) activeTitleBarColor.setAlpha(255);
+        
         //do not animate titlebar if there is a tools area/header area as it causes glitches
-        if( !m_toolsAreaWillBeDrawn && m_animation->state() == QAbstractAnimation::Running )
+        if( !m_toolsAreaWillBeDrawn && m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor )
         {
             return KColorUtils::mix(
-                c->color( ColorGroup::Inactive, ColorRole::TitleBar ),
-                c->color( ColorGroup::Active, ColorRole::TitleBar ),
+                inactiveTitlebarColor,
+                activeTitleBarColor,
                 m_opacity );
-        } else return c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar );
+        } else return  c->isActive() ? activeTitleBarColor : inactiveTitlebarColor;
 
+    }
+    
+    QColor Decoration::titleBarColorWithAddedTransparency() const
+    {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        QColor color( titleBarColor() );
+        color.setAlphaF( color.alphaF() * ( c->isActive() ? m_addedTitleBarOpacityActive : m_addedTitleBarOpacityInactive ) );
+        return color;
     }
 
     //________________________________________________________________
@@ -319,7 +333,7 @@ namespace Breeze
         connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateBlur);
         connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
         
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setTitleBarOpacity);
+        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setAddedTitleBarOpacity);
         connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
 
         connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
@@ -494,7 +508,7 @@ namespace Breeze
         if( hasNoBorders() && m_internalSettings->drawSizeGrip() ) createSizeGrip();
         else deleteSizeGrip();
         
-        setTitleBarOpacity();
+        setAddedTitleBarOpacity();
     }
 
     //________________________________________________________________
@@ -721,8 +735,7 @@ namespace Breeze
             
             QColor windowBorderColor;
             if( m_internalSettings->useTitlebarColorForAllBorders() ) {
-                windowBorderColor = titleBarColor();
-                windowBorderColor.setAlpha( c->isActive() ? m_titleBarOpacityActive : m_titleBarOpacityInactive);
+                windowBorderColor = titleBarColorWithAddedTransparency();
             } else windowBorderColor = c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame );
             
             painter->setBrush( windowBorderColor );
@@ -815,23 +828,18 @@ namespace Breeze
         painter->save();
         painter->setPen(Qt::NoPen);
 
-        QColor titleBarColor( this->titleBarColor() );
+        QColor titleBarColor( titleBarColorWithAddedTransparency() );
         
         // render a linear gradient on title area
         if( c->isActive() && m_internalSettings->drawBackgroundGradient() )
-        {
-
-            titleBarColor.setAlpha( m_titleBarOpacityActive );
-            
+        {            
             QLinearGradient gradient( 0, 0, 0, m_titleRect.height() );
             gradient.setColorAt(0.0, titleBarColor.lighter( 120 ) );
             gradient.setColorAt(0.8, titleBarColor);
             painter->setBrush(gradient);
 
         } else {
-            titleBarColor.setAlpha( c->isActive() ? m_titleBarOpacityActive : m_titleBarOpacityInactive);
             painter->setBrush( titleBarColor );
-
         }
         
 
@@ -1192,23 +1200,19 @@ namespace Breeze
         return topBottomMargins;
     }
     
-    void Decoration::setTitleBarOpacity()
+    void Decoration::setAddedTitleBarOpacity()
     {
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        if( !c->isMaximized() ) {
-            m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
-            m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
+        if ( c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars() ) {
+            m_addedTitleBarOpacityActive = 1;
+            m_addedTitleBarOpacityInactive = 1;
         } else {
-            if( m_internalSettings->opaqueMaximizedTitlebars() ) {
-                m_titleBarOpacityActive = 255;
-                m_titleBarOpacityInactive = 255;
-            } else {
-                m_titleBarOpacityActive = m_internalSettings->activeTitlebarOpacity() * 2.55;
-                m_titleBarOpacityInactive = m_internalSettings->inactiveTitlebarOpacity() * 2.55;
-            }
+            m_addedTitleBarOpacityActive = qreal( m_internalSettings->activeTitlebarOpacity() ) / 100;
+            m_addedTitleBarOpacityInactive = qreal( m_internalSettings->inactiveTitlebarOpacity() ) / 100;
         }
+        
     }
     
     void Decoration::setScaledCornerRadius()
@@ -1222,11 +1226,18 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        int titleBarOpacity = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
+        int titleBarOpacityToAdd = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
         
         //disable blur if the titlebar is opaque
-        if( (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized() ) || !m_internalSettings->blurTransparentTitlebars() || titleBarOpacity == 100 ) setOpaque(true);
-        else setOpaque(false); 
+        if( (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized() )
+            || !m_internalSettings->blurTransparentTitlebars() 
+            || ( titleBarOpacityToAdd == 100 && titleBarColor(true).alpha() == 255 )
+        ){ //disable blur by setting opaque true
+            setOpaque(true);
+        }
+        else { //enable blur by setting opaque false
+            setOpaque(false);
+        }
     }
     
     void Decoration::setSystemAccentColors()
