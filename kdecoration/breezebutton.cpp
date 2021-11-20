@@ -417,14 +417,14 @@ namespace Breeze
                     }
                 } else {
                     QColor color( buttonHoverColor );
-                    color.setAlpha( color.alpha()*m_opacity );
+                    color.setAlphaF( color.alphaF()*m_opacity );
                     return color;
                 }
 
             } else {
 
                 QColor color( buttonHoverColor );
-                color.setAlpha( color.alpha()*m_opacity );
+                color.setAlphaF( color.alphaF()*m_opacity );
                 return color;
 
             }
@@ -483,7 +483,7 @@ namespace Breeze
             }
             else {
                 QColor color( buttonFocusColor );
-                color.setAlpha( color.alpha()*m_opacity );
+                color.setAlphaF( color.alphaF()*m_opacity );
                 return color;
             }
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
