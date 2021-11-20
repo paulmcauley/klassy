@@ -603,7 +603,7 @@ Icons:   </string>
            </property>
            <property name="maximumSize">
             <size>
-             <width>170</width>
+             <width>185</width>
              <height>64</height>
             </size>
            </property>
@@ -617,7 +617,7 @@ Icons:   </string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/classikstyles_config_icons/Classik_logo.svg);</string>
+            <string notr="true">border-image: url(:/classikstyles_config_icons/Classiks_logo.svg);</string>
            </property>
            <property name="interactive">
             <bool>false</bool>
