@@ -356,7 +356,7 @@ namespace Breeze
         Q_ASSERT(c);
         const bool maximized = isMaximized();
         int width, height, x, y;
-        qreal titlebarTopMargin = titleBarTopBottomMargins();
+        setScaledTitleBarTopBottomMargins();
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
@@ -372,9 +372,9 @@ namespace Breeze
             // for smaller circular buttons increase the resizable area
             // Paul McAuley: was 2*s->largeSpacing()* for side margins -- no idea why as side margins use small spacing
             width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
-            height = maximized ? borderTop() : borderTop() - s->smallSpacing()*titlebarTopMargin;
+            height = maximized ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
             x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
-            y = maximized ? 0 : s->smallSpacing()*titlebarTopMargin;
+            y = maximized ? 0 : m_scaledTitleBarTopMargin;
         }
         
         setTitleBar(QRect(x, y, width, height));
@@ -472,6 +472,7 @@ namespace Breeze
         m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
         
         setScaledCornerRadius();
+        setScaledTitleBarTopBottomMargins();
         updateBlur();
         setSystemAccentColors();
         
@@ -521,12 +522,7 @@ namespace Breeze
         // left, right and bottom borders
         const int left   = isLeftEdge() ? 0 : borderSize();
         const int right  = isRightEdge() ? 0 : borderSize();
-        const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
-        
-
-        qreal titleBarTopMargin = titleBarTopBottomMargins();
-        qreal titleBarBottomMargin = titleBarTopMargin;
-                
+        const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);                
 
         int top = 0;
         if( hideTitleBar() ) top = bottom;
@@ -538,10 +534,7 @@ namespace Breeze
             // padding below
             // extra pixel is used for the active window outline
             top += titleBarSeparatorHeight();
-            
-            const int baseSize = s->smallSpacing();
-
-            top += baseSize*(titleBarBottomMargin + titleBarTopMargin);
+            top += (m_scaledTitleBarTopMargin + m_scaledTitleBarBottomMargin);
 
         }
 
@@ -601,18 +594,17 @@ namespace Breeze
         int verticalOffset;
         int fullSizedButtonIconVerticalTranslation;
         int fullSizedButtonIconHorizontalTranslation;
-        qreal titleBarTopMargin = titleBarTopBottomMargins();
         
         if( m_fullSizedButtons )
         {
             bHeight = borderTop();
             bHeight -= titleBarSeparatorHeight();
             verticalOffset = 0;
-            fullSizedButtonIconVerticalTranslation = s->smallSpacing()*titleBarTopMargin + (captionHeight()-buttonHeight())/2;
+            fullSizedButtonIconVerticalTranslation = m_scaledTitleBarTopMargin + (captionHeight()-buttonHeight())/2;
         } else 
         {   
-            bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*titleBarTopMargin:0);
-            verticalOffset = (isTopEdge() ? s->smallSpacing()*titleBarTopMargin:0) + (captionHeight()-buttonHeight())/2;
+            bHeight = captionHeight() + (isTopEdge() ? m_scaledTitleBarTopMargin:0);
+            verticalOffset = (isTopEdge() ? m_scaledTitleBarTopMargin:0) + (captionHeight()-buttonHeight())/2;
             fullSizedButtonIconVerticalTranslation = 0;
         }
         
@@ -664,7 +656,7 @@ namespace Breeze
             // padding
             int vPadding;
             if( m_fullSizedButtons ) vPadding = 0;
-            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
+            else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
             auto firstButton = static_cast<Button*>( m_leftButtons->buttons().front().data() );
@@ -695,7 +687,7 @@ namespace Breeze
             // padding
             int vPadding;
             if( m_fullSizedButtons ) vPadding = 0;
-            else vPadding = isTopEdge() ? 0 : s->smallSpacing()*titleBarTopMargin;
+            else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
             auto lastButton = static_cast<Button*>( m_rightButtons->buttons().back().data() );
@@ -909,17 +901,13 @@ namespace Breeze
     //________________________________________________________________
     int Decoration::captionHeight() const
     { 
-        qreal titleBarTopMargin = titleBarTopBottomMargins();
-        qreal titleBarBottomMargin = titleBarTopMargin;
-        
-        return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(titleBarBottomMargin + titleBarTopMargin ) - titleBarSeparatorHeight();
+ 
+        return hideTitleBar() ? borderTop() : borderTop() - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
     }
 
     //________________________________________________________________
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
     {
-        qreal titleBarTopMargin = titleBarTopBottomMargins();
-        
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
 
@@ -934,7 +922,7 @@ namespace Breeze
                 m_internalSettings->titlebarSideMargins()*settings()->smallSpacing() :
                 size().width() - m_rightButtons->geometry().x() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
 
-            const int yOffset = settings()->smallSpacing()*titleBarTopMargin;
+            const int yOffset = m_scaledTitleBarTopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
 
             switch( m_internalSettings->titleAlignment() )
@@ -1188,7 +1176,7 @@ namespace Breeze
         }
     }
     
-    qreal Decoration::titleBarTopBottomMargins() const
+    void Decoration::setScaledTitleBarTopBottomMargins()
     {
         // access client
         auto c = client().toStrongRef();
@@ -1201,7 +1189,8 @@ namespace Breeze
             topBottomMargins = m_internalSettings->titlebarTopBottomMargins();
         }
         
-        return topBottomMargins;
+        m_scaledTitleBarTopMargin = int( settings()->smallSpacing() * topBottomMargins );
+        m_scaledTitleBarBottomMargin = m_scaledTitleBarTopMargin;
     }
     
     void Decoration::setAddedTitleBarOpacity()

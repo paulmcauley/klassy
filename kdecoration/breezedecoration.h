@@ -147,7 +147,7 @@ namespace Breeze
         { return m_sizeGrip; }
         //@}
         
-        qreal titleBarTopBottomMargins() const;
+        void setScaledTitleBarTopBottomMargins();
         void setAddedTitleBarOpacity();
         qreal titleBarSeparatorHeight() const;
 
@@ -170,8 +170,13 @@ namespace Breeze
         qreal m_addedTitleBarOpacityActive = 1;
         qreal m_addedTitleBarOpacityInactive = 1;
         
-        //* frame corner radius, scaled according to DPI
+        //* frame corner radius, scaled according to smallspacing
         qreal m_scaledCornerRadius = 3.0;
+        
+        //* titleBar top margin, scaled according to smallspacing
+        int m_scaledTitleBarTopMargin = 1;
+        //* titleBar bottom margin, scaled according to smallspacing
+        int m_scaledTitleBarBottomMargin = 1;
         
         //* Rectangular area of titlebar without clipped corners
         QRect m_titleRect;
