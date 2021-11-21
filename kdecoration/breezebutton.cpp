@@ -225,8 +225,14 @@ namespace Breeze
             // TODO: fix aliased and clipped circle button
             //pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
             
-            pen.setWidthF( m_standardScaledPenWidth );
-            pen.setCosmetic(true);
+            //cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons
+            if( m_isGtkCsdButton ) {
+                pen.setWidthF( PenWidth::Symbol );
+            }
+            else {
+                pen.setWidthF( m_standardScaledPenWidth );
+                pen.setCosmetic(true);
+            }
             painter->setPen(pen);
 
 
