@@ -855,17 +855,21 @@ namespace Breeze
             painter->setBrush( Qt::NoBrush );
             QPen p(titleBarSeparatorColor);
             p.setWidthF(titleBarSeparatorHeight());
-            //p.setCosmetic(true);
+            p.setCosmetic(true);
             painter->setPen( p );
+            
+            qreal separatorYOffset = 0.5;
+            if( KWindowSystem::isPlatformWayland() ) separatorYOffset *= painter->device()->devicePixelRatioF();
+            qreal separatorYCoOrd = qreal(m_titleRect.bottom()) - titleBarSeparatorHeight()/2 + separatorYOffset;
             if ( m_internalSettings->useTitlebarColorForAllBorders() ){
                 painter->drawLine( 
-                    QPointF( m_titleRect.bottomLeft().x() + borderLeft() + titleBarSeparatorHeight()/2, m_titleRect.bottomLeft().y() - titleBarSeparatorHeight()/2 ),
-                    QPointF( m_titleRect.bottomRight().x() - borderRight() - titleBarSeparatorHeight()/2, m_titleRect.bottomRight().y() - titleBarSeparatorHeight()/2 )
+                    QPointF( m_titleRect.bottomLeft().x() + borderLeft() + titleBarSeparatorHeight()/2, separatorYCoOrd ),
+                    QPointF( m_titleRect.bottomRight().x() - borderRight() - titleBarSeparatorHeight()/2, separatorYCoOrd )
                 );
             } else{
                 painter->drawLine( 
-                    QPointF( m_titleRect.bottomLeft().x(), m_titleRect.bottomLeft().y() - titleBarSeparatorHeight()/2 ),
-                    QPointF( m_titleRect.bottomRight().x(), m_titleRect.bottomRight().y() - titleBarSeparatorHeight()/2 )
+                    QPointF( m_titleRect.bottomLeft().x(), separatorYCoOrd ),
+                    QPointF( m_titleRect.bottomRight().x(), separatorYCoOrd )
                 );
             } 
         }
@@ -1255,8 +1259,9 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded() ) return 1;
-        else return 0;
+        if( m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded() ) {
+            return 1;
+        } else return 0;
     }
 
 } // namespace
