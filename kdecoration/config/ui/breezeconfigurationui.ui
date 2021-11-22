@@ -173,7 +173,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>&amp;Shape:   </string>
+             <string>Background &amp;shape:  </string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -187,11 +187,6 @@
            <widget class="QComboBox" name="buttonShape">
             <item>
              <property name="text">
-              <string>Circle</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>Full-sized Rectangle</string>
              </property>
             </item>
@@ -202,7 +197,22 @@
             </item>
             <item>
              <property name="text">
-              <string>Square</string>
+              <string>Large Circle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Small Circle</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Small Rounded Square</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Small Square</string>
              </property>
             </item>
            </widget>

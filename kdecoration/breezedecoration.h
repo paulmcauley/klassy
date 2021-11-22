@@ -35,6 +35,13 @@ namespace KDecoration2
 namespace Breeze
 {
     class SizeGrip;
+    
+    enum ButtonSize{
+           Small,
+           Large,
+           FullSized
+    };
+    
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
@@ -60,8 +67,9 @@ namespace Breeze
         //* caption height
         int captionHeight() const;
 
-        //* button height
-        int buttonHeight() const;
+        //* icon height
+        int iconHeight() const;
+        
 
         //*@name active state change animation
         //@{
@@ -98,7 +106,7 @@ namespace Breeze
         std::shared_ptr<QPainterPath> titleBarPath(){ return m_titleBarPath; }
         std::shared_ptr<QPainterPath> windowPath(){ return m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
-        bool fullSizedButtons(){ return m_fullSizedButtons; }
+        ButtonSize buttonSize(){ return m_buttonSize; }
         qreal scaledCornerRadius(){ return m_scaledCornerRadius; }
         std::shared_ptr<SystemButtonColors> systemAccentColors(){ return m_systemAccentColors; }
         
@@ -190,6 +198,7 @@ namespace Breeze
         
         std::shared_ptr<SystemButtonColors> m_systemAccentColors;
         
+        ButtonSize m_buttonSize = ButtonSize::Small;
         bool m_fullSizedButtons = false;
         bool m_colorSchemeHasHeaderColor = true;
         bool m_toolsAreaWillBeDrawn = true;

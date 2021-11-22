@@ -58,10 +58,12 @@
     <!-- button highlight style -->
     <entry name="ButtonShape" type="Enum">
       <choices>
-          <choice name="ShapeCircle" />
           <choice name="ShapeFullSizedRectangle" />
           <choice name="ShapeFullSizedRoundedRectangle" />
-          <choice name="ShapeSquare" />
+          <choice name="ShapeLargeCircle" />
+          <choice name="ShapeSmallCircle" />
+          <choice name="ShapeSmallRoundedSquare" />
+          <choice name="ShapeSmallSquare" />
       </choices>
       <default>ShapeFullSizedRoundedRectangle</default>
     </entry>
