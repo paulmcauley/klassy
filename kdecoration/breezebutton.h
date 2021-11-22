@@ -55,27 +55,25 @@ namespace Breeze
         //* standalone buttons
         bool isStandAlone() const { return ( m_flag == FlagStandalone || m_flag == FlagLeftmostNotAtEdge || m_flag == FlagRightmostNotAtEdge); }
 
-        //* offset
-        void setOffset( const QPointF& value )
-        { m_offset = value; }
+        //* offset for drawing icon
+        void setIconOffset( const QPointF& value )
+        { m_iconOffset = value; }
 
-        //* horizontal offset, for rendering
-        void setHorizontalOffset( qreal value )
-        { m_offset.setX( value ); }
+        //* horizontal offset, for rendering icon
+        void setHorizontalIconOffset( qreal value )
+        { m_iconOffset.setX( value ); }
 
-        //* vertical offset, for rendering
-        void setVerticalOffset( qreal value )
-        { m_offset.setY( value ); }
-
+        //* vertical offset, for rendering icon
+        void setVerticalIconOffset( qreal value )
+        { m_iconOffset.setY( value ); }
+        
+        //* offset for drawing large background -- used for the far left button
+        void setLargeBackgroundOffset( const QPointF& value )
+        { m_largeBackgroundOffset = value; }
+        
         //* set icon size
         void setIconSize( const QSize& value )
         { m_iconSize = value; }
-        
-        void setFullSizedButtonIconVerticalTranslation( int value )
-        { m_fullSizedButtonIconVerticalTranslation = value; }
-        
-        void setFullSizedButtonIconHorizontalTranslation( int value )
-        { m_fullSizedButtonIconHorizontalTranslation = value; }
 
         //*@name active state change animation
         //@{
@@ -120,16 +118,23 @@ namespace Breeze
         void setStandardScaledPenWidth();
         
         /**
-        * @brief Paint the button background for the Full-sized Rectangle highlight style; NB: applies a translation at end due to different full-sized button geometries
-        * @param painter Current QPainter object. NB: will be modified at end with a translation
+        * @brief Paint the button background for the Full-sized Rectangle button shape;
+        * @param painter Current QPainter object.
         */
         void paintFullSizedButtonBackground( QPainter* painter ) const;
         
         /**
-        * @brief Paint the button background for the circle highlight style as originally done in Breeze;
+        * @brief Paint the button background for the large circle button shape
         * @param painter Current QPainter object
         */
-        void paintNormalSizedButtonBackground( QPainter* painter) const;
+        void paintLargeSizedButtonBackground( QPainter* painter ) const;
+        
+        /**
+        * @brief Paint the button background for the small circle button shape as originally done in Breeze
+        *        Also paints the small square or small rounded square shapes
+        * @param painter Current QPainter object
+        */
+        void paintSmallSizedButtonBackground( QPainter* painter) const;
         
         QColor m_foregroundColor;
         QColor m_backgroundColor;
@@ -140,8 +145,10 @@ namespace Breeze
         //* active state change animation
         QVariantAnimation *m_animation;
 
-        //* vertical offset (for rendering)
-        QPointF m_offset;
+        //* icon offset (for rendering)
+        QPointF m_iconOffset;
+        
+        QPointF m_largeBackgroundOffset = QPointF(0,0);
 
         //* icon size
         QSize m_iconSize;
@@ -149,8 +156,6 @@ namespace Breeze
         //* active state change opacity
         qreal m_opacity = 0;
         
-        int m_fullSizedButtonIconVerticalTranslation = 0;
-        int m_fullSizedButtonIconHorizontalTranslation = 0;
         bool m_lowContrastBetweenTitleBarAndBackground = false;
         bool m_isGtkCsdButton;
         qreal m_devicePixelRatio = 1.0;

@@ -51,9 +51,9 @@ namespace Breeze
         }
 
         // setup default geometry
-        const int height = decoration->buttonHeight();
-        setGeometry(QRect(0, 0, height, height));
-        setIconSize(QSize( height, height ));
+        const int iconHeight = decoration->iconHeight();
+        setGeometry(QRect(0, 0, iconHeight, iconHeight));
+        setIconSize(QSize( iconHeight, iconHeight ));
 
         // connections
         connect(decoration->client().data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
@@ -149,14 +149,16 @@ namespace Breeze
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-            //draw a background only with Full-sized Rectangle highlight style; 
-            //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-            if( d->fullSizedButtons() ) 
+            //draw a background only with Full-sized or Large background shapes; 
+            //NB: these functions apply a translation to painter as different button geometry to the original reference small size
+            if( d->buttonSize() == ButtonSize::FullSized ) 
                 paintFullSizedButtonBackground(painter);
+            // for large background shape do not draw the background, but do the translation
+            else if( d->buttonSize() == ButtonSize::Large ) 
+                paintLargeSizedButtonBackground(painter);
             
-            // translate from offset
-            if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
-            else painter->translate( 0, m_offset.y() );
+            // translate from icon offset
+            painter->translate( m_iconOffset );
             
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
             if (auto deco =  qobject_cast<Decoration*>(decoration())) {
@@ -192,11 +194,11 @@ namespace Breeze
                 
         //draw a background only with Full-sized Rectangle button shape; 
         //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-        if( d->fullSizedButtons() ) paintFullSizedButtonBackground(painter);
+        if( d->buttonSize() == ButtonSize::FullSized ) paintFullSizedButtonBackground(painter);
+        if( d->buttonSize() == ButtonSize::Large ) paintLargeSizedButtonBackground(painter);
         
-        // translate from offset
-        if( m_flag == FlagLeftmostAndAtEdge ) painter->translate( m_offset );
-        else painter->translate( 0, m_offset.y() );
+        // translate from icon offset
+        painter->translate( m_iconOffset );       
         
         /*
         scale painter so that its window matches QRect( -1, -1, 20, 20 )
@@ -211,8 +213,8 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         
         
-        // render background if normal sized button shape
-        if( !d->fullSizedButtons() ) paintNormalSizedButtonBackground(painter);
+        // render background inside scaled area if small sized button shape
+        if( d->buttonSize() == ButtonSize::Small ) paintSmallSizedButtonBackground(painter);
         
         // render mark
         if( m_foregroundColor.isValid() )
@@ -222,7 +224,6 @@ namespace Breeze
             QPen pen( m_foregroundColor );
             
             //this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
-            // TODO: fix aliased and clipped circle button
             //pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
             
             //cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons
@@ -541,12 +542,12 @@ namespace Breeze
     }
     
     void Button::paintFullSizedButtonBackground(QPainter* painter) const
-    {
-        auto d = qobject_cast<Decoration*>( decoration() );
-        auto s = d->settings();
-        
+    {        
         if( m_backgroundColor.isValid() )
         {            
+            auto d = qobject_cast<Decoration*>( decoration() );
+            auto s = d->settings();
+            
             painter->save();
             painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
@@ -558,14 +559,14 @@ namespace Breeze
             if( shouldDrawBackgroundStroke() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF( m_standardScaledPenWidth );
+                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
                 pen.setCosmetic(true);
                 painter->setPen(pen);
                 
                 QRectF strokeRect;
                 
-                qreal geometryShrinkOffsetHorizontal = pen.widthF()*1.5;
-                if( KWindowSystem::isPlatformWayland() ) geometryShrinkOffsetHorizontal /= m_devicePixelRatio;
+                qreal geometryShrinkOffsetHorizontal = PenWidth::Symbol *1.5;
+                if( !KWindowSystem::isPlatformWayland() ) geometryShrinkOffsetHorizontal *= m_devicePixelRatio;
                 qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal * 1.1;
                 
                 //shrink the backgroundBoundingRect to make border more visible
@@ -594,30 +595,95 @@ namespace Breeze
             painter->restore();
         }
         
-        
-        //NB: if full-sized highlight, must add a translation due to larger geometry
-        painter->translate( m_fullSizedButtonIconHorizontalTranslation, m_fullSizedButtonIconVerticalTranslation );
     }
     
-    void Button::paintNormalSizedButtonBackground(QPainter* painter) const
+    //paints large circle background shape
+    void Button::paintLargeSizedButtonBackground(QPainter* painter) const
     {
-        auto d = qobject_cast<Decoration*>( decoration() );
-        
         if( m_backgroundColor.isValid() )
-        {
+        {  
+            auto d = qobject_cast<Decoration*>( decoration() );
+            auto s = d->settings();
+            
             painter->save();
+            
+            painter->translate(m_largeBackgroundOffset);
+            painter->setRenderHints( QPainter::Antialiasing, true );
+            painter->setBrush( m_backgroundColor );
+            
+            qreal padding = s->smallSpacing()*2;
+            qreal diameter = geometry().height() - padding;
+            QRectF backgroundBoundingRect(
+                qreal(geometry().topLeft().x()) + padding/2,
+                qreal(geometry().topLeft().y()) + padding/2,
+                diameter,
+                diameter
+            );
+            QPainterPath background;
+            
             if( shouldDrawBackgroundStroke() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF( m_standardScaledPenWidth );
+                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
                 pen.setCosmetic(true);
+                painter->setPen(pen);
+                
+            } else {
+                painter->setPen( Qt::NoPen );
+                //if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                //    background.addRoundedRect(backgroundBoundingRect,d->scaledCornerRadius(),d->scaledCornerRadius());
+            }
+            
+            background.addEllipse( backgroundBoundingRect );
+            
+            //clip the rounded corners using the windowPath
+            //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
+            //kde-gtk-config kwin_bridge (via kded5) does not draw all buttons if we clip with titlebarPath
+            //      -kwin_bridge works if we use windowPath, but cannot be sure either detection method will work in future so use both methods
+            /*if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
+                background = background.intersected( *(d->windowPath()) );*/
+            
+            painter->drawPath( background );
+            
+            painter->restore();
+            
+        }
+
+    }
+    
+    void Button::paintSmallSizedButtonBackground(QPainter* painter) const
+    {
+        
+        if( m_backgroundColor.isValid() )
+        {
+            auto d = qobject_cast<Decoration*>( decoration() );
+            
+            painter->save();
+            
+            qreal geometryShrinkOffset = 0;
+            
+            if( shouldDrawBackgroundStroke() )
+            {   
+                QPen pen( m_outlineColor );
+                pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, (qreal)20/m_iconSize.width() ));
+                qreal geometryShrinkOffset = -(pen.widthF()/2);
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
             
-            if(d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSquare)
-                painter->drawRect( QRectF( 0, 0, 18, 18 ) );
-            else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            if(d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare)
+                painter->drawRect(
+                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset)
+                );
+            else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare)
+                painter->drawRoundedRect(
+                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset),
+                    20,
+                    20, Qt::RelativeSize
+                );
+            else painter->drawEllipse( 
+                QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset) 
+            );
             
             painter->restore();
         }
