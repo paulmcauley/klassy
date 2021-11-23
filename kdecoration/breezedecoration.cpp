@@ -666,14 +666,13 @@ namespace Breeze
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
             auto firstButton = static_cast<Button*>( m_leftButtons->buttons().front().data() );
-            firstButton->setFlag( Button::FlagLeftmostNotAtEdge);
             if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 firstButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( firstButton->geometry().width() + hPadding, firstButton->geometry().height() ) ) );
                 if( m_buttonSize != ButtonSize::FullSized ) firstButton->setHorizontalIconOffset( horizontalIconOffset + hPadding );
                 firstButton->setLargeBackgroundOffset( QPointF( hPadding, 0) );
-                firstButton->setFlag( Button::FlagLeftmostAndAtEdge );
+                firstButton->setFlag( Button::FlagFirstInList );
                 
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
@@ -702,11 +701,10 @@ namespace Breeze
             const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
             
             auto lastButton = static_cast<Button*>( m_rightButtons->buttons().back().data() );
-            lastButton->setFlag( Button::FlagRightmostNotAtEdge );
             if( isRightEdge() )
             {
                 lastButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( lastButton->geometry().width() + hPadding, lastButton->geometry().height() ) ) );
-                lastButton->setFlag( Button::FlagRightmostAndAtEdge );
+                lastButton->setFlag( Button::FlagLastInList );
 
                 m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 

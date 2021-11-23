@@ -144,17 +144,17 @@ namespace Breeze
         
         painter->save();
         
-        if( !m_iconSize.isValid() ) m_iconSize = geometry().size().toSize();
+        if( !m_iconSize.isValid() || isStandAlone() ) m_iconSize = geometry().size().toSize();
         
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
             //draw a background only with Full-sized or Large background shapes; 
-            //NB: these functions apply a translation to painter as different button geometry to the original reference small size
-            if( d->buttonSize() == ButtonSize::FullSized ) 
+            //for standalone/GTK we draw small buttons so can't draw menu
+            if( d->buttonSize() == ButtonSize::FullSized && !( isStandAlone() || m_isGtkCsdButton ) ) 
                 paintFullSizedButtonBackground(painter);
-            // for large background shape do not draw the background, but do the translation
-            else if( d->buttonSize() == ButtonSize::Large ) 
+            //for standalone/GTK we draw small buttons so can't draw menu
+            else if( d->buttonSize() == ButtonSize::Large  && !( isStandAlone() || m_isGtkCsdButton )) 
                 paintLargeSizedButtonBackground(painter);
             
             // translate from icon offset
@@ -192,10 +192,15 @@ namespace Breeze
 
         auto d = qobject_cast<Decoration*>( decoration() );
                 
-        //draw a background only with Full-sized Rectangle button shape; 
-        //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-        if( d->buttonSize() == ButtonSize::FullSized ) paintFullSizedButtonBackground(painter);
-        if( d->buttonSize() == ButtonSize::Large ) paintLargeSizedButtonBackground(painter);
+        
+        //for standalone/GTK we draw small buttons so don't do anything
+        if(  !( isStandAlone() || m_isGtkCsdButton ) ){
+        
+            //draw a background only with Full-sized Rectangle button shape; 
+            //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
+            if( d->buttonSize() == ButtonSize::FullSized ) paintFullSizedButtonBackground(painter);
+            if( d->buttonSize() == ButtonSize::Large ) paintLargeSizedButtonBackground(painter);
+        }
         
         // translate from icon offset
         painter->translate( m_iconOffset );       
@@ -213,8 +218,9 @@ namespace Breeze
         painter->setRenderHints( QPainter::Antialiasing );
         
         
-        // render background inside scaled area if small sized button shape
-        if( d->buttonSize() == ButtonSize::Small ) paintSmallSizedButtonBackground(painter);
+        // render background inside scaled area if small sized button shape, or if standAlone
+        if( d->buttonSize() == ButtonSize::Small || isStandAlone() || m_isGtkCsdButton )
+            paintSmallSizedButtonBackground(painter);
         
         // render mark
         if( m_foregroundColor.isValid() )
@@ -584,10 +590,7 @@ namespace Breeze
             }
             
             //clip the rounded corners using the windowPath
-            //do this for all buttons as there are some edge cases where even the non front/back buttons in the list may be at the window edge
-            //kde-gtk-config kwin_bridge (via kded5) does not draw all buttons if we clip with titlebarPath
-            //      -kwin_bridge works if we use windowPath, but cannot be sure either detection method will work in future so use both methods
-            if( !d->isMaximized() && s->isAlphaChannelSupported() && !m_isGtkCsdButton )
+            if( !d->isMaximized() && s->isAlphaChannelSupported()  )
                 background = background.intersected( *(d->windowPath()) );
             
             painter->drawPath( background );
@@ -671,17 +674,21 @@ namespace Breeze
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
             
-            if(d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare)
+            if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare )
                 painter->drawRect(
                     QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset)
                 );
-            else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare)
+            else if (
+                d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle //case where standalone
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle //case where standalone
+            ) {
                 painter->drawRoundedRect(
                     QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset),
                     20,
                     20, Qt::RelativeSize
                 );
-            else painter->drawEllipse( 
+            } else painter->drawEllipse( 
                 QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset) 
             );
             
