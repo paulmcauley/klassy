@@ -376,7 +376,8 @@ namespace Breeze
 
         }
 
-        auto c = d->client().toStrongRef().data();
+        auto c = d->client().toStrongRef();
+        Q_ASSERT(c);
         
         QColor buttonHoverColor;
         QColor buttonFocusColor;
@@ -462,7 +463,8 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         
-        auto c = d->client().toStrongRef().data();
+        auto c = d->client().toStrongRef();
+        Q_ASSERT(c);
         
         QColor buttonFocusColor;
         //set hover and focus colours
@@ -669,7 +671,6 @@ namespace Breeze
             {   
                 QPen pen( m_outlineColor );
                 pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, (qreal)20/m_iconSize.width() ));
-                qreal geometryShrinkOffset = -(pen.widthF()/2);
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
