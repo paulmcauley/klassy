@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
+    <width>782</width>
     <height>700</height>
    </rect>
   </property>
@@ -955,7 +955,7 @@ horizontal spacing:</string>
                   <bool>true</bool>
                  </property>
                  <property name="minimum">
-                  <number>0</number>
+                  <number>-15</number>
                  </property>
                  <property name="maximum">
                   <number>30</number>
@@ -1117,7 +1117,7 @@ side margins:</string>
                <item row="1" column="0">
                 <widget class="QSpinBox" name="titlebarSideMargins">
                  <property name="minimum">
-                  <number>0</number>
+                  <number>-15</number>
                  </property>
                  <property name="maximum">
                   <number>30</number>
