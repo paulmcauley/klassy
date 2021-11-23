@@ -446,7 +446,7 @@
                 </item>
                 <item>
                  <property name="text">
-                  <string>Background and outline</string>
+                  <string>Background with outline</string>
                  </property>
                 </item>
                </widget>
