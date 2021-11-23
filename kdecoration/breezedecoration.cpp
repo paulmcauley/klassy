@@ -357,23 +357,23 @@ namespace Breeze
         const bool maximized = isMaximized();
         int width, height, x, y;
         setScaledTitleBarTopBottomMargins();
+        setScaledTitleBarSideMargins();
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
         if( m_buttonSize == ButtonSize::FullSized && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
         {
-            width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            width =  maximized ? c->width() : c->width() - 2*m_scaledTitleBarSideMargins;
             height = borderTop();
-            x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            x = maximized ? 0 : m_scaledTitleBarSideMargins;
             y = 0;
             
         } else 
         {   
             // for smaller circular buttons increase the resizable area
-            // Paul McAuley: was 2*s->largeSpacing()* for side margins -- no idea why as side margins use small spacing
-            width =  maximized ? c->width() : c->width() - 2*s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            width =  maximized ? c->width() : c->width() - 2*m_scaledTitleBarSideMargins;
             height = maximized ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
-            x = maximized ? 0 : s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            x = maximized ? 0 : m_scaledTitleBarSideMargins;
             y = maximized ? 0 : m_scaledTitleBarTopMargin;
         }
         
@@ -473,6 +473,7 @@ namespace Breeze
         
         setScaledCornerRadius();
         setScaledTitleBarTopBottomMargins();
+        setScaledTitleBarSideMargins();
         updateBlur();
         setSystemAccentColors();
         
@@ -520,7 +521,9 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         auto s = settings();
-
+        
+        //setScaledTitleBarTopBottomMargins();
+        
         // left, right and bottom borders
         const int left   = isLeftEdge() ? 0 : borderSize();
         const int right  = isRightEdge() ? 0 : borderSize();
@@ -534,7 +537,6 @@ namespace Breeze
             top += qMax(fm.height(), iconHeight() );
 
             // padding below
-            // extra pixel is used for the active window outline
             top += titleBarSeparatorHeight();
             top += (m_scaledTitleBarTopMargin + m_scaledTitleBarBottomMargin);
 
@@ -547,25 +549,24 @@ namespace Breeze
         int extSides = 0;
         int extBottom = 0;
         int extTop = 0;
+        
+        
+        //Add extended resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
+        if( m_buttonSize == ButtonSize::FullSized || m_buttonSize == ButtonSize::Large){
+            if( !isMaximizedVertically() ) extTop = extSize; 
+        }
+        
         if( hasNoBorders() )
         {
             if( !isMaximizedHorizontally() ) extSides = extSize;
             if( !isMaximizedVertically() ) { 
                 extBottom = extSize;
-                
-                //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-                if( m_buttonSize == ButtonSize::FullSized || m_buttonSize == ButtonSize::Large) extTop = extSize; 
             }
 
         } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
-            //Add resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-            if( m_buttonSize == ButtonSize::FullSized  || m_buttonSize == ButtonSize::Large ) extTop = extSize;
-        } else if( m_buttonSize == ButtonSize::FullSized  || m_buttonSize == ButtonSize::Large ) {
-            
-            extTop = extSize;
-        }
+        } 
 
         setResizeOnlyBorders(QMargins(extSides, extTop, extSides, extBottom));
     }
@@ -588,6 +589,8 @@ namespace Breeze
         const auto s = settings();
         auto c = client().toStrongRef();
         Q_ASSERT(c);
+        
+        setScaledTitleBarSideMargins();
         
         // adjust button position
         int bHeight;
@@ -663,7 +666,7 @@ namespace Breeze
             if( m_buttonSize == ButtonSize::FullSized ) vPadding = 0;
             else if(m_buttonSize == ButtonSize::Large ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-            const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            const int hPadding = m_scaledTitleBarSideMargins;
             
             auto firstButton = static_cast<Button*>( m_leftButtons->buttons().front().data() );
             if( isLeftEdge() )
@@ -698,7 +701,7 @@ namespace Breeze
             if( m_buttonSize == ButtonSize::FullSized ) vPadding = 0;
             else if(m_buttonSize == ButtonSize::Large ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-            const int hPadding = s->smallSpacing()*m_internalSettings->titlebarSideMargins();
+            const int hPadding = m_scaledTitleBarSideMargins;
             
             auto lastButton = static_cast<Button*>( m_rightButtons->buttons().back().data() );
             if( isRightEdge() )
@@ -923,12 +926,12 @@ namespace Breeze
            Q_ASSERT(c);
            
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
-                m_internalSettings->titlebarSideMargins()*settings()->smallSpacing():
-                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
+                m_scaledTitleBarSideMargins:
+                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleBarSideMargins;
 
             const int rightOffset = m_rightButtons->buttons().isEmpty() ?
-                m_internalSettings->titlebarSideMargins()*settings()->smallSpacing() :
-                size().width() - m_rightButtons->geometry().x() + m_internalSettings->titlebarSideMargins()*settings()->smallSpacing();
+                m_scaledTitleBarSideMargins :
+                size().width() - m_rightButtons->geometry().x() + m_scaledTitleBarSideMargins;
 
             const int yOffset = m_scaledTitleBarTopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
@@ -1199,6 +1202,20 @@ namespace Breeze
         
         m_scaledTitleBarTopMargin = int( settings()->smallSpacing() * topBottomMargins );
         m_scaledTitleBarBottomMargin = m_scaledTitleBarTopMargin;
+    }
+    
+    void Decoration::setScaledTitleBarSideMargins()
+    {       
+        qreal sideMargins = m_internalSettings->titlebarSideMargins() * settings()->smallSpacing();
+        
+        //negative side margins are for the use case when you have thick borders for rounded corners but don't want the extra spacing
+        //In this case you would just want to reduce the extra spacing caused by the borders but these don't appear when maximized
+        //Therefore, if negative, add the size of the border when maximized
+        if( isMaximizedHorizontally() && (sideMargins < 0) ){
+            sideMargins += borderSize(false);
+        } 
+        
+        m_scaledTitleBarSideMargins = int(sideMargins);
     }
     
     void Decoration::setAddedTitleBarOpacity()
