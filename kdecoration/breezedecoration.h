@@ -36,7 +36,7 @@ namespace Breeze
 {
     class SizeGrip;
     
-    enum ButtonSize{
+    enum struct ButtonSize{
            Small,
            Large,
            FullSized
