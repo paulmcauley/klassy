@@ -10,7 +10,7 @@
 
 #include "breezedecoration.h"
 
-#if CLASSIKS_DECORATION_DEBUG_MODE
+#if CLASSIK_DECORATION_DEBUG_MODE
 #include "setqdebug_logging.h"
 #endif
 
@@ -160,8 +160,8 @@ namespace Breeze
     {
         g_sDecoCount++;
         
-#if CLASSIKS_DECORATION_DEBUG_MODE
-        setDebugOutput(CLASSIKS_QDEBUG_OUTPUT_PATH);
+#if CLASSIK_DECORATION_DEBUG_MODE
+        setDebugOutput(CLASSIK_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
 #endif
     }
 

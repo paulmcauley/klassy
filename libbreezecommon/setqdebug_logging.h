@@ -52,7 +52,7 @@ namespace Breeze
                 }
 
                 QString currentTargetFilePath;
-                currentTargetFilePath = rawTargetFilePath;
+                currentTargetFilePath = QDir::homePath() + rawTargetFilePath;
                 if ( !QFileInfo::exists( currentTargetFilePath ) )
                 {
                     QDir().mkpath( QFileInfo( currentTargetFilePath ).path() );
