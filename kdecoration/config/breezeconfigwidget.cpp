@@ -54,6 +54,7 @@ namespace Breeze
         connect( m_ui.useTitlebarColorForAllBorders, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.opaqueMaximizedTitlebars, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.blurTransparentTitlebars, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.translucentButtonBackgrounds, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         
         //connect dual controls with same values
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), m_ui.titlebarTopBottomMargins_2, SLOT(setValue(double)) );
@@ -146,6 +147,7 @@ namespace Breeze
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
+        m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
         
         // load shadows
         if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge ) m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
@@ -198,6 +200,7 @@ namespace Breeze
         m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
         m_internalSettings->setOpaqueMaximizedTitlebars(m_ui.opaqueMaximizedTitlebars->isChecked());
         m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
+        m_internalSettings->setTranslucentButtonBackgrounds(m_ui.translucentButtonBackgrounds->isChecked());
         
         m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
@@ -267,6 +270,7 @@ namespace Breeze
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
+        m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
         
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
@@ -289,6 +293,7 @@ namespace Breeze
         else if( m_ui.useTitlebarColorForAllBorders->isChecked() != m_internalSettings->useTitlebarColorForAllBorders()) modified = true;
         else if( m_ui.opaqueMaximizedTitlebars->isChecked() != m_internalSettings->opaqueMaximizedTitlebars()) modified = true;
         else if( m_ui.blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars()) modified = true;
+        else if( m_ui.translucentButtonBackgrounds->isChecked() != m_internalSettings->translucentButtonBackgrounds()) modified = true;
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;

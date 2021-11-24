@@ -49,6 +49,33 @@ namespace Breeze
         //this is required as the accent colours feature sets these the same
         if( colors->buttonFocus == colors->buttonHover ) colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonFocus);
         
+        
+        //"Blue Ocean" style reduced opacity outlined buttons
+        colors->buttonReducedOpacityBackground = colors->buttonFocus;
+        colors->buttonReducedOpacityBackground.setAlphaF( colors->buttonReducedOpacityBackground.alphaF() * 0.4 );
+        
+        colors->buttonReducedOpacityOutline = colors->buttonFocus;
+        colors->buttonReducedOpacityOutline.setAlphaF( colors->buttonReducedOpacityOutline.alphaF() * 0.6 );
+        
+        colors->negativeReducedOpacityBackground = colors->negative;
+        colors->negativeReducedOpacityBackground.setAlphaF( colors->negativeReducedOpacityBackground.alphaF() * 0.6 );
+        
+        colors->negativeReducedOpacityOutline = colors->negative;
+        colors->negativeReducedOpacityOutline.setAlphaF( colors->negativeReducedOpacityOutline.alphaF() * 0.8 );
+        
+        colors->neutralReducedOpacityBackground = colors->neutral;
+        colors->neutralReducedOpacityBackground.setAlphaF( colors->neutralReducedOpacityBackground.alphaF() * 0.4 );
+        
+        colors->neutralReducedOpacityOutline = colors->neutral;
+        colors->neutralReducedOpacityOutline.setAlphaF( colors->neutralReducedOpacityOutline.alphaF() * 0.6 );
+        
+        colors->positiveReducedOpacityBackground = colors->positive;
+        colors->positiveReducedOpacityBackground.setAlphaF( colors->positiveReducedOpacityBackground.alphaF() * 0.4 );
+        
+        colors->positiveReducedOpacityOutline = colors->positive;
+        colors->positiveReducedOpacityOutline.setAlphaF( colors->positiveReducedOpacityOutline.alphaF() * 0.6 );
+        
+        
         colors->highlight = palette.color( QPalette::Highlight );
         colors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(colors->highlight,true);
         

@@ -613,7 +613,7 @@ Icons:   </string>
            </property>
            <property name="maximumSize">
             <size>
-             <width>185</width>
+             <width>170</width>
              <height>64</height>
             </size>
            </property>
@@ -627,7 +627,7 @@ Icons:   </string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/classikstyles_config_icons/Classiks_logo.svg);</string>
+            <string notr="true">border-image: url(:/classikstyles_config_icons/Classik_logo.svg);</string>
            </property>
            <property name="interactive">
             <bool>false</bool>
@@ -1940,6 +1940,48 @@ side margins:</string>
          </layout>
         </widget>
        </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Button opacity</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QCheckBox" name="translucentButtonBackgrounds">
+            <property name="text">
+             <string>Translucent button backgrounds</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_18">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <spacer name="verticalSpacer_19">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_window_outline">
@@ -2123,12 +2165,17 @@ side margins:</string>
             </item>
             <item>
              <property name="text">
-              <string>Contrast using titlebar text colour</string>
+              <string>Subtle contrast</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>Accent colour</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Accent and contrast colour blend</string>
              </property>
             </item>
            </widget>
@@ -2211,9 +2258,12 @@ side margins:</string>
   <tabstop>inactiveTitlebarOpacity</tabstop>
   <tabstop>opaqueMaximizedTitlebars</tabstop>
   <tabstop>blurTransparentTitlebars</tabstop>
+  <tabstop>translucentButtonBackgrounds</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>
+  <tabstop>graphicsView</tabstop>
+  <tabstop>thinWindowOutlineStyle</tabstop>
  </tabstops>
  <resources>
   <include location="classikstylesdecoration_config.qrc"/>

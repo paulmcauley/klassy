@@ -87,6 +87,30 @@
         <default>AlwaysShowIconHighlightUsingBackgroundAndOutline</default>
     </entry>
     
+        <!-- Titlebar opacity for active window -->
+    <entry name="ActiveTitlebarOpacity" type = "Int">
+       <default>100</default>
+       <min>0</min>
+       <max>100</max>
+    </entry>
+    
+    <!-- Titlebar opacity for inactive window -->
+    <entry name="InactiveTitlebarOpacity" type = "Int">
+       <default>100</default>
+       <min>0</min>
+       <max>100</max>
+    </entry>
+    
+    <!-- blur transparent titlebars -->
+    <entry name="BlurTransparentTitlebars" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <!-- blur transparent titlebars -->
+    <entry name="TranslucentButtonBackgrounds" type = "Bool">
+        <default>true</default>
+    </entry>
+    
   </group>
 
   <group name="Windeco">
@@ -117,8 +141,9 @@
             <choice name="WindowOutlineBlendToShadow" />
             <choice name="WindowOutlineContrastTitleBarText" />
             <choice name="WindowOutlineAccentColor" />
+            <choice name="WindowOutlineAccentWithContrast" />
         </choices>
-        <default>WindowOutlineAccentColor</default>
+        <default>WindowOutlineAccentWithContrast</default>
     </entry>
     
     <!-- title alignment -->
@@ -223,27 +248,8 @@
         <max>10</max>
     </entry>
     
-    <!-- Titlebar opacity for active window -->
-    <entry name="ActiveTitlebarOpacity" type = "Int">
-       <default>100</default>
-       <min>0</min>
-       <max>100</max>
-    </entry>
-    
-    <!-- Titlebar opacity for inactive window -->
-    <entry name="InactiveTitlebarOpacity" type = "Int">
-       <default>100</default>
-       <min>0</min>
-       <max>100</max>
-    </entry>
-    
     <!-- opaque maximized titlebars -->
     <entry name="OpaqueMaximizedTitlebars" type = "Bool">
-        <default>true</default>
-    </entry>
-    
-    <!-- blur transparent titlebars -->
-    <entry name="BlurTransparentTitlebars" type = "Bool">
         <default>true</default>
     </entry>
 

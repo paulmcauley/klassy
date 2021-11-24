@@ -237,16 +237,44 @@ namespace Breeze
         else return QColor();
     }
     
-    QColor Decoration::accentedWindowOutlineColor(const QColor& inactiveColor) const
+    QColor Decoration::accentedWindowOutlineColor() const
+    {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        
+        QColor activeColor = m_systemAccentColors->highlight;
+        activeColor.setAlphaF( activeColor.alphaF() * 0.87 );
+        QColor inactiveColor = m_systemAccentColors->highlightLessSaturated;
+        inactiveColor.setAlphaF( inactiveColor.alphaF() * 0.4 );
+        
+        if( m_animation->state() == QAbstractAnimation::Running )
+        {
+            return KColorUtils::mix( inactiveColor, activeColor, m_opacity );
+        } else if( c->isActive() ) return activeColor;
+        else return inactiveColor;
+    }
+    
+    QColor Decoration::fontMixedAccentWindowOutlineColor() const
     {
 
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
+        QColor fontColorActive = c->color( ColorGroup::Active, ColorRole::Foreground );
+        QColor fontColorInactive = c->color( ColorGroup::Inactive, ColorRole::Foreground );
+        QColor accentColorActive = m_systemAccentColors->buttonFocus;
+        QColor accentColorInactive = m_systemAccentColors->buttonHover;
+        
+        QColor activeColor = KColorUtils::mix( fontColorActive, accentColorActive, 0.75 );
+        activeColor.setAlphaF( activeColor.alphaF() * 0.4 );
+        
+        QColor inactiveColor = KColorUtils::mix( fontColorInactive, accentColorInactive, 0.75 );
+        inactiveColor.setAlphaF( inactiveColor.alphaF() * 0.25 );
+        
         if( m_animation->state() == QAbstractAnimation::Running )
         {
-            return KColorUtils::mix( inactiveColor, m_systemAccentColors->highlight, m_opacity );
-        } else if( c->isActive() ) return m_systemAccentColors->highlight;
+            return KColorUtils::mix( inactiveColor, activeColor, m_opacity );
+        } else if( c->isActive() ) return activeColor;
         else return inactiveColor;
     }
 
@@ -1025,7 +1053,7 @@ namespace Breeze
 
           auto withOpacity = [](const QColor& color, qreal opacity) -> QColor {
               QColor c(color);
-              c.setAlphaF(opacity);
+              c.setAlphaF(opacity * c.alphaF());
               return c;
           };
 
@@ -1117,7 +1145,9 @@ namespace Breeze
           if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText )
               p.setColor(withOpacity(fontColor(), 0.25));
           else if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor )
-              p.setColor( accentedWindowOutlineColor(withOpacity(m_systemAccentColors->highlightLessSaturated, 0.4)) );
+              p.setColor( accentedWindowOutlineColor() );
+          else if( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
+              p.setColor( fontMixedAccentWindowOutlineColor() );
           else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
           
           p.setWidthF(outlinePenWidth);
