@@ -7,8 +7,8 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#define CLASSIKS_DECORATION_DEBUG_MODE 0
-#define CLASSIKS_QDEBUG_OUTPUT_PATH "/home/paul/Desktop/classiks_debug.txt"
+#define CLASSIK_DECORATION_DEBUG_MODE 0
+#define CLASSIK_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/classik_debug.txt"
 
 #include "breezesettings.h"
 
