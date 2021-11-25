@@ -2175,7 +2175,7 @@ side margins:</string>
             </item>
             <item>
              <property name="text">
-              <string>Contrast with subtle accent colour</string>
+              <string>Contrast blended with accent colour</string>
              </property>
             </item>
            </widget>
