@@ -1512,7 +1512,7 @@ side margins:</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_transparency">
+     <widget class="QWidget" name="tab_titlebar">
       <attribute name="title">
        <string>Titlebar</string>
       </attribute>
