@@ -54,9 +54,9 @@ namespace Breeze
              */
             static std::shared_ptr<SystemButtonColors> getSystemButtonColors( const QPalette & palette );
             
-            static QColor getDifferentiatedSaturatedColor( const QColor& inputColor );
+            static QColor getDifferentiatedSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate = false );
             
-            static QColor getDifferentiatedLessSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate = false);
+            static QColor getDifferentiatedLessSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate = false );
             
             static QColor getLessSaturatedColorForWindowHighlight( const QColor& inputColor, bool noMandatoryDifferentiate = false );
             
