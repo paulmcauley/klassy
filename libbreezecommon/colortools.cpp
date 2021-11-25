@@ -57,11 +57,11 @@ namespace Breeze
         colors->buttonReducedOpacityOutline = colors->buttonFocus;
         colors->buttonReducedOpacityOutline.setAlphaF( colors->buttonReducedOpacityOutline.alphaF() * 0.6 );
         
-        colors->negativeReducedOpacityBackground = colors->negative;
-        colors->negativeReducedOpacityBackground.setAlphaF( colors->negativeReducedOpacityBackground.alphaF() * 0.6 );
+        colors->negativeReducedOpacityBackground = getDifferentiatedSaturatedColor(colors->negative, true);
+        colors->negativeReducedOpacityBackground.setAlphaF( colors->negativeReducedOpacityBackground.alphaF() * 0.5 );
         
-        colors->negativeReducedOpacityOutline = colors->negative;
-        colors->negativeReducedOpacityOutline.setAlphaF( colors->negativeReducedOpacityOutline.alphaF() * 0.8 );
+        colors->negativeReducedOpacityOutline = getDifferentiatedSaturatedColor(colors->negative, true);
+        colors->negativeReducedOpacityOutline.setAlphaF( colors->negativeReducedOpacityOutline.alphaF() * 0.7 );
         
         colors->neutralReducedOpacityBackground = colors->neutral;
         colors->neutralReducedOpacityBackground.setAlphaF( colors->neutralReducedOpacityBackground.alphaF() * 0.4 );
@@ -82,12 +82,12 @@ namespace Breeze
         return colors;
     }
     
-    QColor ColorTools::getDifferentiatedSaturatedColor( const QColor& inputColor )
+    QColor ColorTools::getDifferentiatedSaturatedColor( const QColor& inputColor, bool noMandatoryDifferentiate )
     {
         int colorHsv[3];
         inputColor.getHsv(&colorHsv[0], &colorHsv[1], &colorHsv[2]);
         if( colorHsv[1] < 240 ) colorHsv[1] = 255; //increase saturation to max if not max
-        else colorHsv[1] -= 80; // else reduce saturation if already high to provide differentiation/contrast
+        else if (! noMandatoryDifferentiate ) colorHsv[1] -= 80; // else reduce saturation if already high to provide differentiation/contrast
         QColor redColorSaturated;
         redColorSaturated.setHsv(colorHsv[0], colorHsv[1], colorHsv[2]);
         return redColorSaturated;
