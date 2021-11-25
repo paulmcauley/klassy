@@ -92,8 +92,7 @@
              <string notr="true"/>
             </property>
             <property name="text">
-             <string>
-Icons:   </string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Icons:&amp;nbsp;&amp;nbsp;&lt;br/&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -716,7 +715,7 @@ Icons:   </string>
          <item row="2" column="1">
           <widget class="QLabel" name="label_24">
            <property name="text">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;v3.0 git&lt;br /&gt;&lt;a href=&quot;https://github.com/paulmcauley/classikstyles&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;Source code&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;v3.0 git&lt;br /&gt;&lt;a href=&quot;https://github.com/paulmcauley/classik&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;Source code&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1572,6 +1571,18 @@ side margins:</string>
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
+          <property name="leftMargin">
+           <number>18</number>
+          </property>
+          <property name="topMargin">
+           <number>18</number>
+          </property>
+          <property name="rightMargin">
+           <number>18</number>
+          </property>
+          <property name="bottomMargin">
+           <number>18</number>
+          </property>
           <item row="1" column="0">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <property name="spacing">
@@ -1941,16 +1952,16 @@ side margins:</string>
          </property>
          <layout class="QFormLayout" name="formLayout_3">
           <property name="leftMargin">
-           <number>10</number>
+           <number>12</number>
           </property>
           <property name="topMargin">
-           <number>10</number>
+           <number>12</number>
           </property>
           <property name="rightMargin">
-           <number>10</number>
+           <number>12</number>
           </property>
           <property name="bottomMargin">
-           <number>10</number>
+           <number>12</number>
           </property>
           <item row="0" column="0">
            <widget class="QLabel" name="label">
