@@ -348,7 +348,7 @@ namespace Breeze
             return color;
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             if( type() == DecorationButtonType::Close ){
-                if( d->internalSettings()->outlineCloseButton() ){
+                if( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
                     return KColorUtils::mix (d->titleBarColor(), Qt::GlobalColor::white, m_opacity);
                 } else {
                     return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
@@ -363,7 +363,7 @@ namespace Breeze
             else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return color;
             else if( d->internalSettings()->translucentButtonBackgrounds() ) return d->fontColor();
             else return d->titleBarColor();    
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
             return d->titleBarColor();
         } else {
 
@@ -458,7 +458,7 @@ namespace Breeze
 
             if( type() == DecorationButtonType::Close )
             {
-                if( d->internalSettings()->outlineCloseButton() )
+                if( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton )
                 {
                     if ( d->internalSettings()->redOutline() && !c->isActive() ){
                         return KColorUtils::mix( d->fontColor(), buttonHoverColor, m_opacity );
@@ -484,7 +484,7 @@ namespace Breeze
         } else if( isHovered() ) {
             return buttonHoverColor;
 
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
             if( d->internalSettings()->redOutline() ) return c->isActive() ? buttonHoverColor : d->fontColor();
             else return d->fontColor();
 
@@ -559,7 +559,7 @@ namespace Breeze
         if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade || type() == DecorationButtonType::OnAllDesktops) ) ) {
             return buttonOutlineColor;
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
-            if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+            if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
                 if( !( d->internalSettings()->redOutline() && c->isActive() ) ) return KColorUtils::mix( KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 ), buttonOutlineColor, m_opacity );
                 else return buttonOutlineColor;
             }
@@ -568,7 +568,7 @@ namespace Breeze
                 color.setAlphaF( color.alphaF()*m_opacity );
                 return color;
             }
-        } else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
             if( d->internalSettings()->redOutline() ) {
                 if( c->isActive() ) return buttonOutlineColor;
                 else if( isHovered() ){ 

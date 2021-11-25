@@ -28,6 +28,7 @@ namespace Breeze
         QColor negativeSaturated;
         QColor negativeReducedOpacityBackground;
         QColor negativeReducedOpacityOutline;
+        QColor negativeReducedOpacityLessSaturatedBackground;
         QColor neutral;
         QColor neutralLessSaturated;
         QColor neutralReducedOpacityBackground;

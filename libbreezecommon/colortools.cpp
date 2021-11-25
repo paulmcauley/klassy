@@ -57,11 +57,15 @@ namespace Breeze
         colors->buttonReducedOpacityOutline = colors->buttonFocus;
         colors->buttonReducedOpacityOutline.setAlphaF( colors->buttonReducedOpacityOutline.alphaF() * 0.6 );
         
-        colors->negativeReducedOpacityBackground = getDifferentiatedSaturatedColor(colors->negative, true);
+        QColor fullySaturatedNegative = getDifferentiatedSaturatedColor(colors->negative, true);
+        colors->negativeReducedOpacityBackground = fullySaturatedNegative;
         colors->negativeReducedOpacityBackground.setAlphaF( colors->negativeReducedOpacityBackground.alphaF() * 0.5 );
         
-        colors->negativeReducedOpacityOutline = getDifferentiatedSaturatedColor(colors->negative, true);
+        colors->negativeReducedOpacityOutline = fullySaturatedNegative;
         colors->negativeReducedOpacityOutline.setAlphaF( colors->negativeReducedOpacityOutline.alphaF() * 0.7 );
+        
+        colors->negativeReducedOpacityLessSaturatedBackground = getDifferentiatedLessSaturatedColor(colors->negative);
+        colors->negativeReducedOpacityLessSaturatedBackground.setAlphaF( colors->negativeReducedOpacityLessSaturatedBackground.alphaF() * 0.6 );
         
         colors->neutralReducedOpacityBackground = colors->neutral;
         colors->neutralReducedOpacityBackground.setAlphaF( colors->neutralReducedOpacityBackground.alphaF() * 0.4 );
