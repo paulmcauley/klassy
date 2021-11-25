@@ -6,4 +6,4 @@ NameSpace=Breeze
 Singleton=false
 Mutators=true
 GlobalEnums=true
-Notifiers=OutlineCloseButton
+Notifiers=AlwaysShow

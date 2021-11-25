@@ -7173,7 +7173,7 @@ namespace Breeze
         else if( widget ) palette = widget->palette();
         else palette = QApplication::palette();
 
-        const bool isOutlinedCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->outlineCloseButton() );
+        const bool isOutlinedCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton );
         const bool withTrafficLights( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights );
 
         palette.setCurrentColorGroup( QPalette::Active );

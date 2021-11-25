@@ -34,6 +34,7 @@ namespace Breeze
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -45,7 +46,6 @@ namespace Breeze
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawSizeGrip, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -77,9 +77,6 @@ namespace Breeze
         connect( m_ui.activeTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity, SLOT(setValue(int)) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity_2, SLOT(setValue(int)) );
         connect( m_ui.inactiveTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity, SLOT(setValue(int)) );
-        
-        //only enable redOutline when outlineCloseButton is checked
-        connect( m_ui.outlineCloseButton, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledRedOutline );
 
         //only enable animationsSpeed when animationsEnabled is checked
         connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledAnimationsSpeed );
@@ -118,6 +115,7 @@ namespace Breeze
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
+        m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
@@ -135,8 +133,6 @@ namespace Breeze
         /*setEnabledTransparentTitlebarOptions();*/
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
-        setEnabledRedOutline();
         m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
@@ -178,6 +174,7 @@ namespace Breeze
         m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
         m_internalSettings->setButtonShape( m_ui.buttonShape->currentIndex() );
         m_internalSettings->setBackgroundColors( m_ui.backgroundColors->currentIndex() );
+        m_internalSettings->setAlwaysShow( m_ui.alwaysShow->currentIndex() );
         m_internalSettings->setAlwaysShowIconHighlightUsing( m_ui.alwaysShowIconHighlightUsing->currentIndex() );
         m_internalSettings->setIconSize( m_ui.iconSize->currentIndex() );
         m_internalSettings->setButtonSpacingRight( m_ui.buttonSpacingRight->value() );
@@ -189,7 +186,6 @@ namespace Breeze
         m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
         m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
         m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->currentIndex() );
-        m_internalSettings->setOutlineCloseButton( m_ui.outlineCloseButton->isChecked() );
         m_internalSettings->setRedOutline( m_ui.redOutline->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
@@ -245,6 +241,7 @@ namespace Breeze
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
+        m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
@@ -257,8 +254,6 @@ namespace Breeze
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         /*setEnabledTransparentTitlebarOptions();*/
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.outlineCloseButton->setChecked( m_internalSettings->outlineCloseButton() );
-        setEnabledRedOutline();
         m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
@@ -298,10 +293,10 @@ namespace Breeze
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
         else if( m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors() ) modified = true;
+        else if( m_ui.alwaysShow->currentIndex() != m_internalSettings->alwaysShow() ) modified = true;
         else if( m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing() ) modified = true;
         else if( m_ui.iconSize->currentIndex() != m_internalSettings->iconSize() ) modified = true;
         else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
-        else if( m_ui.outlineCloseButton->isChecked() != m_internalSettings->outlineCloseButton() ) modified = true;
         else if( m_ui.redOutline->isChecked() != m_internalSettings->redOutline() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
@@ -336,12 +331,6 @@ namespace Breeze
     void ConfigWidget::setChanged( bool value )
     {
         emit changed( value );
-    }
-    
-    //only enable redOutline when outlineCloseButton is checked
-    void ConfigWidget::setEnabledRedOutline()
-    {
-        m_ui.redOutline->setEnabled(m_ui.outlineCloseButton->isChecked());
     }
 
     //only enable animationsSpeedRelativeSystem and animationsSpeedLabelx when animationsEnabled is checked
