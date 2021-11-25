@@ -2165,7 +2165,7 @@ side margins:</string>
             </item>
             <item>
              <property name="text">
-              <string>Subtle contrast</string>
+              <string>Contrast</string>
              </property>
             </item>
             <item>
@@ -2175,7 +2175,7 @@ side margins:</string>
             </item>
             <item>
              <property name="text">
-              <string>Accent and contrast colour blend</string>
+              <string>Contrast with subtle accent colour</string>
              </property>
             </item>
            </widget>
@@ -2259,11 +2259,11 @@ side margins:</string>
   <tabstop>opaqueMaximizedTitlebars</tabstop>
   <tabstop>blurTransparentTitlebars</tabstop>
   <tabstop>translucentButtonBackgrounds</tabstop>
+  <tabstop>thinWindowOutlineStyle</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>
   <tabstop>graphicsView</tabstop>
-  <tabstop>thinWindowOutlineStyle</tabstop>
  </tabstops>
  <resources>
   <include location="classikstylesdecoration_config.qrc"/>
