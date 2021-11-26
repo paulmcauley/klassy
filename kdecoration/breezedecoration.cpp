@@ -1243,6 +1243,7 @@ namespace Breeze
         //In this case you would just want to reduce the extra spacing caused by the borders but these don't appear when maximized
         //Therefore, if negative, add the size of the border when maximized
         //-1 is to account for the thickness of the border itself
+        //TODO:double-check this -1
         if( isMaximizedHorizontally() && (m_scaledTitleBarSideMargins < -1 ) ){
             m_scaledTitleBarSideMargins += borderSize(false);
         } 

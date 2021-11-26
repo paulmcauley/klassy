@@ -556,9 +556,11 @@ namespace Breeze
             buttonOutlineColor.setAlphaF( buttonOutlineColor.alphaF() * 0.8 );
         }
         
-        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade || type() == DecorationButtonType::OnAllDesktops) ) ) {
+        if( isPressed() || ( isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade) ) ) {
             return buttonOutlineColor;
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+        }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) ){
+            return buttonOutlineColor;
+        }else if( m_animation->state() == QAbstractAnimation::Running ) {
             if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
                 if( !( d->internalSettings()->redOutline() && c->isActive() ) ) return KColorUtils::mix( KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 ), buttonOutlineColor, m_opacity );
                 else return buttonOutlineColor;
