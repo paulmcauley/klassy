@@ -626,7 +626,8 @@ namespace Breeze
         int iconHeight = this->iconHeight();
         int iconWidth = iconHeight;
         int verticalIconOffset=0;
-        int horizontalIconOffset=0;
+        int horizontalIconOffsetLeftButtons=0;
+        int horizontalIconOffsetRightButtons=0;
         
         if( m_buttonSize == ButtonSize::FullSized ) {
             bHeight = borderTop();
@@ -647,16 +648,16 @@ namespace Breeze
             
             if ( m_buttonSize == ButtonSize::FullSized ) {
                 bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
-                horizontalIconOffset = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
+                horizontalIconOffsetLeftButtons = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
-                horizontalIconOffset = (bWidth - iconHeight)/2;
+                horizontalIconOffsetLeftButtons = (bWidth - iconHeight)/2;
             } else {
                 bWidth = iconHeight;
-                horizontalIconOffset = 0;
+                horizontalIconOffsetLeftButtons = 0;
             }
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
-            static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffset, verticalIconOffset ) );
+            static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffsetLeftButtons, verticalIconOffset ) );
             static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
         }
         
@@ -665,16 +666,16 @@ namespace Breeze
             
             if ( m_buttonSize == ButtonSize::FullSized ) {
                 bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
-                horizontalIconOffset = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
+                horizontalIconOffsetRightButtons = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
-                horizontalIconOffset = (bWidth - iconHeight)/2;
+                horizontalIconOffsetRightButtons = (bWidth - iconHeight)/2;
             } else {
                 bWidth = iconHeight;
-                horizontalIconOffset = 0;
+                horizontalIconOffsetRightButtons = 0;
             }
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
-            static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffset, verticalIconOffset ) );
+            static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffsetRightButtons, verticalIconOffset ) );
             static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
         }
 
@@ -701,7 +702,7 @@ namespace Breeze
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 firstButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( firstButton->geometry().width() + hPadding, firstButton->geometry().height() ) ) );
-                if( m_buttonSize != ButtonSize::FullSized ) firstButton->setHorizontalIconOffset( horizontalIconOffset + hPadding );
+                firstButton->setHorizontalIconOffset( horizontalIconOffsetLeftButtons + hPadding );
                 firstButton->setLargeBackgroundOffset( QPointF( hPadding, 0) );
                 firstButton->setFlag( Button::FlagFirstInList );
                 
@@ -1236,16 +1237,15 @@ namespace Breeze
     
     void Decoration::setScaledTitleBarSideMargins()
     {       
-        qreal sideMargins = m_internalSettings->titlebarSideMargins() * settings()->smallSpacing();
+        m_scaledTitleBarSideMargins = int( qreal(m_internalSettings->titlebarSideMargins()) * qreal(settings()->smallSpacing() ) );
         
         //negative side margins are for the use case when you have thick borders for rounded corners but don't want the extra spacing
         //In this case you would just want to reduce the extra spacing caused by the borders but these don't appear when maximized
         //Therefore, if negative, add the size of the border when maximized
-        if( isMaximizedHorizontally() && (sideMargins < 0) ){
-            sideMargins += borderSize(false);
+        //-1 is to account for the thickness of the border itself
+        if( isMaximizedHorizontally() && (m_scaledTitleBarSideMargins < -1 ) ){
+            m_scaledTitleBarSideMargins += borderSize(false);
         } 
-        
-        m_scaledTitleBarSideMargins = int(sideMargins);
     }
     
     void Decoration::setAddedTitleBarOpacity()
