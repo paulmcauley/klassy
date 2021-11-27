@@ -954,13 +954,17 @@ namespace Breeze
            auto c = client().toStrongRef();
            Q_ASSERT(c);
            
+            int leftPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingLeft();
+            int rightPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingRight();
+            int padding = qMin( leftPadding, rightPadding);
+           
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
-                m_scaledTitleBarSideMargins:
-                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + m_scaledTitleBarSideMargins;
+                padding:
+                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
 
             const int rightOffset = m_rightButtons->buttons().isEmpty() ?
-                m_scaledTitleBarSideMargins :
-                size().width() - m_rightButtons->geometry().x() + m_scaledTitleBarSideMargins;
+                padding :
+                size().width() - m_rightButtons->geometry().x() + padding;
 
             const int yOffset = m_scaledTitleBarTopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
