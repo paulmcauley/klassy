@@ -140,7 +140,7 @@ namespace Breeze
         
         m_lowContrastBetweenTitleBarAndBackground = ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3) );
         
-        m_outlineColor = this->outlineColor();
+        if( shouldDrawBackgroundStroke() ) m_outlineColor = this->outlineColor();
         
         painter->save();
         
@@ -327,6 +327,9 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>( decoration() );
         if( !d ) return QColor();
         
+        auto c = d->client().toStrongRef();
+        Q_ASSERT(c);
+        
         QColor color;
         if( !d->internalSettings()->translucentButtonBackgrounds() )
             color = ColorTools::getHigherContrastForegroundColor( d->fontColor(), m_backgroundColor, 2.3 );
@@ -349,12 +352,16 @@ namespace Breeze
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             if( type() == DecorationButtonType::Close ){
                 if( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                    return KColorUtils::mix (d->titleBarColor(), Qt::GlobalColor::white, m_opacity);
+                    if ( d->internalSettings()->redOutline()  && c->isActive() ){
+                        return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
+                    } else if ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText){
+                        return  KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
+                    } else if ( d->internalSettings()->translucentButtonBackgrounds() ) return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
+                    else return KColorUtils::mix (d->titleBarColor(), Qt::GlobalColor::white, m_opacity);
                 } else {
                     return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
                 }
-            }
-            else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return KColorUtils::mix (d->fontColor(), color, m_opacity);
+            } else if( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText ) return KColorUtils::mix (d->fontColor(), color, m_opacity);
             else if( d->internalSettings()->translucentButtonBackgrounds() ) return d->fontColor(); 
             else return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
             
@@ -364,7 +371,12 @@ namespace Breeze
             else if( d->internalSettings()->translucentButtonBackgrounds() ) return d->fontColor();
             else return d->titleBarColor();    
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
-            return d->titleBarColor();
+            if ( d->internalSettings()->redOutline() && c->isActive() ){
+                return d->fontColor();
+            } else if ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText){
+                return d->fontColor();
+            } else if ( d->internalSettings()->translucentButtonBackgrounds() ) return d->fontColor();
+            else return d->titleBarColor();
         } else {
 
             return d->fontColor();
@@ -386,6 +398,7 @@ namespace Breeze
         auto c = d->client().toStrongRef();
         Q_ASSERT(c);
         
+        QColor buttonAlwaysShowColor;
         QColor buttonHoverColor;
         QColor buttonFocusColor;
         
@@ -394,52 +407,102 @@ namespace Breeze
             
             if( d->internalSettings()->translucentButtonBackgrounds() ){
                 if( type() == DecorationButtonType::Close ) { 
-                    buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                    buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                    if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
+                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                            
+                            buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                            buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                            buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        } else {
+                            buttonAlwaysShowColor = d->systemAccentColors()->buttonReducedOpacityBackground;
+                            buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                            buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        }
+                    } else {
+                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                    }
                 } else if ( type() == DecorationButtonType::Minimize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
-                    buttonFocusColor = d->systemAccentColors()->neutralReducedOpacityOutline;
                     buttonHoverColor = d->systemAccentColors()->neutralReducedOpacityBackground;
+                    buttonFocusColor = d->systemAccentColors()->neutralReducedOpacityOutline;
                 } else if ( type() == DecorationButtonType::Maximize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
-                    buttonFocusColor = d->systemAccentColors()->positiveReducedOpacityOutline;
                     buttonHoverColor = d->systemAccentColors()->positiveReducedOpacityBackground;
+                    buttonFocusColor = d->systemAccentColors()->positiveReducedOpacityOutline;
                 } else {
-                    buttonFocusColor = d->systemAccentColors()->buttonReducedOpacityOutline;
                     buttonHoverColor = d->systemAccentColors()->buttonReducedOpacityBackground;
+                    buttonFocusColor = d->systemAccentColors()->buttonReducedOpacityOutline;
                 }
             } else{
-                if( type() == DecorationButtonType::Close ) { 
-                    buttonFocusColor = d->systemAccentColors()->negativeSaturated;
-                    buttonHoverColor = d->systemAccentColors()->negative;
+                if( type() == DecorationButtonType::Close ) {
+                    if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
+                        if ( d->internalSettings()->redOutline()  && c->isActive() ){
+                            buttonAlwaysShowColor = d->systemAccentColors()->negative;
+                            buttonHoverColor = d->systemAccentColors()->negativeSaturated;
+                            buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        } else {
+                            buttonAlwaysShowColor = d->systemAccentColors()->buttonHover;
+                            buttonHoverColor = d->systemAccentColors()->negativeSaturated;
+                            buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        }
+                    } else {
+                        buttonHoverColor = d->systemAccentColors()->negative;
+                        buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                    }
                 } else if ( type() == DecorationButtonType::Minimize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
-                    buttonFocusColor = d->systemAccentColors()->neutral;
                     buttonHoverColor = d->systemAccentColors()->neutralLessSaturated;
+                    buttonFocusColor = d->systemAccentColors()->neutral;
                 } else if ( type() == DecorationButtonType::Maximize && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ){
-                    buttonFocusColor = d->systemAccentColors()->positive;
                     buttonHoverColor = d->systemAccentColors()->positiveLessSaturated;
+                    buttonFocusColor = d->systemAccentColors()->positive;
                 } else {
-                    buttonFocusColor = d->systemAccentColors()->buttonFocus;
                     buttonHoverColor = d->systemAccentColors()->buttonHover;
+                    buttonFocusColor = d->systemAccentColors()->buttonFocus;
                 }
             }
             
         } else {
             if( d->internalSettings()->translucentButtonBackgrounds() ){
                 if( type() == DecorationButtonType::Close ) {
-                    buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                    buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                    if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
+                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                            buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                            buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                            buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        } else {
+                            buttonAlwaysShowColor = d->fontColor();
+                            buttonAlwaysShowColor.setAlphaF( buttonAlwaysShowColor.alphaF() * 0.15 );
+                            buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                            buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                        }
+                    } else {
+                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                    }
                 } else{
-                    buttonFocusColor = d->fontColor();
-                    buttonFocusColor.setAlphaF( buttonFocusColor.alphaF() * 0.25 );
                     buttonHoverColor = d->fontColor();
                     buttonHoverColor.setAlphaF( buttonHoverColor.alphaF() * 0.15 );
+                    buttonFocusColor = d->fontColor();
+                    buttonFocusColor.setAlphaF( buttonFocusColor.alphaF() * 0.25 );
                 }
             } else{
-                if( type() == DecorationButtonType::Close ) { 
-                    buttonHoverColor = d->systemAccentColors()->negative;
-                    buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                if( type() == DecorationButtonType::Close ) {
+                    if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
+                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                            buttonAlwaysShowColor = d->systemAccentColors()->negative;
+                            buttonHoverColor = d->systemAccentColors()->negativeSaturated;
+                            buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        } else {
+                            buttonAlwaysShowColor = d->fontColor();
+                            buttonHoverColor = d->systemAccentColors()->negativeSaturated;
+                            buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        }
+                    } else {
+                        buttonHoverColor = d->systemAccentColors()->negative;
+                        buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                    }
                 } else {
-                    buttonFocusColor = KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
                     buttonHoverColor = d->fontColor();
+                    buttonFocusColor = KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
                 }
             }
             
@@ -460,13 +523,7 @@ namespace Breeze
             {
                 if( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton )
                 {
-                    if ( d->internalSettings()->redOutline() && !c->isActive() ){
-                        return KColorUtils::mix( d->fontColor(), buttonHoverColor, m_opacity );
-                    } else if( d->internalSettings()->redOutline() && c->isActive() ) {
-                        return buttonHoverColor; //non-hovered and hovered are both same red -- no animation in background, just in foreground
-                    } else {
-                        return KColorUtils::mix( d->fontColor(), buttonHoverColor, m_opacity );
-                    }
+                    return KColorUtils::mix( buttonAlwaysShowColor, buttonHoverColor, m_opacity );
                 } else {
                     QColor color( buttonHoverColor );
                     color.setAlphaF( color.alphaF()*m_opacity );
@@ -485,9 +542,7 @@ namespace Breeze
             return buttonHoverColor;
 
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
-            if( d->internalSettings()->redOutline() ) return c->isActive() ? buttonHoverColor : d->fontColor();
-            else return d->fontColor();
-
+            return buttonAlwaysShowColor;
         } else {
 
             return QColor();
@@ -561,24 +616,13 @@ namespace Breeze
         }else if( type() == DecorationButtonType::OnAllDesktops && isChecked() && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) ){
             return buttonOutlineColor;
         }else if( m_animation->state() == QAbstractAnimation::Running ) {
-            if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
-                if( !( d->internalSettings()->redOutline() && c->isActive() ) ) return KColorUtils::mix( KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 ), buttonOutlineColor, m_opacity );
-                else return buttonOutlineColor;
-            }
-            else {
-                QColor color( buttonOutlineColor );
-                color.setAlphaF( color.alphaF()*m_opacity );
-                return color;
-            }
+           QColor color( buttonOutlineColor );
+           color.setAlphaF( color.alphaF()*m_opacity );
+           return color;
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
-            if( d->internalSettings()->redOutline() ) {
-                if( c->isActive() ) return buttonOutlineColor;
-                else if( isHovered() ){ 
-                     return buttonOutlineColor;
-                } else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
-            } else if( isHovered() ){
+            if( isHovered() ){
                 return buttonOutlineColor;
-            } else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+            } else return QColor();
 
         } else {
             return buttonOutlineColor;
@@ -613,7 +657,7 @@ namespace Breeze
         auto d = qobject_cast<Decoration*>(decoration());
         if(!d) return false;
         
-        if ( d->internalSettings()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline )
+        if( d->internalSettings()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline )
             return true;
         else return ( m_lowContrastBetweenTitleBarAndBackground );
     }
@@ -635,10 +679,15 @@ namespace Breeze
             
             if( shouldDrawBackgroundStroke() )
             {   
-                QPen pen( m_outlineColor );
-                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
-                pen.setCosmetic(true);
-                painter->setPen(pen);
+                
+                if( m_outlineColor.isValid() ){
+                    QPen pen( m_outlineColor );
+                    pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
+                    pen.setCosmetic(true);
+                    painter->setPen(pen);
+                } else {
+                   painter->setPen( Qt::NoPen ); // this is for the case when you still want to shrink the button but don't want an outline e.g. with always show highlighted close button and not hovered/pressed 
+                }
                 
                 QRectF strokeRect;
                 
@@ -695,7 +744,7 @@ namespace Breeze
             );
             QPainterPath background;
             
-            if( shouldDrawBackgroundStroke() )
+            if( shouldDrawBackgroundStroke() && m_outlineColor.isValid() )
             {   
                 QPen pen( m_outlineColor );
                 pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
@@ -736,7 +785,7 @@ namespace Breeze
             
             qreal geometryShrinkOffset = 0;
             
-            if( shouldDrawBackgroundStroke() )
+            if( shouldDrawBackgroundStroke() && m_outlineColor.isValid() )
             {   
                 QPen pen( m_outlineColor );
                 pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, (qreal)20/m_iconSize.width() ));

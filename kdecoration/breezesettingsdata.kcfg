@@ -36,7 +36,7 @@
     
     <!-- red outline close button -->
     <entry name="RedOutline" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
     
     <!-- button icon style -->
