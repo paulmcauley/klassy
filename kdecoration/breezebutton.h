@@ -65,9 +65,13 @@ namespace Breeze
         void setVerticalIconOffset( qreal value )
         { m_iconOffset.setY( value ); }
         
-        //* offset for drawing large background -- used for the far left button
-        void setLargeBackgroundOffset( const QPointF& value )
-        { m_largeBackgroundOffset = value; }
+        //* offset for drawing large or full-sized background -- used for the far left button
+        void setLargeOrFullSizedVisibleBackgroundOffset( const QPointF& value )
+        { m_largeOrFullSizedVisibleBackgroundOffset = value; }
+        
+        //* geometry for rendering a Full-sized button - can differ from button geometry at far left and far right positions
+        void setFullSizedBackgroundVisibleSize( const QSizeF& value )
+        { m_fullSizedBackgroundVisibleSize = value; }
         
         //* set icon size
         void setIconSize( const QSize& value )
@@ -146,7 +150,11 @@ namespace Breeze
         //* icon offset (for rendering)
         QPointF m_iconOffset;
         
-        QPointF m_largeBackgroundOffset = QPointF(0,0);
+        //* offset for rendering a large or Full-sized background
+        QPointF m_largeOrFullSizedVisibleBackgroundOffset = QPointF();
+        
+        //* geometry for rendering a Full-sized button
+        QSizeF m_fullSizedBackgroundVisibleSize = QSizeF();
 
         //* icon size
         QSize m_iconSize;
