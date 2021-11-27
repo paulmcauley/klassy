@@ -650,6 +650,7 @@ namespace Breeze
             if ( m_buttonSize == ButtonSize::FullSized ) {
                 bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
                 horizontalIconOffsetLeftButtons = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
+                static_cast<Button*>( button.data() )->setFullSizedBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
                 horizontalIconOffsetLeftButtons = (bWidth - iconHeight)/2;
@@ -668,6 +669,7 @@ namespace Breeze
             if ( m_buttonSize == ButtonSize::FullSized ) {
                 bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
                 horizontalIconOffsetRightButtons = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
+                static_cast<Button*>( button.data() )->setFullSizedBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
                 horizontalIconOffsetRightButtons = (bWidth - iconHeight)/2;
@@ -704,14 +706,14 @@ namespace Breeze
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 firstButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( firstButton->geometry().width() + hPadding, firstButton->geometry().height() ) ) );
                 firstButton->setHorizontalIconOffset( horizontalIconOffsetLeftButtons + hPadding );
-                firstButton->setLargeBackgroundOffset( QPointF( hPadding, 0) );
+                firstButton->setLargeOrFullSizedVisibleBackgroundOffset( QPointF( hPadding, 0) );
                 firstButton->setFlag( Button::FlagFirstInList );
                 
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
             } else {
                 m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
-                firstButton->setLargeBackgroundOffset( QPointF( 0, 0) );
+                firstButton->setLargeOrFullSizedVisibleBackgroundOffset( QPointF( 0, 0) );
             }
 
         }

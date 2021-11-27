@@ -670,12 +670,12 @@ namespace Breeze
             auto s = d->settings();
             
             painter->save();
+            painter->translate(m_largeOrFullSizedVisibleBackgroundOffset);
             painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
             
-            QRectF backgroundBoundingRect;
+            const QRectF backgroundBoundingRect = ( QRectF(geometry().topLeft(), m_fullSizedBackgroundVisibleSize) );
             QPainterPath background;
-            backgroundBoundingRect = geometry();
             
             if( shouldDrawBackgroundStroke() )
             {   
@@ -730,7 +730,7 @@ namespace Breeze
             
             painter->save();
             
-            painter->translate(m_largeBackgroundOffset);
+            painter->translate(m_largeOrFullSizedVisibleBackgroundOffset);
             painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
             
