@@ -568,7 +568,7 @@
               <item row="0" column="0">
                <widget class="QCheckBox" name="redOutline">
                 <property name="text">
-                 <string>&amp;Red close button</string>
+                 <string>Always &amp;red close button</string>
                 </property>
                </widget>
               </item>
