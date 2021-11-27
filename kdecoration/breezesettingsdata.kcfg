@@ -201,7 +201,7 @@
     
     <entry name="TitlebarSideMargins" type = "Int">
        <default>0</default>
-       <min>-15</min>
+       <min>0</min>
        <max>30</max>
     </entry>
     

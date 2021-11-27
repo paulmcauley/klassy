@@ -382,6 +382,7 @@ namespace Breeze
         auto s = settings();
         auto c = client().toStrongRef();
         Q_ASSERT(c);
+        //TODO: check whether isMaximized() should really be split into isMaximizedHorizontally() and isMaximizedVertically()
         const bool maximized = isMaximized();
         int width, height, x, y;
         setScaledTitleBarTopBottomMargins();
@@ -591,7 +592,7 @@ namespace Breeze
                 extBottom = extSize;
             }
 
-        } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
+        } else if( ( hasNoSideBorders() || (m_internalSettings->titlebarSideMargins() == 0) ) && !isMaximizedHorizontally() ) {
 
             extSides = extSize;
         } 
@@ -1243,14 +1244,10 @@ namespace Breeze
     {       
         m_scaledTitleBarSideMargins = int( qreal(m_internalSettings->titlebarSideMargins()) * qreal(settings()->smallSpacing() ) );
         
-        //negative side margins are for the use case when you have thick borders for rounded corners but don't want the extra spacing
-        //In this case you would just want to reduce the extra spacing caused by the borders but these don't appear when maximized
-        //Therefore, if negative, add the size of the border when maximized
-        //-1 is to account for the thickness of the border itself
-        //TODO:double-check this -1
-        if( isMaximizedHorizontally() && (m_scaledTitleBarSideMargins < -1 ) ){
-            m_scaledTitleBarSideMargins += borderSize(false);
-        } 
+        //subtract any added margins from the side margin so the user doesn't need to adjust the side margins when changing border size
+        //this makes the side margin relative to the border edge rather than the titlebar edge
+        if( !isMaximizedHorizontally() ) m_scaledTitleBarSideMargins -= this->borderSize(false);
+
     }
     
     void Decoration::setAddedTitleBarOpacity()

@@ -971,7 +971,7 @@ horizontal spacing:</string>
                   <bool>true</bool>
                  </property>
                  <property name="minimum">
-                  <number>-15</number>
+                  <number>0</number>
                  </property>
                  <property name="maximum">
                   <number>30</number>
@@ -1133,7 +1133,7 @@ side margins:</string>
                <item row="1" column="0">
                 <widget class="QSpinBox" name="titlebarSideMargins">
                  <property name="minimum">
-                  <number>-15</number>
+                  <number>0</number>
                  </property>
                  <property name="maximum">
                   <number>30</number>
