@@ -159,7 +159,7 @@
             <number>0</number>
            </property>
            <property name="currentIndex">
-            <number>0</number>
+            <number>1</number>
            </property>
            <widget class="QWidget" name="page_always_show_icon">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -2511,8 +2511,13 @@ side margins:</string>
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>buttonIconStyle</tabstop>
+  <tabstop>iconSize</tabstop>
+  <tabstop>boldButtonIcons</tabstop>
   <tabstop>buttonShape</tabstop>
+  <tabstop>fullHeightButtonWidthMarginLeft</tabstop>
+  <tabstop>fullHeightButtonWidthMarginRight</tabstop>
   <tabstop>backgroundColors</tabstop>
+  <tabstop>translucentButtonBackgrounds</tabstop>
   <tabstop>alwaysShow</tabstop>
   <tabstop>redOutline</tabstop>
   <tabstop>alwaysShowIconHighlightUsing</tabstop>
@@ -2548,6 +2553,7 @@ side margins:</string>
   <tabstop>shadowColor</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
+  <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources>
   <include location="classikstylesdecoration_config.qrc"/>
