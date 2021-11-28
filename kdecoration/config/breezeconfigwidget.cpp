@@ -33,6 +33,9 @@ namespace Breeze
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()) );
+        connect( m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -79,7 +82,7 @@ namespace Breeze
         connect( m_ui.inactiveTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity, SLOT(setValue(int)) );
 
         //only enable animationsSpeed when animationsEnabled is checked
-        connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::setEnabledAnimationsSpeed );
+        connect( m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::setEnabledAnimationsSpeed );
 
         // track animations changes
         connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -114,6 +117,8 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.fullHeightButtonWidthMarginLeft->setValue( m_internalSettings->fullHeightButtonWidthMarginLeft() );
+        m_ui.fullHeightButtonWidthMarginRight->setValue( m_internalSettings->fullHeightButtonWidthMarginRight() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
         m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
@@ -139,7 +144,6 @@ namespace Breeze
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsSpeedRelativeSystem->setValue( m_internalSettings->animationsSpeedRelativeSystem() );
-        setEnabledAnimationsSpeed();
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
@@ -173,6 +177,8 @@ namespace Breeze
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
         m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
         m_internalSettings->setButtonShape( m_ui.buttonShape->currentIndex() );
+        m_internalSettings->setFullHeightButtonWidthMarginLeft( m_ui.fullHeightButtonWidthMarginLeft->value() );
+        m_internalSettings->setFullHeightButtonWidthMarginRight( m_ui.fullHeightButtonWidthMarginRight->value() );
         m_internalSettings->setBackgroundColors( m_ui.backgroundColors->currentIndex() );
         m_internalSettings->setAlwaysShow( m_ui.alwaysShow->currentIndex() );
         m_internalSettings->setAlwaysShowIconHighlightUsing( m_ui.alwaysShowIconHighlightUsing->currentIndex() );
@@ -240,6 +246,8 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.fullHeightButtonWidthMarginLeft->setValue( m_internalSettings->fullHeightButtonWidthMarginLeft() );
+        m_ui.fullHeightButtonWidthMarginRight->setValue( m_internalSettings->fullHeightButtonWidthMarginRight() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
         m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
@@ -260,7 +268,6 @@ namespace Breeze
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsSpeedRelativeSystem->setValue( m_internalSettings->animationsSpeedRelativeSystem() );
-        setEnabledAnimationsSpeed();
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
@@ -292,6 +299,8 @@ namespace Breeze
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
+        else if( m_ui.fullHeightButtonWidthMarginLeft->value() != m_internalSettings->fullHeightButtonWidthMarginLeft() ) modified = true;
+        else if( m_ui.fullHeightButtonWidthMarginRight->value() != m_internalSettings->fullHeightButtonWidthMarginRight() ) modified = true;
         else if( m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors() ) modified = true;
         else if( m_ui.alwaysShow->currentIndex() != m_internalSettings->alwaysShow() ) modified = true;
         else if( m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing() ) modified = true;
@@ -359,4 +368,13 @@ namespace Breeze
         }
     }
     */
+    
+    
+    void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
+    {
+        if( m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
+            ||  m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+        ) m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
+        else m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
+    }
 }

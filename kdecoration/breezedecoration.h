@@ -39,7 +39,7 @@ namespace Breeze
     enum struct ButtonSize{
            Small,
            Large,
-           FullSized
+           FullHeight
     };
     
     class Decoration : public KDecoration2::Decoration
@@ -204,7 +204,6 @@ namespace Breeze
         std::shared_ptr<SystemButtonColors> m_systemAccentColors;
         
         ButtonSize m_buttonSize = ButtonSize::Small;
-        bool m_fullSizedButtons = false;
         bool m_colorSchemeHasHeaderColor = true;
         bool m_toolsAreaWillBeDrawn = true;
 
