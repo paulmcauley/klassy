@@ -50,17 +50,17 @@
       <default>StyleClassik</default>
     </entry>
     
-    <!-- button highlight style -->
+    <!-- button background shape -->
     <entry name="ButtonShape" type="Enum">
       <choices>
-          <choice name="ShapeFullSizedRectangle" />
-          <choice name="ShapeFullSizedRoundedRectangle" />
+          <choice name="ShapeFullHeightRectangle" />
+          <choice name="ShapeFullHeightRoundedRectangle" />
           <choice name="ShapeLargeCircle" />
           <choice name="ShapeSmallCircle" />
           <choice name="ShapeSmallRoundedSquare" />
           <choice name="ShapeSmallSquare" />
       </choices>
-      <default>ShapeFullSizedRoundedRectangle</default>
+      <default>ShapeFullHeightRoundedRectangle</default>
     </entry>
     
     <!-- background colors -->
@@ -172,8 +172,15 @@
       <default>IconDefault</default>
     </entry>
     
-    <!-- right button spacing -->
-    <entry name="ButtonSpacingRight" type = "Int">
+    <!-- Full-height button width margin left -->
+    <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
+       <default>3</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+    
+    <!-- Full-height button width margin right -->
+    <entry name="FullHeightButtonWidthMarginRight" type = "Int">
        <default>8</default>
        <min>0</min>
        <max>50</max>
@@ -181,7 +188,14 @@
     
     <!-- left button spacing -->
     <entry name="ButtonSpacingLeft" type = "Int">
-       <default>3</default>
+       <default>0</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+    
+    <!-- right button spacing -->
+    <entry name="ButtonSpacingRight" type = "Int">
+       <default>0</default>
        <min>0</min>
        <max>50</max>
     </entry>

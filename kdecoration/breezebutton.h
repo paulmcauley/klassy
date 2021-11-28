@@ -66,12 +66,12 @@ namespace Breeze
         { m_iconOffset.setY( value ); }
         
         //* offset for drawing large or full-sized background -- used for the far left button
-        void setLargeOrFullSizedVisibleBackgroundOffset( const QPointF& value )
-        { m_largeOrFullSizedVisibleBackgroundOffset = value; }
+        void setLargeOrFullHeightVisibleBackgroundOffset( const QPointF& value )
+        { m_largeOrFullHeightVisibleBackgroundOffset = value; }
         
         //* geometry for rendering a Full-sized button - can differ from button geometry at far left and far right positions
-        void setFullSizedBackgroundVisibleSize( const QSizeF& value )
-        { m_fullSizedBackgroundVisibleSize = value; }
+        void setFullHeightBackgroundVisibleSize( const QSizeF& value )
+        { m_fullHeightBackgroundVisibleSize = value; }
         
         //* set icon size
         void setIconSize( const QSize& value )
@@ -123,7 +123,7 @@ namespace Breeze
         * @brief Paint the button background for the Full-sized Rectangle button shape;
         * @param painter Current QPainter object.
         */
-        void paintFullSizedButtonBackground( QPainter* painter ) const;
+        void paintFullHeightButtonBackground( QPainter* painter ) const;
         
         /**
         * @brief Paint the button background for the large circle button shape
@@ -151,10 +151,10 @@ namespace Breeze
         QPointF m_iconOffset;
         
         //* offset for rendering a large or Full-sized background
-        QPointF m_largeOrFullSizedVisibleBackgroundOffset = QPointF();
+        QPointF m_largeOrFullHeightVisibleBackgroundOffset = QPointF();
         
         //* geometry for rendering a Full-sized button
-        QSizeF m_fullSizedBackgroundVisibleSize = QSizeF();
+        QSizeF m_fullHeightBackgroundVisibleSize = QSizeF();
 
         //* icon size
         QSize m_iconSize;

@@ -151,8 +151,8 @@ namespace Breeze
         {
             //draw a background only with Full-sized or Large background shapes; 
             //for standalone/GTK we draw small buttons so can't draw menu
-            if( d->buttonSize() == ButtonSize::FullSized && !( isStandAlone() || m_isGtkCsdButton ) ) 
-                paintFullSizedButtonBackground(painter);
+            if( d->buttonSize() == ButtonSize::FullHeight && !( isStandAlone() || m_isGtkCsdButton ) ) 
+                paintFullHeightButtonBackground(painter);
             //for standalone/GTK we draw small buttons so can't draw menu
             else if( d->buttonSize() == ButtonSize::Large  && !( isStandAlone() || m_isGtkCsdButton )) 
                 paintLargeSizedButtonBackground(painter);
@@ -197,8 +197,8 @@ namespace Breeze
         if(  !( isStandAlone() || m_isGtkCsdButton ) ){
         
             //draw a background only with Full-sized Rectangle button shape; 
-            //NB: paintFullSizedRectangleBackground function applies a translation to painter as different larger full-sized button geometry
-            if( d->buttonSize() == ButtonSize::FullSized ) paintFullSizedButtonBackground(painter);
+            //NB: paintFullHeightRectangleBackground function applies a translation to painter as different larger full-sized button geometry
+            if( d->buttonSize() == ButtonSize::FullHeight ) paintFullHeightButtonBackground(painter);
             if( d->buttonSize() == ButtonSize::Large ) paintLargeSizedButtonBackground(painter);
         }
         
@@ -662,7 +662,7 @@ namespace Breeze
         else return ( m_lowContrastBetweenTitleBarAndBackground );
     }
     
-    void Button::paintFullSizedButtonBackground(QPainter* painter) const
+    void Button::paintFullHeightButtonBackground(QPainter* painter) const
     {        
         if( m_backgroundColor.isValid() )
         {            
@@ -670,11 +670,11 @@ namespace Breeze
             auto s = d->settings();
             
             painter->save();
-            painter->translate(m_largeOrFullSizedVisibleBackgroundOffset);
+            painter->translate(m_largeOrFullHeightVisibleBackgroundOffset);
             painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
             
-            const QRectF backgroundBoundingRect = ( QRectF(geometry().topLeft(), m_fullSizedBackgroundVisibleSize) );
+            const QRectF backgroundBoundingRect = ( QRectF(geometry().topLeft(), m_fullHeightBackgroundVisibleSize) );
             QPainterPath background;
             
             if( shouldDrawBackgroundStroke() )
@@ -699,12 +699,12 @@ namespace Breeze
                 strokeRect= QRectF( backgroundBoundingRect.adjusted( geometryShrinkOffsetHorizontal, geometryShrinkOffsetVertical, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical ) );
                 
                 
-                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle )
                     background.addRoundedRect(strokeRect,d->scaledCornerRadius(),d->scaledCornerRadius());
                 else background.addRect(strokeRect);
             } else {
                 painter->setPen( Qt::NoPen );
-                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle )
                     background.addRoundedRect(backgroundBoundingRect,d->scaledCornerRadius(),d->scaledCornerRadius());
                 else background.addRect( backgroundBoundingRect );
             }
@@ -730,7 +730,7 @@ namespace Breeze
             
             painter->save();
             
-            painter->translate(m_largeOrFullSizedVisibleBackgroundOffset);
+            painter->translate(m_largeOrFullHeightVisibleBackgroundOffset);
             painter->setRenderHints( QPainter::Antialiasing, true );
             painter->setBrush( m_backgroundColor );
             
@@ -753,7 +753,7 @@ namespace Breeze
                 
             } else {
                 painter->setPen( Qt::NoPen );
-                //if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle )
+                //if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle )
                 //    background.addRoundedRect(backgroundBoundingRect,d->scaledCornerRadius(),d->scaledCornerRadius());
             }
             
@@ -799,8 +799,8 @@ namespace Breeze
                 );
             else if (
                 d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle //case where standalone
-                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle //case where standalone
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle //case where standalone
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle //case where standalone
             ) {
                 painter->drawRoundedRect(
                     QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset),

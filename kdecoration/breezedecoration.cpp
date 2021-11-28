@@ -390,7 +390,7 @@ namespace Breeze
         updateBlur();
         
         //prevents resize handles appearing in button at top window edge for large full-height buttons
-        if( m_buttonSize == ButtonSize::FullSized && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
+        if( m_buttonSize == ButtonSize::FullHeight && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically()) )
         {
             width =  maximized ? c->width() : c->width() - 2*m_scaledTitleBarSideMargins;
             height = borderTop();
@@ -506,9 +506,9 @@ namespace Breeze
         updateBlur();
         setSystemAccentColors();
         
-        if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRectangle
-            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullSizedRoundedRectangle
-        ) m_buttonSize = ButtonSize::FullSized;
+        if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
+            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+        ) m_buttonSize = ButtonSize::FullHeight;
         else if( m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeLargeCircle)
             m_buttonSize = ButtonSize::Large;
         else m_buttonSize = ButtonSize::Small;
@@ -581,7 +581,7 @@ namespace Breeze
         
         
         //Add extended resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-        if( m_buttonSize == ButtonSize::FullSized || m_buttonSize == ButtonSize::Large){
+        if( m_buttonSize == ButtonSize::FullHeight || m_buttonSize == ButtonSize::Large){
             if( !isMaximizedVertically() ) extTop = extSize; 
         }
         
@@ -630,7 +630,7 @@ namespace Breeze
         int horizontalIconOffsetLeftButtons=0;
         int horizontalIconOffsetRightButtons=0;
         
-        if( m_buttonSize == ButtonSize::FullSized ) {
+        if( m_buttonSize == ButtonSize::FullHeight ) {
             bHeight = borderTop();
             bHeight -= titleBarSeparatorHeight();
             
@@ -647,10 +647,10 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
         {
             
-            if ( m_buttonSize == ButtonSize::FullSized ) {
-                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingLeft();
-                horizontalIconOffsetLeftButtons = s->smallSpacing()*m_internalSettings->buttonSpacingLeft() / 2;
-                static_cast<Button*>( button.data() )->setFullSizedBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
+            if ( m_buttonSize == ButtonSize::FullHeight ) {
+                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
+                horizontalIconOffsetLeftButtons = s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft() / 2;
+                static_cast<Button*>( button.data() )->setFullHeightBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
                 horizontalIconOffsetLeftButtons = (bWidth - iconHeight)/2;
@@ -666,10 +666,10 @@ namespace Breeze
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
         {
             
-            if ( m_buttonSize == ButtonSize::FullSized ) {
-                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->buttonSpacingRight();
-                horizontalIconOffsetRightButtons = s->smallSpacing()*m_internalSettings->buttonSpacingRight() / 2;
-                static_cast<Button*>( button.data() )->setFullSizedBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
+            if ( m_buttonSize == ButtonSize::FullHeight ) {
+                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
+                horizontalIconOffsetRightButtons = s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight() / 2;
+                static_cast<Button*>( button.data() )->setFullHeightBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
                 horizontalIconOffsetRightButtons = (bWidth - iconHeight)/2;
@@ -687,15 +687,11 @@ namespace Breeze
         {
 
             // spacing
-            if ( m_buttonSize == ButtonSize::FullSized ) {
-                m_leftButtons->setSpacing( 0 );
-            } else {
-                m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
-            }
+            m_leftButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingLeft());
 
             // padding
             int vPadding;
-            if( m_buttonSize == ButtonSize::FullSized ) vPadding = 0;
+            if( m_buttonSize == ButtonSize::FullHeight ) vPadding = 0;
             else if(m_buttonSize == ButtonSize::Large ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
             const int hPadding = m_scaledTitleBarSideMargins;
@@ -706,14 +702,14 @@ namespace Breeze
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 firstButton->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( firstButton->geometry().width() + hPadding, firstButton->geometry().height() ) ) );
                 firstButton->setHorizontalIconOffset( horizontalIconOffsetLeftButtons + hPadding );
-                firstButton->setLargeOrFullSizedVisibleBackgroundOffset( QPointF( hPadding, 0) );
+                firstButton->setLargeOrFullHeightVisibleBackgroundOffset( QPointF( hPadding, 0) );
                 firstButton->setFlag( Button::FlagFirstInList );
                 
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
             } else {
                 m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
-                firstButton->setLargeOrFullSizedVisibleBackgroundOffset( QPointF( 0, 0) );
+                firstButton->setLargeOrFullHeightVisibleBackgroundOffset( QPointF( 0, 0) );
             }
 
         }
@@ -722,15 +718,11 @@ namespace Breeze
         if( !m_rightButtons->buttons().isEmpty() )
         {
             // spacing
-            if ( m_buttonSize == ButtonSize::FullSized ) {
-                m_rightButtons->setSpacing( 0 );
-            } else {
-                m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
-            }
+            m_rightButtons->setSpacing(s->smallSpacing()*m_internalSettings->buttonSpacingRight());
 
             // padding
             int vPadding;
-            if( m_buttonSize == ButtonSize::FullSized ) vPadding = 0;
+            if( m_buttonSize == ButtonSize::FullHeight ) vPadding = 0;
             else if(m_buttonSize == ButtonSize::Large ) vPadding = 0;
             else vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
             const int hPadding = m_scaledTitleBarSideMargins;
@@ -959,6 +951,10 @@ namespace Breeze
            
             int leftPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingLeft();
             int rightPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingRight();
+            if( m_buttonSize == ButtonSize::FullHeight ){
+                leftPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
+                rightPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
+            }
             int padding = qMin( leftPadding, rightPadding);
            
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
