@@ -159,7 +159,7 @@
             <number>0</number>
            </property>
            <property name="currentIndex">
-            <number>1</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_always_show_icon">
             <layout class="QHBoxLayout" name="horizontalLayout_3">
