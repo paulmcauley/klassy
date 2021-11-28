@@ -287,31 +287,6 @@
            </widget>
           </widget>
          </item>
-         <item row="1" column="5">
-          <widget class="QComboBox" name="boldButtonIcons">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <item>
-            <property name="text">
-             <string>Auto</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Bold</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Fine</string>
-            </property>
-           </item>
-          </widget>
-         </item>
          <item row="3" column="7">
           <spacer name="horizontalSpacer_29">
            <property name="orientation">
@@ -829,6 +804,31 @@ buttons:</string>
            <property name="text">
             <string>Translucent backgrounds</string>
            </property>
+          </widget>
+         </item>
+         <item row="1" column="5">
+          <widget class="QComboBox" name="boldButtonIcons">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>Auto</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Bold</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Fine</string>
+            </property>
+           </item>
           </widget>
          </item>
         </layout>
