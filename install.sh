@@ -11,7 +11,7 @@ rm -rf build
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DKDE_INSTALL_USE_QT_SYS_PATHS=ON
-make
+make -j$(nproc)
 sudo make install
 
 cd $ORIGINAL_DIR
