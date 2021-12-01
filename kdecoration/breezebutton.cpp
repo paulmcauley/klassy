@@ -34,6 +34,9 @@ namespace Breeze
         , m_isGtkCsdButton( false )
     {
 
+        auto c = decoration->client().toStrongRef();
+        Q_ASSERT(c);
+        
         // setup animation
         // It is important start and end value are of the same type, hence 0.0 and not just 0
         m_animation->setStartValue( 0.0 );
@@ -56,7 +59,7 @@ namespace Breeze
         setIconSize(QSize( iconHeight, iconHeight ));
 
         // connections
-        connect(decoration->client().data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
+        connect(c.data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
         connect(decoration->settings().data(), &KDecoration2::DecorationSettings::reconfigured, this, &Button::reconfigure);
         connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
 
@@ -79,37 +82,40 @@ namespace Breeze
     {
         if (auto d = qobject_cast<Decoration*>(decoration))
         {
+            auto c = d->client().toStrongRef();
+            Q_ASSERT(c);
+            
             Button *b = new Button(type, d, parent);
             switch( type )
             {
 
                 case DecorationButtonType::Close:
-                b->setVisible( d->client().data()->isCloseable() );
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
+                b->setVisible( c->isCloseable() );
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
                 case DecorationButtonType::Maximize:
-                b->setVisible( d->client().data()->isMaximizeable() );
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
+                b->setVisible( c->isMaximizeable() );
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
                 case DecorationButtonType::Minimize:
-                b->setVisible( d->client().data()->isMinimizeable() );
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
+                b->setVisible( c->isMinimizeable() );
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
                 case DecorationButtonType::ContextHelp:
-                b->setVisible( d->client().data()->providesContextHelp() );
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
+                b->setVisible( c->providesContextHelp() );
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible );
                 break;
 
                 case DecorationButtonType::Shade:
-                b->setVisible( d->client().data()->isShadeable() );
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
+                b->setVisible( c->isShadeable() );
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible );
                 break;
 
                 case DecorationButtonType::Menu:
-                QObject::connect(d->client().data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
+                QObject::connect(c.data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() { b->update(); });
                 break;
 
                 default: break;
@@ -130,7 +136,9 @@ namespace Breeze
 
         if (!decoration()) return;
         auto d = qobject_cast<Decoration*>( decoration() );
-
+        auto c = d->client().toStrongRef();
+        Q_ASSERT(c);
+        
         setDevicePixelRatio(painter);
         setShouldDrawBoldButtonIcons();
         setStandardScaledPenWidth();
@@ -163,17 +171,17 @@ namespace Breeze
             const QRectF iconRect( geometry().topLeft(), m_iconSize );
             if (auto deco =  qobject_cast<Decoration*>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
-                QPalette palette = decoration()->client().data()->palette();
+                QPalette palette = c->palette();
                 palette.setColor(QPalette::Foreground, deco->fontColor());
                 KIconLoader::global()->setCustomPalette(palette);
-                decoration()->client().data()->icon().paint(painter, iconRect.toRect());
+                c->icon().paint(painter, iconRect.toRect());
                 if (activePalette == QPalette()) {
                     KIconLoader::global()->resetPalette();
                 }    else {
                     KIconLoader::global()->setCustomPalette(palette);
                 }
             } else {
-                decoration()->client().data()->icon().paint(painter, iconRect.toRect());
+                c->icon().paint(painter, iconRect.toRect());
             }
 
         } else {
