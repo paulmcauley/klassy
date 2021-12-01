@@ -30,15 +30,8 @@ if(WITH_DECORATIONS)
 endif()
 
 #add_subdirectory(colors)
-#add_subdirectory(cursors)
 add_subdirectory(libbreezecommon)
 add_subdirectory(kstyle)
-#add_subdirectory(misc)
-
-option(WITH_WALLPAPERS "Install Breeze default wallpapers" ON)
-if (WITH_WALLPAPERS)
-#    add_subdirectory(wallpapers)
-endif()
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
     find_package(KF5I18n ${KF5_MIN_VERSION} CONFIG REQUIRED)
