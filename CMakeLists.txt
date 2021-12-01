@@ -4,6 +4,7 @@ set(PROJECT_VERSION "3.0.breeze5.23.80")
 set(PROJECT_VERSION_MAJOR 5)
 
 set(KF5_MIN_VERSION "5.82")
+set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 set(QT_MIN_VERSION "5.15.0")
 
 include(GenerateExportHeader)
