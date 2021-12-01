@@ -1,6 +1,6 @@
 ################# Qt/KDE #################
 find_package(Qt5 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
-find_package(KF5 REQUIRED COMPONENTS
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     I18n
     Config
     GuiAddons
@@ -8,11 +8,11 @@ find_package(KF5 REQUIRED COMPONENTS
     ConfigWidgets
     WindowSystem)
 
-find_package(Qt5 COMPONENTS Quick X11Extras)
+find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Quick X11Extras)
 set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
 set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
 
-find_package( KF5FrameworkIntegration CONFIG )
+find_package( KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
 set_package_properties(KF5FrameworkIntegration PROPERTIES
     DESCRIPTION "KF5 Framework Integration"
     URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
