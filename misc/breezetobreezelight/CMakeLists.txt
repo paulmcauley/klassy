@@ -1,4 +1,4 @@
-find_package(KF5ConfigWidgets REQUIRED)
+find_package(KF5ConfigWidgets ${KF5_MIN_VERSION} REQUIRED)
 
 add_executable(breezetobreezelight main.cpp)
 
