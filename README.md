@@ -1,4 +1,4 @@
-# ClassikStyles
+# ClassiK
 
 ##### Table of Contents  
 [Overview](#overview)  
@@ -14,7 +14,7 @@
 <a name="overview"/>
 
 ## Overview
-_ClassikStyles_ is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassikStyles_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
+_ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassiK_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
 ![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
@@ -43,14 +43,14 @@ _ClassikStyles_ is a highly customizable binary Window Decoration and Applicatio
 > ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
 
 ### Known issues
-* GTK apps' titlebar buttons will not always update if you change a _ClassikStyles_ setting. Workaround: you need to select another window decoration and then select _ClassikStyles_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
+* GTK apps' titlebar buttons will not always update if you change a _ClassiK_ setting. Workaround: you need to select another window decoration and then select _ClassiK_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
 
 &nbsp;
 
 <a name="installation"/>
 
 ## Installation
-_ClassikStyles_ from version 2.6 onwards requires a recent version of KDE Plasma with __at least KDE Frameworks 5.82__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_ClassiK_ from version 3.0 onwards requires a recent version of KDE Plasma with __at least KDE Frameworks 5.86__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
@@ -110,7 +110,7 @@ To make your Plasma Desktop fully consistent, there are also matching system ico
 > <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/classik_square_icons.png" alt="Screenshot of Classik with Square highlight icon theme" width="512">
 
 To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "classikstyles". Then download your theme of choice to match your Button icon style and Button highlight style:
-> ![Screenshot of downloading matching ClassikStyles system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassikStyles system icons")
+> ![Screenshot of downloading matching ClassiK system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassiK system icons")
 
 These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
 

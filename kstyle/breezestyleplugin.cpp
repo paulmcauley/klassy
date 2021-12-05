@@ -15,7 +15,7 @@ namespace Breeze
     //_________________________________________________
     QStyle* StylePlugin::create( const QString &key )
     {
-        if( key.toLower() == QStringLiteral( "classikstyles" ) )
+        if( key.toLower() == QStringLiteral( "classik" ) )
         {
             return new Style;
         }
@@ -24,6 +24,6 @@ namespace Breeze
 
     //_________________________________________________
     QStringList StylePlugin::keys() const
-    { return QStringList( QStringLiteral( "Classikstyles" ) ); }
+    { return QStringList( QStringLiteral( "Classik" ) ); }
 
 }

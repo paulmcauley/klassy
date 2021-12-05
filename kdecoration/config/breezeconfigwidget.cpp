@@ -22,7 +22,7 @@ namespace Breeze
     //_________________________________________________________
     ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
         KCModule(parent, args),
-        m_configuration( KSharedConfig::openConfig( QStringLiteral( "classikstylesrc" ) ) ),
+        m_configuration( KSharedConfig::openConfig( QStringLiteral( "classikrc" ) ) ),
         m_changed( false )
     {
 
@@ -228,7 +228,7 @@ namespace Breeze
 
         // needed for breeze style to reload shadows
         {
-            QDBusMessage message( QDBusMessage::createSignal("/ClassikstylesDecoration",  "org.kde.Classikstyles.Style", "reparseConfiguration") );
+            QDBusMessage message( QDBusMessage::createSignal("/ClassikDecoration",  "org.kde.Classik.Style", "reparseConfiguration") );
             QDBusConnection::sessionBus().send(message);
         }
 
@@ -348,7 +348,6 @@ namespace Breeze
         m_ui.animationsSpeedRelativeSystem->setEnabled(m_ui.animationsEnabled->isChecked());
         m_ui.animationsSpeedLabel1->setEnabled(m_ui.animationsEnabled->isChecked());
         m_ui.animationsSpeedLabel2->setEnabled(m_ui.animationsEnabled->isChecked());
-        m_ui.animationsSpeedLabel3->setEnabled(m_ui.animationsEnabled->isChecked());
         m_ui.animationsSpeedLabel4->setEnabled(m_ui.animationsEnabled->isChecked());
     }
     

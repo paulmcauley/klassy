@@ -41,7 +41,7 @@ namespace Breeze
     
     
     /**
-     * @brief Functions to manipulate colours within Breeze/ClassikStyles
+     * @brief Functions to manipulate colours within Breeze/ClassiK
      *        To be used as common code base across both kdecoration and kstyle.
      */
     class BREEZECOMMON_EXPORT ColorTools

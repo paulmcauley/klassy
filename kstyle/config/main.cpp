@@ -21,13 +21,13 @@ int main(int argc, char *argv[])
     KLocalizedString::setApplicationDomain("breeze_style_config");
 
     QApplication app( argc, argv );
-    app.setApplicationName( i18n( "ClassikStyles Settings" ) );
+    app.setApplicationName( i18n( "ClassiK Settings" ) );
     app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "breeze-settings" ) ) );
 
     KCMultiDialog dialog;
-    dialog.setWindowTitle( i18n( "ClassikStyles Settings" ) );
-    dialog.addModule( QStringLiteral( "classikstylesstyleconfig" ) );
-    dialog.addModule( QStringLiteral( "classikstylesdecorationconfig" ) );
+    dialog.setWindowTitle( i18n( "ClassiK Settings" ) );
+    dialog.addModule( QStringLiteral( "classikstyleconfig" ) );
+    dialog.addModule( QStringLiteral( "classikdecorationconfig" ) );
     dialog.show();
 
     foreach( auto child, dialog.findChildren<QAbstractScrollArea*>() )
