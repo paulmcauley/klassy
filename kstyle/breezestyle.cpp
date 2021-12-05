@@ -235,13 +235,13 @@ namespace Breeze
         // use DBus connection to update on breeze configuration change
         auto dbus = QDBusConnection::sessionBus();
         dbus.connect( QString(),
-            QStringLiteral( "/ClassikstylesStyle" ),
-            QStringLiteral( "org.kde.Classikstyles.Style" ),
+            QStringLiteral( "/ClassikStyle" ),
+            QStringLiteral( "org.kde.Classik.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
 
         dbus.connect( QString(),
-            QStringLiteral( "/ClassikstylesDecoration" ),
-            QStringLiteral( "org.kde.Classikstyles.Style" ),
+            QStringLiteral( "/ClassikDecoration" ),
+            QStringLiteral( "org.kde.Classik.Style" ),
             QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
 
         dbus.connect( QString(),

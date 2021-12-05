@@ -1,0 +1,9 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>classik_config_icons/Classik.png</file>
+    <file>classik_config_icons/Kite.png</file>
+    <file>classik_config_icons/Oxygen.png</file>
+    <file>classik_config_icons/Redmond.png</file>
+    <file>classik_config_icons/Classik_logo.svg</file>
+</qresource>
+</RCC>

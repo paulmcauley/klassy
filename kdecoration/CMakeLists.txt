@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN="classikstyles_kwin_deco")
+add_definitions(-DTRANSLATION_DOMAIN="classik_kwin_deco")
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
 find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
@@ -55,7 +55,7 @@ set(breezedecoration_config_SRCS
     config/breezeexceptionlistwidget.cpp
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
-    config/ui/classikstylesdecoration_config.qrc
+    config/ui/classikdecoration_config.qrc
 )
 
 set(breezedecoration_config_PART_FORMS
@@ -68,18 +68,18 @@ set(breezedecoration_config_PART_FORMS
 ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
 
 ### build library
-add_library(classikstylesdecoration MODULE
+add_library(classikdecoration MODULE
     ${breezedecoration_SRCS}
     ${breezedecoration_config_SRCS}
     ${breezedecoration_config_PART_FORMS_HEADERS})
 
-target_link_libraries(classikstylesdecoration
+target_link_libraries(classikdecoration
     PUBLIC
         Qt::Core
         Qt::Gui
         Qt::DBus
     PRIVATE
-        classikstylescommon5
+        classikcommon5
         KDecoration2::KDecoration
         #KF5::ConfigCore
         KF5::CoreAddons
@@ -90,12 +90,12 @@ target_link_libraries(classikstylesdecoration
         KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
-  target_link_libraries(classikstylesdecoration
+  target_link_libraries(classikdecoration
     PUBLIC
       Qt::X11Extras
       XCB::XCB)
 endif()
 
 
-install(TARGETS classikstylesdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/classikstylesdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(TARGETS classikdecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
+install(FILES config/classikdecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})

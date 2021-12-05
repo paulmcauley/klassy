@@ -614,7 +614,7 @@ buttons:</string>
             <enum>Qt::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/classikstyles_config_icons/Classik_logo.svg);</string>
+            <string notr="true">border-image: url(:/classik_config_icons/Classik_logo.svg);</string>
            </property>
            <property name="interactive">
             <bool>false</bool>
@@ -662,8 +662,8 @@ buttons:</string>
              <string>  Classik</string>
             </property>
             <property name="icon">
-             <iconset resource="classikstylesdecoration_config.qrc">
-              <normaloff>:/classikstyles_config_icons/Classik.png</normaloff>:/classikstyles_config_icons/Classik.png</iconset>
+             <iconset resource="classikdecoration_config.qrc">
+              <normaloff>:/classik_config_icons/Classik.png</normaloff>:/classik_config_icons/Classik.png</iconset>
             </property>
            </item>
            <item>
@@ -671,8 +671,8 @@ buttons:</string>
              <string>  Kite</string>
             </property>
             <property name="icon">
-             <iconset resource="classikstylesdecoration_config.qrc">
-              <normaloff>:/classikstyles_config_icons/Kite.png</normaloff>:/classikstyles_config_icons/Kite.png</iconset>
+             <iconset resource="classikdecoration_config.qrc">
+              <normaloff>:/classik_config_icons/Kite.png</normaloff>:/classik_config_icons/Kite.png</iconset>
             </property>
            </item>
            <item>
@@ -680,8 +680,8 @@ buttons:</string>
              <string>  Oxygen/Breeze</string>
             </property>
             <property name="icon">
-             <iconset resource="classikstylesdecoration_config.qrc">
-              <normaloff>:/classikstyles_config_icons/Oxygen.png</normaloff>:/classikstyles_config_icons/Oxygen.png</iconset>
+             <iconset resource="classikdecoration_config.qrc">
+              <normaloff>:/classik_config_icons/Oxygen.png</normaloff>:/classik_config_icons/Oxygen.png</iconset>
             </property>
            </item>
            <item>
@@ -689,8 +689,8 @@ buttons:</string>
              <string>  Redmond</string>
             </property>
             <property name="icon">
-             <iconset resource="classikstylesdecoration_config.qrc">
-              <normaloff>:/classikstyles_config_icons/Redmond.png</normaloff>:/classikstyles_config_icons/Redmond.png</iconset>
+             <iconset resource="classikdecoration_config.qrc">
+              <normaloff>:/classik_config_icons/Redmond.png</normaloff>:/classik_config_icons/Redmond.png</iconset>
             </property>
            </item>
           </widget>
@@ -2556,7 +2556,7 @@ side margins:</string>
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources>
-  <include location="classikstylesdecoration_config.qrc"/>
+  <include location="classikdecoration_config.qrc"/>
  </resources>
  <connections>
   <connection>
