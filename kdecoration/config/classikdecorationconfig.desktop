@@ -6,7 +6,7 @@ X-KDE-ServiceTypes=KCModule
 
 X-KDE-Library=org.kde.kdecoration2/classikdecoration
 X-KDE-ParentApp=kcontrol
-X-KDE-Weight=60
+X-KDE-Weight=50
 
 Name=ClassiK: Window Decoration
 

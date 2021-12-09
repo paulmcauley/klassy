@@ -4,3 +4,5 @@
 .idea
 /cmake-build*
 .cache
+build/
+.directory

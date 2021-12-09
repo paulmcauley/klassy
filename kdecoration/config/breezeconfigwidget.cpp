@@ -15,6 +15,7 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QRegularExpression>
 
 namespace Breeze
 {
@@ -28,6 +29,20 @@ namespace Breeze
 
         // configuration
         m_ui.setupUi( this );
+        
+#if CLASSIK_GIT_MASTER
+        //set the long version string if from the git master
+        m_ui.version->setText("v" + QString(CLASSIK_VERSION) + ".git");
+            
+#else
+        //set shortened version string in UI if an official release
+        QRegularExpression re("\\d+\\.\\d+");
+        QRegularExpressionMatch match = re.match(CLASSIK_VERSION);
+        if (match.hasMatch()) {
+            QString matched = match.captured(0);
+            m_ui.version->setText("v" + matched);
+        }
+#endif
 
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
