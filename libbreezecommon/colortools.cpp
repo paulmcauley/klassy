@@ -148,4 +148,11 @@ namespace Breeze
         
         return (brightness > 125) ? QColor(Qt::GlobalColor::black) : QColor(Qt::GlobalColor::white);
     }
+    
+    QColor ColorTools::alphaMix( const QColor& inputColor, const qreal& alphaMixFactor )
+    {
+        QColor outputColor( inputColor );
+        outputColor.setAlphaF( outputColor.alphaF() * alphaMixFactor );
+        return outputColor;
+    }
 }
