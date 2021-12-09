@@ -28,19 +28,19 @@ namespace Breeze
     {
 
         //* corner radius (pixels)
-        //Paul McAuley: No longer used - now InternalSettings::cornerRadius()
+        //Paul A McAuley: No longer used - now InternalSettings::cornerRadius()
         //Frame_FrameRadius = 3,
 
         //* titlebar metrics, in units of small spacing
         
-        //Paul McAuley: No longer used - now InternalSettings::titlebarTopBottomMargins()
+        //Paul A McAuley: No longer used - now InternalSettings::titlebarTopBottomMargins()
         //TitleBar_TopMargin = 2,
         //TitleBar_BottomMargin = 2,
         
-        //Paul McAuley: No longer used - now InternalSettings::titlebarSideMargins()
+        //Paul A McAuley: No longer used - now InternalSettings::titlebarSideMargins()
         //TitleBar_SideMargin = 2,
         
-        //Paul McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()
+        //Paul A McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()
         //TitleBar_ButtonSpacing = 2,
 
         // shadow dimensions (pixels)
