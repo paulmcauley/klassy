@@ -7396,134 +7396,180 @@ namespace Breeze
         else if( widget ) palette = widget->palette();
         else palette = QApplication::palette();
 
-        const bool isOutlinedCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton );
+        const bool isAlwaysShownCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton );
         const bool withTrafficLights( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights );
 
         palette.setCurrentColorGroup( QPalette::Active );
         
-        std::shared_ptr<SystemButtonColors> systemAccentColors = ColorTools::getSystemButtonColors( palette );
+        std::shared_ptr<SystemButtonColors> decorationButtonAccentColors = ColorTools::getSystemButtonColors( palette );
         
         const QColor base( palette.color( QPalette::WindowText ) );
-        const QColor selected( palette.color( QPalette::HighlightedText ) );
+        const QColor selected( _helper->titleBarTextColor( true ) );
         
-        const QColor offNegative( buttonType == ButtonClose ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor onNegative( buttonType == ButtonClose ? systemAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 ) );
-        const QColor onNegativeSelected( buttonType == ButtonClose ? systemAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.7 ) );
-        QColor offNegativeSelected; //used for MDI window titlebars
-        if( isOutlinedCloseButton ){
-            offNegativeSelected = _helper->decorationConfig()->redOutline() ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
-        } else offNegativeSelected = KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 );
         
-        //Colours used if Accent colours is selected
-        const QColor onNegativeForegroundAccent( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 ) );
-        const QColor offNegativeForegroundAccent( buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.5 ) );
-        const QColor backgroundFocusAccent( _helper->buttonFocusColor(palette) );
+        //foreground colours
+        QColor offHoverForeground;
+        QColor onFocusForeground;
+        QColor onFocusSelectedForeground;
+        QColor offSelectedForeground;
+        QColor offForeground;
+        QColor disabledForeground;
         
-        QColor buttonHoverColor = _helper->buttonHoverColor(palette);
+        //background colours
+        QColor offInvertedNormalStateBackground;
+        QColor disabledInvertedNormalStateBackground;
+        QColor offSelectedInvertedNormalStateBackground;
+        QColor offHoverBackground;
+        QColor onFocusBackground;
         
-        QColor negativeBackgroundHoverAccent;
-        switch ( buttonType ) {
-            case ButtonClose:
-                negativeBackgroundHoverAccent = systemAccentColors->negative;
-                break;
-            case ButtonMaximize:
-            case ButtonRestore:
-                if( withTrafficLights ){
-                    negativeBackgroundHoverAccent =  systemAccentColors->positiveLessSaturated;
+        //outline colours
+        QColor outline;
+        
+        if( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText ){
+            
+            if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
+                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+                offSelectedForeground = selected;
+                
+                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
+                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
+                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
+                
+                //for translucent, background colours also need to be defined
+                offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
+                disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
+                offSelectedInvertedNormalStateBackground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negativeReducedOpacityBackground : ColorTools::alphaMix( selected,  0.15 );
+                offHoverBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityBackground : ColorTools::alphaMix( base,  0.15 );
+                onFocusBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityOutline :ColorTools::alphaMix( base,  0.25 );
+            } else {
+                //for non-translucent using the titlebar text colour, it is a special case in the later logic where the foreground colour is inverted to create the background
+                onFocusForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 );
+                onFocusSelectedForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : selected; 
+                if( isAlwaysShownCloseButton ){
+                    offSelectedForeground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negative : selected;
+                } else offSelectedForeground = selected;
+                
+                offHoverForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
+                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
+                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
+                onFocusBackground = onFocusForeground; //used only for setting outline colour
+            }
+        } else {
+            //Colours used if Accent colours            
+            
+            if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
+                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
+                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
+                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
+                offSelectedForeground = selected;
+                
+                offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
+                disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
+                offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negativeReducedOpacityBackground : decorationButtonAccentColors->buttonReducedOpacityBackground;
+            } else {
+                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
+                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
+                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
+                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
+                offSelectedForeground = selected;
+                
+                offInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
+                disabledInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.07);
+                offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negative : decorationButtonAccentColors->buttonHover;
+            }
+            
+            
+            
+            //hover and focus background colours
+            switch ( buttonType ) {
+                case ButtonClose:
+                    if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                        offHoverBackground = decorationButtonAccentColors->negativeReducedOpacityBackground;
+                        onFocusBackground = decorationButtonAccentColors->negativeReducedOpacityOutline;
+                    } else {
+                        offHoverBackground = decorationButtonAccentColors->negative;
+                        onFocusBackground = decorationButtonAccentColors->negativeSaturated;
+                    }
                     break;
-                }
-            case ButtonMinimize:
-                if( withTrafficLights ){
-                    negativeBackgroundHoverAccent =  systemAccentColors->neutralLessSaturated;
-                    break;
-                }
-            default:
-                negativeBackgroundHoverAccent = buttonHoverColor;
+                case ButtonMaximize:
+                case ButtonRestore:
+                    if( withTrafficLights ){
+                        if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                            offHoverBackground = decorationButtonAccentColors->positiveReducedOpacityBackground;
+                            onFocusBackground = decorationButtonAccentColors->positiveReducedOpacityOutline;
+                        } else {
+                            offHoverBackground =  decorationButtonAccentColors->positiveLessSaturated;
+                            onFocusBackground =  decorationButtonAccentColors->positive;
+                        }
+                        break;
+                    }
+                case ButtonMinimize:
+                    if( withTrafficLights ){
+                        if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                            offHoverBackground = decorationButtonAccentColors->neutralReducedOpacityBackground;
+                            onFocusBackground = decorationButtonAccentColors->neutralReducedOpacityOutline;
+                        } else {
+                            offHoverBackground =  decorationButtonAccentColors->neutralLessSaturated;
+                            onFocusBackground =  decorationButtonAccentColors->neutral;
+                        }
+                        break;
+                    }
+                default:
+                    if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
+                        offHoverBackground = decorationButtonAccentColors->buttonReducedOpacityBackground;
+                        onFocusBackground = decorationButtonAccentColors->buttonReducedOpacityOutline;
+                    } else {
+                        offHoverBackground = decorationButtonAccentColors->buttonHover;
+                        onFocusBackground = decorationButtonAccentColors->buttonFocus;
+                    }
+            }
+            
         }
-         
-        QColor negativeBackgroundFocusAccent;
-        switch ( buttonType ) {
-            case ButtonClose:
-                negativeBackgroundFocusAccent = systemAccentColors->negativeSaturated;
-                break;
-            case ButtonMaximize:
-            case ButtonRestore:
-                if( withTrafficLights ){
-                    negativeBackgroundFocusAccent =  systemAccentColors->positive;
-                    break;
-                }
-            case ButtonMinimize:
-                if( withTrafficLights ){
-                    negativeBackgroundFocusAccent =  systemAccentColors->neutral;
-                    break;
-                }
-            default:
-                negativeBackgroundFocusAccent = backgroundFocusAccent;
+        
+        
+        if( _helper->decorationConfig()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline
+                //&& !isAlwaysShownCloseButton
+        ){
+            outline = onFocusBackground;
         }
         
-        const QColor offInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor disabledInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? palette.color( QPalette::Window ) : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
-        const QColor offInvertedNormalStateBackgroundAccent( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ) );
-        const QColor disabledInvertedNormalStateBackgroundAccent( KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 ) );
+        const bool setInvert( 
         
-        //used for MDI window titlebars
-        const QColor offNegativeSelectedInvertedNormalStateBackgroundAccent( _helper->decorationConfig()->redOutline() ? systemAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), selected, 0.5 ) );
-        const QColor offNegativeSelectedInvertedNormalStateForegroundAccent( isOutlinedCloseButton ? _helper->titleBarColor( true ) : _helper->titleBarTextColor( true ) );
-        
+            (( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText )
+                && ( !_helper->decorationConfig()->translucentButtonBackgrounds() ) 
+            )
+        ); 
 
-
-        const bool invertNormalState( isOutlinedCloseButton );
-
-        // convenience class to map color to icon mode
+        // convenience class to map color to icon mode      
         struct IconData
         {
-            QColor _color;
-            bool _inverted;
             QIcon::Mode _mode;
             QIcon::State _state;
-        };
-        
-        struct IconDataAccentColors
-        {
             QColor _foregroundColor;
+            bool _inverted;
             bool _paintBackground;
             QColor _backgroundColor;
-            QIcon::Mode _mode;
-            QIcon::State _state;
-            
+            QColor _outlineColor;
         };
 
-        // map colors to icon states
+        // map colors to icon states      
         const QList<IconData> iconTypes =
         {
-
             // state off icons
-            { KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 ), invertNormalState, QIcon::Normal, QIcon::Off },
-            { offNegativeSelected, invertNormalState, QIcon::Selected, QIcon::Off },
-            { offNegative, true, QIcon::Active, QIcon::Off },
-            { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::Off },
+            { QIcon::Normal, QIcon::Off, offForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, offInvertedNormalStateBackground, QColor() },
+            { QIcon::Selected, QIcon::Off, offSelectedForeground, setInvert&&isAlwaysShownCloseButton , isAlwaysShownCloseButton, offSelectedInvertedNormalStateBackground, QColor() }, //used for active MDI window titlebars
+            { QIcon::Active, QIcon::Off, offHoverForeground, setInvert, true, offHoverBackground, outline },
+            { QIcon::Disabled, QIcon::Off, disabledForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, disabledInvertedNormalStateBackground, QColor() },
 
             // state on icons
-            { onNegative, true, QIcon::Normal, QIcon::On },
-            { onNegativeSelected, true, QIcon::Selected, QIcon::On },
-            { onNegative, true, QIcon::Active, QIcon::On },
-            { KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 ), invertNormalState, QIcon::Disabled, QIcon::On }
-
-        };
-        
-        const QList<IconDataAccentColors> iconTypesAccentColors =
-        {
-            // state off icons
-            { offInvertedNormalStateForegroundAccent, invertNormalState, offInvertedNormalStateBackgroundAccent, QIcon::Normal, QIcon::Off },
-            { offNegativeSelectedInvertedNormalStateForegroundAccent, invertNormalState, offNegativeSelectedInvertedNormalStateBackgroundAccent, QIcon::Selected, QIcon::Off },
-            { offNegativeForegroundAccent, true, negativeBackgroundHoverAccent, QIcon::Active, QIcon::Off },
-            { disabledInvertedNormalStateForegroundAccent, invertNormalState, disabledInvertedNormalStateBackgroundAccent, QIcon::Disabled, QIcon::Off },
-
-            // state on icons
-            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Normal, QIcon::On },
-            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Selected, QIcon::On },
-            { onNegativeForegroundAccent, true, negativeBackgroundFocusAccent, QIcon::Active, QIcon::On },
-            { disabledInvertedNormalStateForegroundAccent, invertNormalState, disabledInvertedNormalStateBackgroundAccent , QIcon::Disabled, QIcon::On }
+            { QIcon::Normal, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline },
+            { QIcon::Selected, QIcon::On, onFocusSelectedForeground, setInvert, true, onFocusBackground, outline },
+            { QIcon::Active, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline },
+            { QIcon::Disabled, QIcon::On, disabledForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, disabledInvertedNormalStateBackground, QColor() }
         
         };
 
@@ -7533,50 +7579,27 @@ namespace Breeze
         // output icon
         QIcon icon;
         
-        if( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent ||  _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights ) {
-            foreach( const IconDataAccentColors& iconData, iconTypesAccentColors )
-            {
-
-                foreach( const int& iconSize, iconSizes )
-                {
-                    // create pixmap
-                    QPixmap pixmap( iconSize, iconSize );
-                    pixmap.fill( Qt::transparent );
-
-                    // create painter and render
-                    QPainter painter( &pixmap );
-                    _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, false, iconData._paintBackground,  iconData._backgroundColor );
-
-                    painter.end();
-
-                    // store
-                    icon.addPixmap( pixmap, iconData._mode, iconData._state );
-                }
-
-            }
-        } else
+        foreach( const IconData& iconData, iconTypes )
         {
-            foreach( const IconData& iconData, iconTypes )
+
+            foreach( const int& iconSize, iconSizes )
             {
+                // create pixmap
+                QPixmap pixmap( iconSize, iconSize );
+                pixmap.fill( Qt::transparent );
 
-                foreach( const int& iconSize, iconSizes )
-                {
-                    // create pixmap
-                    QPixmap pixmap( iconSize, iconSize );
-                    pixmap.fill( Qt::transparent );
+                // create painter and render
+                QPainter painter( &pixmap );
+                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, iconData._inverted, iconData._paintBackground,  iconData._backgroundColor,  iconData._outlineColor );
 
-                    // create painter and render
-                    QPainter painter( &pixmap );
-                    _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._color, buttonType, iconData._inverted );
+                painter.end();
 
-                    painter.end();
-
-                    // store
-                    icon.addPixmap( pixmap, iconData._mode, iconData._state );
-                }
-
+                // store
+                icon.addPixmap( pixmap, iconData._mode, iconData._state );
             }
+
         }
+        
         return icon;
 
     }

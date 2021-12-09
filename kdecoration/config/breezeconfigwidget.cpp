@@ -49,7 +49,7 @@ namespace Breeze
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.redOutline, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.redAlwaysShownClose, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawSizeGrip, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
@@ -138,7 +138,7 @@ namespace Breeze
         /*setEnabledTransparentTitlebarOptions();*/
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
+        m_ui.redAlwaysShownClose->setChecked( m_internalSettings->redAlwaysShownClose() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.drawTitleBarSeparator->setChecked( m_internalSettings->drawTitleBarSeparator() );
@@ -192,7 +192,7 @@ namespace Breeze
         m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
         m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
         m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->currentIndex() );
-        m_internalSettings->setRedOutline( m_ui.redOutline->isChecked() );
+        m_internalSettings->setRedAlwaysShownClose( m_ui.redAlwaysShownClose->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setDrawBackgroundGradient( m_ui.drawBackgroundGradient->isChecked() );
@@ -262,7 +262,7 @@ namespace Breeze
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
         /*setEnabledTransparentTitlebarOptions();*/
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
-        m_ui.redOutline->setChecked( m_internalSettings->redOutline() );
+        m_ui.redAlwaysShownClose->setChecked( m_internalSettings->redAlwaysShownClose() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
@@ -306,7 +306,7 @@ namespace Breeze
         else if( m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing() ) modified = true;
         else if( m_ui.iconSize->currentIndex() != m_internalSettings->iconSize() ) modified = true;
         else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
-        else if( m_ui.redOutline->isChecked() != m_internalSettings->redOutline() ) modified = true;
+        else if( m_ui.redAlwaysShownClose->isChecked() != m_internalSettings->redAlwaysShownClose() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
         else if( m_ui.drawBackgroundGradient->isChecked() !=  m_internalSettings->drawBackgroundGradient() ) modified = true;

@@ -360,7 +360,7 @@ namespace Breeze
         } else if( m_animation->state() == QAbstractAnimation::Running ) {
             if( type() == DecorationButtonType::Close ){
                 if( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                    if ( d->internalSettings()->redOutline()  && c->isActive() ){
+                    if ( d->internalSettings()->redAlwaysShownClose()  && c->isActive() ){
                         return KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
                     } else if ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText){
                         return  KColorUtils::mix (d->fontColor(), Qt::GlobalColor::white, m_opacity);
@@ -379,7 +379,7 @@ namespace Breeze
             else if( d->internalSettings()->translucentButtonBackgrounds() ) return d->fontColor();
             else return d->titleBarColor();    
         } else if( type() == DecorationButtonType::Close && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ) {
-            if ( d->internalSettings()->redOutline() && c->isActive() ){
+            if ( d->internalSettings()->redAlwaysShownClose() && c->isActive() ){
                 return d->fontColor();
             } else if ( d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText){
                 return d->fontColor();
@@ -416,7 +416,7 @@ namespace Breeze
             if( d->internalSettings()->translucentButtonBackgrounds() ){
                 if( type() == DecorationButtonType::Close ) { 
                     if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                        if ( d->internalSettings()->redAlwaysShownClose() && c->isActive() ){
                             
                             buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
                             buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
@@ -443,7 +443,7 @@ namespace Breeze
             } else{
                 if( type() == DecorationButtonType::Close ) {
                     if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                        if ( d->internalSettings()->redOutline()  && c->isActive() ){
+                        if ( d->internalSettings()->redAlwaysShownClose()  && c->isActive() ){
                             buttonAlwaysShowColor = d->systemAccentColors()->negative;
                             buttonHoverColor = d->systemAccentColors()->negativeSaturated;
                             buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
@@ -472,7 +472,7 @@ namespace Breeze
             if( d->internalSettings()->translucentButtonBackgrounds() ){
                 if( type() == DecorationButtonType::Close ) {
                     if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                        if ( d->internalSettings()->redAlwaysShownClose() && c->isActive() ){
                             buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
                             buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
                             buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
@@ -495,7 +495,7 @@ namespace Breeze
             } else{
                 if( type() == DecorationButtonType::Close ) {
                     if ( d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton ){
-                        if ( d->internalSettings()->redOutline() && c->isActive() ){
+                        if ( d->internalSettings()->redAlwaysShownClose() && c->isActive() ){
                             buttonAlwaysShowColor = d->systemAccentColors()->negative;
                             buttonHoverColor = d->systemAccentColors()->negativeSaturated;
                             buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;

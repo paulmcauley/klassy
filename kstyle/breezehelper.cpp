@@ -1430,7 +1430,7 @@ namespace Breeze
    }
 
     //______________________________________________________________________________
-    void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& color, ButtonType buttonType, bool inverted, bool paintBackground, const QColor& backgroundColor ) const
+    void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& foregroundColor, ButtonType buttonType, bool inverted, bool paintBackground, const QColor& backgroundColor, const QColor& outlineColor ) const
     {
         
         painter->save();
@@ -1446,38 +1446,42 @@ namespace Breeze
         if( inverted ) paintBackground = true;
         if( paintBackground )
         {
-            // render circle or square highlight
-            painter->setPen( Qt::NoPen );
+            // render circle or square background
+            if( outlineColor.isValid() ) painter->setPen( outlineColor );
+            else painter->setPen( Qt::NoPen );
             
-            if( inverted ) painter->setBrush( color );
+            if( inverted ) painter->setBrush( foregroundColor );
             else painter->setBrush( backgroundColor );
             
-            if ( decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
+            if( decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
                 || decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeSmallSquare
                 || decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                 || decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
             )
                 painter->drawRoundedRect( QRectF( 2, 2, 14, 14 ), 20, 20, Qt::RelativeSize );
-            else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            else {
+                if( outlineColor.isValid() ) painter->drawEllipse( QRectF( 1, 1, 16, 16 ) ); // have to shrink outlined circle otherwise it gets clipped
+                else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+            }
             
             
-            if (inverted ){
+            if( inverted ){
                 // take out the inner part
                 painter->setCompositionMode( QPainter::CompositionMode_DestinationOut );
                 painter->setBrush( Qt::NoBrush );
                 pen.setColor( Qt::black );
             } else {
                 painter->setBrush( Qt::NoBrush );
-                if (buttonType != ButtonClose ){ //don't want to ruin the nice white colour in the close button
-                    QColor higherContrastForegroundColor = ColorTools::getHigherContrastForegroundColor( color, backgroundColor, 2.7);
+                if (buttonType != ButtonClose && !decorationConfig()->translucentButtonBackgrounds() ){ //don't want to ruin the nice white colour in the close button
+                    QColor higherContrastForegroundColor = ColorTools::getHigherContrastForegroundColor( foregroundColor, backgroundColor, 2.7);
                     pen.setColor( higherContrastForegroundColor );
-                } else pen.setColor( color );
+                } else pen.setColor( foregroundColor );
             }
 
         } else {
 
             painter->setBrush( Qt::NoBrush );
-            pen.setColor( color );
+            pen.setColor( foregroundColor );
 
         }
 

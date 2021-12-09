@@ -74,6 +74,14 @@ namespace Breeze
             * @brief Given a background colour, will return either a black or white foregreound colour, depending upon which gives the best contrast
             */
             static QColor getBlackOrWhiteForegroundForHighContrast( const QColor& backgroundColor );
+            
+            /**
+            * @brief Mulitplies the existing aplhaF value of the inputColor by aplhaMixFactor
+            * @param inputColor The input QColor
+            * @param alphaMixFactor The factor to multiply inputColor by
+            * @return the output QColor with modified alpha
+            */
+            static QColor alphaMix( const QColor& inputColor, const qreal& alphaMixFactor );
         
     };
         

@@ -439,7 +439,7 @@
               <number>0</number>
              </property>
              <item row="0" column="0">
-              <widget class="QCheckBox" name="redOutline">
+              <widget class="QCheckBox" name="redAlwaysShownClose">
                <property name="text">
                 <string>Red close button on active window</string>
                </property>
@@ -2519,7 +2519,7 @@ side margins:</string>
   <tabstop>backgroundColors</tabstop>
   <tabstop>translucentButtonBackgrounds</tabstop>
   <tabstop>alwaysShow</tabstop>
-  <tabstop>redOutline</tabstop>
+  <tabstop>redAlwaysShownClose</tabstop>
   <tabstop>alwaysShowIconHighlightUsing</tabstop>
   <tabstop>alwaysShowIconAndOutlineHighlightUsing</tabstop>
   <tabstop>alwaysShowIconAndBackgroundHighlightUsing</tabstop>
