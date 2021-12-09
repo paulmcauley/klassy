@@ -516,8 +516,8 @@ namespace Breeze
         const KConfigGroup cg(config, QStringLiteral("KDE"));
         
         m_colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(config, KColorScheme::Header);
-        m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() == KDecoration2::BorderSize::NoSides ) ); 
-        
+        //m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() == KDecoration2::BorderSize::NoSides ) ); 
+        m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor ); 
         
         // animation
         if( m_internalSettings->animationsEnabled() ) {
