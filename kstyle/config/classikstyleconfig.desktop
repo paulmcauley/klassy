@@ -6,7 +6,7 @@ X-KDE-ServiceTypes=KCModule
 
 X-KDE-Library=kstyle_classik_config
 X-KDE-ParentApp=kcontrol
-X-KDE-Weight=50
+X-KDE-Weight=60
 
 Name=ClassiK: Widget Style
 

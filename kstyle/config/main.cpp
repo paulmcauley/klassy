@@ -18,11 +18,11 @@
 //__________________________________________
 int main(int argc, char *argv[])
 {
-    KLocalizedString::setApplicationDomain("breeze_style_config");
+    KLocalizedString::setApplicationDomain("classik_style_config");
 
     QApplication app( argc, argv );
     app.setApplicationName( i18n( "ClassiK Settings" ) );
-    app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "breeze-settings" ) ) );
+    app.setWindowIcon( QIcon::fromTheme( QStringLiteral( "classik-settings" ) ) );
 
     KCMultiDialog dialog;
     dialog.setWindowTitle( i18n( "ClassiK Settings" ) );
