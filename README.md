@@ -17,7 +17,7 @@
 _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassiK_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
-* Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
+* Also provides _Oxygen/Breeze_ and _Redmond_ button icons
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!):
 > [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png "Watch the demo video on enabling the Application Style")](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
 
@@ -37,18 +37,18 @@ _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Deco
 > ![Black button style, dark](screenshots/highlight_gifs/kdark.gif?raw=true "Black button style, dark")![Black button style, light](screenshots/highlight_gifs/klight.gif?raw=true "Black button style, light")
 > ![Traffic Lights button style, dark](screenshots/highlight_gifs/trafficdark.gif?raw=true "Traffic Lights button style, dark")![Traffic Lights button style, light](screenshots/highlight_gifs/trafficlight.gif?raw=true "Traffic Lights button style, light")
 
-* Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
+* Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring
 
 
 * Full-height Rectangular or Circular button highlights:
-> ![Square button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-sized Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
+> ![Square button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
 > 
-> (Above-left configuration: Button highlight style: Full-sized Rectangle, Titlebar side margins: 0, Right-hand button spacing: 10
+> (Above-left configuration: Button highlight style: Full-height Rectangle, Titlebar side margins: 0, Right-hand button spacing: 10
 >
 > Above-right configuration: Button highlight style: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5)
 
-* Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
-* Option to have matching titlebar colour and border colour;
+* Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor
+* Option to have matching titlebar colour and border colour
 
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), corner radius; all with scaling for HiDPI:
 > ![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png?raw=true "Screenshot of Alignment & Spacing tab")
