@@ -16,31 +16,43 @@
 ## Overview
 _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassiK_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
 
-![Screenshot of Button icon style menu](screenshots/ClassikStyles_buttonIconStyle_menu.png?raw=true "Screenshot of Button icon style menu")
+![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icon styles;
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!):
 > [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png "Watch the demo video on enabling the Application Style")](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
 
+* Configurable button size, shape, translucency, colours and outlining
+
+* Default buttons are rounded rectangles with translucent outlined accent colours designed to have a large lickable area and complement the "Blue Ocean" design refresh in Plasma 5.23:
+> ![Default button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Default button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
+
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
 
-* Full-sized Rectanglar or Circular button highlights (Full-sized Rectangle is now default as has a larger clickable area):
-> ![Square button highlight style, inheriting system highlight colours](screenshots/squareHighlight.gif?raw=true "Full-sized Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
+
+* Full-height Rectangular or Circular button highlights:
+> ![Square button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-sized Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
 > 
 > (Above-left configuration: Button highlight style: Full-sized Rectangle, Titlebar side margins: 0, Right-hand button spacing: 10
 >
-> Above-right configuration: Button highlight style: circle, Titlebar side margins: 3, Right-hand button spacing: 5)
+> Above-right configuration: Button highlight style: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5)
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor;
 * Option to have matching titlebar colour and border colour;
 
-* Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), all with scaling for HiDPI:
-> ![Screenshot of Sizing & Spacing tab](screenshots/ClassikStyles_sizingAndSpacing_tab.png?raw=true "Screenshot of Sizing & Spacing tab")
+* Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), corner radius; all with scaling for HiDPI:
+> ![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png?raw=true "Screenshot of Alignment & Spacing tab")
 
-* Configurable corner radius, also scales with different DPIs:
-> ![Increased corner radius](screenshots/ClassikStyles_cornerRadius.png?raw=true "Increased corner radius")
+* Transparency/opacity configurable for both active/inactive titlebars; setting to make maximized windows opaque; blur is configurable:
+> ![Screenshot of Titlebar tab](screenshots/titlebar_tab.png?raw=true "Screenshot of Titlebar tab")
 
-* Transparency/opacity configurable for both active/inactive windows; setting to make maximized windows opaque; blur is enabled:
-> ![Screenshot of Transparency tab](screenshots/ClassikStyles_transparency_tab.png?raw=true "Screenshot of Transparency tab")
+* Configurable thin window outline with optional accent colours:
+> ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
+> ![Composite screenshot of thin window outlines with Contrast blended with accent colour (light)](screenshots/thin_window_outline_light_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (light)")
+
+* Configurable scrollbars:
+> ![Screenshot of scrollbar customization](screenshots/configurable_scrollbars.png?raw=true "Screenshot of scrollbar customization")
+
+* Configurable animations
 
 ### Known issues
 * GTK apps' titlebar buttons will not always update if you change a _ClassiK_ setting. Workaround: you need to select another window decoration and then select _ClassiK_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
