@@ -23,8 +23,19 @@ _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Deco
 
 * Configurable button size, shape, translucency, colours and outlining
 
-* Default buttons are rounded rectangles with translucent outlined accent colours designed to have a large lickable area and complement the "Blue Ocean" design refresh in Plasma 5.23:
+* Default buttons are rounded rectangles with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh in Plasma 5.23, along with the Plasma 5.23 accent colour feature:
 > ![Default button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Default button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
+> ![Pink button style, dark](screenshots/highlight_gifs/pdark.gif?raw=true "Pink button style, dark")![Pink button style, light](screenshots/highlight_gifs/plight.gif?raw=true "Pink button style, light")
+> ![Red button style, dark](screenshots/highlight_gifs/rdark.gif?raw=true "Red button style, dark")![Red button style, light](screenshots/highlight_gifs/rlight.gif?raw=true "Red button style, light")
+> ![Orange button style, dark](screenshots/highlight_gifs/odark.gif?raw=true "Orange button style, dark")![Orange button style, light](screenshots/highlight_gifs/olight.gif?raw=true "Orange button style, light")
+> ![Yellow button style, dark](screenshots/highlight_gifs/ydark.gif?raw=true "Yellow button style, dark")![Yellow button style, light](screenshots/highlight_gifs/ylight.gif?raw=true "Yellow button style, light")
+> ![Green button style, dark](screenshots/highlight_gifs/gdark.gif?raw=true "Green button style, dark")![Green button style, light](screenshots/highlight_gifs/glight.gif?raw=true "Green button style, light")
+> ![Turquoise button style, dark](screenshots/highlight_gifs/tdark.gif?raw=true "Turquoise button style, dark")![Turquoise button style, light](screenshots/highlight_gifs/tlight.gif?raw=true "Turquoise button style, light")
+> ![Blue button style, dark](screenshots/highlight_gifs/bdark.gif?raw=true "Blue button style, dark")![Blue button style, light](screenshots/highlight_gifs/blight.gif?raw=true "Blue button style, light")
+> ![Violet button style, dark](screenshots/highlight_gifs/vdark.gif?raw=true "Violet button style, dark")![Blue button style, light](screenshots/highlight_gifs/vlight.gif?raw=true "Violet button style, light")
+> ![Indigo button style, dark](screenshots/highlight_gifs/idark.gif?raw=true "Indigo button style, dark")![Indigo button style, light](screenshots/highlight_gifs/ilight.gif?raw=true "Indigo button style, light")
+> ![Black button style, dark](screenshots/highlight_gifs/kdark.gif?raw=true "Black button style, dark")![Black button style, light](screenshots/highlight_gifs/klight.gif?raw=true "Black button style, light")
+> ![Traffic Lights button style, dark](screenshots/highlight_gifs/trafficdark.gif?raw=true "Traffic Lights button style, dark")![Traffic Lights button style, light](screenshots/highlight_gifs/trafficlight.gif?raw=true "Traffic Lights button style, light")
 
 * Configurable whether to draw bold button icons for HiDPI displays; by default automatically turns off bold icons on LoDPI 96DPI screens to prevent blurring;
 
