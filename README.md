@@ -43,9 +43,9 @@ _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Deco
 * Full-height Rectangular or Circular button highlights:
 > ![Square button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
 > 
-> (Above-left configuration: Button highlight style: Full-height Rectangle, Titlebar side margins: 0, Right-hand button spacing: 10
+> (Above-left configuration: Background shape: Full-height Rectangle, Titlebar side margins: 0, Right-hand button spacing: 0, Button width margins Right-hand buttons: 10, Highlight using: Background
 >
-> Above-right configuration: Button highlight style: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5)
+> Above-right configuration: Background shape: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5, Highlight using: Background )
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor
 * Option to have matching titlebar colour and border colour
