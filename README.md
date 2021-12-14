@@ -14,7 +14,7 @@
 <a name="overview"/>
 
 ## Overview
-_ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassiK_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Setings -> Appearance -> Application Style.
+_ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Inspired by the classic style of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), _ClassiK_ is an attempt to update that classic style using a fork of KDE Breeze. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icons
