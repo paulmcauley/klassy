@@ -23,7 +23,6 @@
 #include <KColorUtils>
 #include <KIconLoader>
 
-#include <QAbstractSpinBox>
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
@@ -422,7 +421,6 @@ namespace Breeze
         }
         else if ( qobject_cast<QDialog*> (widget) ) {
             widget->setAttribute(Qt::WA_StyledBackground);
-        } else if ( auto spbx = qobject_cast<QAbstractSpinBox*> (widget) ) {
         } else if (auto pushButton = qobject_cast<QPushButton*>(widget)) {
             QDialog *dialog = nullptr;
             auto p = pushButton->parentWidget();
@@ -2459,55 +2457,51 @@ namespace Breeze
         if( !spinBoxOption ) return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
         const bool flat( !spinBoxOption->frame );
 
-        const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
-        const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
-
         // copy rect
         auto rect( option->rect );
-
-        if (subControl == SC_SpinBoxUp || subControl == SC_SpinBoxDown) {
-            // compensate for 1px margin + 1px border
-            rect.adjust( 2, 2, -2, -2 );
-        }
 
         switch( subControl )
         {
             case SC_SpinBoxFrame: return flat ? QRect():rect;
 
             case SC_SpinBoxUp:
-            {
-                auto r = rect;
-                r.setWidth(buttonSize);
-                r.moveRight(rect.right());
-                return r;
-            }
-
             case SC_SpinBoxDown:
             {
-                auto r = rect;
-                r.setWidth(buttonSize);
-                r.moveLeft(rect.left());
-                return r;
+
+                // take out frame width
+                if( !flat && rect.height() >= 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
+
+                QRect arrowRect;
+                arrowRect = QRect(
+                    rect.right() - Metrics::SpinBox_ArrowButtonWidth + 1,
+                    rect.top(),
+                    Metrics::SpinBox_ArrowButtonWidth,
+                    rect.height() );
+
+                const int arrowHeight( qMin( rect.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
+                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, arrowHeight );
+                arrowRect.setHeight( arrowHeight/2 );
+                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, arrowHeight/2 );
+
+                return visualRect( option, arrowRect );
+
             }
 
             case SC_SpinBoxEditField:
             {
                 const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
-                const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
 
-                QRect r = rect;
+                QRect labelRect = rect;
                 if( showButtons ) {
-                    auto w = r.width();
-                    r.setLeft(buttonSize);
-                    r.setRight(w-buttonSize);
+                    labelRect.setRight( rect.right() - Metrics::SpinBox_ArrowButtonWidth );
                 }
 
                 // remove right side line editor margins
-                if( !flat && r.height() >= option->fontMetrics.height() + 2*frameWidth )
-                { r.adjust( frameWidth, frameWidth, -frameWidth, -frameWidth ); }
+                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
+                if( !flat && labelRect.height() >= option->fontMetrics.height() + 2*frameWidth )
+                { labelRect.adjust( frameWidth, frameWidth, showButtons ? 0 : -frameWidth, -frameWidth ); }
 
-                return visualRect( option, r );
+                return visualRect( option, labelRect );
 
             }
 
@@ -2801,10 +2795,9 @@ namespace Breeze
         // make sure there is enough height for the button
         size.setHeight( qMax( size.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
 
-        // add in the buttons, which are square w/ length of height, and we have two of them
+        // add button width and spacing
         const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-        const int buttonSize( option->fontMetrics.height() + 2*frameWidth );
-        if( showButtons ) size.rwidth() += buttonSize*2;
+        if( showButtons ) size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
 
         return size;
 
@@ -7099,13 +7092,6 @@ namespace Breeze
 
         // render
         _helper->renderArrow( painter, arrowRect, color, orientation );
-
-        painter->setPen( _helper->separatorColor( palette ));
-        if (subControl == SC_SpinBoxUp) {
-            painter->drawLine(QLine(arrowRect.topLeft()+QPoint(0, 2), arrowRect.bottomLeft()-QPoint(0, 2)));
-        } else {
-            painter->drawLine(QLine(arrowRect.topRight()+QPoint(0, 2), arrowRect.bottomRight()-QPoint(0, 2)));
-        }
 
     }
 
