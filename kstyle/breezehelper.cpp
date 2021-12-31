@@ -335,7 +335,7 @@ namespace Breeze
 
         QPalette copy( source );
 
-        const QList<QPalette::ColorRole> roles = { QPalette::Background, QPalette::Highlight, QPalette::WindowText, QPalette::ButtonText, QPalette::Text, QPalette::Button };
+        const QList<QPalette::ColorRole> roles = { QPalette::Window, QPalette::Highlight, QPalette::WindowText, QPalette::ButtonText, QPalette::Text, QPalette::Button };
         foreach( const QPalette::ColorRole& role, roles )
         { copy.setColor( role, KColorUtils::mix( source.color( QPalette::Active, role ), source.color( QPalette::Disabled, role ), 1.0-ratio ) ); }
 
