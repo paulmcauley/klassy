@@ -172,7 +172,7 @@ namespace Breeze
             if (auto deco =  qobject_cast<Decoration*>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
                 QPalette palette = c->palette();
-                palette.setColor(QPalette::Foreground, deco->fontColor());
+                palette.setColor(QPalette::WindowText, deco->fontColor());
                 KIconLoader::global()->setCustomPalette(palette);
                 c->icon().paint(painter, iconRect.toRect());
                 if (activePalette == QPalette()) {
