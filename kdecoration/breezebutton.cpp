@@ -701,7 +701,7 @@ namespace Breeze
                 
                 qreal geometryShrinkOffsetHorizontal = PenWidth::Symbol *1.5;
                 if( !KWindowSystem::isPlatformWayland() ) geometryShrinkOffsetHorizontal *= m_devicePixelRatio;
-                qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal * 1.1;
+                qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal;
                 
                 //shrink the backgroundBoundingRect to make border more visible
                 strokeRect= QRectF( backgroundBoundingRect.adjusted( geometryShrinkOffsetHorizontal, geometryShrinkOffsetVertical, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical ) );
