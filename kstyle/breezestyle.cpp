@@ -6450,12 +6450,6 @@ namespace Breeze
                 const auto button( qobject_cast<const QAbstractButton*>( widget ) );
                 if( button->isChecked() || button->isDown() ) copy.state |= State_On;
 
-            } else if( !inTabBar && hasInlineIndicator ) {
-
-                const int marginWidth( flat ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-                contentsRect = insideMargin( contentsRect, marginWidth, 0 );
-                contentsRect = visualRect( option, contentsRect );
-
             }
 
             copy.rect = contentsRect;
