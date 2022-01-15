@@ -3887,7 +3887,7 @@ namespace Breeze
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha, isTopMenu );
 
         painter->restore();
-        
+
         return true;
 
     }
@@ -4878,17 +4878,17 @@ namespace Breeze
             // normal separator
             if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
             {
-                
+
                 auto color( _helper->separatorColor( palette ) );
                 QRect copy( rect );
-                
-                if( StyleConfigData::menuOpacity() < 100 ) 
+
+                if( StyleConfigData::menuOpacity() < 100 )
                 {
                     color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) ;
                     // don`t overlap with menu border
                     copy.adjust( 1, 0, -1, 0 );
                 }
-                
+
                 _helper->renderSeparator( painter, copy, color );
                 return true;
 
