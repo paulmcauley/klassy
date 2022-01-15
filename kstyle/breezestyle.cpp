@@ -164,7 +164,7 @@ namespace BreezePrivate
 
     //_______________________________________________________________
     bool isProgressBarHorizontal( const QStyleOptionProgressBar* option )
-    {  return option && ( (option->state & QStyle::State_Horizontal ) || option->orientation == Qt::Horizontal ); }
+    {  return option && (option->state & QStyle::State_Horizontal); }
 
     enum class ToolButtonMenuArrowStyle {
         None,
@@ -938,7 +938,7 @@ namespace Breeze
             case PE_IndicatorToolBarHandle: fcn = &Style::drawIndicatorToolBarHandlePrimitive; break;
             case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
             case PE_IndicatorBranch: fcn = &Style::drawIndicatorBranchPrimitive; break;
-            case PE_FrameStatusBar: fcn = &Style::emptyPrimitive; break;
+            case PE_FrameStatusBarItem: fcn = &Style::emptyPrimitive; break;
             case PE_Frame: fcn = &Style::drawFramePrimitive; break;
             case PE_FrameLineEdit: fcn = &Style::drawFrameLineEditPrimitive; break;
             case PE_FrameMenu: fcn = &Style::drawFrameMenuPrimitive; break;
@@ -1377,7 +1377,7 @@ namespace Breeze
             {
                 _helper->renderMenuFrame( &painter, rect, background, outline, false );
 
-            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&QDockWidget::AllDockWidgetFeatures) ) {
+            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable)) ) {
 
                 _helper->renderFrame( &painter, rect, background, outline );
 

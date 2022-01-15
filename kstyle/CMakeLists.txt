@@ -1,5 +1,5 @@
 ################# Qt/KDE #################
-find_package(Qt5 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     I18n
     Config
@@ -8,9 +8,14 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     ConfigWidgets
     WindowSystem)
 
-find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS Quick X11Extras)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Quick)
 set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
-set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
+if (TARGET Qt5::Core)
+    find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS X11Extras)
+    set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
+else()
+    set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
+endif()
 
 find_package( KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
 set_package_properties(KF5FrameworkIntegration PROPERTIES
@@ -86,8 +91,10 @@ target_link_libraries(classik Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 if( BREEZE_HAVE_QTQUICK )
     target_link_libraries(classik Qt::Quick)
 endif()
-if (BREEZE_HAVE_QTX11EXTRAS)
-    target_link_libraries(classik Qt::X11Extras)
+if (TARGET Qt5::X11Extras)
+    target_link_libraries(classik Qt5::X11Extras)
+elseif (TARGET Qt6::Gui)
+    target_link_libraries(classik Qt6::GuiPrivate)
 endif()
 target_link_libraries(classik KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
 target_link_libraries(classik classikcommon5)

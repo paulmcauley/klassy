@@ -16,7 +16,7 @@ add_library(kstyle_classik_config MODULE
 target_link_libraries(kstyle_classik_config Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(kstyle_classik_config KF5::CoreAddons KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
 install(TARGETS kstyle_classik_config DESTINATION ${KDE_INSTALL_QTPLUGINDIR})
-install(FILES classikstyleconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES classikstyleconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
 
 ########### next target ###############
 find_package(KF5KCMUtils ${KF5_MIN_VERSION} CONFIG)
