@@ -57,6 +57,7 @@
 #if BREEZE_HAVE_QTQUICK
 #include <QQuickWindow>
 #include <KCoreAddons>
+#include <Kirigami/TabletModeWatcher>
 #endif
 
 namespace BreezePrivate
@@ -3010,7 +3011,7 @@ namespace Breeze
                 size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
                 size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
                 size.setHeight( qMax( size.height(), iconWidth ) );
-                return expandSize( size, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
+                return expandSize( size, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight );
 
             }
 
@@ -4937,7 +4938,7 @@ namespace Breeze
         }
 
         // get rect available for contents
-        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight ) );
+        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight ) );
 
         // define relevant rectangles
         // checkbox
@@ -7106,7 +7107,7 @@ namespace Breeze
         auto font = option->font;
         font.setPointSize( qRound( font.pointSize() * 1.1 ) );
         painter->setFont( font );
-        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, Metrics::MenuItem_MarginHeight );
+        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
     }
@@ -7363,6 +7364,15 @@ namespace Breeze
 
         return icon;
 
+    }
+
+    bool Style::isTabletMode() const
+    {
+        #if BREEZE_HAVE_QTQUICK
+        return Kirigami::TabletModeWatcher::self()->isTabletMode();
+        #else
+        return false;
+        #endif
     }
 
     //____________________________________________________________________________________
