@@ -557,6 +557,17 @@ namespace Breeze
         switch( metric )
         {
 
+            // small icon size
+            case PM_SmallIconSize:
+            if ( isTabletMode() )
+            {
+                return 22;
+            }
+            else
+            {
+                return 16;
+            }
+
             // frame width
             case PM_DefaultFrameWidth:
             if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
