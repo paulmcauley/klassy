@@ -1,0 +1,22 @@
+# SPDX-FileCopyrightText: None
+# SPDX-License-Identifier: CC0-1.0
+
+Dependencies:
+- 'on': ['@all']
+  'require':
+    'frameworks/extra-cmake-modules': '@latest'
+    'frameworks/kauth': '@latest'
+    'frameworks/kcmutils': '@latest'
+    'frameworks/kcodecs': '@latest'
+    'frameworks/kconfig': '@latest'
+    'frameworks/kconfigwidgets': '@latest'
+    'frameworks/kcoreaddons': '@latest'
+    'frameworks/kguiaddons': '@latest'
+    'frameworks/ki18n': '@latest'
+    'frameworks/kiconthemes': '@latest'
+    'frameworks/kirigami': '@latest'
+    'frameworks/kservice': '@latest'
+    'frameworks/kstyle': '@latest'
+    'frameworks/kwidgetsaddons': '@latest'
+    'frameworks/kwindowsystem': '@latest'
+    'plasma/kdecoration': '@same'

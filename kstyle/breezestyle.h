@@ -167,6 +167,8 @@ namespace Breeze
         //* load configuration
         void loadConfiguration();
 
+        bool isTabletMode() const;
+
         //*@name subelementRect specialized functions
         //@{
 
