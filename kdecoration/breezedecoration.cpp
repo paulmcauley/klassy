@@ -316,7 +316,7 @@ namespace Breeze
 
         m_shadowAnimation->setStartValue( 0.0 );
         m_shadowAnimation->setEndValue( 1.0 );
-        m_shadowAnimation->setEasingCurve( QEasingCurve::InCubic );
+        m_shadowAnimation->setEasingCurve( QEasingCurve::OutCubic );
         connect(m_shadowAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant& value) {
             m_shadowOpacity = value.toReal();
             updateShadow();
@@ -422,6 +422,7 @@ namespace Breeze
             auto c = client().toStrongRef();
             Q_ASSERT(c);
             m_shadowAnimation->setDirection( c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
+            m_shadowAnimation->setEasingCurve( c->isActive() ? QEasingCurve::OutCubic : QEasingCurve::InCubic );
             if( m_shadowAnimation->state() != QAbstractAnimation::Running ) m_shadowAnimation->start();
 
         } else {
