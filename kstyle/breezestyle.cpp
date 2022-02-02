@@ -3203,7 +3203,7 @@ namespace Breeze
         }
 
         // contents height
-        int contentsHeight( headerOption->fontMetrics.height() );
+        int contentsHeight( hasText ? textSize.height() : headerOption->fontMetrics.height() );
         if( hasIcon ) contentsHeight = qMax( contentsHeight, iconSize.height() );
 
         if( horizontal && headerOption->sortIndicator != QStyleOptionHeader::None )
