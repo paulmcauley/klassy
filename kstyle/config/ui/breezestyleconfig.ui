@@ -593,6 +593,7 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>_tabBarDrawCenteredTabs</tabstop>
   <tabstop>_toolBarDrawItemSeparator</tabstop>
+  <tabstop>_viewDrawFocusIndicator</tabstop>
   <tabstop>_sliderDrawTickMarks</tabstop>
   <tabstop>_viewDrawFocusIndicator</tabstop>
   <tabstop>_splitterProxyEnabled</tabstop>
