@@ -76,17 +76,17 @@
         <widget class="QComboBox" name="_mnemonicsMode">
          <item>
           <property name="text">
-           <string>Always Hide Keyboard Accelerators</string>
+           <string>Always hide</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Show Keyboard Accelerators When Needed</string>
+           <string>Show when Alt key is pressed</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Always Show Keyboard Accelerators</string>
+           <string>Always show</string>
           </property>
          </item>
         </widget>
