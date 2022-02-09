@@ -1470,8 +1470,6 @@ namespace Breeze
             // state
             const State& state( option.state );
             const bool enabled( state & State_Enabled );
-            bool mouseOver( enabled && ( state & State_MouseOver ) );
-            bool hasFocus( enabled && ( state & State_HasFocus ) );
 
             // icon
             if( !button->icon().isNull() )
@@ -1490,7 +1488,7 @@ namespace Breeze
 
             // text rect
             QRect textRect( offset, QSize( button->size().width() - offset.x() - margin, button->size().height() - 2*margin ) );
-            const QPalette::ColorRole textRole = (enabled && hasFocus && !mouseOver && !isFlat ) ? QPalette::HighlightedText : QPalette::ButtonText;
+            const QPalette::ColorRole textRole = QPalette::ButtonText;
             if( !button->text().isEmpty() )
             {
 
