@@ -2930,16 +2930,37 @@ namespace Breeze
 
     }
 
-    //______________________________________________________________
-    QSize Style::toolButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
+    static QStyleOptionToolButton toolButtonMenuTitleOption( const QStyleOptionToolButton &option )
     {
+        QStyleOptionToolButton copy = QStyleOptionToolButton( option );
+        copy.font.setBold( false );
+        copy.state = Style::State_Enabled;
+        return copy;
+    }
 
+    static QFont menuTitleFont( const QStyleOptionToolButton &option )
+    {
+        auto font = option.font;
+        font.setPointSize( qRound( font.pointSize() * 1.1 ) );
+        return font;
+    }
+
+    //______________________________________________________________
+    QSize Style::toolButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
+    {
         // cast option and check
         const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
         if( !toolButtonOption ) return contentsSize;
 
         // copy size
         QSize size = contentsSize;
+
+        if( isMenuTitle( widget ) )
+        {
+            const QStyleOptionToolButton copy = toolButtonMenuTitleOption( *toolButtonOption );
+            const QFontMetrics fm(menuTitleFont(copy));
+            size.setWidth(std::max(size.width(), fm.size(Qt::TextShowMnemonic, copy.text).width()));
+        }
 
         // get relevant state flags
         const State& state( option->state );
@@ -6379,9 +6400,7 @@ namespace Breeze
         if( isMenuTitle )
         {
             // copy option to adjust state, and set font as not-bold
-            QStyleOptionToolButton copy( *toolButtonOption );
-            copy.font.setBold( false );
-            copy.state = State_Enabled;
+            const QStyleOptionToolButton copy = toolButtonMenuTitleOption( *toolButtonOption );
 
             // render
             renderMenuTitle( &copy, painter, widget );
@@ -7113,9 +7132,7 @@ namespace Breeze
         // render text in the center of the rect
         // icon is discarded on purpose
         // make text the same size as a level 4 heading so it looks more title-ish
-        auto font = option->font;
-        font.setPointSize( qRound( font.pointSize() * 1.1 ) );
-        painter->setFont( font );
+        painter->setFont( menuTitleFont(*option) );
         const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight );
         drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
 
