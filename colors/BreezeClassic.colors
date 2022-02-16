@@ -136,8 +136,6 @@ Name[nn]=Breeze
 Name[pa]=ਬਰੀਜ਼
 Name[pl]=Bryza
 Name[pt]=Brisa
-Name[pt_BR]=Breeze
-Name[ro]=Briză
 Name[ru]=Breeze
 Name[sk]=Vánok
 Name[sl]=Sapica
@@ -152,6 +150,9 @@ Name[uk]=Breeze
 Name[x-test]=xxBreezexx
 Name[zh_CN]=Breeze 微风
 Name[zh_TW]=Breeze
+Name[pt]=Brisa
+accentActiveTitlebar=true
+accentInactiveTitlebar=false
 shadeSortColumn=true
 
 [KDE]
