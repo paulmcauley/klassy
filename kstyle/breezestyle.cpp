@@ -755,6 +755,7 @@ namespace Breeze
 
             case SH_ComboBox_ListMouseTracking: return true;
             case SH_MenuBar_MouseTracking: return true;
+            case SH_Menu_Scrollable: return true;
             case SH_Menu_MouseTracking: return true;
             case SH_Menu_SubMenuPopupDelay: return 150;
             case SH_Menu_SloppySubMenus: return true;
