@@ -2551,11 +2551,11 @@ namespace Breeze
         // cast option and check
         const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );
-        
+
         //bools marking the extremities of slider position
         bool sliderAtMin = ( sliderOption->sliderPosition == sliderOption->minimum );
         bool sliderAtMax = ( sliderOption->sliderPosition == sliderOption->maximum );
-        
+
         // get relevant state
         const State& state( option->state );
         const bool horizontal( state & State_Horizontal );
@@ -2573,10 +2573,10 @@ namespace Breeze
             {
                 auto topRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
                 auto bottomRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
-                
+
                 QPoint topLeftCorner;
                 QPoint botRightCorner;
-                
+
                 bool enlargeOverSubPage = false;
                 bool enlargeOverAddPage = false;
                 if( autoHideArrows && (sliderOption->minimum == sliderOption->maximum) ){
@@ -2595,7 +2595,7 @@ namespace Breeze
                         if( enlargeOverSubPage ) topLeftCorner = QPoint ( topRect.left() + Metrics::ScrollBar_TopBottomMargins, topRect.top() );
                         else topLeftCorner  = QPoint( topRect.right() + StyleConfigData::scrollBarTopTwoButtonSpacing(), topRect.top() );
                     }
-                    
+
                     if( _addLineButtons == ScrollBarButtonType::NoButton ) {
                         botRightCorner = QPoint( bottomRect.right() - Metrics::ScrollBar_TopBottomMargins, topRect.bottom() );
                     } else if( _addLineButtons == ScrollBarButtonType::SingleButton ){
@@ -2607,7 +2607,7 @@ namespace Breeze
                     }
 
                 } else {
-                    
+
                     if( _subLineButtons == ScrollBarButtonType::NoButton ) {
                         topLeftCorner  = QPoint( topRect.left(),  topRect.top() + Metrics::ScrollBar_TopBottomMargins );
                     } else if( _subLineButtons == ScrollBarButtonType::SingleButton ) {
@@ -2617,7 +2617,7 @@ namespace Breeze
                         if( enlargeOverSubPage ) topLeftCorner = QPoint ( topRect.left(), topRect.top() + Metrics::ScrollBar_TopBottomMargins );
                         else topLeftCorner  = QPoint( topRect.left(),  topRect.bottom() + StyleConfigData::scrollBarTopTwoButtonSpacing() );
                     }
-                    
+
                     if( _addLineButtons == ScrollBarButtonType::NoButton ) {
                         botRightCorner = QPoint( topRect.right(), bottomRect.bottom() - Metrics::ScrollBar_TopBottomMargins );
                     } else if( _addLineButtons == ScrollBarButtonType::SingleButton ) {
@@ -2634,8 +2634,8 @@ namespace Breeze
                 return visualRect( option, QRect( topLeftCorner, botRightCorner )  );
 
             }
-            
-            
+
+
 
             case SC_ScrollBarSlider:
             {
@@ -2657,16 +2657,16 @@ namespace Breeze
 
                 space -= sliderSize;
                 if( space <= 0 ) return groove;
-                
+
                 // determines whether to enlarge the slider over the area occupied by the arrows when slider is at extremities and mouse is not over
                 bool enlargeOverSubPage = false;
                 bool enlargeOverAddPage = false;
                 if( _subLineButtons != ScrollBarButtonType::NoButton && sliderAtMin && !mouseOver && autoHideArrows )  enlargeOverSubPage = true;
                 if( _addLineButtons != ScrollBarButtonType::NoButton && sliderAtMax && !mouseOver && autoHideArrows )  enlargeOverAddPage = true;
-                
+
                 int pos = qRound( qreal( sliderOption->sliderPosition - sliderOption->minimum )/ ( sliderOption->maximum - sliderOption->minimum )*space );
                 if( sliderOption->upsideDown ) pos = space - pos;
-                
+
                 //return the slider rect, accounting for any enlargement of slider at extremities
                 if( horizontal ) {
                     if( enlargeOverSubPage ) {
@@ -2680,12 +2680,12 @@ namespace Breeze
                         else if (_addLineButtons == ScrollBarButtonType::DoubleButton ) enlargeToBottomRectXBy = bottomRect.right() - groove.right() - Metrics::ScrollBar_TopBottomMargins;
                         return visualRect( option, QRect( groove.left() + pos, groove.top(), sliderSize + enlargeToBottomRectXBy, groove.height() ) );
                     } else return visualRect( option, QRect( groove.left() + pos, groove.top(), sliderSize, groove.height() ) );
-                    
+
                 } else {
                     if( enlargeOverSubPage ) {
                         int enlargeToTopRectYPos = topRect.top();
                         if (_subLineButtons == ScrollBarButtonType::SingleButton ) enlargeToTopRectYPos = topRect.top() + Metrics::ScrollBar_TopBottomMargins;
-                        else if (_subLineButtons == ScrollBarButtonType::DoubleButton ) enlargeToTopRectYPos = topRect.top() + Metrics::ScrollBar_TopBottomMargins; 
+                        else if (_subLineButtons == ScrollBarButtonType::DoubleButton ) enlargeToTopRectYPos = topRect.top() + Metrics::ScrollBar_TopBottomMargins;
                         return visualRect( option, QRect( groove.left(), enlargeToTopRectYPos + pos, groove.width(), sliderSize + ( groove.top() - enlargeToTopRectYPos ) ) );
                     } else if (enlargeOverAddPage ) {
                         int enlargeToBottomRectYBy = 0;
@@ -2729,7 +2729,7 @@ namespace Breeze
     bool Style::scrollBarAutoHideArrowsException( const QWidget* widget ) const
     {
         bool exception = false;
-        
+
         if( widget ){
             std::array<const char*,1> exceptionClassNames = {"KateScrollBar"};
             for( unsigned i=0; i < exceptionClassNames.size(); i++ ){
@@ -2739,17 +2739,17 @@ namespace Breeze
                 }
             }
         }
-        
+
         return exception;
     }
-    
+
     bool Style::shouldAutoHideArrows( const QWidget* widget ) const
     {
         if( StyleConfigData::animationsEnabled() && StyleConfigData::scrollBarAutoHideArrows() && !scrollBarAutoHideArrowsException(widget) )
             return true;
         else return false;
     }
-    
+
     //___________________________________________________________________________________________________________________
     QRect Style::dialSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
     {
@@ -3833,7 +3833,7 @@ namespace Breeze
         stateProperties["hasMenu"] = hasMenu;
         stateProperties["defaultButton"] = defaultButton;
         stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-		stateProperties["gradient"] = StyleConfigData::buttonGradient();
+        stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
         _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
 
@@ -3999,7 +3999,7 @@ namespace Breeze
         _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha, isTopMenu );
 
         painter->restore();
-        
+
         return true;
 
     }
@@ -4208,7 +4208,7 @@ namespace Breeze
         stateProperties["checked"] = checked;
         stateProperties["flat"] = flat;
         stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-	    stateProperties["gradient"] = StyleConfigData::buttonGradient();
+        stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
 
 	    _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
@@ -4992,17 +4992,17 @@ namespace Breeze
             // normal separator
             if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
             {
-                
+
                 auto color( _helper->separatorColor( palette ) );
                 QRect copy( rect );
-                
-                if( StyleConfigData::menuOpacity() < 100 ) 
+
+                if( StyleConfigData::menuOpacity() < 100 )
                 {
                     color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) ;
                     // don`t overlap with menu border
                     copy.adjust( 1, 0, -1, 0 );
                 }
-                
+
                 _helper->renderSeparator( painter, copy, color );
                 return true;
 
@@ -5421,7 +5421,7 @@ namespace Breeze
         // cast option and check
         const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
-        
+
         if( shouldAutoHideArrows(widget) && (sliderOption->minimum == sliderOption->maximum) ) return true;
 
         const State& state( option->state );
@@ -5485,7 +5485,7 @@ namespace Breeze
             {
                 if( reverseLayout ) _helper->renderArrow( painter, rect, color, ArrowLeft );
                 else _helper->renderArrow( painter, rect, color, ArrowRight );
-            } 
+            }
             else _helper->renderArrow( painter, rect, color, ArrowDown );
 
         }
@@ -5504,7 +5504,7 @@ namespace Breeze
         // cast option and check
         const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
         if( !sliderOption ) return true;
-        
+
         if( shouldAutoHideArrows(widget) && (sliderOption->minimum == sliderOption->maximum) ) return true;
 
         const State& state( option->state );
@@ -6644,10 +6644,10 @@ namespace Breeze
                 stateProperties["down"] = down || checked;
                 stateProperties["flat"] = flat;
                 stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-	            stateProperties["gradient"] = StyleConfigData::buttonGradient();
+                stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
 
-	            _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
+                _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
             }
         }
 
@@ -7311,9 +7311,9 @@ namespace Breeze
         if( widget ) widgetMouseOver = widget->underMouse();
         // in case this QStyle is used by QQuickControls QStyle wrapper
         else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
-        
+
         bool autoHideArrows = shouldAutoHideArrows(widget);
-        
+
         // check enabled state
         const bool enabled( option->state & State_Enabled );
         if( !enabled ) {
@@ -7536,13 +7536,13 @@ namespace Breeze
         const bool withTrafficLights( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights );
 
         palette.setCurrentColorGroup( QPalette::Active );
-        
+
         std::shared_ptr<SystemButtonColors> decorationButtonAccentColors = ColorTools::getSystemButtonColors( palette );
-        
+
         const QColor base( palette.color( QPalette::WindowText ) );
         const QColor selected( _helper->titleBarTextColor( true ) );
-        
-        
+
+
         //foreground colours
         QColor offHoverForeground;
         QColor onFocusForeground;
@@ -7550,28 +7550,28 @@ namespace Breeze
         QColor offSelectedForeground;
         QColor offForeground;
         QColor disabledForeground;
-        
+
         //background colours
         QColor offInvertedNormalStateBackground;
         QColor disabledInvertedNormalStateBackground;
         QColor offSelectedInvertedNormalStateBackground;
         QColor offHoverBackground;
         QColor onFocusBackground;
-        
+
         //outline colours
         QColor outline;
-        
+
         if( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText ){
-            
+
             if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
                 onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
                 onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
                 offSelectedForeground = selected;
-                
+
                 offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
                 offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
                 disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
-                
+
                 //for translucent, background colours also need to be defined
                 offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
                 disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
@@ -7581,19 +7581,19 @@ namespace Breeze
             } else {
                 //for non-translucent using the titlebar text colour, it is a special case in the later logic where the foreground colour is inverted to create the background
                 onFocusForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 );
-                onFocusSelectedForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : selected; 
+                onFocusSelectedForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : selected;
                 if( isAlwaysShownCloseButton ){
                     offSelectedForeground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negative : selected;
                 } else offSelectedForeground = selected;
-                
+
                 offHoverForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
                 offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
                 disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
                 onFocusBackground = onFocusForeground; //used only for setting outline colour
             }
         } else {
-            //Colours used if Accent colours            
-            
+            //Colours used if Accent colours
+
             if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
                 onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
                 onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
@@ -7601,7 +7601,7 @@ namespace Breeze
                 offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
                 disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
                 offSelectedForeground = selected;
-                
+
                 offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
                 disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
                 offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negativeReducedOpacityBackground : decorationButtonAccentColors->buttonReducedOpacityBackground;
@@ -7612,14 +7612,14 @@ namespace Breeze
                 offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
                 disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
                 offSelectedForeground = selected;
-                
+
                 offInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
                 disabledInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.07);
                 offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negative : decorationButtonAccentColors->buttonHover;
             }
-            
-            
-            
+
+
+
             //hover and focus background colours
             switch ( buttonType ) {
                 case ButtonClose:
@@ -7663,24 +7663,24 @@ namespace Breeze
                         onFocusBackground = decorationButtonAccentColors->buttonFocus;
                     }
             }
-            
+
         }
-        
-        
+
+
         if( _helper->decorationConfig()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline
                 //&& !isAlwaysShownCloseButton
         ){
             outline = onFocusBackground;
         }
-        
-        const bool setInvert( 
-        
-            (( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText )
-                && ( !_helper->decorationConfig()->translucentButtonBackgrounds() ) 
-            )
-        ); 
 
-        // convenience class to map color to icon mode      
+        const bool setInvert(
+
+            (( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText )
+                && ( !_helper->decorationConfig()->translucentButtonBackgrounds() )
+            )
+        );
+
+        // convenience class to map color to icon mode
         struct IconData
         {
             QIcon::Mode _mode;
@@ -7692,7 +7692,7 @@ namespace Breeze
             QColor _outlineColor;
         };
 
-        // map colors to icon states      
+        // map colors to icon states
         const QList<IconData> iconTypes =
         {
             // state off icons
@@ -7706,7 +7706,7 @@ namespace Breeze
             { QIcon::Selected, QIcon::On, onFocusSelectedForeground, setInvert, true, onFocusBackground, outline },
             { QIcon::Active, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline },
             { QIcon::Disabled, QIcon::On, disabledForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, disabledInvertedNormalStateBackground, QColor() }
-        
+
         };
 
         // default icon sizes
@@ -7714,7 +7714,7 @@ namespace Breeze
 
         // output icon
         QIcon icon;
-        
+
         foreach( const IconData& iconData, iconTypes )
         {
 
@@ -7735,7 +7735,7 @@ namespace Breeze
             }
 
         }
-        
+
         return icon;
 
     }
