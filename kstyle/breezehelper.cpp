@@ -621,6 +621,7 @@ namespace Breeze
         bool flat = stateProperties.value("flat");
         bool defaultButton = stateProperties.value("defaultButton");
         bool hasNeutralHighlight = stateProperties.value("hasNeutralHighlight");
+		bool gradient = stateProperties.value("gradient");
 
         // don't render background if flat and not hovered, down, checked, or given visual focus
         if (flat && !(hovered || down || checked || visualFocus)
@@ -698,7 +699,7 @@ namespace Breeze
         }
 
         // Gradient
-        if (!(flat || down || hovered || checked) && enabled) {
+        if (!(flat || down || hovered || checked) && gradient && enabled) {
             QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
             bgGradient.setColorAt(0, KColorUtils::mix(bgBrush.color(), Qt::white, 0.03125));
             bgGradient.setColorAt(0.5, bgBrush.color());

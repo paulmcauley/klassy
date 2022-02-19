@@ -179,6 +179,11 @@
       <default>true</default>
     </entry>
 
+    <!-- button gradient -->
+    <entry name="ButtonGradient" type="Bool">
+      <default>true</default>
+    </entry>
+
     <!-- window dragging -->
     <entry name="WindowDragMode" type="Enum">
       <choices>

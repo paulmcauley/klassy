@@ -3833,6 +3833,7 @@ namespace Breeze
         stateProperties["hasMenu"] = hasMenu;
         stateProperties["defaultButton"] = defaultButton;
         stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+		stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
         _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
 
@@ -3879,8 +3880,10 @@ namespace Breeze
         stateProperties["checked"] = checked;
         stateProperties["flat"] = flat;
         stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+	    stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
-        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
+
+	    _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
         if (painter->hasClipping()) {
             painter->setClipping(false);
         }
@@ -4205,8 +4208,10 @@ namespace Breeze
         stateProperties["checked"] = checked;
         stateProperties["flat"] = flat;
         stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+	    stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
-        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
+
+	    _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
 
         QRectF frameRect = _helper->strokedRect(_helper->shadowedRect(baseRect));
 
@@ -6639,8 +6644,10 @@ namespace Breeze
                 stateProperties["down"] = down || checked;
                 stateProperties["flat"] = flat;
                 stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+	            stateProperties["gradient"] = StyleConfigData::buttonGradient();
 
-                _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
+
+	            _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
             }
         }
 
