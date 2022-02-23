@@ -1389,7 +1389,8 @@ namespace Breeze
                 // don't overlap left border
                 frameRect.adjust(1, 0, 0, 0);
             }
-            bgBrush = alphaColor(palette.color(QPalette::Shadow), 0.2);
+            const auto windowColor = palette.color(QPalette::Window);
+            bgBrush = windowColor.darker(windowColor.lightnessF() > 0.5 ? 120 : 160);
             const auto hover = alphaColor(hoverColor(palette), 0.2);
             if (animated) {
                 bgBrush = KColorUtils::mix(bgBrush, hover, animation);
