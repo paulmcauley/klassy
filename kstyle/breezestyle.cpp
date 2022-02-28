@@ -1925,13 +1925,13 @@ namespace Breeze
 
             case QTabBar::RoundedWest:
             case QTabBar::TriangularWest:
-            buttonRect.moveBottom( rect.bottom() - Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveTop( rect.top() + ((rect.height() - buttonRect.height()) / 2));
             buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
             break;
 
             case QTabBar::RoundedEast:
             case QTabBar::TriangularEast:
-            buttonRect.moveTop( rect.top() + Metrics::TabBar_TabMarginWidth );
+            buttonRect.moveTop( rect.top() + ((rect.height() - buttonRect.height()) / 2));
             buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
             break;
 
