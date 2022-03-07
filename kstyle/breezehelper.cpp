@@ -621,6 +621,7 @@ namespace Breeze
         bool flat = stateProperties.value("flat");
         bool defaultButton = stateProperties.value("defaultButton");
         bool hasNeutralHighlight = stateProperties.value("hasNeutralHighlight");
+        bool gradient = stateProperties.value("gradient");
 
         // don't render background if flat and not hovered, down, checked, or given visual focus
         if (flat && !(hovered || down || checked || visualFocus)
@@ -698,7 +699,7 @@ namespace Breeze
         }
 
         // Gradient
-        if (!(flat || down || hovered || checked) && enabled) {
+        if (!(flat || down || hovered || checked) && gradient && enabled) {
             QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
             bgGradient.setColorAt(0, KColorUtils::mix(bgBrush.color(), Qt::white, 0.03125));
             bgGradient.setColorAt(0.5, bgBrush.color());
@@ -832,7 +833,7 @@ namespace Breeze
 
         }
 
-        
+
     }
 
     //______________________________________________________________________________
@@ -1064,7 +1065,7 @@ namespace Breeze
 
         QRectF markerRect;
         markerRect = frameRect.adjusted( 6, 6, -6, -6 );
-        
+
         qreal adjustFactor;
 
         // mark
@@ -1107,7 +1108,7 @@ namespace Breeze
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
-        
+
     }
 
     //______________________________________________________________________________
@@ -1134,7 +1135,7 @@ namespace Breeze
 
             const QPen bgPen( fg, penWidth, Qt::SolidLine, Qt::RoundCap );
             const QPen fgPen( KColorUtils::overlayColors( bg, alphaColor( fg, 0.5) ), penWidth - 2, Qt::SolidLine, Qt::RoundCap );
-            
+
             // setup pen
             if( angleSpan != 0 )
             {
@@ -1210,7 +1211,7 @@ namespace Breeze
             painter->drawRoundedRect( baseRect, radius, radius );
         }
 
-        
+
     }
 
 
@@ -1287,7 +1288,7 @@ namespace Breeze
         painter->setBrush( KColorUtils::overlayColors(bg, alphaColor(fg, 0.5)) );
         painter->drawRoundedRect( strokedRect(baseRect), radius, radius );
 
-        
+
     }
 
     void Helper::renderScrollBarGroove(
@@ -1313,7 +1314,7 @@ namespace Breeze
             painter->drawRoundedRect( strokedRect(baseRect), radius, radius );
         }
 
-        
+
     }
 
 
@@ -1457,7 +1458,7 @@ namespace Breeze
     //______________________________________________________________________________
     void Helper::renderDecorationButton( QPainter* painter, const QRect& rect, const QColor& foregroundColor, ButtonType buttonType, bool inverted, bool paintBackground, const QColor& backgroundColor, const QColor& outlineColor ) const
     {
-        
+
         painter->save();
         painter->setViewport( rect );
         painter->setWindow( 0, 0, 18, 18 );
@@ -1467,17 +1468,17 @@ namespace Breeze
         QPen pen;
         pen.setCapStyle( Qt::RoundCap );
         pen.setJoinStyle( Qt::RoundJoin );
-        
+
         if( inverted ) paintBackground = true;
         if( paintBackground )
         {
             // render circle or square background
             if( outlineColor.isValid() ) painter->setPen( outlineColor );
             else painter->setPen( Qt::NoPen );
-            
+
             if( inverted ) painter->setBrush( foregroundColor );
             else painter->setBrush( backgroundColor );
-            
+
             if( decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
                 || decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeSmallSquare
                 || decorationConfig()->buttonShape() ==  InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
@@ -1488,8 +1489,8 @@ namespace Breeze
                 if( outlineColor.isValid() ) painter->drawEllipse( QRectF( 1, 1, 16, 16 ) ); // have to shrink outlined circle otherwise it gets clipped
                 else painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
             }
-            
-            
+
+
             if( inverted ){
                 // take out the inner part
                 painter->setCompositionMode( QPainter::CompositionMode_DestinationOut );
@@ -1512,10 +1513,10 @@ namespace Breeze
 
         pen.setWidthF( PenWidth::Symbol*qMax(1.0, 18.0/rect.width() ) );
         painter->setPen(pen);
-        
+
         std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
         iconRenderer = RenderDecorationButtonIcon18By18::factory( decorationConfig(), painter, true );
-        
+
         switch( buttonType )
         {
             case ButtonClose:
@@ -1568,7 +1569,7 @@ namespace Breeze
     void Helper::renderEllipseShadow( QPainter* painter, const QRectF& rect, const QColor& color ) const
     {
         if( !color.isValid() ) return;
-        
+
         painter->save();
 
         // Clipping does not improve performance here
@@ -1576,22 +1577,22 @@ namespace Breeze
         qreal adjustment = 0.5 * PenWidth::Shadow; // Adjust for the pen
 
         qreal radius = rect.width() / 2 - adjustment;
-        
+
         /* The right side is offset by +0.5 for the visible part of the shadow.
          * The other sides are offset by +0.5 or -0.5 because of the pen.
          */
         QRectF shadowRect = rect.adjusted( adjustment, adjustment, adjustment, -adjustment );
-        
+
         painter->translate( rect.center() );
         painter->rotate( 45 );
         painter->translate( -rect.center() );
         painter->setPen( color );
         painter->setBrush( Qt::NoBrush );
         painter->drawRoundedRect( shadowRect, radius, radius );
-        
+
         painter->restore();
     }
-    
+
     //______________________________________________________________________________
     bool Helper::isX11()
     {
