@@ -8,14 +8,14 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
     ConfigWidgets
     WindowSystem)
 
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} COMPONENTS Quick)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
 set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
 if( BREEZE_HAVE_QTQUICK )
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
 endif()
 
 if (TARGET Qt5::Core)
-    find_package(Qt5 ${QT_MIN_VERSION} COMPONENTS X11Extras)
+    find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
     set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
 else()
     set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
