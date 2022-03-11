@@ -3282,7 +3282,7 @@ namespace Breeze
         {
 
             const auto background( palette.base().color() );
-            const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
+            const auto outline( _helper->frameOutlineColor( palette ) );
             _helper->renderFrameWithSides( painter, rect, background, widget->property( PropertyNames::bordersSides ).value<Qt::Edges>(), outline );
 
             return true;
