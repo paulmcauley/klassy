@@ -13,8 +13,8 @@
 #include "breezesettings.h"
 #include "config-breeze.h"
 
-#include <KColorScheme>
 #include <KSharedConfig>
+#include <KStatefulBrush>
 #include <KConfigWatcher>
 
 #include <QToolBar>
