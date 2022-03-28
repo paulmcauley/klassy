@@ -12,6 +12,7 @@
 #include "renderdecorationbuttonicon.h"
 #include "colortools.h"
 
+#include <KColorScheme>
 #include <KColorUtils>
 #include <KIconLoader>
 #include <KWindowSystem>
