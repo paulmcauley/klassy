@@ -26,6 +26,11 @@ include(KDEClangFormat)
 include(GtkUpdateIconCache)
 
 option(WITH_DECORATIONS "Build Breeze window decorations for KWin" ON)
+
+if(WIN32 OR APPLE)
+    set(WITH_DECORATIONS OFF)
+endif()
+
 if(WITH_DECORATIONS)
     find_package(KDecoration2 REQUIRED)
     add_subdirectory(kdecoration)
