@@ -19,4 +19,7 @@ Dependencies:
     'frameworks/kstyle': '@latest'
     'frameworks/kwidgetsaddons': '@latest'
     'frameworks/kwindowsystem': '@latest'
+
+- 'on': ['Linux', 'FreeBSD']
+  'require':
     'plasma/kdecoration': '@same'
