@@ -5,7 +5,6 @@ Dependencies:
 - 'on': ['@all']
   'require':
     'frameworks/extra-cmake-modules': '@latest'
-    'frameworks/kauth': '@latest'
     'frameworks/kcmutils': '@latest'
     'frameworks/kcodecs': '@latest'
     'frameworks/kconfig': '@latest'
