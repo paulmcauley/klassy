@@ -626,6 +626,7 @@ namespace Breeze
         bool flat = stateProperties.value("flat");
         bool defaultButton = stateProperties.value("defaultButton");
         bool hasNeutralHighlight = stateProperties.value("hasNeutralHighlight");
+        bool isActiveWindow = stateProperties.value("isActiveWindow");
 
         // don't render background if flat and not hovered, down, checked, or given visual focus
         if (flat && !(hovered || down || checked || visualFocus)
@@ -652,7 +653,7 @@ namespace Breeze
                     : alphaColor(palette.buttonText().color(), 0.125);
                 penBrush = hasNeutralHighlight ? neutralText(palette)
                     : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
-            } else if (defaultButton) {
+            } else if (isActiveWindow && defaultButton) {
                 bgBrush = alphaColor(highlightColor, 0.125);
                 penBrush = KColorUtils::mix(
                     highlightColor,
@@ -671,7 +672,7 @@ namespace Breeze
                     : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.125);
                 penBrush = hasNeutralHighlight ? neutralText(palette)
                     : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
-            } else if (defaultButton) {
+            } else if (isActiveWindow && defaultButton) {
                 bgBrush = KColorUtils::mix(palette.button().color(), highlightColor, 0.2);
                 penBrush = KColorUtils::mix(
                     highlightColor,
@@ -703,7 +704,7 @@ namespace Breeze
         }
 
         // Gradient
-        if (!(flat || down || hovered || checked) && enabled) {
+        if (isActiveWindow && !(flat || down || hovered || checked) && enabled) {
             QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
             bgGradient.setColorAt(0, KColorUtils::mix(bgBrush.color(), Qt::white, 0.03125));
             bgGradient.setColorAt(0.5, bgBrush.color());
@@ -716,7 +717,7 @@ namespace Breeze
         }
 
         // Shadow
-        if (!(flat || down || checked) && enabled) {
+        if (isActiveWindow && !(flat || down || checked) && enabled) {
             renderRoundedRectShadow(painter, shadowedRect, shadowColor(palette));
         }
 
