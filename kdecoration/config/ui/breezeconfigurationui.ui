@@ -2029,7 +2029,7 @@ side margins:</string>
           <item row="3" column="0">
            <widget class="QCheckBox" name="blurTransparentTitlebars">
             <property name="text">
-             <string>Blur titlebars that have transparency  (introduces infamous Plasma Kornerbug #395725)</string>
+             <string>Blur titlebars that have transparency</string>
             </property>
            </widget>
           </item>

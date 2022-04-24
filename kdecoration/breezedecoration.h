@@ -119,6 +119,7 @@ namespace Breeze
         private Q_SLOTS:
         void reconfigure();
         void recalculateBorders();
+        void updateOpaque();
         void updateBlur();
         void updateButtonsGeometry();
         void updateButtonsGeometryDelayed();
@@ -133,7 +134,7 @@ namespace Breeze
         QPair<QRect,Qt::Alignment> captionRect() const;
 
         void createButtons();
-        void calculateWindowAndTitleBarShapes();
+        void calculateWindowAndTitleBarShapes(const bool windowShapeOnly=false);
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void updateShadow( const bool force = false );
         QSharedPointer<KDecoration2::DecorationShadow> createShadowObject( const float strengthScale );
