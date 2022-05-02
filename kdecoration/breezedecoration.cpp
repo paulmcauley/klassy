@@ -964,14 +964,18 @@ namespace Breeze
            auto c = client().toStrongRef();
            Q_ASSERT(c);
            
-            int leftPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingLeft();
-            int rightPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingRight();
+            //determine padding of title caption using other padding values
+            int leftButtonPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingLeft();
+            int rightButtonPadding = settings()->smallSpacing()*m_internalSettings->buttonSpacingRight();
             if( m_buttonSize == ButtonSize::FullHeight ){
-                leftPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
-                rightPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
+                leftButtonPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
+                rightButtonPadding += settings()->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
             }
-            int padding = qMin( leftPadding, rightPadding);
-           
+
+            int padding = 0;
+            if(leftButtonPadding == 0 || rightButtonPadding == 0) padding = qMax(leftButtonPadding,rightButtonPadding);
+            else padding = qMin(leftButtonPadding,rightButtonPadding);
+
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
                 padding:
                 m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
