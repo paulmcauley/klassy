@@ -4687,8 +4687,9 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
                 iconSize);
         }
 
-        textRect = QRect(QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height()) / 2),
-                         textSize);
+        const int padding = (contentsRect.height() - textSize.height()) / 2;
+        textRect = QRect(QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + padding),
+                         QPoint(contentsRect.right(), contentsRect.bottom() - padding));
 
         // handle right to left layouts
         iconRect = visualRect(option, iconRect);
