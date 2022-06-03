@@ -53,6 +53,7 @@ namespace Breeze
         void setEnabledAnimationsSpeed();
         /*void setEnabledTransparentTitlebarOptions();*/
         void updateBackgroundShapeStackedWidgetVisible();
+        void updateCustomColorStackedWidgetVisible();
 
         protected:
 

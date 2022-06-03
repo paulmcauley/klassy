@@ -114,6 +114,9 @@ namespace Breeze
         connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged );
         connect( m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateCustomColorStackedWidgetVisible()) );
+        connect( m_ui.thinWindowOutlineCustomColor, &KColorButton::changed, this, &ConfigWidget::updateChanged );
+        connect( m_ui.thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
         
         // track exception changes
         connect( m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged );
@@ -171,6 +174,8 @@ namespace Breeze
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
+        m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
+        m_ui.thinWindowOutlineThickness->setValue ( m_internalSettings->thinWindowOutlineThickness() );
         
         // load exceptions
         ExceptionList exceptions;
@@ -223,6 +228,9 @@ namespace Breeze
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
         m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
         m_internalSettings->setThinWindowOutlineStyle( m_ui.thinWindowOutlineStyle->currentIndex() );
+        m_internalSettings->setThinWindowOutlineCustomColor( m_ui.thinWindowOutlineCustomColor->color() );
+        m_internalSettings->setThinWindowOutlineThickness( m_ui.thinWindowOutlineThickness->value() );
+        
 
         // save configuration
         m_internalSettings->save();
@@ -293,6 +301,8 @@ namespace Breeze
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
+        m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
+        m_ui.thinWindowOutlineThickness->setValue( m_internalSettings->thinWindowOutlineThickness() );
 
     }
 
@@ -343,6 +353,8 @@ namespace Breeze
         else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
         else if( m_ui.shadowColor->color() != m_internalSettings->shadowColor() ) modified = true;
         else if( m_ui.thinWindowOutlineStyle->currentIndex() != m_internalSettings->thinWindowOutlineStyle() ) modified = true;
+        else if( m_ui.thinWindowOutlineCustomColor->color() != m_internalSettings->thinWindowOutlineCustomColor() ) modified = true;
+        else if( m_ui.thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness() ) modified = true;
         
         // exceptions
         else if( m_ui.exceptions->isChanged() ) modified = true;
@@ -390,5 +402,13 @@ namespace Breeze
             ||  m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
         ) m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
         else m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
+    }
+    
+    void ConfigWidget::updateCustomColorStackedWidgetVisible()
+    {
+        if( m_ui.thinWindowOutlineStyle->currentIndex() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor
+            ||  m_ui.thinWindowOutlineStyle->currentIndex() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast
+        ) m_ui.customColorStackedWidget->setCurrentIndex(1);
+        else m_ui.customColorStackedWidget->setCurrentIndex(0);
     }
 }
