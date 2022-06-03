@@ -85,8 +85,8 @@ namespace Breeze
         QColor titleBarColor(bool returnNonAnimatedColor=false) const;
         QColor titleBarColorWithAddedTransparency() const;
         QColor titleBarSeparatorColor() const;
-        QColor accentedWindowOutlineColor() const;
-        QColor fontMixedAccentWindowOutlineColor() const;
+        QColor accentedWindowOutlineColor(QColor customColor = QColor()) const;
+        QColor fontMixedAccentWindowOutlineColor(QColor customColor = QColor()) const;
         QColor fontColor() const;
         //@}
 

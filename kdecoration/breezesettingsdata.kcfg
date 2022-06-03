@@ -139,14 +139,27 @@
     </entry>
     
     <!-- Draw thin window outline -->
-    <entry name="thinWindowOutlineStyle" type = "Enum">
+    <entry name="ThinWindowOutlineStyle" type = "Enum">
         <choices>
+            <choice name="WindowOutlineNone" />
             <choice name="WindowOutlineBlendToShadow" />
             <choice name="WindowOutlineContrastTitleBarText" />
             <choice name="WindowOutlineAccentColor" />
             <choice name="WindowOutlineAccentWithContrast" />
+            <choice name="WindowOutlineCustomColor" />
+            <choice name="WindowOutlineCustomWithContrast" />
         </choices>
         <default>WindowOutlineAccentWithContrast</default>
+    </entry>
+    
+    <entry name="ThinWindowOutlineCustomColor" type = "Color">
+       <default>0, 0, 0</default>
+    </entry>
+    
+    <entry name="ThinWindowOutlineThickness" type = "Double">
+       <default>1.2</default>
+       <min>1</min>
+       <max>5</max>
     </entry>
     
     <!-- title alignment -->

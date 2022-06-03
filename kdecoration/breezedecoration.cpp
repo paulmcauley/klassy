@@ -95,7 +95,10 @@ namespace
 
     const CompositeShadowParams s_shadowParams[] = {
         // None
-        CompositeShadowParams(),
+        CompositeShadowParams( //hacked in by PAM with small values except with opacity 0; this is to allow a thin window outline to be drawn without a shadow
+            QPoint(0, 4),
+            ShadowParams(QPoint(0, 0), 16, 0),
+            ShadowParams(QPoint(0, -2), 8, 0)),
         // Small
         CompositeShadowParams(
             QPoint(0, 4),
@@ -153,6 +156,8 @@ namespace Breeze
     static qreal g_systemScaleFactor = 1;
     static bool g_hasNoBorders = true;
     static int g_thinWindowOutlineStyle = 0;
+    static QColor g_thinWindowOutlineCustomColor = Qt::black;
+    static qreal g_thinWindowOutlineThickness = 1;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
@@ -242,15 +247,25 @@ namespace Breeze
         else return QColor();
     }
     
-    QColor Decoration::accentedWindowOutlineColor() const
+    QColor Decoration::accentedWindowOutlineColor(QColor customColor) const
     {
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        QColor activeColor = m_systemAccentColors->highlight;
-        activeColor.setAlphaF( activeColor.alphaF() * 0.87 );
-        QColor inactiveColor = m_systemAccentColors->highlightLessSaturated;
-        inactiveColor.setAlphaF( inactiveColor.alphaF() * 0.4 );
+        QColor activeColor;
+        QColor inactiveColor;
+        
+        if( customColor.isValid() ){
+            activeColor = customColor;
+            activeColor.setAlphaF( activeColor.alphaF() * 0.87 );
+            inactiveColor = customColor;
+            inactiveColor.setAlphaF( inactiveColor.alphaF() * 0.3 );
+        } else {
+            activeColor = m_systemAccentColors->highlight;
+            activeColor.setAlphaF( activeColor.alphaF() * 0.87 );
+            inactiveColor = m_systemAccentColors->highlightLessSaturated;
+            inactiveColor.setAlphaF( inactiveColor.alphaF() * 0.4 );
+        }
         
         if( m_animation->state() == QAbstractAnimation::Running )
         {
@@ -259,7 +274,7 @@ namespace Breeze
         else return inactiveColor;
     }
     
-    QColor Decoration::fontMixedAccentWindowOutlineColor() const
+    QColor Decoration::fontMixedAccentWindowOutlineColor(QColor customColor) const
     {
 
         auto c = client().toStrongRef();
@@ -267,8 +282,17 @@ namespace Breeze
         
         QColor fontColorActive = c->color( ColorGroup::Active, ColorRole::Foreground );
         QColor fontColorInactive = c->color( ColorGroup::Inactive, ColorRole::Foreground );
-        QColor accentColorActive = m_systemAccentColors->buttonFocus;
-        QColor accentColorInactive = m_systemAccentColors->buttonHover;
+        QColor accentColorActive;
+        QColor accentColorInactive;
+        
+        if( customColor.isValid() ){
+            accentColorActive = customColor;
+            accentColorInactive = customColor;
+        } else {
+            accentColorActive = m_systemAccentColors->buttonFocus;
+            accentColorInactive = m_systemAccentColors->buttonHover;
+        }
+        
         
         QColor activeColor = KColorUtils::mix( fontColorActive, accentColorActive, 0.75 );
         activeColor.setAlphaF( activeColor.alphaF() * 0.4 );
@@ -1045,6 +1069,8 @@ namespace Breeze
                 || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001)
                 || g_hasNoBorders != hasNoBorders() 
                 || g_thinWindowOutlineStyle != m_internalSettings->thinWindowOutlineStyle()
+                || g_thinWindowOutlineCustomColor != m_internalSettings->thinWindowOutlineCustomColor()
+                || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness()
         ){
             g_sShadow.clear();
             g_sShadowInactive.clear();
@@ -1055,6 +1081,8 @@ namespace Breeze
             g_systemScaleFactor = m_systemScaleFactor;
             g_hasNoBorders = hasNoBorders();
             g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
+            g_thinWindowOutlineCustomColor = m_internalSettings->thinWindowOutlineCustomColor();
+            g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
         }
 
         auto& shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
@@ -1069,7 +1097,8 @@ namespace Breeze
     QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject( const float strengthScale )
     {
         const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
-          if (params.isNone())
+          if ( m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone 
+              && m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone )
           {
               return nullptr;
           }
@@ -1087,9 +1116,9 @@ namespace Breeze
           auto c = client().toStrongRef();
           Q_ASSERT(c);
           
-          qreal outlinePenWidth = 1;
+          qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
           //We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11 this does not happen but we can use the system-set scaling value directly.
-          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth = qRound(outlinePenWidth * m_systemScaleFactor);
+          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth *= m_systemScaleFactor;
           
           BoxShadowRenderer shadowRenderer;
           
@@ -1150,49 +1179,63 @@ namespace Breeze
 
           painter.drawPath(roundedRectMask);
 
-          QRectF outlineRect;
-          if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ) outlineRect = innerRect;
-          else outlineRect = innerRect.adjusted(-outlinePenWidth/2, -outlinePenWidth/2, outlinePenWidth/2, outlinePenWidth/2); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
-          QPainterPath outlineRectPath;
-          outlineRectPath.addRect(outlineRect);
+        
+          if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) 
+          {
+            QRectF outlineRect;
+            if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ) outlineRect = innerRect;
+            else outlineRect = innerRect.adjusted(-outlinePenWidth/2, -outlinePenWidth/2, outlinePenWidth/2, outlinePenWidth/2); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
+            QPainterPath outlineRectPath;
+            outlineRectPath.addRect(outlineRect);
 
-          QRectF outlineRectPotentiallyTaller = outlineRect;
+            QRectF outlineRectPotentiallyTaller = outlineRect;
 
-          // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
-          if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
+            // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
+            if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
 
-          // Draw 1px wide outline
-          QPen p;
-          if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText )
-              p.setColor(withOpacity(fontColor(), 0.25));
-          else if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor )
-              p.setColor( accentedWindowOutlineColor() );
-          else if( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
-              p.setColor( fontMixedAccentWindowOutlineColor() );
-          else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
-          
-          p.setWidthF(outlinePenWidth);
-          painter.setPen(p);
-          painter.setBrush(Qt::NoBrush);
-          painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-          
-          QPainterPath roundedRectOutline;
-          if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
-            roundedRectOutline.addRoundedRect(
-                outlineRectPotentiallyTaller,
-                m_scaledCornerRadius + outlinePenWidth/2,
-                m_scaledCornerRadius + outlinePenWidth/2);
-          } else {
-            roundedRectOutline.addRoundedRect(
-                outlineRectPotentiallyTaller,
-                m_scaledCornerRadius - outlinePenWidth/2,
-                m_scaledCornerRadius - outlinePenWidth/2);
+            // Draw 1px wide outline
+            QPen p;
+            if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText )
+                p.setColor(withOpacity(fontColor(), 0.25));
+            else if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor )
+                p.setColor( accentedWindowOutlineColor() );
+            else if( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
+                p.setColor( fontMixedAccentWindowOutlineColor() );
+            else if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor )
+                p.setColor( accentedWindowOutlineColor( m_internalSettings->thinWindowOutlineCustomColor() ) );
+            else if( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
+                p.setColor( fontMixedAccentWindowOutlineColor( m_internalSettings->thinWindowOutlineCustomColor() ) );
+            else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
+            
+            p.setWidthF(outlinePenWidth);
+            painter.setPen(p);
+            painter.setBrush(Qt::NoBrush);
+            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+            
+            QPainterPath roundedRectOutline;
+            qreal cornerRadius;
+            if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
+                
+                if( m_scaledCornerRadius < 0.05 ) cornerRadius = 0; //give a square corner for when corner radius is 0
+                else cornerRadius = m_scaledCornerRadius + outlinePenWidth/2; //else round corner slightly more to account for pen width
+                
+                roundedRectOutline.addRoundedRect(
+                    outlineRectPotentiallyTaller,
+                    cornerRadius,
+                    cornerRadius);
+            } else {
+                
+                cornerRadius = qMax( 0.0, m_scaledCornerRadius - outlinePenWidth/2 ); //round corner slightly less to account for pen width, avoiding a negative corner radius
+                roundedRectOutline.addRoundedRect(
+                    outlineRectPotentiallyTaller,
+                    cornerRadius,
+                    cornerRadius);
+            }
+            
+            if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
+            
+            painter.drawPath(roundedRectOutline);
           }
-          
-          if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
-          
-          painter.drawPath(roundedRectOutline);
-
           painter.end();
 
           auto ret = QSharedPointer<KDecoration2::DecorationShadow>::create();
