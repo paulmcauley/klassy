@@ -1942,23 +1942,27 @@ QRect Style::progressBarContentsRect(const QStyleOption *option, const QWidget *
     const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
 
     // check inverted appearance
-    const bool inverted(progressBarOption->invertedAppearance);
+    bool inverted(progressBarOption->invertedAppearance);
+    if (horizontal) {
+        // un-invert in RTL layout
+        inverted ^= option->direction == Qt::RightToLeft;
+    }
 
     // get progress and steps
-    const qreal progress(progressBarOption->progress - progressBarOption->minimum);
+    const int progress(progressBarOption->progress - progressBarOption->minimum);
     const int steps(qMax(progressBarOption->maximum - progressBarOption->minimum, 1));
 
     // Calculate width fraction
-    const qreal widthFrac = qMin(qreal(1), progress / steps);
+    const qreal position = qreal(progress) / qreal(steps);
+    const qreal visualPosition = inverted ? 1 - position : position;
 
     // convert the pixel width
-    const int indicatorSize(widthFrac * (horizontal ? rect.width() : rect.height()));
+    const int indicatorSize(visualPosition * (horizontal ? rect.width() : rect.height()));
 
     QRect indicatorRect;
     if (horizontal) {
-        indicatorRect = QRect(inverted ? (rect.right() - indicatorSize + 1) : rect.left(), rect.y(), indicatorSize, rect.height());
+        indicatorRect = QRect(rect.left(), rect.y(), indicatorSize, rect.height());
         indicatorRect = visualRect(option->direction, rect, indicatorRect);
-
     } else
         indicatorRect = QRect(rect.x(), inverted ? rect.top() : (rect.bottom() - indicatorSize + 1), rect.width(), indicatorSize);
 
