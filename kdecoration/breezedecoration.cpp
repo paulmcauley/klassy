@@ -1117,8 +1117,18 @@ namespace Breeze
           Q_ASSERT(c);
           
           qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
+          
+          //the overlap between the thin window outline and behind the window in unscaled pixels.
+          //This is necessary for the thin window outline to sit flush with the window on Wayland, 
+          //and also makes sure that the anti-aliasing blends properly between the window and thin window outline
+          qreal outlineOverlap = 0.5; 
+          
+          //scale outline
           //We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11 this does not happen but we can use the system-set scaling value directly.
-          if( !KWindowSystem::isPlatformWayland() ) outlinePenWidth *= m_systemScaleFactor;
+          if( KWindowSystem::isPlatformX11() ){
+              outlinePenWidth *= m_systemScaleFactor;
+              outlineOverlap *= m_systemScaleFactor;
+          }
           
           BoxShadowRenderer shadowRenderer;
           
@@ -1162,17 +1172,10 @@ namespace Breeze
           if ( hasNoBorders() && !c->isShaded() ) innerRectPotentiallyTaller.adjust(0,0,0,m_scaledCornerRadius); 
           
           QPainterPath roundedRectMask;
-          if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
-            roundedRectMask.addRoundedRect(
-                innerRectPotentiallyTaller,
-                m_scaledCornerRadius + outlinePenWidth,
-                m_scaledCornerRadius + outlinePenWidth);
-          } else {
-            roundedRectMask.addRoundedRect(
-                innerRectPotentiallyTaller,
-                m_scaledCornerRadius + outlinePenWidth/2,
-                m_scaledCornerRadius + outlinePenWidth/2);
-          }
+          roundedRectMask.addRoundedRect(
+            innerRectPotentiallyTaller,
+            m_scaledCornerRadius + 0.5,
+            m_scaledCornerRadius + 0.5);
           
           if ( hasNoBorders() && !c->isShaded() ) roundedRectMask = roundedRectMask.intersected(innerRectPath);
 
@@ -1182,9 +1185,9 @@ namespace Breeze
         
           if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) 
           {
+            qreal outlineAdjustment = outlinePenWidth/2 - outlineOverlap;
             QRectF outlineRect;
-            if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ) outlineRect = innerRect;
-            else outlineRect = innerRect.adjusted(-outlinePenWidth/2, -outlinePenWidth/2, outlinePenWidth/2, outlinePenWidth/2); //make 1px outline rect larger so all 1px is outside window and contrasting window outline is visible
+            outlineRect = innerRect.adjusted(-outlineAdjustment, -outlineAdjustment, outlineAdjustment, outlineAdjustment); //make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
             QPainterPath outlineRectPath;
             outlineRectPath.addRect(outlineRect);
 
@@ -1193,7 +1196,7 @@ namespace Breeze
             // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
             if ( hasNoBorders() && !c->isShaded() ) outlineRectPotentiallyTaller = outlineRect.adjusted(0,0,0,m_scaledCornerRadius);
 
-            // Draw 1px wide outline
+            // Draw Thin window outline
             QPen p;
             if ( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText )
                 p.setColor(withOpacity(fontColor(), 0.25));
@@ -1205,7 +1208,7 @@ namespace Breeze
                 p.setColor( accentedWindowOutlineColor( m_internalSettings->thinWindowOutlineCustomColor() ) );
             else if( m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
                 p.setColor( fontMixedAccentWindowOutlineColor( m_internalSettings->thinWindowOutlineCustomColor() ) );
-            else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength));
+            else p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength)); //blend to shadow
             
             p.setWidthF(outlinePenWidth);
             painter.setPen(p);
@@ -1214,23 +1217,14 @@ namespace Breeze
             
             QPainterPath roundedRectOutline;
             qreal cornerRadius;
-            if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow ){
                 
-                if( m_scaledCornerRadius < 0.05 ) cornerRadius = 0; //give a square corner for when corner radius is 0
-                else cornerRadius = m_scaledCornerRadius + outlinePenWidth/2; //else round corner slightly more to account for pen width
-                
-                roundedRectOutline.addRoundedRect(
-                    outlineRectPotentiallyTaller,
-                    cornerRadius,
-                    cornerRadius);
-            } else {
-                
-                cornerRadius = qMax( 0.0, m_scaledCornerRadius - outlinePenWidth/2 ); //round corner slightly less to account for pen width, avoiding a negative corner radius
-                roundedRectOutline.addRoundedRect(
-                    outlineRectPotentiallyTaller,
-                    cornerRadius,
-                    cornerRadius);
-            }
+            if( m_scaledCornerRadius < 0.05 ) cornerRadius = 0; //give a square corner for when corner radius is 0
+            else cornerRadius = m_scaledCornerRadius + outlineAdjustment; //else round corner slightly more to account for pen width
+            
+            roundedRectOutline.addRoundedRect(
+                outlineRectPotentiallyTaller,
+                cornerRadius,
+                cornerRadius);
             
             if ( hasNoBorders() && !c->isShaded() ) roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
             

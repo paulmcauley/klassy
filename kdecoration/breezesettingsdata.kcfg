@@ -157,9 +157,9 @@
     </entry>
     
     <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>1.2</default>
+       <default>1.8</default>
        <min>1</min>
-       <max>5</max>
+       <max>10</max>
     </entry>
     
     <!-- title alignment -->
