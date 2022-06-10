@@ -45,7 +45,9 @@ namespace Breeze
             m_ui.version->setText("v" + matched);
         }
 #endif
-
+        updateBackgroundShapeStackedWidgetVisible();
+        updateCustomColorStackedWidgetVisible();
+        
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -190,7 +192,8 @@ namespace Breeze
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
         m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
         m_ui.thinWindowOutlineThickness->setValue ( m_internalSettings->thinWindowOutlineThickness() );
-        
+        updateBackgroundShapeStackedWidgetVisible();
+        updateCustomColorStackedWidgetVisible();
         // load exceptions
         ExceptionList exceptions;
         exceptions.readConfig( m_configuration );
@@ -317,6 +320,9 @@ namespace Breeze
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
         m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
         m_ui.thinWindowOutlineThickness->setValue( m_internalSettings->thinWindowOutlineThickness() );
+        
+        updateBackgroundShapeStackedWidgetVisible();
+        updateCustomColorStackedWidgetVisible();
         
         m_defaultsPressed = true;
 
