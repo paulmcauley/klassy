@@ -1232,11 +1232,13 @@ namespace Breeze
             painter.setPen(mw->palette().color(QPalette::Window));
             painter.setBrush(mw->palette().color(QPalette::Window));
             painter.drawRect(bg);
-
-            if (rect.height() == 0) {
-                drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
-            } else {
-                drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
+            
+            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+                if (rect.height() == 0) {
+                    drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
+                } else {
+                    drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
+                }
             }
 
         }
