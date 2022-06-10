@@ -1307,12 +1307,15 @@ namespace Breeze
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         
-        if ( c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars() ) {
-            m_addedTitleBarOpacityActive = 1;
-            m_addedTitleBarOpacityInactive = 1;
-        } else {
-            m_addedTitleBarOpacityActive = qreal( m_internalSettings->activeTitlebarOpacity() ) / 100;
-            m_addedTitleBarOpacityInactive = qreal( m_internalSettings->inactiveTitlebarOpacity() ) / 100;
+        m_addedTitleBarOpacityActive = 1;
+        m_addedTitleBarOpacityInactive = 1;
+        
+        if ( !(c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars()) ) {
+            //only add additional translucency if the system colour does not already have translucency
+            QColor systemActiveTitleBarColor = c->color( ColorGroup::Active, ColorRole::TitleBar );
+            QColor systemInactiveTitlebarColor = c->color( ColorGroup::Inactive, ColorRole::TitleBar );
+            if( systemActiveTitleBarColor.alpha() == 255 ) m_addedTitleBarOpacityActive = qreal( m_internalSettings->activeTitlebarOpacity() ) / 100;
+            if( systemInactiveTitlebarColor.alpha() == 255 ) m_addedTitleBarOpacityInactive = qreal( m_internalSettings->inactiveTitlebarOpacity() ) / 100;
         }
         
     }
