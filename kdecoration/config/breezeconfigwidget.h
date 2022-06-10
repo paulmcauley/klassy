@@ -51,7 +51,7 @@ namespace Breeze
         //* update changed state
         virtual void updateChanged();
         void setEnabledAnimationsSpeed();
-        /*void setEnabledTransparentTitlebarOptions();*/
+        void setEnabledTransparentTitlebarOptions();
         void updateBackgroundShapeStackedWidgetVisible();
         void updateCustomColorStackedWidgetVisible();
 
@@ -73,6 +73,16 @@ namespace Breeze
 
         //* changed state
         bool m_changed;
+        
+        //* defaults clicked
+        bool m_defaultsPressed = false;
+        
+        //system colour scheme alpha settings
+        void getTitlebarOpacityFromColorScheme();
+        bool m_translucentActiveSchemeColor = false;
+        bool m_translucentInactiveSchemeColor = false;
+        qreal m_activeSchemeColorAlpha = 1;
+        qreal m_inactiveSchemeColorAlpha = 1;
 
     };
 

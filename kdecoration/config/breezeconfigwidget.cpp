@@ -16,6 +16,8 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QRegularExpression>
+#include <KColorScheme>
+#include <KConfigGroup>
 
 namespace Breeze
 {
@@ -103,11 +105,10 @@ namespace Breeze
         connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         
-        /*
+
         //only enable transparency options when transparency is setActiveTitlebarOpacity
         connect( m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()) );
         connect( m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()) );
-        */
         
         // track shadows changes
         connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -127,6 +128,8 @@ namespace Breeze
     void ConfigWidget::load()
     {
 
+        getTitlebarOpacityFromColorScheme();
+        
         // create internal settings and load from rc files
         m_internalSettings = InternalSettingsPtr( new InternalSettings() );
         m_internalSettings->load();
@@ -149,11 +152,22 @@ namespace Breeze
         m_ui.titlebarSideMargins->setValue( m_internalSettings->titlebarSideMargins() );
         m_ui.titlebarSideMargins_2->setValue( m_internalSettings->titlebarSideMargins() );
         m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
-        m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
-        m_ui.activeTitlebarOpacity_2->setValue( m_internalSettings->activeTitlebarOpacity() );
-        m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
-        m_ui.inactiveTitlebarOpacity_2->setValue( m_internalSettings->inactiveTitlebarOpacity() );
-        /*setEnabledTransparentTitlebarOptions();*/
+        
+        //if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it
+        if( m_translucentActiveSchemeColor ){
+            m_ui.activeTitlebarOpacity->setValue( m_activeSchemeColorAlpha * 100 );
+            m_ui.activeTitlebarOpacity->setEnabled(false);
+            m_ui.activeTitlebarOpacity_2->setEnabled(false);
+        } else m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
+        m_ui.activeTitlebarOpacity_2->setValue( m_ui.activeTitlebarOpacity->value() );
+        if( m_translucentInactiveSchemeColor ){ 
+            m_ui.inactiveTitlebarOpacity->setValue( m_inactiveSchemeColorAlpha * 100 );
+            m_ui.inactiveTitlebarOpacity->setEnabled(false);
+            m_ui.inactiveTitlebarOpacity_2->setEnabled(false);
+        } else m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
+         m_ui.inactiveTitlebarOpacity_2->setValue( m_ui.inactiveTitlebarOpacity->value() );
+        setEnabledTransparentTitlebarOptions();
+        
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.redAlwaysShownClose->setChecked( m_internalSettings->redAlwaysShownClose() );
@@ -209,8 +223,8 @@ namespace Breeze
         m_internalSettings->setPercentMaximizedTopBottomMargins( m_ui.percentMaximizedTopBottomMargins->value() );
         m_internalSettings->setTitlebarSideMargins( m_ui.titlebarSideMargins->value() );
         m_internalSettings->setCornerRadius( m_ui.cornerRadius->value() );
-        m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
-        m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
+        if (!m_translucentActiveSchemeColor || m_defaultsPressed) m_internalSettings->setActiveTitlebarOpacity( m_ui.activeTitlebarOpacity->value() );
+        if (!m_translucentInactiveSchemeColor || m_defaultsPressed) m_internalSettings->setInactiveTitlebarOpacity( m_ui.inactiveTitlebarOpacity->value() );
         m_internalSettings->setBoldButtonIcons( m_ui.boldButtonIcons->currentIndex() );
         m_internalSettings->setRedAlwaysShownClose( m_ui.redAlwaysShownClose->isChecked() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
@@ -260,7 +274,7 @@ namespace Breeze
     //_________________________________________________________
     void ConfigWidget::defaults()
     {
-
+        
         // create internal settings and load from rc files
         m_internalSettings = InternalSettingsPtr( new InternalSettings() );
         m_internalSettings->setDefaults();
@@ -283,7 +297,7 @@ namespace Breeze
         m_ui.cornerRadius->setValue( m_internalSettings->cornerRadius() );
         m_ui.activeTitlebarOpacity->setValue( m_internalSettings->activeTitlebarOpacity() );
         m_ui.inactiveTitlebarOpacity->setValue( m_internalSettings->inactiveTitlebarOpacity() );
-        /*setEnabledTransparentTitlebarOptions();*/
+        setEnabledTransparentTitlebarOptions();
         m_ui.boldButtonIcons->setCurrentIndex( m_internalSettings->boldButtonIcons() );
         m_ui.redAlwaysShownClose->setChecked( m_internalSettings->redAlwaysShownClose() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
@@ -303,6 +317,8 @@ namespace Breeze
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
         m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
         m_ui.thinWindowOutlineThickness->setValue( m_internalSettings->thinWindowOutlineThickness() );
+        
+        m_defaultsPressed = true;
 
     }
 
@@ -341,8 +357,8 @@ namespace Breeze
         else if( m_ui.percentMaximizedTopBottomMargins->value() != m_internalSettings->percentMaximizedTopBottomMargins() ) modified = true;
         else if( m_ui.titlebarSideMargins->value() != m_internalSettings->titlebarSideMargins() ) modified = true;
         else if( m_ui.cornerRadius->value() != m_internalSettings->cornerRadius() ) modified = true;
-        else if( m_ui.activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity() ) modified = true;
-        else if( m_ui.inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity() ) modified = true;
+        else if( (!m_translucentActiveSchemeColor) && ( m_ui.activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity() ) ) modified = true;
+        else if( (!m_translucentInactiveSchemeColor) && (m_ui.inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity()) ) modified = true;
 
         // animations
         else if( m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled() ) modified = true;
@@ -379,13 +395,11 @@ namespace Breeze
     }
     
     
-    /*
-     * commented out as now the system colour transparency is also considered
-     * TODO:potentially read the system colour settings and enable/disable based on these as well
+
     //only enable blurTransparentTitlebars and opaqueMaximizedTitlebars options if transparent titlebars are enabled
     void ConfigWidget::setEnabledTransparentTitlebarOptions()
     {
-        if ( m_ui.activeTitlebarOpacity->value() != 100 ||  m_ui.inactiveTitlebarOpacity->value() != 100 || ){
+        if ( m_ui.activeTitlebarOpacity->value() != 100 ||  m_ui.inactiveTitlebarOpacity->value() != 100 ){
             m_ui.opaqueMaximizedTitlebars->setEnabled(true);
             m_ui.blurTransparentTitlebars->setEnabled(true);
         } else {
@@ -393,7 +407,6 @@ namespace Breeze
             m_ui.blurTransparentTitlebars->setEnabled(false);
         }
     }
-    */
     
     
     void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
@@ -410,5 +423,37 @@ namespace Breeze
             ||  m_ui.thinWindowOutlineStyle->currentIndex() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast
         ) m_ui.customColorStackedWidget->setCurrentIndex(1);
         else m_ui.customColorStackedWidget->setCurrentIndex(0);
+    }
+    
+    void ConfigWidget::getTitlebarOpacityFromColorScheme()
+    {        
+        KSharedConfig::Ptr config = KSharedConfig::openConfig();
+        
+        bool colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(config, KColorScheme::Header);
+        
+        // get the alpha values from the system colour scheme
+        if( colorSchemeHasHeaderColor ){
+            KColorScheme activeHeader = KColorScheme(QPalette::Active, KColorScheme::Header, config);
+            m_translucentActiveSchemeColor = !activeHeader.background().isOpaque();
+            m_activeSchemeColorAlpha = activeHeader.background().color().alphaF();
+            
+            KColorScheme inactiveHeader = KColorScheme(QPalette::Inactive, KColorScheme::Header, config);
+            m_translucentInactiveSchemeColor = !inactiveHeader.background().isOpaque();
+            m_inactiveSchemeColorAlpha = inactiveHeader.background().color().alphaF();
+        } else {
+            KConfigGroup wmConfig(config, QStringLiteral("WM"));
+            if (wmConfig.exists()) {
+                QColor activeTitlebarColor;
+                QColor inactiveTitlebarColor;
+                activeTitlebarColor = wmConfig.readEntry("activeBackground", QColorConstants::Black);
+                inactiveTitlebarColor = wmConfig.readEntry("inactiveBackground", QColorConstants::Black);
+                
+                m_translucentActiveSchemeColor = (activeTitlebarColor.alpha() != 255);
+                m_translucentInactiveSchemeColor = (inactiveTitlebarColor.alpha() != 255);
+                m_activeSchemeColorAlpha = activeTitlebarColor.alphaF();
+                m_inactiveSchemeColorAlpha = inactiveTitlebarColor.alphaF();
+            }
+        }
+        
     }
 }
