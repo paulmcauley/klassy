@@ -1116,20 +1116,6 @@ namespace Breeze
           auto c = client().toStrongRef();
           Q_ASSERT(c);
           
-          qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
-          
-          //the overlap between the thin window outline and behind the window in unscaled pixels.
-          //This is necessary for the thin window outline to sit flush with the window on Wayland, 
-          //and also makes sure that the anti-aliasing blends properly between the window and thin window outline
-          qreal outlineOverlap = 0.5; 
-          
-          //scale outline
-          //We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11 this does not happen but we can use the system-set scaling value directly.
-          if( KWindowSystem::isPlatformX11() ){
-              outlinePenWidth *= m_systemScaleFactor;
-              outlineOverlap *= m_systemScaleFactor;
-          }
-          
           BoxShadowRenderer shadowRenderer;
           
           shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
@@ -1185,6 +1171,20 @@ namespace Breeze
         
           if( m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) 
           {
+            qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
+          
+            //the overlap between the thin window outline and behind the window in unscaled pixels.
+            //This is necessary for the thin window outline to sit flush with the window on Wayland, 
+            //and also makes sure that the anti-aliasing blends properly between the window and thin window outline
+            qreal outlineOverlap = 0.5; 
+            
+            //scale outline
+            //We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11 this does not happen but we can use the system-set scaling value directly.
+            if( KWindowSystem::isPlatformX11() ){
+                outlinePenWidth *= m_systemScaleFactor;
+                outlineOverlap *= m_systemScaleFactor;
+            }
+              
             qreal outlineAdjustment = outlinePenWidth/2 - outlineOverlap;
             QRectF outlineRect;
             outlineRect = innerRect.adjusted(-outlineAdjustment, -outlineAdjustment, outlineAdjustment, outlineAdjustment); //make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
