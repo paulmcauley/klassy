@@ -46,6 +46,7 @@
           <choice name="StyleKite" />
           <choice name="StyleOxygen" />
           <choice name="StyleRedmond" />
+          <choice name="StyleRedmond10" />
       </choices>
       <default>StyleClassik</default>
     </entry>

@@ -9,6 +9,7 @@
 #include "stylekite.h"
 #include "styleoxygen.h"
 #include "styleredmond.h"
+#include "styleredmond10.h"
 
 namespace Breeze
 {
@@ -26,6 +27,8 @@ namespace Breeze
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleOxygen18By18( painter, notInTitlebar, boldButtonIcons ) );
             case InternalSettings::StyleRedmond:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18( painter, notInTitlebar, boldButtonIcons ) );
+            case InternalSettings::StyleRedmond10:
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond1018By18( painter, notInTitlebar, boldButtonIcons ) );
         }
     }
 

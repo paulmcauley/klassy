@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "styleredmond.h"
+#include "styleredmond10.h"
 
 namespace Breeze
 {
-    void RenderStyleRedmond18By18::renderCloseIcon()
+    void RenderStyleRedmond1018By18::renderCloseIcon()
     {
         if(notInTitlebar) {
             
@@ -27,7 +27,7 @@ namespace Breeze
         }
     }
 
-    void RenderStyleRedmond18By18::renderMaximizeIcon()
+    void RenderStyleRedmond1018By18::renderMaximizeIcon()
     {
         if(!notInTitlebar) {
             
@@ -44,7 +44,7 @@ namespace Breeze
         //painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
     }
 
-    void RenderStyleRedmond18By18::renderRestoreIcon()
+    void RenderStyleRedmond1018By18::renderRestoreIcon()
     {
         pen.setJoinStyle( Qt::BevelJoin );
         painter->setPen( pen );
@@ -84,7 +84,7 @@ namespace Breeze
         }
     }
     
-    void RenderStyleRedmond18By18::renderMinimizeIcon()
+    void RenderStyleRedmond1018By18::renderMinimizeIcon()
     {
         if( (!notInTitlebar) && boldButtonIcons) {
                 //thicker pen in titlebar
@@ -93,13 +93,13 @@ namespace Breeze
         }
         
         //horizontal line
-        painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
+        painter->drawLine( QPointF( 4.5, 9.5 ), QPointF( 13.5, 9.5 ) );
         
     }
 
     
 /*//Experimental 3 squares
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleRedmond1018By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -122,7 +122,7 @@ namespace Breeze
         );
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleRedmond1018By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -138,7 +138,7 @@ namespace Breeze
 */
 
 /*//Experimental 2 squares
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleRedmond1018By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -159,7 +159,7 @@ namespace Breeze
         
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleRedmond1018By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -174,7 +174,7 @@ namespace Breeze
 */
 
 // For consistency with breeze icon set
-    void RenderStyleRedmond18By18::renderKeepBehindIcon()
+    void RenderStyleRedmond1018By18::renderKeepBehindIcon()
     {
         if((!notInTitlebar) && boldButtonIcons) {
             //thicker pen in titlebar
@@ -196,7 +196,7 @@ namespace Breeze
             QPointF( 6.5, 9.5 )} );
     }
     
-    void RenderStyleRedmond18By18::renderKeepInFrontIcon()
+    void RenderStyleRedmond1018By18::renderKeepInFrontIcon()
     {
         if((!notInTitlebar) && boldButtonIcons) {
             //thicker pen in titlebar
@@ -218,7 +218,7 @@ namespace Breeze
             QPointF( 15.5, 8.5 )} );
     }
     
-    void RenderStyleRedmond18By18::renderContextHelpIcon()
+    void RenderStyleRedmond1018By18::renderContextHelpIcon()
     {
         if((!notInTitlebar) && boldButtonIcons) {
             //thicker pen in titlebar
@@ -243,7 +243,7 @@ namespace Breeze
         else painter->drawEllipse( QRectF( 8.25, 14.25, 1.5, 1.5 ) );
     }
     
-    void RenderStyleRedmond18By18::renderShadeIcon()
+    void RenderStyleRedmond1018By18::renderShadeIcon()
     {
         if((!notInTitlebar) && boldButtonIcons) {
             //thicker pen in titlebar
@@ -253,7 +253,7 @@ namespace Breeze
         RenderDecorationButtonIcon18By18::renderShadeIcon();
     }
     
-    void RenderStyleRedmond18By18::renderUnShadeIcon()
+    void RenderStyleRedmond1018By18::renderUnShadeIcon()
     {
         if((!notInTitlebar) && boldButtonIcons) {
             //thicker pen in titlebar
