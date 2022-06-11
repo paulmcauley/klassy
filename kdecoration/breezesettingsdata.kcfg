@@ -109,7 +109,12 @@
         <default>true</default>
     </entry>
     
-    <!-- blur transparent titlebars -->
+    <!-- Apply titlebar opacity settings to entire Header area -->
+    <entry name="ApplyOpacityToHeader" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <!-- translucent button backgrounds -->
     <entry name="TranslucentButtonBackgrounds" type = "Bool">
         <default>true</default>
     </entry>
