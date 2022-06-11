@@ -22,6 +22,7 @@
 
 #include <KColorUtils>
 #include <KIconLoader>
+#include <KWindowEffects>
 
 #include <QApplication>
 #include <QBitmap>
@@ -1179,7 +1180,7 @@ namespace Breeze
         return ParentStyleClass::event(e);
     }
 
-    void drawToolsAreaSeparator(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw)
+    void Style::drawToolsAreaSeparator(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw)
     {
         if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
             return;
@@ -1188,10 +1189,27 @@ namespace Breeze
         painter->drawLine(mw->rect().topLeft(), mw->rect().topRight());
     }
 
-    void drawToolsAreaBackground(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw, const QRect& rect)
+    void Style::drawToolsAreaBackground(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw, const QRect& rect)
     {
-        auto color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
-
+        QBrush color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+        
+        if( _helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255 ){
+            if ( (mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitlebars() ) {
+                QColor colorWithoutAlpha = color.color();
+                colorWithoutAlpha.setAlpha(255);
+                color.setColor(colorWithoutAlpha);
+            } else if ( _helper->decorationConfig()->blurTransparentTitlebars() ) { //apply blur to tools area
+                if ((mw->testAttribute(Qt::WA_WState_Created) || mw->internalWinId())){
+                    
+                    //PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence blurring the entire window and causing kornerbug
+                    mw->winId(); // force creation of the window handle
+                    KWindowEffects::enableBlurBehind(mw->windowHandle(),true,rect);
+                    
+                    //no force update at this point like in breezeblurhelper.cpp, as already drawing next and creates an infinite loop
+                    
+                }
+            }
+        }
         painter->setPen(Qt::transparent);
         painter->setBrush(color);
         painter->drawRect(rect);

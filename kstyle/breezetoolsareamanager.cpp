@@ -43,16 +43,16 @@ namespace Breeze {
     inline void doTranslucency(QMainWindow* win, bool on)
     {
         if (on) {
-            if (win->property("_breeze_was_translucent_set").toBool())
+            if (win->property("_classik_was_translucent_set").toBool())
                 return;
 
-            win->setProperty("_breeze_was_translucent", win->testAttribute(Qt::WA_TranslucentBackground));
-            win->setProperty("_breeze_was_translucent_set", true);
+            win->setProperty("_classik_was_translucent", win->testAttribute(Qt::WA_TranslucentBackground));
+            win->setProperty("_classik_was_translucent_set", true);
             win->setAttribute(Qt::WA_TranslucentBackground, true);
         } else {
-            win->setAttribute(Qt::WA_TranslucentBackground, win->property("_breeze_was_translucent").toBool());
-            win->setProperty("_breeze_was_translucent", QVariant());
-            win->setProperty("_breeze_was_translucent_set", false);
+            win->setAttribute(Qt::WA_TranslucentBackground, win->property("_classik_was_translucent").toBool());
+            win->setProperty("_classik_was_translucent", QVariant());
+            win->setProperty("_classik_was_translucent_set", false);
         }
     }
 
@@ -122,16 +122,22 @@ namespace Breeze {
 
     void ToolsAreaManager::configUpdated()
     {
+        _colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
+        
         auto translucent = false;
-
         auto active = KColorScheme(QPalette::Active, KColorScheme::Header, _config);
-        translucent = translucent || !active.background().isOpaque();
-
         auto inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
-        translucent = translucent || !inactive.background().isOpaque();
-
         auto disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
-        translucent = translucent || !disabled.background().isOpaque();
+        
+
+        if( _colorSchemeHasHeaderColor && _helper->decorationConfig()->applyOpacityToHeader() ) {
+            translucent = translucent || !active.background().isOpaque();
+            translucent = translucent || !inactive.background().isOpaque();
+            translucent = translucent || !disabled.background().isOpaque();
+            translucent = translucent || _helper->decorationConfig()->activeTitlebarOpacity() < 100;
+            translucent = translucent || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100;
+        }
+
 
         if (translucent != _translucent) {
             if (translucent)
@@ -150,7 +156,25 @@ namespace Breeze {
         _palette.setBrush(QPalette::Disabled, QPalette::WindowText, disabled.foreground());
         _palette.setBrush(QPalette::Inactive, QPalette::Window, inactive.background());
         _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
-
+        
+        
+        if( _helper->decorationConfig()->applyOpacityToHeader() ){
+            //override active with opacity from decoration if needed
+            if( active.background().isOpaque() && _helper->decorationConfig()->activeTitlebarOpacity() < 100 ) {
+                QColor activeReplacedAlpha = active.background().color();
+                activeReplacedAlpha.setAlphaF( qreal(_helper->decorationConfig()->activeTitlebarOpacity()) / 100 );
+                _palette.setColor(QPalette::Active, QPalette::Window, activeReplacedAlpha);
+            }
+            
+            //override inactive with opacity from decoration if needed
+            if( inactive.background().isOpaque() && _helper->decorationConfig()->inactiveTitlebarOpacity() < 100 ) {
+                QColor inactiveReplacedAlpha = inactive.background().color();
+                inactiveReplacedAlpha.setAlphaF( qreal(_helper->decorationConfig()->inactiveTitlebarOpacity()) / 100 );
+                _palette.setColor(QPalette::Inactive, QPalette::Window, inactiveReplacedAlpha);
+            }
+        }
+        
+        
         for (auto window : _windows) {
             for (auto toolbar : window) {
                 if (!toolbar.isNull()) {
@@ -159,7 +183,6 @@ namespace Breeze {
             }
         }
 
-        _colorSchemeHasHeaderColor =  KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
     }
 
     void ToolsAreaManager::becomeOpaque()

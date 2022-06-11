@@ -76,6 +76,7 @@ namespace Breeze
         connect( m_ui.useTitlebarColorForAllBorders, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.opaqueMaximizedTitlebars, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.blurTransparentTitlebars, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.applyOpacityToHeader, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.translucentButtonBackgrounds, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         
         //connect dual controls with same values
@@ -181,6 +182,7 @@ namespace Breeze
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
+        m_ui.applyOpacityToHeader->setChecked( m_internalSettings->applyOpacityToHeader() );
         m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
         
         // load shadows
@@ -239,6 +241,7 @@ namespace Breeze
         m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
         m_internalSettings->setOpaqueMaximizedTitlebars(m_ui.opaqueMaximizedTitlebars->isChecked());
         m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
+        m_internalSettings->setApplyOpacityToHeader(m_ui.applyOpacityToHeader->isChecked());
         m_internalSettings->setTranslucentButtonBackgrounds(m_ui.translucentButtonBackgrounds->isChecked());
         
         m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
@@ -312,6 +315,7 @@ namespace Breeze
         m_ui.useTitlebarColorForAllBorders->setChecked( m_internalSettings->useTitlebarColorForAllBorders() );
         m_ui.opaqueMaximizedTitlebars->setChecked( m_internalSettings->opaqueMaximizedTitlebars() );
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
+        m_ui.applyOpacityToHeader->setChecked( m_internalSettings->applyOpacityToHeader() );
         m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
         
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
@@ -342,6 +346,7 @@ namespace Breeze
         else if( m_ui.useTitlebarColorForAllBorders->isChecked() != m_internalSettings->useTitlebarColorForAllBorders()) modified = true;
         else if( m_ui.opaqueMaximizedTitlebars->isChecked() != m_internalSettings->opaqueMaximizedTitlebars()) modified = true;
         else if( m_ui.blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars()) modified = true;
+        else if( m_ui.applyOpacityToHeader->isChecked() != m_internalSettings->applyOpacityToHeader()) modified = true;
         else if( m_ui.translucentButtonBackgrounds->isChecked() != m_internalSettings->translucentButtonBackgrounds()) modified = true;
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
@@ -408,9 +413,11 @@ namespace Breeze
         if ( m_ui.activeTitlebarOpacity->value() != 100 ||  m_ui.inactiveTitlebarOpacity->value() != 100 ){
             m_ui.opaqueMaximizedTitlebars->setEnabled(true);
             m_ui.blurTransparentTitlebars->setEnabled(true);
+            m_ui.applyOpacityToHeader->setEnabled(true);
         } else {
             m_ui.opaqueMaximizedTitlebars->setEnabled(false);
             m_ui.blurTransparentTitlebars->setEnabled(false);
+            m_ui.applyOpacityToHeader->setEnabled(false);
         }
     }
     

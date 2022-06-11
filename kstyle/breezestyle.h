@@ -367,7 +367,10 @@ namespace Breeze
 
         //* translucent background
         void setTranslucentBackground( QWidget* ) const;
-
+        
+        void drawToolsAreaSeparator(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw);
+        void drawToolsAreaBackground(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw, const QRect& rect);
+        
         /**
         separator can have a title and an icon
         in that case they are rendered as sunken flat toolbuttons
