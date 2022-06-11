@@ -12,6 +12,7 @@ set(breezecommon_LIB_SRCS
     stylekite.cpp
     styleoxygen.cpp
     styleredmond.cpp
+    styleredmond10.cpp
     setqdebug_logging.h
 )
 

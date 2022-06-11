@@ -457,6 +457,15 @@
               <normaloff>:/classik_config_icons/Redmond.png</normaloff>:/classik_config_icons/Redmond.png</iconset>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>  Redmond 10</string>
+            </property>
+            <property name="icon">
+             <iconset resource="classikdecoration_config.qrc">
+              <normaloff>:/classik_config_icons/Redmond10.png</normaloff>:/classik_config_icons/Redmond10.png</iconset>
+            </property>
+           </item>
           </widget>
          </item>
          <item row="4" column="1">
