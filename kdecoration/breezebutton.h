@@ -115,6 +115,7 @@ namespace Breeze
         //@}
         
         bool shouldDrawBackgroundStroke() const;
+        bool isSystemIconAvailable();
         void setDevicePixelRatio(QPainter* painter);
         void setShouldDrawBoldButtonIcons();
         void setStandardScaledPenWidth();
@@ -162,6 +163,7 @@ namespace Breeze
         //* active state change opacity
         qreal m_opacity = 0;
         
+        bool m_systemIconIsAvailable;
         bool m_lowContrastBetweenTitleBarAndBackground = false;
         bool m_isGtkCsdButton;
         qreal m_devicePixelRatio = 1.0;

@@ -141,6 +141,8 @@ namespace Breeze
         
         setDevicePixelRatio(painter);
         setShouldDrawBoldButtonIcons();
+        m_systemIconIsAvailable = false;
+        if( d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ) m_systemIconIsAvailable = isSystemIconAvailable();
         setStandardScaledPenWidth();
         
         m_backgroundColor = this->backgroundColor();
@@ -212,17 +214,26 @@ namespace Breeze
         
         // translate from icon offset
         painter->translate( m_iconOffset );       
-        
-        /*
-        scale painter so that its window matches QRect( -1, -1, 20, 20 )
-        this makes all further rendering and scaling simpler
-        all further rendering is preformed inside QRect( 0, 0, 18, 18 )
-        */
         painter->translate( geometry().topLeft() );
-
         const qreal width( m_iconSize.width() );
-        painter->scale( width/20, width/20 );
-        painter->translate( 1, 1 );
+        qreal systemIconWidth = 18;
+        
+        if ( !m_systemIconIsAvailable )
+        {
+            /*
+            scale painter so that its window matches QRect( -1, -1, 20, 20 )
+            this makes all further rendering and scaling simpler
+            all further rendering is preformed inside QRect( 0, 0, 18, 18 )
+            */
+            painter->scale( width/20, width/20 );
+            painter->translate( 1, 1 );
+        } else {
+            //do not scale if loading system icons
+            systemIconWidth = width * 0.9;
+            qreal systemIconTranslationOffset = (width - systemIconWidth)/2;
+            painter->translate( systemIconTranslationOffset, systemIconTranslationOffset );
+        }
+        
         painter->setRenderHints( QPainter::Antialiasing );
         
         
@@ -254,7 +265,9 @@ namespace Breeze
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
             if (d) { 
                 
-                iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons );
+                if( d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ) 
+                    iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons, systemIconWidth );
+                else iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons );
 
                 switch( type() )
                 {
@@ -863,6 +876,18 @@ namespace Breeze
                 break;
         }
         
+    }
+    
+    //When "Use system icon theme" is selected for the icons then not all icons are available as a window-*-symbolic icon
+    bool Button::isSystemIconAvailable()
+    {
+        if ( type() == DecorationButtonType::Menu ||
+            type() == DecorationButtonType::ApplicationMenu ||
+            type() == DecorationButtonType::OnAllDesktops ||
+            type() == DecorationButtonType::ContextHelp ||
+            type() == DecorationButtonType::Shade ||
+            type() == DecorationButtonType::Custom ) return false;
+        else return true;
     }
     
 } // namespace
