@@ -1,5 +1,5 @@
 /*
-* SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+* SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
 * 
 * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
 */
@@ -10,11 +10,12 @@
 #include "styleoxygen.h"
 #include "styleredmond.h"
 #include "styleredmond10.h"
+#include "stylesystemicontheme.h"
 
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons, qreal iconWidth)
     {
         switch( internalSettings->buttonIconStyle() )
         {
@@ -29,6 +30,8 @@ namespace Breeze
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond18By18( painter, notInTitlebar, boldButtonIcons ) );
             case InternalSettings::StyleRedmond10:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond1018By18( painter, notInTitlebar, boldButtonIcons ) );
+            case InternalSettings::StyleSystemIconTheme:
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleSystemIconTheme( painter, notInTitlebar, boldButtonIcons, iconWidth ) );
         }
     }
 

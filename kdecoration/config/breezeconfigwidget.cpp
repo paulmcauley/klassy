@@ -16,6 +16,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QRegularExpression>
+#include <QIcon>
 #include <KColorScheme>
 #include <KConfigGroup>
 
@@ -45,6 +46,10 @@ namespace Breeze
             m_ui.version->setText("v" + matched);
         }
 #endif
+        
+        QIcon useSystemIconThemeIcon = QIcon::fromTheme("preferences-desktop-icons");
+        m_ui.buttonIconStyle->addItem(useSystemIconThemeIcon, "Use system icon theme");
+        
         updateBackgroundShapeStackedWidgetVisible();
         updateCustomColorStackedWidgetVisible();
         
