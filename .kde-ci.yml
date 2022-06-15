@@ -22,3 +22,5 @@ Dependencies:
 - 'on': ['Linux', 'FreeBSD']
   'require':
     'plasma/kdecoration': '@same'
+Options:
+  require-passing-tests-on: [ 'Linux', 'FreeBSD']
