@@ -1321,9 +1321,16 @@ bool Style::event(QEvent *e)
                     focusWidget = focusProxy;
                     focusProxy = focusWidget->focusProxy();
                 }
-                target = focusWidget;
+                // by default we want to draw a focus frame only for the following widgets
+                if (focusWidget->inherits("QLineEdit") || focusWidget->inherits("QTextEdit") || focusWidget->inherits("QAbstractSpinBox")
+                    || focusWidget->inherits("QComboBox") || focusWidget->inherits("QPushButton") || focusWidget->inherits("QToolButton")
+                    || focusWidget->inherits("QCheckBox") || focusWidget->inherits("QRadioButton") || focusWidget->inherits("QSlider")
+                    || focusWidget->inherits("QDial") || focusWidget->inherits("QGroupBox")) {
+                    target = focusWidget;
+                }
             }
         }
+
         if (_focusFrame) {
             // sets to nullptr or a widget
             _focusFrame->setWidget(target);
@@ -5776,7 +5783,8 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
         focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
     } else {
-        return true;
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
     }
 
     auto outerColor = _helper->alphaColor(option->palette.highlight().color(), 0.33);
