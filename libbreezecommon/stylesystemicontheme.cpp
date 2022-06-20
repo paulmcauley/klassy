@@ -6,51 +6,76 @@
 
 #include "stylesystemicontheme.h"
 #include <QIcon>
+#include <QGraphicsScene>
+#include <QGraphicsItem>
+#include <QGraphicsColorizeEffect>
 
 namespace Breeze
 {
     
-    void RenderStyleSystemIconTheme::paintQIcon(QIcon& icon)
+    void RenderStyleSystemIconTheme::paintIconFromSystemTheme(QString iconName)
     {
-        icon.paint(painter,QRect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth)));
+        
+        //QIcon::setThemeName(QIcon::themeName()); //doing this hack allows Adwaita icon theme to be partially loaded
+        QIcon icon = QIcon::fromTheme(iconName);
+        QRect rect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth));
+        
+        if( m_internalSettings->colorizeSystemIcons() ){
+            QGraphicsScene scene;
+            QGraphicsPixmapItem item;
+            
+            /* the following paragraph is a silly workaround to fix a Qt problem with multiple monitors with different DPIs on Wayland
+             * When returning a pixmap from a QIcon Qt will give the pixmap the devicePixelRatio of the monitor with the highest devicePixelRatio
+             * Qt does not give it the devicePixelRatio of the current monitor. This causes blurry icons on the lower-dpr screens.
+             * Therefore have to make an icon scaled by the difference and set the devicePixelRatio manually
+             * Qt6 should offer a better solution as has the option to specify the devicePixelRatio when requesting a QPixmap from a QIcon
+             */
+            QPixmap iconPixmap = icon.pixmap(QSize(m_iconWidth,m_iconWidth));
+            int reducedIconWidth = qRound(m_iconWidth * m_devicePixelRatio / iconPixmap.devicePixelRatioF());
+            QPixmap iconPixmap2 = icon.pixmap(reducedIconWidth,reducedIconWidth); 
+            iconPixmap2.setDevicePixelRatio(m_devicePixelRatio);
+            item.setPixmap(iconPixmap2);
+            //item.setPixmap(icon.pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
+            
+            /* Tint the icon with the pen colour */
+            QGraphicsColorizeEffect effect;
+            effect.setColor(pen.color());
+            item.setGraphicsEffect(&effect);
+            
+            scene.addItem(&item);
+            scene.render(painter,rect,rect);
+        } else 
+            icon.paint(painter,QRect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth)));
     }
     
     void RenderStyleSystemIconTheme::renderCloseIcon()
     {
-        
-        //if(!notInTitlebar) {
-        QIcon icon = QIcon::fromTheme("window-close-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-close-symbolic");
     }
     
     void RenderStyleSystemIconTheme::renderMaximizeIcon()
     {
-        QIcon icon = QIcon::fromTheme("window-maximize-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-maximize-symbolic");
     }
     
     void RenderStyleSystemIconTheme::renderRestoreIcon()
     {
-        QIcon icon = QIcon::fromTheme("window-restore-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-restore-symbolic");
     }
     
     void RenderStyleSystemIconTheme::renderMinimizeIcon()
     {        
-        QIcon icon = QIcon::fromTheme("window-minimize-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-minimize-symbolic");
     }
 
     void RenderStyleSystemIconTheme::renderKeepBehindIcon()
     {
-        QIcon icon = QIcon::fromTheme("window-keep-below-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-keep-below-symbolic");
     }
     
     void RenderStyleSystemIconTheme::renderKeepInFrontIcon()
     {
-        QIcon icon = QIcon::fromTheme("window-keep-above-symbolic");
-        paintQIcon(icon);
+        paintIconFromSystemTheme("window-keep-above-symbolic");
     }
 
     void RenderStyleSystemIconTheme::renderContextHelpIcon()

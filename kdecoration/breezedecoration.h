@@ -68,7 +68,7 @@ namespace Breeze
         int captionHeight() const;
 
         //* icon height
-        int iconHeight() const;
+        QPair<int,qreal> iconHeight() const;
         
 
         //*@name active state change animation
