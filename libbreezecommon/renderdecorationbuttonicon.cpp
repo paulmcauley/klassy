@@ -15,7 +15,7 @@
 namespace Breeze
 {
     
-    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons, qreal iconWidth)
+    std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory( const QSharedPointer<InternalSettings> internalSettings, QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons, qreal iconWidth, qreal devicePixelRatio)
     {
         switch( internalSettings->buttonIconStyle() )
         {
@@ -31,7 +31,7 @@ namespace Breeze
             case InternalSettings::StyleRedmond10:
                 return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleRedmond1018By18( painter, notInTitlebar, boldButtonIcons ) );
             case InternalSettings::StyleSystemIconTheme:
-                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleSystemIconTheme( painter, notInTitlebar, boldButtonIcons, iconWidth ) );
+                return std::unique_ptr<RenderDecorationButtonIcon18By18>( new RenderStyleSystemIconTheme( painter, notInTitlebar, boldButtonIcons, iconWidth, internalSettings, devicePixelRatio ) );
         }
     }
 

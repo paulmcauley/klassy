@@ -7664,7 +7664,7 @@ namespace Breeze
 
                 // create painter and render
                 QPainter painter( &pixmap );
-                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, iconData._inverted, iconData._paintBackground,  iconData._backgroundColor,  iconData._outlineColor );
+                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, iconData._inverted, iconData._paintBackground,  iconData._backgroundColor,  iconData._outlineColor, widget->devicePixelRatioF() );
 
                 painter.end();
 

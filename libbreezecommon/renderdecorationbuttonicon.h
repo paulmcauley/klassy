@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
+#include <QGraphicsScene>
 
 namespace Breeze
 {
@@ -37,7 +38,7 @@ namespace Breeze
              * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
              * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new sub-style object.
              */
-            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings>& internalSettings, QPainter* painter, const bool notInTitlebar = false, const bool boldButtonIcons = false, const qreal iconWidth = 18 );
+            static std::unique_ptr<RenderDecorationButtonIcon18By18> factory( const QSharedPointer<InternalSettings> internalSettings, QPainter* painter, const bool notInTitlebar = false, const bool boldButtonIcons = false, const qreal iconWidth = 18, qreal devicePixelRatio = 1 );
             
             virtual ~RenderDecorationButtonIcon18By18();
             

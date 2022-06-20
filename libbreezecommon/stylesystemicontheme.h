@@ -24,9 +24,11 @@ namespace Breeze
              * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
              * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
              */
-            RenderStyleSystemIconTheme( QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons, qreal iconWidth )
+            RenderStyleSystemIconTheme( QPainter* painter, const bool notInTitlebar, const bool boldButtonIcons, qreal iconWidth, const QSharedPointer<InternalSettings> internalSettings, qreal devicePixelRatio )
                 : RenderDecorationButtonIcon18By18( painter, notInTitlebar, boldButtonIcons ),
-                m_iconWidth{iconWidth}
+                m_iconWidth{iconWidth},
+                m_internalSettings{internalSettings},
+                m_devicePixelRatio{devicePixelRatio}
                 {};
             
             void renderCloseIcon() override;
@@ -40,8 +42,11 @@ namespace Breeze
             void renderUnShadeIcon() override;
             
         private:
+            void paintIconFromSystemTheme(QString iconName);
+            
             qreal m_iconWidth;
-            void paintQIcon(QIcon& icon);
+            const QSharedPointer<InternalSettings> m_internalSettings;
+            qreal m_devicePixelRatio;
     };
     
 }

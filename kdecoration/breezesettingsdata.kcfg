@@ -121,6 +121,11 @@
         <default>true</default>
     </entry>
     
+    <!-- colourize icons from system icon theme -->
+    <entry name="ColorizeSystemIcons" type = "Bool">
+        <default>true</default>
+    </entry>
+    
   </group>
 
   <group name="Windeco">
@@ -190,6 +195,21 @@
           <choice name="IconVeryLarge" />
       </choices>
       <default>IconDefault</default>
+    </entry>
+    
+    <!-- system icon size -->
+    <entry name="SystemIconSize" type="Enum">
+      <choices>
+          <choice name="SystemIcon9" />
+          <choice name="SystemIcon13" />
+          <choice name="SystemIcon16" />
+          <choice name="SystemIcon18" />
+          <choice name="SystemIcon22" />
+          <choice name="SystemIcon24" />
+          <choice name="SystemIcon32" />
+          <choice name="SystemIcon48" />
+      </choices>
+      <default>SystemIcon16</default>
     </entry>
     
     <!-- Full-height button width margin left -->

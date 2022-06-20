@@ -50,12 +50,14 @@ namespace Breeze
         QIcon useSystemIconThemeIcon = QIcon::fromTheme("preferences-desktop-icons");
         m_ui.buttonIconStyle->addItem(useSystemIconThemeIcon, "Use system icon theme");
         
+        updateIconsStackedWidgetVisible();
         updateBackgroundShapeStackedWidgetVisible();
         updateCustomColorStackedWidgetVisible();
         
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()) );
         connect( m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
@@ -64,6 +66,7 @@ namespace Breeze
         connect( m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), SLOT(updateChanged()) );
@@ -83,6 +86,7 @@ namespace Breeze
         connect( m_ui.blurTransparentTitlebars, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.applyOpacityToHeader, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.translucentButtonBackgrounds, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
+        connect( m_ui.colorizeSystemIcons, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         
         //connect dual controls with same values
         connect( m_ui.titlebarTopBottomMargins, SIGNAL(valueChanged(double)), m_ui.titlebarTopBottomMargins_2, SLOT(setValue(double)) );
@@ -152,6 +156,7 @@ namespace Breeze
         m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
+        m_ui.systemIconSize->setCurrentIndex( m_internalSettings->systemIconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
         m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
@@ -189,6 +194,7 @@ namespace Breeze
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
         m_ui.applyOpacityToHeader->setChecked( m_internalSettings->applyOpacityToHeader() );
         m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
+        m_ui.colorizeSystemIcons->setChecked( m_internalSettings->colorizeSystemIcons() );
         
         // load shadows
         if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge ) m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
@@ -199,6 +205,7 @@ namespace Breeze
         m_ui.thinWindowOutlineStyle->setCurrentIndex( m_internalSettings->thinWindowOutlineStyle() );
         m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
         m_ui.thinWindowOutlineThickness->setValue ( m_internalSettings->thinWindowOutlineThickness() );
+        updateIconsStackedWidgetVisible();
         updateBackgroundShapeStackedWidgetVisible();
         updateCustomColorStackedWidgetVisible();
         // load exceptions
@@ -227,6 +234,7 @@ namespace Breeze
         m_internalSettings->setAlwaysShow( m_ui.alwaysShow->currentIndex() );
         m_internalSettings->setAlwaysShowIconHighlightUsing( m_ui.alwaysShowIconHighlightUsing->currentIndex() );
         m_internalSettings->setIconSize( m_ui.iconSize->currentIndex() );
+        m_internalSettings->setSystemIconSize( m_ui.systemIconSize->currentIndex() );
         m_internalSettings->setButtonSpacingRight( m_ui.buttonSpacingRight->value() );
         m_internalSettings->setButtonSpacingLeft( m_ui.buttonSpacingLeft->value() );
         m_internalSettings->setTitlebarTopBottomMargins( m_ui.titlebarTopBottomMargins->value() );
@@ -248,6 +256,7 @@ namespace Breeze
         m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
         m_internalSettings->setApplyOpacityToHeader(m_ui.applyOpacityToHeader->isChecked());
         m_internalSettings->setTranslucentButtonBackgrounds(m_ui.translucentButtonBackgrounds->isChecked());
+        m_internalSettings->setColorizeSystemIcons(m_ui.colorizeSystemIcons->isChecked());
         
         m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
         m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
@@ -300,6 +309,7 @@ namespace Breeze
         m_ui.alwaysShow->setCurrentIndex( m_internalSettings->alwaysShow() );
         m_ui.alwaysShowIconHighlightUsing->setCurrentIndex( m_internalSettings->alwaysShowIconHighlightUsing() );
         m_ui.iconSize->setCurrentIndex( m_internalSettings->iconSize() );
+        m_ui.systemIconSize->setCurrentIndex( m_internalSettings->systemIconSize() );
         m_ui.buttonSpacingRight->setValue( m_internalSettings->buttonSpacingRight() );
         m_ui.buttonSpacingLeft->setValue( m_internalSettings->buttonSpacingLeft() );
         m_ui.titlebarTopBottomMargins->setValue( m_internalSettings->titlebarTopBottomMargins() );
@@ -322,6 +332,7 @@ namespace Breeze
         m_ui.blurTransparentTitlebars->setChecked( m_internalSettings->blurTransparentTitlebars() );
         m_ui.applyOpacityToHeader->setChecked( m_internalSettings->applyOpacityToHeader() );
         m_ui.translucentButtonBackgrounds->setChecked( m_internalSettings->translucentButtonBackgrounds() );
+        m_ui.colorizeSystemIcons->setChecked( m_internalSettings->colorizeSystemIcons() );
         
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
@@ -330,6 +341,7 @@ namespace Breeze
         m_ui.thinWindowOutlineCustomColor->setColor( m_internalSettings->thinWindowOutlineCustomColor() );
         m_ui.thinWindowOutlineThickness->setValue( m_internalSettings->thinWindowOutlineThickness() );
         
+        updateIconsStackedWidgetVisible();
         updateBackgroundShapeStackedWidgetVisible();
         updateCustomColorStackedWidgetVisible();
         
@@ -353,6 +365,7 @@ namespace Breeze
         else if( m_ui.blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars()) modified = true;
         else if( m_ui.applyOpacityToHeader->isChecked() != m_internalSettings->applyOpacityToHeader()) modified = true;
         else if( m_ui.translucentButtonBackgrounds->isChecked() != m_internalSettings->translucentButtonBackgrounds()) modified = true;
+        else if( m_ui.colorizeSystemIcons->isChecked() != m_internalSettings->colorizeSystemIcons()) modified = true;
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
@@ -362,6 +375,7 @@ namespace Breeze
         else if( m_ui.alwaysShow->currentIndex() != m_internalSettings->alwaysShow() ) modified = true;
         else if( m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing() ) modified = true;
         else if( m_ui.iconSize->currentIndex() != m_internalSettings->iconSize() ) modified = true;
+        else if( m_ui.systemIconSize->currentIndex() != m_internalSettings->systemIconSize() ) modified = true;
         else if( m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons() ) modified = true;
         else if( m_ui.redAlwaysShownClose->isChecked() != m_internalSettings->redAlwaysShownClose() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
@@ -426,7 +440,14 @@ namespace Breeze
         }
     }
     
-    
+  
+    void ConfigWidget::updateIconsStackedWidgetVisible()
+    {
+        if( m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
+            m_ui.iconsStackedWidget->setCurrentIndex(1);
+        else m_ui.iconsStackedWidget->setCurrentIndex(0);
+    }
+  
     void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
     {
         if( m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle

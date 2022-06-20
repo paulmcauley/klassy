@@ -54,9 +54,10 @@ namespace Breeze
         }
 
         // setup default geometry
-        const int iconHeight = decoration->iconHeight();
-        setGeometry(QRect(0, 0, iconHeight, iconHeight));
-        setIconSize(QSize( iconHeight, iconHeight ));
+        const QPair<int,qreal> smallButtonandIconSize = decoration->iconHeight();
+        setGeometry(QRect(0, 0, smallButtonandIconSize.first, smallButtonandIconSize.first));
+        setSmallButtonSize(QSize( smallButtonandIconSize.first, smallButtonandIconSize.first ));
+        setIconSize(QSizeF( smallButtonandIconSize.second, smallButtonandIconSize.second ));
 
         // connections
         connect(c.data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
@@ -72,9 +73,9 @@ namespace Breeze
         : Button(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
     {
         m_flag = FlagStandalone;
-        //! icon size must return to !valid because it was altered from the default constructor,
+        //! small button size must return to !valid because it was altered from the default constructor,
         //! in Standalone mode the button is not using the decoration metrics but its geometry
-        m_iconSize = QSize(-1, -1);
+        m_smallButtonSize = QSize(-1, -1);
     }
             
     //__________________________________________________________________
@@ -154,7 +155,7 @@ namespace Breeze
         
         painter->save();
         
-        if( !m_iconSize.isValid() || isStandAlone() ) m_iconSize = geometry().size().toSize();
+        if( !m_smallButtonSize.isValid() || isStandAlone() ) m_smallButtonSize = geometry().size().toSize();
         
         // menu button
         if (type() == DecorationButtonType::Menu)
@@ -170,7 +171,7 @@ namespace Breeze
             // translate from icon offset
             painter->translate( m_iconOffset );
             
-            const QRectF iconRect( geometry().topLeft(), m_iconSize );
+            const QRectF iconRect( geometry().topLeft(), m_smallButtonSize );
             if (auto deco =  qobject_cast<Decoration*>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
                 QPalette palette = c->palette();
@@ -215,8 +216,8 @@ namespace Breeze
         // translate from icon offset
         painter->translate( m_iconOffset );       
         painter->translate( geometry().topLeft() );
-        const qreal width( m_iconSize.width() );
-        qreal systemIconWidth = 18;
+        const qreal smallButtonWidth( m_smallButtonSize.width() );
+        qreal systemIconWidth = 16;
         
         if ( !m_systemIconIsAvailable )
         {
@@ -225,12 +226,12 @@ namespace Breeze
             this makes all further rendering and scaling simpler
             all further rendering is preformed inside QRect( 0, 0, 18, 18 )
             */
-            painter->scale( width/20, width/20 );
+            painter->scale( smallButtonWidth/20, smallButtonWidth/20 );
             painter->translate( 1, 1 );
         } else {
             //do not scale if loading system icons
-            systemIconWidth = width * 0.9;
-            qreal systemIconTranslationOffset = (width - systemIconWidth)/2;
+            systemIconWidth = m_iconSize.width(); //icon relative to (icon + padding) 
+            qreal systemIconTranslationOffset = (smallButtonWidth - systemIconWidth)/2;
             painter->translate( systemIconTranslationOffset, systemIconTranslationOffset );
         }
         
@@ -249,7 +250,7 @@ namespace Breeze
             QPen pen( m_foregroundColor );
             
             //this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
-            //pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+            //pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonWidth ) );
             
             //cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons
             if( m_isGtkCsdButton ) {
@@ -264,11 +265,10 @@ namespace Breeze
 
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
             if (d) { 
+                if( d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ){
+                    iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons, systemIconWidth, m_devicePixelRatio);
+                }else iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons );
                 
-                if( d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ) 
-                    iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons, systemIconWidth );
-                else iconRenderer = RenderDecorationButtonIcon18By18::factory( d->internalSettings(), painter, false, m_boldButtonIcons );
-
                 switch( type() )
                 {
 
@@ -703,7 +703,7 @@ namespace Breeze
                 
                 if( m_outlineColor.isValid() ){
                     QPen pen( m_outlineColor );
-                    pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
+                    pen.setWidthF( m_standardScaledPenWidth );
                     pen.setCosmetic(true);
                     painter->setPen(pen);
                 } else {
@@ -768,7 +768,7 @@ namespace Breeze
             if( shouldDrawBackgroundStroke() && m_outlineColor.isValid() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF( PenWidth::Symbol * m_devicePixelRatio );
+                pen.setWidthF( m_standardScaledPenWidth );
                 pen.setCosmetic(true);
                 painter->setPen(pen);
                 
@@ -805,18 +805,23 @@ namespace Breeze
             painter->save();
             
             qreal geometryShrinkOffset = 0;
+            qreal iconSize = 18;
+            if ( m_systemIconIsAvailable ) iconSize = m_iconSize.width();
             
             if( shouldDrawBackgroundStroke() && m_outlineColor.isValid() )
             {   
                 QPen pen( m_outlineColor );
-                pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, (qreal)20/m_iconSize.width() ));
+                if ( m_systemIconIsAvailable ) {
+                    pen.setWidthF( m_standardScaledPenWidth );
+                    pen.setCosmetic(true);
+                } else pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, (qreal)20/m_smallButtonSize.width() ));
                 painter->setPen(pen);
             } else painter->setPen( Qt::NoPen );
             painter->setBrush( m_backgroundColor );
             
             if( d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare )
                 painter->drawRect(
-                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset)
+                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, iconSize - geometryShrinkOffset, iconSize - geometryShrinkOffset)
                 );
             else if (
                 d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
@@ -824,12 +829,12 @@ namespace Breeze
                 || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle //case where standalone
             ) {
                 painter->drawRoundedRect(
-                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset),
+                    QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, iconSize - geometryShrinkOffset, iconSize - geometryShrinkOffset),
                     20,
                     20, Qt::RelativeSize
                 );
             } else painter->drawEllipse( 
-                QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, 18 - geometryShrinkOffset, 18 - geometryShrinkOffset) 
+                QRectF( 0 + geometryShrinkOffset, 0 + geometryShrinkOffset, iconSize - geometryShrinkOffset, iconSize - geometryShrinkOffset) 
             );
             
             painter->restore();
@@ -865,8 +870,10 @@ namespace Breeze
         switch( d->internalSettings()->boldButtonIcons() )
         {
             case InternalSettings::BoldIconsAuto:
-                // If HiDPI system scaling use bold icons
-                if ( m_devicePixelRatio  > 1.2 ) m_boldButtonIcons = true;
+                //use fine icons if using a system icon theme (these icons are the missing ones that are less important)
+                if( d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ) break;
+                // Else if HiDPI system scaling use bold icons
+                else if( m_devicePixelRatio  > 1.2 ) m_boldButtonIcons = true;
                 break;
             case InternalSettings::BoldIconsFine:
             default:

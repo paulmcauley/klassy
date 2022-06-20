@@ -73,8 +73,12 @@ namespace Breeze
         void setFullHeightBackgroundVisibleSize( const QSizeF& value )
         { m_fullHeightBackgroundVisibleSize = value; }
         
+        //* set small button size
+        void setSmallButtonSize( const QSize& value )
+        { m_smallButtonSize = value; }
+        
         //* set icon size
-        void setIconSize( const QSize& value )
+        void setIconSize( const QSizeF& value )
         { m_iconSize = value; }
 
         //*@name active state change animation
@@ -157,8 +161,11 @@ namespace Breeze
         //* geometry for rendering a Full-sized button
         QSizeF m_fullHeightBackgroundVisibleSize = QSizeF();
 
+        //* small button size
+        QSize m_smallButtonSize;
+        
         //* icon size
-        QSize m_iconSize;
+        QSizeF m_iconSize;
 
         //* active state change opacity
         qreal m_opacity = 0;

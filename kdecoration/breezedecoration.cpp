@@ -599,7 +599,7 @@ namespace Breeze
         else {
 
             QFontMetrics fm(s->font());
-            top += qMax(fm.height(), iconHeight() );
+            top += qMax(fm.height(), iconHeight().first );
 
             // padding below
             top += titleBarSeparatorHeight();
@@ -660,8 +660,10 @@ namespace Breeze
         // adjust button position
         int bHeight;
         int bWidth=0;
-        int iconHeight = this->iconHeight();
-        int iconWidth = iconHeight;
+        const QPair<int,qreal> smallButtonandIconSize = this->iconHeight();
+        const int& smallButtonHeight = smallButtonandIconSize.first;
+        const int& smallButtonWidth = smallButtonHeight;
+        qreal iconHeight = smallButtonandIconSize.second;
         int verticalIconOffset=0;
         int horizontalIconOffsetLeftButtons=0;
         int horizontalIconOffsetRightButtons=0;
@@ -670,52 +672,54 @@ namespace Breeze
             bHeight = borderTop();
             bHeight -= titleBarSeparatorHeight();
             
-            verticalIconOffset = m_scaledTitleBarTopMargin + (captionHeight()-iconHeight)/2;
+            verticalIconOffset = m_scaledTitleBarTopMargin + (captionHeight()-smallButtonHeight)/2;
         } else if ( m_buttonSize == ButtonSize::Large ) {
             bHeight = borderTop();
             bHeight -= titleBarSeparatorHeight();
-            verticalIconOffset = m_scaledTitleBarTopMargin + (captionHeight()-iconHeight)/2;
+            verticalIconOffset = m_scaledTitleBarTopMargin + (captionHeight()-smallButtonHeight)/2;
         } else {   
             bHeight = captionHeight() + (isTopEdge() ? m_scaledTitleBarTopMargin:0);
-            verticalIconOffset = (isTopEdge() ? m_scaledTitleBarTopMargin:0) + (captionHeight()-iconHeight)/2;
+            verticalIconOffset = (isTopEdge() ? m_scaledTitleBarTopMargin:0) + (captionHeight()-smallButtonHeight)/2;
         }
         
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_leftButtons->buttons() )
         {
             
             if ( m_buttonSize == ButtonSize::FullHeight ) {
-                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
+                bWidth = smallButtonHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft();
                 horizontalIconOffsetLeftButtons = s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginLeft() / 2;
                 static_cast<Button*>( button.data() )->setFullHeightBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
-                horizontalIconOffsetLeftButtons = (bWidth - iconHeight)/2;
+                horizontalIconOffsetLeftButtons = (bWidth - smallButtonHeight)/2;
             } else {
-                bWidth = iconHeight;
+                bWidth = smallButtonHeight;
                 horizontalIconOffsetLeftButtons = 0;
             }
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
             static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffsetLeftButtons, verticalIconOffset ) );
-            static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
+            static_cast<Button*>( button.data() )->setSmallButtonSize( QSize( smallButtonWidth, smallButtonWidth ) );
+            static_cast<Button*>( button.data() )->setIconSize( QSizeF( iconHeight, iconHeight ) );
         }
         
         foreach( const QPointer<KDecoration2::DecorationButton>& button, m_rightButtons->buttons() )
         {
             
             if ( m_buttonSize == ButtonSize::FullHeight ) {
-                bWidth = iconHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
+                bWidth = smallButtonHeight + s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight();
                 horizontalIconOffsetRightButtons = s->smallSpacing()*m_internalSettings->fullHeightButtonWidthMarginRight() / 2;
                 static_cast<Button*>( button.data() )->setFullHeightBackgroundVisibleSize( QSizeF( bWidth, bHeight ) );
             } else if ( m_buttonSize == ButtonSize::Large ) {
                 bWidth = bHeight;
-                horizontalIconOffsetRightButtons = (bWidth - iconHeight)/2;
+                horizontalIconOffsetRightButtons = (bWidth - smallButtonHeight)/2;
             } else {
-                bWidth = iconHeight;
+                bWidth = smallButtonHeight;
                 horizontalIconOffsetRightButtons = 0;
             }
             button.data()->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth, bHeight ) ) );
             static_cast<Button*>( button.data() )->setIconOffset( QPointF( horizontalIconOffsetRightButtons, verticalIconOffset ) );
-            static_cast<Button*>( button.data() )->setIconSize( QSize( iconWidth, iconWidth ) );
+            static_cast<Button*>( button.data() )->setSmallButtonSize( QSize( smallButtonWidth, smallButtonWidth ) );
+            static_cast<Button*>( button.data() )->setIconSize( QSizeF( iconHeight, iconHeight ) );
         }
 
         // left buttons
@@ -955,18 +959,69 @@ namespace Breeze
         m_rightButtons->paint(painter, repaintRegion);
     }
 
-    //________________________________________________________________
-    int Decoration::iconHeight() const
+    //returns a pair consisting of the icon height + padding to make a small button, and the actual icon height
+    QPair<int,qreal> Decoration::iconHeight() const
     {
-        const int baseSize = settings()->gridUnit();
-        switch( m_internalSettings->iconSize() )
-        {
-            case InternalSettings::IconTiny: return baseSize;
-            case InternalSettings::IconSmall: return baseSize*1.5;
-            default:
-            case InternalSettings::IconDefault: return baseSize*2;
-            case InternalSettings::IconLarge: return baseSize*2.5;
-            case InternalSettings::IconVeryLarge: return baseSize*3.5;
+        int baseSize = settings()->gridUnit(); // 10 on Wayland
+        qreal basePaddingSize = settings()->smallSpacing(); //2 on Wayland
+
+        if( m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ){
+            //baseSize = (baseSize * 18) / 20; //system icons are relative to 16px whereas QPainter icons are on an 18px grid (plus padding to make them up to 18 and 20)
+            
+            switch( m_internalSettings->systemIconSize() )
+            {
+                case InternalSettings::SystemIcon9:
+                    basePaddingSize /= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //10, 9 on Wayland
+                case InternalSettings::SystemIcon13: 
+                    baseSize *= 1.5;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //15, 13 on Wayland
+                default:
+                case InternalSettings::SystemIcon16: 
+                    baseSize *= 1.8;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //18, 16 on Wayland
+                case InternalSettings::SystemIcon18: 
+                    baseSize *= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //20, 18 on Wayland
+                case InternalSettings::SystemIcon22: 
+                    baseSize *= 2.4;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //24, 22 on Wayland
+                case InternalSettings::SystemIcon24: 
+                    baseSize *= 2.6;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //26, 24 on Wayland
+                case InternalSettings::SystemIcon32: 
+                    baseSize *= 3.6;
+                    basePaddingSize *= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //36, 32 on Wayland
+                case InternalSettings::SystemIcon48: 
+                    baseSize *= 5.2;
+                    basePaddingSize *= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //52, 48 on Wayland    
+            }
+        } else {
+            
+            switch( m_internalSettings->iconSize() )
+            {
+                case InternalSettings::IconTiny:
+                    basePaddingSize /= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //10, 9 on Wayland
+                case InternalSettings::IconSmall: 
+                    baseSize *= 1.5;
+                    basePaddingSize = basePaddingSize / 2 * 1.5;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //15, 13.5 on Wayland
+                default:
+                case InternalSettings::IconDefault: 
+                    baseSize *= 2;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //20, 18 on Wayland
+                case InternalSettings::IconLarge:
+                    baseSize *= 2.5;
+                    basePaddingSize = basePaddingSize / 2 * 2.5;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //25, 22.5 on Wayland
+                case InternalSettings::IconVeryLarge:
+                    baseSize *= 3.5;
+                    basePaddingSize = basePaddingSize / 2 * 3.5;
+                    return qMakePair(baseSize, qreal( baseSize-basePaddingSize )); //35, 31.5 on Wayland
+            }
         }
 
     }
