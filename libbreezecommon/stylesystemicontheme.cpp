@@ -30,11 +30,18 @@ namespace Breeze
              * Therefore have to make an icon scaled by the difference and set the devicePixelRatio manually
              * Qt6 should offer a better solution as has the option to specify the devicePixelRatio when requesting a QPixmap from a QIcon
              */
+            QPixmap* iconPixmapToRender;
             QPixmap iconPixmap = icon.pixmap(QSize(m_iconWidth,m_iconWidth));
-            int reducedIconWidth = qRound(m_iconWidth * m_devicePixelRatio / iconPixmap.devicePixelRatioF());
-            QPixmap iconPixmap2 = icon.pixmap(reducedIconWidth,reducedIconWidth); 
-            iconPixmap2.setDevicePixelRatio(m_devicePixelRatio);
-            item.setPixmap(iconPixmap2);
+            QPixmap iconPixmap2;
+            qreal qIconDefaultDevicePixelRatio = iconPixmap.devicePixelRatioF();
+            if( qAbs(qIconDefaultDevicePixelRatio - m_devicePixelRatio) < 0.05 ) iconPixmapToRender = &iconPixmap;
+            else{
+                int reducedIconWidth = qRound(m_iconWidth * m_devicePixelRatio / qIconDefaultDevicePixelRatio);
+                iconPixmap2 = icon.pixmap(reducedIconWidth,reducedIconWidth); 
+                iconPixmap2.setDevicePixelRatio(m_devicePixelRatio);
+                iconPixmapToRender = &iconPixmap2;
+            }
+            item.setPixmap( *iconPixmapToRender );
             //item.setPixmap(icon.pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
             
             /* Tint the icon with the pen colour */
