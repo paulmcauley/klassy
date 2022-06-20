@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsItem>
 #include <QGraphicsColorizeEffect>
+#include <memory>
 
 namespace Breeze
 {
@@ -17,12 +18,12 @@ namespace Breeze
     {
         
         //QIcon::setThemeName(QIcon::themeName()); //doing this hack allows Adwaita icon theme to be partially loaded
-        QIcon icon = QIcon::fromTheme(iconName);
+        std::unique_ptr<QIcon> icon( new QIcon(QIcon::fromTheme(iconName)) );
         QRect rect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth));
         
         if( m_internalSettings->colorizeSystemIcons() ){
-            QGraphicsScene scene;
-            QGraphicsPixmapItem item;
+            std::unique_ptr<QGraphicsScene> scene(new QGraphicsScene);
+            QGraphicsPixmapItem* item = new QGraphicsPixmapItem;
             
             /* the following paragraph is a silly workaround to fix a Qt problem with multiple monitors with different DPIs on Wayland
              * When returning a pixmap from a QIcon Qt will give the pixmap the devicePixelRatio of the monitor with the highest devicePixelRatio
@@ -30,29 +31,30 @@ namespace Breeze
              * Therefore have to make an icon scaled by the difference and set the devicePixelRatio manually
              * Qt6 should offer a better solution as has the option to specify the devicePixelRatio when requesting a QPixmap from a QIcon
              */
-            QPixmap* iconPixmapToRender;
-            QPixmap iconPixmap = icon.pixmap(QSize(m_iconWidth,m_iconWidth));
-            QPixmap iconPixmap2;
-            qreal qIconDefaultDevicePixelRatio = iconPixmap.devicePixelRatioF();
-            if( qAbs(qIconDefaultDevicePixelRatio - m_devicePixelRatio) < 0.05 ) iconPixmapToRender = &iconPixmap;
+            QPixmap* iconPixmapToRender = nullptr;
+            std::unique_ptr<QPixmap> iconPixmap( new QPixmap(icon->pixmap(QSize(m_iconWidth,m_iconWidth))) );
+            std::unique_ptr<QPixmap> iconPixmap2;
+            qreal qIconDefaultDevicePixelRatio = iconPixmap->devicePixelRatioF();
+            if( qAbs(qIconDefaultDevicePixelRatio - m_devicePixelRatio) < 0.05 ) iconPixmapToRender = iconPixmap.get();
             else{
+                iconPixmap2.reset( new QPixmap() );
                 int reducedIconWidth = qRound(m_iconWidth * m_devicePixelRatio / qIconDefaultDevicePixelRatio);
-                iconPixmap2 = icon.pixmap(reducedIconWidth,reducedIconWidth); 
-                iconPixmap2.setDevicePixelRatio(m_devicePixelRatio);
-                iconPixmapToRender = &iconPixmap2;
+                *iconPixmap2 = icon->pixmap(reducedIconWidth,reducedIconWidth); 
+                iconPixmap2->setDevicePixelRatio(m_devicePixelRatio);
+                iconPixmapToRender = iconPixmap2.get();
             }
-            item.setPixmap( *iconPixmapToRender );
-            //item.setPixmap(icon.pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
+            if(iconPixmapToRender) item->setPixmap( *iconPixmapToRender );
+            //item->setPixmap(icon->pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
             
             /* Tint the icon with the pen colour */
-            QGraphicsColorizeEffect effect;
-            effect.setColor(pen.color());
-            item.setGraphicsEffect(&effect);
+            QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect;
+            effect->setColor(pen.color());
+            item->setGraphicsEffect(effect);
             
-            scene.addItem(&item);
-            scene.render(painter,rect,rect);
+            scene->addItem(item);
+            scene->render(painter,rect,rect);
         } else 
-            icon.paint(painter,QRect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth)));
+            icon->paint(painter,QRect(QPoint(0,0),QSize(m_iconWidth,m_iconWidth)));
     }
     
     void RenderStyleSystemIconTheme::renderCloseIcon()
