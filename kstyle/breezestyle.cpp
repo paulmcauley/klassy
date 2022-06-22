@@ -4021,7 +4021,7 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
     painter->save();
 
     if (StyleConfigData::menuOpacity() < 100) {
-        if (painter && widget && widget->isWindow()) {
+        if (widget && widget->isWindow()) {
             painter->setCompositionMode(QPainter::CompositionMode_Source);
         }
         background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
