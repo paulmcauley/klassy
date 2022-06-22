@@ -4184,7 +4184,7 @@ bool Style::drawIndicatorRadioButtonPrimitive(const QStyleOption *option, QPaint
     const bool mouseOver(enabled && (state & State_MouseOver));
 
     // radio button state
-    RadioButtonState radioButtonState(state & State_On ? RadioOn : RadioOff);
+    RadioButtonState radioButtonState((state & State_On) ? RadioOn : RadioOff);
 
     // animation state
     _animations->widgetStateEngine().updateState(widget, AnimationHover, mouseOver);
