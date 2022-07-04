@@ -10,13 +10,16 @@ namespace Breeze
 {
     void RenderStyleClassik18By18::renderCloseIcon()
     {
+        pen.setWidthF( pen.widthF() * 1.166666666 ); //thicken up diagonal slightly to give a balanced look
+        painter->setPen ( pen );
+        
         if(notInTitlebar) {
             
             RenderDecorationButtonIcon18By18::renderCloseIcon();
             
         } else {
             if(boldButtonIcons) {
-                pen.setWidthF( pen.widthF() *1.75 );
+                pen.setWidthF( pen.widthF() * 1.5 ); //total factor of 1.75
                 painter->setPen( pen );
             }
             
@@ -33,11 +36,6 @@ namespace Breeze
             if(boldButtonIcons) {
                 //thicker pen in titlebar
                 pen.setWidthF( pen.widthF() *1.666666 );
-            } else {
-                QColor penColor = pen.color();
-                penColor.setAlphaF( penColor.alphaF() * 0.9 );
-                //close button appears more grey when fine so reduce maximize opacity slightly to give a balanced look
-                pen.setColor( penColor );
             }
         }
         
