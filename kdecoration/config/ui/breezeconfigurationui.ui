@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>880</width>
+    <width>885</width>
     <height>700</height>
    </rect>
   </property>
@@ -782,7 +782,7 @@ buttons:</string>
            </item>
            <item>
             <property name="text">
-             <string>Bold</string>
+             <string>Bold (for HiDPI)</string>
             </property>
            </item>
            <item>
@@ -795,7 +795,7 @@ buttons:</string>
          <item row="1" column="4">
           <widget class="QLabel" name="label_16">
            <property name="text">
-            <string>&amp;Bold icons (for HiDPI):</string>
+            <string>&amp;Bold icons:</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
