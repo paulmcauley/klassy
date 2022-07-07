@@ -24,7 +24,8 @@ namespace Breeze
         if( m_internalSettings->colorizeSystemIcons() ){
             std::unique_ptr<QGraphicsScene> scene(new QGraphicsScene);
             QGraphicsPixmapItem* item = new QGraphicsPixmapItem; //raw pointer as QGraphicsScene takes ownership of QGraphicsPixmapItem
-            
+
+#if QT_VERSION < QT_VERSION_CHECK(6,0,0)            
             /* the following paragraph is a silly workaround to fix a Qt problem with multiple monitors with different DPIs on Wayland
              * When returning a pixmap from a QIcon Qt will give the pixmap the devicePixelRatio of the monitor with the highest devicePixelRatio
              * Qt does not give it the devicePixelRatio of the current monitor. This causes blurry icons on the lower-dpr screens.
@@ -44,8 +45,10 @@ namespace Breeze
                 iconPixmapToRender = iconPixmap2.get();
             }
             if(iconPixmapToRender) item->setPixmap( *iconPixmapToRender );
-            //item->setPixmap(icon->pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
-            
+
+#else
+            item->setPixmap(icon->pixmap(QSize(m_iconWidth,m_iconWidth),m_devicePixelRatio)); //need Qt6 for this more straightforward line to work
+#endif
             /* Tint the icon with the pen colour */
             QGraphicsColorizeEffect* effect = new QGraphicsColorizeEffect; //raw pointer as QGraphicsPixmapItem takes ownership of QGraphicsColorizeEffect
             effect->setColor(pen.color());
