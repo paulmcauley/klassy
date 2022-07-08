@@ -36,6 +36,9 @@
 #include <QTextStream>
 #include <QTimer>
 #include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusPendingReply>
+#include <QDBusPendingCallWatcher>
 
 #if BREEZE_HAVE_X11
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -352,6 +355,28 @@ namespace Breeze
             QStringLiteral( "/KGlobalSettings" ),
             QStringLiteral( "org.kde.KGlobalSettings" ),
             QStringLiteral( "notifyChange" ), this, SLOT(reconfigure()) );
+        
+        //Implement tablet mode DBus connection
+        dbus.connect( QStringLiteral("org.kde.KWin"),
+            QStringLiteral( "/org/kde/KWin" ),
+            QStringLiteral( "org.kde.KWin.TabletModeManager" ),
+            QStringLiteral( "tabletModeChanged" ), QStringLiteral( "b" ), this, SLOT(onTabletModeChanged(bool)) );
+
+        auto message = QDBusMessage::createMethodCall( QStringLiteral("org.kde.KWin"),
+            QStringLiteral( "/org/kde/KWin" ),
+            QStringLiteral( "org.freedesktop.DBus.Properties" ),
+            QStringLiteral( "Get" )
+        );
+        message.setArguments({QStringLiteral("org.kde.KWin.TabletModeManager"), QStringLiteral("tabletMode")});
+        auto call = new QDBusPendingCallWatcher(dbus.asyncCall(message), this);
+        connect(call, &QDBusPendingCallWatcher::finished, this, [this, call]() {
+            QDBusPendingReply<QVariant> reply = *call;
+            if (!reply.isError()) {
+                onTabletModeChanged(reply.value().toBool());
+            }
+
+            call->deleteLater();
+        });
 
         reconfigure();
         updateTitleBar();
@@ -955,6 +980,8 @@ namespace Breeze
     {
         int baseSize = settings()->gridUnit(); // 10 on Wayland
         qreal basePaddingSize = settings()->smallSpacing(); //2 on Wayland
+        
+        if(m_tabletMode) baseSize*=2;
 
         if( m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme ){
             
@@ -1025,6 +1052,14 @@ namespace Breeze
         }
         
 
+    }
+    
+    void Decoration::onTabletModeChanged(bool mode)
+    {
+        m_tabletMode = mode;
+        calculateButtonHeights();
+        recalculateBorders();
+        updateButtonsGeometry();
     }
 
     

@@ -126,6 +126,7 @@ namespace Breeze
         void updateAnimationState();
         void updateSizeGripVisibility();
         void forceUpdateShadow(){ updateShadow(true); }
+        void onTabletModeChanged(bool mode);
 
         private:
 
@@ -185,6 +186,8 @@ namespace Breeze
         
         //* frame corner radius, scaled according to smallspacing
         qreal m_scaledCornerRadius = 3.0;
+        
+        bool m_tabletMode = false;
         
         //* titleBar top margin, scaled according to smallspacing
         int m_scaledTitleBarTopMargin = 1;
