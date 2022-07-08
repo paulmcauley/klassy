@@ -57,7 +57,6 @@
       <choices>
           <choice name="ShapeFullHeightRectangle" />
           <choice name="ShapeFullHeightRoundedRectangle" />
-          <choice name="ShapeLargeCircle" />
           <choice name="ShapeSmallCircle" />
           <choice name="ShapeSmallRoundedSquare" />
           <choice name="ShapeSmallSquare" />
@@ -210,6 +209,13 @@
           <choice name="SystemIcon48" />
       </choices>
       <default>SystemIcon16</default>
+    </entry>
+    
+    <!-- Scale for small buttons -->
+    <entry name="ScaleBackgroundPercent" type = "Int">
+       <default>100</default>
+       <min>100</min>
+       <max>250</max>
     </entry>
     
     <!-- Full-height button width margin left -->

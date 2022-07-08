@@ -65,17 +65,17 @@ namespace Breeze
         void setVerticalIconOffset( qreal value )
         { m_iconOffset.setY( value ); }
         
-        //* offset for drawing large or full-sized background -- used for the far left button
-        void setLargeOrFullHeightVisibleBackgroundOffset( const QPointF& value )
-        { m_largeOrFullHeightVisibleBackgroundOffset = value; }
+        //* offset for drawing full-sized background -- used for the far left button
+        void setFullHeightVisibleBackgroundOffset( const QPointF& value )
+        { m_fullHeightVisibleBackgroundOffset = value; }
         
-        //* geometry for rendering a Full-sized button - can differ from button geometry at far left and far right positions
-        void setFullHeightBackgroundVisibleSize( const QSizeF& value )
-        { m_fullHeightBackgroundVisibleSize = value; }
+        //* geometry for rendering a visible button background- can differ from button geometry
+        void setBackgroundVisibleSize( const QSizeF& value )
+        { m_backgroundVisibleSize = value; }
         
-        //* set small button size
-        void setSmallButtonSize( const QSize& value )
-        { m_smallButtonSize = value; }
+        //* set small button padded size
+        void setSmallButtonPaddedSize( const QSize& value )
+        { m_smallButtonPaddedSize = value; }
         
         //* set icon size
         void setIconSize( const QSizeF& value )
@@ -130,11 +130,6 @@ namespace Breeze
         */
         void paintFullHeightButtonBackground( QPainter* painter ) const;
         
-        /**
-        * @brief Paint the button background for the large circle button shape
-        * @param painter Current QPainter object
-        */
-        void paintLargeSizedButtonBackground( QPainter* painter ) const;
         
         /**
         * @brief Paint the button background for the small circle button shape as originally done in Breeze
@@ -156,16 +151,16 @@ namespace Breeze
         QPointF m_iconOffset;
         
         //* offset for rendering a large or Full-sized background
-        QPointF m_largeOrFullHeightVisibleBackgroundOffset = QPointF();
+        QPointF m_fullHeightVisibleBackgroundOffset = QPointF();
         
         //* geometry for rendering a Full-sized button
-        QSizeF m_fullHeightBackgroundVisibleSize = QSizeF();
+        QSizeF m_backgroundVisibleSize = QSizeF();
 
-        //* small button size
-        QSize m_smallButtonSize;
+        //* small button size (icon + padding)
+        QSize m_smallButtonPaddedSize = QSize();
         
         //* icon size
-        QSizeF m_iconSize;
+        QSizeF m_iconSize = QSizeF();
 
         //* active state change opacity
         qreal m_opacity = 0;

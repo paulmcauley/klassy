@@ -60,6 +60,7 @@ namespace Breeze
         connect( m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()) );
+        connect( m_ui.scaleBackgroundPercent, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -150,6 +151,7 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.scaleBackgroundPercent->setValue( m_internalSettings->scaleBackgroundPercent() );
         m_ui.fullHeightButtonWidthMarginLeft->setValue( m_internalSettings->fullHeightButtonWidthMarginLeft() );
         m_ui.fullHeightButtonWidthMarginRight->setValue( m_internalSettings->fullHeightButtonWidthMarginRight() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
@@ -228,6 +230,7 @@ namespace Breeze
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
         m_internalSettings->setButtonIconStyle( m_ui.buttonIconStyle->currentIndex() );
         m_internalSettings->setButtonShape( m_ui.buttonShape->currentIndex() );
+        m_internalSettings->setScaleBackgroundPercent( m_ui.scaleBackgroundPercent->value() );
         m_internalSettings->setFullHeightButtonWidthMarginLeft( m_ui.fullHeightButtonWidthMarginLeft->value() );
         m_internalSettings->setFullHeightButtonWidthMarginRight( m_ui.fullHeightButtonWidthMarginRight->value() );
         m_internalSettings->setBackgroundColors( m_ui.backgroundColors->currentIndex() );
@@ -303,6 +306,7 @@ namespace Breeze
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonIconStyle->setCurrentIndex( m_internalSettings->buttonIconStyle() );
         m_ui.buttonShape->setCurrentIndex( m_internalSettings->buttonShape() );
+        m_ui.scaleBackgroundPercent->setValue( m_internalSettings->scaleBackgroundPercent() );
         m_ui.fullHeightButtonWidthMarginLeft->setValue( m_internalSettings->fullHeightButtonWidthMarginLeft() );
         m_ui.fullHeightButtonWidthMarginRight->setValue( m_internalSettings->fullHeightButtonWidthMarginRight() );
         m_ui.backgroundColors->setCurrentIndex( m_internalSettings->backgroundColors() );
@@ -369,6 +373,7 @@ namespace Breeze
         else if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle() ) modified = true;
         else if( m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape() ) modified = true;
+        else if( m_ui.scaleBackgroundPercent->value() != m_internalSettings->scaleBackgroundPercent() ) modified = true;
         else if( m_ui.fullHeightButtonWidthMarginLeft->value() != m_internalSettings->fullHeightButtonWidthMarginLeft() ) modified = true;
         else if( m_ui.fullHeightButtonWidthMarginRight->value() != m_internalSettings->fullHeightButtonWidthMarginRight() ) modified = true;
         else if( m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors() ) modified = true;
