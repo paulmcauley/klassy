@@ -36,10 +36,9 @@ namespace Breeze
 {
     class SizeGrip;
     
-    enum struct ButtonSize{
+    enum struct ButtonBackgroundType{
            Small,
-           Large,
-           FullHeight
+           FullHeight,
     };
     
     class Decoration : public KDecoration2::Decoration
@@ -66,10 +65,6 @@ namespace Breeze
 
         //* caption height
         int captionHeight() const;
-
-        //* icon height
-        QPair<int,qreal> iconHeight() const;
-        
 
         //*@name active state change animation
         //@{
@@ -104,10 +99,14 @@ namespace Breeze
         inline bool hideTitleBar() const;
         //@}
         
+        
         std::shared_ptr<QPainterPath> titleBarPath(){ return m_titleBarPath; }
         std::shared_ptr<QPainterPath> windowPath(){ return m_windowPath; }
         qreal systemScaleFactor(){ return m_systemScaleFactor; }
-        ButtonSize buttonSize(){ return m_buttonSize; }
+        ButtonBackgroundType buttonBackgroundType(){ return m_buttonBackgroundType; }
+        int smallButtonPaddedHeight(){ return m_smallButtonPaddedHeight; }
+        qreal iconHeight(){ return m_iconHeight; }
+        qreal smallButtonBackgroundHeight(){ return m_smallButtonBackgroundHeight; }
         qreal scaledCornerRadius(){ return m_scaledCornerRadius; }
         std::shared_ptr<SystemButtonColors> systemAccentColors(){ return m_systemAccentColors; }
         
@@ -161,6 +160,9 @@ namespace Breeze
         void setScaledTitleBarSideMargins();
         void setAddedTitleBarOpacity();
         qreal titleBarSeparatorHeight() const;
+        
+        //* button heights
+        void calculateButtonHeights();
 
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -204,7 +206,11 @@ namespace Breeze
         
         std::shared_ptr<SystemButtonColors> m_systemAccentColors;
         
-        ButtonSize m_buttonSize = ButtonSize::Small;
+        ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
+        int m_smallButtonPaddedHeight;
+        qreal m_iconHeight;
+        qreal m_smallButtonBackgroundHeight;
+        
         bool m_colorSchemeHasHeaderColor = true;
         bool m_toolsAreaWillBeDrawn = true;
 
