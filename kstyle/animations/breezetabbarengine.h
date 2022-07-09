@@ -15,71 +15,72 @@
 namespace Breeze
 {
 
-    //* stores tabbar hovered action and timeLine
-    class TabBarEngine: public BaseEngine
+//* stores tabbar hovered action and timeLine
+class TabBarEngine : public BaseEngine
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit TabBarEngine(QObject *parent)
+        : BaseEngine(parent)
     {
+    }
 
-        Q_OBJECT
+    //* register tabbar
+    bool registerWidget(QWidget *);
 
-        public:
+    //* true if widget hover state is changed
+    bool updateState(const QObject *, const QPoint &, AnimationMode, bool);
 
-        //* constructor
-        explicit TabBarEngine( QObject* parent ):
-            BaseEngine( parent )
-        {}
+    //* true if widget is animated
+    bool isAnimated(const QObject *object, const QPoint &point, AnimationMode);
 
-        //* register tabbar
-        bool registerWidget( QWidget* );
+    //* animation opacity
+    qreal opacity(const QObject *object, const QPoint &point, AnimationMode mode)
+    {
+        return isAnimated(object, point, mode) ? data(object, mode).data()->opacity(point) : AnimationData::OpacityInvalid;
+    }
 
-        //* true if widget hover state is changed
-        bool updateState( const QObject*, const QPoint&, AnimationMode, bool );
+    //* enability
+    void setEnabled(bool value) override
+    {
+        BaseEngine::setEnabled(value);
+        _hoverData.setEnabled(value);
+        _focusData.setEnabled(value);
+    }
 
-        //* true if widget is animated
-        bool isAnimated( const QObject* object, const QPoint& point, AnimationMode );
+    //* duration
+    void setDuration(int value) override
+    {
+        BaseEngine::setDuration(value);
+        _hoverData.setDuration(value);
+        _focusData.setDuration(value);
+    }
 
-        //* animation opacity
-        qreal opacity( const QObject* object, const QPoint& point, AnimationMode mode )
-        { return isAnimated( object, point, mode ) ? data( object, mode ).data()->opacity( point ) : AnimationData::OpacityInvalid; }
+public Q_SLOTS:
 
-        //* enability
-        void setEnabled( bool value ) override
-        {
-            BaseEngine::setEnabled( value );
-            _hoverData.setEnabled( value );
-            _focusData.setEnabled( value );
-        }
+    //* remove widget from map
+    bool unregisterWidget(QObject *object) override
+    {
+        if (!object)
+            return false;
+        bool found = false;
+        if (_hoverData.unregisterWidget(object))
+            found = true;
+        if (_focusData.unregisterWidget(object))
+            found = true;
+        return found;
+    }
 
-        //* duration
-        void setDuration( int value ) override
-        {
-            BaseEngine::setDuration( value );
-            _hoverData.setDuration( value );
-            _focusData.setDuration( value );
-        }
+private:
+    //* returns data associated to widget
+    DataMap<TabBarData>::Value data(const QObject *, AnimationMode);
 
-        public Q_SLOTS:
-
-        //* remove widget from map
-        bool unregisterWidget( QObject* object ) override
-        {
-            if( !object ) return false;
-            bool found = false;
-            if( _hoverData.unregisterWidget( object ) ) found = true;
-            if( _focusData.unregisterWidget( object ) ) found = true;
-            return found;
-        }
-
-        private:
-
-        //* returns data associated to widget
-        DataMap<TabBarData>::Value data( const QObject*, AnimationMode );
-
-        //* data map
-        DataMap<TabBarData> _hoverData;
-        DataMap<TabBarData> _focusData;
-
-    };
-
+    //* data map
+    DataMap<TabBarData> _hoverData;
+    DataMap<TabBarData> _focusData;
+};
 }
 
 #endif

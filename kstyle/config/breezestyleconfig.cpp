@@ -10,142 +10,150 @@
 #include "../config-breeze.h"
 #include "breezestyleconfigdata.h"
 
-#include <QDBusMessage>
 #include <QDBusConnection>
+#include <QDBusMessage>
 #include <QRegularExpression>
 
-extern "C"
+extern "C" {
+Q_DECL_EXPORT QWidget *allocate_kstyle_config(QWidget *parent)
 {
-    Q_DECL_EXPORT QWidget* allocate_kstyle_config(QWidget* parent)
-    { return new Breeze::StyleConfig(parent); }
+    return new Breeze::StyleConfig(parent);
+}
 }
 
 namespace Breeze
 {
 
-    //__________________________________________________________________
-    StyleConfig::StyleConfig(QWidget* parent):
-        QWidget(parent)
-    {
-        setupUi(this);
-        
+//__________________________________________________________________
+StyleConfig::StyleConfig(QWidget *parent)
+    : QWidget(parent)
+{
+    setupUi(this);
+
 #if CLASSIK_GIT_MASTER
-        //set the long version string if from the git master
-        _version->setText("v" + QString(CLASSIK_VERSION) + ".git");
-            
+    // set the long version string if from the git master
+    _version->setText("v" + QString(CLASSIK_VERSION) + ".git");
+
 #else
-        //set shortened version string in UI if an official release
-        QRegularExpression re("\\d+\\.\\d+");
-        QRegularExpressionMatch match = re.match(CLASSIK_VERSION);
-        if (match.hasMatch()) {
-            QString matched = match.captured(0);
-            _version->setText("v" + matched);
-        }
+    // set shortened version string in UI if an official release
+    QRegularExpression re("\\d+\\.\\d+");
+    QRegularExpressionMatch match = re.match(CLASSIK_VERSION);
+    if (match.hasMatch()) {
+        QString matched = match.captured(0);
+        _version->setText("v" + matched);
+    }
 #endif
 
-        // load setup from configData
-        load();
+    // load setup from configData
+    load();
 
-        connect( _tabBarDrawCenteredTabs, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _toolBarDrawItemSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _viewDrawFocusIndicator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _dockWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _sidePanelDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _menuItemDrawThinFocus, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _sliderDrawTickMarks, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _splitterProxyEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged );
-        connect( _mnemonicsMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( _menuOpacity, &QAbstractSlider::valueChanged, this, &StyleConfig::updateChanged );
+    connect(_tabBarDrawCenteredTabs, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_toolBarDrawItemSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_viewDrawFocusIndicator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_dockWidgetDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_sidePanelDrawFrame, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_menuItemDrawThinFocus, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_sliderDrawTickMarks, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_splitterProxyEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_mnemonicsMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_menuOpacity, &QAbstractSlider::valueChanged, this, &StyleConfig::updateChanged);
+}
 
-    }
+//__________________________________________________________________
+void StyleConfig::save()
+{
+    StyleConfigData::setTabBarDrawCenteredTabs(_tabBarDrawCenteredTabs->isChecked());
+    StyleConfigData::setToolBarDrawItemSeparator(_toolBarDrawItemSeparator->isChecked());
+    StyleConfigData::setViewDrawFocusIndicator(_viewDrawFocusIndicator->isChecked());
+    StyleConfigData::setDockWidgetDrawFrame(_dockWidgetDrawFrame->isChecked());
+    StyleConfigData::setSidePanelDrawFrame(_sidePanelDrawFrame->isChecked());
+    StyleConfigData::setMenuItemDrawStrongFocus(!_menuItemDrawThinFocus->isChecked());
+    StyleConfigData::setSliderDrawTickMarks(_sliderDrawTickMarks->isChecked());
+    StyleConfigData::setSplitterProxyEnabled(_splitterProxyEnabled->isChecked());
+    StyleConfigData::setMnemonicsMode(_mnemonicsMode->currentIndex());
+    StyleConfigData::setScrollBarAddLineButtons(_scrollBarAddLineButtons->currentIndex());
+    StyleConfigData::setScrollBarSubLineButtons(_scrollBarSubLineButtons->currentIndex());
+    StyleConfigData::setWindowDragMode(_windowDragMode->currentIndex());
+    StyleConfigData::setMenuOpacity(_menuOpacity->value());
 
-    //__________________________________________________________________
-    void StyleConfig::save()
-    {
-        StyleConfigData::setTabBarDrawCenteredTabs( _tabBarDrawCenteredTabs->isChecked() );
-        StyleConfigData::setToolBarDrawItemSeparator( _toolBarDrawItemSeparator->isChecked() );
-        StyleConfigData::setViewDrawFocusIndicator( _viewDrawFocusIndicator->isChecked() );
-        StyleConfigData::setDockWidgetDrawFrame( _dockWidgetDrawFrame->isChecked() );
-        StyleConfigData::setSidePanelDrawFrame( _sidePanelDrawFrame->isChecked() );
-        StyleConfigData::setMenuItemDrawStrongFocus( !_menuItemDrawThinFocus->isChecked() );
-        StyleConfigData::setSliderDrawTickMarks( _sliderDrawTickMarks->isChecked() );
-        StyleConfigData::setSplitterProxyEnabled( _splitterProxyEnabled->isChecked() );
-        StyleConfigData::setMnemonicsMode( _mnemonicsMode->currentIndex() );
-        StyleConfigData::setScrollBarAddLineButtons( _scrollBarAddLineButtons->currentIndex() );
-        StyleConfigData::setScrollBarSubLineButtons( _scrollBarSubLineButtons->currentIndex() );
-        StyleConfigData::setWindowDragMode( _windowDragMode->currentIndex() );
-        StyleConfigData::setMenuOpacity( _menuOpacity->value() );
+    StyleConfigData::self()->save();
 
-        StyleConfigData::self()->save();
+    // emit dbus signal
+    QDBusMessage message(
+        QDBusMessage::createSignal(QStringLiteral("/ClassikStyle"), QStringLiteral("org.kde.Classik.Style"), QStringLiteral("reparseConfiguration")));
+    QDBusConnection::sessionBus().send(message);
+}
 
-        // emit dbus signal
-        QDBusMessage message( QDBusMessage::createSignal( QStringLiteral( "/ClassikStyle" ),  QStringLiteral( "org.kde.Classik.Style" ), QStringLiteral( "reparseConfiguration" ) ) );
-        QDBusConnection::sessionBus().send(message);
+//__________________________________________________________________
+void StyleConfig::defaults()
+{
+    StyleConfigData::self()->setDefaults();
+    load();
+}
 
-    }
+//__________________________________________________________________
+void StyleConfig::reset()
+{
+    // reparse configuration
+    StyleConfigData::self()->load();
 
-    //__________________________________________________________________
-    void StyleConfig::defaults()
-    {
-        StyleConfigData::self()->setDefaults();
-        load();
-    }
+    load();
+}
 
-    //__________________________________________________________________
-    void StyleConfig::reset()
-    {
-        // reparse configuration
-        StyleConfigData::self()->load();
+//__________________________________________________________________
+void StyleConfig::updateChanged()
+{
+    bool modified(false);
 
-        load();
-    }
+    // check if any value was modified
+    if (_tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs())
+        modified = true;
+    else if (_toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator())
+        modified = true;
+    else if (_viewDrawFocusIndicator->isChecked() != StyleConfigData::viewDrawFocusIndicator())
+        modified = true;
+    else if (_dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame())
+        modified = true;
+    else if (_sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame())
+        modified = true;
+    else if (_menuItemDrawThinFocus->isChecked() == StyleConfigData::menuItemDrawStrongFocus())
+        modified = true;
+    else if (_sliderDrawTickMarks->isChecked() != StyleConfigData::sliderDrawTickMarks())
+        modified = true;
+    else if (_mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode())
+        modified = true;
+    else if (_scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons())
+        modified = true;
+    else if (_scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons())
+        modified = true;
+    else if (_splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled())
+        modified = true;
+    else if (_windowDragMode->currentIndex() != StyleConfigData::windowDragMode())
+        modified = true;
+    else if (_menuOpacity->value() != StyleConfigData::menuOpacity())
+        modified = true;
 
-    //__________________________________________________________________
-    void StyleConfig::updateChanged()
-    {
+    emit changed(modified);
+}
 
-        bool modified( false );
-
-        // check if any value was modified
-        if( _tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs() ) modified = true;
-        else if( _toolBarDrawItemSeparator->isChecked() != StyleConfigData::toolBarDrawItemSeparator() ) modified = true;
-        else if( _viewDrawFocusIndicator->isChecked() != StyleConfigData::viewDrawFocusIndicator() ) modified = true;
-        else if( _dockWidgetDrawFrame->isChecked() != StyleConfigData::dockWidgetDrawFrame() ) modified = true;
-        else if( _sidePanelDrawFrame->isChecked() != StyleConfigData::sidePanelDrawFrame() ) modified = true;
-        else if( _menuItemDrawThinFocus->isChecked() == StyleConfigData::menuItemDrawStrongFocus() ) modified = true;
-        else if( _sliderDrawTickMarks->isChecked() != StyleConfigData::sliderDrawTickMarks() ) modified = true;
-        else if( _mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode() ) modified = true;
-        else if( _scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons() ) modified = true;
-        else if( _scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons() ) modified = true;
-        else if( _splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled() ) modified = true;
-        else if( _windowDragMode->currentIndex() != StyleConfigData::windowDragMode() ) modified = true;
-        else if( _menuOpacity->value() != StyleConfigData::menuOpacity() ) modified = true;
-
-        emit changed(modified);
-
-    }
-
-    //__________________________________________________________________
-    void StyleConfig::load()
-    {
-
-        _tabBarDrawCenteredTabs->setChecked( StyleConfigData::tabBarDrawCenteredTabs() );
-        _toolBarDrawItemSeparator->setChecked( StyleConfigData::toolBarDrawItemSeparator() );
-        _viewDrawFocusIndicator->setChecked( StyleConfigData::viewDrawFocusIndicator() );
-        _dockWidgetDrawFrame->setChecked( StyleConfigData::dockWidgetDrawFrame() );
-        _sidePanelDrawFrame->setChecked( StyleConfigData::sidePanelDrawFrame() );
-        _menuItemDrawThinFocus->setChecked( !StyleConfigData::menuItemDrawStrongFocus() );
-        _sliderDrawTickMarks->setChecked( StyleConfigData::sliderDrawTickMarks() );
-        _mnemonicsMode->setCurrentIndex( StyleConfigData::mnemonicsMode() );
-        _splitterProxyEnabled->setChecked( StyleConfigData::splitterProxyEnabled() );
-        _scrollBarAddLineButtons->setCurrentIndex( StyleConfigData::scrollBarAddLineButtons() );
-        _scrollBarSubLineButtons->setCurrentIndex( StyleConfigData::scrollBarSubLineButtons() );
-        _windowDragMode->setCurrentIndex( StyleConfigData::windowDragMode() );
-        _menuOpacity->setValue( StyleConfigData::menuOpacity() );
-
-    }
-
+//__________________________________________________________________
+void StyleConfig::load()
+{
+    _tabBarDrawCenteredTabs->setChecked(StyleConfigData::tabBarDrawCenteredTabs());
+    _toolBarDrawItemSeparator->setChecked(StyleConfigData::toolBarDrawItemSeparator());
+    _viewDrawFocusIndicator->setChecked(StyleConfigData::viewDrawFocusIndicator());
+    _dockWidgetDrawFrame->setChecked(StyleConfigData::dockWidgetDrawFrame());
+    _sidePanelDrawFrame->setChecked(StyleConfigData::sidePanelDrawFrame());
+    _menuItemDrawThinFocus->setChecked(!StyleConfigData::menuItemDrawStrongFocus());
+    _sliderDrawTickMarks->setChecked(StyleConfigData::sliderDrawTickMarks());
+    _mnemonicsMode->setCurrentIndex(StyleConfigData::mnemonicsMode());
+    _splitterProxyEnabled->setChecked(StyleConfigData::splitterProxyEnabled());
+    _scrollBarAddLineButtons->setCurrentIndex(StyleConfigData::scrollBarAddLineButtons());
+    _scrollBarSubLineButtons->setCurrentIndex(StyleConfigData::scrollBarSubLineButtons());
+    _windowDragMode->setCurrentIndex(StyleConfigData::windowDragMode());
+    _menuOpacity->setValue(StyleConfigData::menuOpacity());
+}
 }

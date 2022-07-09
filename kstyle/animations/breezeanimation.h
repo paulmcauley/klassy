@@ -15,34 +15,35 @@
 namespace Breeze
 {
 
-    class Animation: public QPropertyAnimation
+class Animation : public QPropertyAnimation
+{
+    Q_OBJECT
+
+public:
+    //* convenience
+    using Pointer = WeakPointer<Animation>;
+
+    //* constructor
+    Animation(int duration, QObject *parent)
+        : QPropertyAnimation(parent)
     {
+        setDuration(duration);
+    }
 
-        Q_OBJECT
+    //* true if running
+    bool isRunning() const
+    {
+        return state() == Animation::Running;
+    }
 
-        public:
-
-        //* convenience
-        using Pointer = WeakPointer<Animation>;
-
-        //* constructor
-        Animation( int duration, QObject* parent ):
-            QPropertyAnimation( parent )
-        { setDuration( duration ); }
-
-        //* true if running
-        bool isRunning() const
-        { return state() == Animation::Running; }
-
-        //* restart
-        void restart()
-        {
-            if( isRunning() ) stop();
-            start();
-        }
-
-    };
-
+    //* restart
+    void restart()
+    {
+        if (isRunning())
+            stop();
+        start();
+    }
+};
 }
 
 #endif

@@ -12,24 +12,22 @@
 namespace Breeze
 {
 
-    //* Enable data
-    class EnableData: public WidgetStateData
+//* Enable data
+class EnableData : public WidgetStateData
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    EnableData(QObject *parent, QWidget *target, int duration, bool state = true)
+        : WidgetStateData(parent, target, duration, state)
     {
+        target->installEventFilter(this);
+    }
 
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        EnableData( QObject* parent, QWidget* target, int duration, bool state = true ):
-            WidgetStateData( parent, target, duration, state )
-        { target->installEventFilter( this ); }
-
-        //* event filter
-        bool eventFilter( QObject*, QEvent* ) override;
-
-    };
-
+    //* event filter
+    bool eventFilter(QObject *, QEvent *) override;
+};
 }
 
 #endif

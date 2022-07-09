@@ -22,70 +22,70 @@
 
 namespace Breeze
 {
-    //___________________________________________________________
-    BlurHelper::BlurHelper(QObject* parent):
-        QObject(parent)
-    {
-    }
+//___________________________________________________________
+BlurHelper::BlurHelper(QObject *parent)
+    : QObject(parent)
+{
+}
 
-    //___________________________________________________________
-    void BlurHelper::registerWidget(QWidget* widget)
-    {
-        // install event filter
-        addEventFilter(widget);
+//___________________________________________________________
+void BlurHelper::registerWidget(QWidget *widget)
+{
+    // install event filter
+    addEventFilter(widget);
 
-        // schedule shadow area repaint
+    // schedule shadow area repaint
+    update(widget);
+}
+
+//___________________________________________________________
+void BlurHelper::unregisterWidget(QWidget *widget)
+{
+    // remove event filter
+    widget->removeEventFilter(this);
+}
+
+//___________________________________________________________
+bool BlurHelper::eventFilter(QObject *object, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::Hide:
+    case QEvent::Show:
+    case QEvent::Resize: {
+        // cast to widget and check
+        QWidget *widget(qobject_cast<QWidget *>(object));
+
+        if (!widget)
+            break;
+
         update(widget);
+        break;
     }
 
-    //___________________________________________________________
-    void BlurHelper::unregisterWidget(QWidget* widget)
-    {
-        // remove event filter
-        widget->removeEventFilter(this);
+    default:
+        break;
     }
 
-    //___________________________________________________________
-    bool BlurHelper::eventFilter(QObject* object, QEvent* event)
-    {
-        switch (event->type()) {
-            case QEvent::Hide:
-            case QEvent::Show:
-            case QEvent::Resize:
-            {
-                // cast to widget and check
-                QWidget* widget(qobject_cast<QWidget*>(object));
+    // never eat events
+    return false;
+}
 
-                if (!widget)
-                    break;
+//___________________________________________________________
+void BlurHelper::update(QWidget *widget) const
+{
+    /*
+    directly from bespin code. Supposedly prevent playing with some 'pseudo-widgets'
+    that have winId matching some other -random- window
+    */
+    if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId()))
+        return;
 
-                update(widget);
-                break;
-            }
+    widget->winId(); // force creation of the window handle
+    KWindowEffects::enableBlurBehind(widget->windowHandle(), true);
 
-            default: break;
-        }
-
-        // never eat events
-        return false;
+    // force update
+    if (widget->isVisible()) {
+        widget->update();
     }
-
-    //___________________________________________________________
-    void BlurHelper::update(QWidget* widget) const
-    {
-        /*
-        directly from bespin code. Supposedly prevent playing with some 'pseudo-widgets'
-        that have winId matching some other -random- window
-        */
-        if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId()))
-            return;
-
-        widget->winId(); // force creation of the window handle
-        KWindowEffects::enableBlurBehind(widget->windowHandle(), true);
-
-        // force update
-        if (widget->isVisible()) {
-            widget->update();
-        }
-    }
+}
 }

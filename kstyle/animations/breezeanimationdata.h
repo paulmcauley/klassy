@@ -17,71 +17,79 @@
 namespace Breeze
 {
 
-    //* base class
-    class AnimationData: public QObject
+//* base class
+class AnimationData : public QObject
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    AnimationData(QObject *parent, QWidget *target)
+        : QObject(parent)
+        , _target(target)
     {
+    }
 
-        Q_OBJECT
+    //* duration
+    virtual void setDuration(int) = 0;
 
-        public:
+    //* steps
+    static void setSteps(int value)
+    {
+        _steps = value;
+    }
 
-        //* constructor
-        AnimationData( QObject* parent, QWidget* target ):
-            QObject( parent ),
-            _target( target )
-        {}
+    //* enability
+    virtual bool enabled() const
+    {
+        return _enabled;
+    }
 
-        //* duration
-        virtual void setDuration( int ) = 0;
+    //* enability
+    virtual void setEnabled(bool value)
+    {
+        _enabled = value;
+    }
 
-        //* steps
-        static void setSteps( int value )
-        { _steps = value; }
+    //* target
+    const WeakPointer<QWidget> &target() const
+    {
+        return _target;
+    }
 
-        //* enability
-        virtual bool enabled() const
-        { return _enabled; }
+    //* invalid opacity
+    static const qreal OpacityInvalid;
 
-        //* enability
-        virtual void setEnabled( bool value )
-        { _enabled = value; }
+protected:
+    //* setup animation
+    virtual void setupAnimation(const Animation::Pointer &animation, const QByteArray &property);
 
-        //* target
-        const WeakPointer<QWidget>& target() const
-        { return _target; }
+    //* apply step
+    virtual qreal digitize(const qreal &value) const
+    {
+        if (_steps > 0)
+            return std::floor(value * _steps) / _steps;
+        else
+            return value;
+    }
 
-        //* invalid opacity
-        static const qreal OpacityInvalid;
+    //* trigger target update
+    virtual void setDirty() const
+    {
+        if (_target)
+            _target.data()->update();
+    }
 
-        protected:
+private:
+    //* guarded target
+    WeakPointer<QWidget> _target;
 
-        //* setup animation
-        virtual void setupAnimation( const Animation::Pointer& animation, const QByteArray& property );
+    //* enability
+    bool _enabled = true;
 
-        //* apply step
-        virtual qreal digitize( const qreal& value ) const
-        {
-            if( _steps > 0 ) return std::floor( value*_steps )/_steps;
-            else return value;
-        }
-
-        //* trigger target update
-        virtual void setDirty() const
-        { if( _target ) _target.data()->update(); }
-
-        private:
-
-        //* guarded target
-        WeakPointer<QWidget> _target;
-
-        //* enability
-        bool _enabled = true;
-
-        //* steps
-        static int _steps;
-
-    };
-
+    //* steps
+    static int _steps;
+};
 }
 
 #endif

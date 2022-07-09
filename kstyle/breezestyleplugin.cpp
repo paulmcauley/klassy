@@ -12,18 +12,18 @@
 namespace Breeze
 {
 
-    //_________________________________________________
-    QStyle* StylePlugin::create( const QString &key )
-    {
-        if( key.toLower() == QStringLiteral( "classik" ) )
-        {
-            return new Style;
-        }
-        return nullptr;
+//_________________________________________________
+QStyle *StylePlugin::create(const QString &key)
+{
+    if (key.toLower() == QStringLiteral("classik")) {
+        return new Style;
     }
+    return nullptr;
+}
 
-    //_________________________________________________
-    QStringList StylePlugin::keys() const
-    { return QStringList( QStringLiteral( "Classik" ) ); }
-
+//_________________________________________________
+QStringList StylePlugin::keys() const
+{
+    return QStringList(QStringLiteral("Classik"));
+}
 }
