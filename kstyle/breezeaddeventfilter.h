@@ -7,31 +7,30 @@
 #ifndef breezeaddeventfilter_h
 #define breezeaddeventfilter_h
 
-#include <QObject>
 #include <QEvent>
+#include <QObject>
 
 namespace Breeze
 {
 
-    class AddEventFilter: public QObject
+class AddEventFilter : public QObject
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    AddEventFilter()
+        : QObject()
     {
+    }
 
-        Q_OBJECT
-
-        public:
-
-        //* constructor
-        AddEventFilter():
-            QObject()
-            {}
-
-        //* event filter
-        /** blocks all AddChild events */
-        bool eventFilter( QObject*, QEvent* event ) override
-        { return event->type() == QEvent::ChildAdded; }
-
-    };
-
+    //* event filter
+    /** blocks all AddChild events */
+    bool eventFilter(QObject *, QEvent *event) override
+    {
+        return event->type() == QEvent::ChildAdded;
+    }
+};
 }
 
 #endif

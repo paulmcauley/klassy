@@ -15,58 +15,64 @@
 namespace Breeze
 {
 
-    //* base class for all animation engines
-    /** it is used to store configuration values used by all animations stored in the engine */
-    class BaseEngine: public QObject
+//* base class for all animation engines
+/** it is used to store configuration values used by all animations stored in the engine */
+class BaseEngine : public QObject
+{
+    Q_OBJECT
+
+public:
+    using Pointer = WeakPointer<BaseEngine>;
+
+    //* constructor
+    explicit BaseEngine(QObject *parent)
+        : QObject(parent)
     {
+    }
 
-        Q_OBJECT
+    //* enability
+    virtual void setEnabled(bool value)
+    {
+        _enabled = value;
+    }
 
-        public:
+    //* enability
+    virtual bool enabled() const
+    {
+        return _enabled;
+    }
 
-        using Pointer = WeakPointer<BaseEngine>;
+    //* duration
+    virtual void setDuration(int value)
+    {
+        _duration = value;
+    }
 
-        //* constructor
-        explicit BaseEngine( QObject* parent ):
-            QObject( parent )
-        {}
+    //* duration
+    virtual int duration() const
+    {
+        return _duration;
+    }
 
-        //* enability
-        virtual void setEnabled( bool value )
-        { _enabled = value; }
+    //* unregister widget
+    virtual bool unregisterWidget(QObject *object) = 0;
 
-        //* enability
-        virtual bool enabled() const
-        { return _enabled; }
+    //* list of widgets
+    using WidgetList = QSet<QWidget *>;
 
-        //* duration
-        virtual void setDuration( int value )
-        { _duration = value; }
+    //* returns registered widgets
+    virtual WidgetList registeredWidgets() const
+    {
+        return WidgetList();
+    }
 
-        //* duration
-        virtual int duration() const
-        { return _duration; }
+private:
+    //* engine enability
+    bool _enabled = true;
 
-        //* unregister widget
-        virtual bool unregisterWidget( QObject* object ) = 0;
-
-        //* list of widgets
-        using WidgetList = QSet<QWidget*>;
-
-        //* returns registered widgets
-        virtual WidgetList registeredWidgets() const
-        { return WidgetList(); }
-
-        private:
-
-        //* engine enability
-        bool _enabled = true;
-
-        //* animation duration
-        int _duration = 200;
-
-    };
-
+    //* animation duration
+    int _duration = 200;
+};
 }
 
 #endif

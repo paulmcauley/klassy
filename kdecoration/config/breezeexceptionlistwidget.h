@@ -9,100 +9,99 @@
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeexceptionlistwidget.h"
 #include "breezeexceptionmodel.h"
+#include "ui_breezeexceptionlistwidget.h"
 
 //* QDialog used to commit selected files
 namespace Breeze
 {
 
-    class ExceptionListWidget: public QWidget
+class ExceptionListWidget : public QWidget
+{
+    //* Qt meta object
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit ExceptionListWidget(QWidget * = nullptr);
+
+    //* set exceptions
+    void setExceptions(const InternalSettingsList &);
+
+    //* get exceptions
+    InternalSettingsList exceptions();
+
+    //* true if changed
+    virtual bool isChanged() const
     {
+        return m_changed;
+    }
 
-        //* Qt meta object
-        Q_OBJECT
+Q_SIGNALS:
 
-        public:
+    //* emitted when changed
+    void changed(bool);
 
-        //* constructor
-        explicit ExceptionListWidget( QWidget* = nullptr );
+protected:
+    //* model
+    const ExceptionModel &model() const
+    {
+        return m_model;
+    }
 
-        //* set exceptions
-        void setExceptions( const InternalSettingsList& );
+    //* model
+    ExceptionModel &model()
+    {
+        return m_model;
+    }
 
-        //* get exceptions
-        InternalSettingsList exceptions();
+protected Q_SLOTS:
 
-        //* true if changed
-        virtual bool isChanged() const
-        { return m_changed; }
+    //* update button states
+    virtual void updateButtons();
 
-        Q_SIGNALS:
+    //* add
+    virtual void add();
 
-        //* emitted when changed
-        void changed( bool );
+    //* edit
+    virtual void edit();
 
-        protected:
+    //* remove
+    virtual void remove();
 
-        //* model
-        const ExceptionModel& model() const
-        { return m_model; }
+    //* toggle
+    virtual void toggle(const QModelIndex &);
 
-        //* model
-        ExceptionModel& model()
-        { return m_model; }
+    //* move up
+    virtual void up();
 
-        protected Q_SLOTS:
+    //* move down
+    virtual void down();
 
-        //* update button states
-        virtual void updateButtons();
+protected:
+    //* resize columns
+    void resizeColumns() const;
 
-        //* add
-        virtual void add();
+    //* check exception
+    bool checkException(InternalSettingsPtr);
 
-        //* edit
-        virtual void edit();
+    //* set changed state
+    virtual void setChanged(bool value)
+    {
+        m_changed = value;
+        emit changed(value);
+    }
 
-        //* remove
-        virtual void remove();
+private:
+    //* model
+    ExceptionModel m_model;
 
-        //* toggle
-        virtual void toggle( const QModelIndex& );
+    //* ui
+    Ui_BreezeExceptionListWidget m_ui;
 
-        //* move up
-        virtual void up();
-
-        //* move down
-        virtual void down();
-
-        protected:
-
-        //* resize columns
-        void resizeColumns() const;
-
-        //* check exception
-        bool checkException( InternalSettingsPtr );
-
-        //* set changed state
-        virtual void setChanged( bool value )
-        {
-            m_changed = value;
-            emit changed( value );
-        }
-
-        private:
-
-        //* model
-        ExceptionModel m_model;
-
-        //* ui
-        Ui_BreezeExceptionListWidget m_ui;
-
-        //* changed state
-        bool m_changed = false;
-
-    };
-
+    //* changed state
+    bool m_changed = false;
+};
 }
 
 #endif

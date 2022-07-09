@@ -18,41 +18,36 @@
 namespace Breeze
 {
 
-    //* generic data
-    class StackedWidgetData: public TransitionData
-    {
+//* generic data
+class StackedWidgetData : public TransitionData
+{
+    Q_OBJECT
 
-        Q_OBJECT
+public:
+    //* constructor
+    StackedWidgetData(QObject *, QStackedWidget *, int);
 
-        public:
+protected Q_SLOTS:
 
-        //* constructor
-        StackedWidgetData( QObject*, QStackedWidget*, int );
+    //* initialize animation
+    bool initializeAnimation() override;
 
-        protected Q_SLOTS:
+    //* animate
+    bool animate() override;
 
-        //* initialize animation
-        bool initializeAnimation() override;
+    //* finish animation
+    void finishAnimation();
 
-        //* animate
-        bool animate() override;
+    //* called when target is destroyed
+    void targetDestroyed();
 
-        //* finish animation
-        void finishAnimation();
+private:
+    //* target
+    WeakPointer<QStackedWidget> _target;
 
-        //* called when target is destroyed
-        void targetDestroyed();
-
-        private:
-
-        //* target
-        WeakPointer<QStackedWidget> _target;
-
-        //* current index
-        int _index;
-
-    };
-
+    //* current index
+    int _index;
+};
 }
 
 #endif

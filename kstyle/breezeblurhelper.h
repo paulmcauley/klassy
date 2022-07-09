@@ -23,38 +23,34 @@
 
 namespace Breeze
 {
-    class BlurHelper: public QObject
+class BlurHelper : public QObject
+{
+    Q_OBJECT
+
+public:
+    //! constructor
+    BlurHelper(QObject *);
+
+    //! register widget
+    void registerWidget(QWidget *);
+
+    //! register widget
+    void unregisterWidget(QWidget *);
+
+    //! event filter
+    bool eventFilter(QObject *, QEvent *) override;
+
+protected:
+    //! install event filter to object, in a unique way
+    void addEventFilter(QObject *object)
     {
-        Q_OBJECT
+        object->removeEventFilter(this);
+        object->installEventFilter(this);
+    }
 
-        public:
-
-        //! constructor
-        BlurHelper( QObject* );
-
-        //! register widget
-        void registerWidget( QWidget* );
-
-        //! register widget
-        void unregisterWidget( QWidget* );
-
-        //! event filter
-        bool eventFilter( QObject*, QEvent* ) override;
-
-        protected:
-
-        //! install event filter to object, in a unique way
-        void addEventFilter( QObject* object )
-        {
-            object->removeEventFilter( this );
-            object->installEventFilter( this );
-        }
-
-        //! update blur regions for given widget
-        void update( QWidget* ) const;
-
-    };
-
+    //! update blur regions for given widget
+    void update(QWidget *) const;
+};
 }
 
 #endif

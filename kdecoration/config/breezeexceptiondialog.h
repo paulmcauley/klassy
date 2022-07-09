@@ -9,8 +9,8 @@
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeexceptiondialog.h"
 #include "breeze.h"
+#include "ui_breezeexceptiondialog.h"
 
 #include <QCheckBox>
 #include <QMap>
@@ -18,81 +18,78 @@
 namespace Breeze
 {
 
-    class DetectDialog;
+class DetectDialog;
 
-    //* breeze exceptions list
-    class ExceptionDialog: public QDialog
+//* breeze exceptions list
+class ExceptionDialog : public QDialog
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit ExceptionDialog(QWidget *parent);
+
+    //* destructor
+    virtual ~ExceptionDialog()
     {
+    }
 
-        Q_OBJECT
+    //* set exception
+    void setException(InternalSettingsPtr);
 
-        public:
+    //* save exception
+    void save();
 
-        //* constructor
-        explicit ExceptionDialog( QWidget* parent );
+    //* true if changed
+    virtual bool isChanged() const
+    {
+        return m_changed;
+    }
 
-        //* destructor
-        virtual ~ExceptionDialog()
-        {}
+Q_SIGNALS:
 
-        //* set exception
-        void setException( InternalSettingsPtr );
+    //* emitted when changed
+    void changed(bool);
 
-        //* save exception
-        void save();
+protected:
+    //* set changed state
+    virtual void setChanged(bool value)
+    {
+        m_changed = value;
+        emit changed(value);
+    }
 
-        //* true if changed
-        virtual bool isChanged() const
-        { return m_changed; }
+protected Q_SLOTS:
 
-        Q_SIGNALS:
+    //* check whether configuration is changed and emit appropriate signal if yes
+    virtual void updateChanged();
 
-        //* emitted when changed
-        void changed( bool );
+private Q_SLOTS:
 
-        protected:
+    //* select window properties from grabbed pointers
+    void selectWindowProperties();
 
-        //* set changed state
-        virtual void setChanged( bool value )
-        {
-            m_changed = value;
-            emit changed( value );
-        }
+    //* read properties of selected window
+    void readWindowProperties(bool);
 
-        protected Q_SLOTS:
+private:
+    //* map mask and checkbox
+    using CheckBoxMap = QMap<ExceptionMask, QCheckBox *>;
 
-        //* check whether configuration is changed and emit appropriate signal if yes
-        virtual void updateChanged();
+    Ui::BreezeExceptionDialog m_ui;
 
-        private Q_SLOTS:
+    //* map mask and checkbox
+    CheckBoxMap m_checkboxes;
 
-        //* select window properties from grabbed pointers
-        void selectWindowProperties();
+    //* internal exception
+    InternalSettingsPtr m_exception;
 
-        //* read properties of selected window
-        void readWindowProperties( bool );
+    //* detection dialog
+    DetectDialog *m_detectDialog = nullptr;
 
-        private:
-
-        //* map mask and checkbox
-        using CheckBoxMap=QMap< ExceptionMask, QCheckBox*>;
-
-        Ui::BreezeExceptionDialog m_ui;
-
-        //* map mask and checkbox
-        CheckBoxMap m_checkboxes;
-
-        //* internal exception
-        InternalSettingsPtr m_exception;
-
-        //* detection dialog
-        DetectDialog* m_detectDialog = nullptr;
-
-        //* changed state
-        bool m_changed = false;
-
-    };
-
+    //* changed state
+    bool m_changed = false;
+};
 }
 
 #endif

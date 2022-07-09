@@ -18,49 +18,47 @@
 namespace Breeze
 {
 
-    //* used for simple widgets
-    class StackedWidgetEngine: public BaseEngine
+//* used for simple widgets
+class StackedWidgetEngine : public BaseEngine
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit StackedWidgetEngine(QObject *parent)
+        : BaseEngine(parent)
     {
+    }
 
-        Q_OBJECT
+    //* register widget
+    bool registerWidget(QStackedWidget *);
 
-        public:
+    //* duration
+    void setEnabled(bool value) override
+    {
+        BaseEngine::setEnabled(value);
+        _data.setEnabled(value);
+    }
 
-        //* constructor
-        explicit StackedWidgetEngine( QObject* parent ):
-            BaseEngine( parent )
-        {}
+    //* duration
+    void setDuration(int value) override
+    {
+        BaseEngine::setDuration(value);
+        _data.setDuration(value);
+    }
 
-        //* register widget
-        bool registerWidget( QStackedWidget* );
+public Q_SLOTS:
 
-        //* duration
-        void setEnabled( bool value ) override
-        {
-            BaseEngine::setEnabled( value );
-            _data.setEnabled( value );
-        }
+    //* remove widget from map
+    bool unregisterWidget(QObject *object) override
+    {
+        return _data.unregisterWidget(object);
+    }
 
-        //* duration
-        void setDuration( int value ) override
-        {
-            BaseEngine::setDuration( value );
-            _data.setDuration( value );
-        }
-
-        public Q_SLOTS:
-
-        //* remove widget from map
-        bool unregisterWidget( QObject* object ) override
-        { return _data.unregisterWidget( object ); }
-
-        private:
-
-        //* maps
-        DataMap<StackedWidgetData> _data;
-
-    };
-
+private:
+    //* maps
+    DataMap<StackedWidgetData> _data;
+};
 }
 
 #endif

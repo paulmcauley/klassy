@@ -7,6 +7,7 @@
 #include "breezestyle.h"
 
 #include "breezeanimations.h"
+#include "breezeblurhelper.h"
 #include "breezeframeshadow.h"
 #include "breezemdiwindowshadow.h"
 #include "breezemnemonics.h"
@@ -14,10 +15,9 @@
 #include "breezeshadowhelper.h"
 #include "breezesplitterproxy.h"
 #include "breezestyleconfigdata.h"
+#include "breezetoolsareamanager.h"
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
-#include "breezeblurhelper.h"
-#include "breezetoolsareamanager.h"
 #include "colortools.h"
 
 #include <KColorUtils>
@@ -28,20 +28,25 @@
 #include <QBitmap>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDBusConnection>
 #include <QDial>
 #include <QDialog>
-#include <QDBusConnection>
+#include <QDialogButtonBox>
+#include <QFontDatabase>
 #include <QFormLayout>
+#include <QGraphicsItem>
+#include <QGraphicsProxyWidget>
 #include <QGraphicsView>
 #include <QGroupBox>
+#include <QItemDelegate>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QMdiArea>
 #include <QMenu>
 #include <QPainter>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QScrollBar>
-#include <QItemDelegate>
 #include <QSplitterHandle>
 #include <QTextEdit>
 #include <QToolBar>
@@ -49,7784 +54,7754 @@
 #include <QToolButton>
 #include <QTreeView>
 #include <QWidgetAction>
-#include <QMdiArea>
 #include <memory>
-#include <QDialogButtonBox>
-#include <QGraphicsItem>
-#include <QGraphicsProxyWidget>
-#include <QFontDatabase>
-
 
 #if BREEZE_HAVE_QTQUICK
-#include <QQuickWindow>
 #include <KCoreAddons>
 #include <Kirigami/TabletModeWatcher>
+#include <QQuickWindow>
 #endif
 
 namespace BreezePrivate
 {
 
-    // needed to keep track of tabbars when being dragged
-    class TabBarData: public QObject
+// needed to keep track of tabbars when being dragged
+class TabBarData : public QObject
+{
+public:
+    //* constructor
+    explicit TabBarData(QObject *parent)
+        : QObject(parent)
     {
+    }
 
-        public:
-
-        //* constructor
-        explicit TabBarData( QObject* parent ):
-            QObject( parent )
-        {}
-
-        //* assign target tabBar
-        void lock( const QWidget* widget )
-        { _tabBar = widget; }
-
-        //* true if tabbar is locked
-        bool isLocked( const QWidget* widget ) const
-        { return _tabBar && _tabBar.data() == widget; }
-
-        //* release
-        void release()
-        { _tabBar.clear(); }
-
-        private:
-
-        //* pointer to target tabBar
-        Breeze::WeakPointer<const QWidget> _tabBar;
-
-    };
-
-    //* needed to have spacing added to items in combobox
-    class ComboBoxItemDelegate: public QItemDelegate
+    //* assign target tabBar
+    void lock(const QWidget *widget)
     {
+        _tabBar = widget;
+    }
 
-        public:
-
-        //* constructor
-        explicit ComboBoxItemDelegate( QAbstractItemView* parent ):
-            QItemDelegate( parent ),
-            _proxy( parent->itemDelegate() ),
-            _itemMargin( Breeze::Metrics::ItemView_ItemMarginWidth )
-        {}
-
-        //* paint
-        void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
-        {
-            painter->setRenderHints( QPainter::Antialiasing );
-            // if the app sets an item delegate that isn't the default, use its drawing...
-            if( _proxy && _proxy->metaObject()->className() != QStringLiteral("QComboBoxDelegate") ) {
-                _proxy.data()->paint( painter, option, index );
-                return;
-            }
-
-            // otherwise we draw the selected/highlighted background ourself...
-            if (option.showDecorationSelected && (option.state & QStyle::State_Selected))
-            {
-                using namespace Breeze;
-
-                auto c = option.palette.brush((option.state & QStyle::State_Enabled) ? QPalette::Normal : QPalette::Disabled, QPalette::Highlight).color();
-
-                painter->setPen( c );
-                c.setAlphaF(c.alphaF() * 0.3);
-                painter->setBrush( c );
-                auto radius = Metrics::Frame_FrameRadius - (0.5 * PenWidth::Frame);
-                painter->drawRoundedRect( QRectF(option.rect).adjusted(0.5, 0.5, -0.5, -0.5), radius, radius );
-            }
-
-            // and ask the base class to do everything else for us besides the selected/highlighted part which we just did
-            auto opt = option;
-            opt.showDecorationSelected = false;
-            opt.state &= ~QStyle::State_Selected;
-
-            QItemDelegate::paint( painter, opt, index );
-        }
-
-        //* size hint for index
-        QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override
-        {
-
-            // get size from either proxy or parent class
-            auto size( _proxy ?
-                _proxy.data()->sizeHint( option, index ):
-                QItemDelegate::sizeHint( option, index ) );
-
-            // adjust and return
-            if( size.isValid() ) { size.rheight() += _itemMargin*2; }
-            return size;
-
-        }
-
-        private:
-
-        //* proxy
-        Breeze::WeakPointer<QAbstractItemDelegate> _proxy;
-
-        //* margin
-        int _itemMargin;
-
-    };
-
-    //_______________________________________________________________
-    bool isProgressBarHorizontal( const QStyleOptionProgressBar* option )
-    {  return option && (option->state & QStyle::State_Horizontal); }
-
-    enum class ToolButtonMenuArrowStyle {
-        None,
-        InlineLarge,
-        InlineSmall,
-        SubControl,
-    };
-
-    ToolButtonMenuArrowStyle toolButtonMenuArrowStyle( const QStyleOption* option )
+    //* true if tabbar is locked
+    bool isLocked(const QWidget *widget) const
     {
-        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
-        if (!toolButtonOption) {
-            return ToolButtonMenuArrowStyle::None;
+        return _tabBar && _tabBar.data() == widget;
+    }
+
+    //* release
+    void release()
+    {
+        _tabBar.clear();
+    }
+
+private:
+    //* pointer to target tabBar
+    Breeze::WeakPointer<const QWidget> _tabBar;
+};
+
+//* needed to have spacing added to items in combobox
+class ComboBoxItemDelegate : public QItemDelegate
+{
+public:
+    //* constructor
+    explicit ComboBoxItemDelegate(QAbstractItemView *parent)
+        : QItemDelegate(parent)
+        , _proxy(parent->itemDelegate())
+        , _itemMargin(Breeze::Metrics::ItemView_ItemMarginWidth)
+    {
+    }
+
+    //* paint
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        painter->setRenderHints(QPainter::Antialiasing);
+        // if the app sets an item delegate that isn't the default, use its drawing...
+        if (_proxy && _proxy->metaObject()->className() != QStringLiteral("QComboBoxDelegate")) {
+            _proxy.data()->paint(painter, option, index);
+            return;
         }
 
-        const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
-        const bool hasInlineIndicator( toolButtonOption->features&QStyleOptionToolButton::HasMenu && !hasPopupMenu );
-        const bool hasDelayedMenu( hasInlineIndicator && toolButtonOption->features & QStyleOptionToolButton::PopupDelay );
+        // otherwise we draw the selected/highlighted background ourself...
+        if (option.showDecorationSelected && (option.state & QStyle::State_Selected)) {
+            using namespace Breeze;
 
-        const bool hasIcon = !toolButtonOption->icon.isNull() || ( toolButtonOption->features & QStyleOptionToolButton::Arrow );
-        const bool iconOnly = toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly
-                              || (toolButtonOption->text.isEmpty() && hasIcon);
+            auto c = option.palette.brush((option.state & QStyle::State_Enabled) ? QPalette::Normal : QPalette::Disabled, QPalette::Highlight).color();
 
-        if( hasPopupMenu )
-        {
-            return ToolButtonMenuArrowStyle::SubControl;
+            painter->setPen(c);
+            c.setAlphaF(c.alphaF() * 0.3);
+            painter->setBrush(c);
+            auto radius = Metrics::Frame_FrameRadius - (0.5 * PenWidth::Frame);
+            painter->drawRoundedRect(QRectF(option.rect).adjusted(0.5, 0.5, -0.5, -0.5), radius, radius);
         }
 
-        if( hasDelayedMenu )
-        {
-            return ToolButtonMenuArrowStyle::InlineSmall;
-        }
+        // and ask the base class to do everything else for us besides the selected/highlighted part which we just did
+        auto opt = option;
+        opt.showDecorationSelected = false;
+        opt.state &= ~QStyle::State_Selected;
 
-        if ( hasInlineIndicator && !iconOnly )
-        {
-            return ToolButtonMenuArrowStyle::InlineLarge;
-        }
+        QItemDelegate::paint(painter, opt, index);
+    }
 
+    //* size hint for index
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        // get size from either proxy or parent class
+        auto size(_proxy ? _proxy.data()->sizeHint(option, index) : QItemDelegate::sizeHint(option, index));
+
+        // adjust and return
+        if (size.isValid()) {
+            size.rheight() += _itemMargin * 2;
+        }
+        return size;
+    }
+
+private:
+    //* proxy
+    Breeze::WeakPointer<QAbstractItemDelegate> _proxy;
+
+    //* margin
+    int _itemMargin;
+};
+
+//_______________________________________________________________
+bool isProgressBarHorizontal(const QStyleOptionProgressBar *option)
+{
+    return option && (option->state & QStyle::State_Horizontal);
+}
+
+enum class ToolButtonMenuArrowStyle {
+    None,
+    InlineLarge,
+    InlineSmall,
+    SubControl,
+};
+
+ToolButtonMenuArrowStyle toolButtonMenuArrowStyle(const QStyleOption *option)
+{
+    const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton *>(option);
+    if (!toolButtonOption) {
         return ToolButtonMenuArrowStyle::None;
     }
+
+    const bool hasPopupMenu(toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup);
+    const bool hasInlineIndicator(toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu);
+    const bool hasDelayedMenu(hasInlineIndicator && toolButtonOption->features & QStyleOptionToolButton::PopupDelay);
+
+    const bool hasIcon = !toolButtonOption->icon.isNull() || (toolButtonOption->features & QStyleOptionToolButton::Arrow);
+    const bool iconOnly = toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly || (toolButtonOption->text.isEmpty() && hasIcon);
+
+    if (hasPopupMenu) {
+        return ToolButtonMenuArrowStyle::SubControl;
+    }
+
+    if (hasDelayedMenu) {
+        return ToolButtonMenuArrowStyle::InlineSmall;
+    }
+
+    if (hasInlineIndicator && !iconOnly) {
+        return ToolButtonMenuArrowStyle::InlineLarge;
+    }
+
+    return ToolButtonMenuArrowStyle::None;
+}
 
 }
 
 namespace Breeze
 {
 
-    //______________________________________________________________
-    Style::Style():
+//______________________________________________________________
+Style::Style()
+    :
 
-        _helper( new Helper( StyleConfigData::self()->sharedConfig() ) )
-        , _shadowHelper( new ShadowHelper( this, *_helper ) )
-        , _animations( new Animations( this ) )
-        , _mnemonics( new Mnemonics( this ) )
-        , _blurHelper( new BlurHelper( this ) )
-        , _windowManager( new WindowManager( this ) )
-        , _frameShadowFactory( new FrameShadowFactory( this ) )
-        , _mdiWindowShadowFactory( new MdiWindowShadowFactory( this ) )
-        , _splitterFactory( new SplitterFactory( this ) )
-        , _toolsAreaManager ( new ToolsAreaManager( _helper, this ) )
-        , _widgetExplorer( new WidgetExplorer( this ) )
-        , _tabBarData( new BreezePrivate::TabBarData( this ) )
-        #if BREEZE_HAVE_KSTYLE
-        , SH_ArgbDndWindow( newStyleHint( QStringLiteral( "SH_ArgbDndWindow" ) ) )
-        , CE_CapacityBar( newControlElement( QStringLiteral( "CE_CapacityBar" ) ) )
-        #endif
-    {
+    _helper(new Helper(StyleConfigData::self()->sharedConfig()))
+    , _shadowHelper(new ShadowHelper(this, *_helper))
+    , _animations(new Animations(this))
+    , _mnemonics(new Mnemonics(this))
+    , _blurHelper(new BlurHelper(this))
+    , _windowManager(new WindowManager(this))
+    , _frameShadowFactory(new FrameShadowFactory(this))
+    , _mdiWindowShadowFactory(new MdiWindowShadowFactory(this))
+    , _splitterFactory(new SplitterFactory(this))
+    , _toolsAreaManager(new ToolsAreaManager(_helper, this))
+    , _widgetExplorer(new WidgetExplorer(this))
+    , _tabBarData(new BreezePrivate::TabBarData(this))
+#if BREEZE_HAVE_KSTYLE
+    , SH_ArgbDndWindow(newStyleHint(QStringLiteral("SH_ArgbDndWindow")))
+    , CE_CapacityBar(newControlElement(QStringLiteral("CE_CapacityBar")))
+#endif
+{
+    // use DBus connection to update on breeze configuration change
+    auto dbus = QDBusConnection::sessionBus();
+    dbus.connect(QString(),
+                 QStringLiteral("/ClassikStyle"),
+                 QStringLiteral("org.kde.Classik.Style"),
+                 QStringLiteral("reparseConfiguration"),
+                 this,
+                 SLOT(configurationChanged()));
 
-        // use DBus connection to update on breeze configuration change
-        auto dbus = QDBusConnection::sessionBus();
-        dbus.connect( QString(),
-            QStringLiteral( "/ClassikStyle" ),
-            QStringLiteral( "org.kde.Classik.Style" ),
-            QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
+    dbus.connect(QString(),
+                 QStringLiteral("/ClassikDecoration"),
+                 QStringLiteral("org.kde.Classik.Style"),
+                 QStringLiteral("reparseConfiguration"),
+                 this,
+                 SLOT(configurationChanged()));
 
-        dbus.connect( QString(),
-            QStringLiteral( "/ClassikDecoration" ),
-            QStringLiteral( "org.kde.Classik.Style" ),
-            QStringLiteral( "reparseConfiguration" ), this, SLOT(configurationChanged()) );
+    dbus.connect(QString(),
+                 QStringLiteral("/KGlobalSettings"),
+                 QStringLiteral("org.kde.KGlobalSettings"),
+                 QStringLiteral("notifyChange"),
+                 this,
+                 SLOT(configurationChanged()));
 
-        dbus.connect( QString(),
-            QStringLiteral( "/KGlobalSettings" ),
-            QStringLiteral( "org.kde.KGlobalSettings" ),
-            QStringLiteral( "notifyChange" ), this, SLOT(configurationChanged()) );
+    dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
 
-        dbus.connect( QString(),
-            QStringLiteral( "/KWin" ),
-            QStringLiteral( "org.kde.KWin" ),
-            QStringLiteral( "reloadConfig" ), this, SLOT(configurationChanged()));
+    connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
+    // call the slot directly; this initial call will set up things that also
+    // need to be reset when the system palette changes
+    loadConfiguration();
+}
 
-        connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
-        // call the slot directly; this initial call will set up things that also
-        // need to be reset when the system palette changes
-        loadConfiguration();
+//______________________________________________________________
+Style::~Style()
+{
+    delete _shadowHelper;
+    delete _helper;
+}
 
+//______________________________________________________________
+void Style::polish(QWidget *widget)
+{
+    if (!widget)
+        return;
+
+    // register widget to animations
+    _animations->registerWidget(widget);
+    _windowManager->registerWidget(widget);
+    _frameShadowFactory->registerWidget(widget, *_helper);
+    _mdiWindowShadowFactory->registerWidget(widget);
+    _shadowHelper->registerWidget(widget);
+    _splitterFactory->registerWidget(widget);
+    _toolsAreaManager->registerWidget(widget);
+
+    // enable mouse over effects for all necessary widgets
+    if (qobject_cast<QAbstractItemView *>(widget) || qobject_cast<QAbstractSpinBox *>(widget) || qobject_cast<QCheckBox *>(widget)
+        || qobject_cast<QComboBox *>(widget) || qobject_cast<QDial *>(widget) || qobject_cast<QLineEdit *>(widget) || qobject_cast<QPushButton *>(widget)
+        || qobject_cast<QRadioButton *>(widget) || qobject_cast<QScrollBar *>(widget) || qobject_cast<QSlider *>(widget)
+        || qobject_cast<QSplitterHandle *>(widget) || qobject_cast<QTabBar *>(widget) || qobject_cast<QTextEdit *>(widget)
+        || qobject_cast<QToolButton *>(widget) || widget->inherits("KTextEditor::View")) {
+        widget->setAttribute(Qt::WA_Hover);
     }
 
-    //______________________________________________________________
-    Style::~Style()
-    {
-        delete _shadowHelper;
-        delete _helper;
+    // enforce translucency for drag and drop window
+    if (widget->testAttribute(Qt::WA_X11NetWmWindowTypeDND) && _helper->compositingActive()) {
+        widget->setAttribute(Qt::WA_TranslucentBackground);
+        widget->clearMask();
     }
 
-    //______________________________________________________________
-    void Style::polish( QWidget* widget )
-    {
-        if( !widget ) return;
+    // scrollarea polishing is somewhat complex. It is moved to a dedicated method
+    polishScrollArea(qobject_cast<QAbstractScrollArea *>(widget));
 
-        // register widget to animations
-        _animations->registerWidget( widget );
-        _windowManager->registerWidget( widget );
-        _frameShadowFactory->registerWidget( widget, *_helper );
-        _mdiWindowShadowFactory->registerWidget( widget );
-        _shadowHelper->registerWidget( widget );
-        _splitterFactory->registerWidget( widget );
-        _toolsAreaManager->registerWidget ( widget );
+    if (auto itemView = qobject_cast<QAbstractItemView *>(widget)) {
+        // enable mouse over effects in itemviews' viewport
+        itemView->viewport()->setAttribute(Qt::WA_Hover);
 
-        // enable mouse over effects for all necessary widgets
-        if(
-            qobject_cast<QAbstractItemView*>( widget )
-            || qobject_cast<QAbstractSpinBox*>( widget )
-            || qobject_cast<QCheckBox*>( widget )
-            || qobject_cast<QComboBox*>( widget )
-            || qobject_cast<QDial*>( widget )
-            || qobject_cast<QLineEdit*>( widget )
-            || qobject_cast<QPushButton*>( widget )
-            || qobject_cast<QRadioButton*>( widget )
-            || qobject_cast<QScrollBar*>( widget )
-            || qobject_cast<QSlider*>( widget )
-            || qobject_cast<QSplitterHandle*>( widget )
-            || qobject_cast<QTabBar*>( widget )
-            || qobject_cast<QTextEdit*>( widget )
-            || qobject_cast<QToolButton*>( widget )
-            || widget->inherits( "KTextEditor::View" )
-            )
-        { widget->setAttribute( Qt::WA_Hover ); }
-
-        // enforce translucency for drag and drop window
-        if( widget->testAttribute( Qt::WA_X11NetWmWindowTypeDND ) && _helper->compositingActive() )
-        {
-            widget->setAttribute( Qt::WA_TranslucentBackground );
-            widget->clearMask();
+    } else if (auto groupBox = qobject_cast<QGroupBox *>(widget)) {
+        // checkable group boxes
+        if (groupBox->isCheckable()) {
+            groupBox->setAttribute(Qt::WA_Hover);
         }
 
-        // scrollarea polishing is somewhat complex. It is moved to a dedicated method
-        polishScrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
+    } else if (qobject_cast<QAbstractButton *>(widget) && qobject_cast<QDockWidget *>(widget->parent())) {
+        widget->setAttribute(Qt::WA_Hover);
 
-        if( auto itemView = qobject_cast<QAbstractItemView*>( widget ) )
-        {
+    } else if (qobject_cast<QAbstractButton *>(widget) && qobject_cast<QToolBox *>(widget->parent())) {
+        widget->setAttribute(Qt::WA_Hover);
 
-            // enable mouse over effects in itemviews' viewport
-            itemView->viewport()->setAttribute( Qt::WA_Hover );
+    } else if (qobject_cast<QFrame *>(widget) && widget->parent() && widget->parent()->inherits("KTitleWidget")) {
+        widget->setAutoFillBackground(false);
+    }
 
-        } else if( auto groupBox = qobject_cast<QGroupBox*>( widget ) )  {
+    if (qobject_cast<QScrollBar *>(widget)) {
+        // remove opaque painting for scrollbars
+        widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
 
-            // checkable group boxes
-            if( groupBox->isCheckable() )
-            { groupBox->setAttribute( Qt::WA_Hover ); }
+    } else if (widget->inherits("KTextEditor::View")) {
+        addEventFilter(widget);
 
-        } else if( qobject_cast<QAbstractButton*>( widget ) && qobject_cast<QDockWidget*>( widget->parent() ) ) {
-
-            widget->setAttribute( Qt::WA_Hover );
-
-        } else if( qobject_cast<QAbstractButton*>( widget ) && qobject_cast<QToolBox*>( widget->parent() ) ) {
-
-            widget->setAttribute( Qt::WA_Hover );
-
-        } else if( qobject_cast<QFrame*>( widget ) && widget->parent() && widget->parent()->inherits( "KTitleWidget" ) ) {
-
-            widget->setAutoFillBackground( false );
-
+    } else if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
+        if (toolButton->autoRaise()) {
+            // for flat toolbuttons, adjust foreground and background role accordingly
+            widget->setBackgroundRole(QPalette::NoRole);
+            widget->setForegroundRole(QPalette::WindowText);
         }
 
-        if( qobject_cast<QScrollBar*>( widget ) )
-        {
+        if (widget->parentWidget() && widget->parentWidget()->parentWidget() && widget->parentWidget()->parentWidget()->inherits("Gwenview::SideBarGroup")) {
+            widget->setProperty(PropertyNames::toolButtonAlignment, Qt::AlignLeft);
+        }
 
-            // remove opaque painting for scrollbars
-            widget->setAttribute( Qt::WA_OpaquePaintEvent, false );
+    } else if (qobject_cast<QDockWidget *>(widget)) {
+        // add event filter on dock widgets
+        // and alter palette
+        widget->setAutoFillBackground(false);
+        widget->setContentsMargins(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth);
+        addEventFilter(widget);
 
-        } else if( widget->inherits( "KTextEditor::View" ) ) {
+    } else if (qobject_cast<QMdiSubWindow *>(widget)) {
+        widget->setAutoFillBackground(false);
+        addEventFilter(widget);
 
-            addEventFilter( widget );
+    } else if (qobject_cast<QToolBox *>(widget)) {
+        widget->setBackgroundRole(QPalette::NoRole);
+        widget->setAutoFillBackground(false);
 
-        } else if( auto toolButton = qobject_cast<QToolButton*>( widget ) ) {
+    } else if (widget->parentWidget() && widget->parentWidget()->parentWidget()
+               && qobject_cast<QToolBox *>(widget->parentWidget()->parentWidget()->parentWidget())) {
+        widget->setBackgroundRole(QPalette::NoRole);
+        widget->setAutoFillBackground(false);
+        widget->parentWidget()->setAutoFillBackground(false);
 
-            if( toolButton->autoRaise() )
-            {
-                // for flat toolbuttons, adjust foreground and background role accordingly
-                widget->setBackgroundRole( QPalette::NoRole );
-                widget->setForegroundRole( QPalette::WindowText );
+    } else if (qobject_cast<QMenu *>(widget)) {
+        setTranslucentBackground(widget);
+
+        if (_helper->hasAlphaChannel(widget) && StyleConfigData::menuOpacity() < 100) {
+            _blurHelper->registerWidget(widget->window());
+        }
+
+    } else if (qobject_cast<QCommandLinkButton *>(widget)) {
+        addEventFilter(widget);
+
+    } else if (auto comboBox = qobject_cast<QComboBox *>(widget)) {
+        if (!hasParent(widget, "QWebView")) {
+            auto itemView(comboBox->view());
+            if (itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits("QComboBoxDelegate")) {
+                itemView->setItemDelegate(new BreezePrivate::ComboBoxItemDelegate(itemView));
             }
-
-            if( widget->parentWidget() &&
-                widget->parentWidget()->parentWidget() &&
-                widget->parentWidget()->parentWidget()->inherits( "Gwenview::SideBarGroup" ) )
-            { widget->setProperty( PropertyNames::toolButtonAlignment, Qt::AlignLeft ); }
-
-        } else if( qobject_cast<QDockWidget*>( widget ) ) {
-
-            // add event filter on dock widgets
-            // and alter palette
-            widget->setAutoFillBackground( false );
-            widget->setContentsMargins( Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth );
-            addEventFilter( widget );
-
-        } else if( qobject_cast<QMdiSubWindow*>( widget ) ) {
-
-            widget->setAutoFillBackground( false );
-            addEventFilter( widget );
-
-        } else if( qobject_cast<QToolBox*>( widget ) ) {
-
-            widget->setBackgroundRole( QPalette::NoRole );
-            widget->setAutoFillBackground( false );
-
-        } else if( widget->parentWidget() && widget->parentWidget()->parentWidget() && qobject_cast<QToolBox*>( widget->parentWidget()->parentWidget()->parentWidget() ) ) {
-
-            widget->setBackgroundRole( QPalette::NoRole );
-            widget->setAutoFillBackground( false );
-            widget->parentWidget()->setAutoFillBackground( false );
-
-        } else if( qobject_cast<QMenu*>( widget ) ) {
-
-            setTranslucentBackground( widget );
-
-            if ( _helper->hasAlphaChannel( widget ) && StyleConfigData::menuOpacity() < 100 ) {
-                _blurHelper->registerWidget( widget->window() );
-            }
-
-        } else if( qobject_cast<QCommandLinkButton*>( widget ) ) {
-
-            addEventFilter( widget );
-
-        } else if( auto comboBox = qobject_cast<QComboBox*>( widget ) ) {
-
-            if( !hasParent( widget, "QWebView" ) )
-            {
-                auto itemView( comboBox->view() );
-                if( itemView && itemView->itemDelegate() && itemView->itemDelegate()->inherits( "QComboBoxDelegate" ) )
-                { itemView->setItemDelegate( new BreezePrivate::ComboBoxItemDelegate( itemView ) ); }
-            }
-
-        } else if( widget->inherits( "QComboBoxPrivateContainer" ) ) {
-
-            addEventFilter( widget );
-            setTranslucentBackground( widget );
-
-        } else if( widget->inherits( "QTipLabel" ) ) {
-
-            setTranslucentBackground( widget );
-
-        } else if ( qobject_cast<QMainWindow*> (widget) ) {
-            widget->setAttribute(Qt::WA_StyledBackground);
-            addEventFilter( widget );
-        }
-        else if ( qobject_cast<QDialog*> (widget) ) {
-            widget->setAttribute(Qt::WA_StyledBackground);
-        } else if (auto pushButton = qobject_cast<QPushButton*>(widget)) {
-            QDialog *dialog = nullptr;
-            auto p = pushButton->parentWidget();
-            while (p && !p->isWindow()) {
-                p = p->parentWidget();
-                if (auto d = qobject_cast<QDialog*>(p)) {
-                    dialog = d;
-                }
-            }
-            // Internally, QPushButton::autoDefault can be explicitly on,
-            // explicitly off, or automatic (enabled if in a QDialog).
-            // If autoDefault is explicitly on and not in a dialog,
-            // or on/automatic in a dialog and has a QDialogButtonBox parent,
-            // explicitly enable autoDefault, else explicitly disable autoDefault.
-            bool autoDefaultNoDialog = pushButton->autoDefault() && !dialog;
-            bool autoDefaultInDialog = pushButton->autoDefault() && dialog;
-            auto dialogButtonBox = qobject_cast<QDialogButtonBox*>(pushButton->parent());
-            pushButton->setAutoDefault(autoDefaultNoDialog || (autoDefaultInDialog && dialogButtonBox));
         }
 
-        // base class polishing
-        ParentStyleClass::polish( widget );
+    } else if (widget->inherits("QComboBoxPrivateContainer")) {
+        addEventFilter(widget);
+        setTranslucentBackground(widget);
 
+    } else if (widget->inherits("QTipLabel")) {
+        setTranslucentBackground(widget);
+
+    } else if (qobject_cast<QMainWindow *>(widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground);
+        addEventFilter(widget);
+    } else if (qobject_cast<QDialog *>(widget)) {
+        widget->setAttribute(Qt::WA_StyledBackground);
+    } else if (auto pushButton = qobject_cast<QPushButton *>(widget)) {
+        QDialog *dialog = nullptr;
+        auto p = pushButton->parentWidget();
+        while (p && !p->isWindow()) {
+            p = p->parentWidget();
+            if (auto d = qobject_cast<QDialog *>(p)) {
+                dialog = d;
+            }
+        }
+        // Internally, QPushButton::autoDefault can be explicitly on,
+        // explicitly off, or automatic (enabled if in a QDialog).
+        // If autoDefault is explicitly on and not in a dialog,
+        // or on/automatic in a dialog and has a QDialogButtonBox parent,
+        // explicitly enable autoDefault, else explicitly disable autoDefault.
+        bool autoDefaultNoDialog = pushButton->autoDefault() && !dialog;
+        bool autoDefaultInDialog = pushButton->autoDefault() && dialog;
+        auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(pushButton->parent());
+        pushButton->setAutoDefault(autoDefaultNoDialog || (autoDefaultInDialog && dialogButtonBox));
     }
 
-    //______________________________________________________________
-    void Style::polish( QApplication *application )
-    {
-        const auto smallFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
-        application->setFont(smallFont, "QHeaderView");
-        _toolsAreaManager->registerApplication(application);
+    // base class polishing
+    ParentStyleClass::polish(widget);
+}
+
+//______________________________________________________________
+void Style::polish(QApplication *application)
+{
+    const auto smallFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
+    application->setFont(smallFont, "QHeaderView");
+    _toolsAreaManager->registerApplication(application);
+}
+
+//______________________________________________________________
+void Style::unpolish(QApplication *application)
+{
+    application->setFont(QFont(), "QHeaderView");
+}
+
+//______________________________________________________________
+void Style::polishScrollArea(QAbstractScrollArea *scrollArea)
+{
+    // check argument
+    if (!scrollArea)
+        return;
+
+    // enable mouse over effect in sunken scrollareas that support focus
+    if (scrollArea->frameShadow() == QFrame::Sunken && scrollArea->focusPolicy() & Qt::StrongFocus) {
+        scrollArea->setAttribute(Qt::WA_Hover);
     }
 
-    //______________________________________________________________
-    void Style::unpolish( QApplication *application )
-    {
-        application->setFont(QFont(), "QHeaderView");
+    if (scrollArea->viewport() && scrollArea->inherits("KItemListContainer") && scrollArea->frameShape() == QFrame::NoFrame) {
+        scrollArea->viewport()->setBackgroundRole(QPalette::Window);
+        scrollArea->viewport()->setForegroundRole(QPalette::WindowText);
     }
 
-    //______________________________________________________________
-    void Style::polishScrollArea( QAbstractScrollArea* scrollArea )
-    {
+    // add event filter, to make sure proper background is rendered behind scrollbars
+    addEventFilter(scrollArea);
 
-        // check argument
-        if( !scrollArea ) return;
+    // force side panels as flat, on option
+    if (scrollArea->inherits("KDEPrivate::KPageListView") || scrollArea->inherits("KDEPrivate::KPageTreeView")) {
+        scrollArea->setProperty(PropertyNames::sidePanelView, true);
+    }
 
-        // enable mouse over effect in sunken scrollareas that support focus
-        if( scrollArea->frameShadow() == QFrame::Sunken && scrollArea->focusPolicy()&Qt::StrongFocus )
-        { scrollArea->setAttribute( Qt::WA_Hover ); }
+    // for all side view panels, unbold font (design choice)
+    if (scrollArea->property(PropertyNames::sidePanelView).toBool()) {
+        // upbold list font
+        auto font(scrollArea->font());
+        font.setBold(false);
+        scrollArea->setFont(font);
+    }
 
-        if( scrollArea->viewport() && scrollArea->inherits( "KItemListContainer" ) && scrollArea->frameShape() == QFrame::NoFrame )
-        {
-            scrollArea->viewport()->setBackgroundRole( QPalette::Window );
-            scrollArea->viewport()->setForegroundRole( QPalette::WindowText );
+    // disable autofill background for flat (== NoFrame) scrollareas, with QPalette::Window as a background
+    // this fixes flat scrollareas placed in a tinted widget, such as groupboxes, tabwidgets or framed dock-widgets
+    if (!(scrollArea->frameShape() == QFrame::NoFrame || scrollArea->backgroundRole() == QPalette::Window)) {
+        return;
+    }
+
+    // get viewport and check background role
+    auto viewport(scrollArea->viewport());
+    if (!(viewport && viewport->backgroundRole() == QPalette::Window))
+        return;
+
+    // change viewport autoFill background.
+    // do the same for all children if the background role is QPalette::Window
+    viewport->setAutoFillBackground(false);
+    QList<QWidget *> children(viewport->findChildren<QWidget *>());
+    foreach (QWidget *child, children) {
+        if (child->parent() == viewport && child->backgroundRole() == QPalette::Window) {
+            child->setAutoFillBackground(false);
+        }
+    }
+
+    /*
+    QTreeView animates expanding/collapsing branches. It paints them into a
+    temp pixmap whose background is unconditionally filled with the palette's
+    *base* color which is usually different from the window's color
+    cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
+    */
+    if (auto treeView = qobject_cast<QTreeView *>(scrollArea)) {
+        if (treeView->isAnimated()) {
+            QPalette pal(treeView->palette());
+            pal.setColor(QPalette::Active, QPalette::Base, treeView->palette().color(treeView->backgroundRole()));
+            treeView->setPalette(pal);
+        }
+    }
+}
+
+//_______________________________________________________________
+void Style::unpolish(QWidget *widget)
+{
+    // register widget to animations
+    _animations->unregisterWidget(widget);
+    _frameShadowFactory->unregisterWidget(widget);
+    _mdiWindowShadowFactory->unregisterWidget(widget);
+    _shadowHelper->unregisterWidget(widget);
+    _windowManager->unregisterWidget(widget);
+    _splitterFactory->unregisterWidget(widget);
+    _blurHelper->unregisterWidget(widget);
+    _toolsAreaManager->unregisterWidget(widget);
+
+    // remove event filter
+    if (qobject_cast<QAbstractScrollArea *>(widget) || qobject_cast<QDockWidget *>(widget) || qobject_cast<QMdiSubWindow *>(widget)
+        || widget->inherits("QComboBoxPrivateContainer")) {
+        widget->removeEventFilter(this);
+    }
+
+    ParentStyleClass::unpolish(widget);
+}
+
+//______________________________________________________________
+int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
+{
+    // handle special cases
+    switch (metric) {
+    case PM_MenuHMargin:
+    case PM_MenuVMargin:
+        return Metrics::MenuItem_HighlightGap;
+
+    // small icon size
+    case PM_SmallIconSize:
+        if (isTabletMode()) {
+            return 22;
+        } else {
+            return 16;
         }
 
-        // add event filter, to make sure proper background is rendered behind scrollbars
-        addEventFilter( scrollArea );
+    // frame width
+    case PM_DefaultFrameWidth:
+        if (qobject_cast<const QMenu *>(widget))
+            return Metrics::Menu_FrameWidth;
+        if (qobject_cast<const QLineEdit *>(widget))
+            return Metrics::LineEdit_FrameWidth;
+        else if (isQtQuickControl(option, widget)) {
+            const QString &elementType = option->styleObject->property("elementType").toString();
+            if (elementType == QLatin1String("edit") || elementType == QLatin1String("spinbox")) {
+                return Metrics::LineEdit_FrameWidth;
 
-        // force side panels as flat, on option
-        if( scrollArea->inherits( "KDEPrivate::KPageListView" ) || scrollArea->inherits( "KDEPrivate::KPageTreeView" ) )
-        { scrollArea->setProperty( PropertyNames::sidePanelView, true ); }
-
-        // for all side view panels, unbold font (design choice)
-        if( scrollArea->property( PropertyNames::sidePanelView ).toBool() )
-        {
-            // upbold list font
-            auto font( scrollArea->font() );
-            font.setBold( false );
-            scrollArea->setFont( font );
+            } else if (elementType == QLatin1String("combobox")) {
+                return Metrics::ComboBox_FrameWidth;
+            }
         }
 
-        // disable autofill background for flat (== NoFrame) scrollareas, with QPalette::Window as a background
-        // this fixes flat scrollareas placed in a tinted widget, such as groupboxes, tabwidgets or framed dock-widgets
-        if( !(scrollArea->frameShape() == QFrame::NoFrame || scrollArea->backgroundRole() == QPalette::Window ) )
-        { return; }
+        // fallback
+        return Metrics::Frame_FrameWidth;
 
-        // get viewport and check background role
-        auto viewport( scrollArea->viewport() );
-        if( !( viewport && viewport->backgroundRole() == QPalette::Window ) ) return;
+    case PM_ComboBoxFrameWidth: {
+        const auto comboBoxOption(qstyleoption_cast<const QStyleOptionComboBox *>(option));
+        return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
+    }
 
-        // change viewport autoFill background.
-        // do the same for all children if the background role is QPalette::Window
-        viewport->setAutoFillBackground( false );
-        QList<QWidget*> children( viewport->findChildren<QWidget*>() );
-        foreach( QWidget* child, children )
-        {
-            if( child->parent() == viewport && child->backgroundRole() == QPalette::Window )
-            { child->setAutoFillBackground( false ); }
-        }
+    case PM_SpinBoxFrameWidth:
+        return Metrics::SpinBox_FrameWidth;
+    case PM_ToolBarFrameWidth:
+        return Metrics::ToolBar_FrameWidth;
+    case PM_ToolTipLabelFrameWidth:
+        return Metrics::ToolTip_FrameWidth;
 
+    case PM_FocusFrameVMargin:
+    case PM_FocusFrameHMargin:
+        return 2;
+
+    // layout
+    case PM_LayoutLeftMargin:
+    case PM_LayoutTopMargin:
+    case PM_LayoutRightMargin:
+    case PM_LayoutBottomMargin: {
         /*
-        QTreeView animates expanding/collapsing branches. It paints them into a
-        temp pixmap whose background is unconditionally filled with the palette's
-        *base* color which is usually different from the window's color
-        cf. QTreeViewPrivate::renderTreeToPixmapForAnimation()
-        */
-        if( auto treeView = qobject_cast<QTreeView *>( scrollArea ) )
-        {
-            if (treeView->isAnimated())
-            {
-                QPalette pal( treeView->palette() );
-                pal.setColor( QPalette::Active, QPalette::Base, treeView->palette().color( treeView->backgroundRole() ) );
-                treeView->setPalette(pal);
-            }
-        }
-
-    }
-
-    //_______________________________________________________________
-    void Style::unpolish( QWidget* widget )
-    {
-
-        // register widget to animations
-        _animations->unregisterWidget( widget );
-        _frameShadowFactory->unregisterWidget( widget );
-        _mdiWindowShadowFactory->unregisterWidget( widget );
-        _shadowHelper->unregisterWidget( widget );
-        _windowManager->unregisterWidget( widget );
-        _splitterFactory->unregisterWidget( widget );
-        _blurHelper->unregisterWidget( widget );
-        _toolsAreaManager->unregisterWidget ( widget );
-
-        // remove event filter
-        if( qobject_cast<QAbstractScrollArea*>( widget ) ||
-            qobject_cast<QDockWidget*>( widget ) ||
-            qobject_cast<QMdiSubWindow*>( widget ) ||
-            widget->inherits( "QComboBoxPrivateContainer" ) )
-            { widget->removeEventFilter( this ); }
-
-        ParentStyleClass::unpolish( widget );
-
-    }
-
-    //______________________________________________________________
-    int Style::pixelMetric( PixelMetric metric, const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // handle special cases
-        switch( metric )
-        {
-
-            case PM_MenuHMargin:
-            case PM_MenuVMargin:
-                return Metrics::MenuItem_HighlightGap;
-
-            // small icon size
-            case PM_SmallIconSize:
-            if ( isTabletMode() )
-            {
-                return 22;
-            }
-            else
-            {
-                return 16;
-            }
-
-            // frame width
-            case PM_DefaultFrameWidth:
-            if( qobject_cast<const QMenu*>( widget ) ) return Metrics::Menu_FrameWidth;
-            if( qobject_cast<const QLineEdit*>( widget ) ) return Metrics::LineEdit_FrameWidth;
-            else if( isQtQuickControl( option, widget ) )
-            {
-                const QString &elementType = option->styleObject->property( "elementType" ).toString();
-                if( elementType == QLatin1String( "edit" ) || elementType == QLatin1String( "spinbox" ) )
-                {
-
-                    return Metrics::LineEdit_FrameWidth;
-
-                } else if( elementType == QLatin1String( "combobox" ) ) {
-
-                    return Metrics::ComboBox_FrameWidth;
-                }
-
-            }
-
-            // fallback
-            return Metrics::Frame_FrameWidth;
-
-            case PM_ComboBoxFrameWidth:
-            {
-                const auto comboBoxOption( qstyleoption_cast< const QStyleOptionComboBox*>( option ) );
-                return comboBoxOption && comboBoxOption->editable ? Metrics::LineEdit_FrameWidth : Metrics::ComboBox_FrameWidth;
-            }
-
-            case PM_SpinBoxFrameWidth: return Metrics::SpinBox_FrameWidth;
-            case PM_ToolBarFrameWidth: return Metrics::ToolBar_FrameWidth;
-            case PM_ToolTipLabelFrameWidth: return Metrics::ToolTip_FrameWidth;
-
-            case PM_FocusFrameVMargin:
-            case PM_FocusFrameHMargin: return 2;
-
-            // layout
-            case PM_LayoutLeftMargin:
-            case PM_LayoutTopMargin:
-            case PM_LayoutRightMargin:
-            case PM_LayoutBottomMargin:
-            {
-                /*
-                 * use either Child margin or TopLevel margin,
-                 * depending on  widget type
-                 */
-                if( ( option && ( option->state & QStyle::State_Window ) ) || ( widget && widget->isWindow() ) )
-                {
-
-                    return Metrics::Layout_TopLevelMarginWidth;
-
-                } else if( widget && widget->inherits( "KPageView" ) ) {
-
-                    return 0;
-
-                } else {
-
-                    return Metrics::Layout_ChildMarginWidth;
-
-                }
-
-            }
-
-            case PM_LayoutHorizontalSpacing: return Metrics::Layout_DefaultSpacing;
-            case PM_LayoutVerticalSpacing: return Metrics::Layout_DefaultSpacing;
-
-            // buttons
-            case PM_ButtonMargin:
-            {
-                // needs special case for kcalc buttons, to prevent the application to set too small margins
-                if( widget && widget->inherits( "KCalcButton" ) ) return Metrics::Button_MarginWidth + 4;
-                else return Metrics::Button_MarginWidth;
-            }
-
-            case PM_ButtonDefaultIndicator: return 0;
-            case PM_ButtonShiftHorizontal: return 0;
-            case PM_ButtonShiftVertical: return 0;
-
-            // menubars
-            case PM_MenuBarPanelWidth: return 0;
-            case PM_MenuBarHMargin: return 0;
-            case PM_MenuBarVMargin: return 0;
-            case PM_MenuBarItemSpacing: return 0;
-            case PM_MenuDesktopFrameWidth: return 0;
-
-            // menu buttons
-            case PM_MenuButtonIndicator: return Metrics::MenuButton_IndicatorWidth;
-
-            // toolbars
-            case PM_ToolBarHandleExtent: return Metrics::ToolBar_HandleExtent;
-            case PM_ToolBarSeparatorExtent: return Metrics::ToolBar_SeparatorWidth;
-            case PM_ToolBarExtensionExtent:
-            return pixelMetric( PM_SmallIconSize, option, widget ) + 2*Metrics::ToolButton_MarginWidth;
-
-            case PM_ToolBarItemMargin: return 0;
-            case PM_ToolBarItemSpacing: return Metrics::ToolBar_ItemSpacing;
-
-            // tabbars
-            case PM_TabBarTabShiftVertical: return 0;
-            case PM_TabBarTabShiftHorizontal: return 0;
-            case PM_TabBarTabOverlap: return Metrics::TabBar_TabOverlap;
-            case PM_TabBarBaseOverlap: return Metrics::TabBar_BaseOverlap;
-            case PM_TabBarTabHSpace: return 2*Metrics::TabBar_TabMarginWidth;
-            case PM_TabBarTabVSpace: return 2*Metrics::TabBar_TabMarginHeight;
-            case PM_TabCloseIndicatorWidth:
-            case PM_TabCloseIndicatorHeight:
-            return pixelMetric( PM_SmallIconSize, option, widget );
-
-            // scrollbars
-            case PM_ScrollBarExtent: return Metrics::ScrollBar_Extend;
-            case PM_ScrollBarSliderMin: return Metrics::ScrollBar_MinSliderHeight;
-
-            // title bar
-            case PM_TitleBarHeight: return 2*Metrics::TitleBar_MarginWidth + pixelMetric( PM_SmallIconSize, option, widget );
-
-            // sliders
-            case PM_SliderThickness: return Metrics::Slider_ControlThickness;
-            case PM_SliderControlThickness: return Metrics::Slider_ControlThickness;
-            case PM_SliderLength: return Metrics::Slider_ControlThickness;
-
-            // checkboxes and radio buttons
-            case PM_IndicatorWidth: return Metrics::CheckBox_Size;
-            case PM_IndicatorHeight: return Metrics::CheckBox_Size;
-            case PM_ExclusiveIndicatorWidth: return Metrics::CheckBox_Size;
-            case PM_ExclusiveIndicatorHeight: return Metrics::CheckBox_Size;
-
-            // list heaaders
-            case PM_HeaderMarkSize: return Metrics::Header_ArrowSize;
-            case PM_HeaderMargin: return Metrics::Header_MarginWidth;
-
-            // dock widget
-            // return 0 here, since frame is handled directly in polish
-            case PM_DockWidgetFrameWidth: return 0;
-            case PM_DockWidgetTitleMargin: return Metrics::Frame_FrameWidth;
-            case PM_DockWidgetTitleBarButtonMargin: return Metrics::ToolButton_MarginWidth;
-
-            case PM_SplitterWidth: return Metrics::Splitter_SplitterWidth;
-            case PM_DockWidgetSeparatorExtent: return Metrics::Splitter_SplitterWidth;
-
-            // fallback
-            default: return ParentStyleClass::pixelMetric( metric, option, widget );
-
-        }
-
-    }
-
-    //______________________________________________________________
-    int Style::styleHint( StyleHint hint, const QStyleOption* option, const QWidget* widget, QStyleHintReturn* returnData ) const
-    {
-        switch( hint )
-        {
-
-            case SH_RubberBand_Mask:
-            {
-
-                if( auto mask = qstyleoption_cast<QStyleHintReturnMask*>( returnData ) )
-                {
-
-                    mask->region = option->rect;
-
-                    /*
-                     * need to check on widget before removing inner region
-                     * in order to still preserve rubberband in MainWindow and QGraphicsView
-                     * in QMainWindow because it looks better
-                     * in QGraphicsView because the painting fails completely otherwise
-                     */
-                    if( widget && (
-                        qobject_cast<const QAbstractItemView*>( widget->parent() ) ||
-                        qobject_cast<const QGraphicsView*>( widget->parent() ) ||
-                        qobject_cast<const QMainWindow*>( widget->parent() ) ) )
-                    { return true; }
-
-                    // also check if widget's parent is some itemView viewport
-                    if( widget && widget->parent() &&
-                        qobject_cast<const QAbstractItemView*>( widget->parent()->parent() ) &&
-                        static_cast<const QAbstractItemView*>( widget->parent()->parent() )->viewport() == widget->parent() )
-                    { return true; }
-
-                    // mask out center
-                    mask->region -= insideMargin( option->rect, 1 );
-
-                    return true;
-                }
-                return false;
-            }
-
-            case SH_ComboBox_ListMouseTracking: return true;
-            case SH_MenuBar_MouseTracking: return true;
-            case SH_Menu_Scrollable: return true;
-            case SH_Menu_MouseTracking: return true;
-            case SH_Menu_SubMenuPopupDelay: return 150;
-            case SH_Menu_SloppySubMenus: return true;
-
-            // TODO Qt6: drop deprecated SH_Widget_Animate
-            case SH_Widget_Animate: return StyleConfigData::animationsEnabled();
-            case SH_Menu_SupportsSections: return true;
-            case SH_Widget_Animation_Duration: return StyleConfigData::animationsEnabled() ? StyleConfigData::animationsDuration() : 0;
-
-            case SH_DialogButtonBox_ButtonsHaveIcons: return true;
-
-            case SH_GroupBox_TextLabelVerticalAlignment: return Qt::AlignVCenter;
-            case SH_TabBar_Alignment: return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter:Qt::AlignLeft;
-            case SH_ToolBox_SelectedPageTitleBold: return false;
-            case SH_ScrollBar_MiddleClickAbsolutePosition: return true;
-            case SH_ScrollView_FrameOnlyAroundContents: return false;
-            case SH_FormLayoutFormAlignment: return Qt::AlignLeft | Qt::AlignTop;
-            case SH_FormLayoutLabelAlignment: return Qt::AlignRight;
-            case SH_FormLayoutFieldGrowthPolicy: return QFormLayout::ExpandingFieldsGrow;
-            case SH_FormLayoutWrapPolicy: return QFormLayout::DontWrapRows;
-            case SH_MessageBox_TextInteractionFlags: return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
-            case SH_ProgressDialog_CenterCancelButton: return false;
-            case SH_MessageBox_CenterButtons: return false;
-
-            case SH_FocusFrame_AboveWidget: return true;
-            case SH_FocusFrame_Mask: return false;
-
-            case SH_RequestSoftwareInputPanel: return RSIP_OnMouseClick;
-            case SH_TitleBar_NoBorder: return true;
-            case SH_DockWidget_ButtonsHaveFrame: return false;
-            default: return ParentStyleClass::styleHint( hint, option, widget, returnData );
-
-        }
-
-    }
-
-    //______________________________________________________________
-    QRect Style::subElementRect( SubElement element, const QStyleOption* option, const QWidget* widget ) const
-    {
-        switch( element )
-        {
-
-            case SE_PushButtonContents: return pushButtonContentsRect( option, widget );
-            case SE_CheckBoxContents: return checkBoxContentsRect( option, widget );
-            case SE_RadioButtonContents: return checkBoxContentsRect( option, widget );
-            case SE_LineEditContents: return lineEditContentsRect( option, widget );
-            case SE_ProgressBarGroove: return progressBarGrooveRect( option, widget );
-            case SE_ProgressBarContents: return progressBarContentsRect( option, widget );
-            case SE_ProgressBarLabel: return progressBarLabelRect( option, widget );
-            case SE_FrameContents: return frameContentsRect( option, widget );
-            case SE_HeaderArrow: return headerArrowRect( option, widget );
-            case SE_HeaderLabel: return headerLabelRect( option, widget );
-            case SE_TabBarTabLeftButton: return tabBarTabLeftButtonRect( option, widget );
-            case SE_TabBarTabRightButton: return tabBarTabRightButtonRect( option, widget );
-            case SE_TabWidgetTabBar: return tabWidgetTabBarRect( option, widget );
-            case SE_TabWidgetTabContents: return tabWidgetTabContentsRect( option, widget );
-            case SE_TabWidgetTabPane: return tabWidgetTabPaneRect( option, widget );
-            case SE_TabWidgetLeftCorner: return tabWidgetCornerRect( SE_TabWidgetLeftCorner, option, widget );
-            case SE_TabWidgetRightCorner: return tabWidgetCornerRect( SE_TabWidgetRightCorner, option, widget );
-            case SE_ToolBoxTabContents: return toolBoxTabContentsRect( option, widget );
-
-            // fallback
-            default: return ParentStyleClass::subElementRect( element, option, widget );
-
+         * use either Child margin or TopLevel margin,
+         * depending on  widget type
+         */
+        if ((option && (option->state & QStyle::State_Window)) || (widget && widget->isWindow())) {
+            return Metrics::Layout_TopLevelMarginWidth;
+
+        } else if (widget && widget->inherits("KPageView")) {
+            return 0;
+
+        } else {
+            return Metrics::Layout_ChildMarginWidth;
         }
     }
 
-    //______________________________________________________________
-    QRect Style::subControlRect( ComplexControl element, const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
+    case PM_LayoutHorizontalSpacing:
+        return Metrics::Layout_DefaultSpacing;
+    case PM_LayoutVerticalSpacing:
+        return Metrics::Layout_DefaultSpacing;
 
-        switch( element )
-        {
-
-            case CC_GroupBox: return groupBoxSubControlRect( option, subControl, widget );
-            case CC_ToolButton: return toolButtonSubControlRect( option, subControl, widget );
-            case CC_ComboBox: return comboBoxSubControlRect( option, subControl, widget );
-            case CC_SpinBox: return spinBoxSubControlRect( option, subControl, widget );
-            case CC_ScrollBar: return scrollBarSubControlRect( option, subControl, widget );
-            case CC_Dial: return dialSubControlRect( option, subControl, widget );
-            case CC_Slider: return sliderSubControlRect( option, subControl, widget );
-
-            // fallback
-            default: return ParentStyleClass::subControlRect( element, option, subControl, widget );
-
-        }
-
+    // buttons
+    case PM_ButtonMargin: {
+        // needs special case for kcalc buttons, to prevent the application to set too small margins
+        if (widget && widget->inherits("KCalcButton"))
+            return Metrics::Button_MarginWidth + 4;
+        else
+            return Metrics::Button_MarginWidth;
     }
 
-    //______________________________________________________________
-    QSize Style::sizeFromContents( ContentsType element, const QStyleOption* option, const QSize& size, const QWidget* widget ) const
-    {
+    case PM_ButtonDefaultIndicator:
+        return 0;
+    case PM_ButtonShiftHorizontal:
+        return 0;
+    case PM_ButtonShiftVertical:
+        return 0;
 
-        switch( element )
-        {
-            case CT_CheckBox: return checkBoxSizeFromContents( option, size, widget );
-            case CT_RadioButton: return checkBoxSizeFromContents( option, size, widget );
-            case CT_LineEdit: return lineEditSizeFromContents( option, size, widget );
-            case CT_ComboBox: return comboBoxSizeFromContents( option, size, widget );
-            case CT_SpinBox: return spinBoxSizeFromContents( option, size, widget );
-            case CT_Slider: return sliderSizeFromContents( option, size, widget );
-            case CT_PushButton: return pushButtonSizeFromContents( option, size, widget );
-            case CT_ToolButton: return toolButtonSizeFromContents( option, size, widget );
-            case CT_MenuBar: return defaultSizeFromContents( option, size, widget );
-            case CT_MenuBarItem: return menuBarItemSizeFromContents( option, size, widget );
-            case CT_MenuItem: return menuItemSizeFromContents( option, size, widget );
-            case CT_ProgressBar: return progressBarSizeFromContents( option, size, widget );
-            case CT_TabWidget: return tabWidgetSizeFromContents( option, size, widget );
-            case CT_TabBarTab: return tabBarTabSizeFromContents( option, size, widget );
-            case CT_HeaderSection: return headerSectionSizeFromContents( option, size, widget );
-            case CT_ItemViewItem: return itemViewItemSizeFromContents( option, size, widget );
+    // menubars
+    case PM_MenuBarPanelWidth:
+        return 0;
+    case PM_MenuBarHMargin:
+        return 0;
+    case PM_MenuBarVMargin:
+        return 0;
+    case PM_MenuBarItemSpacing:
+        return 0;
+    case PM_MenuDesktopFrameWidth:
+        return 0;
 
-            // fallback
-            default: return ParentStyleClass::sizeFromContents( element, option, size, widget );
-        }
+    // menu buttons
+    case PM_MenuButtonIndicator:
+        return Metrics::MenuButton_IndicatorWidth;
 
+    // toolbars
+    case PM_ToolBarHandleExtent:
+        return Metrics::ToolBar_HandleExtent;
+    case PM_ToolBarSeparatorExtent:
+        return Metrics::ToolBar_SeparatorWidth;
+    case PM_ToolBarExtensionExtent:
+        return pixelMetric(PM_SmallIconSize, option, widget) + 2 * Metrics::ToolButton_MarginWidth;
+
+    case PM_ToolBarItemMargin:
+        return 0;
+    case PM_ToolBarItemSpacing:
+        return Metrics::ToolBar_ItemSpacing;
+
+    // tabbars
+    case PM_TabBarTabShiftVertical:
+        return 0;
+    case PM_TabBarTabShiftHorizontal:
+        return 0;
+    case PM_TabBarTabOverlap:
+        return Metrics::TabBar_TabOverlap;
+    case PM_TabBarBaseOverlap:
+        return Metrics::TabBar_BaseOverlap;
+    case PM_TabBarTabHSpace:
+        return 2 * Metrics::TabBar_TabMarginWidth;
+    case PM_TabBarTabVSpace:
+        return 2 * Metrics::TabBar_TabMarginHeight;
+    case PM_TabCloseIndicatorWidth:
+    case PM_TabCloseIndicatorHeight:
+        return pixelMetric(PM_SmallIconSize, option, widget);
+
+    // scrollbars
+    case PM_ScrollBarExtent:
+        return Metrics::ScrollBar_Extend;
+    case PM_ScrollBarSliderMin:
+        return Metrics::ScrollBar_MinSliderHeight;
+
+    // title bar
+    case PM_TitleBarHeight:
+        return 2 * Metrics::TitleBar_MarginWidth + pixelMetric(PM_SmallIconSize, option, widget);
+
+    // sliders
+    case PM_SliderThickness:
+        return Metrics::Slider_ControlThickness;
+    case PM_SliderControlThickness:
+        return Metrics::Slider_ControlThickness;
+    case PM_SliderLength:
+        return Metrics::Slider_ControlThickness;
+
+    // checkboxes and radio buttons
+    case PM_IndicatorWidth:
+        return Metrics::CheckBox_Size;
+    case PM_IndicatorHeight:
+        return Metrics::CheckBox_Size;
+    case PM_ExclusiveIndicatorWidth:
+        return Metrics::CheckBox_Size;
+    case PM_ExclusiveIndicatorHeight:
+        return Metrics::CheckBox_Size;
+
+    // list heaaders
+    case PM_HeaderMarkSize:
+        return Metrics::Header_ArrowSize;
+    case PM_HeaderMargin:
+        return Metrics::Header_MarginWidth;
+
+    // dock widget
+    // return 0 here, since frame is handled directly in polish
+    case PM_DockWidgetFrameWidth:
+        return 0;
+    case PM_DockWidgetTitleMargin:
+        return Metrics::Frame_FrameWidth;
+    case PM_DockWidgetTitleBarButtonMargin:
+        return Metrics::ToolButton_MarginWidth;
+
+    case PM_SplitterWidth:
+        return Metrics::Splitter_SplitterWidth;
+    case PM_DockWidgetSeparatorExtent:
+        return Metrics::Splitter_SplitterWidth;
+
+    // fallback
+    default:
+        return ParentStyleClass::pixelMetric(metric, option, widget);
     }
+}
 
-    //______________________________________________________________
-    QStyle::SubControl Style::hitTestComplexControl( ComplexControl control, const QStyleOptionComplex* option, const QPoint& point, const QWidget* widget ) const
-    {
-        switch( control )
-        {
-            case CC_ScrollBar:
-            {
+//______________________________________________________________
+int Style::styleHint(StyleHint hint, const QStyleOption *option, const QWidget *widget, QStyleHintReturn *returnData) const
+{
+    switch (hint) {
+    case SH_RubberBand_Mask: {
+        if (auto mask = qstyleoption_cast<QStyleHintReturnMask *>(returnData)) {
+            mask->region = option->rect;
 
-                auto grooveRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget );
-                if( grooveRect.contains( point ) )
-                {
-                    // Must be either page up/page down, or just click on the slider.
-                    auto sliderRect = subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget );
-
-                    if( sliderRect.contains( point ) ) return SC_ScrollBarSlider;
-                    else if( preceeds( point, sliderRect, option ) ) return SC_ScrollBarSubPage;
-                    else return SC_ScrollBarAddPage;
-
-                }
-
-                // This is one of the up/down buttons. First, decide which one it is.
-                if( preceeds( point, grooveRect, option ) )
-                {
-
-                    if( _subLineButtons == DoubleButton )
-                    {
-
-                        auto buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine );
-                        return scrollBarHitTest( buttonRect, point, option );
-
-                    } else return SC_ScrollBarSubLine;
-
-                }
-
-                if( _addLineButtons == DoubleButton )
-                {
-
-                    auto buttonRect = scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine );
-                    return scrollBarHitTest( buttonRect, point, option );
-
-                } else return SC_ScrollBarAddLine;
-            }
-
-            // fallback
-            default: return ParentStyleClass::hitTestComplexControl( control, option, point, widget );
-
-        }
-
-    }
-
-    //______________________________________________________________
-    void Style::drawPrimitive( PrimitiveElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        StylePrimitive fcn;
-        switch( element )
-        {
-
-            case PE_PanelButtonCommand: fcn = &Style::drawPanelButtonCommandPrimitive; break;
-            case PE_PanelButtonTool: fcn = &Style::drawPanelButtonToolPrimitive; break;
-            case PE_PanelScrollAreaCorner: fcn = &Style::drawPanelScrollAreaCornerPrimitive; break;
-            case PE_PanelMenu: fcn = &Style::drawPanelMenuPrimitive; break;
-            case PE_PanelTipLabel: fcn = &Style::drawPanelTipLabelPrimitive; break;
-            case PE_PanelItemViewItem: fcn = &Style::drawPanelItemViewItemPrimitive; break;
-            case PE_IndicatorCheckBox: fcn = &Style::drawIndicatorCheckBoxPrimitive; break;
-            case PE_IndicatorRadioButton: fcn = &Style::drawIndicatorRadioButtonPrimitive; break;
-            case PE_IndicatorButtonDropDown: fcn = &Style::drawIndicatorButtonDropDownPrimitive; break;
-            case PE_IndicatorTabClose: fcn = &Style::drawIndicatorTabClosePrimitive; break;
-            case PE_IndicatorTabTear: fcn = &Style::drawIndicatorTabTearPrimitive; break;
-            case PE_IndicatorArrowUp: fcn = &Style::drawIndicatorArrowUpPrimitive; break;
-            case PE_IndicatorArrowDown: fcn = &Style::drawIndicatorArrowDownPrimitive; break;
-            case PE_IndicatorArrowLeft: fcn = &Style::drawIndicatorArrowLeftPrimitive; break;
-            case PE_IndicatorArrowRight: fcn = &Style::drawIndicatorArrowRightPrimitive; break;
-            case PE_IndicatorHeaderArrow: fcn = &Style::drawIndicatorHeaderArrowPrimitive; break;
-            case PE_IndicatorToolBarHandle: fcn = &Style::drawIndicatorToolBarHandlePrimitive; break;
-            case PE_IndicatorToolBarSeparator: fcn = &Style::drawIndicatorToolBarSeparatorPrimitive; break;
-            case PE_IndicatorBranch: fcn = &Style::drawIndicatorBranchPrimitive; break;
-            case PE_FrameStatusBarItem: fcn = &Style::emptyPrimitive; break;
-            case PE_Frame: fcn = &Style::drawFramePrimitive; break;
-            case PE_FrameLineEdit: fcn = &Style::drawFrameLineEditPrimitive; break;
-            case PE_FrameMenu: fcn = &Style::drawFrameMenuPrimitive; break;
-            case PE_FrameGroupBox: fcn = &Style::drawFrameGroupBoxPrimitive; break;
-            case PE_FrameTabWidget: fcn = &Style::drawFrameTabWidgetPrimitive; break;
-            case PE_FrameTabBarBase: fcn = &Style::drawFrameTabBarBasePrimitive; break;
-            case PE_FrameWindow: fcn = &Style::drawFrameWindowPrimitive; break;
-            case PE_FrameFocusRect: fcn = _frameFocusPrimitive; break;
-            case PE_Widget: fcn = &Style::drawWidgetPrimitive; break;
-
-            // fallback
-            default: break;
-
-        }
-
-        painter->save();
-
-        // call function if implemented
-        if( !( fcn && fcn( *this, option, painter, widget ) ) )
-        { ParentStyleClass::drawPrimitive( element, option, painter, widget ); }
-
-        painter->restore();
-
-    }
-
-    bool Style::drawWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const {
-        Q_UNUSED(option)
-        auto parent = widget;
-        if (!_toolsAreaManager->hasHeaderColors() || !_helper->shouldDrawToolsArea(widget)) {
-            return true;
-        }
-        if (auto dialog = qobject_cast<const QDialog*>(widget)) {
-            if (dialog->isFullScreen()) {
+            /*
+             * need to check on widget before removing inner region
+             * in order to still preserve rubberband in MainWindow and QGraphicsView
+             * in QMainWindow because it looks better
+             * in QGraphicsView because the painting fails completely otherwise
+             */
+            if (widget
+                && (qobject_cast<const QAbstractItemView *>(widget->parent()) || qobject_cast<const QGraphicsView *>(widget->parent())
+                    || qobject_cast<const QMainWindow *>(widget->parent()))) {
                 return true;
             }
-            painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
-            painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
+
+            // also check if widget's parent is some itemView viewport
+            if (widget && widget->parent() && qobject_cast<const QAbstractItemView *>(widget->parent()->parent())
+                && static_cast<const QAbstractItemView *>(widget->parent()->parent())->viewport() == widget->parent()) {
+                return true;
+            }
+
+            // mask out center
+            mask->region -= insideMargin(option->rect, 1);
+
+            return true;
         }
-        return true;
+        return false;
     }
 
-    //______________________________________________________________
-    void Style::drawControl( ControlElement element, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    case SH_ComboBox_ListMouseTracking:
+        return true;
+    case SH_MenuBar_MouseTracking:
+        return true;
+    case SH_Menu_Scrollable:
+        return true;
+    case SH_Menu_MouseTracking:
+        return true;
+    case SH_Menu_SubMenuPopupDelay:
+        return 150;
+    case SH_Menu_SloppySubMenus:
+        return true;
 
-        StyleControl fcn;
+    // TODO Qt6: drop deprecated SH_Widget_Animate
+    case SH_Widget_Animate:
+        return StyleConfigData::animationsEnabled();
+    case SH_Menu_SupportsSections:
+        return true;
+    case SH_Widget_Animation_Duration:
+        return StyleConfigData::animationsEnabled() ? StyleConfigData::animationsDuration() : 0;
 
-        #if BREEZE_HAVE_KSTYLE
-        if( element == CE_CapacityBar )
-        {
-            fcn = &Style::drawProgressBarControl;
+    case SH_DialogButtonBox_ButtonsHaveIcons:
+        return true;
+
+    case SH_GroupBox_TextLabelVerticalAlignment:
+        return Qt::AlignVCenter;
+    case SH_TabBar_Alignment:
+        return StyleConfigData::tabBarDrawCenteredTabs() ? Qt::AlignCenter : Qt::AlignLeft;
+    case SH_ToolBox_SelectedPageTitleBold:
+        return false;
+    case SH_ScrollBar_MiddleClickAbsolutePosition:
+        return true;
+    case SH_ScrollView_FrameOnlyAroundContents:
+        return false;
+    case SH_FormLayoutFormAlignment:
+        return Qt::AlignLeft | Qt::AlignTop;
+    case SH_FormLayoutLabelAlignment:
+        return Qt::AlignRight;
+    case SH_FormLayoutFieldGrowthPolicy:
+        return QFormLayout::ExpandingFieldsGrow;
+    case SH_FormLayoutWrapPolicy:
+        return QFormLayout::DontWrapRows;
+    case SH_MessageBox_TextInteractionFlags:
+        return Qt::TextSelectableByMouse | Qt::LinksAccessibleByMouse;
+    case SH_ProgressDialog_CenterCancelButton:
+        return false;
+    case SH_MessageBox_CenterButtons:
+        return false;
+
+    case SH_FocusFrame_AboveWidget:
+        return true;
+    case SH_FocusFrame_Mask:
+        return false;
+
+    case SH_RequestSoftwareInputPanel:
+        return RSIP_OnMouseClick;
+    case SH_TitleBar_NoBorder:
+        return true;
+    case SH_DockWidget_ButtonsHaveFrame:
+        return false;
+    default:
+        return ParentStyleClass::styleHint(hint, option, widget, returnData);
+    }
+}
+
+//______________________________________________________________
+QRect Style::subElementRect(SubElement element, const QStyleOption *option, const QWidget *widget) const
+{
+    switch (element) {
+    case SE_PushButtonContents:
+        return pushButtonContentsRect(option, widget);
+    case SE_CheckBoxContents:
+        return checkBoxContentsRect(option, widget);
+    case SE_RadioButtonContents:
+        return checkBoxContentsRect(option, widget);
+    case SE_LineEditContents:
+        return lineEditContentsRect(option, widget);
+    case SE_ProgressBarGroove:
+        return progressBarGrooveRect(option, widget);
+    case SE_ProgressBarContents:
+        return progressBarContentsRect(option, widget);
+    case SE_ProgressBarLabel:
+        return progressBarLabelRect(option, widget);
+    case SE_FrameContents:
+        return frameContentsRect(option, widget);
+    case SE_HeaderArrow:
+        return headerArrowRect(option, widget);
+    case SE_HeaderLabel:
+        return headerLabelRect(option, widget);
+    case SE_TabBarTabLeftButton:
+        return tabBarTabLeftButtonRect(option, widget);
+    case SE_TabBarTabRightButton:
+        return tabBarTabRightButtonRect(option, widget);
+    case SE_TabWidgetTabBar:
+        return tabWidgetTabBarRect(option, widget);
+    case SE_TabWidgetTabContents:
+        return tabWidgetTabContentsRect(option, widget);
+    case SE_TabWidgetTabPane:
+        return tabWidgetTabPaneRect(option, widget);
+    case SE_TabWidgetLeftCorner:
+        return tabWidgetCornerRect(SE_TabWidgetLeftCorner, option, widget);
+    case SE_TabWidgetRightCorner:
+        return tabWidgetCornerRect(SE_TabWidgetRightCorner, option, widget);
+    case SE_ToolBoxTabContents:
+        return toolBoxTabContentsRect(option, widget);
+
+    // fallback
+    default:
+        return ParentStyleClass::subElementRect(element, option, widget);
+    }
+}
+
+//______________________________________________________________
+QRect Style::subControlRect(ComplexControl element, const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    switch (element) {
+    case CC_GroupBox:
+        return groupBoxSubControlRect(option, subControl, widget);
+    case CC_ToolButton:
+        return toolButtonSubControlRect(option, subControl, widget);
+    case CC_ComboBox:
+        return comboBoxSubControlRect(option, subControl, widget);
+    case CC_SpinBox:
+        return spinBoxSubControlRect(option, subControl, widget);
+    case CC_ScrollBar:
+        return scrollBarSubControlRect(option, subControl, widget);
+    case CC_Dial:
+        return dialSubControlRect(option, subControl, widget);
+    case CC_Slider:
+        return sliderSubControlRect(option, subControl, widget);
+
+    // fallback
+    default:
+        return ParentStyleClass::subControlRect(element, option, subControl, widget);
+    }
+}
+
+//______________________________________________________________
+QSize Style::sizeFromContents(ContentsType element, const QStyleOption *option, const QSize &size, const QWidget *widget) const
+{
+    switch (element) {
+    case CT_CheckBox:
+        return checkBoxSizeFromContents(option, size, widget);
+    case CT_RadioButton:
+        return checkBoxSizeFromContents(option, size, widget);
+    case CT_LineEdit:
+        return lineEditSizeFromContents(option, size, widget);
+    case CT_ComboBox:
+        return comboBoxSizeFromContents(option, size, widget);
+    case CT_SpinBox:
+        return spinBoxSizeFromContents(option, size, widget);
+    case CT_Slider:
+        return sliderSizeFromContents(option, size, widget);
+    case CT_PushButton:
+        return pushButtonSizeFromContents(option, size, widget);
+    case CT_ToolButton:
+        return toolButtonSizeFromContents(option, size, widget);
+    case CT_MenuBar:
+        return defaultSizeFromContents(option, size, widget);
+    case CT_MenuBarItem:
+        return menuBarItemSizeFromContents(option, size, widget);
+    case CT_MenuItem:
+        return menuItemSizeFromContents(option, size, widget);
+    case CT_ProgressBar:
+        return progressBarSizeFromContents(option, size, widget);
+    case CT_TabWidget:
+        return tabWidgetSizeFromContents(option, size, widget);
+    case CT_TabBarTab:
+        return tabBarTabSizeFromContents(option, size, widget);
+    case CT_HeaderSection:
+        return headerSectionSizeFromContents(option, size, widget);
+    case CT_ItemViewItem:
+        return itemViewItemSizeFromContents(option, size, widget);
+
+    // fallback
+    default:
+        return ParentStyleClass::sizeFromContents(element, option, size, widget);
+    }
+}
+
+//______________________________________________________________
+QStyle::SubControl Style::hitTestComplexControl(ComplexControl control, const QStyleOptionComplex *option, const QPoint &point, const QWidget *widget) const
+{
+    switch (control) {
+    case CC_ScrollBar: {
+        auto grooveRect = subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget);
+        if (grooveRect.contains(point)) {
+            // Must be either page up/page down, or just click on the slider.
+            auto sliderRect = subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget);
+
+            if (sliderRect.contains(point))
+                return SC_ScrollBarSlider;
+            else if (preceeds(point, sliderRect, option))
+                return SC_ScrollBarSubPage;
+            else
+                return SC_ScrollBarAddPage;
+        }
+
+        // This is one of the up/down buttons. First, decide which one it is.
+        if (preceeds(point, grooveRect, option)) {
+            if (_subLineButtons == DoubleButton) {
+                auto buttonRect = scrollBarInternalSubControlRect(option, SC_ScrollBarSubLine);
+                return scrollBarHitTest(buttonRect, point, option);
+
+            } else
+                return SC_ScrollBarSubLine;
+        }
+
+        if (_addLineButtons == DoubleButton) {
+            auto buttonRect = scrollBarInternalSubControlRect(option, SC_ScrollBarAddLine);
+            return scrollBarHitTest(buttonRect, point, option);
 
         } else
-        #endif
-
-        switch( element ) {
-
-            case CE_PushButtonBevel: fcn = &Style::drawPanelButtonCommandPrimitive; break;
-            case CE_PushButtonLabel: fcn = &Style::drawPushButtonLabelControl; break;
-            case CE_CheckBoxLabel: fcn = &Style::drawCheckBoxLabelControl; break;
-            case CE_RadioButtonLabel: fcn = &Style::drawCheckBoxLabelControl; break;
-            case CE_ToolButtonLabel: fcn = &Style::drawToolButtonLabelControl; break;
-            case CE_ComboBoxLabel: fcn = &Style::drawComboBoxLabelControl; break;
-            case CE_MenuBarEmptyArea: fcn = &Style::emptyControl; break;
-            case CE_MenuBarItem: fcn = &Style::drawMenuBarItemControl; break;
-            case CE_MenuItem: fcn = &Style::drawMenuItemControl; break;
-            case CE_ToolBar: fcn = &Style::emptyControl; break;
-            case CE_ProgressBar: fcn = &Style::drawProgressBarControl; break;
-            case CE_ProgressBarContents: fcn = &Style::drawProgressBarContentsControl; break;
-            case CE_ProgressBarGroove: fcn = &Style::drawProgressBarGrooveControl; break;
-            case CE_ProgressBarLabel: fcn = &Style::drawProgressBarLabelControl; break;
-            case CE_ScrollBarSlider: fcn = &Style::drawScrollBarSliderControl; break;
-            case CE_ScrollBarAddLine: fcn = &Style::drawScrollBarAddLineControl; break;
-            case CE_ScrollBarSubLine: fcn = &Style::drawScrollBarSubLineControl; break;
-            case CE_ScrollBarAddPage: fcn = &Style::emptyControl; break;
-            case CE_ScrollBarSubPage: fcn = &Style::emptyControl; break;
-            case CE_ShapedFrame: fcn = &Style::drawShapedFrameControl; break;
-            case CE_FocusFrame: fcn = &Style::drawFocusFrame; break;
-            case CE_RubberBand: fcn = &Style::drawRubberBandControl; break;
-            case CE_SizeGrip: fcn = &Style::emptyControl; break;
-            case CE_HeaderSection: fcn = &Style::drawHeaderSectionControl; break;
-            case CE_HeaderEmptyArea: fcn = &Style::drawHeaderEmptyAreaControl; break;
-            case CE_TabBarTabLabel: fcn = &Style::drawTabBarTabLabelControl; break;
-            case CE_TabBarTabShape: fcn = &Style::drawTabBarTabShapeControl; break;
-            case CE_ToolBoxTabLabel: fcn = &Style::drawToolBoxTabLabelControl; break;
-            case CE_ToolBoxTabShape: fcn = &Style::drawToolBoxTabShapeControl; break;
-            case CE_DockWidgetTitle: fcn = &Style::drawDockWidgetTitleControl; break;
-
-            // fallback
-            default: break;
-
-        }
-
-        painter->save();
-
-        // call function if implemented
-        if( !( fcn && fcn( *this, option, painter, widget ) ) )
-        { ParentStyleClass::drawControl( element, option, painter, widget ); }
-
-        painter->restore();
-
+            return SC_ScrollBarAddLine;
     }
 
-    //______________________________________________________________
-    void Style::drawComplexControl( ComplexControl element, const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // fallback
+    default:
+        return ParentStyleClass::hitTestComplexControl(control, option, point, widget);
+    }
+}
 
-        StyleComplexControl fcn;
-        switch( element )
-        {
-            case CC_GroupBox: fcn = &Style::drawGroupBoxComplexControl; break;
-            case CC_ToolButton: fcn = &Style::drawToolButtonComplexControl; break;
-            case CC_ComboBox: fcn = &Style::drawComboBoxComplexControl; break;
-            case CC_SpinBox: fcn = &Style::drawSpinBoxComplexControl; break;
-            case CC_Slider: fcn = &Style::drawSliderComplexControl; break;
-            case CC_Dial: fcn = &Style::drawDialComplexControl; break;
-            case CC_ScrollBar: fcn = &Style::drawScrollBarComplexControl; break;
-            case CC_TitleBar: fcn = &Style::drawTitleBarComplexControl; break;
+//______________________________________________________________
+void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    StylePrimitive fcn;
+    switch (element) {
+    case PE_PanelButtonCommand:
+        fcn = &Style::drawPanelButtonCommandPrimitive;
+        break;
+    case PE_PanelButtonTool:
+        fcn = &Style::drawPanelButtonToolPrimitive;
+        break;
+    case PE_PanelScrollAreaCorner:
+        fcn = &Style::drawPanelScrollAreaCornerPrimitive;
+        break;
+    case PE_PanelMenu:
+        fcn = &Style::drawPanelMenuPrimitive;
+        break;
+    case PE_PanelTipLabel:
+        fcn = &Style::drawPanelTipLabelPrimitive;
+        break;
+    case PE_PanelItemViewItem:
+        fcn = &Style::drawPanelItemViewItemPrimitive;
+        break;
+    case PE_IndicatorCheckBox:
+        fcn = &Style::drawIndicatorCheckBoxPrimitive;
+        break;
+    case PE_IndicatorRadioButton:
+        fcn = &Style::drawIndicatorRadioButtonPrimitive;
+        break;
+    case PE_IndicatorButtonDropDown:
+        fcn = &Style::drawIndicatorButtonDropDownPrimitive;
+        break;
+    case PE_IndicatorTabClose:
+        fcn = &Style::drawIndicatorTabClosePrimitive;
+        break;
+    case PE_IndicatorTabTear:
+        fcn = &Style::drawIndicatorTabTearPrimitive;
+        break;
+    case PE_IndicatorArrowUp:
+        fcn = &Style::drawIndicatorArrowUpPrimitive;
+        break;
+    case PE_IndicatorArrowDown:
+        fcn = &Style::drawIndicatorArrowDownPrimitive;
+        break;
+    case PE_IndicatorArrowLeft:
+        fcn = &Style::drawIndicatorArrowLeftPrimitive;
+        break;
+    case PE_IndicatorArrowRight:
+        fcn = &Style::drawIndicatorArrowRightPrimitive;
+        break;
+    case PE_IndicatorHeaderArrow:
+        fcn = &Style::drawIndicatorHeaderArrowPrimitive;
+        break;
+    case PE_IndicatorToolBarHandle:
+        fcn = &Style::drawIndicatorToolBarHandlePrimitive;
+        break;
+    case PE_IndicatorToolBarSeparator:
+        fcn = &Style::drawIndicatorToolBarSeparatorPrimitive;
+        break;
+    case PE_IndicatorBranch:
+        fcn = &Style::drawIndicatorBranchPrimitive;
+        break;
+    case PE_FrameStatusBarItem:
+        fcn = &Style::emptyPrimitive;
+        break;
+    case PE_Frame:
+        fcn = &Style::drawFramePrimitive;
+        break;
+    case PE_FrameLineEdit:
+        fcn = &Style::drawFrameLineEditPrimitive;
+        break;
+    case PE_FrameMenu:
+        fcn = &Style::drawFrameMenuPrimitive;
+        break;
+    case PE_FrameGroupBox:
+        fcn = &Style::drawFrameGroupBoxPrimitive;
+        break;
+    case PE_FrameTabWidget:
+        fcn = &Style::drawFrameTabWidgetPrimitive;
+        break;
+    case PE_FrameTabBarBase:
+        fcn = &Style::drawFrameTabBarBasePrimitive;
+        break;
+    case PE_FrameWindow:
+        fcn = &Style::drawFrameWindowPrimitive;
+        break;
+    case PE_FrameFocusRect:
+        fcn = _frameFocusPrimitive;
+        break;
+    case PE_Widget:
+        fcn = &Style::drawWidgetPrimitive;
+        break;
 
-            // fallback
-            default: break;
-        }
-
-
-        painter->save();
-
-        // call function if implemented
-        if( !( fcn && fcn( *this, option, painter, widget ) ) )
-        { ParentStyleClass::drawComplexControl( element, option, painter, widget ); }
-
-        painter->restore();
-
+    // fallback
+    default:
+        break;
     }
 
+    painter->save();
 
-    //___________________________________________________________________________________
-    void Style::drawItemText(
-        QPainter* painter, const QRect& rect, int flags, const QPalette& palette, bool enabled,
-        const QString &text, QPalette::ColorRole textRole ) const
-    {
-
-        // hide mnemonics if requested
-        if( !_mnemonics->enabled() && ( flags&Qt::TextShowMnemonic ) && !( flags&Qt::TextHideMnemonic ) )
-        {
-            flags &= ~Qt::TextShowMnemonic;
-            flags |= Qt::TextHideMnemonic;
-        }
-
-        // make sure vertical alignment is defined
-        // fallback on Align::VCenter if not
-        if( !(flags&Qt::AlignVertical_Mask) ) flags |= Qt::AlignVCenter;
-
-        if( _animations->widgetEnabilityEngine().enabled() )
-        {
-
-            /*
-             * check if painter engine is registered to WidgetEnabilityEngine, and animated
-             * if yes, merge the palettes. Note: a static_cast is safe here, since only the address
-             * of the pointer is used, not the actual content.
-             */
-            const QWidget* widget( static_cast<const QWidget*>( painter->device() ) );
-            if( _animations->widgetEnabilityEngine().isAnimated( widget, AnimationEnable ) )
-            {
-
-                const QPalette copy( _helper->disabledPalette( palette, _animations->widgetEnabilityEngine().opacity( widget, AnimationEnable ) ) );
-                return ParentStyleClass::drawItemText( painter, rect, flags, copy, enabled, text, textRole );
-
-            }
-
-        }
-
-        // fallback
-        return ParentStyleClass::drawItemText( painter, rect, flags, palette, enabled, text, textRole );
-
+    // call function if implemented
+    if (!(fcn && fcn(*this, option, painter, widget))) {
+        ParentStyleClass::drawPrimitive(element, option, painter, widget);
     }
 
-    bool Style::event(QEvent *e)
-    {
-        // Adapted from QMacStyle::event()
-        if (e->type() == QEvent::FocusIn) {
-            QWidget *target = nullptr;
-            auto focusWidget = QApplication::focusWidget();
-            if (auto graphicsView = qobject_cast<QGraphicsView *>(focusWidget)) {
-                QGraphicsItem *focusItem = graphicsView->scene() ? graphicsView->scene()->focusItem() : nullptr;
-                if (focusItem && focusItem->type() == QGraphicsProxyWidget::Type) {
-                    auto proxy = static_cast<QGraphicsProxyWidget *>(focusItem);
-                    if (proxy->widget()) {
-                        focusWidget = proxy->widget()->focusWidget();
-                    }
-                }
-            }
+    painter->restore();
+}
 
-            if (focusWidget) {
-                auto focusEvent = static_cast<QFocusEvent*>(e);
-                auto focusReason = focusEvent->reason();
-                bool hasKeyboardFocusReason = focusReason == Qt::TabFocusReason
-                    || focusReason == Qt::BacktabFocusReason
-                    || focusReason == Qt::ShortcutFocusReason;
-                if (hasKeyboardFocusReason) {
-                    auto focusProxy = focusWidget->focusProxy();
-                    while (focusProxy != nullptr) {
-                        focusWidget = focusProxy;
-                        focusProxy = focusWidget->focusProxy();
-                    }
-                    target = focusWidget;
-                }
-            }
-            if (_focusFrame) {
-                // sets to nullptr or a widget
-                _focusFrame->setWidget(target);
-            } else if (target) { // only create if there is a widget
-                _focusFrame = new QFocusFrame(target);
-                _focusFrame->setWidget(target);
-            }
-        } else if (e->type() == QEvent::FocusOut) {
-            if(_focusFrame) {
-                _focusFrame->setWidget(nullptr);
-            }
-        }
-        return ParentStyleClass::event(e);
+bool Style::drawWidgetPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    Q_UNUSED(option)
+    auto parent = widget;
+    if (!_toolsAreaManager->hasHeaderColors() || !_helper->shouldDrawToolsArea(widget)) {
+        return true;
     }
-
-    void Style::drawToolsAreaSeparator(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw)
-    {
-        if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
-            return;
+    if (auto dialog = qobject_cast<const QDialog *>(widget)) {
+        if (dialog->isFullScreen()) {
+            return true;
         }
-        painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * mw->devicePixelRatio()));
-        painter->drawLine(mw->rect().topLeft(), mw->rect().topRight());
+        painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
+        painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
     }
+    return true;
+}
 
-    void Style::drawToolsAreaBackground(QPainter* painter, Helper* _helper, ToolsAreaManager* _toolsAreaManager, QMainWindow* mw, const QRect& rect)
-    {
-        QBrush color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
-        
-        if( _helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255 ){
-            if ( (mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitlebars() ) {
-                QColor colorWithoutAlpha = color.color();
-                colorWithoutAlpha.setAlpha(255);
-                color.setColor(colorWithoutAlpha);
-            } else if ( _helper->decorationConfig()->blurTransparentTitlebars() ) { //apply blur to tools area
-                if ((mw->testAttribute(Qt::WA_WState_Created) || mw->internalWinId())){
-                    
-                    //PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence blurring the entire window and causing kornerbug
-                    mw->winId(); // force creation of the window handle
-                    KWindowEffects::enableBlurBehind(mw->windowHandle(),true,rect);
-                    
-                    //no force update at this point like in breezeblurhelper.cpp, as already drawing next and creates an infinite loop
-                    
-                }
-            }
-        }
-        painter->setPen(Qt::transparent);
-        painter->setBrush(color);
-        painter->drawRect(rect);
+//______________________________________________________________
+void Style::drawControl(ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    StyleControl fcn;
 
-        painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
-        painter->drawLine(rect.bottomLeft(), rect.bottomRight());
-    }
+#if BREEZE_HAVE_KSTYLE
+    if (element == CE_CapacityBar) {
+        fcn = &Style::drawProgressBarControl;
 
-    //_____________________________________________________________________
-    bool Style::eventFilter( QObject *object, QEvent *event )
-    {
+    } else
+#endif
 
-        if( auto dockWidget = qobject_cast<QDockWidget*>( object ) ) { return eventFilterDockWidget( dockWidget, event ); }
-        else if( auto subWindow = qobject_cast<QMdiSubWindow*>( object ) ) { return eventFilterMdiSubWindow( subWindow, event ); }
-        else if( auto commandLinkButton = qobject_cast<QCommandLinkButton*>( object ) ) { return eventFilterCommandLinkButton( commandLinkButton, event ); }
-        #if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
-        else if( object == qApp && event->type() == QEvent::ApplicationPaletteChange ) { configurationChanged(); }
-        #endif
-        // cast to QWidget
-        QWidget *widget = static_cast<QWidget*>( object );
-        if( widget->inherits( "QAbstractScrollArea" ) || widget->inherits( "KTextEditor::View" ) ) { return eventFilterScrollArea( widget, event ); }
-        else if( widget->inherits( "QComboBoxPrivateContainer" ) ) { return eventFilterComboBoxContainer( widget, event ); }
-
-        auto mw = qobject_cast<QMainWindow*>(object);
-        if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
-            QPainter painter( mw );
-            painter.setClipRegion(static_cast<QPaintEvent*>( event )->region());
-            painter.save();
-
-            auto bg = mw->rect();
-            auto rect = _toolsAreaManager->toolsAreaRect(mw);
-            bg.setTop(rect.height());
-
-            painter.setPen(mw->palette().color(QPalette::Window));
-            painter.setBrush(mw->palette().color(QPalette::Window));
-            painter.drawRect(bg);
-            
-            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
-                if (rect.height() == 0) {
-                    drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
-                } else {
-                    drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
-                }
-            }
-            painter.restore();
-
-        }
-
-        // fallback
-        return ParentStyleClass::eventFilter( object, event );
-
-    }
-
-    //____________________________________________________________________________
-    bool Style::eventFilterScrollArea( QWidget* widget, QEvent* event )
-    {
-
-        switch( event->type() )
-        {
-            case QEvent::Paint:
-            {
-
-                // get scrollarea viewport
-                auto scrollArea( qobject_cast<QAbstractScrollArea*>( widget ) );
-                QWidget* viewport;
-                if( !( scrollArea && (viewport = scrollArea->viewport()) ) ) break;
-
-                // get scrollarea horizontal and vertical containers
-                QWidget* child( nullptr );
-                QList<QWidget*> children;
-                if( ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_vcontainer" ) ) && child->isVisible() )
-                { children.append( child ); }
-
-                if( ( child = scrollArea->findChild<QWidget*>( "qt_scrollarea_hcontainer" ) ) && child->isVisible() )
-                { children.append( child ); }
-
-                if( children.empty() ) break;
-                if( !scrollArea->styleSheet().isEmpty() ) break;
-
-                // make sure proper background is rendered behind the containers
-                QPainter painter( scrollArea );
-                painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
-
-                painter.setPen( Qt::NoPen );
-
-                // decide background color
-                const QPalette::ColorRole role( viewport->backgroundRole() );
-                QColor background;
-                if( role == QPalette::Window && hasAlteredBackground( viewport ) ) background = _helper->frameBackgroundColor( viewport->palette() );
-                else background = viewport->palette().color( role );
-                painter.setBrush( background );
-
-                // render
-                foreach( auto* child, children )
-                { painter.drawRect( child->geometry() ); }
-
-            }
+        switch (element) {
+        case CE_PushButtonBevel:
+            fcn = &Style::drawPanelButtonCommandPrimitive;
+            break;
+        case CE_PushButtonLabel:
+            fcn = &Style::drawPushButtonLabelControl;
+            break;
+        case CE_CheckBoxLabel:
+            fcn = &Style::drawCheckBoxLabelControl;
+            break;
+        case CE_RadioButtonLabel:
+            fcn = &Style::drawCheckBoxLabelControl;
+            break;
+        case CE_ToolButtonLabel:
+            fcn = &Style::drawToolButtonLabelControl;
+            break;
+        case CE_ComboBoxLabel:
+            fcn = &Style::drawComboBoxLabelControl;
+            break;
+        case CE_MenuBarEmptyArea:
+            fcn = &Style::emptyControl;
+            break;
+        case CE_MenuBarItem:
+            fcn = &Style::drawMenuBarItemControl;
+            break;
+        case CE_MenuItem:
+            fcn = &Style::drawMenuItemControl;
+            break;
+        case CE_ToolBar:
+            fcn = &Style::emptyControl;
+            break;
+        case CE_ProgressBar:
+            fcn = &Style::drawProgressBarControl;
+            break;
+        case CE_ProgressBarContents:
+            fcn = &Style::drawProgressBarContentsControl;
+            break;
+        case CE_ProgressBarGroove:
+            fcn = &Style::drawProgressBarGrooveControl;
+            break;
+        case CE_ProgressBarLabel:
+            fcn = &Style::drawProgressBarLabelControl;
+            break;
+        case CE_ScrollBarSlider:
+            fcn = &Style::drawScrollBarSliderControl;
+            break;
+        case CE_ScrollBarAddLine:
+            fcn = &Style::drawScrollBarAddLineControl;
+            break;
+        case CE_ScrollBarSubLine:
+            fcn = &Style::drawScrollBarSubLineControl;
+            break;
+        case CE_ScrollBarAddPage:
+            fcn = &Style::emptyControl;
+            break;
+        case CE_ScrollBarSubPage:
+            fcn = &Style::emptyControl;
+            break;
+        case CE_ShapedFrame:
+            fcn = &Style::drawShapedFrameControl;
+            break;
+        case CE_FocusFrame:
+            fcn = &Style::drawFocusFrame;
+            break;
+        case CE_RubberBand:
+            fcn = &Style::drawRubberBandControl;
+            break;
+        case CE_SizeGrip:
+            fcn = &Style::emptyControl;
+            break;
+        case CE_HeaderSection:
+            fcn = &Style::drawHeaderSectionControl;
+            break;
+        case CE_HeaderEmptyArea:
+            fcn = &Style::drawHeaderEmptyAreaControl;
+            break;
+        case CE_TabBarTabLabel:
+            fcn = &Style::drawTabBarTabLabelControl;
+            break;
+        case CE_TabBarTabShape:
+            fcn = &Style::drawTabBarTabShapeControl;
+            break;
+        case CE_ToolBoxTabLabel:
+            fcn = &Style::drawToolBoxTabLabelControl;
+            break;
+        case CE_ToolBoxTabShape:
+            fcn = &Style::drawToolBoxTabShapeControl;
+            break;
+        case CE_DockWidgetTitle:
+            fcn = &Style::drawDockWidgetTitleControl;
             break;
 
-            case QEvent::MouseButtonPress:
-            case QEvent::MouseButtonRelease:
-            case QEvent::MouseMove:
-            {
-
-                // case event
-                QMouseEvent* mouseEvent( static_cast<QMouseEvent*>( event ) );
-
-                // get frame framewidth
-                const int frameWidth( pixelMetric( PM_DefaultFrameWidth, nullptr, widget ) );
-
-                // find list of scrollbars
-                QList<QScrollBar*> scrollBars;
-                if( auto scrollArea = qobject_cast<QAbstractScrollArea*>( widget ) )
-                {
-
-                    if( scrollArea->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff ) scrollBars.append( scrollArea->horizontalScrollBar() );
-                    if( scrollArea->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff )scrollBars.append( scrollArea->verticalScrollBar() );
-
-                } else if( widget->inherits( "KTextEditor::View" ) ) {
-
-                    scrollBars = widget->findChildren<QScrollBar*>();
-
-                }
-
-                // loop over found scrollbars
-                foreach( QScrollBar* scrollBar, scrollBars )
-                {
-
-                    if( !( scrollBar && scrollBar->isVisible() ) ) continue;
-
-                    QPoint offset;
-                    if( scrollBar->orientation() == Qt::Horizontal ) offset = QPoint( 0, frameWidth );
-                    else offset = QPoint( QApplication::isLeftToRight() ? frameWidth : -frameWidth, 0 );
-
-                    // map position to scrollarea
-                    QPoint position( scrollBar->mapFrom( widget, mouseEvent->pos() - offset ) );
-
-                    // check if contains
-                    if( !scrollBar->rect().contains( position ) ) continue;
-
-                    // copy event, send and return
-                    QMouseEvent copy(
-                        mouseEvent->type(),
-                        position,
-                        mouseEvent->button(),
-                        mouseEvent->buttons(), mouseEvent->modifiers());
-
-                    QCoreApplication::sendEvent( scrollBar, &copy );
-                    event->setAccepted( true );
-                    return true;
-
-                }
-
-                break;
-
-            }
-
-            default: break;
-
+        // fallback
+        default:
+            break;
         }
 
-        return  ParentStyleClass::eventFilter( widget, event );
+    painter->save();
 
+    // call function if implemented
+    if (!(fcn && fcn(*this, option, painter, widget))) {
+        ParentStyleClass::drawControl(element, option, painter, widget);
     }
 
-    //_________________________________________________________
-    bool Style::eventFilterComboBoxContainer( QWidget* widget, QEvent* event )
-    {
-        if( event->type() == QEvent::Paint )
-        {
+    painter->restore();
+}
 
-            QPainter painter( widget );
-            auto paintEvent = static_cast<QPaintEvent*>( event );
-            painter.setClipRegion( paintEvent->region() );
+//______________________________________________________________
+void Style::drawComplexControl(ComplexControl element, const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    StyleComplexControl fcn;
+    switch (element) {
+    case CC_GroupBox:
+        fcn = &Style::drawGroupBoxComplexControl;
+        break;
+    case CC_ToolButton:
+        fcn = &Style::drawToolButtonComplexControl;
+        break;
+    case CC_ComboBox:
+        fcn = &Style::drawComboBoxComplexControl;
+        break;
+    case CC_SpinBox:
+        fcn = &Style::drawSpinBoxComplexControl;
+        break;
+    case CC_Slider:
+        fcn = &Style::drawSliderComplexControl;
+        break;
+    case CC_Dial:
+        fcn = &Style::drawDialComplexControl;
+        break;
+    case CC_ScrollBar:
+        fcn = &Style::drawScrollBarComplexControl;
+        break;
+    case CC_TitleBar:
+        fcn = &Style::drawTitleBarComplexControl;
+        break;
 
-            const auto rect( widget->rect() );
-            const auto& palette( widget->palette() );
-            const auto background( _helper->frameBackgroundColor( palette ) );
-            const auto outline( _helper->frameOutlineColor( palette ) );
+    // fallback
+    default:
+        break;
+    }
 
-            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-            if( hasAlpha )
-            {
+    painter->save();
 
-                painter.setCompositionMode( QPainter::CompositionMode_Source );
-                _helper->renderMenuFrame( &painter, rect, background, outline, true );
+    // call function if implemented
+    if (!(fcn && fcn(*this, option, painter, widget))) {
+        ParentStyleClass::drawComplexControl(element, option, painter, widget);
+    }
 
+    painter->restore();
+}
+
+//___________________________________________________________________________________
+void Style::drawItemText(QPainter *painter,
+                         const QRect &rect,
+                         int flags,
+                         const QPalette &palette,
+                         bool enabled,
+                         const QString &text,
+                         QPalette::ColorRole textRole) const
+{
+    // hide mnemonics if requested
+    if (!_mnemonics->enabled() && (flags & Qt::TextShowMnemonic) && !(flags & Qt::TextHideMnemonic)) {
+        flags &= ~Qt::TextShowMnemonic;
+        flags |= Qt::TextHideMnemonic;
+    }
+
+    // make sure vertical alignment is defined
+    // fallback on Align::VCenter if not
+    if (!(flags & Qt::AlignVertical_Mask))
+        flags |= Qt::AlignVCenter;
+
+    if (_animations->widgetEnabilityEngine().enabled()) {
+        /*
+         * check if painter engine is registered to WidgetEnabilityEngine, and animated
+         * if yes, merge the palettes. Note: a static_cast is safe here, since only the address
+         * of the pointer is used, not the actual content.
+         */
+        const QWidget *widget(static_cast<const QWidget *>(painter->device()));
+        if (_animations->widgetEnabilityEngine().isAnimated(widget, AnimationEnable)) {
+            const QPalette copy(_helper->disabledPalette(palette, _animations->widgetEnabilityEngine().opacity(widget, AnimationEnable)));
+            return ParentStyleClass::drawItemText(painter, rect, flags, copy, enabled, text, textRole);
+        }
+    }
+
+    // fallback
+    return ParentStyleClass::drawItemText(painter, rect, flags, palette, enabled, text, textRole);
+}
+
+bool Style::event(QEvent *e)
+{
+    // Adapted from QMacStyle::event()
+    if (e->type() == QEvent::FocusIn) {
+        QWidget *target = nullptr;
+        auto focusWidget = QApplication::focusWidget();
+        if (auto graphicsView = qobject_cast<QGraphicsView *>(focusWidget)) {
+            QGraphicsItem *focusItem = graphicsView->scene() ? graphicsView->scene()->focusItem() : nullptr;
+            if (focusItem && focusItem->type() == QGraphicsProxyWidget::Type) {
+                auto proxy = static_cast<QGraphicsProxyWidget *>(focusItem);
+                if (proxy->widget()) {
+                    focusWidget = proxy->widget()->focusWidget();
+                }
+            }
+        }
+
+        if (focusWidget) {
+            auto focusEvent = static_cast<QFocusEvent *>(e);
+            auto focusReason = focusEvent->reason();
+            bool hasKeyboardFocusReason = focusReason == Qt::TabFocusReason || focusReason == Qt::BacktabFocusReason || focusReason == Qt::ShortcutFocusReason;
+            if (hasKeyboardFocusReason) {
+                auto focusProxy = focusWidget->focusProxy();
+                while (focusProxy != nullptr) {
+                    focusWidget = focusProxy;
+                    focusProxy = focusWidget->focusProxy();
+                }
+                target = focusWidget;
+            }
+        }
+        if (_focusFrame) {
+            // sets to nullptr or a widget
+            _focusFrame->setWidget(target);
+        } else if (target) { // only create if there is a widget
+            _focusFrame = new QFocusFrame(target);
+            _focusFrame->setWidget(target);
+        }
+    } else if (e->type() == QEvent::FocusOut) {
+        if (_focusFrame) {
+            _focusFrame->setWidget(nullptr);
+        }
+    }
+    return ParentStyleClass::event(e);
+}
+
+void Style::drawToolsAreaSeparator(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw)
+{
+    if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
+        return;
+    }
+    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * mw->devicePixelRatio()));
+    painter->drawLine(mw->rect().topLeft(), mw->rect().topRight());
+}
+
+void Style::drawToolsAreaBackground(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw, const QRect &rect)
+{
+    QBrush color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+
+    if (_helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255) {
+        if ((mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitlebars()) {
+            QColor colorWithoutAlpha = color.color();
+            colorWithoutAlpha.setAlpha(255);
+            color.setColor(colorWithoutAlpha);
+        } else if (_helper->decorationConfig()->blurTransparentTitlebars()) { // apply blur to tools area
+            if ((mw->testAttribute(Qt::WA_WState_Created) || mw->internalWinId())) {
+                // PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence
+                // blurring the entire window and causing kornerbug
+                mw->winId(); // force creation of the window handle
+                KWindowEffects::enableBlurBehind(mw->windowHandle(), true, rect);
+
+                // no force update at this point like in breezeblurhelper.cpp, as already drawing next and creates an infinite loop
+            }
+        }
+    }
+    painter->setPen(Qt::transparent);
+    painter->setBrush(color);
+    painter->drawRect(rect);
+
+    painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
+    painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+}
+
+//_____________________________________________________________________
+bool Style::eventFilter(QObject *object, QEvent *event)
+{
+    if (auto dockWidget = qobject_cast<QDockWidget *>(object)) {
+        return eventFilterDockWidget(dockWidget, event);
+    } else if (auto subWindow = qobject_cast<QMdiSubWindow *>(object)) {
+        return eventFilterMdiSubWindow(subWindow, event);
+    } else if (auto commandLinkButton = qobject_cast<QCommandLinkButton *>(object)) {
+        return eventFilterCommandLinkButton(commandLinkButton, event);
+    }
+#if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
+    else if (object == qApp && event->type() == QEvent::ApplicationPaletteChange) {
+        configurationChanged();
+    }
+#endif
+    // cast to QWidget
+    QWidget *widget = static_cast<QWidget *>(object);
+    if (widget->inherits("QAbstractScrollArea") || widget->inherits("KTextEditor::View")) {
+        return eventFilterScrollArea(widget, event);
+    } else if (widget->inherits("QComboBoxPrivateContainer")) {
+        return eventFilterComboBoxContainer(widget, event);
+    }
+
+    auto mw = qobject_cast<QMainWindow *>(object);
+    if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
+        QPainter painter(mw);
+        painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
+        painter.save();
+
+        auto bg = mw->rect();
+        auto rect = _toolsAreaManager->toolsAreaRect(mw);
+        bg.setTop(rect.height());
+
+        painter.setPen(mw->palette().color(QPalette::Window));
+        painter.setBrush(mw->palette().color(QPalette::Window));
+        painter.drawRect(bg);
+
+        if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+            if (rect.height() == 0) {
+                drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
             } else {
-
-                _helper->renderMenuFrame( &painter, rect, background, outline, false );
-
+                drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
             }
-
         }
-
-        return false;
-
+        painter.restore();
     }
 
-    //____________________________________________________________________________
-    bool Style::eventFilterDockWidget( QDockWidget* dockWidget, QEvent* event )
-    {
-        if( event->type() == QEvent::Paint )
-        {
-            // create painter and clip
-            QPainter painter( dockWidget );
-            QPaintEvent *paintEvent = static_cast<QPaintEvent*>( event );
-            painter.setClipRegion( paintEvent->region() );
+    // fallback
+    return ParentStyleClass::eventFilter(object, event);
+}
 
-            // store palette and set colors
-            const auto& palette( dockWidget->palette() );
-            const auto background( _helper->frameBackgroundColor( palette ) );
-            const auto outline( _helper->frameOutlineColor( palette ) );
+//____________________________________________________________________________
+bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::Paint: {
+        // get scrollarea viewport
+        auto scrollArea(qobject_cast<QAbstractScrollArea *>(widget));
+        QWidget *viewport;
+        if (!(scrollArea && (viewport = scrollArea->viewport())))
+            break;
 
-            // store rect
-            const auto rect( dockWidget->rect() );
-
-            // render
-            if( dockWidget->isFloating() )
-            {
-                _helper->renderMenuFrame( &painter, rect, background, outline, false );
-
-            } else if( StyleConfigData::dockWidgetDrawFrame() || (dockWidget->features()&(QDockWidget::DockWidgetClosable|QDockWidget::DockWidgetMovable|QDockWidget::DockWidgetFloatable)) ) {
-
-                _helper->renderFrame( &painter, rect, background, outline );
-
-            }
-
+        // get scrollarea horizontal and vertical containers
+        QWidget *child(nullptr);
+        QList<QWidget *> children;
+        if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_vcontainer")) && child->isVisible()) {
+            children.append(child);
         }
 
-        return false;
-
-    }
-
-    //____________________________________________________________________________
-    bool Style::eventFilterMdiSubWindow( QMdiSubWindow* subWindow, QEvent* event )
-    {
-
-        if( event->type() == QEvent::Paint )
-        {
-            QPainter painter( subWindow );
-            QPaintEvent* paintEvent( static_cast<QPaintEvent*>( event ) );
-            painter.setClipRegion( paintEvent->region() );
-
-            const auto rect( subWindow->rect() );
-            const auto background( subWindow->palette().color( QPalette::Window ) );
-
-            if( subWindow->isMaximized() )
-            {
-
-                // full painting
-                painter.setPen( Qt::NoPen );
-                painter.setBrush( background );
-                painter.drawRect( rect );
-
-            } else {
-
-                // framed painting
-                _helper->renderMenuFrame( &painter, rect, background, QColor() );
-
-            }
-
+        if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_hcontainer")) && child->isVisible()) {
+            children.append(child);
         }
 
-        // continue with normal painting
-        return false;
+        if (children.empty())
+            break;
+        if (!scrollArea->styleSheet().isEmpty())
+            break;
 
-    }
+        // make sure proper background is rendered behind the containers
+        QPainter painter(scrollArea);
+        painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
 
-    //____________________________________________________________________________
-    bool Style::eventFilterCommandLinkButton( QCommandLinkButton* button, QEvent* event )
-    {
+        painter.setPen(Qt::NoPen);
 
-        if( event->type() == QEvent::Paint )
-        {
+        // decide background color
+        const QPalette::ColorRole role(viewport->backgroundRole());
+        QColor background;
+        if (role == QPalette::Window && hasAlteredBackground(viewport))
+            background = _helper->frameBackgroundColor(viewport->palette());
+        else
+            background = viewport->palette().color(role);
+        painter.setBrush(background);
 
-            // painter
-            QPainter painter( button );
-            painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+        // render
+        foreach (auto *child, children) {
+            painter.drawRect(child->geometry());
+        }
 
-            const bool isFlat = false;
+    } break;
 
-            // option
-            QStyleOptionButton option;
-            option.initFrom( button );
-            option.features |= QStyleOptionButton::CommandLinkButton;
-            if( isFlat ) option.features |= QStyleOptionButton::Flat;
-            option.text = QString();
-            option.icon = QIcon();
+    case QEvent::MouseButtonPress:
+    case QEvent::MouseButtonRelease:
+    case QEvent::MouseMove: {
+        // case event
+        QMouseEvent *mouseEvent(static_cast<QMouseEvent *>(event));
 
-            if( button->isChecked() ) option.state|=State_On;
-            if( button->isDown() ) option.state|=State_Sunken;
+        // get frame framewidth
+        const int frameWidth(pixelMetric(PM_DefaultFrameWidth, nullptr, widget));
 
-            // frame
-            drawControl(QStyle::CE_PushButton, &option, &painter, button );
+        // find list of scrollbars
+        QList<QScrollBar *> scrollBars;
+        if (auto scrollArea = qobject_cast<QAbstractScrollArea *>(widget)) {
+            if (scrollArea->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+                scrollBars.append(scrollArea->horizontalScrollBar());
+            if (scrollArea->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+                scrollBars.append(scrollArea->verticalScrollBar());
 
-            // offset
-            const int margin( Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-            QPoint offset( margin, margin );
+        } else if (widget->inherits("KTextEditor::View")) {
+            scrollBars = widget->findChildren<QScrollBar *>();
+        }
 
-            // state
-            const State& state( option.state );
-            const bool enabled( state & State_Enabled );
+        // loop over found scrollbars
+        foreach (QScrollBar *scrollBar, scrollBars) {
+            if (!(scrollBar && scrollBar->isVisible()))
+                continue;
 
-            // icon
-            if( !button->icon().isNull() )
-            {
+            QPoint offset;
+            if (scrollBar->orientation() == Qt::Horizontal)
+                offset = QPoint(0, frameWidth);
+            else
+                offset = QPoint(QApplication::isLeftToRight() ? frameWidth : -frameWidth, 0);
 
-                const auto pixmapSize( button->icon().actualSize( button->iconSize() ) );
-                const QRect pixmapRect( QPoint( offset.x(), button->description().isEmpty() ? (button->height() - pixmapSize.height())/2:offset.y() ), pixmapSize );
-                const QPixmap pixmap(_helper->coloredIcon(button->icon(), button->palette(), pixmapSize,
-                    enabled ? QIcon::Normal : QIcon::Disabled,
-                    button->isChecked() ? QIcon::On : QIcon::Off));
-                drawItemPixmap( &painter, pixmapRect, Qt::AlignCenter, pixmap );
+            // map position to scrollarea
+            QPoint position(scrollBar->mapFrom(widget, mouseEvent->pos() - offset));
 
-                offset.rx() += pixmapSize.width() + Metrics::Button_ItemSpacing;
+            // check if contains
+            if (!scrollBar->rect().contains(position))
+                continue;
 
-            }
+            // copy event, send and return
+            QMouseEvent copy(mouseEvent->type(), position, mouseEvent->button(), mouseEvent->buttons(), mouseEvent->modifiers());
 
-            // text rect
-            QRect textRect( offset, QSize( button->size().width() - offset.x() - margin, button->size().height() - 2*margin ) );
-            const QPalette::ColorRole textRole = QPalette::ButtonText;
-            if( !button->text().isEmpty() )
-            {
-
-                QFont font( button->font() );
-                font.setBold( true );
-                painter.setFont( font );
-                if( button->description().isEmpty() )
-                {
-
-                    drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole );
-
-                } else {
-
-                    drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignTop|Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole );
-                    textRect.setTop( textRect.top() + QFontMetrics( font ).height() );
-
-                }
-
-                painter.setFont( button->font() );
-
-            }
-
-            if( !button->description().isEmpty() )
-            { drawItemText( &painter, textRect, Qt::AlignLeft|Qt::AlignVCenter|Qt::TextWordWrap, button->palette(), enabled, button->description(), textRole ); }
-
+            QCoreApplication::sendEvent(scrollBar, &copy);
+            event->setAccepted(true);
             return true;
         }
 
-        // continue with normal painting
-        return false;
-
+        break;
     }
 
-    //_____________________________________________________________________
-    void Style::configurationChanged()
-    {
-
-        // reload
-        StyleConfigData::self()->load();
-
-        // reload configuration
-        loadConfiguration();
-
+    default:
+        break;
     }
 
-    //_____________________________________________________________________
-    void Style::loadGlobalAnimationSettings()
-    {
-        KSharedConfig::Ptr config = KSharedConfig::openConfig();
-        const KConfigGroup cg(config, QStringLiteral("KDE"));
+    return ParentStyleClass::eventFilter(widget, event);
+}
 
-        // Don't override if it isn't set by the user
-        if (!cg.hasKey("AnimationDurationFactor")) {
-            return;
-        }
+//_________________________________________________________
+bool Style::eventFilterComboBoxContainer(QWidget *widget, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        QPainter painter(widget);
+        auto paintEvent = static_cast<QPaintEvent *>(event);
+        painter.setClipRegion(paintEvent->region());
 
-        const int animationsDuration = cg.readEntry("AnimationDurationFactor", StyleConfigData::animationsDuration() / 100.0f) * 100;
-        if (animationsDuration > 0) {
-            StyleConfigData::setAnimationsDuration(animationsDuration);
-            StyleConfigData::setAnimationsEnabled(true);
-        } else {
-            StyleConfigData::setAnimationsEnabled(false);
-        }
-    }
+        const auto rect(widget->rect());
+        const auto &palette(widget->palette());
+        const auto background(_helper->frameBackgroundColor(palette));
+        const auto outline(_helper->frameOutlineColor(palette));
 
-    //_____________________________________________________________________
-    void Style::globalConfigurationChanged(int type, int arg)
-    {
-        Q_UNUSED(arg);
-
-        // 3 == SettingsChanged, which is manually redefined in
-        // plasma-integration/src/platformtheme/khintssettings.h and fetched
-        // from KGlobalConfig in kdelibs4support in plasma-desktop/kcms/*,
-        // seems to be agreed on by everything in plasma is what sets the
-        // animation duration
-        if (type != 3) {
-            return;
-        }
-
-        // Reload the new values
-        loadGlobalAnimationSettings();
-
-        // reinitialize engines
-        _animations->setupEngines();
-    }
-
-    //____________________________________________________________________
-    QIcon Style::standardIconImplementation( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // lookup cache
-        if( _iconCache.contains( standardPixmap ) ) return _iconCache.value( standardPixmap );
-
-        QIcon icon;
-        switch( standardPixmap )
-        {
-
-            case SP_TitleBarNormalButton:
-            case SP_TitleBarMinButton:
-            case SP_TitleBarMaxButton:
-            case SP_TitleBarCloseButton:
-            case SP_DockWidgetCloseButton:
-            icon = titleBarButtonIcon( standardPixmap, option, widget );
-            break;
-
-            case SP_ToolBarHorizontalExtensionButton:
-            case SP_ToolBarVerticalExtensionButton:
-            icon = toolBarExtensionIcon( standardPixmap, option, widget );
-            break;
-
-            default:
-            break;
-
-        }
-
-        if( icon.isNull() )
-        {
-
-            // do not cache parent style icon, since it may change at runtime
-            return  ParentStyleClass::standardIcon( standardPixmap, option, widget );
+        const bool hasAlpha(_helper->hasAlphaChannel(widget));
+        if (hasAlpha) {
+            painter.setCompositionMode(QPainter::CompositionMode_Source);
+            _helper->renderMenuFrame(&painter, rect, background, outline, true);
 
         } else {
-            const_cast<IconCache*>(&_iconCache)->insert( standardPixmap, icon );
-            return icon;
-        }
-
-    }
-
-    //_____________________________________________________________________
-    void Style::loadConfiguration()
-    {
-
-        // load helper configuration
-        _helper->loadConfig();
-
-        loadGlobalAnimationSettings();
-
-        // reinitialize engines
-        _animations->setupEngines();
-        _windowManager->initialize();
-
-        // mnemonics
-        _mnemonics->setMode( StyleConfigData::mnemonicsMode() );
-
-        // splitter proxy
-        _splitterFactory->setEnabled( StyleConfigData::splitterProxyEnabled() );
-
-        // reset shadow tiles
-        _shadowHelper->loadConfig();
-
-        // set mdiwindow factory shadow tiles
-        _mdiWindowShadowFactory->setShadowHelper( _shadowHelper );
-
-        // clear icon cache
-        _iconCache.clear();
-
-        // scrollbar buttons
-        switch( StyleConfigData::scrollBarAddLineButtons() )
-        {
-            case 0: _addLineButtons = NoButton; break;
-            case 1: _addLineButtons = SingleButton; break;
-
-            default:
-            case 2: _addLineButtons = DoubleButton; break;
-        }
-
-        switch( StyleConfigData::scrollBarSubLineButtons() )
-        {
-            case 0: _subLineButtons = NoButton; break;
-            case 1: _subLineButtons = SingleButton; break;
-
-            default:
-            case 2: _subLineButtons = DoubleButton; break;
-        }
-
-        // frame focus
-        if( StyleConfigData::viewDrawFocusIndicator() ) _frameFocusPrimitive = &Style::drawFrameFocusRectPrimitive;
-        else _frameFocusPrimitive = &Style::emptyPrimitive;
-
-        // widget explorer
-        _widgetExplorer->setEnabled( StyleConfigData::widgetExplorerEnabled() );
-        _widgetExplorer->setDrawWidgetRects( StyleConfigData::drawWidgetRects() );
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::pushButtonContentsRect( const QStyleOption* option, const QWidget* ) const
-    { return insideMargin( option->rect, Metrics::Frame_FrameWidth ); }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::checkBoxContentsRect( const QStyleOption* option, const QWidget* ) const
-    { return visualRect( option, option->rect.adjusted( Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0 ) ); }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::lineEditContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-        // cast option and check
-        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
-        if( !frameOption ) return option->rect;
-
-        // check flatness
-        const bool flat( frameOption->lineWidth == 0 );
-        if( flat ) return option->rect;
-
-        // copy rect and take out margins
-        auto rect( option->rect );
-
-        // take out margins if there is enough room
-        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-        if( rect.height() >= option->fontMetrics.height() + 2*frameWidth ) return insideMargin( rect, frameWidth );
-        else return rect;
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::progressBarGrooveRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return option->rect;
-
-        // get flags and orientation
-        const bool textVisible( progressBarOption->textVisible );
-        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-
-        // copy rectangle and adjust
-        auto rect( option->rect );
-        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-        if( horizontal ) rect = insideMargin( rect, frameWidth, 0 );
-        else rect = insideMargin( rect, 0, frameWidth );
-
-        if( textVisible && !busy && horizontal )
-        {
-
-            auto textRect( subElementRect( SE_ProgressBarLabel, option, widget ) );
-            textRect = visualRect( option, textRect );
-            rect.setRight( textRect.left() - Metrics::ProgressBar_ItemSpacing - 1 );
-            rect = visualRect( option, rect );
-            rect = centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
-
-        } else if( horizontal ) {
-
-            rect = centerRect( rect, rect.width(), Metrics::ProgressBar_Thickness );
-
-        } else {
-
-            rect = centerRect( rect, Metrics::ProgressBar_Thickness, rect.height() );
-
-        }
-
-        return rect;
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::progressBarContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return QRect();
-
-        // get groove rect
-        const auto rect( progressBarGrooveRect( option, widget ) );
-
-        // in busy mode, grooveRect is used
-        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        if( busy ) return rect;
-
-        // get orientation
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-
-        // check inverted appearance
-        const bool inverted( progressBarOption->invertedAppearance );
-
-        // get progress and steps
-        const qreal progress( progressBarOption->progress - progressBarOption->minimum );
-        const int steps( qMax( progressBarOption->maximum  - progressBarOption->minimum, 1 ) );
-
-        //Calculate width fraction
-        const qreal widthFrac = qMin( qreal(1), progress/steps );
-
-        // convert the pixel width
-        const int indicatorSize( widthFrac*( horizontal ? rect.width():rect.height() ) );
-
-        QRect indicatorRect;
-        if( horizontal )
-        {
-
-            indicatorRect = QRect( inverted ? ( rect.right() - indicatorSize + 1):rect.left(), rect.y(), indicatorSize, rect.height() );
-            indicatorRect = visualRect( option->direction, rect, indicatorRect );
-
-        } else indicatorRect = QRect( rect.x(), inverted ? rect.top() : (rect.bottom() - indicatorSize + 1), rect.width(), indicatorSize );
-
-        return indicatorRect;
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::frameContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-        if ( widget ) {
-            const auto borders = widget->property( PropertyNames::bordersSides );
-            if ( borders.isValid() && borders.canConvert<Qt::Edges>() ) {
-                const auto value = borders.value<Qt::Edges>();
-                auto rect = option->rect;
-
-                if ( value & Qt::LeftEdge ) {
-                    rect.adjust( 1, 0, 0, 0 );
-                }
-                if ( value & Qt::RightEdge ) {
-                    rect.adjust( 0, 0, -1, 0 );
-                }
-                if ( value & Qt::TopEdge ) {
-                    rect.adjust( 0, 1, 0, 0 );
-                }
-                if ( value & Qt::BottomEdge ) {
-                    rect.adjust( 0, 0, 0, -1 );
-                }
-
-                return rect;
-            }
-        }
-
-        if( !StyleConfigData::sidePanelDrawFrame() &&
-            qobject_cast<const QAbstractScrollArea*>( widget ) &&
-            widget->property( PropertyNames::sidePanelView ).toBool() )
-        {
-
-            // adjust margins for sidepanel widgets
-            return option->rect.adjusted( 0, 0, -1, 0 );
-
-        } else {
-
-            // base class implementation
-            return ParentStyleClass::subElementRect( SE_FrameContents, option, widget );
-
+            _helper->renderMenuFrame(&painter, rect, background, outline, false);
         }
     }
 
-    //___________________________________________________________________________________________________________________
-    QRect Style::progressBarLabelRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return QRect();
-
-        // get flags and check
-        const bool textVisible( progressBarOption->textVisible );
-        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        if( !textVisible || busy ) return QRect();
-
-        // get direction and check
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        if( !horizontal ) return QRect();
-
-        int textWidth = qMax(
-            option->fontMetrics.size( _mnemonics->textFlags(), progressBarOption->text ).width(),
-            option->fontMetrics.size( _mnemonics->textFlags(), QStringLiteral( "100%" ) ).width() );
-
-        auto rect( insideMargin( option->rect, Metrics::Frame_FrameWidth, 0 ) );
-        rect.setLeft( rect.right() - textWidth + 1 );
-        rect = visualRect( option, rect );
-
-        return rect;
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::headerArrowRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        if( !headerOption ) return option->rect;
-
-        // check if arrow is necessary
-        if( headerOption->sortIndicator == QStyleOptionHeader::None ) return QRect();
-
-        auto arrowRect( insideMargin( option->rect, Metrics::Header_MarginWidth ) );
-        arrowRect.setLeft( arrowRect.right() - Metrics::Header_ArrowSize + 1 );
-
-        return visualRect( option, arrowRect );
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::headerLabelRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        if( !headerOption ) return option->rect;
-
-        // check if arrow is necessary
-        auto labelRect( insideMargin( option->rect, Metrics::Header_MarginWidth, 0 ) );
-        if( headerOption->sortIndicator == QStyleOptionHeader::None ) return labelRect;
-
-        labelRect.adjust( 0, 0, -Metrics::Header_ArrowSize-Metrics::Header_ItemSpacing, 0 );
-        return visualRect( option, labelRect );
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabBarTabLeftButtonRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        if( !tabOption || tabOption->leftButtonSize.isEmpty() ) return QRect();
-
-        const auto rect( option->rect );
-        const QSize size( tabOption->leftButtonSize );
-        QRect buttonRect( QPoint(0,0), size );
-
-        // vertical positioning
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            buttonRect.moveLeft( rect.left() + Metrics::TabBar_TabMarginWidth );
-            buttonRect.moveTop( ( rect.height() - buttonRect.height() )/2 );
-            buttonRect = visualRect( option, buttonRect );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            buttonRect.moveTop( rect.top() + ((rect.height() - buttonRect.height()) / 2));
-            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            buttonRect.moveTop( rect.top() + ((rect.height() - buttonRect.height()) / 2));
-            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
-            break;
-
-            default: break;
-        }
-
-        return buttonRect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabBarTabRightButtonRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        if( !tabOption || tabOption->rightButtonSize.isEmpty() ) return QRect();
-
-        const auto rect( option->rect );
-        const auto size( tabOption->rightButtonSize );
-        QRect buttonRect( QPoint(0,0), size );
-
-        // vertical positioning
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            buttonRect.moveRight( rect.right() - Metrics::TabBar_TabMarginWidth );
-            buttonRect.moveTop( ( rect.height() - buttonRect.height() )/2 );
-            buttonRect = visualRect( option, buttonRect );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            buttonRect.moveTop( rect.top() + Metrics::TabBar_TabMarginWidth );
-            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            buttonRect.moveBottom( rect.bottom() - Metrics::TabBar_TabMarginWidth );
-            buttonRect.moveLeft( ( rect.width() - buttonRect.width() )/2 );
-            break;
-
-            default: break;
-        }
-
-        return buttonRect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabWidgetTabBarRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return ParentStyleClass::subElementRect( SE_TabWidgetTabBar, option, widget );
-
-        // do nothing if tabbar is hidden
-        const QSize tabBarSize( tabOption->tabBarSize );
-
-        auto rect( option->rect );
-        QRect tabBarRect( QPoint(0, 0), tabBarSize );
-
-        Qt::Alignment tabBarAlignment( styleHint( SH_TabBar_Alignment, option, widget ) );
-
-        // horizontal positioning
-        const bool verticalTabs( isVerticalTab( tabOption->shape ) );
-        if( verticalTabs )
-        {
-
-            tabBarRect.setHeight( qMin( tabBarRect.height(), rect.height() - 2 ) );
-            if( tabBarAlignment == Qt::AlignCenter ) tabBarRect.moveTop( rect.top() + ( rect.height() - tabBarRect.height() )/2 );
-            else tabBarRect.moveTop( rect.top()+1 );
-
-        } else {
-
-            // account for corner rects
-            // need to re-run visualRect to remove right-to-left handling, since it is re-added on tabBarRect at the end
-            const auto leftButtonRect( visualRect( option, subElementRect( SE_TabWidgetLeftCorner, option, widget ) ) );
-            const auto rightButtonRect( visualRect( option, subElementRect( SE_TabWidgetRightCorner, option, widget ) ) );
-
-            rect.setLeft( leftButtonRect.width() );
-            rect.setRight( rightButtonRect.left() - 1 );
-
-            tabBarRect.setWidth( qMin( tabBarRect.width(), rect.width() - 2 ) );
-            if( tabBarAlignment == Qt::AlignCenter ) tabBarRect.moveLeft( rect.left() + (rect.width() - tabBarRect.width())/2 );
-            else tabBarRect.moveLeft( rect.left() + 1 );
-
-            tabBarRect = visualRect( option, tabBarRect );
-
-        }
-
-        // expand the tab bar towards the frame to cover the frame's border
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            tabBarRect.moveTop( rect.top() );
-            tabBarRect.setBottom( tabBarRect.bottom() + 1 );
-            break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            tabBarRect.moveBottom( rect.bottom() );
-            tabBarRect.setTop( tabBarRect.top() - 1 );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            tabBarRect.moveLeft( rect.left() );
-            tabBarRect.setRight( tabBarRect.right() + 1 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            tabBarRect.moveRight( rect.right() );
-            tabBarRect.setLeft( tabBarRect.left() - 1 );
-            break;
-
-            default: break;
-
-        }
-
-        return tabBarRect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabWidgetTabContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return option->rect;
-
-        // do nothing if tabbar is hidden
-        if( tabOption->tabBarSize.isEmpty() ) return option->rect;
-        const auto rect = tabWidgetTabPaneRect( option, widget );
-
-        const bool documentMode( tabOption->lineWidth == 0 );
-        if( documentMode )
-        {
-
-            // add margin only to the relevant side
-            switch( tabOption->shape )
-            {
-                case QTabBar::RoundedNorth:
-                case QTabBar::TriangularNorth:
-                return rect.adjusted( 0, Metrics::TabWidget_MarginWidth, 0, 0 );
-
-                case QTabBar::RoundedSouth:
-                case QTabBar::TriangularSouth:
-                return rect.adjusted( 0, 0, 0, -Metrics::TabWidget_MarginWidth );
-
-                case QTabBar::RoundedWest:
-                case QTabBar::TriangularWest:
-                return rect.adjusted( Metrics::TabWidget_MarginWidth, 0, 0, 0 );
-
-                case QTabBar::RoundedEast:
-                case QTabBar::TriangularEast:
-                return rect.adjusted( 0, 0, -Metrics::TabWidget_MarginWidth, 0 );
-
-                default: return rect;
-            }
-
-        } else return insideMargin( rect, Metrics::TabWidget_MarginWidth );
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabWidgetTabPaneRect( const QStyleOption* option, const QWidget* ) const
-    {
-
-        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption || tabOption->tabBarSize.isEmpty() ) return option->rect;
-
-        const int overlap = Metrics::TabBar_BaseOverlap - 1;
-        const QSize tabBarSize( tabOption->tabBarSize - QSize( overlap, overlap ) );
-
-        auto rect( option->rect );
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            rect.adjust( 0, tabBarSize.height(), 0, 0 );
-            break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            rect.adjust( 0, 0, 0, -tabBarSize.height() );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            rect.adjust( tabBarSize.width(), 0, 0, 0 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            rect.adjust( 0, 0, -tabBarSize.width(), 0 );
-            break;
-
-            default: return QRect();
-        }
-
-        return rect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::tabWidgetCornerRect( SubElement element, const QStyleOption* option, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return option->rect;
-
-        // do nothing if tabbar is hidden
-        const QSize tabBarSize( tabOption->tabBarSize );
-        if( tabBarSize.isEmpty() ) return QRect();
-
-        // do nothing for vertical tabs
-        const bool verticalTabs( isVerticalTab( tabOption->shape ) );
-        if( verticalTabs ) return QRect();
-
-        const auto rect( option->rect );
-        QRect cornerRect;
-        switch( element )
-        {
-            case SE_TabWidgetLeftCorner:
-            cornerRect = QRect( QPoint(0,0), tabOption->leftCornerWidgetSize );
-            cornerRect.moveLeft( rect.left() );
-            break;
-
-            case SE_TabWidgetRightCorner:
-            cornerRect = QRect( QPoint(0,0), tabOption->rightCornerWidgetSize );
-            cornerRect.moveRight( rect.right() );
-            break;
-
-            default: break;
-
-        }
-
-        // expend height to tabBarSize, if needed, to make sure base is properly rendered
-        cornerRect.setHeight( qMax( cornerRect.height(), tabBarSize.height() + 1 ) );
-
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            cornerRect.moveTop( rect.top() );
-            break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            cornerRect.moveBottom( rect.bottom() );
-            break;
-
-            default: break;
-        }
-
-        // return cornerRect;
-        cornerRect = visualRect( option, cornerRect );
-        return cornerRect;
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::toolBoxTabContentsRect( const QStyleOption* option, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
-        if( !toolBoxOption ) return option->rect;
-
-        // copy rect
-        const auto& rect( option->rect );
-
-        int contentsWidth(0);
-        if( !toolBoxOption->icon.isNull() )
-        {
-            const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
-            contentsWidth += iconSize;
-
-            if( !toolBoxOption->text.isEmpty() ) contentsWidth += Metrics::ToolBox_TabItemSpacing;
-        }
-
-        if( !toolBoxOption->text.isEmpty() )
-        {
-
-            const int textWidth = toolBoxOption->fontMetrics.size( _mnemonics->textFlags(), toolBoxOption->text ).width();
-            contentsWidth += textWidth;
-
-        }
-
-        contentsWidth += 2*Metrics::ToolBox_TabMarginWidth;
-        contentsWidth = qMin( contentsWidth, rect.width() );
-        contentsWidth = qMax( contentsWidth, int(Metrics::ToolBox_TabMinWidth) );
-        return centerRect( rect, contentsWidth, rect.height() );
-
-    }
-
-    //____________________________________________________________________
-    QRect Style::genericLayoutItemRect( const QStyleOption* option, const QWidget* ) const
-    { return insideMargin( option->rect, -Metrics::Frame_FrameWidth ); }
-
-    //______________________________________________________________
-    QRect Style::groupBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
-
-        QRect rect = option->rect;
-        switch( subControl )
-        {
-
-            case SC_GroupBoxFrame: return rect;
-
-            case SC_GroupBoxContents:
-            {
-
-                // cast option and check
-                const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
-                if( !groupBoxOption ) break;
-
-                // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
-                // get state
-                const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
-                const bool emptyText( groupBoxOption->text.isEmpty() );
-
-                // calculate title height
-                int titleHeight( 0 );
-                if( !emptyText ) titleHeight = groupBoxOption->fontMetrics.height();
-                if( checkable ) titleHeight = qMax( titleHeight, int(Metrics::CheckBox_Size) );
-
-                // add margin
-                if( titleHeight > 0 ) titleHeight += 2*Metrics::GroupBox_TitleMarginWidth;
-
-                rect.adjust( 0, titleHeight, 0, 0 );
-                return rect;
-
-            }
-
-            case SC_GroupBoxCheckBox:
-            case SC_GroupBoxLabel:
-            {
-
-                // cast option and check
-                const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
-                if( !groupBoxOption ) break;
-
-                // take out frame width
-                rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
-                const bool emptyText( groupBoxOption->text.isEmpty() );
-                const bool checkable( groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox );
-
-                // calculate title height
-                int titleHeight( 0 );
-                int titleWidth( 0 );
-                if( !emptyText )
-                {
-                    const QFontMetrics fontMetrics = option->fontMetrics;
-                    titleHeight = qMax( titleHeight, fontMetrics.height() );
-                    titleWidth += fontMetrics.size( _mnemonics->textFlags(), groupBoxOption->text ).width();
-                }
-
-                if( checkable )
-                {
-                    titleHeight = qMax( titleHeight, int(Metrics::CheckBox_Size) );
-                    titleWidth += Metrics::CheckBox_Size;
-                    if( !emptyText ) titleWidth += Metrics::CheckBox_ItemSpacing;
-                }
-
-                // adjust height
-                auto titleRect( rect );
-                titleRect.setHeight( titleHeight );
-                titleRect.translate( 0, Metrics::GroupBox_TitleMarginWidth );
-
-                // center
-                titleRect = centerRect( titleRect, titleWidth, titleHeight );
-
-                if( subControl == SC_GroupBoxCheckBox )
-                {
-
-                    // vertical centering
-                    titleRect = centerRect( titleRect, titleWidth, Metrics::CheckBox_Size );
-
-                    // horizontal positioning
-                    const QRect subRect( titleRect.topLeft(), QSize( Metrics::CheckBox_Size, titleRect.height() ) );
-                    return visualRect( option->direction, titleRect, subRect );
-
-                } else {
-
-                    // vertical centering
-                    QFontMetrics fontMetrics = option->fontMetrics;
-                    titleRect = centerRect( titleRect, titleWidth, fontMetrics.height() );
-
-                    // horizontal positioning
-                    auto subRect( titleRect );
-                    if( checkable ) subRect.adjust( Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0 );
-                    return visualRect( option->direction, titleRect, subRect );
-
-                }
-
-            }
-
-            default: break;
-
-        }
-
-        return ParentStyleClass::subControlRect( CC_GroupBox, option, subControl, widget );
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::toolButtonSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
-        if( !toolButtonOption ) return ParentStyleClass::subControlRect( CC_ToolButton, option, subControl, widget );
-
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
+    return false;
+}
+
+//____________________________________________________________________________
+bool Style::eventFilterDockWidget(QDockWidget *dockWidget, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        // create painter and clip
+        QPainter painter(dockWidget);
+        QPaintEvent *paintEvent = static_cast<QPaintEvent *>(event);
+        painter.setClipRegion(paintEvent->region());
+
+        // store palette and set colors
+        const auto &palette(dockWidget->palette());
+        const auto background(_helper->frameBackgroundColor(palette));
+        const auto outline(_helper->frameOutlineColor(palette));
 
         // store rect
-        const auto& rect( option->rect );
-        const int menuButtonWidth( Metrics::MenuButton_IndicatorWidth );
-        switch( subControl )
-        {
-            case SC_ToolButtonMenu:
-            {
+        const auto rect(dockWidget->rect());
 
-                // check features
-                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::None ) return QRect();
+        // render
+        if (dockWidget->isFloating()) {
+            _helper->renderMenuFrame(&painter, rect, background, outline, false);
 
-                // check features
-                auto menuRect( rect );
-                menuRect.setLeft( rect.right() - menuButtonWidth + 1 );
-                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall )
-                { menuRect.setTop( menuRect.bottom() - menuButtonWidth + 1 ); }
-
-                return visualRect( option, menuRect );
-            }
-
-            case SC_ToolButton:
-            {
-
-                if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
-                {
-
-                    auto contentsRect( rect );
-                    contentsRect.setRight( rect.right() - menuButtonWidth );
-                    return visualRect( option, contentsRect );
-
-                } else return rect;
-
-            }
-
-            default: return QRect();
-
-        }
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::comboBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
-        // cast option and check
-        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
-        if( !comboBoxOption ) return ParentStyleClass::subControlRect( CC_ComboBox, option, subControl, widget );
-
-        const bool editable( comboBoxOption->editable );
-        const bool flat( editable && !comboBoxOption->frame );
-
-        // copy rect
-        auto rect( option->rect );
-
-        switch( subControl )
-        {
-            case SC_ComboBoxFrame: return flat ? rect : QRect();
-            case SC_ComboBoxListBoxPopup: return rect;
-
-            case SC_ComboBoxArrow:
-            {
-
-                // take out frame width
-                if( !flat ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
-                QRect arrowRect(
-                    rect.right() - Metrics::MenuButton_IndicatorWidth + 1,
-                    rect.top(),
-                    Metrics::MenuButton_IndicatorWidth,
-                    rect.height() );
-
-                arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
-                return visualRect( option, arrowRect );
-
-            }
-
-            case SC_ComboBoxEditField:
-            {
-
-                QRect labelRect;
-                const int frameWidth( pixelMetric( PM_ComboBoxFrameWidth, option, widget ) );
-                labelRect = QRect(
-                    rect.left(), rect.top(),
-                    rect.width() - Metrics::MenuButton_IndicatorWidth,
-                    rect.height() );
-
-                // remove margins
-                if( !flat && rect.height() >= option->fontMetrics.height() + 2*frameWidth )
-                { labelRect.adjust( frameWidth, frameWidth, 0, -frameWidth ); }
-
-                return visualRect( option, labelRect );
-
-            }
-
-            default: break;
-
-        }
-
-        return ParentStyleClass::subControlRect( CC_ComboBox, option, subControl, widget );
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::spinBoxSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
-        if( !spinBoxOption ) return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
-        const bool flat( !spinBoxOption->frame );
-
-        // copy rect
-        auto rect( option->rect );
-
-        switch( subControl )
-        {
-            case SC_SpinBoxFrame: return flat ? QRect():rect;
-
-            case SC_SpinBoxUp:
-            case SC_SpinBoxDown:
-            {
-
-                // take out frame width
-                if( !flat && rect.height() >= 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth ) rect = insideMargin( rect, Metrics::Frame_FrameWidth );
-
-                QRect arrowRect;
-                arrowRect = QRect(
-                    rect.right() - Metrics::SpinBox_ArrowButtonWidth + 1,
-                    rect.top(),
-                    Metrics::SpinBox_ArrowButtonWidth,
-                    rect.height() );
-
-                const int arrowHeight( qMin( rect.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
-                arrowRect = centerRect( arrowRect, Metrics::SpinBox_ArrowButtonWidth, arrowHeight );
-                arrowRect.setHeight( arrowHeight/2 );
-                if( subControl == SC_SpinBoxDown ) arrowRect.translate( 0, arrowHeight/2 );
-
-                return visualRect( option, arrowRect );
-
-            }
-
-            case SC_SpinBoxEditField:
-            {
-                const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-
-                QRect labelRect = rect;
-                if( showButtons ) {
-                    labelRect.setRight( rect.right() - Metrics::SpinBox_ArrowButtonWidth );
-                }
-
-                // remove right side line editor margins
-                const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
-                if( !flat && labelRect.height() >= option->fontMetrics.height() + 2*frameWidth )
-                { labelRect.adjust( frameWidth, frameWidth, showButtons ? 0 : -frameWidth, -frameWidth ); }
-
-                return visualRect( option, labelRect );
-
-            }
-
-            default: break;
-
-        }
-
-        return ParentStyleClass::subControlRect( CC_SpinBox, option, subControl, widget );
-
-    }
-
-    //___________________________________________________________________________________________________________________
-    QRect Style::scrollBarInternalSubControlRect( const QStyleOptionComplex* option, SubControl subControl ) const
-    {
-        const auto& rect = option->rect;
-        const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
-
-        switch( subControl )
-        {
-
-            case SC_ScrollBarSubLine:
-            {
-                int majorSize( scrollBarButtonHeight( _subLineButtons ) );
-                if( horizontal ) return visualRect( option, QRect( rect.left(), rect.top(), majorSize, rect.height() ) );
-                else return visualRect( option, QRect( rect.left(), rect.top(), rect.width(), majorSize ) );
-
-            }
-
-            case SC_ScrollBarAddLine:
-            {
-                int majorSize( scrollBarButtonHeight( _addLineButtons ) );
-                if( horizontal ) return visualRect( option, QRect( rect.right() - majorSize + 1, rect.top(), majorSize, rect.height() ) );
-                else return visualRect( option, QRect( rect.left(), rect.bottom() - majorSize + 1, rect.width(), majorSize ) );
-            }
-
-            default: return QRect();
-
+        } else if (StyleConfigData::dockWidgetDrawFrame()
+                   || (dockWidget->features() & (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable))) {
+            _helper->renderFrame(&painter, rect, background, outline);
         }
     }
 
-    //___________________________________________________________________________________________________________________
-    QRect Style::scrollBarSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
+    return false;
+}
 
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );
+//____________________________________________________________________________
+bool Style::eventFilterMdiSubWindow(QMdiSubWindow *subWindow, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        QPainter painter(subWindow);
+        QPaintEvent *paintEvent(static_cast<QPaintEvent *>(event));
+        painter.setClipRegion(paintEvent->region());
 
-        // get relevant state
-        const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
+        const auto rect(subWindow->rect());
+        const auto background(subWindow->palette().color(QPalette::Window));
 
-        switch( subControl )
-        {
+        if (subWindow->isMaximized()) {
+            // full painting
+            painter.setPen(Qt::NoPen);
+            painter.setBrush(background);
+            painter.drawRect(rect);
 
-            case SC_ScrollBarSubLine:
-            case SC_ScrollBarAddLine:
-            return scrollBarInternalSubControlRect( option, subControl );
-
-            case SC_ScrollBarGroove:
-            {
-                auto topRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarSubLine ) );
-                auto bottomRect = visualRect( option, scrollBarInternalSubControlRect( option, SC_ScrollBarAddLine ) );
-
-                QPoint topLeftCorner;
-                QPoint botRightCorner;
-
-                if( horizontal )
-                {
-
-                    topLeftCorner  = QPoint( topRect.right() + 1, topRect.top() );
-                    botRightCorner = QPoint( bottomRect.left()  - 1, topRect.bottom() );
-
-                } else {
-
-                    topLeftCorner  = QPoint( topRect.left(),  topRect.bottom() + 1 );
-                    botRightCorner = QPoint( topRect.right(), bottomRect.top() - 1 );
-
-                }
-
-                // define rect
-                return visualRect( option, QRect( topLeftCorner, botRightCorner )  );
-
-            }
-
-            case SC_ScrollBarSlider:
-            {
-
-                // handle RTL here to unreflect things if need be
-                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
-
-                if( sliderOption->minimum == sliderOption->maximum ) return groove;
-
-                // Figure out how much room there is
-                int space( horizontal ? groove.width() : groove.height() );
-
-                // Calculate the portion of this space that the slider should occupy
-                int sliderSize = space * qreal( sliderOption->pageStep ) / ( sliderOption->maximum - sliderOption->minimum + sliderOption->pageStep );
-                sliderSize = qMax( sliderSize, static_cast<int>(Metrics::ScrollBar_MinSliderHeight ) );
-                sliderSize = qMin( sliderSize, space );
-
-                space -= sliderSize;
-                if( space <= 0 ) return groove;
-
-                int pos = qRound( qreal( sliderOption->sliderPosition - sliderOption->minimum )/ ( sliderOption->maximum - sliderOption->minimum )*space );
-                if( sliderOption->upsideDown ) pos = space - pos;
-                if( horizontal ) return visualRect( option, QRect( groove.left() + pos, groove.top(), sliderSize, groove.height() ) );
-                else return visualRect( option, QRect( groove.left(), groove.top() + pos, groove.width(), sliderSize ) );
-            }
-
-            case SC_ScrollBarSubPage:
-            {
-
-                // handle RTL here to unreflect things if need be
-                auto slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
-                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
-
-                if( horizontal ) return visualRect( option, QRect( groove.left(), groove.top(), slider.left() - groove.left(), groove.height() ) );
-                else return visualRect( option, QRect( groove.left(), groove.top(), groove.width(), slider.top() - groove.top() ) );
-            }
-
-            case SC_ScrollBarAddPage:
-            {
-
-                // handle RTL here to unreflect things if need be
-                auto slider = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarSlider, widget ) );
-                auto groove = visualRect( option, subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
-
-                if( horizontal ) return visualRect( option, QRect( slider.right() + 1, groove.top(), groove.right() - slider.right(), groove.height() ) );
-                else return visualRect( option, QRect( groove.left(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom() ) );
-
-            }
-
-            default: return ParentStyleClass::subControlRect( CC_ScrollBar, option, subControl, widget );;
+        } else {
+            // framed painting
+            _helper->renderMenuFrame(&painter, rect, background, QColor());
         }
     }
 
-    //___________________________________________________________________________________________________________________
-    QRect Style::dialSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
+    // continue with normal painting
+    return false;
+}
 
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );
+//____________________________________________________________________________
+bool Style::eventFilterCommandLinkButton(QCommandLinkButton *button, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        // painter
+        QPainter painter(button);
+        painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
 
-        // adjust rect to be square, and centered
-        auto rect( option->rect );
-        const int dimension( qMin( rect.width(), rect.height() ) );
-        rect = centerRect( rect, dimension, dimension );
+        const bool isFlat = false;
 
-        switch( subControl )
-        {
-            case QStyle::SC_DialGroove: return insideMargin( rect, (Metrics::Slider_ControlThickness - Metrics::Slider_GrooveThickness)/2 );
-            case QStyle::SC_DialHandle:
-            {
+        // option
+        QStyleOptionButton option;
+        option.initFrom(button);
+        option.features |= QStyleOptionButton::CommandLinkButton;
+        if (isFlat)
+            option.features |= QStyleOptionButton::Flat;
+        option.text = QString();
+        option.icon = QIcon();
 
-                // calculate angle at which handle needs to be drawn
-                const qreal angle( dialAngle( sliderOption, sliderOption->sliderPosition ) );
+        if (button->isChecked())
+            option.state |= State_On;
+        if (button->isDown())
+            option.state |= State_Sunken;
 
-                // groove rect
-                const QRectF grooveRect( insideMargin( rect, Metrics::Slider_ControlThickness/2 ) );
-                qreal radius( grooveRect.width()/2 );
+        // frame
+        drawControl(QStyle::CE_PushButton, &option, &painter, button);
 
-                // slider center
-                QPointF center( grooveRect.center() + QPointF( radius*std::cos( angle ), -radius*std::sin( angle ) ) );
+        // offset
+        const int margin(Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth);
+        QPoint offset(margin, margin);
 
-                // slider rect
-                QRect handleRect( 0, 0, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
-                handleRect.moveCenter( center.toPoint() );
-                return handleRect;
+        // state
+        const State &state(option.state);
+        const bool enabled(state & State_Enabled);
 
-            }
+        // icon
+        if (!button->icon().isNull()) {
+            const auto pixmapSize(button->icon().actualSize(button->iconSize()));
+            const QRect pixmapRect(QPoint(offset.x(), button->description().isEmpty() ? (button->height() - pixmapSize.height()) / 2 : offset.y()), pixmapSize);
+            const QPixmap pixmap(_helper->coloredIcon(button->icon(),
+                                                      button->palette(),
+                                                      pixmapSize,
+                                                      enabled ? QIcon::Normal : QIcon::Disabled,
+                                                      button->isChecked() ? QIcon::On : QIcon::Off));
+            drawItemPixmap(&painter, pixmapRect, Qt::AlignCenter, pixmap);
 
-            default: return ParentStyleClass::subControlRect( CC_Dial, option, subControl, widget );;
-
+            offset.rx() += pixmapSize.width() + Metrics::Button_ItemSpacing;
         }
 
-    }
+        // text rect
+        QRect textRect(offset, QSize(button->size().width() - offset.x() - margin, button->size().height() - 2 * margin));
+        const QPalette::ColorRole textRole = QPalette::ButtonText;
+        if (!button->text().isEmpty()) {
+            QFont font(button->font());
+            font.setBold(true);
+            painter.setFont(font);
+            if (button->description().isEmpty()) {
+                drawItemText(&painter, textRect, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole);
 
-    //___________________________________________________________________________________________________________________
-    QRect Style::sliderSubControlRect( const QStyleOptionComplex* option, SubControl subControl, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget );
-
-        switch( subControl )
-        {
-            case SC_SliderGroove:
-            {
-
-                // direction
-                const bool horizontal( sliderOption->orientation == Qt::Horizontal );
-
-                // get base class rect
-                auto grooveRect( ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget ) );
-                grooveRect = insideMargin( grooveRect, pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-
-                // centering
-                if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::Slider_GrooveThickness );
-                else grooveRect = centerRect( grooveRect, Metrics::Slider_GrooveThickness, grooveRect.height() );
-                return grooveRect;
-
+            } else {
+                drawItemText(&painter, textRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextHideMnemonic, button->palette(), enabled, button->text(), textRole);
+                textRect.setTop(textRect.top() + QFontMetrics(font).height());
             }
 
-            default: return ParentStyleClass::subControlRect( CC_Slider, option, subControl, widget );
+            painter.setFont(button->font());
         }
 
+        if (!button->description().isEmpty()) {
+            drawItemText(&painter, textRect, Qt::AlignLeft | Qt::AlignVCenter | Qt::TextWordWrap, button->palette(), enabled, button->description(), textRole);
+        }
+
+        return true;
     }
 
-    //______________________________________________________________
-    QSize Style::checkBoxSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    {
-        // get contents size
-        QSize size( contentsSize );
+    // continue with normal painting
+    return false;
+}
 
-        // add focus height
-        size = expandSize( size, 0, Metrics::CheckBox_FocusMarginWidth );
+//_____________________________________________________________________
+void Style::configurationChanged()
+{
+    // reload
+    StyleConfigData::self()->load();
 
-        // make sure there is enough height for indicator
-        size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
+    // reload configuration
+    loadConfiguration();
+}
 
-        // Add space for the indicator and the icon
-        size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing;
+//_____________________________________________________________________
+void Style::loadGlobalAnimationSettings()
+{
+    KSharedConfig::Ptr config = KSharedConfig::openConfig();
+    const KConfigGroup cg(config, QStringLiteral("KDE"));
 
-        // also add extra space, to leave room to the right of the label
-        size.rwidth() += Metrics::CheckBox_ItemSpacing;
-
-        return size;
-
+    // Don't override if it isn't set by the user
+    if (!cg.hasKey("AnimationDurationFactor")) {
+        return;
     }
 
-    //______________________________________________________________
-    QSize Style::lineEditSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
+    const int animationsDuration = cg.readEntry("AnimationDurationFactor", StyleConfigData::animationsDuration() / 100.0f) * 100;
+    if (animationsDuration > 0) {
+        StyleConfigData::setAnimationsDuration(animationsDuration);
+        StyleConfigData::setAnimationsEnabled(true);
+    } else {
+        StyleConfigData::setAnimationsEnabled(false);
+    }
+}
+
+//_____________________________________________________________________
+void Style::globalConfigurationChanged(int type, int arg)
+{
+    Q_UNUSED(arg);
+
+    // 3 == SettingsChanged, which is manually redefined in
+    // plasma-integration/src/platformtheme/khintssettings.h and fetched
+    // from KGlobalConfig in kdelibs4support in plasma-desktop/kcms/*,
+    // seems to be agreed on by everything in plasma is what sets the
+    // animation duration
+    if (type != 3) {
+        return;
+    }
+
+    // Reload the new values
+    loadGlobalAnimationSettings();
+
+    // reinitialize engines
+    _animations->setupEngines();
+}
+
+//____________________________________________________________________
+QIcon Style::standardIconImplementation(StandardPixmap standardPixmap, const QStyleOption *option, const QWidget *widget) const
+{
+    // lookup cache
+    if (_iconCache.contains(standardPixmap))
+        return _iconCache.value(standardPixmap);
+
+    QIcon icon;
+    switch (standardPixmap) {
+    case SP_TitleBarNormalButton:
+    case SP_TitleBarMinButton:
+    case SP_TitleBarMaxButton:
+    case SP_TitleBarCloseButton:
+    case SP_DockWidgetCloseButton:
+        icon = titleBarButtonIcon(standardPixmap, option, widget);
+        break;
+
+    case SP_ToolBarHorizontalExtensionButton:
+    case SP_ToolBarVerticalExtensionButton:
+        icon = toolBarExtensionIcon(standardPixmap, option, widget);
+        break;
+
+    default:
+        break;
+    }
+
+    if (icon.isNull()) {
+        // do not cache parent style icon, since it may change at runtime
+        return ParentStyleClass::standardIcon(standardPixmap, option, widget);
+
+    } else {
+        const_cast<IconCache *>(&_iconCache)->insert(standardPixmap, icon);
+        return icon;
+    }
+}
+
+//_____________________________________________________________________
+void Style::loadConfiguration()
+{
+    // load helper configuration
+    _helper->loadConfig();
+
+    loadGlobalAnimationSettings();
+
+    // reinitialize engines
+    _animations->setupEngines();
+    _windowManager->initialize();
+
+    // mnemonics
+    _mnemonics->setMode(StyleConfigData::mnemonicsMode());
+
+    // splitter proxy
+    _splitterFactory->setEnabled(StyleConfigData::splitterProxyEnabled());
+
+    // reset shadow tiles
+    _shadowHelper->loadConfig();
+
+    // set mdiwindow factory shadow tiles
+    _mdiWindowShadowFactory->setShadowHelper(_shadowHelper);
+
+    // clear icon cache
+    _iconCache.clear();
+
+    // scrollbar buttons
+    switch (StyleConfigData::scrollBarAddLineButtons()) {
+    case 0:
+        _addLineButtons = NoButton;
+        break;
+    case 1:
+        _addLineButtons = SingleButton;
+        break;
+
+    default:
+    case 2:
+        _addLineButtons = DoubleButton;
+        break;
+    }
+
+    switch (StyleConfigData::scrollBarSubLineButtons()) {
+    case 0:
+        _subLineButtons = NoButton;
+        break;
+    case 1:
+        _subLineButtons = SingleButton;
+        break;
+
+    default:
+    case 2:
+        _subLineButtons = DoubleButton;
+        break;
+    }
+
+    // frame focus
+    if (StyleConfigData::viewDrawFocusIndicator())
+        _frameFocusPrimitive = &Style::drawFrameFocusRectPrimitive;
+    else
+        _frameFocusPrimitive = &Style::emptyPrimitive;
+
+    // widget explorer
+    _widgetExplorer->setEnabled(StyleConfigData::widgetExplorerEnabled());
+    _widgetExplorer->setDrawWidgetRects(StyleConfigData::drawWidgetRects());
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::pushButtonContentsRect(const QStyleOption *option, const QWidget *) const
+{
+    return insideMargin(option->rect, Metrics::Frame_FrameWidth);
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::checkBoxContentsRect(const QStyleOption *option, const QWidget *) const
+{
+    return visualRect(option, option->rect.adjusted(Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0));
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::lineEditContentsRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto frameOption(qstyleoption_cast<const QStyleOptionFrame *>(option));
+    if (!frameOption)
+        return option->rect;
+
+    // check flatness
+    const bool flat(frameOption->lineWidth == 0);
+    if (flat)
+        return option->rect;
+
+    // copy rect and take out margins
+    auto rect(option->rect);
+
+    // take out margins if there is enough room
+    const int frameWidth(pixelMetric(PM_DefaultFrameWidth, option, widget));
+    if (rect.height() >= option->fontMetrics.height() + 2 * frameWidth)
+        return insideMargin(rect, frameWidth);
+    else
+        return rect;
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::progressBarGrooveRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return option->rect;
+
+    // get flags and orientation
+    const bool textVisible(progressBarOption->textVisible);
+    const bool busy(progressBarOption->minimum == 0 && progressBarOption->maximum == 0);
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+
+    // copy rectangle and adjust
+    auto rect(option->rect);
+    const int frameWidth(pixelMetric(PM_DefaultFrameWidth, option, widget));
+    if (horizontal)
+        rect = insideMargin(rect, frameWidth, 0);
+    else
+        rect = insideMargin(rect, 0, frameWidth);
+
+    if (textVisible && !busy && horizontal) {
+        auto textRect(subElementRect(SE_ProgressBarLabel, option, widget));
+        textRect = visualRect(option, textRect);
+        rect.setRight(textRect.left() - Metrics::ProgressBar_ItemSpacing - 1);
+        rect = visualRect(option, rect);
+        rect = centerRect(rect, rect.width(), Metrics::ProgressBar_Thickness);
+
+    } else if (horizontal) {
+        rect = centerRect(rect, rect.width(), Metrics::ProgressBar_Thickness);
+
+    } else {
+        rect = centerRect(rect, Metrics::ProgressBar_Thickness, rect.height());
+    }
+
+    return rect;
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::progressBarContentsRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return QRect();
+
+    // get groove rect
+    const auto rect(progressBarGrooveRect(option, widget));
+
+    // in busy mode, grooveRect is used
+    const bool busy(progressBarOption->minimum == 0 && progressBarOption->maximum == 0);
+    if (busy)
+        return rect;
+
+    // get orientation
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+
+    // check inverted appearance
+    const bool inverted(progressBarOption->invertedAppearance);
+
+    // get progress and steps
+    const qreal progress(progressBarOption->progress - progressBarOption->minimum);
+    const int steps(qMax(progressBarOption->maximum - progressBarOption->minimum, 1));
+
+    // Calculate width fraction
+    const qreal widthFrac = qMin(qreal(1), progress / steps);
+
+    // convert the pixel width
+    const int indicatorSize(widthFrac * (horizontal ? rect.width() : rect.height()));
+
+    QRect indicatorRect;
+    if (horizontal) {
+        indicatorRect = QRect(inverted ? (rect.right() - indicatorSize + 1) : rect.left(), rect.y(), indicatorSize, rect.height());
+        indicatorRect = visualRect(option->direction, rect, indicatorRect);
+
+    } else
+        indicatorRect = QRect(rect.x(), inverted ? rect.top() : (rect.bottom() - indicatorSize + 1), rect.width(), indicatorSize);
+
+    return indicatorRect;
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::frameContentsRect(const QStyleOption *option, const QWidget *widget) const
+{
+    if (widget) {
+        const auto borders = widget->property(PropertyNames::bordersSides);
+        if (borders.isValid() && borders.canConvert<Qt::Edges>()) {
+            const auto value = borders.value<Qt::Edges>();
+            auto rect = option->rect;
+
+            if (value & Qt::LeftEdge) {
+                rect.adjust(1, 0, 0, 0);
+            }
+            if (value & Qt::RightEdge) {
+                rect.adjust(0, 0, -1, 0);
+            }
+            if (value & Qt::TopEdge) {
+                rect.adjust(0, 1, 0, 0);
+            }
+            if (value & Qt::BottomEdge) {
+                rect.adjust(0, 0, 0, -1);
+            }
+
+            return rect;
+        }
+    }
+
+    if (!StyleConfigData::sidePanelDrawFrame() && qobject_cast<const QAbstractScrollArea *>(widget)
+        && widget->property(PropertyNames::sidePanelView).toBool()) {
+        // adjust margins for sidepanel widgets
+        return option->rect.adjusted(0, 0, -1, 0);
+
+    } else {
+        // base class implementation
+        return ParentStyleClass::subElementRect(SE_FrameContents, option, widget);
+    }
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::progressBarLabelRect(const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return QRect();
+
+    // get flags and check
+    const bool textVisible(progressBarOption->textVisible);
+    const bool busy(progressBarOption->minimum == 0 && progressBarOption->maximum == 0);
+    if (!textVisible || busy)
+        return QRect();
+
+    // get direction and check
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    if (!horizontal)
+        return QRect();
+
+    int textWidth = qMax(option->fontMetrics.size(_mnemonics->textFlags(), progressBarOption->text).width(),
+                         option->fontMetrics.size(_mnemonics->textFlags(), QStringLiteral("100%")).width());
+
+    auto rect(insideMargin(option->rect, Metrics::Frame_FrameWidth, 0));
+    rect.setLeft(rect.right() - textWidth + 1);
+    rect = visualRect(option, rect);
+
+    return rect;
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::headerArrowRect(const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto headerOption(qstyleoption_cast<const QStyleOptionHeader *>(option));
+    if (!headerOption)
+        return option->rect;
+
+    // check if arrow is necessary
+    if (headerOption->sortIndicator == QStyleOptionHeader::None)
+        return QRect();
+
+    auto arrowRect(insideMargin(option->rect, Metrics::Header_MarginWidth));
+    arrowRect.setLeft(arrowRect.right() - Metrics::Header_ArrowSize + 1);
+
+    return visualRect(option, arrowRect);
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::headerLabelRect(const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto headerOption(qstyleoption_cast<const QStyleOptionHeader *>(option));
+    if (!headerOption)
+        return option->rect;
+
+    // check if arrow is necessary
+    auto labelRect(insideMargin(option->rect, Metrics::Header_MarginWidth, 0));
+    if (headerOption->sortIndicator == QStyleOptionHeader::None)
+        return labelRect;
+
+    labelRect.adjust(0, 0, -Metrics::Header_ArrowSize - Metrics::Header_ItemSpacing, 0);
+    return visualRect(option, labelRect);
+}
+
+//____________________________________________________________________
+QRect Style::tabBarTabLeftButtonRect(const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    if (!tabOption || tabOption->leftButtonSize.isEmpty())
+        return QRect();
+
+    const auto rect(option->rect);
+    const QSize size(tabOption->leftButtonSize);
+    QRect buttonRect(QPoint(0, 0), size);
+
+    // vertical positioning
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        buttonRect.moveLeft(rect.left() + Metrics::TabBar_TabMarginWidth);
+        buttonRect.moveTop((rect.height() - buttonRect.height()) / 2);
+        buttonRect = visualRect(option, buttonRect);
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        buttonRect.moveTop(rect.top() + ((rect.height() - buttonRect.height()) / 2));
+        buttonRect.moveLeft((rect.width() - buttonRect.width()) / 2);
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        buttonRect.moveTop(rect.top() + ((rect.height() - buttonRect.height()) / 2));
+        buttonRect.moveLeft((rect.width() - buttonRect.width()) / 2);
+        break;
+
+    default:
+        break;
+    }
+
+    return buttonRect;
+}
+
+//____________________________________________________________________
+QRect Style::tabBarTabRightButtonRect(const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    if (!tabOption || tabOption->rightButtonSize.isEmpty())
+        return QRect();
+
+    const auto rect(option->rect);
+    const auto size(tabOption->rightButtonSize);
+    QRect buttonRect(QPoint(0, 0), size);
+
+    // vertical positioning
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        buttonRect.moveRight(rect.right() - Metrics::TabBar_TabMarginWidth);
+        buttonRect.moveTop((rect.height() - buttonRect.height()) / 2);
+        buttonRect = visualRect(option, buttonRect);
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        buttonRect.moveTop(rect.top() + Metrics::TabBar_TabMarginWidth);
+        buttonRect.moveLeft((rect.width() - buttonRect.width()) / 2);
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        buttonRect.moveBottom(rect.bottom() - Metrics::TabBar_TabMarginWidth);
+        buttonRect.moveLeft((rect.width() - buttonRect.width()) / 2);
+        break;
+
+    default:
+        break;
+    }
+
+    return buttonRect;
+}
+
+//____________________________________________________________________
+QRect Style::tabWidgetTabBarRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
+    if (!tabOption)
+        return ParentStyleClass::subElementRect(SE_TabWidgetTabBar, option, widget);
+
+    // do nothing if tabbar is hidden
+    const QSize tabBarSize(tabOption->tabBarSize);
+
+    auto rect(option->rect);
+    QRect tabBarRect(QPoint(0, 0), tabBarSize);
+
+    Qt::Alignment tabBarAlignment(styleHint(SH_TabBar_Alignment, option, widget));
+
+    // horizontal positioning
+    const bool verticalTabs(isVerticalTab(tabOption->shape));
+    if (verticalTabs) {
+        tabBarRect.setHeight(qMin(tabBarRect.height(), rect.height() - 2));
+        if (tabBarAlignment == Qt::AlignCenter)
+            tabBarRect.moveTop(rect.top() + (rect.height() - tabBarRect.height()) / 2);
+        else
+            tabBarRect.moveTop(rect.top() + 1);
+
+    } else {
+        // account for corner rects
+        // need to re-run visualRect to remove right-to-left handling, since it is re-added on tabBarRect at the end
+        const auto leftButtonRect(visualRect(option, subElementRect(SE_TabWidgetLeftCorner, option, widget)));
+        const auto rightButtonRect(visualRect(option, subElementRect(SE_TabWidgetRightCorner, option, widget)));
+
+        rect.setLeft(leftButtonRect.width());
+        rect.setRight(rightButtonRect.left() - 1);
+
+        tabBarRect.setWidth(qMin(tabBarRect.width(), rect.width() - 2));
+        if (tabBarAlignment == Qt::AlignCenter)
+            tabBarRect.moveLeft(rect.left() + (rect.width() - tabBarRect.width()) / 2);
+        else
+            tabBarRect.moveLeft(rect.left() + 1);
+
+        tabBarRect = visualRect(option, tabBarRect);
+    }
+
+    // expand the tab bar towards the frame to cover the frame's border
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        tabBarRect.moveTop(rect.top());
+        tabBarRect.setBottom(tabBarRect.bottom() + 1);
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        tabBarRect.moveBottom(rect.bottom());
+        tabBarRect.setTop(tabBarRect.top() - 1);
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        tabBarRect.moveLeft(rect.left());
+        tabBarRect.setRight(tabBarRect.right() + 1);
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        tabBarRect.moveRight(rect.right());
+        tabBarRect.setLeft(tabBarRect.left() - 1);
+        break;
+
+    default:
+        break;
+    }
+
+    return tabBarRect;
+}
+
+//____________________________________________________________________
+QRect Style::tabWidgetTabContentsRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
+    if (!tabOption)
+        return option->rect;
+
+    // do nothing if tabbar is hidden
+    if (tabOption->tabBarSize.isEmpty())
+        return option->rect;
+    const auto rect = tabWidgetTabPaneRect(option, widget);
+
+    const bool documentMode(tabOption->lineWidth == 0);
+    if (documentMode) {
+        // add margin only to the relevant side
+        switch (tabOption->shape) {
+        case QTabBar::RoundedNorth:
+        case QTabBar::TriangularNorth:
+            return rect.adjusted(0, Metrics::TabWidget_MarginWidth, 0, 0);
+
+        case QTabBar::RoundedSouth:
+        case QTabBar::TriangularSouth:
+            return rect.adjusted(0, 0, 0, -Metrics::TabWidget_MarginWidth);
+
+        case QTabBar::RoundedWest:
+        case QTabBar::TriangularWest:
+            return rect.adjusted(Metrics::TabWidget_MarginWidth, 0, 0, 0);
+
+        case QTabBar::RoundedEast:
+        case QTabBar::TriangularEast:
+            return rect.adjusted(0, 0, -Metrics::TabWidget_MarginWidth, 0);
+
+        default:
+            return rect;
+        }
+
+    } else
+        return insideMargin(rect, Metrics::TabWidget_MarginWidth);
+}
+
+//____________________________________________________________________
+QRect Style::tabWidgetTabPaneRect(const QStyleOption *option, const QWidget *) const
+{
+    const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
+    if (!tabOption || tabOption->tabBarSize.isEmpty())
+        return option->rect;
+
+    const int overlap = Metrics::TabBar_BaseOverlap - 1;
+    const QSize tabBarSize(tabOption->tabBarSize - QSize(overlap, overlap));
+
+    auto rect(option->rect);
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        rect.adjust(0, tabBarSize.height(), 0, 0);
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        rect.adjust(0, 0, 0, -tabBarSize.height());
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        rect.adjust(tabBarSize.width(), 0, 0, 0);
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        rect.adjust(0, 0, -tabBarSize.width(), 0);
+        break;
+
+    default:
+        return QRect();
+    }
+
+    return rect;
+}
+
+//____________________________________________________________________
+QRect Style::tabWidgetCornerRect(SubElement element, const QStyleOption *option, const QWidget *) const
+{
+    // cast option and check
+    const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
+    if (!tabOption)
+        return option->rect;
+
+    // do nothing if tabbar is hidden
+    const QSize tabBarSize(tabOption->tabBarSize);
+    if (tabBarSize.isEmpty())
+        return QRect();
+
+    // do nothing for vertical tabs
+    const bool verticalTabs(isVerticalTab(tabOption->shape));
+    if (verticalTabs)
+        return QRect();
+
+    const auto rect(option->rect);
+    QRect cornerRect;
+    switch (element) {
+    case SE_TabWidgetLeftCorner:
+        cornerRect = QRect(QPoint(0, 0), tabOption->leftCornerWidgetSize);
+        cornerRect.moveLeft(rect.left());
+        break;
+
+    case SE_TabWidgetRightCorner:
+        cornerRect = QRect(QPoint(0, 0), tabOption->rightCornerWidgetSize);
+        cornerRect.moveRight(rect.right());
+        break;
+
+    default:
+        break;
+    }
+
+    // expend height to tabBarSize, if needed, to make sure base is properly rendered
+    cornerRect.setHeight(qMax(cornerRect.height(), tabBarSize.height() + 1));
+
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        cornerRect.moveTop(rect.top());
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        cornerRect.moveBottom(rect.bottom());
+        break;
+
+    default:
+        break;
+    }
+
+    // return cornerRect;
+    cornerRect = visualRect(option, cornerRect);
+    return cornerRect;
+}
+
+//____________________________________________________________________
+QRect Style::toolBoxTabContentsRect(const QStyleOption *option, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolBoxOption(qstyleoption_cast<const QStyleOptionToolBox *>(option));
+    if (!toolBoxOption)
+        return option->rect;
+
+    // copy rect
+    const auto &rect(option->rect);
+
+    int contentsWidth(0);
+    if (!toolBoxOption->icon.isNull()) {
+        const int iconSize(pixelMetric(QStyle::PM_SmallIconSize, option, widget));
+        contentsWidth += iconSize;
+
+        if (!toolBoxOption->text.isEmpty())
+            contentsWidth += Metrics::ToolBox_TabItemSpacing;
+    }
+
+    if (!toolBoxOption->text.isEmpty()) {
+        const int textWidth = toolBoxOption->fontMetrics.size(_mnemonics->textFlags(), toolBoxOption->text).width();
+        contentsWidth += textWidth;
+    }
+
+    contentsWidth += 2 * Metrics::ToolBox_TabMarginWidth;
+    contentsWidth = qMin(contentsWidth, rect.width());
+    contentsWidth = qMax(contentsWidth, int(Metrics::ToolBox_TabMinWidth));
+    return centerRect(rect, contentsWidth, rect.height());
+}
+
+//____________________________________________________________________
+QRect Style::genericLayoutItemRect(const QStyleOption *option, const QWidget *) const
+{
+    return insideMargin(option->rect, -Metrics::Frame_FrameWidth);
+}
+
+//______________________________________________________________
+QRect Style::groupBoxSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    QRect rect = option->rect;
+    switch (subControl) {
+    case SC_GroupBoxFrame:
+        return rect;
+
+    case SC_GroupBoxContents: {
         // cast option and check
-        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
-        if( !frameOption ) return contentsSize;
+        const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>(option);
+        if (!groupBoxOption)
+            break;
 
-        const bool flat( frameOption->lineWidth == 0 );
-        const int frameWidth( pixelMetric( PM_DefaultFrameWidth, option, widget ) );
-        return flat ? contentsSize : expandSize( contentsSize, frameWidth );
+        // take out frame width
+        rect = insideMargin(rect, Metrics::Frame_FrameWidth);
+
+        // get state
+        const bool checkable(groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox);
+        const bool emptyText(groupBoxOption->text.isEmpty());
+
+        // calculate title height
+        int titleHeight(0);
+        if (!emptyText)
+            titleHeight = groupBoxOption->fontMetrics.height();
+        if (checkable)
+            titleHeight = qMax(titleHeight, int(Metrics::CheckBox_Size));
+
+        // add margin
+        if (titleHeight > 0)
+            titleHeight += 2 * Metrics::GroupBox_TitleMarginWidth;
+
+        rect.adjust(0, titleHeight, 0, 0);
+        return rect;
     }
 
-    //______________________________________________________________
-    QSize Style::comboBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-
+    case SC_GroupBoxCheckBox:
+    case SC_GroupBoxLabel: {
         // cast option and check
-        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
-        if( !comboBoxOption ) return contentsSize;
+        const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>(option);
+        if (!groupBoxOption)
+            break;
 
-        // copy size
-        QSize size( contentsSize );
+        // take out frame width
+        rect = insideMargin(rect, Metrics::Frame_FrameWidth);
 
-        // add relevant margin
-        const bool flat( !comboBoxOption->frame );
-        const int frameWidth( pixelMetric( PM_ComboBoxFrameWidth, option, widget ) );
-        if( !flat ) size = expandSize( size, frameWidth );
+        const bool emptyText(groupBoxOption->text.isEmpty());
+        const bool checkable(groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox);
 
-        // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
+        // calculate title height
+        int titleHeight(0);
+        int titleWidth(0);
+        if (!emptyText) {
+            const QFontMetrics fontMetrics = option->fontMetrics;
+            titleHeight = qMax(titleHeight, fontMetrics.height());
+            titleWidth += fontMetrics.size(_mnemonics->textFlags(), groupBoxOption->text).width();
+        }
 
-        // add button width and spacing
-        size.rwidth() += Metrics::MenuButton_IndicatorWidth+2;
-        size.rwidth() += Metrics::Button_ItemSpacing;
+        if (checkable) {
+            titleHeight = qMax(titleHeight, int(Metrics::CheckBox_Size));
+            titleWidth += Metrics::CheckBox_Size;
+            if (!emptyText)
+                titleWidth += Metrics::CheckBox_ItemSpacing;
+        }
 
-        return size;
+        // adjust height
+        auto titleRect(rect);
+        titleRect.setHeight(titleHeight);
+        titleRect.translate(0, Metrics::GroupBox_TitleMarginWidth);
 
+        // center
+        titleRect = centerRect(titleRect, titleWidth, titleHeight);
+
+        if (subControl == SC_GroupBoxCheckBox) {
+            // vertical centering
+            titleRect = centerRect(titleRect, titleWidth, Metrics::CheckBox_Size);
+
+            // horizontal positioning
+            const QRect subRect(titleRect.topLeft(), QSize(Metrics::CheckBox_Size, titleRect.height()));
+            return visualRect(option->direction, titleRect, subRect);
+
+        } else {
+            // vertical centering
+            QFontMetrics fontMetrics = option->fontMetrics;
+            titleRect = centerRect(titleRect, titleWidth, fontMetrics.height());
+
+            // horizontal positioning
+            auto subRect(titleRect);
+            if (checkable)
+                subRect.adjust(Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing, 0, 0, 0);
+            return visualRect(option->direction, titleRect, subRect);
+        }
     }
 
-    //______________________________________________________________
-    QSize Style::spinBoxSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
+    default:
+        break;
+    }
 
-        // cast option and check
-        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
-        if( !spinBoxOption ) return contentsSize;
+    return ParentStyleClass::subControlRect(CC_GroupBox, option, subControl, widget);
+}
 
-        const bool flat( !spinBoxOption->frame );
+//___________________________________________________________________________________________________________________
+QRect Style::toolButtonSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton *>(option);
+    if (!toolButtonOption)
+        return ParentStyleClass::subControlRect(CC_ToolButton, option, subControl, widget);
 
-        // copy size
-        QSize size( contentsSize );
+    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
 
-        // add editor margins
-        const int frameWidth( pixelMetric( PM_SpinBoxFrameWidth, option, widget ) );
-        if( !flat ) size = expandSize( size, frameWidth );
+    // store rect
+    const auto &rect(option->rect);
+    const int menuButtonWidth(Metrics::MenuButton_IndicatorWidth);
+    switch (subControl) {
+    case SC_ToolButtonMenu: {
+        // check features
+        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::None)
+            return QRect();
 
-        // make sure there is enough height for the button
-        size.setHeight( qMax( size.height(), int(Metrics::SpinBox_ArrowButtonWidth) ) );
+        // check features
+        auto menuRect(rect);
+        menuRect.setLeft(rect.right() - menuButtonWidth + 1);
+        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
+            menuRect.setTop(menuRect.bottom() - menuButtonWidth + 1);
+        }
 
-        // add button width and spacing
+        return visualRect(option, menuRect);
+    }
+
+    case SC_ToolButton: {
+        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+            auto contentsRect(rect);
+            contentsRect.setRight(rect.right() - menuButtonWidth);
+            return visualRect(option, contentsRect);
+
+        } else
+            return rect;
+    }
+
+    default:
+        return QRect();
+    }
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::comboBoxSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto comboBoxOption(qstyleoption_cast<const QStyleOptionComboBox *>(option));
+    if (!comboBoxOption)
+        return ParentStyleClass::subControlRect(CC_ComboBox, option, subControl, widget);
+
+    const bool editable(comboBoxOption->editable);
+    const bool flat(editable && !comboBoxOption->frame);
+
+    // copy rect
+    auto rect(option->rect);
+
+    switch (subControl) {
+    case SC_ComboBoxFrame:
+        return flat ? rect : QRect();
+    case SC_ComboBoxListBoxPopup:
+        return rect;
+
+    case SC_ComboBoxArrow: {
+        // take out frame width
+        if (!flat)
+            rect = insideMargin(rect, Metrics::Frame_FrameWidth);
+
+        QRect arrowRect(rect.right() - Metrics::MenuButton_IndicatorWidth + 1, rect.top(), Metrics::MenuButton_IndicatorWidth, rect.height());
+
+        arrowRect = centerRect(arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth);
+        return visualRect(option, arrowRect);
+    }
+
+    case SC_ComboBoxEditField: {
+        QRect labelRect;
+        const int frameWidth(pixelMetric(PM_ComboBoxFrameWidth, option, widget));
+        labelRect = QRect(rect.left(), rect.top(), rect.width() - Metrics::MenuButton_IndicatorWidth, rect.height());
+
+        // remove margins
+        if (!flat && rect.height() >= option->fontMetrics.height() + 2 * frameWidth) {
+            labelRect.adjust(frameWidth, frameWidth, 0, -frameWidth);
+        }
+
+        return visualRect(option, labelRect);
+    }
+
+    default:
+        break;
+    }
+
+    return ParentStyleClass::subControlRect(CC_ComboBox, option, subControl, widget);
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::spinBoxSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto spinBoxOption(qstyleoption_cast<const QStyleOptionSpinBox *>(option));
+    if (!spinBoxOption)
+        return ParentStyleClass::subControlRect(CC_SpinBox, option, subControl, widget);
+    const bool flat(!spinBoxOption->frame);
+
+    // copy rect
+    auto rect(option->rect);
+
+    switch (subControl) {
+    case SC_SpinBoxFrame:
+        return flat ? QRect() : rect;
+
+    case SC_SpinBoxUp:
+    case SC_SpinBoxDown: {
+        // take out frame width
+        if (!flat && rect.height() >= 2 * Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth)
+            rect = insideMargin(rect, Metrics::Frame_FrameWidth);
+
+        QRect arrowRect;
+        arrowRect = QRect(rect.right() - Metrics::SpinBox_ArrowButtonWidth + 1, rect.top(), Metrics::SpinBox_ArrowButtonWidth, rect.height());
+
+        const int arrowHeight(qMin(rect.height(), int(Metrics::SpinBox_ArrowButtonWidth)));
+        arrowRect = centerRect(arrowRect, Metrics::SpinBox_ArrowButtonWidth, arrowHeight);
+        arrowRect.setHeight(arrowHeight / 2);
+        if (subControl == SC_SpinBoxDown)
+            arrowRect.translate(0, arrowHeight / 2);
+
+        return visualRect(option, arrowRect);
+    }
+
+    case SC_SpinBoxEditField: {
         const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
-        if( showButtons ) size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
 
-        return size;
+        QRect labelRect = rect;
+        if (showButtons) {
+            labelRect.setRight(rect.right() - Metrics::SpinBox_ArrowButtonWidth);
+        }
 
+        // remove right side line editor margins
+        const int frameWidth(pixelMetric(PM_SpinBoxFrameWidth, option, widget));
+        if (!flat && labelRect.height() >= option->fontMetrics.height() + 2 * frameWidth) {
+            labelRect.adjust(frameWidth, frameWidth, showButtons ? 0 : -frameWidth, -frameWidth);
+        }
+
+        return visualRect(option, labelRect);
     }
 
-    //______________________________________________________________
-    QSize Style::sliderSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
+    default:
+        break;
+    }
 
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return contentsSize;
+    return ParentStyleClass::subControlRect(CC_SpinBox, option, subControl, widget);
+}
 
-        // store tick position and orientation
-        const QSlider::TickPosition& tickPosition( sliderOption->tickPosition );
-        const bool horizontal( sliderOption->orientation == Qt::Horizontal );
-        const bool disableTicks( !StyleConfigData::sliderDrawTickMarks() );
+//___________________________________________________________________________________________________________________
+QRect Style::scrollBarInternalSubControlRect(const QStyleOptionComplex *option, SubControl subControl) const
+{
+    const auto &rect = option->rect;
+    const State &state(option->state);
+    const bool horizontal(state & State_Horizontal);
 
-        // do nothing if no ticks are requested
-        if( tickPosition == QSlider::NoTicks ) return contentsSize;
+    switch (subControl) {
+    case SC_ScrollBarSubLine: {
+        int majorSize(scrollBarButtonHeight(_subLineButtons));
+        if (horizontal)
+            return visualRect(option, QRect(rect.left(), rect.top(), majorSize, rect.height()));
+        else
+            return visualRect(option, QRect(rect.left(), rect.top(), rect.width(), majorSize));
+    }
 
+    case SC_ScrollBarAddLine: {
+        int majorSize(scrollBarButtonHeight(_addLineButtons));
+        if (horizontal)
+            return visualRect(option, QRect(rect.right() - majorSize + 1, rect.top(), majorSize, rect.height()));
+        else
+            return visualRect(option, QRect(rect.left(), rect.bottom() - majorSize + 1, rect.width(), majorSize));
+    }
+
+    default:
+        return QRect();
+    }
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return ParentStyleClass::subControlRect(CC_ScrollBar, option, subControl, widget);
+
+    // get relevant state
+    const State &state(option->state);
+    const bool horizontal(state & State_Horizontal);
+
+    switch (subControl) {
+    case SC_ScrollBarSubLine:
+    case SC_ScrollBarAddLine:
+        return scrollBarInternalSubControlRect(option, subControl);
+
+    case SC_ScrollBarGroove: {
+        auto topRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarSubLine));
+        auto bottomRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarAddLine));
+
+        QPoint topLeftCorner;
+        QPoint botRightCorner;
+
+        if (horizontal) {
+            topLeftCorner = QPoint(topRect.right() + 1, topRect.top());
+            botRightCorner = QPoint(bottomRect.left() - 1, topRect.bottom());
+
+        } else {
+            topLeftCorner = QPoint(topRect.left(), topRect.bottom() + 1);
+            botRightCorner = QPoint(topRect.right(), bottomRect.top() - 1);
+        }
+
+        // define rect
+        return visualRect(option, QRect(topLeftCorner, botRightCorner));
+    }
+
+    case SC_ScrollBarSlider: {
+        // handle RTL here to unreflect things if need be
+        auto groove = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget));
+
+        if (sliderOption->minimum == sliderOption->maximum)
+            return groove;
+
+        // Figure out how much room there is
+        int space(horizontal ? groove.width() : groove.height());
+
+        // Calculate the portion of this space that the slider should occupy
+        int sliderSize = space * qreal(sliderOption->pageStep) / (sliderOption->maximum - sliderOption->minimum + sliderOption->pageStep);
+        sliderSize = qMax(sliderSize, static_cast<int>(Metrics::ScrollBar_MinSliderHeight));
+        sliderSize = qMin(sliderSize, space);
+
+        space -= sliderSize;
+        if (space <= 0)
+            return groove;
+
+        int pos = qRound(qreal(sliderOption->sliderPosition - sliderOption->minimum) / (sliderOption->maximum - sliderOption->minimum) * space);
+        if (sliderOption->upsideDown)
+            pos = space - pos;
+        if (horizontal)
+            return visualRect(option, QRect(groove.left() + pos, groove.top(), sliderSize, groove.height()));
+        else
+            return visualRect(option, QRect(groove.left(), groove.top() + pos, groove.width(), sliderSize));
+    }
+
+    case SC_ScrollBarSubPage: {
+        // handle RTL here to unreflect things if need be
+        auto slider = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget));
+        auto groove = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget));
+
+        if (horizontal)
+            return visualRect(option, QRect(groove.left(), groove.top(), slider.left() - groove.left(), groove.height()));
+        else
+            return visualRect(option, QRect(groove.left(), groove.top(), groove.width(), slider.top() - groove.top()));
+    }
+
+    case SC_ScrollBarAddPage: {
+        // handle RTL here to unreflect things if need be
+        auto slider = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarSlider, widget));
+        auto groove = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget));
+
+        if (horizontal)
+            return visualRect(option, QRect(slider.right() + 1, groove.top(), groove.right() - slider.right(), groove.height()));
+        else
+            return visualRect(option, QRect(groove.left(), slider.bottom() + 1, groove.width(), groove.bottom() - slider.bottom()));
+    }
+
+    default:
+        return ParentStyleClass::subControlRect(CC_ScrollBar, option, subControl, widget);
+        ;
+    }
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::dialSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return ParentStyleClass::subControlRect(CC_Dial, option, subControl, widget);
+
+    // adjust rect to be square, and centered
+    auto rect(option->rect);
+    const int dimension(qMin(rect.width(), rect.height()));
+    rect = centerRect(rect, dimension, dimension);
+
+    switch (subControl) {
+    case QStyle::SC_DialGroove:
+        return insideMargin(rect, (Metrics::Slider_ControlThickness - Metrics::Slider_GrooveThickness) / 2);
+    case QStyle::SC_DialHandle: {
+        // calculate angle at which handle needs to be drawn
+        const qreal angle(dialAngle(sliderOption, sliderOption->sliderPosition));
+
+        // groove rect
+        const QRectF grooveRect(insideMargin(rect, Metrics::Slider_ControlThickness / 2));
+        qreal radius(grooveRect.width() / 2);
+
+        // slider center
+        QPointF center(grooveRect.center() + QPointF(radius * std::cos(angle), -radius * std::sin(angle)));
+
+        // slider rect
+        QRect handleRect(0, 0, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness);
+        handleRect.moveCenter(center.toPoint());
+        return handleRect;
+    }
+
+    default:
+        return ParentStyleClass::subControlRect(CC_Dial, option, subControl, widget);
+        ;
+    }
+}
+
+//___________________________________________________________________________________________________________________
+QRect Style::sliderSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return ParentStyleClass::subControlRect(CC_Slider, option, subControl, widget);
+
+    switch (subControl) {
+    case SC_SliderGroove: {
+        // direction
+        const bool horizontal(sliderOption->orientation == Qt::Horizontal);
+
+        // get base class rect
+        auto grooveRect(ParentStyleClass::subControlRect(CC_Slider, option, subControl, widget));
+        grooveRect = insideMargin(grooveRect, pixelMetric(PM_DefaultFrameWidth, option, widget));
+
+        // centering
+        if (horizontal)
+            grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::Slider_GrooveThickness);
+        else
+            grooveRect = centerRect(grooveRect, Metrics::Slider_GrooveThickness, grooveRect.height());
+        return grooveRect;
+    }
+
+    default:
+        return ParentStyleClass::subControlRect(CC_Slider, option, subControl, widget);
+    }
+}
+
+//______________________________________________________________
+QSize Style::checkBoxSizeFromContents(const QStyleOption *, const QSize &contentsSize, const QWidget *) const
+{
+    // get contents size
+    QSize size(contentsSize);
+
+    // add focus height
+    size = expandSize(size, 0, Metrics::CheckBox_FocusMarginWidth);
+
+    // make sure there is enough height for indicator
+    size.setHeight(qMax(size.height(), int(Metrics::CheckBox_Size)));
+
+    // Add space for the indicator and the icon
+    size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing;
+
+    // also add extra space, to leave room to the right of the label
+    size.rwidth() += Metrics::CheckBox_ItemSpacing;
+
+    return size;
+}
+
+//______________________________________________________________
+QSize Style::lineEditSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto frameOption(qstyleoption_cast<const QStyleOptionFrame *>(option));
+    if (!frameOption)
+        return contentsSize;
+
+    const bool flat(frameOption->lineWidth == 0);
+    const int frameWidth(pixelMetric(PM_DefaultFrameWidth, option, widget));
+    return flat ? contentsSize : expandSize(contentsSize, frameWidth);
+}
+
+//______________________________________________________________
+QSize Style::comboBoxSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto comboBoxOption(qstyleoption_cast<const QStyleOptionComboBox *>(option));
+    if (!comboBoxOption)
+        return contentsSize;
+
+    // copy size
+    QSize size(contentsSize);
+
+    // add relevant margin
+    const bool flat(!comboBoxOption->frame);
+    const int frameWidth(pixelMetric(PM_ComboBoxFrameWidth, option, widget));
+    if (!flat)
+        size = expandSize(size, frameWidth);
+
+    // make sure there is enough height for the button
+    size.setHeight(qMax(size.height(), int(Metrics::MenuButton_IndicatorWidth)));
+
+    // add button width and spacing
+    size.rwidth() += Metrics::MenuButton_IndicatorWidth + 2;
+    size.rwidth() += Metrics::Button_ItemSpacing;
+
+    return size;
+}
+
+//______________________________________________________________
+QSize Style::spinBoxSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto spinBoxOption(qstyleoption_cast<const QStyleOptionSpinBox *>(option));
+    if (!spinBoxOption)
+        return contentsSize;
+
+    const bool flat(!spinBoxOption->frame);
+
+    // copy size
+    QSize size(contentsSize);
+
+    // add editor margins
+    const int frameWidth(pixelMetric(PM_SpinBoxFrameWidth, option, widget));
+    if (!flat)
+        size = expandSize(size, frameWidth);
+
+    // make sure there is enough height for the button
+    size.setHeight(qMax(size.height(), int(Metrics::SpinBox_ArrowButtonWidth)));
+
+    // add button width and spacing
+    const bool showButtons = spinBoxOption->buttonSymbols != QAbstractSpinBox::NoButtons;
+    if (showButtons)
+        size.rwidth() += Metrics::SpinBox_ArrowButtonWidth;
+
+    return size;
+}
+
+//______________________________________________________________
+QSize Style::sliderSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return contentsSize;
+
+    // store tick position and orientation
+    const QSlider::TickPosition &tickPosition(sliderOption->tickPosition);
+    const bool horizontal(sliderOption->orientation == Qt::Horizontal);
+    const bool disableTicks(!StyleConfigData::sliderDrawTickMarks());
+
+    // do nothing if no ticks are requested
+    if (tickPosition == QSlider::NoTicks)
+        return contentsSize;
+
+    /*
+     * Qt adds its own tick length directly inside QSlider.
+     * Take it out and replace by ours, if needed
+     */
+    const int tickLength(disableTicks ? 0
+                                      : (Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth
+                                         + (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness) / 2));
+
+    const int builtInTickLength(5);
+
+    QSize size(contentsSize);
+    if (horizontal) {
+        if (tickPosition & QSlider::TicksAbove)
+            size.rheight() += tickLength - builtInTickLength;
+        if (tickPosition & QSlider::TicksBelow)
+            size.rheight() += tickLength - builtInTickLength;
+
+    } else {
+        if (tickPosition & QSlider::TicksAbove)
+            size.rwidth() += tickLength - builtInTickLength;
+        if (tickPosition & QSlider::TicksBelow)
+            size.rwidth() += tickLength - builtInTickLength;
+    }
+
+    return size;
+}
+
+//______________________________________________________________
+QSize Style::pushButtonSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto buttonOption(qstyleoption_cast<const QStyleOptionButton *>(option));
+    if (!buttonOption)
+        return contentsSize;
+
+    // output
+    QSize size;
+
+    // check text and icon
+    const bool hasText(!buttonOption->text.isEmpty());
+    const bool flat(buttonOption->features & QStyleOptionButton::Flat);
+    bool hasIcon(!buttonOption->icon.isNull());
+
+    if (!(hasText || hasIcon)) {
         /*
-         * Qt adds its own tick length directly inside QSlider.
-         * Take it out and replace by ours, if needed
-         */
-        const int tickLength( disableTicks ? 0 : (
-            Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth +
-            (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness)/2 ) );
+        no text nor icon is passed.
+        assume custom button and use contentsSize as a starting point
+        */
+        size = contentsSize;
 
-        const int builtInTickLength( 5 );
-
-        QSize size( contentsSize );
-        if( horizontal )
-        {
-
-            if(tickPosition & QSlider::TicksAbove) size.rheight() += tickLength - builtInTickLength;
-            if(tickPosition & QSlider::TicksBelow) size.rheight() += tickLength - builtInTickLength;
-
-        } else {
-
-            if(tickPosition & QSlider::TicksAbove) size.rwidth() += tickLength - builtInTickLength;
-            if(tickPosition & QSlider::TicksBelow) size.rwidth() += tickLength - builtInTickLength;
-
-        }
-
-        return size;
-
-    }
-
-    //______________________________________________________________
-    QSize Style::pushButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
-        if( !buttonOption ) return contentsSize;
-
-        // output
-        QSize size;
-
-        // check text and icon
-        const bool hasText( !buttonOption->text.isEmpty() );
-        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
-        bool hasIcon( !buttonOption->icon.isNull() );
-
-        if( !( hasText||hasIcon ) )
-        {
-
-            /*
-            no text nor icon is passed.
-            assume custom button and use contentsSize as a starting point
-            */
-            size = contentsSize;
-
-        } else {
-
-            /*
-            rather than trying to guess what Qt puts into its contents size calculation,
-            we recompute the button size entirely, based on button option
-            this ensures consistency with the rendering stage
-            */
-
-            // update has icon to honour showIconsOnPushButtons, when possible
-            hasIcon &= (showIconsOnPushButtons() || flat || !hasText );
-
-            // text
-            if( hasText ) size = buttonOption->fontMetrics.size( Qt::TextShowMnemonic, buttonOption->text );
-
-            // icon
-            if( hasIcon )
-            {
-                QSize iconSize = buttonOption->iconSize;
-                if( !iconSize.isValid() ) iconSize = QSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
-
-                size.setHeight( qMax( size.height(), iconSize.height() ) );
-                size.rwidth() += iconSize.width();
-
-                if( hasText ) size.rwidth() += Metrics::Button_ItemSpacing;
-            }
-
-        }
-
-        // menu
-        const bool hasMenu( buttonOption->features & QStyleOptionButton::HasMenu );
-        if( hasMenu )
-        {
-            size.rwidth() += Metrics::MenuButton_IndicatorWidth;
-            if( hasText||hasIcon ) size.rwidth() += Metrics::Button_ItemSpacing;
-        }
-
-        // expand with buttons margin
-        size = expandSize( size, Metrics::Button_MarginWidth );
-
-        // make sure buttons have a minimum width
-        if( hasText )
-        { size.setWidth( qMax( size.width(), int( Metrics::Button_MinWidth ) ) ); }
-
-        // finally add frame margins
-        return expandSize( size, Metrics::Frame_FrameWidth );
-
-    }
-
-    static QStyleOptionToolButton toolButtonMenuTitleOption( const QStyleOptionToolButton &option )
-    {
-        QStyleOptionToolButton copy = QStyleOptionToolButton( option );
-        copy.font.setBold( false );
-        copy.state = Style::State_Enabled;
-        return copy;
-    }
-
-    static QFont menuTitleFont( const QStyleOptionToolButton &option )
-    {
-        auto font = option.font;
-        font.setPointSize( qRound( font.pointSize() * 1.1 ) );
-        return font;
-    }
-
-    //______________________________________________________________
-    QSize Style::toolButtonSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-        // cast option and check
-        const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton*>( option );
-        if( !toolButtonOption ) return contentsSize;
-
-        // copy size
-        QSize size = contentsSize;
-
-        if( isMenuTitle( widget ) )
-        {
-            const QStyleOptionToolButton copy = toolButtonMenuTitleOption( *toolButtonOption );
-            const QFontMetrics fm(menuTitleFont(copy));
-            size.setWidth(std::max(size.width(), fm.size(Qt::TextShowMnemonic, copy.text).width()));
-        }
-
-        // get relevant state flags
-        const State& state( option->state );
-        const bool autoRaise( state & State_AutoRaise );
-
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
-        if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
-        {
-            size.rwidth() += Metrics::MenuButton_IndicatorWidth;
-        }
-
-        const int marginWidth( autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth );
-
-        size = expandSize( size, marginWidth );
-
-        return size;
-
-    }
-
-    //______________________________________________________________
-    QSize Style::menuBarItemSizeFromContents( const QStyleOption*, const QSize& contentsSize, const QWidget* ) const
-    {
-
-        return expandSize( contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight );
-
-    }
-
-    //______________________________________________________________
-    QSize Style::menuItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
-        if( !menuItemOption ) return contentsSize;
-
+    } else {
         /*
-         * First calculate the intrinsic size of the item.
-         * this must be kept consistent with what's in drawMenuItemControl
+        rather than trying to guess what Qt puts into its contents size calculation,
+        we recompute the button size entirely, based on button option
+        this ensures consistency with the rendering stage
+        */
+
+        // update has icon to honour showIconsOnPushButtons, when possible
+        hasIcon &= (showIconsOnPushButtons() || flat || !hasText);
+
+        // text
+        if (hasText)
+            size = buttonOption->fontMetrics.size(Qt::TextShowMnemonic, buttonOption->text);
+
+        // icon
+        if (hasIcon) {
+            QSize iconSize = buttonOption->iconSize;
+            if (!iconSize.isValid())
+                iconSize = QSize(pixelMetric(PM_SmallIconSize, option, widget), pixelMetric(PM_SmallIconSize, option, widget));
+
+            size.setHeight(qMax(size.height(), iconSize.height()));
+            size.rwidth() += iconSize.width();
+
+            if (hasText)
+                size.rwidth() += Metrics::Button_ItemSpacing;
+        }
+    }
+
+    // menu
+    const bool hasMenu(buttonOption->features & QStyleOptionButton::HasMenu);
+    if (hasMenu) {
+        size.rwidth() += Metrics::MenuButton_IndicatorWidth;
+        if (hasText || hasIcon)
+            size.rwidth() += Metrics::Button_ItemSpacing;
+    }
+
+    // expand with buttons margin
+    size = expandSize(size, Metrics::Button_MarginWidth);
+
+    // make sure buttons have a minimum width
+    if (hasText) {
+        size.setWidth(qMax(size.width(), int(Metrics::Button_MinWidth)));
+    }
+
+    // finally add frame margins
+    return expandSize(size, Metrics::Frame_FrameWidth);
+}
+
+static QStyleOptionToolButton toolButtonMenuTitleOption(const QStyleOptionToolButton &option)
+{
+    QStyleOptionToolButton copy = QStyleOptionToolButton(option);
+    copy.font.setBold(false);
+    copy.state = Style::State_Enabled;
+    return copy;
+}
+
+static QFont menuTitleFont(const QStyleOptionToolButton &option)
+{
+    auto font = option.font;
+    font.setPointSize(qRound(font.pointSize() * 1.1));
+    return font;
+}
+
+//______________________________________________________________
+QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton *>(option);
+    if (!toolButtonOption)
+        return contentsSize;
+
+    // copy size
+    QSize size = contentsSize;
+
+    if (isMenuTitle(widget)) {
+        const QStyleOptionToolButton copy = toolButtonMenuTitleOption(*toolButtonOption);
+        const QFontMetrics fm(menuTitleFont(copy));
+        size.setWidth(std::max(size.width(), fm.size(Qt::TextShowMnemonic, copy.text).width()));
+    }
+
+    // get relevant state flags
+    const State &state(option->state);
+    const bool autoRaise(state & State_AutoRaise);
+
+    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
+    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+        size.rwidth() += Metrics::MenuButton_IndicatorWidth;
+    }
+
+    const int marginWidth(autoRaise ? Metrics::ToolButton_MarginWidth : Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth);
+
+    size = expandSize(size, marginWidth);
+
+    return size;
+}
+
+//______________________________________________________________
+QSize Style::menuBarItemSizeFromContents(const QStyleOption *, const QSize &contentsSize, const QWidget *) const
+{
+    return expandSize(contentsSize, Metrics::MenuBarItem_MarginWidth, Metrics::MenuBarItem_MarginHeight);
+}
+
+//______________________________________________________________
+QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem *>(option);
+    if (!menuItemOption)
+        return contentsSize;
+
+    /*
+     * First calculate the intrinsic size of the item.
+     * this must be kept consistent with what's in drawMenuItemControl
+     */
+    QSize size(contentsSize);
+    switch (menuItemOption->menuItemType) {
+    case QStyleOptionMenuItem::Normal:
+    case QStyleOptionMenuItem::DefaultItem:
+    case QStyleOptionMenuItem::SubMenu: {
+        int iconWidth = 0;
+        if (showIconsInMenuItems())
+            iconWidth = isQtQuickControl(option, widget) ? qMax(pixelMetric(PM_SmallIconSize, option, widget), menuItemOption->maxIconWidth)
+                                                         : menuItemOption->maxIconWidth;
+
+        int leftColumnWidth = 0;
+
+        // add icon width
+        if (iconWidth > 0) {
+            leftColumnWidth += iconWidth + Metrics::MenuItem_ItemSpacing;
+        }
+
+        // add checkbox indicator width
+        if (menuItemOption->menuHasCheckableItems) {
+            leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_ItemSpacing;
+        }
+
+        // add spacing for accelerator
+        /*
+         * Note:
+         * The width of the accelerator itself is not included here since
+         * Qt will add that on separately after obtaining the
+         * sizeFromContents() for each menu item in the menu to be shown
+         * ( see QMenuPrivate::calcActionRects() )
          */
-        QSize size( contentsSize );
-        switch( menuItemOption->menuItemType )
-        {
+        const bool hasAccelerator(menuItemOption->text.indexOf(QLatin1Char('\t')) >= 0);
+        if (hasAccelerator)
+            size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
 
-            case QStyleOptionMenuItem::Normal:
-            case QStyleOptionMenuItem::DefaultItem:
-            case QStyleOptionMenuItem::SubMenu:
-            {
+        // right column
+        const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_ItemSpacing;
+        size.rwidth() += leftColumnWidth + rightColumnWidth;
 
-                int iconWidth = 0;
-                if( showIconsInMenuItems() ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
+        // make sure height is large enough for icon and arrow
+        size.setHeight(qMax(size.height(), int(Metrics::MenuButton_IndicatorWidth)));
+        size.setHeight(qMax(size.height(), int(Metrics::CheckBox_Size)));
+        size.setHeight(qMax(size.height(), iconWidth));
+        return expandSize(size, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight);
+    }
 
-                int leftColumnWidth = 0;
+    case QStyleOptionMenuItem::Separator: {
+        if (menuItemOption->text.isEmpty() && menuItemOption->icon.isNull()) {
+            return expandSize(QSize(0, 1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_SeparatorPadding);
 
-                // add icon width
-                if( iconWidth > 0 )
-                { leftColumnWidth += iconWidth + Metrics::MenuItem_ItemSpacing; }
+        } else {
+            // build toolbutton option
+            const QStyleOptionToolButton toolButtonOption(separatorMenuItemOption(menuItemOption, widget));
 
-                // add checkbox indicator width
-                if( menuItemOption->menuHasCheckableItems )
-                { leftColumnWidth += Metrics::CheckBox_Size + Metrics::MenuItem_ItemSpacing; }
-
-                // add spacing for accelerator
-                /*
-                 * Note:
-                 * The width of the accelerator itself is not included here since
-                 * Qt will add that on separately after obtaining the
-                 * sizeFromContents() for each menu item in the menu to be shown
-                 * ( see QMenuPrivate::calcActionRects() )
-                 */
-                const bool hasAccelerator( menuItemOption->text.indexOf( QLatin1Char( '\t' ) ) >= 0 );
-                if( hasAccelerator ) size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
-
-                // right column
-                const int rightColumnWidth = Metrics::MenuButton_IndicatorWidth + Metrics::MenuItem_ItemSpacing;
-                size.rwidth() += leftColumnWidth + rightColumnWidth;
-
-                // make sure height is large enough for icon and arrow
-                size.setHeight( qMax( size.height(), int(Metrics::MenuButton_IndicatorWidth) ) );
-                size.setHeight( qMax( size.height(), int(Metrics::CheckBox_Size) ) );
-                size.setHeight( qMax( size.height(), iconWidth ) );
-                return expandSize( size, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight );
-
+            // make sure height is large enough for icon and text
+            const int iconWidth(menuItemOption->maxIconWidth);
+            const int textHeight(menuItemOption->fontMetrics.height());
+            if (!menuItemOption->icon.isNull())
+                size.setHeight(qMax(size.height(), iconWidth));
+            if (!menuItemOption->text.isEmpty()) {
+                size.setHeight(qMax(size.height(), textHeight));
+                size.setWidth(qMax(size.width(), menuItemOption->fontMetrics.boundingRect(menuItemOption->text).width()));
             }
 
-            case QStyleOptionMenuItem::Separator:
-            {
-
-                if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
-                {
-
-                    return expandSize( QSize(0,1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_SeparatorPadding );
-
-                } else {
-
-                    // build toolbutton option
-                    const QStyleOptionToolButton toolButtonOption( separatorMenuItemOption( menuItemOption, widget ) );
-
-                    // make sure height is large enough for icon and text
-                    const int iconWidth( menuItemOption->maxIconWidth );
-                    const int textHeight( menuItemOption->fontMetrics.height() );
-                    if( !menuItemOption->icon.isNull() ) size.setHeight( qMax( size.height(), iconWidth ) );
-                    if( !menuItemOption->text.isEmpty() )
-                    {
-                        size.setHeight( qMax( size.height(), textHeight ) );
-                        size.setWidth( qMax( size.width(), menuItemOption->fontMetrics.boundingRect( menuItemOption->text ).width() ) );
-                    }
-
-                    return sizeFromContents( CT_ToolButton, &toolButtonOption, size, widget );
-
-                }
-
-            }
-
-            // for all other cases, return input
-            default: return contentsSize;
+            return sizeFromContents(CT_ToolButton, &toolButtonOption, size, widget);
         }
-
     }
 
-    //______________________________________________________________
-    QSize Style::progressBarSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
+    // for all other cases, return input
+    default:
+        return contentsSize;
+    }
+}
 
-        // cast option
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return contentsSize;
+//______________________________________________________________
+QSize Style::progressBarSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
+{
+    // cast option
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return contentsSize;
 
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
 
-        // make local copy
-        QSize size( contentsSize );
+    // make local copy
+    QSize size(contentsSize);
 
-        if( horizontal )
-        {
+    if (horizontal) {
+        // check text visibility
+        const bool textVisible(progressBarOption->textVisible);
 
-            // check text visibility
-            const bool textVisible( progressBarOption->textVisible );
+        size.setWidth(qMax(size.width(), int(Metrics::ProgressBar_Thickness)));
+        size.setHeight(qMax(size.height(), int(Metrics::ProgressBar_Thickness)));
+        if (textVisible)
+            size.setHeight(qMax(size.height(), option->fontMetrics.height()));
 
-            size.setWidth( qMax( size.width(), int(Metrics::ProgressBar_Thickness) ) );
-            size.setHeight( qMax( size.height(), int(Metrics::ProgressBar_Thickness) ) );
-            if( textVisible ) size.setHeight( qMax( size.height(), option->fontMetrics.height() ) );
-
-        } else {
-
-            size.setHeight( qMax( size.height(), int(Metrics::ProgressBar_Thickness) ) );
-            size.setWidth( qMax( size.width(), int(Metrics::ProgressBar_Thickness) ) );
-
-        }
-
-        return size;
-
+    } else {
+        size.setHeight(qMax(size.height(), int(Metrics::ProgressBar_Thickness)));
+        size.setWidth(qMax(size.width(), int(Metrics::ProgressBar_Thickness)));
     }
 
-    //______________________________________________________________
-    QSize Style::tabWidgetSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-        // cast option and check
-        const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option );
-        if( !tabOption ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
+    return size;
+}
 
-        // try find direct children of type QTabBar and QStackedWidget
-        // this is needed in order to add TabWidget margins only if they are necessary around tabWidget content, not the tabbar
-        if( !widget ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
-        QTabBar* tabBar = nullptr;
-        QStackedWidget* stack = nullptr;
-        auto children( widget->children() );
-        foreach( auto child, children )
-        {
-            if( !tabBar ) tabBar = qobject_cast<QTabBar*>( child );
-            if( !stack ) stack = qobject_cast<QStackedWidget*>( child );
-            if( tabBar && stack ) break;
-        }
+//______________________________________________________________
+QSize Style::tabWidgetSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // cast option and check
+    const auto tabOption = qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option);
+    if (!tabOption)
+        return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
 
-        if( !( tabBar && stack ) ) return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
-
-        // tab orientation
-        const bool verticalTabs( tabOption && isVerticalTab( tabOption->shape ) );
-        if( verticalTabs )
-        {
-            const int tabBarHeight = tabBar->minimumSizeHint().height();
-            const int stackHeight = stack->minimumSizeHint().height();
-            if( contentsSize.height() == tabBarHeight && tabBarHeight + 2*(Metrics::Frame_FrameWidth - 1) >= stackHeight + 2*Metrics::TabWidget_MarginWidth ) return QSize( contentsSize.width() + 2*Metrics::TabWidget_MarginWidth, contentsSize.height() + 2*(Metrics::Frame_FrameWidth - 1) );
-            else return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
-
-        } else {
-
-            const int tabBarWidth = tabBar->minimumSizeHint().width();
-            const int stackWidth = stack->minimumSizeHint().width();
-            if( contentsSize.width() == tabBarWidth && tabBarWidth + 2*(Metrics::Frame_FrameWidth - 1) >= stackWidth + 2*Metrics::TabWidget_MarginWidth) return QSize( contentsSize.width() + 2*(Metrics::Frame_FrameWidth - 1), contentsSize.height() + 2*Metrics::TabWidget_MarginWidth );
-            else return expandSize( contentsSize, Metrics::TabWidget_MarginWidth );
-
-        }
-
+    // try find direct children of type QTabBar and QStackedWidget
+    // this is needed in order to add TabWidget margins only if they are necessary around tabWidget content, not the tabbar
+    if (!widget)
+        return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
+    QTabBar *tabBar = nullptr;
+    QStackedWidget *stack = nullptr;
+    auto children(widget->children());
+    foreach (auto child, children) {
+        if (!tabBar)
+            tabBar = qobject_cast<QTabBar *>(child);
+        if (!stack)
+            stack = qobject_cast<QStackedWidget *>(child);
+        if (tabBar && stack)
+            break;
     }
 
-    //______________________________________________________________
-    QSize Style::tabBarTabSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        const bool hasText( tabOption && !tabOption->text.isEmpty() );
-        const bool hasIcon( tabOption && !tabOption->icon.isNull() );
-        const bool hasLeftButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
-        const bool hasRightButton( tabOption && !tabOption->leftButtonSize.isEmpty() );
+    if (!(tabBar && stack))
+        return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
 
-        // calculate width increment for horizontal tabs
-        int widthIncrement = 0;
-        if( hasIcon && !( hasText || hasLeftButton || hasRightButton ) ) widthIncrement -= 4;
-        if( hasText && hasIcon ) widthIncrement += Metrics::TabBar_TabItemSpacing;
-        if( hasLeftButton && ( hasText || hasIcon ) )  widthIncrement += Metrics::TabBar_TabItemSpacing;
-        if( hasRightButton && ( hasText || hasIcon || hasLeftButton ) )  widthIncrement += Metrics::TabBar_TabItemSpacing;
+    // tab orientation
+    const bool verticalTabs(tabOption && isVerticalTab(tabOption->shape));
+    if (verticalTabs) {
+        const int tabBarHeight = tabBar->minimumSizeHint().height();
+        const int stackHeight = stack->minimumSizeHint().height();
+        if (contentsSize.height() == tabBarHeight && tabBarHeight + 2 * (Metrics::Frame_FrameWidth - 1) >= stackHeight + 2 * Metrics::TabWidget_MarginWidth)
+            return QSize(contentsSize.width() + 2 * Metrics::TabWidget_MarginWidth, contentsSize.height() + 2 * (Metrics::Frame_FrameWidth - 1));
+        else
+            return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
 
-        // add margins
-        QSize size( contentsSize );
+    } else {
+        const int tabBarWidth = tabBar->minimumSizeHint().width();
+        const int stackWidth = stack->minimumSizeHint().width();
+        if (contentsSize.width() == tabBarWidth && tabBarWidth + 2 * (Metrics::Frame_FrameWidth - 1) >= stackWidth + 2 * Metrics::TabWidget_MarginWidth)
+            return QSize(contentsSize.width() + 2 * (Metrics::Frame_FrameWidth - 1), contentsSize.height() + 2 * Metrics::TabWidget_MarginWidth);
+        else
+            return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
+    }
+}
 
-        // compare to minimum size
-        const bool verticalTabs( tabOption && isVerticalTab( tabOption ) );
-        if( verticalTabs )
-        {
+//______________________________________________________________
+QSize Style::tabBarTabSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
+{
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    const bool hasText(tabOption && !tabOption->text.isEmpty());
+    const bool hasIcon(tabOption && !tabOption->icon.isNull());
+    const bool hasLeftButton(tabOption && !tabOption->leftButtonSize.isEmpty());
+    const bool hasRightButton(tabOption && !tabOption->leftButtonSize.isEmpty());
 
-            size.rheight() += widthIncrement;
-            if( hasIcon && !hasText ) size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, 0 ) );
-            else size = size.expandedTo( QSize( Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth ) );
+    // calculate width increment for horizontal tabs
+    int widthIncrement = 0;
+    if (hasIcon && !(hasText || hasLeftButton || hasRightButton))
+        widthIncrement -= 4;
+    if (hasText && hasIcon)
+        widthIncrement += Metrics::TabBar_TabItemSpacing;
+    if (hasLeftButton && (hasText || hasIcon))
+        widthIncrement += Metrics::TabBar_TabItemSpacing;
+    if (hasRightButton && (hasText || hasIcon || hasLeftButton))
+        widthIncrement += Metrics::TabBar_TabItemSpacing;
 
-        } else {
+    // add margins
+    QSize size(contentsSize);
 
-            size.rwidth() += widthIncrement;
-            if( hasIcon && !hasText ) size = size.expandedTo( QSize( 0, Metrics::TabBar_TabMinHeight ) );
-            else size = size.expandedTo( QSize( Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight ) );
+    // compare to minimum size
+    const bool verticalTabs(tabOption && isVerticalTab(tabOption));
+    if (verticalTabs) {
+        size.rheight() += widthIncrement;
+        if (hasIcon && !hasText)
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinHeight, 0));
+        else
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth));
 
-        }
-
-        return size;
-
+    } else {
+        size.rwidth() += widthIncrement;
+        if (hasIcon && !hasText)
+            size = size.expandedTo(QSize(0, Metrics::TabBar_TabMinHeight));
+        else
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight));
     }
 
-    //______________________________________________________________
-    QSize Style::headerSectionSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* ) const
-    {
+    return size;
+}
 
-        // cast option and check
-        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        if( !headerOption ) return contentsSize;
+//______________________________________________________________
+QSize Style::headerSectionSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
+{
+    // cast option and check
+    const auto headerOption(qstyleoption_cast<const QStyleOptionHeader *>(option));
+    if (!headerOption)
+        return contentsSize;
 
-        // get text size
-        const bool horizontal( headerOption->orientation == Qt::Horizontal );
-        const bool hasText( !headerOption->text.isEmpty() );
-        const bool hasIcon( !headerOption->icon.isNull() );
+    // get text size
+    const bool horizontal(headerOption->orientation == Qt::Horizontal);
+    const bool hasText(!headerOption->text.isEmpty());
+    const bool hasIcon(!headerOption->icon.isNull());
 
-        const QSize textSize( hasText ? headerOption->fontMetrics.size( 0, headerOption->text ) : QSize() );
-        const QSize iconSize( hasIcon ? QSize( 22,22 ) : QSize() );
+    const QSize textSize(hasText ? headerOption->fontMetrics.size(0, headerOption->text) : QSize());
+    const QSize iconSize(hasIcon ? QSize(22, 22) : QSize());
 
-        // contents width
-        int contentsWidth( 0 );
-        if( hasText ) contentsWidth += textSize.width();
-        if( hasIcon )
-        {
-            contentsWidth += iconSize.width();
-            if( hasText ) contentsWidth += Metrics::Header_ItemSpacing;
-        }
-
-        // contents height
-        int contentsHeight( hasText ? textSize.height() : headerOption->fontMetrics.height() );
-        if( hasIcon ) contentsHeight = qMax( contentsHeight, iconSize.height() );
-
-        if( horizontal && headerOption->sortIndicator != QStyleOptionHeader::None )
-        {
-            // also add space for sort indicator
-            contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_ItemSpacing;
-            contentsHeight = qMax( contentsHeight, int(Metrics::Header_ArrowSize) );
-        }
-
-        // update contents size, add margins and return
-        const QSize size( contentsSize.expandedTo( QSize( contentsWidth, contentsHeight ) ) );
-        return expandSize( size, Metrics::Header_MarginWidth );
-
+    // contents width
+    int contentsWidth(0);
+    if (hasText)
+        contentsWidth += textSize.width();
+    if (hasIcon) {
+        contentsWidth += iconSize.width();
+        if (hasText)
+            contentsWidth += Metrics::Header_ItemSpacing;
     }
 
-    //______________________________________________________________
-    QSize Style::itemViewItemSizeFromContents( const QStyleOption* option, const QSize& contentsSize, const QWidget* widget ) const
-    {
-        // call base class
-        const QSize size( ParentStyleClass::sizeFromContents( CT_ItemViewItem, option, contentsSize, widget ) );
-        return expandSize( size, Metrics::ItemView_ItemMarginWidth );
+    // contents height
+    int contentsHeight(hasText ? textSize.height() : headerOption->fontMetrics.height());
+    if (hasIcon)
+        contentsHeight = qMax(contentsHeight, iconSize.height());
+
+    if (horizontal && headerOption->sortIndicator != QStyleOptionHeader::None) {
+        // also add space for sort indicator
+        contentsWidth += Metrics::Header_ArrowSize + Metrics::Header_ItemSpacing;
+        contentsHeight = qMax(contentsHeight, int(Metrics::Header_ArrowSize));
     }
 
-    //______________________________________________________________
-    bool Style::drawFramePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // update contents size, add margins and return
+    const QSize size(contentsSize.expandedTo(QSize(contentsWidth, contentsHeight)));
+    return expandSize(size, Metrics::Header_MarginWidth);
+}
 
-        // copy palette and rect
-        const auto& palette( option->palette );
-        const auto& rect( option->rect );
+//______________________________________________________________
+QSize Style::itemViewItemSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+{
+    // call base class
+    const QSize size(ParentStyleClass::sizeFromContents(CT_ItemViewItem, option, contentsSize, widget));
+    return expandSize(size, Metrics::ItemView_ItemMarginWidth);
+}
 
+//______________________________________________________________
+bool Style::drawFramePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // copy palette and rect
+    const auto &palette(option->palette);
+    const auto &rect(option->rect);
+
+    // copy state
+    const State &state(option->state);
+    if (!(state & (State_Sunken | State_Raised)))
+        return true;
+
+    const bool isInputWidget((widget && widget->testAttribute(Qt::WA_Hover))
+                             || (isQtQuickControl(option, widget) && option->styleObject->property("elementType").toString() == QStringLiteral("edit")));
+
+    const bool enabled(state & State_Enabled);
+    const bool mouseOver(enabled && isInputWidget && (state & State_MouseOver));
+    const bool hasFocus(enabled && isInputWidget && (state & State_HasFocus));
+
+    // focus takes precedence over mouse over
+    _animations->inputWidgetEngine().updateState(widget, AnimationFocus, hasFocus);
+    _animations->inputWidgetEngine().updateState(widget, AnimationHover, mouseOver && !hasFocus);
+
+    // retrieve animation mode and opacity
+    const AnimationMode mode(_animations->inputWidgetEngine().frameAnimationMode(widget));
+    const qreal opacity(_animations->inputWidgetEngine().frameOpacity(widget));
+
+    if (widget && widget->property(PropertyNames::bordersSides).isValid()) {
+        const auto background(palette.base().color());
+        const auto outline(_helper->frameOutlineColor(palette));
+        _helper->renderFrameWithSides(painter, rect, background, widget->property(PropertyNames::bordersSides).value<Qt::Edges>(), outline);
+
+        return true;
+    }
+
+    // render
+    if (!StyleConfigData::sidePanelDrawFrame() && widget && widget->property(PropertyNames::sidePanelView).toBool()) {
+        const auto outline(_helper->sidePanelOutlineColor(palette, hasFocus, opacity, mode));
+        const bool reverseLayout(option->direction == Qt::RightToLeft);
+        const Side side(reverseLayout ? SideRight : SideLeft);
+        _helper->renderSidePanelFrame(painter, rect, outline, side);
+
+    } else {
+        if (_frameShadowFactory->isRegistered(widget)) {
+            // update frame shadow factory
+            _frameShadowFactory->updateShadowsGeometry(widget, rect);
+            _frameShadowFactory->updateState(widget, hasFocus, mouseOver, opacity, mode);
+        }
+
+        const auto background(palette.base().color());
+        const auto outline(_helper->frameOutlineColor(palette, mouseOver, hasFocus, opacity, mode));
+        _helper->renderFrame(painter, rect, background, outline);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawFrameLineEditPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // copy palette and rect
+    const auto &palette(option->palette);
+    const auto &rect(option->rect);
+
+    // make sure there is enough room to render frame
+    if (rect.height() < 2 * Metrics::LineEdit_FrameWidth + option->fontMetrics.height()) {
+        const auto &background = palette.color(QPalette::Base);
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(background);
+        painter->drawRect(rect);
+        return true;
+
+    } else {
         // copy state
-        const State& state( option->state );
-        if( !( state & (State_Sunken | State_Raised ) ) ) return true;
-
-        const bool isInputWidget( ( widget && widget->testAttribute( Qt::WA_Hover ) ) ||
-            ( isQtQuickControl( option, widget ) && option->styleObject->property( "elementType" ).toString() == QStringLiteral( "edit") ) );
-
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && isInputWidget && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && isInputWidget && ( state & State_HasFocus ) );
+        const State &state(option->state);
+        const bool enabled(state & State_Enabled);
+        const bool mouseOver(enabled && (state & State_MouseOver));
+        const bool hasFocus(enabled && (state & State_HasFocus));
 
         // focus takes precedence over mouse over
-        _animations->inputWidgetEngine().updateState( widget, AnimationFocus, hasFocus );
-        _animations->inputWidgetEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
+        _animations->inputWidgetEngine().updateState(widget, AnimationFocus, hasFocus);
+        _animations->inputWidgetEngine().updateState(widget, AnimationHover, mouseOver && !hasFocus);
 
         // retrieve animation mode and opacity
-        const AnimationMode mode( _animations->inputWidgetEngine().frameAnimationMode( widget ) );
-        const qreal opacity( _animations->inputWidgetEngine().frameOpacity( widget ) );
-
-        if ( widget && widget->property( PropertyNames::bordersSides ).isValid() )
-        {
-
-            const auto background( palette.base().color() );
-            const auto outline( _helper->frameOutlineColor( palette ) );
-            _helper->renderFrameWithSides( painter, rect, background, widget->property( PropertyNames::bordersSides ).value<Qt::Edges>(), outline );
-
-            return true;
-        }
+        const AnimationMode mode(_animations->inputWidgetEngine().frameAnimationMode(widget));
+        const qreal opacity(_animations->inputWidgetEngine().frameOpacity(widget));
 
         // render
-        if( !StyleConfigData::sidePanelDrawFrame() && widget && widget->property( PropertyNames::sidePanelView ).toBool() )
-        {
+        const auto &background = palette.color(QPalette::Base);
+        const auto outline(hasHighlightNeutral(widget, option, mouseOver, hasFocus) ? _helper->neutralText(palette).lighter(mouseOver || hasFocus ? 150 : 100)
+                                                                                    : _helper->frameOutlineColor(palette, mouseOver, hasFocus, opacity, mode));
+        _helper->renderFrame(painter, rect, background, outline);
+    }
 
-            const auto outline( _helper->sidePanelOutlineColor( palette, hasFocus, opacity, mode ) );
-            const bool reverseLayout( option->direction == Qt::RightToLeft );
-            const Side side( reverseLayout ? SideRight : SideLeft );
-            _helper->renderSidePanelFrame( painter, rect, outline, side );
+    return true;
+}
 
-        } else {
+//___________________________________________________________________________________
+bool Style::drawFrameFocusRectPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // no focus indicator on buttons / scrollbars, since it is rendered elsewhere
+    if (qobject_cast<const QAbstractButton *>(widget) || qobject_cast<const QScrollBar *>(widget) || qobject_cast<const QGroupBox *>(widget)) {
+        return true;
+    }
 
-            if( _frameShadowFactory->isRegistered( widget ) )
-            {
+    // no focus indicator on ComboBox list items
+    if (widget && widget->inherits("QComboBoxListView")) {
+        return true;
+    }
 
-                // update frame shadow factory
-                _frameShadowFactory->updateShadowsGeometry( widget, rect );
-                _frameShadowFactory->updateState( widget, hasFocus, mouseOver, opacity, mode );
+    if (option->styleObject && option->styleObject->property("elementType") == QLatin1String("button")) {
+        return true;
+    }
 
+    const State &state(option->state);
+
+    // no focus indicator on selected list items
+    if ((state & State_Selected) && qobject_cast<const QAbstractItemView *>(widget)) {
+        return true;
+    }
+
+    const auto rect(option->rect.adjusted(0, 0, 0, 1));
+    const auto &palette(option->palette);
+
+    if (rect.width() < 10)
+        return true;
+
+    const auto outlineColor(state & State_Selected ? palette.color(QPalette::HighlightedText) : palette.color(QPalette::Highlight));
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setPen(outlineColor);
+    painter->drawLine(QPoint(rect.bottomLeft() - QPoint(0, 1)), QPoint(rect.bottomRight() - QPoint(0, 1)));
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawFrameMenuPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // only draw frame for (expanded) toolbars and QtQuick controls
+    // do nothing for other cases, for which frame is rendered via drawPanelMenuPrimitive
+    if (qobject_cast<const QToolBar *>(widget)) {
+        const auto &palette(option->palette);
+        const auto background(_helper->frameBackgroundColor(palette));
+        const auto outline(_helper->frameOutlineColor(palette));
+
+        const bool hasAlpha(_helper->hasAlphaChannel(widget));
+        _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha);
+
+    } else if (isQtQuickControl(option, widget)) {
+        const auto &palette(option->palette);
+        const auto background(_helper->frameBackgroundColor(palette));
+        const auto outline(_helper->frameOutlineColor(palette));
+
+        const bool hasAlpha(_helper->hasAlphaChannel(widget));
+        _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawFrameGroupBoxPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // cast option and check
+    const auto frameOption(qstyleoption_cast<const QStyleOptionFrame *>(option));
+    if (!frameOption)
+        return true;
+
+    // no frame for flat groupboxes
+    if (frameOption->features & QStyleOptionFrame::Flat)
+        return true;
+
+    // normal frame
+    const auto &palette(option->palette);
+    const auto background(_helper->frameBackgroundColor(palette));
+    const auto outline(_helper->frameOutlineColor(palette));
+
+    /*
+     * need to reset painter's clip region in order to paint behind textbox label
+     * (was taken out in QCommonStyle)
+     */
+
+    painter->setClipRegion(option->rect);
+    _helper->renderFrame(painter, option->rect, background, outline);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawFrameTabWidgetPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTabWidgetFrame *>(option));
+    if (!tabOption)
+        return true;
+
+    // do nothing if tabbar is hidden
+    const bool isQtQuickControl(this->isQtQuickControl(option, widget));
+    if (tabOption->tabBarSize.isEmpty() && !isQtQuickControl)
+        return true;
+
+    // adjust rect to handle overlaps
+    auto rect(option->rect);
+
+    const auto tabBarRect(tabOption->tabBarRect);
+    const QSize tabBarSize(tabOption->tabBarSize);
+    Corners corners = AllCorners;
+
+    // adjust corners to deal with oversized tabbars
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        if (isQtQuickControl)
+            rect.adjust(-1, -1, 1, 0);
+        if (tabBarSize.width() >= rect.width() - 2 * Metrics::Frame_FrameRadius)
+            corners &= ~CornersTop;
+        if (tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius)
+            corners &= ~CornerTopLeft;
+        if (tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius)
+            corners &= ~CornerTopRight;
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        if (isQtQuickControl)
+            rect.adjust(-1, 0, 1, 1);
+        if (tabBarSize.width() >= rect.width() - 2 * Metrics::Frame_FrameRadius)
+            corners &= ~CornersBottom;
+        if (tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius)
+            corners &= ~CornerBottomLeft;
+        if (tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius)
+            corners &= ~CornerBottomRight;
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        if (isQtQuickControl)
+            rect.adjust(-1, 0, 0, 0);
+        if (tabBarSize.height() >= rect.height() - 2 * Metrics::Frame_FrameRadius)
+            corners &= ~CornersLeft;
+        if (tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius)
+            corners &= ~CornerTopLeft;
+        if (tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius)
+            corners &= ~CornerBottomLeft;
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        if (isQtQuickControl)
+            rect.adjust(0, 0, 1, 0);
+        if (tabBarSize.height() >= rect.height() - 2 * Metrics::Frame_FrameRadius)
+            corners &= ~CornersRight;
+        if (tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius)
+            corners &= ~CornerTopRight;
+        if (tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius)
+            corners &= ~CornerBottomRight;
+        break;
+
+    default:
+        break;
+    }
+
+    // define colors
+    const auto &palette(option->palette);
+    const auto background(_helper->frameBackgroundColor(palette));
+    const auto outline(_helper->frameOutlineColor(palette));
+    _helper->renderTabWidgetFrame(painter, rect, background, outline, corners);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawFrameTabBarBasePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // tabbar frame used either for 'separate' tabbar, or in 'document mode'
+
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTabBarBase *>(option));
+    if (!tabOption)
+        return true;
+
+    // get rect, orientation, palette
+    const auto rect(option->rect);
+    const auto outline(_helper->frameOutlineColor(option->palette));
+
+    // setup painter
+    painter->setBrush(Qt::NoBrush);
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setPen(QPen(outline, 1));
+
+    // render
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        painter->drawLine(rect.bottomLeft() - QPoint(1, 0), rect.bottomRight() + QPoint(1, 0));
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        painter->drawLine(rect.topLeft() - QPoint(1, 0), rect.topRight() + QPoint(1, 0));
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        painter->drawLine(rect.topRight() - QPoint(0, 1), rect.bottomRight() + QPoint(1, 0));
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        painter->drawLine(rect.topLeft() - QPoint(0, 1), rect.bottomLeft() + QPoint(1, 0));
+        break;
+
+    default:
+        break;
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawFrameWindowPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+    const State state(option->state);
+    const bool selected(state & State_Selected);
+
+    // render frame outline
+    const auto outline(_helper->frameOutlineColor(palette, false, selected));
+    _helper->renderMenuFrame(painter, rect, QColor(), outline);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorArrowPrimitive(ArrowOrientation orientation, const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // store rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    bool mouseOver(enabled && (state & State_MouseOver));
+    bool hasFocus(enabled && (state & State_HasFocus));
+
+    // detect special buttons
+    const bool inTabBar(widget && qobject_cast<const QTabBar *>(widget->parentWidget()));
+    const bool inToolButton(qstyleoption_cast<const QStyleOptionToolButton *>(option));
+
+    // color
+    QColor color;
+    if (inTabBar) {
+        // for tabbar arrows one uses animations to get the arrow color
+        /*
+         * get animation state
+         * there is no need to update the engine since this was already done when rendering the frame
+         */
+        const AnimationMode mode(_animations->widgetStateEngine().buttonAnimationMode(widget));
+        const qreal opacity(_animations->widgetStateEngine().buttonOpacity(widget));
+        color = _helper->arrowColor(palette, mouseOver, hasFocus, opacity, mode);
+
+    } else if (mouseOver && !inToolButton) {
+        color = _helper->hoverColor(palette);
+
+    } else if (inToolButton) {
+        const bool flat(state & State_AutoRaise);
+
+        // cast option
+        const QStyleOptionToolButton *toolButtonOption(static_cast<const QStyleOptionToolButton *>(option));
+        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(toolButtonOption);
+        const bool sunken = state & State_Sunken;
+        const bool checked = state & State_On;
+        const bool arrowHover = mouseOver && (toolButtonOption->activeSubControls & SC_ToolButtonMenu);
+        if (flat && menuStyle != BreezePrivate::ToolButtonMenuArrowStyle::None) {
+            if (sunken && !mouseOver) {
+                color = palette.color(QPalette::HighlightedText);
+            } else if (checked && !mouseOver) {
+                color = _helper->arrowColor(palette, QPalette::WindowText);
+            } else if (checked && arrowHover) {
+                // If the button is checked we have a focus color tinted background on hover
+                color = palette.color(QPalette::HighlightedText);
+            } else {
+                // for menu arrows in flat toolbutton one uses animations to get the arrow color
+                // handle arrow over animation
+                _animations->toolButtonEngine().updateState(widget, AnimationHover, arrowHover);
+
+                const bool animated(_animations->toolButtonEngine().isAnimated(widget, AnimationHover));
+                const qreal opacity(_animations->toolButtonEngine().opacity(widget, AnimationHover));
+
+                color = _helper->arrowColor(palette, arrowHover, false, opacity, animated ? AnimationHover : AnimationNone);
             }
 
-            const auto background( palette.base().color() );
-            const auto outline( _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            _helper->renderFrame( painter, rect, background, outline );
+        } else if (flat) {
+            if (sunken && hasFocus && !mouseOver)
+                color = palette.color(QPalette::WindowText);
+            else
+                color = _helper->arrowColor(palette, QPalette::WindowText);
 
-        }
-
-        return true;
-
-    }
-
-    //______________________________________________________________
-    bool Style::drawFrameLineEditPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        // copy palette and rect
-        const auto& palette( option->palette );
-        const auto& rect( option->rect );
-
-        // make sure there is enough room to render frame
-        if( rect.height() < 2*Metrics::LineEdit_FrameWidth + option->fontMetrics.height())
-        {
-
-            const auto &background = palette.color( QPalette::Base );
-
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( background );
-            painter->drawRect( rect );
-            return true;
+        } else if (hasFocus && !mouseOver) {
+            color = palette.color(QPalette::ButtonText);
 
         } else {
-
-            // copy state
-            const State& state( option->state );
-            const bool enabled( state & State_Enabled );
-            const bool mouseOver( enabled && ( state & State_MouseOver ) );
-            const bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-            // focus takes precedence over mouse over
-            _animations->inputWidgetEngine().updateState( widget, AnimationFocus, hasFocus );
-            _animations->inputWidgetEngine().updateState( widget, AnimationHover, mouseOver && !hasFocus );
-
-            // retrieve animation mode and opacity
-            const AnimationMode mode( _animations->inputWidgetEngine().frameAnimationMode( widget ) );
-            const qreal opacity( _animations->inputWidgetEngine().frameOpacity( widget ) );
-
-            // render
-            const auto &background = palette.color( QPalette::Base );
-            const auto outline( hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : _helper->frameOutlineColor( palette, mouseOver, hasFocus, opacity, mode ) );
-            _helper->renderFrame( painter, rect, background, outline );
-
+            color = _helper->arrowColor(palette, QPalette::ButtonText);
         }
 
+    } else
+        color = _helper->arrowColor(palette, QPalette::WindowText);
+
+    // render
+    _helper->renderArrow(painter, rect, color, orientation);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorHeaderArrowPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    const auto headerOption(qstyleoption_cast<const QStyleOptionHeader *>(option));
+    const State &state(option->state);
+
+    // arrow orientation
+    ArrowOrientation orientation(ArrowNone);
+    if (state & State_UpArrow || (headerOption && headerOption->sortIndicator == QStyleOptionHeader::SortUp))
+        orientation = ArrowUp;
+    else if (state & State_DownArrow || (headerOption && headerOption->sortIndicator == QStyleOptionHeader::SortDown))
+        orientation = ArrowDown;
+    if (orientation == ArrowNone)
         return true;
 
+    // invert arrows if requested by (hidden) options
+    if (StyleConfigData::viewInvertSortIndicator())
+        orientation = (orientation == ArrowUp) ? ArrowDown : ArrowUp;
+
+    // state, rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // define color and polygon for drawing arrow
+    const auto color = _helper->arrowColor(palette, QPalette::ButtonText);
+
+    // render
+    _helper->renderArrow(painter, rect, color, orientation);
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // button state
+    bool enabled = option->state & QStyle::State_Enabled;
+    bool activeFocus = option->state & QStyle::State_HasFocus;
+    // Using `widget->focusProxy() == nullptr` to work around a possible Qt bug
+    // where buttons that have a focusProxy still show focus.
+    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    bool hovered = option->state & QStyle::State_MouseOver;
+    bool down = option->state & QStyle::State_Sunken;
+    bool checked = option->state & QStyle::State_On;
+    bool flat = false;
+    bool hasMenu = false;
+    // Use to determine if this button is a default button.
+    bool defaultButton = false;
+    // Use to determine if this button is capable of being a default button when focused.
+    bool autoDefault = false;
+    bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
+
+    const auto buttonOption = qstyleoption_cast<const QStyleOptionButton *>(option);
+    if (buttonOption) {
+        flat = buttonOption->features & QStyleOptionButton::Flat;
+        hasMenu = buttonOption->features & QStyleOptionButton::HasMenu;
+        // If autoDefault is re-enabled by undoing a change to this file and
+        // we decide that the default button highlight moving around outside
+        // of the QDialogButtonBox is annoying, we could add
+        // ` && widget->parentWidget()->inherits("QDialogButtonBox")`.
+        // The downside would be that you can't see which button is the
+        // default button when a QPushButton in a QDialog outside of a
+        // QDialogButtonBox is focused.
+        defaultButton = buttonOption->features & QStyleOptionButton::DefaultButton;
+        autoDefault = buttonOption->features & QStyleOptionButton::AutoDefaultButton;
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawFrameFocusRectPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        // no focus indicator on buttons / scrollbars, since it is rendered elsewhere
-        if ( qobject_cast<const QAbstractButton*>( widget ) || qobject_cast<const QScrollBar*>( widget ) || qobject_cast<const QGroupBox*>( widget ) )
-        { return true; }
+    // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+    // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+    qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+    qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
-        // no focus indicator on ComboBox list items
-        if (widget && widget->inherits("QComboBoxListView"))
-        { return true; }
+    QHash<QByteArray, bool> stateProperties;
+    stateProperties["enabled"] = enabled;
+    stateProperties["visualFocus"] = visualFocus;
+    stateProperties["hovered"] = hovered;
+    stateProperties["down"] = down;
+    stateProperties["checked"] = checked;
+    stateProperties["flat"] = flat;
+    stateProperties["hasMenu"] = hasMenu;
+    stateProperties["defaultButton"] = defaultButton;
+    stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+    stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
 
-        if ( option->styleObject && option->styleObject->property("elementType") == QLatin1String("button") )
-        { return true; }
+    _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
 
-        const State& state( option->state );
+    return true;
+}
 
-        // no focus indicator on selected list items
-        if ((state & State_Selected) && qobject_cast<const QAbstractItemView *>(widget))
-        { return true; }
+//______________________________________________________________
+bool Style::drawPanelButtonToolPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // button state
+    bool enabled = option->state & QStyle::State_Enabled;
+    bool activeFocus = option->state & QStyle::State_HasFocus;
+    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    bool hovered = option->state & QStyle::State_MouseOver;
+    bool down = option->state & QStyle::State_Sunken;
+    bool checked = option->state & QStyle::State_On;
+    bool flat = option->state & QStyle::State_AutoRaise;
+    bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
 
-        const auto rect( option->rect.adjusted( 0, 0, 0, 1 ) );
-        const auto& palette( option->palette );
+    // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+    // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+    qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+    qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
-        if( rect.width() < 10 ) return true;
+    QRect baseRect = option->rect;
+    // adjust frame in case of menu
+    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
+    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+        // NOTE: working around weird issue with flat toolbuttons having unusually wide rects
+        painter->setClipRect(baseRect.adjusted(0, 0, flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0, 0));
+        baseRect.adjust(0, 0, Metrics::Frame_FrameRadius + PenWidth::Shadow, 0);
+        baseRect = visualRect(option, baseRect);
+    }
 
-        const auto outlineColor( state & State_Selected ? palette.color( QPalette::HighlightedText ):palette.color( QPalette::Highlight ) );
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setPen( outlineColor );
-        painter->drawLine( QPoint( rect.bottomLeft() - QPoint( 0,1 ) ), QPoint( rect.bottomRight() - QPoint( 0,1 ) ) );
+    QHash<QByteArray, bool> stateProperties;
+    stateProperties["enabled"] = enabled;
+    stateProperties["visualFocus"] = visualFocus;
+    stateProperties["hovered"] = hovered;
+    stateProperties["down"] = down;
+    stateProperties["checked"] = checked;
+    stateProperties["flat"] = flat;
+    stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+    stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
 
+    _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
+    if (painter->hasClipping()) {
+        painter->setClipping(false);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawTabBarPanelButtonToolPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // copy palette and rect
+    auto rect(option->rect);
+
+    // static_cast is safe here since check was already performed in calling function
+    const QTabBar *tabBar(static_cast<QTabBar *>(widget->parentWidget()));
+
+    // overlap.
+    // subtract 1, because of the empty pixel left the tabwidget frame
+    const int overlap(Metrics::TabBar_BaseOverlap - 1);
+
+    // adjust rect based on tabbar shape
+    switch (tabBar->shape()) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        rect.adjust(0, 0, 0, -overlap);
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        rect.adjust(0, overlap, 0, 0);
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        rect.adjust(0, 0, -overlap, 0);
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        rect.adjust(overlap, 0, 0, 0);
+        break;
+
+    default:
+        break;
+    }
+
+    // get the relevant palette
+    const QWidget *parent(tabBar->parentWidget());
+    if (qobject_cast<const QTabWidget *>(parent))
+        parent = parent->parentWidget();
+    const auto &palette(parent ? parent->palette() : QApplication::palette());
+    const auto color = hasAlteredBackground(parent) ? _helper->frameBackgroundColor(palette) : palette.color(QPalette::Window);
+
+    // render flat background
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(color);
+    painter->drawRect(rect);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawPanelScrollAreaCornerPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // make sure background role matches viewport
+    const QAbstractScrollArea *scrollArea;
+    if ((scrollArea = qobject_cast<const QAbstractScrollArea *>(widget)) && scrollArea->viewport()) {
+        // need to adjust clipRect in order not to render outside of frame
+        const int frameWidth(pixelMetric(PM_DefaultFrameWidth, nullptr, scrollArea));
+        painter->setClipRect(insideMargin(scrollArea->rect(), frameWidth));
+        painter->setBrush(scrollArea->viewport()->palette().color(scrollArea->viewport()->backgroundRole()));
+        painter->setPen(Qt::NoPen);
+        painter->drawRect(option->rect);
         return true;
 
+    } else {
+        return false;
     }
+}
+//___________________________________________________________________________________
+bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    /*
+     * do nothing if menu is embedded in another widget
+     * this corresponds to having a transparent background
+     */
+    if (widget && !widget->isWindow())
+        return true;
 
-    //___________________________________________________________________________________
-    bool Style::drawFrameMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        // only draw frame for (expanded) toolbars and QtQuick controls
-        // do nothing for other cases, for which frame is rendered via drawPanelMenuPrimitive
-        if( qobject_cast<const QToolBar*>( widget ) )
-        {
+    const auto &palette(option->palette);
+    const bool hasAlpha(_helper->hasAlphaChannel(widget));
+    const bool isTopMenu(widget != nullptr && widget->property(PropertyNames::isTopMenu).toBool());
+    auto background(_helper->frameBackgroundColor(palette));
+    auto outline(_helper->frameOutlineColor(palette));
 
-            const auto& palette( option->palette );
-            const auto background( _helper->frameBackgroundColor( palette ) );
-            const auto outline( _helper->frameOutlineColor( palette ) );
+    painter->save();
 
-            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-            _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
-
-        } else if( isQtQuickControl( option, widget ) ) {
-
-            const auto& palette( option->palette );
-            const auto background( _helper->frameBackgroundColor( palette ) );
-            const auto outline( _helper->frameOutlineColor( palette ) );
-
-            const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-            _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
-
+    if (StyleConfigData::menuOpacity() < 100) {
+        if (painter && widget && widget->isWindow()) {
+            painter->setCompositionMode(QPainter::CompositionMode_Source);
         }
-
-        return true;
-
+        background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
+        outline = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
     }
 
-    //______________________________________________________________
-    bool Style::drawFrameGroupBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
+    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha, isTopMenu);
 
-        // cast option and check
-        const auto frameOption( qstyleoption_cast<const QStyleOptionFrame*>( option ) );
-        if( !frameOption ) return true;
+    painter->restore();
 
-        // no frame for flat groupboxes
-        if( frameOption->features & QStyleOptionFrame::Flat ) return true;
+    return true;
+}
 
-        // normal frame
-        const auto& palette( option->palette );
-        const auto background( _helper->frameBackgroundColor( palette ) );
-        const auto outline( _helper->frameOutlineColor( palette ) );
-
-        /*
-         * need to reset painter's clip region in order to paint behind textbox label
-         * (was taken out in QCommonStyle)
-         */
-
-        painter->setClipRegion( option->rect );
-        _helper->renderFrame( painter, option->rect, background, outline );
-
-        return true;
-
+//___________________________________________________________________________________
+bool Style::drawPanelTipLabelPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // force registration of widget
+    if (widget && widget->window()) {
+        _shadowHelper->registerWidget(widget->window(), true);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawFrameTabWidgetPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    const auto &palette(option->palette);
+    const auto &background = palette.color(QPalette::ToolTipBase);
+    const auto outline(KColorUtils::mix(palette.color(QPalette::ToolTipBase), palette.color(QPalette::ToolTipText), 0.25));
+    const bool hasAlpha(_helper->hasAlphaChannel(widget));
 
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTabWidgetFrame*>( option ) );
-        if( !tabOption ) return true;
+    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha);
+    return true;
+}
 
-        // do nothing if tabbar is hidden
-        const bool isQtQuickControl( this->isQtQuickControl( option, widget ) );
-        if( tabOption->tabBarSize.isEmpty() && !isQtQuickControl ) return true;
+//___________________________________________________________________________________
+bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItem *>(option);
+    if (!viewItemOption)
+        return false;
 
-        // adjust rect to handle overlaps
-        auto rect( option->rect );
+    // try cast widget
+    const auto abstractItemView = qobject_cast<const QAbstractItemView *>(widget);
 
-        const auto tabBarRect( tabOption->tabBarRect );
-        const QSize tabBarSize( tabOption->tabBarSize );
-        Corners corners = AllCorners;
+    // store palette and rect
+    const auto &palette(option->palette);
+    auto rect(option->rect);
 
-        // adjust corners to deal with oversized tabbars
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            if( isQtQuickControl ) rect.adjust( -1, -1, 1, 0 );
-            if( tabBarSize.width() >= rect.width() - 2*Metrics::Frame_FrameRadius ) corners &= ~CornersTop;
-            if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
-            if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
-            break;
+    // store flags
+    const State &state(option->state);
+    const bool mouseOver((state & State_MouseOver) && (!abstractItemView || abstractItemView->selectionMode() != QAbstractItemView::NoSelection));
+    const bool selected(state & State_Selected);
+    const bool enabled(state & State_Enabled);
+    const bool active(state & State_Active);
 
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            if( isQtQuickControl ) rect.adjust( -1, 0, 1, 1 );
-            if( tabBarSize.width() >= rect.width()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersBottom;
-            if( tabBarRect.left() < rect.left() + Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
-            if( tabBarRect.right() > rect.right() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
-            break;
+    const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !(state & State_Selected);
+    const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
+    const bool hasAlternateBackground(viewItemOption->features & QStyleOptionViewItem::Alternate);
 
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            if( isQtQuickControl ) rect.adjust( -1, 0, 0, 0 );
-            if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersLeft;
-            if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopLeft;
-            if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomLeft;
-            break;
+    // do nothing if no background is to be rendered
+    if (!(mouseOver || selected || hasCustomBackground || hasAlternateBackground)) {
+        return true;
+    }
 
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            if( isQtQuickControl ) rect.adjust( 0, 0, 1, 0 );
-            if( tabBarSize.height() >= rect.height()-2*Metrics::Frame_FrameRadius ) corners &= ~CornersRight;
-            if( tabBarRect.top() < rect.top() + Metrics::Frame_FrameRadius ) corners &= ~CornerTopRight;
-            if( tabBarRect.bottom() > rect.bottom() - Metrics::Frame_FrameRadius ) corners &= ~CornerBottomRight;
-            break;
+    // define color group
+    QPalette::ColorGroup colorGroup;
+    if (enabled)
+        colorGroup = active ? QPalette::Active : QPalette::Inactive;
+    else
+        colorGroup = QPalette::Disabled;
 
-            default: break;
+    // render alternate background
+    if (hasAlternateBackground) {
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(palette.brush(colorGroup, QPalette::AlternateBase));
+        painter->drawRect(rect);
+    }
+
+    // stop here if no highlight is needed
+    if (!(mouseOver || selected || hasCustomBackground)) {
+        return true;
+    }
+
+    // render custom background
+    if (hasCustomBackground && !hasSolidBackground) {
+        painter->setBrushOrigin(viewItemOption->rect.topLeft());
+        painter->setBrush(viewItemOption->backgroundBrush);
+        painter->setPen(Qt::NoPen);
+        painter->drawRect(viewItemOption->rect);
+        return true;
+    }
+
+    // render selection
+    // define color
+    QColor color;
+    if (hasCustomBackground && hasSolidBackground)
+        color = viewItemOption->backgroundBrush.color();
+    else
+        color = palette.color(colorGroup, QPalette::Highlight);
+
+    // change color to implement mouse over
+    if (mouseOver && !hasCustomBackground) {
+        if (!selected)
+            color.setAlphaF(0.2);
+        else
+            color = color.lighter(110);
+    }
+
+    // render
+    _helper->renderSelection(painter, rect, color);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorCheckBoxPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store flags
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool sunken(state & State_Sunken);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+
+    // checkbox state
+    CheckBoxState checkBoxState(CheckOff);
+    if (state & State_NoChange)
+        checkBoxState = CheckPartial;
+    else if (state & State_On)
+        checkBoxState = CheckOn;
+
+    // animation state
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, mouseOver);
+    _animations->widgetStateEngine().updateState(widget, AnimationPressed, checkBoxState != CheckOff);
+    auto target = checkBoxState;
+    if (_animations->widgetStateEngine().isAnimated(widget, AnimationPressed))
+        checkBoxState = CheckAnimated;
+    const qreal animation(_animations->widgetStateEngine().opacity(widget, AnimationPressed));
+
+    const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationHover));
+
+    // render
+    _helper->renderCheckBoxBackground(painter, rect, palette, checkBoxState, hasHighlightNeutral(widget, option, mouseOver), sunken, animation);
+    _helper
+        ->renderCheckBox(painter, rect, palette, mouseOver, checkBoxState, target, hasHighlightNeutral(widget, option, mouseOver), sunken, animation, opacity);
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorRadioButtonPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store flags
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool sunken(state & State_Sunken);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+
+    // radio button state
+    RadioButtonState radioButtonState(state & State_On ? RadioOn : RadioOff);
+
+    // animation state
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, mouseOver);
+    _animations->widgetStateEngine().updateState(widget, AnimationPressed, radioButtonState != RadioOff);
+    if (_animations->widgetStateEngine().isAnimated(widget, AnimationPressed))
+        radioButtonState = RadioAnimated;
+    const qreal animation(_animations->widgetStateEngine().opacity(widget, AnimationPressed));
+
+    // colors
+    const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationHover));
+
+    // render
+    _helper->renderRadioButtonBackground(painter, rect, palette, radioButtonState, hasHighlightNeutral(widget, option, mouseOver), sunken, animation);
+    _helper->renderRadioButton(painter, rect, palette, mouseOver, radioButtonState, hasHighlightNeutral(widget, option, mouseOver), sunken, animation, opacity);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorButtonDropDownPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto complexOption(qstyleoption_cast<const QStyleOptionComplex *>(option));
+    if (!complexOption || !(complexOption->subControls & SC_ToolButtonMenu))
+        return true;
+
+    // button state
+    bool enabled = option->state & QStyle::State_Enabled;
+    bool activeFocus = option->state & QStyle::State_HasFocus;
+    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    bool hovered = option->state & QStyle::State_MouseOver;
+    bool down = option->state & QStyle::State_Sunken;
+    bool checked = option->state & QStyle::State_On;
+    bool flat = option->state & QStyle::State_AutoRaise;
+    bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
+
+    // update animation state
+    // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+    // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+    qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+    qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
+
+    QRect baseRect = option->rect;
+    painter->setClipRect(baseRect);
+    baseRect.adjust(-Metrics::Frame_FrameRadius - PenWidth::Shadow, 0, 0, 0);
+    baseRect = visualRect(option, baseRect);
+
+    QHash<QByteArray, bool> stateProperties;
+    stateProperties["enabled"] = enabled;
+    stateProperties["visualFocus"] = visualFocus;
+    stateProperties["hovered"] = hovered;
+    stateProperties["down"] = down;
+    stateProperties["checked"] = checked;
+    stateProperties["flat"] = flat;
+    stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+    stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
+
+    _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
+
+    QRectF frameRect = _helper->strokedRect(_helper->shadowedRect(baseRect));
+
+    // also render separator
+    if (!flat || activeFocus || hovered || down || checked || penAnimation != AnimationData::OpacityInvalid) {
+        QRectF separatorRect = frameRect.adjusted(Metrics::Frame_FrameRadius + PenWidth::Shadow, 0, 0, 0);
+        painter->setBrush(Qt::NoBrush);
+        if (option->direction == Qt::RightToLeft) {
+            painter->drawLine(separatorRect.topRight(), separatorRect.bottomRight());
+        } else {
+            painter->drawLine(separatorRect.topLeft(), separatorRect.bottomLeft());
         }
+    }
 
-        // define colors
-        const auto& palette( option->palette );
-        const auto background( _helper->frameBackgroundColor( palette ) );
-        const auto outline( _helper->frameOutlineColor( palette ) );
-        _helper->renderTabWidgetFrame( painter, rect, background, outline, corners );
+    if (painter->hasClipping()) {
+        painter->setClipping(false);
+    }
 
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorTabClosePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // get icon and check
+    QIcon icon(standardIcon(SP_TitleBarCloseButton, option, widget));
+    if (icon.isNull())
+        return false;
+
+    // store state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool active(state & State_Raised);
+    const bool sunken(state & State_Sunken);
+
+    // decide icon mode and state
+    QIcon::Mode iconMode;
+    QIcon::State iconState;
+    if (!enabled) {
+        iconMode = QIcon::Disabled;
+        iconState = QIcon::Off;
+
+    } else {
+        if (active)
+            iconMode = QIcon::Active;
+        else
+            iconMode = QIcon::Normal;
+
+        iconState = sunken ? QIcon::On : QIcon::Off;
+    }
+
+    // icon size
+    const int iconWidth(pixelMetric(QStyle::PM_SmallIconSize, option, widget));
+    const QSize iconSize(iconWidth, iconWidth);
+
+    // get pixmap
+    const QPixmap pixmap(_helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState));
+
+    // render
+    drawItemPixmap(painter, option->rect, Qt::AlignCenter, pixmap);
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorTabTearPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    if (!tabOption)
+        return true;
+
+    // store palette and rect
+    const auto &palette(option->palette);
+    auto rect(option->rect);
+
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    const auto color(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setPen(color);
+    painter->setBrush(Qt::NoBrush);
+    switch (tabOption->shape) {
+    case QTabBar::TriangularNorth:
+    case QTabBar::RoundedNorth:
+        rect.adjust(0, 1, 0, 0);
+        if (reverseLayout)
+            painter->drawLine(rect.topRight(), rect.bottomRight());
+        else
+            painter->drawLine(rect.topLeft(), rect.bottomLeft());
+        break;
+
+    case QTabBar::TriangularSouth:
+    case QTabBar::RoundedSouth:
+        rect.adjust(0, 0, 0, -1);
+        if (reverseLayout)
+            painter->drawLine(rect.topRight(), rect.bottomRight());
+        else
+            painter->drawLine(rect.topLeft(), rect.bottomLeft());
+        break;
+
+    case QTabBar::TriangularWest:
+    case QTabBar::RoundedWest:
+        rect.adjust(1, 0, 0, 0);
+        painter->drawLine(rect.topLeft(), rect.topRight());
+        break;
+
+    case QTabBar::TriangularEast:
+    case QTabBar::RoundedEast:
+        rect.adjust(0, 0, -1, 0);
+        painter->drawLine(rect.topLeft(), rect.topRight());
+        break;
+
+    default:
+        break;
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorToolBarHandlePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // do nothing if disabled from options
+    if (!StyleConfigData::toolBarDrawItemSeparator())
+        return true;
+
+    // store rect and palette
+    auto rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store state
+    const State &state(option->state);
+    const bool separatorIsVertical(state & State_Horizontal);
+
+    // define color and render
+    const auto color(_helper->separatorColor(palette));
+    if (separatorIsVertical) {
+        rect.setWidth(Metrics::ToolBar_HandleWidth);
+        rect = centerRect(option->rect, rect.size());
+        rect.setWidth(3);
+        _helper->renderSeparator(painter, rect, color, separatorIsVertical);
+
+        rect.translate(2, 0);
+        _helper->renderSeparator(painter, rect, color, separatorIsVertical);
+
+    } else {
+        rect.setHeight(Metrics::ToolBar_HandleWidth);
+        rect = centerRect(option->rect, rect.size());
+        rect.setHeight(3);
+        _helper->renderSeparator(painter, rect, color, separatorIsVertical);
+
+        rect.translate(0, 2);
+        _helper->renderSeparator(painter, rect, color, separatorIsVertical);
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawIndicatorToolBarSeparatorPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    /*
+     * do nothing if disabled from options
+     * also need to check if widget is a combobox, because of Qt hack using 'toolbar' separator primitive
+     * for rendering separators in comboboxes
+     */
+    if (!(StyleConfigData::toolBarDrawItemSeparator() || qobject_cast<const QComboBox *>(widget))) {
         return true;
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawFrameTabBarBasePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
+    // store rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
 
-        // tabbar frame used either for 'separate' tabbar, or in 'document mode'
+    // store state
+    const State &state(option->state);
+    const bool separatorIsVertical(state & State_Horizontal);
 
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTabBarBase*>( option ) );
-        if( !tabOption ) return true;
+    // define color and render
+    const auto color(_helper->separatorColor(palette));
+    _helper->renderSeparator(painter, rect, color, separatorIsVertical);
 
-        // get rect, orientation, palette
-        const auto rect( option->rect );
-        const auto outline( _helper->frameOutlineColor( option->palette ) );
+    return true;
+}
 
-        // setup painter
-        painter->setBrush( Qt::NoBrush );
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setPen( QPen( outline, 1 ) );
+//___________________________________________________________________________________
+bool Style::drawIndicatorBranchPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
 
-        // render
-        switch( tabOption->shape )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            painter->drawLine( rect.bottomLeft() - QPoint( 1, 0 ), rect.bottomRight() + QPoint( 1, 0 ) );
-            break;
+    // state
+    const State &state(option->state);
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
 
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            painter->drawLine( rect.topLeft() - QPoint( 1, 0 ), rect.topRight() + QPoint( 1, 0 ) );
-            break;
+    // draw expander
+    int expanderAdjust = 0;
+    if (state & State_Children) {
+        // state
+        const bool expanderOpen(state & State_Open);
+        const bool enabled(state & State_Enabled);
+        const bool mouseOver(enabled && (state & State_MouseOver));
 
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            painter->drawLine( rect.topRight() - QPoint( 0, 1 ), rect.bottomRight() + QPoint( 1, 0 ) );
-            break;
+        // expander rect
+        int expanderSize = qMin(rect.width(), rect.height());
+        expanderSize = qMin(expanderSize, int(Metrics::ItemView_ArrowSize));
+        expanderAdjust = expanderSize / 2 + 1;
+        const auto arrowRect = centerRect(rect, expanderSize, expanderSize);
 
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            painter->drawLine( rect.topLeft() - QPoint( 0, 1 ), rect.bottomLeft() + QPoint( 1, 0 ) );
-            break;
-
-            default:
-            break;
-
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawFrameWindowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-        const State state( option->state );
-        const bool selected( state & State_Selected );
-
-        // render frame outline
-        const auto outline( _helper->frameOutlineColor( palette, false, selected ) );
-        _helper->renderMenuFrame( painter, rect, QColor(), outline );
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorArrowPrimitive( ArrowOrientation orientation, const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // store rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        bool mouseOver( enabled && ( state & State_MouseOver ) );
-        bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-        // detect special buttons
-        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
-        const bool inToolButton( qstyleoption_cast<const QStyleOptionToolButton *>( option ) );
+        // get orientation from option
+        ArrowOrientation orientation;
+        if (expanderOpen)
+            orientation = ArrowDown;
+        else if (reverseLayout)
+            orientation = ArrowLeft;
+        else
+            orientation = ArrowRight;
 
         // color
-        QColor color;
-        if( inTabBar ) {
-
-            // for tabbar arrows one uses animations to get the arrow color
-            /*
-             * get animation state
-             * there is no need to update the engine since this was already done when rendering the frame
-             */
-            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
-            color = _helper->arrowColor( palette, mouseOver, hasFocus, opacity, mode );
-
-        } else if( mouseOver && !inToolButton ) {
-
-            color = _helper->hoverColor( palette );
-
-        } else if( inToolButton ) {
-
-            const bool flat( state & State_AutoRaise );
-
-            // cast option
-            const QStyleOptionToolButton* toolButtonOption( static_cast<const QStyleOptionToolButton*>( option ) );
-            const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( toolButtonOption );
-            const bool sunken = state & State_Sunken;
-            const bool checked = state & State_On;
-            const bool arrowHover = mouseOver && (toolButtonOption->activeSubControls & SC_ToolButtonMenu);
-            if( flat && menuStyle != BreezePrivate::ToolButtonMenuArrowStyle::None )
-            {
-
-                if(sunken && !mouseOver ) {
-                    color = palette.color(QPalette::HighlightedText);
-                } else if (checked  && !mouseOver) {
-                    color = _helper->arrowColor(palette, QPalette::WindowText);
-                } else if (checked && arrowHover) {
-                    // If the button is checked we have a focus color tinted background on hover
-                    color = palette.color(QPalette::HighlightedText);
-                } else {
-                    // for menu arrows in flat toolbutton one uses animations to get the arrow color
-                    // handle arrow over animation
-                    _animations->toolButtonEngine().updateState( widget, AnimationHover, arrowHover );
-
-                    const bool animated( _animations->toolButtonEngine().isAnimated( widget, AnimationHover ) );
-                    const qreal opacity( _animations->toolButtonEngine().opacity( widget, AnimationHover ) );
-
-                    color = _helper->arrowColor( palette, arrowHover, false, opacity, animated ? AnimationHover:AnimationNone );
-
-                }
-
-            } else if( flat ) {
-
-                if( sunken && hasFocus && !mouseOver ) color = palette.color( QPalette::WindowText );
-                else color = _helper->arrowColor( palette, QPalette::WindowText );
-
-            } else if( hasFocus && !mouseOver )  {
-
-                color = palette.color( QPalette::ButtonText );
-
-            } else {
-
-                color = _helper->arrowColor( palette, QPalette::ButtonText );
-
-            }
-
-        } else color = _helper->arrowColor( palette, QPalette::WindowText );
+        const auto arrowColor(mouseOver ? _helper->hoverColor(palette) : _helper->arrowColor(palette, QPalette::Text));
 
         // render
-        _helper->renderArrow( painter, rect, color, orientation );
-
-        return true;
+        _helper->renderArrow(painter, arrowRect, arrowColor, orientation);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorHeaderArrowPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        const State& state( option->state );
-
-        // arrow orientation
-        ArrowOrientation orientation( ArrowNone );
-        if( state & State_UpArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortUp ) ) orientation = ArrowUp;
-        else if( state & State_DownArrow || ( headerOption && headerOption->sortIndicator==QStyleOptionHeader::SortDown ) ) orientation = ArrowDown;
-        if( orientation == ArrowNone ) return true;
-
-        // invert arrows if requested by (hidden) options
-        if( StyleConfigData::viewInvertSortIndicator() ) orientation = (orientation == ArrowUp) ? ArrowDown:ArrowUp;
-
-        // state, rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // define color and polygon for drawing arrow
-        const auto color = _helper->arrowColor( palette, QPalette::ButtonText );
-
-        // render
-        _helper->renderArrow( painter, rect, color, orientation );
-
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawPanelButtonCommandPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        // button state
-        bool enabled = option->state & QStyle::State_Enabled;
-        bool activeFocus = option->state & QStyle::State_HasFocus;
-        // Using `widget->focusProxy() == nullptr` to work around a possible Qt bug
-        // where buttons that have a focusProxy still show focus.
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
-        bool hovered = option->state & QStyle::State_MouseOver;
-        bool down = option->state & QStyle::State_Sunken;
-        bool checked = option->state & QStyle::State_On;
-        bool flat = false;
-        bool hasMenu = false;
-        // Use to determine if this button is a default button.
-        bool defaultButton = false;
-        // Use to determine if this button is capable of being a default button when focused.
-        bool autoDefault = false;
-        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
-
-        const auto buttonOption = qstyleoption_cast<const QStyleOptionButton*>(option);
-        if (buttonOption) {
-            flat = buttonOption->features & QStyleOptionButton::Flat;
-            hasMenu = buttonOption->features & QStyleOptionButton::HasMenu;
-            // If autoDefault is re-enabled by undoing a change to this file and
-            // we decide that the default button highlight moving around outside
-            // of the QDialogButtonBox is annoying, we could add
-            // ` && widget->parentWidget()->inherits("QDialogButtonBox")`.
-            // The downside would be that you can't see which button is the
-            // default button when a QPushButton in a QDialog outside of a
-            // QDialogButtonBox is focused.
-            defaultButton = buttonOption->features & QStyleOptionButton::DefaultButton;
-            autoDefault = buttonOption->features & QStyleOptionButton::AutoDefaultButton;
-        }
-
-        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
-        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
-        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
-        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
-        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
-        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
-
-        QHash<QByteArray, bool> stateProperties;
-        stateProperties["enabled"] = enabled;
-        stateProperties["visualFocus"] = visualFocus;
-        stateProperties["hovered"] = hovered;
-        stateProperties["down"] = down;
-        stateProperties["checked"] = checked;
-        stateProperties["flat"] = flat;
-        stateProperties["hasMenu"] = hasMenu;
-        stateProperties["defaultButton"] = defaultButton;
-        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-        stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
-
-        _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
-
+    // tree branches
+    if (!StyleConfigData::viewDrawTreeBranchLines())
         return true;
 
+    const auto center(rect.center());
+    const auto lineColor(KColorUtils::mix(palette.color(QPalette::Base), palette.color(QPalette::Text), 0.25));
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    painter->translate(0.5, 0.5);
+    painter->setPen(QPen(lineColor, 1));
+    if (state & (State_Item | State_Children | State_Sibling)) {
+        const QLineF line(QPointF(center.x(), rect.top()), QPointF(center.x(), center.y() - expanderAdjust - 1));
+        painter->drawLine(line);
     }
 
-    //______________________________________________________________
-    bool Style::drawPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // button state
-        bool enabled = option->state & QStyle::State_Enabled;
-        bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
-        bool hovered = option->state & QStyle::State_MouseOver;
-        bool down = option->state & QStyle::State_Sunken;
-        bool checked = option->state & QStyle::State_On;
-        bool flat = option->state & QStyle::State_AutoRaise;
-        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
-
-        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
-        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
-        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
-        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
-        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
-        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
-
-        QRect baseRect = option->rect;
-        // adjust frame in case of menu
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
-        if(menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
-            // NOTE: working around weird issue with flat toolbuttons having unusually wide rects
-            painter->setClipRect(baseRect.adjusted(0,0,flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0,0));
-            baseRect.adjust(0, 0, Metrics::Frame_FrameRadius + PenWidth::Shadow, 0);
-            baseRect = visualRect(option, baseRect);
-        }
-
-        QHash<QByteArray, bool> stateProperties;
-        stateProperties["enabled"] = enabled;
-        stateProperties["visualFocus"] = visualFocus;
-        stateProperties["hovered"] = hovered;
-        stateProperties["down"] = down;
-        stateProperties["checked"] = checked;
-        stateProperties["flat"] = flat;
-        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-        stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
-
-        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
-        if (painter->hasClipping()) {
-            painter->setClipping(false);
-        }
-
-        return true;
+    // The right/left (depending on direction) line gets drawn if we have an item
+    if (state & State_Item) {
+        const QLineF line = reverseLayout ? QLineF(QPointF(rect.left(), center.y()), QPointF(center.x() - expanderAdjust, center.y()))
+                                          : QLineF(QPointF(center.x() + expanderAdjust, center.y()), QPointF(rect.right(), center.y()));
+        painter->drawLine(line);
     }
 
-    //______________________________________________________________
-    bool Style::drawTabBarPanelButtonToolPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // The bottom if we have a sibling
+    if (state & State_Sibling) {
+        const QLineF line(QPointF(center.x(), center.y() + expanderAdjust), QPointF(center.x(), rect.bottom()));
+        painter->drawLine(line);
+    }
 
-        // copy palette and rect
-        auto rect( option->rect );
+    return true;
+}
 
-        // static_cast is safe here since check was already performed in calling function
-        const QTabBar* tabBar( static_cast<QTabBar*>( widget->parentWidget() ) );
-
-        // overlap.
-        // subtract 1, because of the empty pixel left the tabwidget frame
-        const int overlap( Metrics::TabBar_BaseOverlap - 1 );
-
-        // adjust rect based on tabbar shape
-        switch( tabBar->shape() )
-        {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth:
-            rect.adjust( 0, 0, 0, -overlap );
-            break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth:
-            rect.adjust( 0, overlap, 0, 0 );
-            break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest:
-            rect.adjust( 0, 0, -overlap, 0 );
-            break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast:
-            rect.adjust( overlap, 0, 0, 0 );
-            break;
-
-            default: break;
-
-        }
-
-        // get the relevant palette
-        const QWidget* parent( tabBar->parentWidget() );
-        if( qobject_cast<const QTabWidget*>( parent ) ) parent = parent->parentWidget();
-        const auto& palette( parent ? parent->palette() : QApplication::palette() );
-        const auto color = hasAlteredBackground(parent) ? _helper->frameBackgroundColor( palette ):palette.color( QPalette::Window );
-
-        // render flat background
-        painter->setPen( Qt::NoPen );
-        painter->setBrush( color );
-        painter->drawRect( rect );
-
+//___________________________________________________________________________________
+bool Style::drawPushButtonLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto buttonOption(qstyleoption_cast<const QStyleOptionButton *>(option));
+    if (!buttonOption)
         return true;
 
-    }
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
 
-    //___________________________________________________________________________________
-    bool Style::drawPanelScrollAreaCornerPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool sunken(state & (State_On | State_Sunken));
+    const bool mouseOver(enabled && (option->state & State_MouseOver));
+    const bool hasFocus(enabled && !mouseOver && (option->state & State_HasFocus));
+    const bool flat(buttonOption->features & QStyleOptionButton::Flat);
 
-        // make sure background role matches viewport
-        const QAbstractScrollArea* scrollArea;
-        if( ( scrollArea = qobject_cast<const QAbstractScrollArea*>( widget ) ) && scrollArea->viewport() )
-        {
+    // content
+    const bool hasText(!buttonOption->text.isEmpty());
+    const bool hasIcon((showIconsOnPushButtons() || flat || !hasText) && !buttonOption->icon.isNull());
 
-            // need to adjust clipRect in order not to render outside of frame
-            const int frameWidth( pixelMetric( PM_DefaultFrameWidth, nullptr, scrollArea ) );
-            painter->setClipRect( insideMargin( scrollArea->rect(), frameWidth ) );
-            painter->setBrush( scrollArea->viewport()->palette().color( scrollArea->viewport()->backgroundRole() ) );
-            painter->setPen( Qt::NoPen );
-            painter->drawRect( option->rect );
-            return true;
+    // contents
+    auto contentsRect(rect);
 
-        } else {
+    // color role
+    QPalette::ColorRole textRole;
+    if (flat) {
+        if (hasFocus && sunken)
+            textRole = QPalette::WindowText;
+        else
+            textRole = QPalette::WindowText;
 
-            return false;
+    } else if (hasFocus)
+        textRole = QPalette::ButtonText;
+    else
+        textRole = QPalette::ButtonText;
 
-        }
+    // menu arrow
+    if (buttonOption->features & QStyleOptionButton::HasMenu) {
+        // define rect
+        auto arrowRect(contentsRect);
+        arrowRect.setLeft(contentsRect.right() - Metrics::MenuButton_IndicatorWidth + 1);
+        arrowRect = centerRect(arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth);
 
-    }
-    //___________________________________________________________________________________
-    bool Style::drawPanelMenuPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        /*
-         * do nothing if menu is embedded in another widget
-         * this corresponds to having a transparent background
-         */
-        if( widget && !widget->isWindow() ) return true;
+        contentsRect.setRight(arrowRect.left() - Metrics::Button_ItemSpacing - 1);
+        contentsRect.adjust(Metrics::Button_MarginWidth, 0, 0, 0);
 
-        const auto& palette( option->palette );
-        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-        const bool isTopMenu( widget != nullptr && widget->property(PropertyNames::isTopMenu).toBool() );
-        auto background( _helper->frameBackgroundColor( palette ) );
-        auto outline( _helper->frameOutlineColor( palette ) );
+        arrowRect = visualRect(option, arrowRect);
 
-        painter->save();
-
-        if ( StyleConfigData::menuOpacity() < 100) {
-            if ( painter && widget && widget->isWindow() ) {
-                painter->setCompositionMode( QPainter::CompositionMode_Source );
-            }
-            background.setAlphaF(StyleConfigData::menuOpacity() / 100.0);
-            outline = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 );
-        }
-
-        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha, isTopMenu );
-
-        painter->restore();
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawPanelTipLabelPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // force registration of widget
-        if( widget && widget->window() )
-        { _shadowHelper->registerWidget( widget->window(), true ); }
-
-        const auto& palette( option->palette );
-        const auto &background = palette.color( QPalette::ToolTipBase );
-        const auto outline( KColorUtils::mix( palette.color( QPalette::ToolTipBase ), palette.color( QPalette::ToolTipText ), 0.25 ) );
-        const bool hasAlpha( _helper->hasAlphaChannel( widget ) );
-
-        _helper->renderMenuFrame( painter, option->rect, background, outline, hasAlpha );
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawPanelItemViewItemPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto viewItemOption = qstyleoption_cast<const QStyleOptionViewItem*>( option );
-        if( !viewItemOption ) return false;
-
-        // try cast widget
-        const auto abstractItemView = qobject_cast<const QAbstractItemView *>( widget );
-
-        // store palette and rect
-        const auto& palette( option->palette );
-        auto rect( option->rect );
-
-        // store flags
-        const State& state( option->state );
-        const bool mouseOver( ( state & State_MouseOver ) && ( !abstractItemView || abstractItemView->selectionMode() != QAbstractItemView::NoSelection ) );
-        const bool selected( state & State_Selected );
-        const bool enabled( state & State_Enabled );
-        const bool active( state & State_Active );
-
-        const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !( state & State_Selected );
-        const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
-        const bool hasAlternateBackground( viewItemOption->features & QStyleOptionViewItem::Alternate );
-
-        // do nothing if no background is to be rendered
-        if( !( mouseOver || selected || hasCustomBackground || hasAlternateBackground ) )
-        { return true; }
-
-        // define color group
-        QPalette::ColorGroup colorGroup;
-        if( enabled ) colorGroup = active ? QPalette::Active : QPalette::Inactive;
-        else colorGroup = QPalette::Disabled;
-
-        // render alternate background
-        if( hasAlternateBackground )
-        {
-            painter->setPen( Qt::NoPen );
-            painter->setBrush( palette.brush( colorGroup, QPalette::AlternateBase ) );
-            painter->drawRect( rect );
-        }
-
-        // stop here if no highlight is needed
-        if( !( mouseOver || selected ||hasCustomBackground ) )
-        { return true; }
-
-        // render custom background
-        if( hasCustomBackground && !hasSolidBackground )
-        {
-
-            painter->setBrushOrigin( viewItemOption->rect.topLeft() );
-            painter->setBrush( viewItemOption->backgroundBrush );
-            painter->setPen( Qt::NoPen );
-            painter->drawRect( viewItemOption->rect );
-            return true;
-
-        }
-
-        // render selection
         // define color
-        QColor color;
-        if( hasCustomBackground && hasSolidBackground ) color = viewItemOption->backgroundBrush.color();
-        else color = palette.color( colorGroup, QPalette::Highlight );
+        const auto arrowColor(_helper->arrowColor(palette, textRole));
+        _helper->renderArrow(painter, arrowRect, arrowColor, ArrowDown);
+    }
 
-        // change color to implement mouse over
-        if( mouseOver && !hasCustomBackground )
-        {
-            if( !selected ) color.setAlphaF( 0.2 );
-            else color = color.lighter( 110 );
+    // icon size
+    QSize iconSize;
+    if (hasIcon) {
+        iconSize = buttonOption->iconSize;
+        if (!iconSize.isValid()) {
+            const int metric(pixelMetric(PM_SmallIconSize, option, widget));
+            iconSize = QSize(metric, metric);
+        }
+    }
+
+    // text size
+    const int textFlags(_mnemonics->textFlags() | Qt::AlignCenter);
+    const QSize textSize(option->fontMetrics.size(textFlags, buttonOption->text));
+
+    // adjust text and icon rect based on options
+    QRect iconRect;
+    QRect textRect;
+
+    if (hasText && !hasIcon)
+        textRect = contentsRect;
+    else if (hasIcon && !hasText)
+        iconRect = contentsRect;
+    else {
+        const int contentsWidth(iconSize.width() + textSize.width() + Metrics::Button_ItemSpacing);
+        iconRect = QRect(
+            QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
+            iconSize);
+        textRect = QRect(QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height()) / 2),
+                         textSize);
+    }
+
+    // handle right to left
+    if (iconRect.isValid())
+        iconRect = visualRect(option, iconRect);
+    if (textRect.isValid())
+        textRect = visualRect(option, textRect);
+
+    // make sure there is enough room for icon
+    if (iconRect.isValid())
+        iconRect = centerRect(iconRect, iconSize);
+
+    // render icon
+    if (hasIcon && iconRect.isValid()) {
+        // icon state and mode
+        const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
+        QIcon::Mode iconMode;
+        if (!enabled)
+            iconMode = QIcon::Disabled;
+        else
+            iconMode = QIcon::Normal;
+
+        const auto pixmap = _helper->coloredIcon(buttonOption->icon, buttonOption->palette, iconSize, iconMode, iconState);
+        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
+    }
+
+    // render text
+    if (hasText && textRect.isValid()) {
+        drawItemText(painter, textRect, textFlags, palette, enabled, buttonOption->text, textRole);
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolButtonOption(qstyleoption_cast<const QStyleOptionToolButton *>(option));
+
+    // copy rect and palette
+    const auto &rect = option->rect;
+
+    // state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool sunken(state & (State_On | State_Sunken));
+    const bool mouseOver(enabled && (option->state & State_MouseOver));
+    const bool flat(state & State_AutoRaise);
+
+    // focus flag is set to match the background color in either renderButtonFrame or renderToolButtonFrame
+    bool hasFocus(false);
+    if (flat)
+        hasFocus = enabled && !mouseOver && (option->state & State_HasFocus);
+    else
+        hasFocus = enabled && !mouseOver && (option->state & (State_HasFocus | State_Sunken));
+
+    const bool hasArrow(toolButtonOption->features & QStyleOptionToolButton::Arrow);
+    const bool hasIcon(!(hasArrow || toolButtonOption->icon.isNull()));
+    const bool hasText(!toolButtonOption->text.isEmpty());
+
+    // contents
+    auto contentsRect(rect);
+
+    // icon size
+    const QSize iconSize(toolButtonOption->iconSize);
+
+    // text size
+    int textFlags(_mnemonics->textFlags());
+    const QSize textSize(option->fontMetrics.size(textFlags, toolButtonOption->text));
+
+    // adjust text and icon rect based on options
+    QRect iconRect;
+    QRect textRect;
+
+    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
+    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+        // Place contents to the left of the menu arrow.
+        const auto arrowRect = toolButtonSubControlRect(toolButtonOption, SC_ToolButtonMenu, widget);
+        contentsRect.setRight(contentsRect.right() - arrowRect.width());
+    }
+
+    if (hasText && (!(hasArrow || hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly)) {
+        // text only
+        textRect = contentsRect;
+        textFlags |= Qt::AlignCenter;
+
+    } else if ((hasArrow || hasIcon) && (!hasText || toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly)) {
+        // icon only
+        iconRect = contentsRect;
+
+    } else if (toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon) {
+        const int contentsHeight(iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing);
+        iconRect = QRect(
+            QPoint(contentsRect.left() + (contentsRect.width() - iconSize.width()) / 2, contentsRect.top() + (contentsRect.height() - contentsHeight) / 2),
+            iconSize);
+        textRect = QRect(QPoint(contentsRect.left() + (contentsRect.width() - textSize.width()) / 2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
+                         textSize);
+        textFlags |= Qt::AlignCenter;
+
+    } else {
+        const bool leftAlign(widget && widget->property(PropertyNames::toolButtonAlignment).toInt() == Qt::AlignLeft);
+        if (leftAlign) {
+            const int marginWidth(Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth + 1);
+            iconRect = QRect(QPoint(contentsRect.left() + marginWidth, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2), iconSize);
+        } else {
+            const int contentsWidth(iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing);
+            iconRect = QRect(
+                QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
+                iconSize);
         }
 
-        // render
-        _helper->renderSelection( painter, rect, color );
+        textRect = QRect(QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height()) / 2),
+                         textSize);
 
-        return true;
+        // handle right to left layouts
+        iconRect = visualRect(option, iconRect);
+        textRect = visualRect(option, textRect);
+
+        textFlags |= Qt::AlignLeft | Qt::AlignVCenter;
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorCheckBoxPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // make sure there is enough room for icon
+    if (iconRect.isValid())
+        iconRect = centerRect(iconRect, iconSize);
 
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
+    // render arrow or icon
+    if (hasArrow && iconRect.isValid()) {
+        QStyleOptionToolButton copy(*toolButtonOption);
+        copy.rect = iconRect;
+        switch (toolButtonOption->arrowType) {
+        case Qt::LeftArrow:
+            drawPrimitive(PE_IndicatorArrowLeft, &copy, painter, widget);
+            break;
+        case Qt::RightArrow:
+            drawPrimitive(PE_IndicatorArrowRight, &copy, painter, widget);
+            break;
+        case Qt::UpArrow:
+            drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
+            break;
+        case Qt::DownArrow:
+            drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
+            break;
+        default:
+            break;
+        }
 
-        // store flags
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & State_Sunken );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
+    } else if (hasIcon && iconRect.isValid()) {
+        // icon state and mode
+        const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
+        QIcon::Mode iconMode;
+        if (!enabled)
+            iconMode = QIcon::Disabled;
+        else if (!flat && hasFocus)
+            iconMode = QIcon::Selected;
+        else if (mouseOver && flat)
+            iconMode = QIcon::Active;
+        else
+            iconMode = QIcon::Normal;
 
-        // checkbox state
-        CheckBoxState checkBoxState( CheckOff );
-        if( state & State_NoChange ) checkBoxState = CheckPartial;
-        else if( state & State_On ) checkBoxState = CheckOn;
-
-        // animation state
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationPressed, checkBoxState != CheckOff );
-        auto target = checkBoxState;
-        if( _animations->widgetStateEngine().isAnimated( widget, AnimationPressed ) ) checkBoxState = CheckAnimated;
-        const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
-
-        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-
-        // render
-        _helper->renderCheckBoxBackground( painter, rect, palette, checkBoxState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation );
-        _helper->renderCheckBox( painter, rect, palette, mouseOver, checkBoxState, target, hasHighlightNeutral( widget, option, mouseOver), sunken, animation, opacity );
-        return true;
-
+        const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon, toolButtonOption->palette, iconSize, iconMode, iconState);
+        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorRadioButtonPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // render text
+    if (hasText && textRect.isValid()) {
+        QPalette::ColorRole textRole(QPalette::ButtonText);
+        if (flat)
+            textRole = QPalette::WindowText;
 
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
+        auto palette = option->palette;
 
-        // store flags
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & State_Sunken );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-
-        // radio button state
-        RadioButtonState radioButtonState( state & State_On ? RadioOn:RadioOff );
-
-        // animation state
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, mouseOver );
-        _animations->widgetStateEngine().updateState( widget, AnimationPressed, radioButtonState != RadioOff );
-        if( _animations->widgetStateEngine().isAnimated( widget, AnimationPressed ) ) radioButtonState = RadioAnimated;
-        const qreal animation( _animations->widgetStateEngine().opacity( widget, AnimationPressed ) );
-
-        // colors
-        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationHover ) );
-
-        // render
-        _helper->renderRadioButtonBackground( painter, rect, palette, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation );
-        _helper->renderRadioButton( painter, rect, palette, mouseOver, radioButtonState, hasHighlightNeutral( widget, option, mouseOver), sunken, animation, opacity );
-
-        return true;
-
+        painter->setFont(toolButtonOption->font);
+        drawItemText(painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorButtonDropDownPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    return true;
+}
 
-        // cast option and check
-        const auto complexOption( qstyleoption_cast<const QStyleOptionComplex*>( option ) );
-        if( !complexOption || !(complexOption->subControls & SC_ToolButtonMenu) ) return true;
+//___________________________________________________________________________________
+bool Style::drawCheckBoxLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto buttonOption(qstyleoption_cast<const QStyleOptionButton *>(option));
+    if (!buttonOption)
+        return true;
 
-        // button state
-        bool enabled = option->state & QStyle::State_Enabled;
-        bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
-        bool hovered = option->state & QStyle::State_MouseOver;
-        bool down = option->state & QStyle::State_Sunken;
-        bool checked = option->state & QStyle::State_On;
-        bool flat = option->state & QStyle::State_AutoRaise;
-        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
+    // copy palette and rect
+    const auto &palette(option->palette);
+    const auto &rect(option->rect);
+
+    // store state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+
+    // text alignment
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+    const int textFlags(_mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft));
+
+    // text rect
+    auto textRect(rect);
+
+    // render icon
+    if (!buttonOption->icon.isNull()) {
+        const QIcon::Mode mode(enabled ? QIcon::Normal : QIcon::Disabled);
+        const QPixmap pixmap(_helper->coloredIcon(buttonOption->icon, buttonOption->palette, buttonOption->iconSize, mode));
+        drawItemPixmap(painter, rect, textFlags, pixmap);
+
+        // adjust rect (copied from QCommonStyle)
+        textRect.setLeft(textRect.left() + buttonOption->iconSize.width() + 4);
+        textRect = visualRect(option, textRect);
+    }
+
+    // render text
+    if (!buttonOption->text.isEmpty()) {
+        textRect = option->fontMetrics.boundingRect(textRect, textFlags, buttonOption->text);
+        drawItemText(painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText);
+
+        // check focus state
+        const bool hasFocus(enabled && (state & State_HasFocus));
 
         // update animation state
-        // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
-        _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
-        // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
-        _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
-        qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
-        qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
+        _animations->widgetStateEngine().updateState(widget, AnimationFocus, hasFocus);
+        const bool isFocusAnimated(_animations->widgetStateEngine().isAnimated(widget, AnimationFocus));
+        const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationFocus));
 
-        QRect baseRect = option->rect;
-        painter->setClipRect(baseRect);
-        baseRect.adjust(-Metrics::Frame_FrameRadius - PenWidth::Shadow, 0, 0, 0);
-        baseRect = visualRect(option, baseRect);
+        // focus color
+        QColor focusColor;
+        if (isFocusAnimated)
+            focusColor = _helper->alphaColor(_helper->focusColor(palette), opacity);
+        else if (hasFocus)
+            focusColor = _helper->focusColor(palette);
 
-        QHash<QByteArray, bool> stateProperties;
-        stateProperties["enabled"] = enabled;
-        stateProperties["visualFocus"] = visualFocus;
-        stateProperties["hovered"] = hovered;
-        stateProperties["down"] = down;
-        stateProperties["checked"] = checked;
-        stateProperties["flat"] = flat;
-        stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-        stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
-
-        _helper->renderButtonFrame(painter, baseRect, option->palette, stateProperties, bgAnimation, penAnimation);
-
-        QRectF frameRect = _helper->strokedRect(_helper->shadowedRect(baseRect));
-
-        // also render separator
-        if ( !flat || activeFocus || hovered || down || checked || penAnimation != AnimationData::OpacityInvalid ) {
-            QRectF separatorRect = frameRect.adjusted(Metrics::Frame_FrameRadius + PenWidth::Shadow,0,0,0);
-            painter->setBrush( Qt::NoBrush );
-            if (option->direction == Qt::RightToLeft) {
-                painter->drawLine( separatorRect.topRight(), separatorRect.bottomRight() );
-            } else {
-                painter->drawLine( separatorRect.topLeft(), separatorRect.bottomLeft() );
-            }
-        }
-
-        if (painter->hasClipping()) {
-            painter->setClipping(false);
-        }
-
-        return true;
-
+        // render focus
+        _helper->renderFocusLine(painter, textRect, focusColor);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorTabClosePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    return true;
+}
 
-        // get icon and check
-        QIcon icon( standardIcon( SP_TitleBarCloseButton, option, widget ) );
-        if( icon.isNull() ) return false;
+//___________________________________________________________________________________
+bool Style::drawComboBoxLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto comboBoxOption(qstyleoption_cast<const QStyleOptionComboBox *>(option));
+    if (!comboBoxOption)
+        return false;
+    if (comboBoxOption->editable)
+        return false;
 
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool active( state & State_Raised );
-        const bool sunken( state & State_Sunken );
+    // need to alter palette for focused buttons
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool sunken(state & (State_On | State_Sunken));
+    const bool mouseOver(enabled && (option->state & State_MouseOver));
+    const bool hasFocus(enabled && !mouseOver && (option->state & State_HasFocus));
+    const bool flat(!comboBoxOption->frame);
+
+    QPalette::ColorRole textRole;
+    if (flat) {
+        if (hasFocus && sunken)
+            textRole = QPalette::WindowText;
+        else
+            textRole = QPalette::WindowText;
+
+    } else if (hasFocus)
+        textRole = QPalette::ButtonText;
+    else
+        textRole = QPalette::ButtonText;
+
+    // change pen color directly
+    painter->setPen(QPen(option->palette.color(textRole), 1));
+
+    if (const auto cb = qstyleoption_cast<const QStyleOptionComboBox *>(option)) {
+        auto editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
+        painter->save();
+        painter->setClipRect(editRect);
+        if (!cb->currentIcon.isNull()) {
+            QIcon::Mode mode;
+
+            if (!enabled)
+                mode = QIcon::Disabled;
+            else
+                mode = QIcon::Normal;
+
+            const QPixmap pixmap = _helper->coloredIcon(cb->currentIcon, cb->palette, cb->iconSize, mode);
+            auto iconRect(editRect);
+            iconRect.setWidth(cb->iconSize.width() + 4);
+            iconRect = alignedRect(cb->direction, Qt::AlignLeft | Qt::AlignVCenter, iconRect.size(), editRect);
+            if (cb->editable)
+                painter->fillRect(iconRect, option->palette.brush(QPalette::Base));
+            proxy()->drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
+
+            if (cb->direction == Qt::RightToLeft)
+                editRect.translate(-4 - cb->iconSize.width(), 0);
+            else
+                editRect.translate(cb->iconSize.width() + 4, 0);
+        }
+        if (!cb->currentText.isEmpty() && !cb->editable) {
+            proxy()->drawItemText(painter,
+                                  editRect.adjusted(1, 0, -1, 0),
+                                  visualAlignment(cb->direction, Qt::AlignLeft | Qt::AlignVCenter),
+                                  cb->palette,
+                                  cb->state & State_Enabled,
+                                  cb->currentText);
+        }
+        painter->restore();
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawMenuBarItemControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem *>(option);
+    if (!menuItemOption)
+        return true;
+
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool selected(enabled && (state & State_Selected));
+    const bool sunken(enabled && (state & State_Sunken));
+    const bool useStrongFocus(StyleConfigData::menuItemDrawStrongFocus());
+
+    painter->save();
+    painter->setRenderHints(QPainter::Antialiasing);
+
+    // render hover and focus
+    if (useStrongFocus && (selected || sunken)) {
+        QColor outlineColor;
+        if (sunken)
+            outlineColor = _helper->focusColor(palette);
+        else if (selected)
+            outlineColor = _helper->hoverColor(palette);
+        _helper->renderFocusRect(painter, rect, outlineColor);
+    }
+
+    /*
+    check if item as an icon, in which case only the icon should be rendered
+    consistently with comment in QMenuBarPrivate::calcActionRects
+    */
+    if (!menuItemOption->icon.isNull()) {
+        // icon size is forced to SmallIconSize
+        const auto iconSize = pixelMetric(QStyle::PM_SmallIconSize, nullptr, widget);
+        const auto iconRect = centerRect(rect, iconSize, iconSize);
 
         // decide icon mode and state
         QIcon::Mode iconMode;
         QIcon::State iconState;
-        if( !enabled )
-        {
+        if (!enabled) {
             iconMode = QIcon::Disabled;
             iconState = QIcon::Off;
 
         } else {
-
-            if( active ) iconMode = QIcon::Active;
-            else iconMode = QIcon::Normal;
+            if (useStrongFocus && sunken)
+                iconMode = QIcon::Selected;
+            else if (useStrongFocus && selected)
+                iconMode = QIcon::Active;
+            else
+                iconMode = QIcon::Normal;
 
             iconState = sunken ? QIcon::On : QIcon::Off;
         }
 
-        // icon size
-        const int iconWidth( pixelMetric(QStyle::PM_SmallIconSize, option, widget ) );
-        const QSize iconSize( iconWidth, iconWidth );
-
-        // get pixmap
-        const QPixmap pixmap(_helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState));
-
-        // render
-        drawItemPixmap( painter, option->rect, Qt::AlignCenter, pixmap );
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorTabTearPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        if( !tabOption ) return true;
-
-        // store palette and rect
-        const auto& palette( option->palette );
-        auto rect( option->rect );
-
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setPen( color );
-        painter->setBrush( Qt::NoBrush );
-        switch( tabOption->shape )
-        {
-
-            case QTabBar::TriangularNorth:
-            case QTabBar::RoundedNorth:
-            rect.adjust( 0, 1, 0, 0 );
-            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() );
-            else painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-            break;
-
-            case QTabBar::TriangularSouth:
-            case QTabBar::RoundedSouth:
-            rect.adjust( 0, 0, 0, -1 );
-            if( reverseLayout ) painter->drawLine( rect.topRight(), rect.bottomRight() );
-            else painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-            break;
-
-            case QTabBar::TriangularWest:
-            case QTabBar::RoundedWest:
-            rect.adjust( 1, 0, 0, 0 );
-            painter->drawLine( rect.topLeft(), rect.topRight() );
-            break;
-
-            case QTabBar::TriangularEast:
-            case QTabBar::RoundedEast:
-            rect.adjust( 0, 0, -1, 0 );
-            painter->drawLine( rect.topLeft(), rect.topRight() );
-            break;
-
-            default: break;
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorToolBarHandlePrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // do nothing if disabled from options
-        if( !StyleConfigData::toolBarDrawItemSeparator() ) return true;
-
-        // store rect and palette
-        auto rect( option->rect );
-        const auto& palette( option->palette );
-
-        // store state
-        const State& state( option->state );
-        const bool separatorIsVertical( state & State_Horizontal );
-
-        // define color and render
-        const auto color( _helper->separatorColor( palette ) );
-        if( separatorIsVertical )
-        {
-            rect.setWidth( Metrics::ToolBar_HandleWidth );
-            rect = centerRect( option->rect, rect.size() );
-            rect.setWidth( 3 );
-            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
-
-            rect.translate( 2, 0 );
-            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
-
-        } else {
-
-            rect.setHeight( Metrics::ToolBar_HandleWidth );
-            rect = centerRect( option->rect, rect.size() );
-            rect.setHeight( 3 );
-            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
-
-            rect.translate( 0, 2 );
-            _helper->renderSeparator( painter, rect, color, separatorIsVertical );
-
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorToolBarSeparatorPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        /*
-         * do nothing if disabled from options
-         * also need to check if widget is a combobox, because of Qt hack using 'toolbar' separator primitive
-         * for rendering separators in comboboxes
-         */
-        if( !( StyleConfigData::toolBarDrawItemSeparator() || qobject_cast<const QComboBox*>( widget ) ) )
-        { return true; }
-
-        // store rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // store state
-        const State& state( option->state );
-        const bool separatorIsVertical( state & State_Horizontal );
-
-        // define color and render
-        const auto color( _helper->separatorColor( palette ) );
-        _helper->renderSeparator( painter, rect, color, separatorIsVertical );
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawIndicatorBranchPrimitive( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // state
-        const State& state( option->state );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        //draw expander
-        int expanderAdjust = 0;
-        if( state & State_Children )
-        {
-
-            // state
-            const bool expanderOpen( state & State_Open );
-            const bool enabled( state & State_Enabled );
-            const bool mouseOver( enabled && ( state & State_MouseOver ) );
-
-            // expander rect
-            int expanderSize = qMin( rect.width(), rect.height() );
-            expanderSize = qMin( expanderSize, int(Metrics::ItemView_ArrowSize) );
-            expanderAdjust = expanderSize/2 + 1;
-            const auto arrowRect = centerRect( rect, expanderSize, expanderSize );
-
-            // get orientation from option
-            ArrowOrientation orientation;
-            if( expanderOpen ) orientation = ArrowDown;
-            else if( reverseLayout ) orientation = ArrowLeft;
-            else orientation = ArrowRight;
-
-            // color
-            const auto arrowColor( mouseOver ? _helper->hoverColor( palette ) : _helper->arrowColor( palette, QPalette::Text ) );
-
-            // render
-            _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
-
-        }
-
-        // tree branches
-        if( !StyleConfigData::viewDrawTreeBranchLines() ) return true;
-
-        const auto center( rect.center() );
-        const auto lineColor( KColorUtils::mix( palette.color( QPalette::Base ), palette.color( QPalette::Text ), 0.25 ) );
-        painter->setRenderHint( QPainter::Antialiasing, true );
-        painter->translate( 0.5, 0.5 );
-        painter->setPen( QPen( lineColor, 1 ) );
-        if( state & ( State_Item | State_Children | State_Sibling ) )
-        {
-            const QLineF line( QPointF( center.x(), rect.top() ), QPointF( center.x(), center.y() - expanderAdjust - 1 ) );
-            painter->drawLine( line );
-        }
-
-        // The right/left (depending on direction) line gets drawn if we have an item
-        if( state & State_Item )
-        {
-            const QLineF line = reverseLayout ?
-                QLineF( QPointF( rect.left(), center.y() ), QPointF( center.x() - expanderAdjust, center.y() ) ):
-                QLineF( QPointF( center.x() + expanderAdjust, center.y() ), QPointF( rect.right(), center.y() ) );
-            painter->drawLine( line );
-
-        }
-
-        // The bottom if we have a sibling
-        if( state & State_Sibling )
-        {
-            const QLineF line( QPointF( center.x(), center.y() + expanderAdjust ), QPointF( center.x(), rect.bottom() ) );
-            painter->drawLine( line );
-        }
-
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawPushButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>( option ) );
-        if( !buttonOption ) return true;
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & (State_On | State_Sunken) );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
-        const bool flat( buttonOption->features & QStyleOptionButton::Flat );
-
-        // content
-        const bool hasText( !buttonOption->text.isEmpty() );
-        const bool hasIcon( (showIconsOnPushButtons() || flat || !hasText ) && !buttonOption->icon.isNull() );
-
-        // contents
-        auto contentsRect( rect );
-
-        // color role
-        QPalette::ColorRole textRole;
-        if( flat )
-        {
-
-            if( hasFocus && sunken ) textRole = QPalette::WindowText;
-            else textRole = QPalette::WindowText;
-
-        } else if( hasFocus ) textRole = QPalette::ButtonText;
-        else textRole = QPalette::ButtonText;
-
-        // menu arrow
-        if( buttonOption->features & QStyleOptionButton::HasMenu )
-        {
-
-            // define rect
-            auto arrowRect( contentsRect );
-            arrowRect.setLeft( contentsRect.right() - Metrics::MenuButton_IndicatorWidth + 1 );
-            arrowRect = centerRect( arrowRect, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
-
-            contentsRect.setRight( arrowRect.left() - Metrics::Button_ItemSpacing - 1  );
-            contentsRect.adjust( Metrics::Button_MarginWidth, 0, 0, 0 );
-
-            arrowRect = visualRect( option, arrowRect );
-
-            // define color
-            const auto arrowColor( _helper->arrowColor( palette, textRole ) );
-            _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
-
-        }
-
-        // icon size
-        QSize iconSize;
-        if( hasIcon )
-        {
-            iconSize = buttonOption->iconSize;
-            if( !iconSize.isValid() )
-            {
-                const int metric( pixelMetric( PM_SmallIconSize, option, widget ) );
-                iconSize = QSize( metric, metric );
-            }
-        }
-
-        // text size
-        const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
-        const QSize textSize( option->fontMetrics.size( textFlags, buttonOption->text ) );
-
-        // adjust text and icon rect based on options
-        QRect iconRect;
-        QRect textRect;
-
-        if( hasText && !hasIcon ) textRect = contentsRect;
-        else if( hasIcon && !hasText ) iconRect = contentsRect;
-        else {
-
-            const int contentsWidth( iconSize.width() + textSize.width() + Metrics::Button_ItemSpacing );
-            iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - contentsWidth )/2, contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
-            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height())/2 ), textSize );
-
-        }
-
-        // handle right to left
-        if( iconRect.isValid() ) iconRect = visualRect( option, iconRect );
-        if( textRect.isValid() ) textRect = visualRect( option, textRect );
-
-        // make sure there is enough room for icon
-        if( iconRect.isValid() ) iconRect = centerRect( iconRect, iconSize );
-
-        // render icon
-        if( hasIcon && iconRect.isValid() ) {
-
-            // icon state and mode
-            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
-            QIcon::Mode iconMode;
-            if( !enabled ) iconMode = QIcon::Disabled;
-            else iconMode = QIcon::Normal;
-
-            const auto pixmap = _helper->coloredIcon(buttonOption->icon, buttonOption->palette, iconSize, iconMode, iconState);
-            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
-
-        }
-
-        // render text
-        if( hasText && textRect.isValid() )
-        { drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, textRole ); }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawToolButtonLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>(option) );
-
-        // copy rect and palette
-        const auto& rect = option->rect;
-
-        // state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & (State_On | State_Sunken) );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool flat( state & State_AutoRaise );
-
-        // focus flag is set to match the background color in either renderButtonFrame or renderToolButtonFrame
-        bool hasFocus( false );
-        if( flat ) hasFocus = enabled && !mouseOver && (option->state & State_HasFocus);
-        else hasFocus = enabled && !mouseOver && (option->state & (State_HasFocus|State_Sunken) );
-
-        const bool hasArrow( toolButtonOption->features & QStyleOptionToolButton::Arrow );
-        const bool hasIcon( !( hasArrow || toolButtonOption->icon.isNull() ) );
-        const bool hasText( !toolButtonOption->text.isEmpty() );
-
-        // contents
-        auto contentsRect( rect );
-
-        // icon size
-        const QSize iconSize( toolButtonOption->iconSize );
-
-        // text size
-        int textFlags( _mnemonics->textFlags() );
-        const QSize textSize( option->fontMetrics.size( textFlags, toolButtonOption->text ) );
-
-        // adjust text and icon rect based on options
-        QRect iconRect;
-        QRect textRect;
-
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
-        if ( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
-        {
-            // Place contents to the left of the menu arrow.
-            const auto arrowRect = toolButtonSubControlRect( toolButtonOption, SC_ToolButtonMenu, widget );
-            contentsRect.setRight( contentsRect.right() - arrowRect.width() );
-        }
-
-        if( hasText && ( !(hasArrow||hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly ) )
-        {
-
-            // text only
-            textRect = contentsRect;
-            textFlags |= Qt::AlignCenter;
-
-        } else if( (hasArrow||hasIcon) && (!hasText || toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly ) ) {
-
-            // icon only
-            iconRect = contentsRect;
-
-        } else if( toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon ) {
-
-            const int contentsHeight( iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing );
-            iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - iconSize.width())/2, contentsRect.top() + (contentsRect.height() - contentsHeight)/2 ), iconSize );
-            textRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - textSize.width())/2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1 ), textSize );
-            textFlags |= Qt::AlignCenter;
-
-        } else {
-
-            const bool leftAlign( widget && widget->property( PropertyNames::toolButtonAlignment ).toInt() == Qt::AlignLeft );
-            if( leftAlign ) {
-                const int marginWidth( Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth + 1 );
-                iconRect = QRect( QPoint( contentsRect.left() + marginWidth, contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
-            }
-            else {
-
-                const int contentsWidth( iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing );
-                iconRect = QRect( QPoint( contentsRect.left() + (contentsRect.width() - contentsWidth )/2, contentsRect.top() + (contentsRect.height() - iconSize.height())/2 ), iconSize );
-
-            }
-
-            textRect = QRect( QPoint( iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + (contentsRect.height() - textSize.height())/2 ), textSize );
-
-            // handle right to left layouts
-            iconRect = visualRect( option, iconRect );
-            textRect = visualRect( option, textRect );
-
-            textFlags |= Qt::AlignLeft | Qt::AlignVCenter;
-
-        }
-
-        // make sure there is enough room for icon
-        if( iconRect.isValid() ) iconRect = centerRect( iconRect, iconSize );
-
-        // render arrow or icon
-        if( hasArrow && iconRect.isValid() )
-        {
-
-            QStyleOptionToolButton copy( *toolButtonOption );
-            copy.rect = iconRect;
-            switch( toolButtonOption->arrowType )
-            {
-                case Qt::LeftArrow: drawPrimitive( PE_IndicatorArrowLeft, &copy, painter, widget ); break;
-                case Qt::RightArrow: drawPrimitive( PE_IndicatorArrowRight, &copy, painter, widget ); break;
-                case Qt::UpArrow: drawPrimitive( PE_IndicatorArrowUp, &copy, painter, widget ); break;
-                case Qt::DownArrow: drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget ); break;
-                default: break;
-            }
-
-        } else if( hasIcon && iconRect.isValid() ) {
-
-            // icon state and mode
-            const QIcon::State iconState( sunken ? QIcon::On : QIcon::Off );
-            QIcon::Mode iconMode;
-            if( !enabled ) iconMode = QIcon::Disabled;
-            else if( !flat && hasFocus ) iconMode = QIcon::Selected;
-            else if( mouseOver && flat ) iconMode = QIcon::Active;
-            else iconMode = QIcon::Normal;
-
-            const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon, toolButtonOption->palette, iconSize, iconMode, iconState);
-            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
-
-        }
-
-        // render text
-        if( hasText && textRect.isValid() )
-        {
-
-            QPalette::ColorRole textRole( QPalette::ButtonText );
-            if( flat ) textRole = QPalette::WindowText;
-
-            auto palette = option->palette;
-
-            painter->setFont(toolButtonOption->font);
-            drawItemText( painter, textRect, textFlags, palette, enabled, toolButtonOption->text, textRole );
-
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawCheckBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto buttonOption( qstyleoption_cast<const QStyleOptionButton*>(option) );
-        if( !buttonOption ) return true;
-
-        // copy palette and rect
-        const auto& palette( option->palette );
-        const auto& rect( option->rect );
-
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-
-        // text alignment
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-        const int textFlags( _mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight:Qt::AlignLeft ) );
-
-        // text rect
-        auto textRect( rect );
-
-        // render icon
-        if( !buttonOption->icon.isNull() )
-        {
-            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
-            const QPixmap pixmap(_helper->coloredIcon(buttonOption->icon, buttonOption->palette, buttonOption->iconSize, mode));
-            drawItemPixmap( painter, rect, textFlags, pixmap );
-
-            // adjust rect (copied from QCommonStyle)
-            textRect.setLeft( textRect.left() + buttonOption->iconSize.width() + 4 );
-            textRect = visualRect( option, textRect );
-
-        }
-
-        // render text
-        if( !buttonOption->text.isEmpty() )
-        {
-            textRect = option->fontMetrics.boundingRect( textRect, textFlags, buttonOption->text );
-            drawItemText( painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText );
-
-            // check focus state
-            const bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-            // update animation state
-            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
-            const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
-            const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
-
-            // focus color
-            QColor focusColor;
-            if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
-            else if( hasFocus ) focusColor =  _helper->focusColor( palette );
-
-            // render focus
-            _helper->renderFocusLine( painter, textRect, focusColor );
-
-        }
-
-        return true;
-
-    }
-
-
-    //___________________________________________________________________________________
-    bool Style::drawComboBoxLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        const auto comboBoxOption( qstyleoption_cast<const QStyleOptionComboBox*>( option ) );
-        if( !comboBoxOption ) return false;
-        if( comboBoxOption->editable ) return false;
-
-        // need to alter palette for focused buttons
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool sunken( state & (State_On | State_Sunken) );
-        const bool mouseOver( enabled && (option->state & State_MouseOver) );
-        const bool hasFocus( enabled && !mouseOver && (option->state & State_HasFocus) );
-        const bool flat( !comboBoxOption->frame );
-
-        QPalette::ColorRole textRole;
-        if( flat )  {
-
-            if( hasFocus && sunken ) textRole = QPalette::WindowText;
-            else textRole = QPalette::WindowText;
-
-        } else if( hasFocus ) textRole = QPalette::ButtonText;
-        else textRole = QPalette::ButtonText;
-
-        // change pen color directly
-        painter->setPen( QPen( option->palette.color( textRole ), 1 ) );
-
-        if (const auto cb = qstyleoption_cast<const QStyleOptionComboBox *>(option))
-        {
-            auto editRect = proxy()->subControlRect(CC_ComboBox, cb, SC_ComboBoxEditField, widget);
-            painter->save();
-            painter->setClipRect(editRect);
-            if (!cb->currentIcon.isNull()) {
-                QIcon::Mode mode;
-
-                if( !enabled ) mode = QIcon::Disabled;
-                else mode = QIcon::Normal;
-
-                const QPixmap pixmap = _helper->coloredIcon(cb->currentIcon,cb->palette, cb->iconSize, mode);
-                auto iconRect(editRect);
-                iconRect.setWidth(cb->iconSize.width() + 4);
-                iconRect = alignedRect(cb->direction,
-                                       Qt::AlignLeft | Qt::AlignVCenter,
-                                       iconRect.size(), editRect);
-                if (cb->editable)
-                    painter->fillRect(iconRect, option->palette.brush(QPalette::Base));
-                proxy()->drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
-
-                if (cb->direction == Qt::RightToLeft)
-                    editRect.translate(-4 - cb->iconSize.width(), 0);
-                else
-                    editRect.translate(cb->iconSize.width() + 4, 0);
-            }
-            if (!cb->currentText.isEmpty() && !cb->editable) {
-                proxy()->drawItemText(painter, editRect.adjusted(1, 0, -1, 0),
-                             visualAlignment(cb->direction, Qt::AlignLeft | Qt::AlignVCenter),
-                             cb->palette, cb->state & State_Enabled, cb->currentText);
-            }
-            painter->restore();
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawMenuBarItemControl( const QStyleOption* option, QPainter* painter, const QWidget* widget) const
-    {
-
-        // cast option and check
-        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
-        if( !menuItemOption ) return true;
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool selected( enabled && (state & State_Selected) );
-        const bool sunken( enabled && (state & State_Sunken) );
-        const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
-
-        painter->save();
-        painter->setRenderHints( QPainter::Antialiasing );
-
-        // render hover and focus
-        if( useStrongFocus && ( selected || sunken ) )
-        {
-
+        const auto pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), iconMode, iconState);
+        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
+
+        // render outline
+        if (!useStrongFocus && (selected || sunken)) {
             QColor outlineColor;
-            if( sunken ) outlineColor = _helper->focusColor( palette );
-            else if( selected ) outlineColor = _helper->hoverColor( palette );
-            _helper->renderFocusRect( painter, rect, outlineColor );
+            if (sunken)
+                outlineColor = _helper->focusColor(palette);
+            else if (selected)
+                outlineColor = _helper->hoverColor(palette);
 
+            _helper->renderFocusLine(painter, iconRect, outlineColor);
         }
 
-        /*
-        check if item as an icon, in which case only the icon should be rendered
-        consistently with comment in QMenuBarPrivate::calcActionRects
-        */
-        if( !menuItemOption->icon.isNull() )
-        {
-            // icon size is forced to SmallIconSize
-            const auto iconSize = pixelMetric(QStyle::PM_SmallIconSize, nullptr, widget);
-            const auto iconRect = centerRect( rect, iconSize, iconSize );
-
-            // decide icon mode and state
-            QIcon::Mode iconMode;
-            QIcon::State iconState;
-            if( !enabled )
-            {
-                iconMode = QIcon::Disabled;
-                iconState = QIcon::Off;
-
-            } else {
-
-                if( useStrongFocus && sunken ) iconMode = QIcon::Selected;
-                else if( useStrongFocus && selected ) iconMode = QIcon::Active;
-                else iconMode = QIcon::Normal;
-
-                iconState = sunken ? QIcon::On : QIcon::Off;
-
-            }
-
-            const auto pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), iconMode, iconState);
-            drawItemPixmap( painter, iconRect, Qt::AlignCenter, pixmap );
-
-            // render outline
-            if( !useStrongFocus && ( selected || sunken ) )
-            {
-
-                QColor outlineColor;
-                if( sunken ) outlineColor = _helper->focusColor( palette );
-                else if( selected ) outlineColor = _helper->hoverColor( palette );
-
-                _helper->renderFocusLine( painter, iconRect, outlineColor );
-
-            }
-
-        } else {
-
-            // get text rect
-            const int textFlags( Qt::AlignCenter|_mnemonics->textFlags() );
-            const auto textRect = option->fontMetrics.boundingRect( rect, textFlags, menuItemOption->text );
-
-            // render text
-            const QPalette::ColorRole role = (useStrongFocus && sunken ) ? QPalette::HighlightedText : QPalette::WindowText;
-            drawItemText( painter, textRect, textFlags, palette, enabled, menuItemOption->text, role );
-
-            // render outline
-            if( !useStrongFocus && ( selected || sunken ) )
-            {
-
-                QColor outlineColor;
-                if( sunken ) outlineColor = _helper->focusColor( palette );
-                else if( selected ) outlineColor = _helper->hoverColor( palette );
-
-                _helper->renderFocusLine( painter, textRect, outlineColor );
-
-            }
-
-        }
-
-        painter->restore();
-
-        return true;
-    }
-
-
-    //___________________________________________________________________________________
-    bool Style::drawMenuItemControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem*>( option );
-        if( !menuItemOption ) return true;
-        if( menuItemOption->menuItemType == QStyleOptionMenuItem::EmptyArea ) return true;
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // deal with separators
-        if( menuItemOption->menuItemType == QStyleOptionMenuItem::Separator )
-        {
-
-            // normal separator
-            if( menuItemOption->text.isEmpty() && menuItemOption->icon.isNull() )
-            {
-
-                auto color( _helper->separatorColor( palette ) );
-                QRect copy( rect );
-
-                if( StyleConfigData::menuOpacity() < 100 )
-                {
-                    color = _helper->alphaColor( palette.color( QPalette::WindowText ), 0.25 ) ;
-                    // don`t overlap with menu border
-                    copy.adjust( 1, 0, -1, 0 );
-                }
-
-                _helper->renderSeparator( painter, copy, color );
-                return true;
-
-            } else {
-
-                /*
-                 * separator can have a title and an icon
-                 * in that case they are rendered as menu title buttons
-                 */
-                QStyleOptionToolButton copy( separatorMenuItemOption( menuItemOption, widget ) );
-                renderMenuTitle( &copy, painter, widget );
-
-                return true;
-
-            }
-
-        }
-
-        // store state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool selected( enabled && (state & State_Selected) );
-        const bool sunken( enabled && (state & (State_Sunken) ) );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-        const bool useStrongFocus( StyleConfigData::menuItemDrawStrongFocus() );
-
-        // render hover and focus
-        if( useStrongFocus && ( selected || sunken ) )
-        {
-
-            auto color = _helper->focusColor( palette );
-            color = _helper->alphaColor( color, 0.3 );
-            const auto outlineColor = _helper->focusOutlineColor( palette );
-
-            Sides sides;
-            if( !menuItemOption->menuRect.isNull() )
-            {
-                if( rect.top() <= menuItemOption->menuRect.top() && !(widget && widget->property(PropertyNames::isTopMenu).toBool()) ) sides |= SideTop;
-                if( rect.bottom() >= menuItemOption->menuRect.bottom() ) sides |= SideBottom;
-                if( rect.left() <= menuItemOption->menuRect.left() ) sides |= SideLeft;
-                if( rect.right() >= menuItemOption->menuRect.right() ) sides |= SideRight;
-            }
-
-            _helper->renderFocusRect( painter, rect, color, outlineColor, SideTop | SideBottom | SideLeft | SideRight );
-
-        }
-
-        // get rect available for contents
-        auto contentsRect( insideMargin( rect,  Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight ) );
-
-        // define relevant rectangles
-        // checkbox
-        QRect checkBoxRect;
-        if( menuItemOption->menuHasCheckableItems )
-        {
-            checkBoxRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-Metrics::CheckBox_Size)/2, Metrics::CheckBox_Size, Metrics::CheckBox_Size );
-            contentsRect.setLeft( checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
-        }
-
-        // render checkbox indicator
-        if( menuItemOption->checkType == QStyleOptionMenuItem::NonExclusive )
-        {
-
-            checkBoxRect = visualRect( option, checkBoxRect );
-
-            // checkbox state
-
-            CheckBoxState state( menuItemOption->checked ? CheckOn : CheckOff );
-            const bool active( menuItemOption->checked );
-            const auto shadow( _helper->shadowColor( palette ) );
-            const auto color( _helper->checkBoxIndicatorColor( palette, false, enabled && active ) );
-            _helper->renderCheckBoxBackground( painter, checkBoxRect, palette, state, false, sunken );
-            _helper->renderCheckBox( painter, checkBoxRect, palette, false, state, state, false, sunken );
-
-        } else if( menuItemOption->checkType == QStyleOptionMenuItem::Exclusive ) {
-
-            checkBoxRect = visualRect( option, checkBoxRect );
-
-            const bool active( menuItemOption->checked );
-            _helper->renderRadioButtonBackground( painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, sunken );
-            _helper->renderRadioButton( painter, checkBoxRect, palette, false, active ? RadioOn:RadioOff, false, sunken );
-
-        }
-
-        // icon
-        int iconWidth = 0;
-        const bool showIcon( showIconsInMenuItems() );
-        if( showIcon ) iconWidth = isQtQuickControl( option, widget ) ? qMax( pixelMetric(PM_SmallIconSize, option, widget ), menuItemOption->maxIconWidth ) : menuItemOption->maxIconWidth;
-
-        QRect iconRect;
-        if( showIcon && iconWidth > 0 )
-        {
-            iconRect = QRect( contentsRect.left(), contentsRect.top() + (contentsRect.height()-iconWidth)/2, iconWidth, iconWidth );
-            contentsRect.setLeft( iconRect.right() + Metrics::MenuItem_ItemSpacing + 1 );
-            const QSize iconSize( pixelMetric( PM_SmallIconSize, option, widget ), pixelMetric( PM_SmallIconSize, option, widget ) );
-            iconRect = centerRect( iconRect, iconSize );
-        } else {
-            contentsRect.setLeft( contentsRect.left() + Metrics::MenuItem_ExtraLeftMargin );
-        }
-
-        if( showIcon && !menuItemOption->icon.isNull() )
-        {
-
-            iconRect = visualRect( option, iconRect );
-
-            // icon mode
-            QIcon::Mode mode;
-            if( enabled ) mode = QIcon::Normal;
-            else mode = QIcon::Disabled;
-
-            // icon state
-            const QIcon::State iconState( sunken ? QIcon::On:QIcon::Off );
-            const QPixmap icon = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), mode, iconState);
-            painter->drawPixmap( iconRect, icon );
-
-        }
-
-        // arrow
-        QRect arrowRect( contentsRect.right() - Metrics::MenuButton_IndicatorWidth + 1, contentsRect.top() + (contentsRect.height()-Metrics::MenuButton_IndicatorWidth)/2, Metrics::MenuButton_IndicatorWidth, Metrics::MenuButton_IndicatorWidth );
-        contentsRect.setRight( arrowRect.left() -  Metrics::MenuItem_ItemSpacing - 1 );
-
-        if( menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu )
-        {
-
-            // apply right-to-left layout
-            arrowRect = visualRect( option, arrowRect );
-
-            // arrow orientation
-            const ArrowOrientation orientation( reverseLayout ? ArrowLeft:ArrowRight );
-
-            // color
-            const QColor arrowColor = _helper->arrowColor( palette, QPalette::WindowText );
-
-            // render
-            _helper->renderArrow( painter, arrowRect, arrowColor, orientation );
-
-        }
-
-
-        // text
-        auto textRect = contentsRect;
-        if( !menuItemOption->text.isEmpty() )
-        {
-
-            // adjust textRect
-            QString text = menuItemOption->text;
-            textRect = centerRect( textRect, textRect.width(), option->fontMetrics.size( _mnemonics->textFlags(), text ).height() );
-            textRect = visualRect( option, textRect );
-
-            // set font
-            painter->setFont( menuItemOption->font );
-
-            // color role
-            const QPalette::ColorRole role = QPalette::WindowText;
-
-            // locate accelerator and render
-            const int tabPosition( text.indexOf( QLatin1Char( '\t' ) ) );
-            if( tabPosition >= 0 )
-            {
-
-                const int textFlags( Qt::AlignVCenter | Qt::AlignRight );
-                QString accelerator( text.mid( tabPosition + 1 ) );
-                text = text.left( tabPosition );
-                drawItemText( painter, textRect, textFlags, palette, enabled, accelerator, role );
-
-            }
-
-            // render text
-            const int textFlags( Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft ) | _mnemonics->textFlags() );
-            textRect = option->fontMetrics.boundingRect( textRect, textFlags, text );
-            drawItemText( painter, textRect, textFlags, palette, enabled, text, role );
-
-            // render hover and focus
-            if( !useStrongFocus && ( selected || sunken ) )
-            {
-
-                QColor outlineColor;
-                if( sunken ) outlineColor = _helper->focusColor( palette );
-                else if( selected ) outlineColor = _helper->hoverColor( palette );
-
-                _helper->renderFocusLine( painter, textRect, outlineColor );
-
-            }
-
-        }
-
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawProgressBarControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return true;
-
-        // render groove
-        QStyleOptionProgressBar progressBarOption2 = *progressBarOption;
-        progressBarOption2.rect = subElementRect( SE_ProgressBarGroove, progressBarOption, widget );
-        drawControl( CE_ProgressBarGroove, &progressBarOption2, painter, widget );
-
-        const QObject* styleObject( widget ? widget:progressBarOption->styleObject );
-
-        // enable busy animations
-        // need to check both widget and passed styleObject, used for QML
-        if( styleObject && _animations->busyIndicatorEngine().enabled() )
-        {
-
-            // register QML object if defined
-            if( !widget && progressBarOption->styleObject )
-            { _animations->busyIndicatorEngine().registerWidget( progressBarOption->styleObject ); }
-
-            _animations->busyIndicatorEngine().setAnimated( styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0 );
-
-        }
-
-        // check if animated and pass to option
-        if( _animations->busyIndicatorEngine().isAnimated( styleObject ) )
-        { progressBarOption2.progress = _animations->busyIndicatorEngine().value(); }
-
-        // render contents
-        progressBarOption2.rect = subElementRect( SE_ProgressBarContents, progressBarOption, widget );
-        drawControl( CE_ProgressBarContents, &progressBarOption2, painter, widget );
+    } else {
+        // get text rect
+        const int textFlags(Qt::AlignCenter | _mnemonics->textFlags());
+        const auto textRect = option->fontMetrics.boundingRect(rect, textFlags, menuItemOption->text);
 
         // render text
-        const bool textVisible( progressBarOption->textVisible );
-        const bool busy( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 );
-        if( textVisible && !busy )
-        {
-            progressBarOption2.rect = subElementRect( SE_ProgressBarLabel, progressBarOption, widget );
-            drawControl( CE_ProgressBarLabel, &progressBarOption2, painter, widget );
+        const QPalette::ColorRole role = (useStrongFocus && sunken) ? QPalette::HighlightedText : QPalette::WindowText;
+        drawItemText(painter, textRect, textFlags, palette, enabled, menuItemOption->text, role);
+
+        // render outline
+        if (!useStrongFocus && (selected || sunken)) {
+            QColor outlineColor;
+            if (sunken)
+                outlineColor = _helper->focusColor(palette);
+            else if (selected)
+                outlineColor = _helper->hoverColor(palette);
+
+            _helper->renderFocusLine(painter, textRect, outlineColor);
         }
-
-        return true;
-
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawProgressBarContentsControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
+    painter->restore();
 
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return true;
+    return true;
+}
 
-        // copy rect and palette
-        auto rect( option->rect );
-        const auto& palette( option->palette );
+//___________________________________________________________________________________
+bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto menuItemOption = qstyleoption_cast<const QStyleOptionMenuItem *>(option);
+    if (!menuItemOption)
+        return true;
+    if (menuItemOption->menuItemType == QStyleOptionMenuItem::EmptyArea)
+        return true;
 
-        // get direction
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        const bool inverted( progressBarOption->invertedAppearance );
-        bool reverse = horizontal && option->direction == Qt::RightToLeft;
-        if( inverted ) reverse = !reverse;
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
 
-        // check if anything is to be drawn
-        const bool busy( ( progressBarOption->minimum == 0 && progressBarOption->maximum == 0 ) );
-        if( busy )
-        {
+    // deal with separators
+    if (menuItemOption->menuItemType == QStyleOptionMenuItem::Separator) {
+        // normal separator
+        if (menuItemOption->text.isEmpty() && menuItemOption->icon.isNull()) {
+            auto color(_helper->separatorColor(palette));
+            QRect copy(rect);
 
-            const qreal progress( _animations->busyIndicatorEngine().value() );
+            if (StyleConfigData::menuOpacity() < 100) {
+                color = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
+                // don`t overlap with menu border
+                copy.adjust(1, 0, -1, 0);
+            }
 
-            const auto &first = palette.color( QPalette::Highlight );
-            const auto second( KColorUtils::mix( palette.color( QPalette::Highlight ), palette.color( QPalette::Window ), 0.7 ) );
-            _helper->renderProgressBarBusyContents( painter, rect, first, second, horizontal, reverse, progress );
+            _helper->renderSeparator(painter, copy, color);
+            return true;
 
         } else {
-
-            const QRegion oldClipRegion( painter->clipRegion() );
-            if( horizontal )
-            {
-                if( rect.width() < Metrics::ProgressBar_Thickness )
-                {
-                    painter->setClipRect( rect, Qt::IntersectClip );
-                    if( reverse ) rect.setLeft( rect.left() - Metrics::ProgressBar_Thickness + rect.width() );
-                    else rect.setWidth( Metrics::ProgressBar_Thickness );
-                }
-
-            } else {
-
-                if( rect.height() < Metrics::ProgressBar_Thickness )
-                {
-                    painter->setClipRect( rect, Qt::IntersectClip );
-                    if( reverse ) rect.setHeight( Metrics::ProgressBar_Thickness );
-                    else rect.setTop( rect.top() - Metrics::ProgressBar_Thickness + rect.height() );
-                }
-
-            }
-
-            auto contentsColor(
-                option->state.testFlag( QStyle::State_Selected ) ?
-                palette.color( QPalette::HighlightedText ) :
-                palette.color( QPalette::Highlight ) );
-
-            _helper->renderProgressBarGroove( painter, rect, contentsColor, palette.color(QPalette::Window) );
-            painter->setClipRegion( oldClipRegion );
-        }
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawProgressBarGrooveControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-        const auto& palette( option->palette );
-        const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-        _helper->renderProgressBarGroove( painter, option->rect, color, palette.color(QPalette::Window) );
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawProgressBarLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
-
-        // cast option and check
-        const auto progressBarOption( qstyleoption_cast<const QStyleOptionProgressBar*>( option ) );
-        if( !progressBarOption ) return true;
-
-        // get direction and check
-        const bool horizontal( BreezePrivate::isProgressBarHorizontal( progressBarOption ) );
-        if( !horizontal ) return true;
-
-        // store rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // store state and direction
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-
-        // define text rect
-        Qt::Alignment hAlign( ( progressBarOption->textAlignment == Qt::AlignLeft ) ? Qt::AlignHCenter : progressBarOption->textAlignment );
-        drawItemText( painter, rect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText );
-
-        return true;
-
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawScrollBarSliderControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return true;
-
-        // copy rect and palette
-        //const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // need to make it center due to the thin line separator
-        QRect rect = option->rect;
-
-        if( option->state & State_Horizontal ) {
-            rect.setTop(PenWidth::Frame);
-        } else if (option->direction == Qt::RightToLeft) {
-            rect.setRight(rect.right() - PenWidth::Frame);
-        } else {
-            rect.setLeft(PenWidth::Frame);
-        }
-
-        //try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
-        bool widgetMouseOver( ( option->state & State_MouseOver ) );
-        if( widget ) widgetMouseOver = _animations->scrollBarEngine().isHovered( widget, QStyle::SC_ScrollBarGroove );
-        else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
-
-        qreal grooveAnimationOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
-        if( grooveAnimationOpacity == AnimationData::OpacityInvalid ) grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
-
-        // define handle rect
-        QRect handleRect;
-        const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
-        if( horizontal ) handleRect = centerRect( rect, rect.width(), Metrics::ScrollBar_SliderWidth );
-        else handleRect = centerRect( rect, Metrics::ScrollBar_SliderWidth, rect.height() );
-
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-
-        // check focus from relevant parent
-        const QWidget* parent( scrollBarParent( widget ) );
-        const bool hasFocus( enabled && ( (widget && widget->hasFocus()) || (parent && parent->hasFocus()) ) );
-
-        // enable animation state
-        const bool handleActive( sliderOption->activeSubControls & SC_ScrollBarSlider );
-        _animations->scrollBarEngine().updateState( widget, AnimationFocus, hasFocus );
-
-        _animations->scrollBarEngine().updateState( widget, AnimationHover, mouseOver && handleActive );
-
-        const auto mode( _animations->scrollBarEngine().animationMode( widget, SC_ScrollBarSlider ) );
-        const qreal opacity( _animations->scrollBarEngine().opacity( widget, SC_ScrollBarSlider ) );
-        auto color = _helper->scrollBarHandleColor( palette, mouseOver, hasFocus, opacity, mode );
-        if (StyleConfigData::animationsEnabled()) {
-            color.setAlphaF(color.alphaF() * (0.7 + 0.3 * grooveAnimationOpacity));
-        }
-
-        _helper->renderScrollBarHandle( painter, handleRect, color );
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawScrollBarAddLineControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // do nothing if no buttons are defined
-        if( _addLineButtons == NoButton ) return true;
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return true;
-
-        const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        // adjust rect, based on number of buttons to be drawn
-        auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarAddLine ) );
-
-        // need to make it center due to the thin line separator
-        if( option->state & State_Horizontal ) {
-            rect.setTop(PenWidth::Frame);
-        } else if (option->direction == Qt::RightToLeft) {
-            rect.setRight(rect.right() - PenWidth::Frame);
-        } else {
-            rect.setLeft(PenWidth::Frame);
-        }
-
-        QColor color;
-        QStyleOptionSlider copy( *sliderOption );
-        if( _addLineButtons == DoubleButton )
-        {
-
-            if( horizontal )
-            {
-
-                //Draw the arrows
-                const QSize halfSize( rect.width()/2, rect.height() );
-                const QRect leftSubButton( rect.topLeft(), halfSize );
-                const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
-
-                copy.rect = leftSubButton;
-                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                _helper->renderArrow( painter, leftSubButton, color, ArrowLeft );
-
-                copy.rect = rightSubButton;
-                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                _helper->renderArrow( painter, rightSubButton, color, ArrowRight );
-
-            } else {
-
-                const QSize halfSize( rect.width(), rect.height()/2 );
-                const QRect topSubButton( rect.topLeft(), halfSize );
-                const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
-
-                copy.rect = topSubButton;
-                color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
-                _helper->renderArrow( painter, topSubButton, color, ArrowUp );
-
-                copy.rect = botSubButton;
-                color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
-                _helper->renderArrow( painter, botSubButton, color, ArrowDown );
-
-            }
-
-        } else if( _addLineButtons == SingleButton ) {
-
-            copy.rect = rect;
-            color = scrollBarArrowColor( &copy,  SC_ScrollBarAddLine, widget );
-            if( horizontal )
-            {
-
-                if( reverseLayout ) _helper->renderArrow( painter, rect, color, ArrowLeft );
-                else _helper->renderArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
-
-            } else _helper->renderArrow( painter, rect.translated( 0, 1 ), color, ArrowDown );
-
-        }
-
-        return true;
-    }
-
-
-    //___________________________________________________________________________________
-    bool Style::drawScrollBarSubLineControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // do nothing if no buttons are set
-        if( _subLineButtons == NoButton ) return true;
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return true;
-
-        const State& state( option->state );
-        const bool horizontal( state & State_Horizontal );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        // adjust rect, based on number of buttons to be drawn
-        auto rect( scrollBarInternalSubControlRect( sliderOption, SC_ScrollBarSubLine ) );
-
-        // need to make it center due to the thin line separator
-        if( option->state & State_Horizontal ) {
-            rect.setTop(PenWidth::Frame);
-        } else if (option->direction == Qt::RightToLeft) {
-            rect.setRight(rect.right() - PenWidth::Frame);
-        } else {
-            rect.setLeft(PenWidth::Frame);
-        }
-
-        QColor color;
-        QStyleOptionSlider copy( *sliderOption );
-        if( _subLineButtons == DoubleButton )
-        {
-
-            if( horizontal )
-            {
-
-                //Draw the arrows
-                const QSize halfSize( rect.width()/2, rect.height() );
-                const QRect leftSubButton( rect.topLeft(), halfSize );
-                const QRect rightSubButton( leftSubButton.topRight() + QPoint( 1, 0 ), halfSize );
-
-                copy.rect = leftSubButton;
-                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarAddLine:SC_ScrollBarSubLine, widget );
-                _helper->renderArrow( painter, leftSubButton, color, ArrowLeft );
-
-                copy.rect = rightSubButton;
-                color = scrollBarArrowColor( &copy,  reverseLayout ? SC_ScrollBarSubLine:SC_ScrollBarAddLine, widget );
-                _helper->renderArrow( painter, rightSubButton, color, ArrowRight );
-
-            } else {
-
-                const QSize halfSize( rect.width(), rect.height()/2 );
-                const QRect topSubButton( rect.topLeft(), halfSize );
-                const QRect botSubButton( topSubButton.bottomLeft() + QPoint( 0, 1 ), halfSize );
-
-                copy.rect = topSubButton;
-                color = scrollBarArrowColor( &copy, SC_ScrollBarSubLine, widget );
-                _helper->renderArrow( painter, topSubButton, color, ArrowUp );
-
-                copy.rect = botSubButton;
-                color = scrollBarArrowColor( &copy, SC_ScrollBarAddLine, widget );
-                _helper->renderArrow( painter, botSubButton, color, ArrowDown );
-
-            }
-
-        } else if( _subLineButtons == SingleButton ) {
-
-            copy.rect = rect;
-            color = scrollBarArrowColor( &copy,  SC_ScrollBarSubLine, widget );
-            if( horizontal )
-            {
-
-                if( reverseLayout ) _helper->renderArrow( painter, rect.translated( 1, 0 ), color, ArrowRight );
-                else _helper->renderArrow( painter, rect, color, ArrowLeft );
-
-            } else _helper->renderArrow( painter, rect, color, ArrowUp );
-
-        }
-
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawShapedFrameControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto frameOpt = qstyleoption_cast<const QStyleOptionFrame*>( option );
-        if( !frameOpt ) return false;
-
-        switch( frameOpt->frameShape )
-        {
-
-            case QFrame::Box:
-            {
-                if( option->state & State_Sunken ) return true;
-                else break;
-            }
-
-            case QFrame::HLine:
-            case QFrame::VLine:
-            {
-
-                const auto& rect( option->rect );
-                const auto color( _helper->separatorColor( option->palette ) );
-                const bool isVertical( frameOpt->frameShape == QFrame::VLine );
-                _helper->renderSeparator( painter, rect, color, isVertical );
-                return true;
-            }
-
-            case QFrame::StyledPanel:
-            {
-
-                if( isQtQuickControl( option, widget )
-                    && option->styleObject->property( "elementType" ).toString() == QLatin1String( "combobox" ) )
-                {
-
-                    // ComboBox popup frame
-                    drawFrameMenuPrimitive( option, painter, widget );
-                    return true;
-
-                } else break;
-            }
-
-            default: break;
-
-        }
-
-        return false;
-
-    }
-
-    // Adapted from QMacStylePrivate::drawFocusRing()
-    bool Style::drawFocusFrame( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-        const QFocusFrame *focusFrame = qobject_cast<const QFocusFrame *>(widget);
-        const QWidget *targetWidget = focusFrame ? focusFrame->widget() : nullptr;
-        // If we have a QFocusFrame and no target widget, don't draw anything.
-        if (focusFrame && !targetWidget) return true;
-
-        const int hmargin = proxy()->pixelMetric(QStyle::PM_FocusFrameHMargin, option, widget);
-        const int vmargin = proxy()->pixelMetric(QStyle::PM_FocusFrameVMargin, option, widget);
-        // Not using targetWidget->rect() to get this because this should still work when widget is null.
-        const QRect targetWidgetRect = option->rect.adjusted(hmargin, vmargin, -hmargin, -vmargin);
-
-        QRect innerRect = targetWidgetRect;
-        QRect outerRect = option->rect;
-
-        qreal innerRadius = Metrics::Frame_FrameRadius;
-        qreal outerRadius = innerRadius + vmargin;
-
-        QPainterPath focusFramePath;
-        focusFramePath.setFillRule(Qt::OddEvenFill);
-
-        // If focusFrame is null, make it still possible to draw something since
-        // most draw functions allow drawing something when the widget is null
-        if (!focusFrame) {
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-        } else if (targetWidget->inherits("QLineEdit") || targetWidget->inherits("QTextEdit")
-            || targetWidget->inherits("QAbstractSpinBox") || targetWidget->inherits("QComboBox")
-            || targetWidget->inherits("QPushButton") || targetWidget->inherits("QToolButton")
-        ) {
-            /* It's OK to check for QAbstractSpinBox instead of more spacific classes
-             * because QAbstractSpinBox handles the painting for spinboxes,
-             * unlike most abstract widget classes.
+            /*
+             * separator can have a title and an icon
+             * in that case they are rendered as menu title buttons
              */
-            innerRect.adjust(1, 1, -1, -1);
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-        } else if (auto checkBox = qobject_cast<const QCheckBox*>(targetWidget)) {
-            QStyleOptionButton opt;
-            opt.initFrom(checkBox);
-            if (checkBox->isDown()) {
-                opt.state |= QStyle::State_Sunken;
-            }
-            if (checkBox->isTristate()) {
-                opt.state |= QStyle::State_NoChange;
-            } else if (checkBox->isChecked()) {
-                opt.state |= QStyle::State_On;
-            } else {
-                opt.state |= QStyle::State_Off;
-            }
-            opt.text = checkBox->text();
-            opt.icon = checkBox->icon();
-            opt.iconSize = checkBox->iconSize();
-            innerRect = subElementRect(SE_CheckBoxIndicator, &opt, checkBox);
-            innerRect.adjust(2, 2, -2, -2);
-            innerRect.translate(hmargin, vmargin);
-            innerRect = visualRect(option, innerRect);
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-        } else if (auto radioButton = qobject_cast<const QRadioButton*>(targetWidget)) {
-            QStyleOptionButton opt;
-            opt.initFrom(radioButton);
-            if (radioButton->isDown()) {
-                opt.state |= QStyle::State_Sunken;
-            }
-            if (radioButton->isChecked()) {
-                opt.state |= QStyle::State_On;
-            } else {
-                opt.state |= QStyle::State_Off;
-            }
-            opt.text = radioButton->text();
-            opt.icon = radioButton->icon();
-            opt.iconSize = radioButton->iconSize();
-            innerRect = subElementRect(SE_RadioButtonIndicator, &opt, radioButton);
-            innerRect.adjust(2, 2, -2, -2);
-            innerRect.translate(hmargin, vmargin);
-            innerRect = visualRect(option, innerRect);
-            innerRadius = innerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            outerRadius = outerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-        } else if (auto slider = qobject_cast<const QSlider*>(targetWidget)) {
-            QStyleOptionSlider opt;
-            opt.initFrom(slider);
-            opt.orientation = slider->orientation();
-            opt.maximum = slider->maximum();
-            opt.minimum = slider->minimum();
-            opt.tickPosition = slider->tickPosition();
-            opt.tickInterval = slider->tickInterval();
-            if (opt.orientation == Qt::Horizontal) {
-                opt.upsideDown = slider->invertedAppearance() && opt.direction != Qt::RightToLeft;
-            } else {
-                opt.upsideDown = !slider->invertedAppearance();
-            }
-            opt.sliderPosition = slider->sliderPosition();
-            opt.sliderValue = slider->value();
-            opt.singleStep = slider->singleStep();
-            opt.pageStep = slider->pageStep();
-            if (opt.orientation == Qt::Horizontal) {
-                opt.state |= QStyle::State_Horizontal;
-            }
-            innerRect = subControlRect(CC_Slider, &opt, SC_SliderHandle, slider);
-            innerRect.adjust(1, 1, -1, -1);
-            innerRect.translate(hmargin, vmargin);
-            innerRadius = innerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            outerRadius = outerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-            if (_focusFrame) {
-                // Workaround QFocusFrame not fully repainting outside the bounds of the targetWidget
-                auto previousRect = _focusFrame->property("_lastOuterRect").value<QRect>();
-                if (previousRect != outerRect) {
-                    _focusFrame->update();
-                    _focusFrame->setProperty("_lastOuterRect", outerRect);
-                }
-            }
-        } else if (auto dial = qobject_cast<const QDial*>(targetWidget)) {
-            QStyleOptionSlider opt;
-            opt.initFrom(dial);
-            opt.maximum = dial->maximum();
-            opt.minimum = dial->minimum();
-            opt.sliderPosition = dial->sliderPosition();
-            opt.sliderValue = dial->value();
-            opt.singleStep = dial->singleStep();
-            opt.pageStep = dial->pageStep();
-            opt.upsideDown = !dial->invertedAppearance();
-            opt.notchTarget = dial->notchTarget();
-            opt.dialWrapping = dial->wrapping();
-            if (!dial->notchesVisible()) {
-                opt.subControls &= ~QStyle::SC_DialTickmarks;
-                opt.tickPosition = QSlider::TicksAbove;
-            } else {
-                opt.tickPosition = QSlider::NoTicks;
-            }
-            opt.tickInterval = dial->notchSize();
-            innerRect = subControlRect(CC_Dial, &opt, SC_DialHandle, dial);
-            innerRect.adjust(1, 1, -1, -1);
-            innerRect.translate(hmargin, vmargin);
-            innerRadius = innerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            outerRadius = outerRect.height() / 2.0;
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-            if (_focusFrame) {
-                // Workaround QFocusFrame not fully repainting outside the bounds of the targetWidget
-                auto previousRect = _focusFrame->property("_lastOuterRect").value<QRect>();
-                if (previousRect != outerRect) {
-                    _focusFrame->update();
-                    _focusFrame->setProperty("_lastOuterRect", outerRect);
-                }
-            }
-        } else if (auto groupBox = qobject_cast<const QGroupBox*>(targetWidget)) {
-            QStyleOptionGroupBox opt;
-            opt.initFrom(groupBox);
-            opt.lineWidth = 1;
-            opt.midLineWidth = 0;
-            opt.textAlignment = groupBox->alignment();
-            opt.subControls = QStyle::SC_GroupBoxFrame;
-            if (groupBox->isCheckable()) {
-                opt.subControls |= QStyle::SC_GroupBoxCheckBox;
-                if (groupBox->isChecked()) {
-                    opt.state |= QStyle::State_On;
-                } else {
-                    opt.state |= QStyle::State_Off;
-                }
-                // NOTE: we can't get the sunken state of the checkbox
-            }
-            opt.text = groupBox->title();
-            if (!opt.text.isEmpty()) {
-                opt.subControls |= QStyle::SC_GroupBoxLabel;
-            }
-            innerRect = subControlRect(CC_GroupBox, &opt, SC_GroupBoxCheckBox, groupBox);
-            innerRect.adjust(2, 2, -2, -2);
-            innerRect.translate(hmargin, vmargin);
-            innerRect = visualRect(option, innerRect);
-            focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-            outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-            focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
-        } else {
+            QStyleOptionToolButton copy(separatorMenuItemOption(menuItemOption, widget));
+            renderMenuTitle(&copy, painter, widget);
+
             return true;
         }
-
-        auto outerColor = _helper->alphaColor(option->palette.highlight().color(), 0.33);
-
-        painter->setRenderHint(QPainter::Antialiasing);
-        painter->fillPath(focusFramePath, outerColor);
-        return true;
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawRubberBandControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
+    // store state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool selected(enabled && (state & State_Selected));
+    const bool sunken(enabled && (state & (State_Sunken)));
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+    const bool useStrongFocus(StyleConfigData::menuItemDrawStrongFocus());
 
-        painter->save();
-        painter->setRenderHints( QPainter::Antialiasing );
+    // render hover and focus
+    if (useStrongFocus && (selected || sunken)) {
+        auto color = _helper->focusColor(palette);
+        color = _helper->alphaColor(color, 0.3);
+        const auto outlineColor = _helper->focusOutlineColor(palette);
 
-        const auto& palette( option->palette );
-        const auto outline = KColorUtils::lighten( palette.color( QPalette::Highlight ) );
-        auto background = palette.color( QPalette::Highlight );
-        background.setAlphaF( 0.20 );
+        Sides sides;
+        if (!menuItemOption->menuRect.isNull()) {
+            if (rect.top() <= menuItemOption->menuRect.top() && !(widget && widget->property(PropertyNames::isTopMenu).toBool()))
+                sides |= SideTop;
+            if (rect.bottom() >= menuItemOption->menuRect.bottom())
+                sides |= SideBottom;
+            if (rect.left() <= menuItemOption->menuRect.left())
+                sides |= SideLeft;
+            if (rect.right() >= menuItemOption->menuRect.right())
+                sides |= SideRight;
+        }
 
-        painter->setPen( outline );
-        painter->setBrush( background );
-        painter->drawRoundedRect( _helper->strokedRect( option->rect ), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius );
-
-        painter->restore();
-        return true;
-
+        _helper->renderFocusRect(painter, rect, color, outlineColor, SideTop | SideBottom | SideLeft | SideRight);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawHeaderSectionControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // get rect available for contents
+    auto contentsRect(insideMargin(rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight));
 
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-        const auto& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool sunken( enabled && ( state & (State_On|State_Sunken) ) );
-
-        const auto headerOption( qstyleoption_cast<const QStyleOptionHeader*>( option ) );
-        if( !headerOption ) return true;
-
-        const bool horizontal( headerOption->orientation == Qt::Horizontal );
-        const bool isCorner( widget && widget->inherits( "QTableCornerButton" ) );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        // update animation state
-        _animations->headerViewEngine().updateState( widget, rect.topLeft(), mouseOver );
-        const bool animated( enabled && _animations->headerViewEngine().isAnimated( widget, rect.topLeft() ) );
-        const qreal opacity( _animations->headerViewEngine().opacity( widget, rect.topLeft() ) );
-
-        // fill
-        const auto &normal = palette.color( QPalette::Button );
-        const auto focus( KColorUtils::mix( normal, _helper->focusColor( palette ), 0.2 ) );
-        const auto hover( KColorUtils::mix( normal, _helper->hoverColor( palette ), 0.2 ) );
-
-        QColor color;
-        if( sunken ) color = focus;
-        else if( animated ) color = KColorUtils::mix( normal, hover, opacity );
-        else if( mouseOver ) color = hover;
-        else color = normal;
-
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setBrush( color );
-        painter->setPen( Qt::NoPen );
-        painter->drawRect( rect );
-
-        // outline
-        painter->setBrush( Qt::NoBrush );
-        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.1 ) );
-
-        if( isCorner )
-        {
-
-            if( reverseLayout ) painter->drawPoint( rect.bottomLeft() );
-            else painter->drawPoint( rect.bottomRight() );
-
-
-        } else if( horizontal ) {
-
-            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
-
-        } else {
-
-            if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-            else painter->drawLine( rect.topRight(), rect.bottomRight() );
-
-        }
-
-        // separators
-        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
-
-        // If the separator would be next to a "HeaderEmptyArea", skip it and let that draw
-        // the separator instead. This means that those separators are only visible when necessary.
-
-        if( horizontal )
-        {
-            if ( headerOption->position != QStyleOptionHeader::OnlyOneSection )
-            {
-
-                if( reverseLayout && headerOption->position != QStyleOptionHeader::Beginning )
-                    painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
-                else if( !reverseLayout && headerOption->position != QStyleOptionHeader::End )
-                    painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
-
-            }
-
-        } else if( headerOption->position != QStyleOptionHeader::End ) {
-
-            if( reverseLayout ) painter->drawLine( rect.bottomLeft()+QPoint( 1, 0 ), rect.bottomRight() );
-            else painter->drawLine( rect.bottomLeft(), rect.bottomRight() - QPoint( 1, 0 ) );
-
-        }
-
-        return true;
-
+    // define relevant rectangles
+    // checkbox
+    QRect checkBoxRect;
+    if (menuItemOption->menuHasCheckableItems) {
+        checkBoxRect = QRect(contentsRect.left(),
+                             contentsRect.top() + (contentsRect.height() - Metrics::CheckBox_Size) / 2,
+                             Metrics::CheckBox_Size,
+                             Metrics::CheckBox_Size);
+        contentsRect.setLeft(checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawHeaderEmptyAreaControl( const QStyleOption* option, QPainter* painter, const QWidget* ) const
-    {
+    // render checkbox indicator
+    if (menuItemOption->checkType == QStyleOptionMenuItem::NonExclusive) {
+        checkBoxRect = visualRect(option, checkBoxRect);
 
-        // use the same background as in drawHeaderPrimitive
-        const auto& rect( option->rect );
-        auto palette( option->palette );
+        // checkbox state
 
-        const bool horizontal( option->state & QStyle::State_Horizontal );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
+        CheckBoxState state(menuItemOption->checked ? CheckOn : CheckOff);
+        const bool active(menuItemOption->checked);
+        const auto shadow(_helper->shadowColor(palette));
+        const auto color(_helper->checkBoxIndicatorColor(palette, false, enabled && active));
+        _helper->renderCheckBoxBackground(painter, checkBoxRect, palette, state, false, sunken);
+        _helper->renderCheckBox(painter, checkBoxRect, palette, false, state, state, false, sunken);
 
-        // fill
-        painter->setRenderHint( QPainter::Antialiasing, false );
-        painter->setBrush( palette.color( QPalette::Button ) );
-        painter->setPen( Qt::NoPen );
-        painter->drawRect( rect );
+    } else if (menuItemOption->checkType == QStyleOptionMenuItem::Exclusive) {
+        checkBoxRect = visualRect(option, checkBoxRect);
 
-        // outline
-        painter->setBrush( Qt::NoBrush );
-        painter->setPen( _helper->alphaColor( palette.color( QPalette::ButtonText ), 0.1 ) );
-
-        if( horizontal ) {
-
-            painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
-
-        } else {
-
-            if( reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() );
-            else painter->drawLine( rect.topRight(), rect.bottomRight() );
-
-        }
-
-        // separators
-        painter->setPen( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.2 ) );
-
-        if( horizontal )
-        {
-
-            // 26aa20407d in qtbase introduced a 1px empty area in reversed horizontal headers. Ignore it.
-            if( reverseLayout && rect.width() != 1 ) painter->drawLine( rect.topRight(), rect.bottomRight() - QPoint( 0, 1 ) );
-            else if ( !reverseLayout ) painter->drawLine( rect.topLeft(), rect.bottomLeft() - QPoint( 0, 1 ) );
-
-
-        } else {
-
-            if( reverseLayout ) painter->drawLine( rect.topLeft()+QPoint( 1, 0 ), rect.topRight() );
-            else painter->drawLine( rect.topLeft(), rect.topRight() - QPoint( 1, 0 ) );
-
-        }
-
-        return true;
-
+        const bool active(menuItemOption->checked);
+        _helper->renderRadioButtonBackground(painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, sunken);
+        _helper->renderRadioButton(painter, checkBoxRect, palette, false, active ? RadioOn : RadioOff, false, sunken);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawTabBarTabLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    // icon
+    int iconWidth = 0;
+    const bool showIcon(showIconsInMenuItems());
+    if (showIcon)
+        iconWidth =
+            isQtQuickControl(option, widget) ? qMax(pixelMetric(PM_SmallIconSize, option, widget), menuItemOption->maxIconWidth) : menuItemOption->maxIconWidth;
 
-        // call parent style method
-
-        // we draw the focus ourselves so we don't need the parent to do it for us.
-        auto old = option->state;
-        // clear the State_HasFocus bit
-        const_cast<QStyleOption*>(option)->state &= ~State_HasFocus;
-        ParentStyleClass::drawControl( CE_TabBarTabLabel, option, painter, widget );
-        const_cast<QStyleOption*>(option)->state = old;
-
-        // store rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // check focus
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool selected( state & State_Selected );
-        const bool hasFocus( enabled && selected && (state & State_HasFocus) );
-
-        // update mouse over animation state
-        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationFocus, hasFocus );
-        const bool animated( enabled && selected && _animations->tabBarEngine().isAnimated( widget, rect.topLeft(), AnimationFocus ) );
-        const qreal opacity( _animations->tabBarEngine().opacity( widget, rect.topLeft(), AnimationFocus ) );
-
-        if( !( hasFocus || animated ) ) return true;
-
-        // code is copied from QCommonStyle, but adds focus
-        // cast option and check
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>(option) );
-        if( !tabOption || tabOption->text.isEmpty() ) return true;
-
-        // tab option rect
-        const bool verticalTabs( isVerticalTab( tabOption ) );
-        const int textFlags( Qt::AlignCenter | _mnemonics->textFlags() );
-
-        // text rect
-        auto textRect( subElementRect(SE_TabBarTabText, option, widget) );
-
-        if( verticalTabs )
-        {
-
-            // properly rotate painter
-            painter->save();
-            int newX, newY, newRot;
-            if( tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast)
-            {
-
-                newX = rect.width() + rect.x();
-                newY = rect.y();
-                newRot = 90;
-
-            } else {
-
-                newX = rect.x();
-                newY = rect.y() + rect.height();
-                newRot = -90;
-
-            }
-
-            QTransform transform;
-            transform.translate( newX, newY );
-            transform.rotate(newRot);
-            painter->setTransform( transform, true );
-
-        }
-
-        // adjust text rect based on font metrics
-        textRect = option->fontMetrics.boundingRect( textRect, textFlags, tabOption->text );
-
-        // focus color
-        QColor focusColor;
-        if( animated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
-        else if( hasFocus ) focusColor =  _helper->focusColor( palette );
-
-        // render focus line
-        _helper->renderFocusLine( painter, textRect, focusColor );
-
-        if( verticalTabs ) painter->restore();
-
-        return true;
-
+    QRect iconRect;
+    if (showIcon && iconWidth > 0) {
+        iconRect = QRect(contentsRect.left(), contentsRect.top() + (contentsRect.height() - iconWidth) / 2, iconWidth, iconWidth);
+        contentsRect.setLeft(iconRect.right() + Metrics::MenuItem_ItemSpacing + 1);
+        const QSize iconSize(pixelMetric(PM_SmallIconSize, option, widget), pixelMetric(PM_SmallIconSize, option, widget));
+        iconRect = centerRect(iconRect, iconSize);
+    } else {
+        contentsRect.setLeft(contentsRect.left() + Metrics::MenuItem_ExtraLeftMargin);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawTabBarTabShapeControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
+    if (showIcon && !menuItemOption->icon.isNull()) {
+        iconRect = visualRect(option, iconRect);
 
-        const auto tabOption( qstyleoption_cast<const QStyleOptionTab*>( option ) );
-        if( !tabOption ) return true;
+        // icon mode
+        QIcon::Mode mode;
+        if (enabled)
+            mode = QIcon::Normal;
+        else
+            mode = QIcon::Disabled;
 
-        // palette and state
-        const bool enabled = option->state & State_Enabled;
-        const bool activeFocus = option->state & State_HasFocus;
-        const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
-        const bool hovered = option->state & State_MouseOver;
-        const bool down = option->state & State_Sunken;
-        const bool selected = option->state & State_Selected;
-        const bool north = tabOption->shape == QTabBar::RoundedNorth || tabOption->shape == QTabBar::TriangularNorth;
-        const bool south = tabOption->shape == QTabBar::RoundedSouth || tabOption->shape == QTabBar::TriangularSouth;
-        const bool west = tabOption->shape == QTabBar::RoundedWest || tabOption->shape == QTabBar::TriangularWest;
-        const bool east = tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast;
-
-        // check if tab is being dragged
-        const bool isDragged( widget && selected && painter->device() != widget );
-        const bool isLocked( widget && _tabBarData->isLocked( widget ) );
-
-        // store rect
-        auto rect( option->rect );
-
-        // update mouse over animation state
-        _animations->tabBarEngine().updateState( widget, rect.topLeft(), AnimationHover, hovered && !selected && enabled );
-        const qreal animation = _animations->tabBarEngine().opacity(widget, rect.topLeft(), AnimationHover);
-
-        // lock state
-        if( selected && widget && isDragged ) _tabBarData->lock( widget );
-        else if( widget && selected  && _tabBarData->isLocked( widget ) ) _tabBarData->release();
-
-        // tab position
-        const QStyleOptionTab::TabPosition& position = tabOption->position;
-        const bool isSingle( position == QStyleOptionTab::OnlyOneTab );
-        const bool isQtQuickControl( this->isQtQuickControl( option, widget ) );
-        bool isFirst( isSingle || position == QStyleOptionTab::Beginning );
-        bool isLast( isSingle || position == QStyleOptionTab::End );
-        bool isLeftOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::NextIsSelected );
-        bool isRightOfSelected( !isLocked && tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected );
-
-        // true if widget is aligned to the frame
-        // need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved
-        isFirst &= !isRightOfSelected;
-        isLast &= !isLeftOfSelected;
-
-        // swap state based on reverse layout, so that they become layout independent
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-        const bool verticalTabs( isVerticalTab( tabOption ) );
-        if( reverseLayout && !verticalTabs )
-        {
-            qSwap( isFirst, isLast );
-            qSwap( isLeftOfSelected, isRightOfSelected );
-        }
-
-        // overlap
-        // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
-        const int overlap = isQtQuickControl ? 0 : Metrics::TabBar_TabOverlap;
-
-        // adjust rect and define corners based on tabbar orientation
-        Corners corners;
-        switch(tabOption->shape) {
-            case QTabBar::RoundedNorth:
-            case QTabBar::TriangularNorth: if (selected) {
-                corners = CornersTop;
-            } else {
-                if(isFirst) corners |= CornerTopLeft;
-                if(isLast) corners |= CornerTopRight;
-                if(isRightOfSelected) rect.adjust(-Metrics::Frame_FrameRadius, 0, 0, 0);
-                if(isLeftOfSelected) rect.adjust(0, 0, Metrics::Frame_FrameRadius, 0);
-                else if(!isLast) rect.adjust(0, 0, overlap, 0);
-            } break;
-
-            case QTabBar::RoundedSouth:
-            case QTabBar::TriangularSouth: if (selected) {
-                corners = CornersBottom;
-            } else {
-                if( isFirst ) corners |= CornerBottomLeft;
-                if( isLast ) corners |= CornerBottomRight;
-                if( isRightOfSelected ) rect.adjust( -Metrics::Frame_FrameRadius, 0, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, Metrics::Frame_FrameRadius, 0 );
-                else if( !isLast ) rect.adjust( 0, 0, overlap, 0 );
-            } break;
-
-            case QTabBar::RoundedWest:
-            case QTabBar::TriangularWest: if (selected) {
-                corners = CornersLeft;
-            } else {
-                if( isFirst ) corners |= CornerTopLeft;
-                if( isLast ) corners |= CornerBottomLeft;
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
-                else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
-            } break;
-
-            case QTabBar::RoundedEast:
-            case QTabBar::TriangularEast: if (selected) {
-                corners = CornersRight;
-            } else {
-                if( isFirst ) corners |= CornerTopRight;
-                if( isLast ) corners |= CornerBottomRight;
-                if( isRightOfSelected ) rect.adjust( 0, -Metrics::Frame_FrameRadius, 0, 0 );
-                if( isLeftOfSelected ) rect.adjust( 0, 0, 0, Metrics::Frame_FrameRadius );
-                else if( !isLast ) rect.adjust( 0, 0, 0, overlap );
-            } break;
-
-            default: break;
-        }
-        switch (tabOption->shape) {
-        case QTabBar::RoundedNorth:
-        case QTabBar::TriangularNorth:
-            rect.adjust( 0, 0, 0, 1 );
-            break;
-        case QTabBar::RoundedSouth:
-        case QTabBar::TriangularSouth:
-            rect.adjust( 0, 0, 0, -1 );
-            break;
-        case QTabBar::RoundedWest:
-        case QTabBar::TriangularWest:
-            rect.adjust( 0, 0, 1, 0 );
-            break;
-        case QTabBar::RoundedEast:
-        case QTabBar::TriangularEast:
-            rect.adjust( 0, 0, -1, 0 );
-            break;
-        }
-
-        QHash<QByteArray, bool> stateProperties;
-        stateProperties["enabled"] = enabled;
-        stateProperties["visualFocus"] = visualFocus;
-        stateProperties["hovered"] = hovered;
-        stateProperties["down"] = down;
-        stateProperties["selected"] = selected;
-        stateProperties["documentMode"] = true;
-        stateProperties["north"] = north;
-        stateProperties["south"] = south;
-        stateProperties["west"] = west;
-        stateProperties["east"] = east;
-        stateProperties["isQtQuickControl"] = isQtQuickControl;
-        stateProperties["hasAlteredBackground"] = hasAlteredBackground(widget);
-        _helper->renderTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
-
-        return true;
-
+        // icon state
+        const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
+        const QPixmap icon = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), mode, iconState);
+        painter->drawPixmap(iconRect, icon);
     }
 
-    //___________________________________________________________________________________
-    bool Style::drawToolBoxTabLabelControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // rendering is similar to drawPushButtonLabelControl
-        // cast option and check
-        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
-        if( !toolBoxOption ) return true;
-
-        // copy palette
-        const auto& palette( option->palette );
-
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-
-        // text alignment
-        const int textFlags( _mnemonics->textFlags() | Qt::AlignCenter );
-
-        // contents rect
-        const auto rect( subElementRect( SE_ToolBoxTabContents, option, widget ) );
-
-        // store icon size
-        const int iconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
-
-        // find contents size and rect
-        auto contentsRect( rect );
-        QSize contentsSize;
-        if( !toolBoxOption->text.isEmpty() )
-        {
-            contentsSize = option->fontMetrics.size( _mnemonics->textFlags(), toolBoxOption->text );
-            if( !toolBoxOption->icon.isNull() ) contentsSize.rwidth() += Metrics::ToolBox_TabItemSpacing;
-        }
-
-        // icon size
-        if( !toolBoxOption->icon.isNull() )
-        {
-
-            contentsSize.setHeight( qMax( contentsSize.height(), iconSize ) );
-            contentsSize.rwidth() += iconSize;
-
-        }
-
-        // adjust contents rect
-        contentsRect = centerRect( contentsRect, contentsSize );
-
-        // render icon
-        if( !toolBoxOption->icon.isNull() )
-        {
-
-            // icon rect
-            QRect iconRect;
-            if( toolBoxOption->text.isEmpty() ) iconRect = centerRect( contentsRect, iconSize, iconSize );
-            else {
-
-                iconRect = contentsRect;
-                iconRect.setWidth( iconSize );
-                iconRect = centerRect( iconRect, iconSize, iconSize );
-                contentsRect.setLeft( iconRect.right() + Metrics::ToolBox_TabItemSpacing + 1 );
-
-            }
-
-            iconRect = visualRect( option, iconRect );
-            const QIcon::Mode mode( enabled ? QIcon::Normal : QIcon::Disabled );
-            const QPixmap pixmap(_helper->coloredIcon(toolBoxOption->icon, toolBoxOption->palette, iconRect.size(), mode));
-            drawItemPixmap( painter, iconRect, textFlags, pixmap );
-
-        }
-
-        // render text
-        if( !toolBoxOption->text.isEmpty() )
-        {
-            contentsRect = visualRect( option, contentsRect );
-            drawItemText( painter, contentsRect, textFlags, palette, enabled, toolBoxOption->text, QPalette::WindowText );
-        }
-
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawToolBoxTabShapeControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto toolBoxOption( qstyleoption_cast<const QStyleOptionToolBox *>( option ) );
-        if( !toolBoxOption ) return true;
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto tabRect( toolBoxTabContentsRect( option, widget ) );
-
-        /*
-         * important: option returns the wrong palette.
-         * we use the widget palette instead, when set
-         */
-        const auto& palette( widget ? widget->palette() : option->palette );
-
-        // store flags
-        const State& flags( option->state );
-        const bool enabled( flags&State_Enabled );
-        const bool selected( flags&State_Selected );
-        const bool mouseOver( enabled && !selected && ( flags&State_MouseOver ) );
-
-        // update animation state
-        /*
-         * the proper widget ( the toolbox tab ) is not passed as argument by Qt.
-         * What is passed is the toolbox directly. To implement animations properly,
-         *the painter->device() is used instead
-         */
-        bool isAnimated( false );
-        qreal opacity( AnimationData::OpacityInvalid );
-        QPaintDevice* device = painter->device();
-        if( enabled && device )
-        {
-            _animations->toolBoxEngine().updateState( device, mouseOver );
-            isAnimated = _animations->toolBoxEngine().isAnimated( device );
-            opacity = _animations->toolBoxEngine().opacity( device );
-        }
-
-        // color
-        QColor outline;
-        if( selected ) outline = _helper->focusColor( palette );
-        else outline = _helper->frameOutlineColor( palette, mouseOver, false, opacity, isAnimated ? AnimationHover:AnimationNone );
-
-        // render
-        _helper->renderToolBoxFrame( painter, rect, tabRect.width(), outline );
-
-        return true;
-    }
-
-    //___________________________________________________________________________________
-    bool Style::drawDockWidgetTitleControl( const QStyleOption* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto dockWidgetOption = qstyleoption_cast<const QStyleOptionDockWidget*>( option );
-        if( !dockWidgetOption ) return true;
-
-        const auto& palette( option->palette );
-        const auto& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool reverseLayout( option->direction == Qt::RightToLeft );
-
-        // cast to v2 to check vertical bar
-        const bool verticalTitleBar( dockWidgetOption->verticalTitleBar );
-
-        const auto buttonRect( subElementRect( dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget ) );
-
-        // get rectangle and adjust to properly accounts for buttons
-        auto rect( insideMargin( dockWidgetOption->rect, Metrics::Frame_FrameWidth ) );
-        if( verticalTitleBar )
-        {
-
-            if( buttonRect.isValid() ) rect.setTop( buttonRect.bottom() + 1 );
-
-        } else if( reverseLayout ) {
-
-            if( buttonRect.isValid() ) rect.setLeft( buttonRect.right() + 1 );
-            rect.adjust( 0, 0, -4, 0 );
-
-        } else {
-
-            if( buttonRect.isValid() ) rect.setRight( buttonRect.left() - 1 );
-            rect.adjust( 4, 0, 0, 0 );
-
-        }
-
-        QString title( dockWidgetOption->title );
-        int titleWidth = dockWidgetOption->fontMetrics.size( _mnemonics->textFlags(), title ).width();
-        int width = verticalTitleBar ? rect.height() : rect.width();
-        if( width < titleWidth ) title = dockWidgetOption->fontMetrics.elidedText( title, Qt::ElideRight, width, Qt::TextShowMnemonic );
-
-        if( verticalTitleBar )
-        {
-
-            QSize size = rect.size();
-            size.transpose();
-            rect.setSize( size );
-
-            painter->save();
-            painter->translate( rect.left(), rect.top() + rect.width() );
-            painter->rotate( -90 );
-            painter->translate( -rect.left(), -rect.top() );
-            drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText );
-            painter->restore();
-
-
-        } else {
-
-            drawItemText( painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText );
-
-        }
-
-        return true;
-
-
-    }
-
-    //______________________________________________________________
-    bool Style::drawGroupBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // base class method
-        ParentStyleClass::drawComplexControl( CC_GroupBox, option, painter, widget );
-
-        // cast option and check
-        const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox*>( option );
-        if( !groupBoxOption ) return true;
-
-        // do nothing if either label is not selected or groupbox is empty
-        if( !(option->subControls & QStyle::SC_GroupBoxLabel) || groupBoxOption->text.isEmpty() )
-        { return true; }
-
-        // store palette and rect
-        const auto& palette( option->palette );
-
-        // check focus state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool hasFocus( enabled && (option->state & State_HasFocus) );
-        if( !hasFocus ) return true;
-
-        // alignment
-        const int textFlags( groupBoxOption->textAlignment | _mnemonics->textFlags() );
-
-        // update animation state
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
-        const bool isFocusAnimated( _animations->widgetStateEngine().isAnimated( widget, AnimationFocus ) );
-        const qreal opacity( _animations->widgetStateEngine().opacity( widget, AnimationFocus ) );
-
-        // get relevant rect
-        auto textRect = subControlRect( CC_GroupBox, option, SC_GroupBoxLabel, widget );
-        textRect = option->fontMetrics.boundingRect( textRect, textFlags, groupBoxOption->text );
-
-        // focus color
-        QColor focusColor;
-        if( isFocusAnimated ) focusColor = _helper->alphaColor( _helper->focusColor( palette ), opacity );
-        else if( hasFocus ) focusColor =  _helper->focusColor( palette );
-
-        // render focus
-        _helper->renderFocusLine( painter, textRect, focusColor );
-
-        return true;
-
-    }
-
-    //______________________________________________________________
-    bool Style::drawToolButtonComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto toolButtonOption( qstyleoption_cast<const QStyleOptionToolButton*>( option ) );
-        if( !toolButtonOption ) return true;
-
-        // need to alter palette for focused buttons
-        const bool enabled = option->state & QStyle::State_Enabled;
-        const bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
-        const bool hovered = option->state & QStyle::State_MouseOver;
-        const bool down = option->state & QStyle::State_Sunken;
-        const bool checked = option->state & QStyle::State_On;
-        bool flat = option->state & QStyle::State_AutoRaise;
-
-        // update animation state
-        // mouse over takes precedence over focus
-        _animations->widgetStateEngine().updateState( widget, AnimationHover, hovered );
-        _animations->widgetStateEngine().updateState( widget, AnimationFocus, activeFocus && !hovered );
-
-        // detect buttons in tabbar, for which special rendering is needed
-        const bool inTabBar( widget && qobject_cast<const QTabBar*>( widget->parentWidget() ) );
-        const bool isMenuTitle( this->isMenuTitle( widget ) );
-        if( isMenuTitle )
-        {
-            // copy option to adjust state, and set font as not-bold
-            const QStyleOptionToolButton copy = toolButtonMenuTitleOption( *toolButtonOption );
-
-            // render
-            renderMenuTitle( &copy, painter, widget );
-            return true;
-        }
-
-        // copy option and alter palette
-        QStyleOptionToolButton copy( *toolButtonOption );
-
-        const bool hasPopupMenu( toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup );
-        const bool hasInlineIndicator(
-            toolButtonOption->features&QStyleOptionToolButton::HasMenu
-            && !hasPopupMenu );
-
-        const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle( option );
-
-        const auto buttonRect( subControlRect( CC_ToolButton, option, SC_ToolButton, widget ) );
-        const auto menuRect( subControlRect( CC_ToolButton, option, SC_ToolButtonMenu, widget ) );
-
-        // frame
-        if( toolButtonOption->subControls & SC_ToolButton )
-        {
-            if( !flat ) copy.rect = buttonRect;
-            if( inTabBar ) drawTabBarPanelButtonToolPrimitive( &copy, painter, widget );
-            else drawPrimitive( PE_PanelButtonTool, &copy, painter, widget);
-        }
-
-        // arrow
-        if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl )
-        {
-
-            copy.rect = menuRect;
-            drawPrimitive( PE_IndicatorButtonDropDown, &copy, painter, widget );
-
-            copy.state &= ~State_MouseOver;
-            copy.state &= ~State_Sunken;
-            copy.state &= ~State_On;
-            drawPrimitive( PE_IndicatorArrowDown, &copy, painter, widget );
-
-        } else if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall
-                   || menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge )
-        {
-
-            copy.rect = menuRect;
-            copy.state &= ~State_MouseOver;
-            copy.state &= ~State_Sunken;
-            copy.state &= ~State_On;
-
-            if( menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall )
-            {
-                drawIndicatorArrowPrimitive( ArrowDown_Small, &copy, painter, widget );
-            } else {
-                copy.rect.translate( -Metrics::Button_ItemSpacing, 0 );
-                drawIndicatorArrowPrimitive( ArrowDown, &copy, painter, widget );
-            }
-
-        }
-
-        // contents
-        {
-
-            // restore state
-            copy.state = option->state;
-
-            // define contents rect
-            auto contentsRect( buttonRect );
-
-            // detect dock widget title button
-            // for dockwidget title buttons, do not take out margins, so that icon do not get scaled down
-            const bool isDockWidgetTitleButton( widget && widget->inherits( "QDockWidgetTitleButton" ) );
-            if( isDockWidgetTitleButton )
-            {
-
-                // cast to abstract button
-                // adjust state to have correct icon rendered
-                const auto button( qobject_cast<const QAbstractButton*>( widget ) );
-                if( button->isChecked() || button->isDown() ) copy.state |= State_On;
-
-            }
-
-            copy.rect = contentsRect;
-
-            // render
-            drawControl( CE_ToolButtonLabel, &copy, painter, widget);
-
-        }
-
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawComboBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // state
-        bool enabled = option->state & QStyle::State_Enabled;
-        bool activeFocus = option->state & QStyle::State_HasFocus;
-        bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
-        bool hovered = option->state & QStyle::State_MouseOver;
-        // Only true if the arrow (SC_ComboBoxArrow) is pressed
-        bool down = option->state & QStyle::State_Sunken;
-        // Only true if the background (QComboBoxPrivateContainer) is pressed
-        bool checked = option->state & QStyle::State_On;
-        bool flat = false;
-        bool editable = false;
-        bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
-
-        // cast option and check
-        const auto comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox*>(option);
-        if (comboBoxOption) {
-            flat = !comboBoxOption->frame;
-            editable = comboBoxOption->editable;
-        }
-
-        // frame
-        if( option->subControls & SC_ComboBoxFrame ) {
-            if( editable ) {
-                flat |= ( option->rect.height() <= 2*Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth );
-                if( flat ) {
-                    const auto &background = option->palette.color( QPalette::Base );
-                    painter->setBrush( background );
-                    painter->setPen( Qt::NoPen );
-                    painter->drawRect( option->rect );
-                } else {
-                    drawPrimitive( PE_FrameLineEdit, option, painter, widget );
-                }
-            } else {
-                // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
-                _animations->widgetStateEngine().updateState(widget, AnimationFocus, (down || checked) && enabled);
-                // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
-                _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down || checked) && enabled);
-                qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
-                qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
-
-                QHash<QByteArray, bool> stateProperties;
-                stateProperties["enabled"] = enabled;
-                stateProperties["visualFocus"] = visualFocus;
-                stateProperties["hovered"] = hovered;
-                // See notes for down and checked above.
-                stateProperties["down"] = down || checked;
-                stateProperties["flat"] = flat;
-                stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
-                stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
-
-                _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
-            }
-        }
-
-        // arrow
-        if( option->subControls & SC_ComboBoxArrow ) {
-            // detect empty comboboxes
-            const auto comboBox = qobject_cast<const QComboBox*>( widget );
-            const bool empty( comboBox && !comboBox->count() );
-
-            // arrow color
-            QColor arrowColor;
-            if( editable ) {
-                if( empty || !enabled ) {
-                    arrowColor = option->palette.color( QPalette::Disabled, QPalette::Text );
-                } else {
-                    // check animation state
-                    const bool subControlHover( enabled && hovered && option->activeSubControls&SC_ComboBoxArrow );
-                    _animations->comboBoxEngine().updateState( widget, AnimationHover, subControlHover  );
-
-                    const bool animated( enabled && _animations->comboBoxEngine().isAnimated( widget, AnimationHover ) );
-                    const qreal opacity( _animations->comboBoxEngine().opacity( widget, AnimationHover ) );
-
-                    // color
-                    const auto normal( _helper->arrowColor( option->palette, QPalette::WindowText ) );
-                    const auto hover( _helper->hoverColor( option->palette ) );
-
-                    if( animated ) {
-                        arrowColor = KColorUtils::mix( normal, hover, opacity );
-                    } else if( subControlHover ) {
-                        arrowColor = hover;
-                    } else arrowColor = normal;
-                }
-            } else if( flat ) {
-                if( empty || !enabled ) {
-                    arrowColor = _helper->arrowColor( option->palette, QPalette::Disabled, QPalette::WindowText );
-                } else if( activeFocus && !hovered && down ) {
-                    arrowColor = option->palette.color( QPalette::WindowText );
-                } else {
-                    arrowColor = _helper->arrowColor( option->palette, QPalette::WindowText );
-                }
-            } else if( empty || !enabled ) {
-                arrowColor = _helper->arrowColor( option->palette, QPalette::Disabled, QPalette::ButtonText );
-            } else if( activeFocus && !hovered ) {
-                arrowColor = option->palette.color( QPalette::WindowText );
-            } else {
-                arrowColor = _helper->arrowColor( option->palette, QPalette::ButtonText );
-            }
-
-            // arrow rect
-            auto arrowRect( subControlRect( CC_ComboBox, option, SC_ComboBoxArrow, widget ) );
-
-            // render
-            _helper->renderArrow( painter, arrowRect, arrowColor, ArrowDown );
-        }
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawSpinBoxComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        const auto spinBoxOption( qstyleoption_cast<const QStyleOptionSpinBox*>( option ) );
-        if( !spinBoxOption ) return true;
-
-        // store palette and rect
-        const auto& palette( option->palette );
-        const auto& rect( option->rect );
-
-
-        if( option->subControls & SC_SpinBoxFrame )
-        {
-
-            // detect flat spinboxes
-            bool flat( !spinBoxOption->frame );
-            flat |= ( rect.height() < 2*Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth );
-            if( flat )
-            {
-
-                const auto &background = palette.color( QPalette::Base );
-
-                painter->setBrush( background );
-                painter->setPen( Qt::NoPen );
-                painter->drawRect( rect );
-
-            } else {
-
-                drawPrimitive( PE_FrameLineEdit, option, painter, widget );
-
-            }
-
-        }
-
-        if( option->subControls & SC_SpinBoxUp ) renderSpinBoxArrow( SC_SpinBoxUp, spinBoxOption, painter, widget );
-        if( option->subControls & SC_SpinBoxDown ) renderSpinBoxArrow( SC_SpinBoxDown, spinBoxOption, painter, widget );
-
-        return true;
-
-    }
-
-    //______________________________________________________________
-    bool Style::drawSliderComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return true;
-
-        // copy rect and palette
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-
-        // copy state
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-        // direction
-        const bool horizontal( sliderOption->orientation == Qt::Horizontal );
-
-        // tickmarks
-        if( StyleConfigData::sliderDrawTickMarks() && ( sliderOption->subControls & SC_SliderTickmarks ) )
-        {
-            const bool upsideDown( sliderOption->upsideDown );
-            const int tickPosition( sliderOption->tickPosition );
-            const int available( pixelMetric( PM_SliderSpaceAvailable, option, widget ) );
-            int interval = sliderOption->tickInterval;
-            if( interval < 1 ) interval = sliderOption->pageStep;
-            if( interval >= 1 )
-            {
-                const int fudge( pixelMetric( PM_SliderLength, option, widget ) / 2 );
-                int current( sliderOption->minimum );
-
-                // store tick lines
-                const auto grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
-                QList<QLine> tickLines;
-                if( horizontal )
-                {
-
-                    if( tickPosition & QSlider::TicksAbove ) tickLines.append( QLine( rect.left(), grooveRect.top() - Metrics::Slider_TickMarginWidth, rect.left(), grooveRect.top() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength ) );
-                    if( tickPosition & QSlider::TicksBelow ) tickLines.append( QLine( rect.left(), grooveRect.bottom() + Metrics::Slider_TickMarginWidth, rect.left(), grooveRect.bottom() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength ) );
-
-                } else {
-
-                    if( tickPosition & QSlider::TicksAbove ) tickLines.append( QLine( grooveRect.left() - Metrics::Slider_TickMarginWidth, rect.top(), grooveRect.left() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength, rect.top() ) );
-                    if( tickPosition & QSlider::TicksBelow ) tickLines.append( QLine( grooveRect.right() + Metrics::Slider_TickMarginWidth, rect.top(), grooveRect.right() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength, rect.top() ) );
-
-                }
-
-                // colors
-                const auto base( _helper->separatorColor( palette ) );
-                const auto &highlight = hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : palette.color( QPalette::Highlight );
-
-                while( current <= sliderOption->maximum )
-                {
-
-                    // adjust color
-                    const auto color( (enabled && current <= sliderOption->sliderPosition) ? highlight:base );
-                    painter->setPen( color );
-
-                    // calculate positions and draw lines
-                    int position( sliderPositionFromValue( sliderOption->minimum, sliderOption->maximum, current, available ) + fudge );
-                    foreach( const QLine& tickLine, tickLines )
-                    {
-                        if( horizontal ) painter->drawLine( tickLine.translated( upsideDown ? (rect.width() - position) : position, 0 ) );
-                        else painter->drawLine( tickLine.translated( 0, upsideDown ? (rect.height() - position):position ) );
-                    }
-
-                    // go to next position
-                    current += interval;
-
-                }
-            }
-        }
-
-        // groove
-        if( sliderOption->subControls & SC_SliderGroove )
-        {
-            // retrieve groove rect
-            auto grooveRect( subControlRect( CC_Slider, sliderOption, SC_SliderGroove, widget ) );
-
-            // base color
-            const auto grooveColor( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 ) );
-
-            if( !enabled ) _helper->renderSliderGroove( painter, grooveRect, grooveColor );
-            else {
-
-                const bool upsideDown( sliderOption->upsideDown );
-
-                // handle rect
-                auto handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-
-                // highlight color
-                const auto &highlight = hasHighlightNeutral( widget, option, mouseOver, hasFocus ) ? _helper->neutralText( palette ) : palette.color( QPalette::Highlight );
-
-                if( sliderOption->orientation == Qt::Horizontal )
-                {
-
-                    auto leftRect( grooveRect );
-                    leftRect.setRight( handleRect.right() - Metrics::Slider_ControlThickness/2 );
-                    _helper->renderSliderGroove( painter, leftRect, upsideDown ? grooveColor:highlight );
-
-                    auto rightRect( grooveRect );
-                    rightRect.setLeft( handleRect.left() + Metrics::Slider_ControlThickness/2 );
-                    _helper->renderSliderGroove( painter, rightRect, upsideDown ? highlight:grooveColor );
-
-                } else {
-
-                    auto topRect( grooveRect );
-                    topRect.setBottom( handleRect.bottom() - Metrics::Slider_ControlThickness/2 );
-                    _helper->renderSliderGroove( painter, topRect, upsideDown ? grooveColor:highlight );
-
-                    auto bottomRect( grooveRect );
-                    bottomRect.setTop( handleRect.top() + Metrics::Slider_ControlThickness/2 );
-                    _helper->renderSliderGroove( painter, bottomRect, upsideDown ? highlight:grooveColor );
-
-                }
-
-            }
-
-        }
-
-        // handle
-        if( sliderOption->subControls & SC_SliderHandle )
-        {
-
-            // get rect and center
-            auto handleRect( subControlRect( CC_Slider, sliderOption, SC_SliderHandle, widget ) );
-
-            // handle state
-            const bool handleActive( sliderOption->activeSubControls & SC_SliderHandle );
-            const bool sunken( state & (State_On|State_Sunken) );
-
-            // animation state
-            _animations->widgetStateEngine().updateState( widget, AnimationHover, handleActive && mouseOver );
-            _animations->widgetStateEngine().updateState( widget, AnimationFocus, hasFocus );
-            const AnimationMode mode( _animations->widgetStateEngine().buttonAnimationMode( widget ) );
-            const qreal opacity( _animations->widgetStateEngine().buttonOpacity( widget ) );
-
-            // define colors
-            const auto &background = palette.color( QPalette::Button );
-            auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
-            if (hasFocus || (handleActive && mouseOver)) {
-                outline = hasHighlightNeutral( widget, option, handleActive && mouseOver, hasFocus ) ? _helper->neutralText( palette ).lighter(mouseOver || hasFocus ? 150 : 100) : outline;
-            }
-            const auto shadow( _helper->shadowColor( palette ) );
-
-            // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
-
-        }
-
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawDialComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto sliderOption( qstyleoption_cast<const QStyleOptionSlider*>( option ) );
-        if( !sliderOption ) return true;
-
-        const auto& palette( option->palette );
-        const State& state( option->state );
-        const bool enabled( state & State_Enabled );
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-        const bool hasFocus( enabled && ( state & State_HasFocus ) );
-
-        // do not render tickmarks
-        if( sliderOption->subControls & SC_DialTickmarks )
-        {}
-
-        // groove
-        if( sliderOption->subControls & SC_DialGroove )
-        {
-
-            // groove rect
-            auto grooveRect( subControlRect( CC_Dial, sliderOption, SC_SliderGroove, widget ) );
-
-            // groove
-            const auto grooveColor( KColorUtils::mix( palette.color( QPalette::Window ), palette.color( QPalette::WindowText ), 0.3 ) );
-
-            // angles
-            const qreal first( dialAngle( sliderOption, sliderOption->minimum ) );
-            const qreal last( dialAngle( sliderOption, sliderOption->maximum ) );
-
-            // render groove
-            _helper->renderDialGroove( painter, grooveRect, grooveColor, palette.color(QPalette::Window), first, last );
-
-            if( enabled )
-            {
-
-                // highlight
-                const auto &highlight = palette.color( QPalette::Highlight );
-
-                // angles
-                const qreal second( dialAngle( sliderOption, sliderOption->sliderPosition ) );
-
-                // render contents
-                _helper->renderDialGroove( painter, grooveRect, highlight, palette.color(QPalette::Window), first, second );
-
-            }
-
-        }
-
-        // handle
-        if( sliderOption->subControls & SC_DialHandle )
-        {
-
-            // get handle rect
-            auto handleRect( subControlRect( CC_Dial, sliderOption, SC_DialHandle, widget ) );
-            handleRect = centerRect( handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness );
-
-            // handle state
-            const bool handleActive( mouseOver && handleRect.contains( _animations->dialEngine().position( widget ) ) );
-            const bool sunken( state & (State_On|State_Sunken) );
-
-            // animation state
-            _animations->dialEngine().setHandleRect( widget, handleRect );
-            _animations->dialEngine().updateState( widget, AnimationHover, handleActive && mouseOver );
-            _animations->dialEngine().updateState( widget, AnimationFocus, hasFocus );
-            const auto mode( _animations->dialEngine().buttonAnimationMode( widget ) );
-            const qreal opacity( _animations->dialEngine().buttonOpacity( widget ) );
-
-            // define colors
-            const auto &background = palette.color( QPalette::Button );
-            const auto outline( _helper->sliderOutlineColor( palette, handleActive && mouseOver, hasFocus, opacity, mode ) );
-            const auto shadow( _helper->shadowColor( palette ) );
-
-            // render
-            _helper->renderSliderHandle( painter, handleRect, background, outline, shadow, sunken );
-
-        }
-
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawScrollBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-        //the animation for QStyle::SC_ScrollBarGroove is special: it will animate
-        //the opacity of everything else as well, included slider and arrows
-        qreal opacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
-        const bool animated( StyleConfigData::animationsEnabled() && _animations->scrollBarEngine().isAnimated( widget,  AnimationHover, QStyle::SC_ScrollBarGroove ) );
-        const bool mouseOver( option->state & State_MouseOver );
-
-        if( opacity == AnimationData::OpacityInvalid ) opacity = 1;
-
-        QRect separatorRect;
-        if ( option->state & State_Horizontal ) {
-            separatorRect = QRect(0, 0, option->rect.width(), 1);
-        } else {
-            separatorRect = alignedRect(option->direction,
-                                        Qt::AlignLeft,
-                                        QSize(PenWidth::Frame, option->rect.height()), option->rect);
-        }
-
-        _helper->renderScrollBarBorder( painter, separatorRect, _helper->alphaColor( option->palette.color( QPalette::Text ), 0.1 ));
-
-        // render full groove directly, rather than using the addPage and subPage control element methods
-        if( (!StyleConfigData::animationsEnabled() || mouseOver || animated) && option->subControls & SC_ScrollBarGroove )
-        {
-            // retrieve groove rectangle
-            auto grooveRect( subControlRect( CC_ScrollBar, option, SC_ScrollBarGroove, widget ) );
-
-            // need to make it center due to the thin line separator
-            if( option->state & State_Horizontal ) {
-                grooveRect.setTop(PenWidth::Frame);
-            } else if (option->direction == Qt::RightToLeft) {
-                grooveRect.setRight(grooveRect.right() - PenWidth::Frame);
-            } else {
-                grooveRect.setLeft(PenWidth::Frame);
-            }
-
-            const auto& palette( option->palette );
-            const auto color( _helper->alphaColor( palette.color( QPalette::WindowText ), 0.3 * (animated ? opacity : 1) ) );
-            const auto& state( option->state );
-            const bool horizontal( state & State_Horizontal );
-
-            if( horizontal ) grooveRect = centerRect( grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidth );
-            else grooveRect = centerRect( grooveRect, Metrics::ScrollBar_SliderWidth, grooveRect.height() );
-
-            // render
-            _helper->renderScrollBarGroove( painter, grooveRect, color );
-        }
-
-        // call base class primitive
-        ParentStyleClass::drawComplexControl( CC_ScrollBar, option, painter, widget );
-
-        return true;
-    }
-
-    //______________________________________________________________
-    bool Style::drawTitleBarComplexControl( const QStyleOptionComplex* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        // cast option and check
-        const auto titleBarOption( qstyleoption_cast<const QStyleOptionTitleBar *>( option ) );
-        if( !titleBarOption ) return true;
-
-        // store palette and rect
-        auto palette( option->palette );
-        const auto& rect( option->rect );
-
-        const State& flags( option->state );
-        const bool enabled( flags & State_Enabled );
-        const bool active( enabled && ( titleBarOption->titleBarState & Qt::WindowActive ) );
-
-        if( titleBarOption->subControls & SC_TitleBarLabel )
-        {
-
-            // render background
-            painter->setClipRect( rect );
-            const auto outline( active ? QColor():_helper->frameOutlineColor( palette, false, false ) );
-            const auto background( _helper->titleBarColor( active ) );
-            _helper->renderTabWidgetFrame( painter, rect.adjusted( -1, -1, 1, 3 ), background, outline, CornersTop );
-
-            const bool useSeparator(
-                active &&
-                _helper->titleBarColor( active ) != palette.color( QPalette::Window ) &&
-                !( titleBarOption->titleBarState & Qt::WindowMinimized ) );
-
-            if( useSeparator )
-            {
-                painter->setRenderHint( QPainter::Antialiasing, false );
-                painter->setBrush( Qt::NoBrush );
-                painter->setPen( palette.color( QPalette::Highlight ) );
-                painter->drawLine( rect.bottomLeft(), rect.bottomRight() );
-            }
-
-            // render text
-            palette.setColor( QPalette::WindowText, _helper->titleBarTextColor( active ) );
-            const auto textRect( subControlRect( CC_TitleBar, option, SC_TitleBarLabel, widget ) );
-            ParentStyleClass::drawItemText( painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, QPalette::WindowText );
-
-        }
-
-        // buttons
-        static const QList<SubControl> subControls =
-        {
-            SC_TitleBarMinButton,
-            SC_TitleBarMaxButton,
-            SC_TitleBarCloseButton,
-            SC_TitleBarNormalButton,
-            SC_TitleBarSysMenu
-        };
-
-        // loop over supported buttons
-        foreach( const SubControl& subControl, subControls )
-        {
-
-            // skip if not requested
-            if( !( titleBarOption->subControls & subControl ) ) continue;
-
-            // find matching icon
-            QIcon icon;
-            switch( subControl )
-            {
-                case SC_TitleBarMinButton: icon = standardIcon( SP_TitleBarMinButton, option, widget ); break;
-                case SC_TitleBarMaxButton: icon = standardIcon( SP_TitleBarMaxButton, option, widget ); break;
-                case SC_TitleBarCloseButton: icon = standardIcon( SP_TitleBarCloseButton, option, widget ); break;
-                case SC_TitleBarNormalButton: icon = standardIcon( SP_TitleBarNormalButton, option, widget ); break;
-                case SC_TitleBarSysMenu: icon = titleBarOption->icon; break;
-                default: break;
-            }
-
-            // check icon
-            if( icon.isNull() ) continue;
-
-            // define icon rect
-            auto iconRect( subControlRect( CC_TitleBar, option, subControl, widget ) );
-            if( iconRect.isEmpty() ) continue;
-
-            // active state
-            const bool subControlActive( titleBarOption->activeSubControls & subControl );
-
-            // mouse over state
-            const bool mouseOver(
-                !subControlActive &&
-                widget &&
-                iconRect.translated( widget->mapToGlobal( QPoint( 0,0 ) ) ).contains( QCursor::pos() ) );
-
-            // adjust iconRect
-            const int iconWidth( pixelMetric( PM_SmallIconSize, option, widget ) );
-            const QSize iconSize( iconWidth, iconWidth );
-            iconRect = centerRect( iconRect, iconSize );
-
-            // set icon mode and state
-            QIcon::Mode iconMode;
-            QIcon::State iconState;
-
-            if( !enabled )
-            {
-                iconMode = QIcon::Disabled;
-                iconState = QIcon::Off;
-
-            } else {
-
-                if( mouseOver ) iconMode = QIcon::Active;
-                else if( active ) iconMode = QIcon::Selected;
-                else iconMode = QIcon::Normal;
-
-                iconState = subControlActive ? QIcon::On : QIcon::Off;
-
-            }
-
-            // get pixmap and render
-            const QPixmap pixmap = _helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState);
-            painter->drawPixmap( iconRect, pixmap );
-
-        }
-
-        return true;
-
-    }
-
-    //____________________________________________________________________________________________________
-    void Style::renderSpinBoxArrow( const SubControl& subControl, const QStyleOptionSpinBox* option, QPainter* painter, const QWidget* widget ) const
-    {
-
-        const auto& palette( option->palette );
-        const State& state( option->state );
-
-        // enable state
-        bool enabled( state & State_Enabled );
-
-        // check steps enable step
-        const bool atLimit(
-            (subControl == SC_SpinBoxUp && !(option->stepEnabled & QAbstractSpinBox::StepUpEnabled )) ||
-            (subControl == SC_SpinBoxDown && !(option->stepEnabled & QAbstractSpinBox::StepDownEnabled ) ) );
-
-        // update enabled state accordingly
-        enabled &= !atLimit;
-
-        // update mouse-over effect
-        const bool mouseOver( enabled && ( state & State_MouseOver ) );
-
-        // check animation state
-        const bool subControlHover( enabled && mouseOver && ( option->activeSubControls & subControl ) );
-        _animations->spinBoxEngine().updateState( widget, subControl, subControlHover );
-
-        const bool animated( enabled && _animations->spinBoxEngine().isAnimated( widget, subControl ) );
-        const qreal opacity( _animations->spinBoxEngine().opacity( widget, subControl ) );
-
-        auto color = _helper->arrowColor( palette, QPalette::Text );
-        if( animated )
-        {
-
-            auto highlight = _helper->hoverColor( palette );
-            color = KColorUtils::mix( color, highlight, opacity );
-
-        } else if( subControlHover ) {
-
-            color = _helper->hoverColor( palette );
-
-        } else if( atLimit ) {
-
-            color = _helper->arrowColor( palette, QPalette::Disabled, QPalette::Text );
-
-        }
+    // arrow
+    QRect arrowRect(contentsRect.right() - Metrics::MenuButton_IndicatorWidth + 1,
+                    contentsRect.top() + (contentsRect.height() - Metrics::MenuButton_IndicatorWidth) / 2,
+                    Metrics::MenuButton_IndicatorWidth,
+                    Metrics::MenuButton_IndicatorWidth);
+    contentsRect.setRight(arrowRect.left() - Metrics::MenuItem_ItemSpacing - 1);
+
+    if (menuItemOption->menuItemType == QStyleOptionMenuItem::SubMenu) {
+        // apply right-to-left layout
+        arrowRect = visualRect(option, arrowRect);
 
         // arrow orientation
-        ArrowOrientation orientation( ( subControl == SC_SpinBoxUp ) ? ArrowUp:ArrowDown );
+        const ArrowOrientation orientation(reverseLayout ? ArrowLeft : ArrowRight);
 
-        // arrow rect
-        const auto arrowRect( subControlRect( CC_SpinBox, option, subControl, widget ) );
+        // color
+        const QColor arrowColor = _helper->arrowColor(palette, QPalette::WindowText);
 
         // render
-        _helper->renderArrow( painter, arrowRect, color, orientation );
-
+        _helper->renderArrow(painter, arrowRect, arrowColor, orientation);
     }
 
-    //______________________________________________________________________________
-    void Style::renderMenuTitle( const QStyleOptionToolButton* option, QPainter* painter, const QWidget* ) const
-    {
+    // text
+    auto textRect = contentsRect;
+    if (!menuItemOption->text.isEmpty()) {
+        // adjust textRect
+        QString text = menuItemOption->text;
+        textRect = centerRect(textRect, textRect.width(), option->fontMetrics.size(_mnemonics->textFlags(), text).height());
+        textRect = visualRect(option, textRect);
 
-        // render a background rect for the title
-        const auto& palette( option->palette );
-        QColor bgColor = palette.color( QPalette::Text );
-        bgColor.setAlphaF(0.04);
-        const auto separatorColor( _helper->separatorColor( palette ) );
-        _helper->renderMenuFrame( painter, option->rect, bgColor, separatorColor, true );
+        // set font
+        painter->setFont(menuItemOption->font);
 
-        // render text in the center of the rect
-        // icon is discarded on purpose
-        // make text the same size as a level 4 heading so it looks more title-ish
-        painter->setFont( menuTitleFont(*option) );
-        const auto contentsRect = insideMargin( option->rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight );
-        drawItemText( painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText );
+        // color role
+        const QPalette::ColorRole role = QPalette::WindowText;
 
+        // locate accelerator and render
+        const int tabPosition(text.indexOf(QLatin1Char('\t')));
+        if (tabPosition >= 0) {
+            const int textFlags(Qt::AlignVCenter | Qt::AlignRight);
+            QString accelerator(text.mid(tabPosition + 1));
+            text = text.left(tabPosition);
+            drawItemText(painter, textRect, textFlags, palette, enabled, accelerator, role);
+        }
+
+        // render text
+        const int textFlags(Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft) | _mnemonics->textFlags());
+        textRect = option->fontMetrics.boundingRect(textRect, textFlags, text);
+        drawItemText(painter, textRect, textFlags, palette, enabled, text, role);
+
+        // render hover and focus
+        if (!useStrongFocus && (selected || sunken)) {
+            QColor outlineColor;
+            if (sunken)
+                outlineColor = _helper->focusColor(palette);
+            else if (selected)
+                outlineColor = _helper->hoverColor(palette);
+
+            _helper->renderFocusLine(painter, textRect, outlineColor);
+        }
     }
 
-    //______________________________________________________________________________
-    qreal Style::dialAngle( const QStyleOptionSlider* sliderOption, int value ) const
-    {
+    return true;
+}
 
-        // calculate angle at which handle needs to be drawn
-        qreal angle( 0 );
-        if( sliderOption->maximum == sliderOption->minimum ) angle = M_PI / 2;
-        else {
+//___________________________________________________________________________________
+bool Style::drawProgressBarControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return true;
 
-            qreal fraction( qreal( value - sliderOption->minimum )/qreal( sliderOption->maximum - sliderOption->minimum ) );
-            if( !sliderOption->upsideDown ) fraction = 1 - fraction;
+    // render groove
+    QStyleOptionProgressBar progressBarOption2 = *progressBarOption;
+    progressBarOption2.rect = subElementRect(SE_ProgressBarGroove, progressBarOption, widget);
+    drawControl(CE_ProgressBarGroove, &progressBarOption2, painter, widget);
 
-            if( sliderOption->dialWrapping ) angle = 1.5*M_PI - fraction*2*M_PI;
-            else  angle = ( M_PI*8 - fraction*10*M_PI )/6;
+    const QObject *styleObject(widget ? widget : progressBarOption->styleObject);
 
+    // enable busy animations
+    // need to check both widget and passed styleObject, used for QML
+    if (styleObject && _animations->busyIndicatorEngine().enabled()) {
+        // register QML object if defined
+        if (!widget && progressBarOption->styleObject) {
+            _animations->busyIndicatorEngine().registerWidget(progressBarOption->styleObject);
         }
 
-        return angle;
-
+        _animations->busyIndicatorEngine().setAnimated(styleObject, progressBarOption->maximum == 0 && progressBarOption->minimum == 0);
     }
 
-    //______________________________________________________________________________
-    const QWidget* Style::scrollBarParent( const QWidget* widget ) const
-    {
-
-        // check widget and parent
-        if( !(widget && widget->parentWidget() ) ) return nullptr;
-
-        // try cast to scroll area. Must test both parent and grandparent
-        QAbstractScrollArea* scrollArea;
-        if( !(scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget() ) ) )
-        { scrollArea = qobject_cast<QAbstractScrollArea*>( widget->parentWidget()->parentWidget() ); }
-
-        // check scrollarea
-        if( scrollArea &&
-            (widget == scrollArea->verticalScrollBar() ||
-            widget == scrollArea->horizontalScrollBar() ) )
-        {
-
-            return scrollArea;
-
-        } else if( widget->parentWidget()->inherits( "KTextEditor::View" ) ) {
-
-            return widget->parentWidget();
-
-        } else return nullptr;
-
+    // check if animated and pass to option
+    if (_animations->busyIndicatorEngine().isAnimated(styleObject)) {
+        progressBarOption2.progress = _animations->busyIndicatorEngine().value();
     }
 
-    //______________________________________________________________________________
-    QColor Style::scrollBarArrowColor( const QStyleOptionSlider* option, const SubControl& control, const QWidget* widget ) const
-    {
+    // render contents
+    progressBarOption2.rect = subElementRect(SE_ProgressBarContents, progressBarOption, widget);
+    drawControl(CE_ProgressBarContents, &progressBarOption2, painter, widget);
 
-        const auto& rect( option->rect );
-        const auto& palette( option->palette );
-        auto color( _helper->arrowColor( palette, QPalette::WindowText ) );
+    // render text
+    const bool textVisible(progressBarOption->textVisible);
+    const bool busy(progressBarOption->minimum == 0 && progressBarOption->maximum == 0);
+    if (textVisible && !busy) {
+        progressBarOption2.rect = subElementRect(SE_ProgressBarLabel, progressBarOption, widget);
+        drawControl(CE_ProgressBarLabel, &progressBarOption2, painter, widget);
+    }
 
-        bool widgetMouseOver( ( option->state & State_MouseOver ) );
-        if( widget ) widgetMouseOver = widget->underMouse();
-        // in case this QStyle is used by QQuickControls QStyle wrapper
-        else if( option->styleObject ) widgetMouseOver = option->styleObject->property("hover").toBool();
+    return true;
+}
 
-        // check enabled state
-        const bool enabled( option->state & State_Enabled );
-        if( !enabled ) {
-            if( StyleConfigData::animationsEnabled() ) {
-                // finally, global opacity when ScrollBarShowOnMouseOver
-                const qreal globalOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
-                if( globalOpacity >= 0 ) color.setAlphaF( globalOpacity );
-                // no mouse over and no animation in progress, don't draw arrows at all
-                else if( !widgetMouseOver ) return Qt::transparent;
-            }
-            return color;
-        }
+//___________________________________________________________________________________
+bool Style::drawProgressBarContentsControl(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return true;
 
-        if(
-            ( control == SC_ScrollBarSubLine && option->sliderValue == option->minimum ) ||
-            ( control == SC_ScrollBarAddLine && option->sliderValue == option->maximum ) )
-        {
+    // copy rect and palette
+    auto rect(option->rect);
+    const auto &palette(option->palette);
 
-            // manually disable arrow, to indicate that scrollbar is at limit
-            color = _helper->arrowColor( palette, QPalette::Disabled, QPalette::WindowText );
-            if( StyleConfigData::animationsEnabled() ) {
-                // finally, global opacity when ScrollBarShowOnMouseOver
-                const qreal globalOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
-                if( globalOpacity >= 0 ) color.setAlphaF( globalOpacity );
-                // no mouse over and no animation in progress, don't draw arrows at all
-                else if( !widgetMouseOver ) return Qt::transparent;
-            }
-            return color;
-        }
+    // get direction
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    const bool inverted(progressBarOption->invertedAppearance);
+    bool reverse = horizontal && option->direction == Qt::RightToLeft;
+    if (inverted)
+        reverse = !reverse;
 
-        const bool mouseOver( _animations->scrollBarEngine().isHovered( widget, control ) );
-        const bool animated( _animations->scrollBarEngine().isAnimated( widget, AnimationHover, control ) );
-        const qreal opacity( _animations->scrollBarEngine().opacity( widget, control ) );
+    // check if anything is to be drawn
+    const bool busy((progressBarOption->minimum == 0 && progressBarOption->maximum == 0));
+    if (busy) {
+        const qreal progress(_animations->busyIndicatorEngine().value());
 
-        // retrieve mouse position from engine
-        QPoint position( mouseOver ? _animations->scrollBarEngine().position( widget ) : QPoint( -1, -1 ) );
-        if( mouseOver && rect.contains( position ) )
-        {
-            /*
-             * need to update the arrow controlRect on fly because there is no
-             * way to get it from the styles directly, outside of repaint events
-             */
-            _animations->scrollBarEngine().setSubControlRect( widget, control, rect );
-        }
+        const auto &first = palette.color(QPalette::Highlight);
+        const auto second(KColorUtils::mix(palette.color(QPalette::Highlight), palette.color(QPalette::Window), 0.7));
+        _helper->renderProgressBarBusyContents(painter, rect, first, second, horizontal, reverse, progress);
 
-
-        if( rect.intersects(  _animations->scrollBarEngine().subControlRect( widget, control ) ) )
-        {
-
-            auto highlight = _helper->hoverColor( palette );
-            if( animated )
-            {
-                color = KColorUtils::mix( color, highlight, opacity );
-
-            } else if( mouseOver ) {
-
-                color = highlight;
-
+    } else {
+        const QRegion oldClipRegion(painter->clipRegion());
+        if (horizontal) {
+            if (rect.width() < Metrics::ProgressBar_Thickness) {
+                painter->setClipRect(rect, Qt::IntersectClip);
+                if (reverse)
+                    rect.setLeft(rect.left() - Metrics::ProgressBar_Thickness + rect.width());
+                else
+                    rect.setWidth(Metrics::ProgressBar_Thickness);
             }
 
-        } else if (option->state & State_MouseOver) {
-            const bool activeIsSub = option->activeSubControls & SC_ScrollBarSubLine;
-            const bool activeIsAdd = option->activeSubControls & SC_ScrollBarAddLine;
-            const bool drawingSub = control == SC_ScrollBarSubLine;
-            const bool drawingAdd = control == SC_ScrollBarAddLine;
-
-            if ((activeIsSub && drawingSub) || (activeIsAdd && drawingAdd)) {
-                const auto highlight = _helper->hoverColor( palette );
-
-                color = highlight;
+        } else {
+            if (rect.height() < Metrics::ProgressBar_Thickness) {
+                painter->setClipRect(rect, Qt::IntersectClip);
+                if (reverse)
+                    rect.setHeight(Metrics::ProgressBar_Thickness);
+                else
+                    rect.setTop(rect.top() - Metrics::ProgressBar_Thickness + rect.height());
             }
         }
 
-        if( StyleConfigData::animationsEnabled() ) {
-            // finally, global opacity when ScrollBarShowOnMouseOver
-            const qreal globalOpacity( _animations->scrollBarEngine().opacity( widget, QStyle::SC_ScrollBarGroove ) );
-            if( globalOpacity >= 0 ) color.setAlphaF( globalOpacity );
-            // no mouse over and no animation in progress, don't draw arrows at all
-            else if( !widgetMouseOver ) return Qt::transparent;
+        auto contentsColor(option->state.testFlag(QStyle::State_Selected) ? palette.color(QPalette::HighlightedText) : palette.color(QPalette::Highlight));
+
+        _helper->renderProgressBarGroove(painter, rect, contentsColor, palette.color(QPalette::Window));
+        painter->setClipRegion(oldClipRegion);
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawProgressBarGrooveControl(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    const auto &palette(option->palette);
+    const auto color(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+    _helper->renderProgressBarGroove(painter, option->rect, color, palette.color(QPalette::Window));
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawProgressBarLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // cast option and check
+    const auto progressBarOption(qstyleoption_cast<const QStyleOptionProgressBar *>(option));
+    if (!progressBarOption)
+        return true;
+
+    // get direction and check
+    const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
+    if (!horizontal)
+        return true;
+
+    // store rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // store state and direction
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+
+    // define text rect
+    Qt::Alignment hAlign((progressBarOption->textAlignment == Qt::AlignLeft) ? Qt::AlignHCenter : progressBarOption->textAlignment);
+    drawItemText(painter, rect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawScrollBarSliderControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return true;
+
+    // copy rect and palette
+    // const auto& rect( option->rect );
+    const auto &palette(option->palette);
+
+    // need to make it center due to the thin line separator
+    QRect rect = option->rect;
+
+    if (option->state & State_Horizontal) {
+        rect.setTop(PenWidth::Frame);
+    } else if (option->direction == Qt::RightToLeft) {
+        rect.setRight(rect.right() - PenWidth::Frame);
+    } else {
+        rect.setLeft(PenWidth::Frame);
+    }
+
+    // try to understand if anywhere the widget is under mouse, not just the handle, use _animations in case of QWidget, option->styleObject in case of QML
+    bool widgetMouseOver((option->state & State_MouseOver));
+    if (widget)
+        widgetMouseOver = _animations->scrollBarEngine().isHovered(widget, QStyle::SC_ScrollBarGroove);
+    else if (option->styleObject)
+        widgetMouseOver = option->styleObject->property("hover").toBool();
+
+    qreal grooveAnimationOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
+    if (grooveAnimationOpacity == AnimationData::OpacityInvalid)
+        grooveAnimationOpacity = (widgetMouseOver ? 1 : 0);
+
+    // define handle rect
+    QRect handleRect;
+    const State &state(option->state);
+    const bool horizontal(state & State_Horizontal);
+    if (horizontal)
+        handleRect = centerRect(rect, rect.width(), Metrics::ScrollBar_SliderWidth);
+    else
+        handleRect = centerRect(rect, Metrics::ScrollBar_SliderWidth, rect.height());
+
+    const bool enabled(state & State_Enabled);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+
+    // check focus from relevant parent
+    const QWidget *parent(scrollBarParent(widget));
+    const bool hasFocus(enabled && ((widget && widget->hasFocus()) || (parent && parent->hasFocus())));
+
+    // enable animation state
+    const bool handleActive(sliderOption->activeSubControls & SC_ScrollBarSlider);
+    _animations->scrollBarEngine().updateState(widget, AnimationFocus, hasFocus);
+
+    _animations->scrollBarEngine().updateState(widget, AnimationHover, mouseOver && handleActive);
+
+    const auto mode(_animations->scrollBarEngine().animationMode(widget, SC_ScrollBarSlider));
+    const qreal opacity(_animations->scrollBarEngine().opacity(widget, SC_ScrollBarSlider));
+    auto color = _helper->scrollBarHandleColor(palette, mouseOver, hasFocus, opacity, mode);
+    if (StyleConfigData::animationsEnabled()) {
+        color.setAlphaF(color.alphaF() * (0.7 + 0.3 * grooveAnimationOpacity));
+    }
+
+    _helper->renderScrollBarHandle(painter, handleRect, color, palette.color(QPalette::Window));
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawScrollBarAddLineControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // do nothing if no buttons are defined
+    if (_addLineButtons == NoButton)
+        return true;
+
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return true;
+
+    const State &state(option->state);
+    const bool horizontal(state & State_Horizontal);
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    // adjust rect, based on number of buttons to be drawn
+    auto rect(scrollBarInternalSubControlRect(sliderOption, SC_ScrollBarAddLine));
+
+    // need to make it center due to the thin line separator
+    if (option->state & State_Horizontal) {
+        rect.setTop(PenWidth::Frame);
+    } else if (option->direction == Qt::RightToLeft) {
+        rect.setRight(rect.right() - PenWidth::Frame);
+    } else {
+        rect.setLeft(PenWidth::Frame);
+    }
+
+    QColor color;
+    QStyleOptionSlider copy(*sliderOption);
+    if (_addLineButtons == DoubleButton) {
+        if (horizontal) {
+            // Draw the arrows
+            const QSize halfSize(rect.width() / 2, rect.height());
+            const QRect leftSubButton(rect.topLeft(), halfSize);
+            const QRect rightSubButton(leftSubButton.topRight() + QPoint(1, 0), halfSize);
+
+            copy.rect = leftSubButton;
+            color = scrollBarArrowColor(&copy, reverseLayout ? SC_ScrollBarAddLine : SC_ScrollBarSubLine, widget);
+            _helper->renderArrow(painter, leftSubButton, color, ArrowLeft);
+
+            copy.rect = rightSubButton;
+            color = scrollBarArrowColor(&copy, reverseLayout ? SC_ScrollBarSubLine : SC_ScrollBarAddLine, widget);
+            _helper->renderArrow(painter, rightSubButton, color, ArrowRight);
+
+        } else {
+            const QSize halfSize(rect.width(), rect.height() / 2);
+            const QRect topSubButton(rect.topLeft(), halfSize);
+            const QRect botSubButton(topSubButton.bottomLeft() + QPoint(0, 1), halfSize);
+
+            copy.rect = topSubButton;
+            color = scrollBarArrowColor(&copy, SC_ScrollBarSubLine, widget);
+            _helper->renderArrow(painter, topSubButton, color, ArrowUp);
+
+            copy.rect = botSubButton;
+            color = scrollBarArrowColor(&copy, SC_ScrollBarAddLine, widget);
+            _helper->renderArrow(painter, botSubButton, color, ArrowDown);
         }
 
-        return color;
+    } else if (_addLineButtons == SingleButton) {
+        copy.rect = rect;
+        color = scrollBarArrowColor(&copy, SC_ScrollBarAddLine, widget);
+        if (horizontal) {
+            if (reverseLayout)
+                _helper->renderArrow(painter, rect, color, ArrowLeft);
+            else
+                _helper->renderArrow(painter, rect.translated(1, 0), color, ArrowRight);
 
+        } else
+            _helper->renderArrow(painter, rect.translated(0, 1), color, ArrowDown);
     }
 
-    //____________________________________________________________________________________
-    void Style::setTranslucentBackground( QWidget* widget ) const
-    {
-        widget->setAttribute( Qt::WA_TranslucentBackground );
+    return true;
+}
 
-        #ifdef Q_WS_WIN
-        // FramelessWindowHint is needed on windows to make WA_TranslucentBackground work properly
-        widget->setWindowFlags( widget->windowFlags() | Qt::FramelessWindowHint );
-        #endif
+//___________________________________________________________________________________
+bool Style::drawScrollBarSubLineControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // do nothing if no buttons are set
+    if (_subLineButtons == NoButton)
+        return true;
 
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return true;
+
+    const State &state(option->state);
+    const bool horizontal(state & State_Horizontal);
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    // adjust rect, based on number of buttons to be drawn
+    auto rect(scrollBarInternalSubControlRect(sliderOption, SC_ScrollBarSubLine));
+
+    // need to make it center due to the thin line separator
+    if (option->state & State_Horizontal) {
+        rect.setTop(PenWidth::Frame);
+    } else if (option->direction == Qt::RightToLeft) {
+        rect.setRight(rect.right() - PenWidth::Frame);
+    } else {
+        rect.setLeft(PenWidth::Frame);
     }
 
-    //____________________________________________________________________________________
-    QStyleOptionToolButton Style::separatorMenuItemOption( const QStyleOptionMenuItem* menuItemOption, const QWidget* widget ) const
-    {
+    QColor color;
+    QStyleOptionSlider copy(*sliderOption);
+    if (_subLineButtons == DoubleButton) {
+        if (horizontal) {
+            // Draw the arrows
+            const QSize halfSize(rect.width() / 2, rect.height());
+            const QRect leftSubButton(rect.topLeft(), halfSize);
+            const QRect rightSubButton(leftSubButton.topRight() + QPoint(1, 0), halfSize);
 
-        // separator can have a title and an icon
-        // in that case they are rendered as sunken flat toolbuttons
-        QStyleOptionToolButton toolButtonOption;
-        toolButtonOption.initFrom( widget );
-        toolButtonOption.rect = menuItemOption->rect;
-        toolButtonOption.features = QStyleOptionToolButton::None;
-        toolButtonOption.state = State_Enabled|State_AutoRaise;
-        toolButtonOption.subControls = SC_ToolButton;
-        toolButtonOption.icon =  QIcon();
-        toolButtonOption.iconSize = QSize();
-        toolButtonOption.text = menuItemOption->text;
+            copy.rect = leftSubButton;
+            color = scrollBarArrowColor(&copy, reverseLayout ? SC_ScrollBarAddLine : SC_ScrollBarSubLine, widget);
+            _helper->renderArrow(painter, leftSubButton, color, ArrowLeft);
 
-        toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
-        return toolButtonOption;
+            copy.rect = rightSubButton;
+            color = scrollBarArrowColor(&copy, reverseLayout ? SC_ScrollBarSubLine : SC_ScrollBarAddLine, widget);
+            _helper->renderArrow(painter, rightSubButton, color, ArrowRight);
 
-    }
+        } else {
+            const QSize halfSize(rect.width(), rect.height() / 2);
+            const QRect topSubButton(rect.topLeft(), halfSize);
+            const QRect botSubButton(topSubButton.bottomLeft() + QPoint(0, 1), halfSize);
 
-    //____________________________________________________________________________________
-    QIcon Style::toolBarExtensionIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
-    {
+            copy.rect = topSubButton;
+            color = scrollBarArrowColor(&copy, SC_ScrollBarSubLine, widget);
+            _helper->renderArrow(painter, topSubButton, color, ArrowUp);
 
-        // store palette
-        // due to Qt, it is not always safe to assume that either option, nor widget are defined
-        QPalette palette;
-        if( option ) palette = option->palette;
-        else if( widget ) palette = widget->palette();
-        else palette = QApplication::palette();
-
-        // convenience class to map color to icon mode
-        struct IconData
-        {
-            QColor _color;
-            QIcon::Mode _mode;
-            QIcon::State _state;
-        };
-
-        // map colors to icon states
-        const QList<IconData> iconTypes =
-        {
-            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Normal, QIcon::Off },
-            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Selected, QIcon::Off },
-            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Active, QIcon::Off },
-            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::Off },
-
-            { palette.color( QPalette::Active, QPalette::HighlightedText ), QIcon::Normal, QIcon::On },
-            { palette.color( QPalette::Active, QPalette::HighlightedText ), QIcon::Selected, QIcon::On },
-            { palette.color( QPalette::Active, QPalette::WindowText ), QIcon::Active, QIcon::On },
-            { palette.color( QPalette::Disabled, QPalette::WindowText ), QIcon::Disabled, QIcon::On }
-        };
-
-        // default icon sizes
-        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
-
-        // decide arrow orientation
-        const ArrowOrientation orientation( standardPixmap == SP_ToolBarHorizontalExtensionButton ? ArrowRight : ArrowDown );
-
-        // create icon and fill
-        QIcon icon;
-        foreach( const IconData& iconData, iconTypes )
-        {
-
-            foreach( const int& iconSize, iconSizes )
-            {
-
-                // create pixmap
-                QPixmap pixmap( iconSize, iconSize );
-                pixmap.fill( Qt::transparent );
-
-                // render
-                QPainter painter( &pixmap );
-
-                // icon size
-                const int fixedIconSize( pixelMetric( QStyle::PM_SmallIconSize, option, widget ) );
-                const QRect fixedRect( 0, 0, fixedIconSize, fixedIconSize );
-
-                painter.setWindow( fixedRect );
-                painter.translate( standardPixmap == SP_ToolBarHorizontalExtensionButton ? QPoint( 1, 0 ) : QPoint( 0, 1 ) );
-                _helper->renderArrow( &painter, fixedRect, iconData._color, orientation );
-                painter.end();
-
-                // add to icon
-                icon.addPixmap( pixmap, iconData._mode, iconData._state );
-
-            }
-
+            copy.rect = botSubButton;
+            color = scrollBarArrowColor(&copy, SC_ScrollBarAddLine, widget);
+            _helper->renderArrow(painter, botSubButton, color, ArrowDown);
         }
 
-        return icon;
+    } else if (_subLineButtons == SingleButton) {
+        copy.rect = rect;
+        color = scrollBarArrowColor(&copy, SC_ScrollBarSubLine, widget);
+        if (horizontal) {
+            if (reverseLayout)
+                _helper->renderArrow(painter, rect.translated(1, 0), color, ArrowRight);
+            else
+                _helper->renderArrow(painter, rect, color, ArrowLeft);
 
+        } else
+            _helper->renderArrow(painter, rect, color, ArrowUp);
     }
 
-    bool Style::isTabletMode() const
-    {
-        #if BREEZE_HAVE_QTQUICK
-        return Kirigami::TabletModeWatcher::self()->isTabletMode();
-        #else
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawShapedFrameControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto frameOpt = qstyleoption_cast<const QStyleOptionFrame *>(option);
+    if (!frameOpt)
         return false;
-        #endif
+
+    switch (frameOpt->frameShape) {
+    case QFrame::Box: {
+        if (option->state & State_Sunken)
+            return true;
+        else
+            break;
     }
 
-    //____________________________________________________________________________________
-    QIcon Style::titleBarButtonIcon( StandardPixmap standardPixmap, const QStyleOption* option, const QWidget* widget ) const
-    {
+    case QFrame::HLine:
+    case QFrame::VLine: {
+        const auto &rect(option->rect);
+        const auto color(_helper->separatorColor(option->palette));
+        const bool isVertical(frameOpt->frameShape == QFrame::VLine);
+        _helper->renderSeparator(painter, rect, color, isVertical);
+        return true;
+    }
 
-        // map standardPixmap to button type
-        ButtonType buttonType;
-        switch( standardPixmap )
-        {
-            case SP_TitleBarNormalButton: buttonType = ButtonRestore; break;
-            case SP_TitleBarMinButton: buttonType = ButtonMinimize; break;
-            case SP_TitleBarMaxButton: buttonType = ButtonMaximize; break;
-            case SP_TitleBarCloseButton:
-            case SP_DockWidgetCloseButton:
-            buttonType = ButtonClose;
+    case QFrame::StyledPanel: {
+        if (isQtQuickControl(option, widget) && option->styleObject->property("elementType").toString() == QLatin1String("combobox")) {
+            // ComboBox popup frame
+            drawFrameMenuPrimitive(option, painter, widget);
+            return true;
+
+        } else
             break;
+    }
 
-            default: return QIcon();
+    default:
+        break;
+    }
+
+    return false;
+}
+
+// Adapted from QMacStylePrivate::drawFocusRing()
+bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const QFocusFrame *focusFrame = qobject_cast<const QFocusFrame *>(widget);
+    const QWidget *targetWidget = focusFrame ? focusFrame->widget() : nullptr;
+    // If we have a QFocusFrame and no target widget, don't draw anything.
+    if (focusFrame && !targetWidget)
+        return true;
+
+    const int hmargin = proxy()->pixelMetric(QStyle::PM_FocusFrameHMargin, option, widget);
+    const int vmargin = proxy()->pixelMetric(QStyle::PM_FocusFrameVMargin, option, widget);
+    // Not using targetWidget->rect() to get this because this should still work when widget is null.
+    const QRect targetWidgetRect = option->rect.adjusted(hmargin, vmargin, -hmargin, -vmargin);
+
+    QRect innerRect = targetWidgetRect;
+    QRect outerRect = option->rect;
+
+    qreal innerRadius = Metrics::Frame_FrameRadius;
+    qreal outerRadius = innerRadius + vmargin;
+
+    QPainterPath focusFramePath;
+    focusFramePath.setFillRule(Qt::OddEvenFill);
+
+    // If focusFrame is null, make it still possible to draw something since
+    // most draw functions allow drawing something when the widget is null
+    if (!focusFrame) {
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+    } else if (targetWidget->inherits("QLineEdit") || targetWidget->inherits("QTextEdit") || targetWidget->inherits("QAbstractSpinBox")
+               || targetWidget->inherits("QComboBox") || targetWidget->inherits("QPushButton") || targetWidget->inherits("QToolButton")) {
+        /* It's OK to check for QAbstractSpinBox instead of more spacific classes
+         * because QAbstractSpinBox handles the painting for spinboxes,
+         * unlike most abstract widget classes.
+         */
+        innerRect.adjust(1, 1, -1, -1);
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+    } else if (auto checkBox = qobject_cast<const QCheckBox *>(targetWidget)) {
+        QStyleOptionButton opt;
+        opt.initFrom(checkBox);
+        if (checkBox->isDown()) {
+            opt.state |= QStyle::State_Sunken;
+        }
+        if (checkBox->isTristate()) {
+            opt.state |= QStyle::State_NoChange;
+        } else if (checkBox->isChecked()) {
+            opt.state |= QStyle::State_On;
+        } else {
+            opt.state |= QStyle::State_Off;
+        }
+        opt.text = checkBox->text();
+        opt.icon = checkBox->icon();
+        opt.iconSize = checkBox->iconSize();
+        innerRect = subElementRect(SE_CheckBoxIndicator, &opt, checkBox);
+        innerRect.adjust(2, 2, -2, -2);
+        innerRect.translate(hmargin, vmargin);
+        innerRect = visualRect(option, innerRect);
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+    } else if (auto radioButton = qobject_cast<const QRadioButton *>(targetWidget)) {
+        QStyleOptionButton opt;
+        opt.initFrom(radioButton);
+        if (radioButton->isDown()) {
+            opt.state |= QStyle::State_Sunken;
+        }
+        if (radioButton->isChecked()) {
+            opt.state |= QStyle::State_On;
+        } else {
+            opt.state |= QStyle::State_Off;
+        }
+        opt.text = radioButton->text();
+        opt.icon = radioButton->icon();
+        opt.iconSize = radioButton->iconSize();
+        innerRect = subElementRect(SE_RadioButtonIndicator, &opt, radioButton);
+        innerRect.adjust(2, 2, -2, -2);
+        innerRect.translate(hmargin, vmargin);
+        innerRect = visualRect(option, innerRect);
+        innerRadius = innerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        outerRadius = outerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+    } else if (auto slider = qobject_cast<const QSlider *>(targetWidget)) {
+        QStyleOptionSlider opt;
+        opt.initFrom(slider);
+        opt.orientation = slider->orientation();
+        opt.maximum = slider->maximum();
+        opt.minimum = slider->minimum();
+        opt.tickPosition = slider->tickPosition();
+        opt.tickInterval = slider->tickInterval();
+        if (opt.orientation == Qt::Horizontal) {
+            opt.upsideDown = slider->invertedAppearance() && opt.direction != Qt::RightToLeft;
+        } else {
+            opt.upsideDown = !slider->invertedAppearance();
+        }
+        opt.sliderPosition = slider->sliderPosition();
+        opt.sliderValue = slider->value();
+        opt.singleStep = slider->singleStep();
+        opt.pageStep = slider->pageStep();
+        if (opt.orientation == Qt::Horizontal) {
+            opt.state |= QStyle::State_Horizontal;
+        }
+        innerRect = subControlRect(CC_Slider, &opt, SC_SliderHandle, slider);
+        innerRect.adjust(1, 1, -1, -1);
+        innerRect.translate(hmargin, vmargin);
+        innerRadius = innerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        outerRadius = outerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+        if (_focusFrame) {
+            // Workaround QFocusFrame not fully repainting outside the bounds of the targetWidget
+            auto previousRect = _focusFrame->property("_lastOuterRect").value<QRect>();
+            if (previousRect != outerRect) {
+                _focusFrame->update();
+                _focusFrame->setProperty("_lastOuterRect", outerRect);
+            }
+        }
+    } else if (auto dial = qobject_cast<const QDial *>(targetWidget)) {
+        QStyleOptionSlider opt;
+        opt.initFrom(dial);
+        opt.maximum = dial->maximum();
+        opt.minimum = dial->minimum();
+        opt.sliderPosition = dial->sliderPosition();
+        opt.sliderValue = dial->value();
+        opt.singleStep = dial->singleStep();
+        opt.pageStep = dial->pageStep();
+        opt.upsideDown = !dial->invertedAppearance();
+        opt.notchTarget = dial->notchTarget();
+        opt.dialWrapping = dial->wrapping();
+        if (!dial->notchesVisible()) {
+            opt.subControls &= ~QStyle::SC_DialTickmarks;
+            opt.tickPosition = QSlider::TicksAbove;
+        } else {
+            opt.tickPosition = QSlider::NoTicks;
+        }
+        opt.tickInterval = dial->notchSize();
+        innerRect = subControlRect(CC_Dial, &opt, SC_DialHandle, dial);
+        innerRect.adjust(1, 1, -1, -1);
+        innerRect.translate(hmargin, vmargin);
+        innerRadius = innerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        outerRadius = outerRect.height() / 2.0;
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+        if (_focusFrame) {
+            // Workaround QFocusFrame not fully repainting outside the bounds of the targetWidget
+            auto previousRect = _focusFrame->property("_lastOuterRect").value<QRect>();
+            if (previousRect != outerRect) {
+                _focusFrame->update();
+                _focusFrame->setProperty("_lastOuterRect", outerRect);
+            }
+        }
+    } else if (auto groupBox = qobject_cast<const QGroupBox *>(targetWidget)) {
+        QStyleOptionGroupBox opt;
+        opt.initFrom(groupBox);
+        opt.lineWidth = 1;
+        opt.midLineWidth = 0;
+        opt.textAlignment = groupBox->alignment();
+        opt.subControls = QStyle::SC_GroupBoxFrame;
+        if (groupBox->isCheckable()) {
+            opt.subControls |= QStyle::SC_GroupBoxCheckBox;
+            if (groupBox->isChecked()) {
+                opt.state |= QStyle::State_On;
+            } else {
+                opt.state |= QStyle::State_Off;
+            }
+            // NOTE: we can't get the sunken state of the checkbox
+        }
+        opt.text = groupBox->title();
+        if (!opt.text.isEmpty()) {
+            opt.subControls |= QStyle::SC_GroupBoxLabel;
+        }
+        innerRect = subControlRect(CC_GroupBox, &opt, SC_GroupBoxCheckBox, groupBox);
+        innerRect.adjust(2, 2, -2, -2);
+        innerRect.translate(hmargin, vmargin);
+        innerRect = visualRect(option, innerRect);
+        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
+        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
+        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+    } else {
+        return true;
+    }
+
+    auto outerColor = _helper->alphaColor(option->palette.highlight().color(), 0.33);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->fillPath(focusFramePath, outerColor);
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawRubberBandControl(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    painter->save();
+    painter->setRenderHints(QPainter::Antialiasing);
+
+    const auto &palette(option->palette);
+    const auto outline = KColorUtils::lighten(palette.color(QPalette::Highlight));
+    auto background = palette.color(QPalette::Highlight);
+    background.setAlphaF(0.20);
+
+    painter->setPen(outline);
+    painter->setBrush(background);
+    painter->drawRoundedRect(_helper->strokedRect(option->rect), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+
+    painter->restore();
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawHeaderSectionControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+    const auto &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+    const bool sunken(enabled && (state & (State_On | State_Sunken)));
+
+    const auto headerOption(qstyleoption_cast<const QStyleOptionHeader *>(option));
+    if (!headerOption)
+        return true;
+
+    const bool horizontal(headerOption->orientation == Qt::Horizontal);
+    const bool isCorner(widget && widget->inherits("QTableCornerButton"));
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    // update animation state
+    _animations->headerViewEngine().updateState(widget, rect.topLeft(), mouseOver);
+    const bool animated(enabled && _animations->headerViewEngine().isAnimated(widget, rect.topLeft()));
+    const qreal opacity(_animations->headerViewEngine().opacity(widget, rect.topLeft()));
+
+    // fill
+    const auto &normal = palette.color(QPalette::Button);
+    const auto focus(KColorUtils::mix(normal, _helper->focusColor(palette), 0.2));
+    const auto hover(KColorUtils::mix(normal, _helper->hoverColor(palette), 0.2));
+
+    QColor color;
+    if (sunken)
+        color = focus;
+    else if (animated)
+        color = KColorUtils::mix(normal, hover, opacity);
+    else if (mouseOver)
+        color = hover;
+    else
+        color = normal;
+
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setBrush(color);
+    painter->setPen(Qt::NoPen);
+    painter->drawRect(rect);
+
+    // outline
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), 0.1));
+
+    if (isCorner) {
+        if (reverseLayout)
+            painter->drawPoint(rect.bottomLeft());
+        else
+            painter->drawPoint(rect.bottomRight());
+
+    } else if (horizontal) {
+        painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    } else {
+        if (reverseLayout)
+            painter->drawLine(rect.topLeft(), rect.bottomLeft());
+        else
+            painter->drawLine(rect.topRight(), rect.bottomRight());
+    }
+
+    // separators
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+
+    // If the separator would be next to a "HeaderEmptyArea", skip it and let that draw
+    // the separator instead. This means that those separators are only visible when necessary.
+
+    if (horizontal) {
+        if (headerOption->position != QStyleOptionHeader::OnlyOneSection) {
+            if (reverseLayout && headerOption->position != QStyleOptionHeader::Beginning)
+                painter->drawLine(rect.topLeft(), rect.bottomLeft() - QPoint(0, 1));
+            else if (!reverseLayout && headerOption->position != QStyleOptionHeader::End)
+                painter->drawLine(rect.topRight(), rect.bottomRight() - QPoint(0, 1));
         }
 
-        // store palette
-        // due to Qt, it is not always safe to assume that either option, nor widget are defined
-        QPalette palette;
-        if( option ) palette = option->palette;
-        else if( widget ) palette = widget->palette();
-        else palette = QApplication::palette();
+    } else if (headerOption->position != QStyleOptionHeader::End) {
+        if (reverseLayout)
+            painter->drawLine(rect.bottomLeft() + QPoint(1, 0), rect.bottomRight());
+        else
+            painter->drawLine(rect.bottomLeft(), rect.bottomRight() - QPoint(1, 0));
+    }
 
-        const bool isAlwaysShownCloseButton( buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton );
-        const bool withTrafficLights( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights );
+    return true;
+}
 
-        palette.setCurrentColorGroup( QPalette::Active );
-        
-        std::shared_ptr<SystemButtonColors> decorationButtonAccentColors = ColorTools::getSystemButtonColors( palette );
-        
-        const QColor base( palette.color( QPalette::WindowText ) );
-        const QColor selected( _helper->titleBarTextColor( true ) );
-        
-        
-        //foreground colours
-        QColor offHoverForeground;
-        QColor onFocusForeground;
-        QColor onFocusSelectedForeground;
-        QColor offSelectedForeground;
-        QColor offForeground;
-        QColor disabledForeground;
-        
-        //background colours
-        QColor offInvertedNormalStateBackground;
-        QColor disabledInvertedNormalStateBackground;
-        QColor offSelectedInvertedNormalStateBackground;
-        QColor offHoverBackground;
-        QColor onFocusBackground;
-        
-        //outline colours
-        QColor outline;
-        
-        if( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText ){
-            
-            if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
-                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
-                offSelectedForeground = selected;
-                
-                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
-                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
-                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
-                
-                //for translucent, background colours also need to be defined
-                offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
-                disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
-                offSelectedInvertedNormalStateBackground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negativeReducedOpacityBackground : ColorTools::alphaMix( selected,  0.15 );
-                offHoverBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityBackground : ColorTools::alphaMix( base,  0.15 );
-                onFocusBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityOutline :ColorTools::alphaMix( base,  0.25 );
+//___________________________________________________________________________________
+bool Style::drawHeaderEmptyAreaControl(const QStyleOption *option, QPainter *painter, const QWidget *) const
+{
+    // use the same background as in drawHeaderPrimitive
+    const auto &rect(option->rect);
+    auto palette(option->palette);
+
+    const bool horizontal(option->state & QStyle::State_Horizontal);
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    // fill
+    painter->setRenderHint(QPainter::Antialiasing, false);
+    painter->setBrush(palette.color(QPalette::Button));
+    painter->setPen(Qt::NoPen);
+    painter->drawRect(rect);
+
+    // outline
+    painter->setBrush(Qt::NoBrush);
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::ButtonText), 0.1));
+
+    if (horizontal) {
+        painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    } else {
+        if (reverseLayout)
+            painter->drawLine(rect.topLeft(), rect.bottomLeft());
+        else
+            painter->drawLine(rect.topRight(), rect.bottomRight());
+    }
+
+    // separators
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+
+    if (horizontal) {
+        // 26aa20407d in qtbase introduced a 1px empty area in reversed horizontal headers. Ignore it.
+        if (reverseLayout && rect.width() != 1)
+            painter->drawLine(rect.topRight(), rect.bottomRight() - QPoint(0, 1));
+        else if (!reverseLayout)
+            painter->drawLine(rect.topLeft(), rect.bottomLeft() - QPoint(0, 1));
+
+    } else {
+        if (reverseLayout)
+            painter->drawLine(rect.topLeft() + QPoint(1, 0), rect.topRight());
+        else
+            painter->drawLine(rect.topLeft(), rect.topRight() - QPoint(1, 0));
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawTabBarTabLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // call parent style method
+
+    // we draw the focus ourselves so we don't need the parent to do it for us.
+    auto old = option->state;
+    // clear the State_HasFocus bit
+    const_cast<QStyleOption *>(option)->state &= ~State_HasFocus;
+    ParentStyleClass::drawControl(CE_TabBarTabLabel, option, painter, widget);
+    const_cast<QStyleOption *>(option)->state = old;
+
+    // store rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+
+    // check focus
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool selected(state & State_Selected);
+    const bool hasFocus(enabled && selected && (state & State_HasFocus));
+
+    // update mouse over animation state
+    _animations->tabBarEngine().updateState(widget, rect.topLeft(), AnimationFocus, hasFocus);
+    const bool animated(enabled && selected && _animations->tabBarEngine().isAnimated(widget, rect.topLeft(), AnimationFocus));
+    const qreal opacity(_animations->tabBarEngine().opacity(widget, rect.topLeft(), AnimationFocus));
+
+    if (!(hasFocus || animated))
+        return true;
+
+    // code is copied from QCommonStyle, but adds focus
+    // cast option and check
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    if (!tabOption || tabOption->text.isEmpty())
+        return true;
+
+    // tab option rect
+    const bool verticalTabs(isVerticalTab(tabOption));
+    const int textFlags(Qt::AlignCenter | _mnemonics->textFlags());
+
+    // text rect
+    auto textRect(subElementRect(SE_TabBarTabText, option, widget));
+
+    if (verticalTabs) {
+        // properly rotate painter
+        painter->save();
+        int newX, newY, newRot;
+        if (tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast) {
+            newX = rect.width() + rect.x();
+            newY = rect.y();
+            newRot = 90;
+
+        } else {
+            newX = rect.x();
+            newY = rect.y() + rect.height();
+            newRot = -90;
+        }
+
+        QTransform transform;
+        transform.translate(newX, newY);
+        transform.rotate(newRot);
+        painter->setTransform(transform, true);
+    }
+
+    // adjust text rect based on font metrics
+    textRect = option->fontMetrics.boundingRect(textRect, textFlags, tabOption->text);
+
+    // focus color
+    QColor focusColor;
+    if (animated)
+        focusColor = _helper->alphaColor(_helper->focusColor(palette), opacity);
+    else if (hasFocus)
+        focusColor = _helper->focusColor(palette);
+
+    // render focus line
+    _helper->renderFocusLine(painter, textRect, focusColor);
+
+    if (verticalTabs)
+        painter->restore();
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
+    if (!tabOption)
+        return true;
+
+    // palette and state
+    const bool enabled = option->state & State_Enabled;
+    const bool activeFocus = option->state & State_HasFocus;
+    const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange;
+    const bool hovered = option->state & State_MouseOver;
+    const bool down = option->state & State_Sunken;
+    const bool selected = option->state & State_Selected;
+    const bool north = tabOption->shape == QTabBar::RoundedNorth || tabOption->shape == QTabBar::TriangularNorth;
+    const bool south = tabOption->shape == QTabBar::RoundedSouth || tabOption->shape == QTabBar::TriangularSouth;
+    const bool west = tabOption->shape == QTabBar::RoundedWest || tabOption->shape == QTabBar::TriangularWest;
+    const bool east = tabOption->shape == QTabBar::RoundedEast || tabOption->shape == QTabBar::TriangularEast;
+
+    // check if tab is being dragged
+    const bool isDragged(widget && selected && painter->device() != widget);
+    const bool isLocked(widget && _tabBarData->isLocked(widget));
+
+    // store rect
+    auto rect(option->rect);
+
+    // update mouse over animation state
+    _animations->tabBarEngine().updateState(widget, rect.topLeft(), AnimationHover, hovered && !selected && enabled);
+    const qreal animation = _animations->tabBarEngine().opacity(widget, rect.topLeft(), AnimationHover);
+
+    // lock state
+    if (selected && widget && isDragged)
+        _tabBarData->lock(widget);
+    else if (widget && selected && _tabBarData->isLocked(widget))
+        _tabBarData->release();
+
+    // tab position
+    const QStyleOptionTab::TabPosition &position = tabOption->position;
+    const bool isSingle(position == QStyleOptionTab::OnlyOneTab);
+    const bool isQtQuickControl(this->isQtQuickControl(option, widget));
+    bool isFirst(isSingle || position == QStyleOptionTab::Beginning);
+    bool isLast(isSingle || position == QStyleOptionTab::End);
+    bool isLeftOfSelected(!isLocked && tabOption->selectedPosition == QStyleOptionTab::NextIsSelected);
+    bool isRightOfSelected(!isLocked && tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected);
+
+    // true if widget is aligned to the frame
+    // need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved
+    isFirst &= !isRightOfSelected;
+    isLast &= !isLeftOfSelected;
+
+    // swap state based on reverse layout, so that they become layout independent
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+    const bool verticalTabs(isVerticalTab(tabOption));
+    if (reverseLayout && !verticalTabs) {
+        qSwap(isFirst, isLast);
+        qSwap(isLeftOfSelected, isRightOfSelected);
+    }
+
+    // overlap
+    // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
+    const int overlap = isQtQuickControl ? 0 : Metrics::TabBar_TabOverlap;
+
+    // adjust rect and define corners based on tabbar orientation
+    Corners corners;
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        if (selected) {
+            corners = CornersTop;
+        } else {
+            if (isFirst)
+                corners |= CornerTopLeft;
+            if (isLast)
+                corners |= CornerTopRight;
+            if (isRightOfSelected)
+                rect.adjust(-Metrics::Frame_FrameRadius, 0, 0, 0);
+            if (isLeftOfSelected)
+                rect.adjust(0, 0, Metrics::Frame_FrameRadius, 0);
+            else if (!isLast)
+                rect.adjust(0, 0, overlap, 0);
+        }
+        break;
+
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        if (selected) {
+            corners = CornersBottom;
+        } else {
+            if (isFirst)
+                corners |= CornerBottomLeft;
+            if (isLast)
+                corners |= CornerBottomRight;
+            if (isRightOfSelected)
+                rect.adjust(-Metrics::Frame_FrameRadius, 0, 0, 0);
+            if (isLeftOfSelected)
+                rect.adjust(0, 0, Metrics::Frame_FrameRadius, 0);
+            else if (!isLast)
+                rect.adjust(0, 0, overlap, 0);
+        }
+        break;
+
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        if (selected) {
+            corners = CornersLeft;
+        } else {
+            if (isFirst)
+                corners |= CornerTopLeft;
+            if (isLast)
+                corners |= CornerBottomLeft;
+            if (isRightOfSelected)
+                rect.adjust(0, -Metrics::Frame_FrameRadius, 0, 0);
+            if (isLeftOfSelected)
+                rect.adjust(0, 0, 0, Metrics::Frame_FrameRadius);
+            else if (!isLast)
+                rect.adjust(0, 0, 0, overlap);
+        }
+        break;
+
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        if (selected) {
+            corners = CornersRight;
+        } else {
+            if (isFirst)
+                corners |= CornerTopRight;
+            if (isLast)
+                corners |= CornerBottomRight;
+            if (isRightOfSelected)
+                rect.adjust(0, -Metrics::Frame_FrameRadius, 0, 0);
+            if (isLeftOfSelected)
+                rect.adjust(0, 0, 0, Metrics::Frame_FrameRadius);
+            else if (!isLast)
+                rect.adjust(0, 0, 0, overlap);
+        }
+        break;
+
+    default:
+        break;
+    }
+    switch (tabOption->shape) {
+    case QTabBar::RoundedNorth:
+    case QTabBar::TriangularNorth:
+        rect.adjust(0, 0, 0, 1);
+        break;
+    case QTabBar::RoundedSouth:
+    case QTabBar::TriangularSouth:
+        rect.adjust(0, 0, 0, -1);
+        break;
+    case QTabBar::RoundedWest:
+    case QTabBar::TriangularWest:
+        rect.adjust(0, 0, 1, 0);
+        break;
+    case QTabBar::RoundedEast:
+    case QTabBar::TriangularEast:
+        rect.adjust(0, 0, -1, 0);
+        break;
+    }
+
+    QHash<QByteArray, bool> stateProperties;
+    stateProperties["enabled"] = enabled;
+    stateProperties["visualFocus"] = visualFocus;
+    stateProperties["hovered"] = hovered;
+    stateProperties["down"] = down;
+    stateProperties["selected"] = selected;
+    stateProperties["documentMode"] = true;
+    stateProperties["north"] = north;
+    stateProperties["south"] = south;
+    stateProperties["west"] = west;
+    stateProperties["east"] = east;
+    stateProperties["isQtQuickControl"] = isQtQuickControl;
+    stateProperties["hasAlteredBackground"] = hasAlteredBackground(widget);
+    _helper->renderTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawToolBoxTabLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // rendering is similar to drawPushButtonLabelControl
+    // cast option and check
+    const auto toolBoxOption(qstyleoption_cast<const QStyleOptionToolBox *>(option));
+    if (!toolBoxOption)
+        return true;
+
+    // copy palette
+    const auto &palette(option->palette);
+
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+
+    // text alignment
+    const int textFlags(_mnemonics->textFlags() | Qt::AlignCenter);
+
+    // contents rect
+    const auto rect(subElementRect(SE_ToolBoxTabContents, option, widget));
+
+    // store icon size
+    const int iconSize(pixelMetric(QStyle::PM_SmallIconSize, option, widget));
+
+    // find contents size and rect
+    auto contentsRect(rect);
+    QSize contentsSize;
+    if (!toolBoxOption->text.isEmpty()) {
+        contentsSize = option->fontMetrics.size(_mnemonics->textFlags(), toolBoxOption->text);
+        if (!toolBoxOption->icon.isNull())
+            contentsSize.rwidth() += Metrics::ToolBox_TabItemSpacing;
+    }
+
+    // icon size
+    if (!toolBoxOption->icon.isNull()) {
+        contentsSize.setHeight(qMax(contentsSize.height(), iconSize));
+        contentsSize.rwidth() += iconSize;
+    }
+
+    // adjust contents rect
+    contentsRect = centerRect(contentsRect, contentsSize);
+
+    // render icon
+    if (!toolBoxOption->icon.isNull()) {
+        // icon rect
+        QRect iconRect;
+        if (toolBoxOption->text.isEmpty())
+            iconRect = centerRect(contentsRect, iconSize, iconSize);
+        else {
+            iconRect = contentsRect;
+            iconRect.setWidth(iconSize);
+            iconRect = centerRect(iconRect, iconSize, iconSize);
+            contentsRect.setLeft(iconRect.right() + Metrics::ToolBox_TabItemSpacing + 1);
+        }
+
+        iconRect = visualRect(option, iconRect);
+        const QIcon::Mode mode(enabled ? QIcon::Normal : QIcon::Disabled);
+        const QPixmap pixmap(_helper->coloredIcon(toolBoxOption->icon, toolBoxOption->palette, iconRect.size(), mode));
+        drawItemPixmap(painter, iconRect, textFlags, pixmap);
+    }
+
+    // render text
+    if (!toolBoxOption->text.isEmpty()) {
+        contentsRect = visualRect(option, contentsRect);
+        drawItemText(painter, contentsRect, textFlags, palette, enabled, toolBoxOption->text, QPalette::WindowText);
+    }
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawToolBoxTabShapeControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolBoxOption(qstyleoption_cast<const QStyleOptionToolBox *>(option));
+    if (!toolBoxOption)
+        return true;
+
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto tabRect(toolBoxTabContentsRect(option, widget));
+
+    /*
+     * important: option returns the wrong palette.
+     * we use the widget palette instead, when set
+     */
+    const auto &palette(widget ? widget->palette() : option->palette);
+
+    // store flags
+    const State &flags(option->state);
+    const bool enabled(flags & State_Enabled);
+    const bool selected(flags & State_Selected);
+    const bool mouseOver(enabled && !selected && (flags & State_MouseOver));
+
+    // update animation state
+    /*
+     * the proper widget ( the toolbox tab ) is not passed as argument by Qt.
+     * What is passed is the toolbox directly. To implement animations properly,
+     *the painter->device() is used instead
+     */
+    bool isAnimated(false);
+    qreal opacity(AnimationData::OpacityInvalid);
+    QPaintDevice *device = painter->device();
+    if (enabled && device) {
+        _animations->toolBoxEngine().updateState(device, mouseOver);
+        isAnimated = _animations->toolBoxEngine().isAnimated(device);
+        opacity = _animations->toolBoxEngine().opacity(device);
+    }
+
+    // color
+    QColor outline;
+    if (selected)
+        outline = _helper->focusColor(palette);
+    else
+        outline = _helper->frameOutlineColor(palette, mouseOver, false, opacity, isAnimated ? AnimationHover : AnimationNone);
+
+    // render
+    _helper->renderToolBoxFrame(painter, rect, tabRect.width(), outline);
+
+    return true;
+}
+
+//___________________________________________________________________________________
+bool Style::drawDockWidgetTitleControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto dockWidgetOption = qstyleoption_cast<const QStyleOptionDockWidget *>(option);
+    if (!dockWidgetOption)
+        return true;
+
+    const auto &palette(option->palette);
+    const auto &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool reverseLayout(option->direction == Qt::RightToLeft);
+
+    // cast to v2 to check vertical bar
+    const bool verticalTitleBar(dockWidgetOption->verticalTitleBar);
+
+    const auto buttonRect(subElementRect(dockWidgetOption->floatable ? SE_DockWidgetFloatButton : SE_DockWidgetCloseButton, option, widget));
+
+    // get rectangle and adjust to properly accounts for buttons
+    auto rect(insideMargin(dockWidgetOption->rect, Metrics::Frame_FrameWidth));
+    if (verticalTitleBar) {
+        if (buttonRect.isValid())
+            rect.setTop(buttonRect.bottom() + 1);
+
+    } else if (reverseLayout) {
+        if (buttonRect.isValid())
+            rect.setLeft(buttonRect.right() + 1);
+        rect.adjust(0, 0, -4, 0);
+
+    } else {
+        if (buttonRect.isValid())
+            rect.setRight(buttonRect.left() - 1);
+        rect.adjust(4, 0, 0, 0);
+    }
+
+    QString title(dockWidgetOption->title);
+    int titleWidth = dockWidgetOption->fontMetrics.size(_mnemonics->textFlags(), title).width();
+    int width = verticalTitleBar ? rect.height() : rect.width();
+    if (width < titleWidth)
+        title = dockWidgetOption->fontMetrics.elidedText(title, Qt::ElideRight, width, Qt::TextShowMnemonic);
+
+    if (verticalTitleBar) {
+        QSize size = rect.size();
+        size.transpose();
+        rect.setSize(size);
+
+        painter->save();
+        painter->translate(rect.left(), rect.top() + rect.width());
+        painter->rotate(-90);
+        painter->translate(-rect.left(), -rect.top());
+        drawItemText(painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText);
+        painter->restore();
+
+    } else {
+        drawItemText(painter, rect, Qt::AlignLeft | Qt::AlignVCenter | _mnemonics->textFlags(), palette, enabled, title, QPalette::WindowText);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // base class method
+    ParentStyleClass::drawComplexControl(CC_GroupBox, option, painter, widget);
+
+    // cast option and check
+    const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>(option);
+    if (!groupBoxOption)
+        return true;
+
+    // do nothing if either label is not selected or groupbox is empty
+    if (!(option->subControls & QStyle::SC_GroupBoxLabel) || groupBoxOption->text.isEmpty()) {
+        return true;
+    }
+
+    // store palette and rect
+    const auto &palette(option->palette);
+
+    // check focus state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool hasFocus(enabled && (option->state & State_HasFocus));
+    if (!hasFocus)
+        return true;
+
+    // alignment
+    const int textFlags(groupBoxOption->textAlignment | _mnemonics->textFlags());
+
+    // update animation state
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, hasFocus);
+    const bool isFocusAnimated(_animations->widgetStateEngine().isAnimated(widget, AnimationFocus));
+    const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationFocus));
+
+    // get relevant rect
+    auto textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
+    textRect = option->fontMetrics.boundingRect(textRect, textFlags, groupBoxOption->text);
+
+    // focus color
+    QColor focusColor;
+    if (isFocusAnimated)
+        focusColor = _helper->alphaColor(_helper->focusColor(palette), opacity);
+    else if (hasFocus)
+        focusColor = _helper->focusColor(palette);
+
+    // render focus
+    _helper->renderFocusLine(painter, textRect, focusColor);
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto toolButtonOption(qstyleoption_cast<const QStyleOptionToolButton *>(option));
+    if (!toolButtonOption)
+        return true;
+
+    // need to alter palette for focused buttons
+    const bool enabled = option->state & QStyle::State_Enabled;
+    const bool activeFocus = option->state & QStyle::State_HasFocus;
+    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    const bool hovered = option->state & QStyle::State_MouseOver;
+    const bool down = option->state & QStyle::State_Sunken;
+    const bool checked = option->state & QStyle::State_On;
+    bool flat = option->state & QStyle::State_AutoRaise;
+
+    // update animation state
+    // mouse over takes precedence over focus
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, hovered);
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, activeFocus && !hovered);
+
+    // detect buttons in tabbar, for which special rendering is needed
+    const bool inTabBar(widget && qobject_cast<const QTabBar *>(widget->parentWidget()));
+    const bool isMenuTitle(this->isMenuTitle(widget));
+    if (isMenuTitle) {
+        // copy option to adjust state, and set font as not-bold
+        const QStyleOptionToolButton copy = toolButtonMenuTitleOption(*toolButtonOption);
+
+        // render
+        renderMenuTitle(&copy, painter, widget);
+        return true;
+    }
+
+    // copy option and alter palette
+    QStyleOptionToolButton copy(*toolButtonOption);
+
+    const bool hasPopupMenu(toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup);
+    const bool hasInlineIndicator(toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu);
+
+    const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
+
+    const auto buttonRect(subControlRect(CC_ToolButton, option, SC_ToolButton, widget));
+    const auto menuRect(subControlRect(CC_ToolButton, option, SC_ToolButtonMenu, widget));
+
+    // frame
+    if (toolButtonOption->subControls & SC_ToolButton) {
+        if (!flat)
+            copy.rect = buttonRect;
+        if (inTabBar)
+            drawTabBarPanelButtonToolPrimitive(&copy, painter, widget);
+        else
+            drawPrimitive(PE_PanelButtonTool, &copy, painter, widget);
+    }
+
+    // arrow
+    if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
+        copy.rect = menuRect;
+        drawPrimitive(PE_IndicatorButtonDropDown, &copy, painter, widget);
+
+        copy.state &= ~State_MouseOver;
+        copy.state &= ~State_Sunken;
+        copy.state &= ~State_On;
+        drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
+
+    } else if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall || menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
+        copy.rect = menuRect;
+        copy.state &= ~State_MouseOver;
+        copy.state &= ~State_Sunken;
+        copy.state &= ~State_On;
+
+        if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
+            drawIndicatorArrowPrimitive(ArrowDown_Small, &copy, painter, widget);
+        } else {
+            copy.rect.translate(-Metrics::Button_ItemSpacing, 0);
+            drawIndicatorArrowPrimitive(ArrowDown, &copy, painter, widget);
+        }
+    }
+
+    // contents
+    {
+        // restore state
+        copy.state = option->state;
+
+        // define contents rect
+        auto contentsRect(buttonRect);
+
+        // detect dock widget title button
+        // for dockwidget title buttons, do not take out margins, so that icon do not get scaled down
+        const bool isDockWidgetTitleButton(widget && widget->inherits("QDockWidgetTitleButton"));
+        if (isDockWidgetTitleButton) {
+            // cast to abstract button
+            // adjust state to have correct icon rendered
+            const auto button(qobject_cast<const QAbstractButton *>(widget));
+            if (button->isChecked() || button->isDown())
+                copy.state |= State_On;
+        }
+
+        copy.rect = contentsRect;
+
+        // render
+        drawControl(CE_ToolButtonLabel, &copy, painter, widget);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawComboBoxComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // state
+    bool enabled = option->state & QStyle::State_Enabled;
+    bool activeFocus = option->state & QStyle::State_HasFocus;
+    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    bool hovered = option->state & QStyle::State_MouseOver;
+    // Only true if the arrow (SC_ComboBoxArrow) is pressed
+    bool down = option->state & QStyle::State_Sunken;
+    // Only true if the background (QComboBoxPrivateContainer) is pressed
+    bool checked = option->state & QStyle::State_On;
+    bool flat = false;
+    bool editable = false;
+    bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
+
+    // cast option and check
+    const auto comboBoxOption = qstyleoption_cast<const QStyleOptionComboBox *>(option);
+    if (comboBoxOption) {
+        flat = !comboBoxOption->frame;
+        editable = comboBoxOption->editable;
+    }
+
+    // frame
+    if (option->subControls & SC_ComboBoxFrame) {
+        if (editable) {
+            flat |= (option->rect.height() <= 2 * Metrics::Frame_FrameWidth + Metrics::MenuButton_IndicatorWidth);
+            if (flat) {
+                const auto &background = option->palette.color(QPalette::Base);
+                painter->setBrush(background);
+                painter->setPen(Qt::NoPen);
+                painter->drawRect(option->rect);
             } else {
-                //for non-translucent using the titlebar text colour, it is a special case in the later logic where the foreground colour is inverted to create the background
-                onFocusForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.7 );
-                onFocusSelectedForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : selected; 
-                if( isAlwaysShownCloseButton ){
-                    offSelectedForeground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negative : selected;
-                } else offSelectedForeground = selected;
-                
-                offHoverForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negative : KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
-                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
-                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base, 0.2 );
-                onFocusBackground = onFocusForeground; //used only for setting outline colour
+                drawPrimitive(PE_FrameLineEdit, option, painter, widget);
             }
         } else {
-            //Colours used if Accent colours            
-            
-            if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
-                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
-                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
-                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
-                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
-                offSelectedForeground = selected;
-                
-                offInvertedNormalStateBackground = ColorTools::alphaMix( base,  0.15 );
-                disabledInvertedNormalStateBackground = ColorTools::alphaMix( base, 0.07 );
-                offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negativeReducedOpacityBackground : decorationButtonAccentColors->buttonReducedOpacityBackground;
+            // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+            _animations->widgetStateEngine().updateState(widget, AnimationFocus, (down || checked) && enabled);
+            // NOTE: Using hover animation for all pen animations to prevent flickering when closing the menu.
+            _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down || checked) && enabled);
+            qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+            qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
+
+            QHash<QByteArray, bool> stateProperties;
+            stateProperties["enabled"] = enabled;
+            stateProperties["visualFocus"] = visualFocus;
+            stateProperties["hovered"] = hovered;
+            // See notes for down and checked above.
+            stateProperties["down"] = down || checked;
+            stateProperties["flat"] = flat;
+            stateProperties["hasNeutralHighlight"] = hasNeutralHighlight;
+            stateProperties["isActiveWindow"] = widget ? widget->isActiveWindow() : true;
+
+            _helper->renderButtonFrame(painter, option->rect, option->palette, stateProperties, bgAnimation, penAnimation);
+        }
+    }
+
+    // arrow
+    if (option->subControls & SC_ComboBoxArrow) {
+        // detect empty comboboxes
+        const auto comboBox = qobject_cast<const QComboBox *>(widget);
+        const bool empty(comboBox && !comboBox->count());
+
+        // arrow color
+        QColor arrowColor;
+        if (editable) {
+            if (empty || !enabled) {
+                arrowColor = option->palette.color(QPalette::Disabled, QPalette::Text);
             } else {
-                onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.8 );
-                onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
-                offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix( palette.color( QPalette::Window ), base, 0.7 );
-                offForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.5 );
-                disabledForeground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
-                offSelectedForeground = selected;
-                
-                offInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.2 );
-                disabledInvertedNormalStateBackground = KColorUtils::mix( palette.color( QPalette::Window ), base,  0.07);
-                offSelectedInvertedNormalStateBackground = ( _helper->decorationConfig()->redAlwaysShownClose() ) ? decorationButtonAccentColors->negative : decorationButtonAccentColors->buttonHover;
+                // check animation state
+                const bool subControlHover(enabled && hovered && option->activeSubControls & SC_ComboBoxArrow);
+                _animations->comboBoxEngine().updateState(widget, AnimationHover, subControlHover);
+
+                const bool animated(enabled && _animations->comboBoxEngine().isAnimated(widget, AnimationHover));
+                const qreal opacity(_animations->comboBoxEngine().opacity(widget, AnimationHover));
+
+                // color
+                const auto normal(_helper->arrowColor(option->palette, QPalette::WindowText));
+                const auto hover(_helper->hoverColor(option->palette));
+
+                if (animated) {
+                    arrowColor = KColorUtils::mix(normal, hover, opacity);
+                } else if (subControlHover) {
+                    arrowColor = hover;
+                } else
+                    arrowColor = normal;
             }
-            
-            
-            
-            //hover and focus background colours
-            switch ( buttonType ) {
-                case ButtonClose:
-                    if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                        offHoverBackground = decorationButtonAccentColors->negativeReducedOpacityBackground;
-                        onFocusBackground = decorationButtonAccentColors->negativeReducedOpacityOutline;
-                    } else {
-                        offHoverBackground = decorationButtonAccentColors->negative;
-                        onFocusBackground = decorationButtonAccentColors->negativeSaturated;
-                    }
-                    break;
-                case ButtonMaximize:
-                case ButtonRestore:
-                    if( withTrafficLights ){
-                        if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                            offHoverBackground = decorationButtonAccentColors->positiveReducedOpacityBackground;
-                            onFocusBackground = decorationButtonAccentColors->positiveReducedOpacityOutline;
-                        } else {
-                            offHoverBackground =  decorationButtonAccentColors->positiveLessSaturated;
-                            onFocusBackground =  decorationButtonAccentColors->positive;
-                        }
-                        break;
-                    }
-                case ButtonMinimize:
-                    if( withTrafficLights ){
-                        if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                            offHoverBackground = decorationButtonAccentColors->neutralReducedOpacityBackground;
-                            onFocusBackground = decorationButtonAccentColors->neutralReducedOpacityOutline;
-                        } else {
-                            offHoverBackground =  decorationButtonAccentColors->neutralLessSaturated;
-                            onFocusBackground =  decorationButtonAccentColors->neutral;
-                        }
-                        break;
-                    }
-                default:
-                    if( _helper->decorationConfig()->translucentButtonBackgrounds() ){
-                        offHoverBackground = decorationButtonAccentColors->buttonReducedOpacityBackground;
-                        onFocusBackground = decorationButtonAccentColors->buttonReducedOpacityOutline;
-                    } else {
-                        offHoverBackground = decorationButtonAccentColors->buttonHover;
-                        onFocusBackground = decorationButtonAccentColors->buttonFocus;
-                    }
+        } else if (flat) {
+            if (empty || !enabled) {
+                arrowColor = _helper->arrowColor(option->palette, QPalette::Disabled, QPalette::WindowText);
+            } else if (activeFocus && !hovered && down) {
+                arrowColor = option->palette.color(QPalette::WindowText);
+            } else {
+                arrowColor = _helper->arrowColor(option->palette, QPalette::WindowText);
             }
-            
+        } else if (empty || !enabled) {
+            arrowColor = _helper->arrowColor(option->palette, QPalette::Disabled, QPalette::ButtonText);
+        } else if (activeFocus && !hovered) {
+            arrowColor = option->palette.color(QPalette::WindowText);
+        } else {
+            arrowColor = _helper->arrowColor(option->palette, QPalette::ButtonText);
         }
-        
-        
-        if( _helper->decorationConfig()->alwaysShowIconHighlightUsing() == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline
-                //&& !isAlwaysShownCloseButton
-        ){
-            outline = onFocusBackground;
+
+        // arrow rect
+        auto arrowRect(subControlRect(CC_ComboBox, option, SC_ComboBoxArrow, widget));
+
+        // render
+        _helper->renderArrow(painter, arrowRect, arrowColor, ArrowDown);
+    }
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawSpinBoxComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto spinBoxOption(qstyleoption_cast<const QStyleOptionSpinBox *>(option));
+    if (!spinBoxOption)
+        return true;
+
+    // store palette and rect
+    const auto &palette(option->palette);
+    const auto &rect(option->rect);
+
+    if (option->subControls & SC_SpinBoxFrame) {
+        // detect flat spinboxes
+        bool flat(!spinBoxOption->frame);
+        flat |= (rect.height() < 2 * Metrics::Frame_FrameWidth + Metrics::SpinBox_ArrowButtonWidth);
+        if (flat) {
+            const auto &background = palette.color(QPalette::Base);
+
+            painter->setBrush(background);
+            painter->setPen(Qt::NoPen);
+            painter->drawRect(rect);
+
+        } else {
+            drawPrimitive(PE_FrameLineEdit, option, painter, widget);
         }
-        
-        const bool setInvert( 
-        
-            (( _helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText )
-                && ( !_helper->decorationConfig()->translucentButtonBackgrounds() ) 
-            )
-        ); 
+    }
 
-        // convenience class to map color to icon mode      
-        struct IconData
-        {
-            QIcon::Mode _mode;
-            QIcon::State _state;
-            QColor _foregroundColor;
-            bool _inverted;
-            bool _paintBackground;
-            QColor _backgroundColor;
-            QColor _outlineColor;
-        };
+    if (option->subControls & SC_SpinBoxUp)
+        renderSpinBoxArrow(SC_SpinBoxUp, spinBoxOption, painter, widget);
+    if (option->subControls & SC_SpinBoxDown)
+        renderSpinBoxArrow(SC_SpinBoxDown, spinBoxOption, painter, widget);
 
-        // map colors to icon states      
-        const QList<IconData> iconTypes =
-        {
-            // state off icons
-            { QIcon::Normal, QIcon::Off, offForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, offInvertedNormalStateBackground, QColor() },
-            { QIcon::Selected, QIcon::Off, offSelectedForeground, setInvert&&isAlwaysShownCloseButton , isAlwaysShownCloseButton, offSelectedInvertedNormalStateBackground, QColor() }, //used for active MDI window titlebars
-            { QIcon::Active, QIcon::Off, offHoverForeground, setInvert, true, offHoverBackground, outline },
-            { QIcon::Disabled, QIcon::Off, disabledForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, disabledInvertedNormalStateBackground, QColor() },
+    return true;
+}
 
-            // state on icons
-            { QIcon::Normal, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline },
-            { QIcon::Selected, QIcon::On, onFocusSelectedForeground, setInvert, true, onFocusBackground, outline },
-            { QIcon::Active, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline },
-            { QIcon::Disabled, QIcon::On, disabledForeground, setInvert&&isAlwaysShownCloseButton, isAlwaysShownCloseButton, disabledInvertedNormalStateBackground, QColor() }
-        
-        };
+//______________________________________________________________
+bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return true;
 
-        // default icon sizes
-        static const QList<int> iconSizes = { 8, 16, 22, 32, 48 };
+    // copy rect and palette
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
 
-        // output icon
+    // copy state
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+    const bool hasFocus(enabled && (state & State_HasFocus));
+
+    // direction
+    const bool horizontal(sliderOption->orientation == Qt::Horizontal);
+
+    // tickmarks
+    if (StyleConfigData::sliderDrawTickMarks() && (sliderOption->subControls & SC_SliderTickmarks)) {
+        const bool upsideDown(sliderOption->upsideDown);
+        const int tickPosition(sliderOption->tickPosition);
+        const int available(pixelMetric(PM_SliderSpaceAvailable, option, widget));
+        int interval = sliderOption->tickInterval;
+        if (interval < 1)
+            interval = sliderOption->pageStep;
+        if (interval >= 1) {
+            const int fudge(pixelMetric(PM_SliderLength, option, widget) / 2);
+            int current(sliderOption->minimum);
+
+            // store tick lines
+            const auto grooveRect(subControlRect(CC_Slider, sliderOption, SC_SliderGroove, widget));
+            QList<QLine> tickLines;
+            if (horizontal) {
+                if (tickPosition & QSlider::TicksAbove)
+                    tickLines.append(QLine(rect.left(),
+                                           grooveRect.top() - Metrics::Slider_TickMarginWidth,
+                                           rect.left(),
+                                           grooveRect.top() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength));
+                if (tickPosition & QSlider::TicksBelow)
+                    tickLines.append(QLine(rect.left(),
+                                           grooveRect.bottom() + Metrics::Slider_TickMarginWidth,
+                                           rect.left(),
+                                           grooveRect.bottom() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength));
+
+            } else {
+                if (tickPosition & QSlider::TicksAbove)
+                    tickLines.append(QLine(grooveRect.left() - Metrics::Slider_TickMarginWidth,
+                                           rect.top(),
+                                           grooveRect.left() - Metrics::Slider_TickMarginWidth - Metrics::Slider_TickLength,
+                                           rect.top()));
+                if (tickPosition & QSlider::TicksBelow)
+                    tickLines.append(QLine(grooveRect.right() + Metrics::Slider_TickMarginWidth,
+                                           rect.top(),
+                                           grooveRect.right() + Metrics::Slider_TickMarginWidth + Metrics::Slider_TickLength,
+                                           rect.top()));
+            }
+
+            // colors
+            const auto base(_helper->separatorColor(palette));
+            const auto &highlight =
+                hasHighlightNeutral(widget, option, mouseOver, hasFocus) ? _helper->neutralText(palette) : palette.color(QPalette::Highlight);
+
+            while (current <= sliderOption->maximum) {
+                // adjust color
+                const auto color((enabled && current <= sliderOption->sliderPosition) ? highlight : base);
+                painter->setPen(color);
+
+                // calculate positions and draw lines
+                int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available) + fudge);
+                foreach (const QLine &tickLine, tickLines) {
+                    if (horizontal)
+                        painter->drawLine(tickLine.translated(upsideDown ? (rect.width() - position) : position, 0));
+                    else
+                        painter->drawLine(tickLine.translated(0, upsideDown ? (rect.height() - position) : position));
+                }
+
+                // go to next position
+                current += interval;
+            }
+        }
+    }
+
+    // groove
+    if (sliderOption->subControls & SC_SliderGroove) {
+        // retrieve groove rect
+        auto grooveRect(subControlRect(CC_Slider, sliderOption, SC_SliderGroove, widget));
+
+        // base color
+        const auto grooveColor(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+
+        if (!enabled)
+            _helper->renderSliderGroove(painter, grooveRect, grooveColor);
+        else {
+            const bool upsideDown(sliderOption->upsideDown);
+
+            // handle rect
+            auto handleRect(subControlRect(CC_Slider, sliderOption, SC_SliderHandle, widget));
+
+            // highlight color
+            const auto &highlight =
+                hasHighlightNeutral(widget, option, mouseOver, hasFocus) ? _helper->neutralText(palette) : palette.color(QPalette::Highlight);
+
+            if (sliderOption->orientation == Qt::Horizontal) {
+                auto leftRect(grooveRect);
+                leftRect.setRight(handleRect.right() - Metrics::Slider_ControlThickness / 2);
+                _helper->renderSliderGroove(painter, leftRect, upsideDown ? grooveColor : highlight);
+
+                auto rightRect(grooveRect);
+                rightRect.setLeft(handleRect.left() + Metrics::Slider_ControlThickness / 2);
+                _helper->renderSliderGroove(painter, rightRect, upsideDown ? highlight : grooveColor);
+
+            } else {
+                auto topRect(grooveRect);
+                topRect.setBottom(handleRect.bottom() - Metrics::Slider_ControlThickness / 2);
+                _helper->renderSliderGroove(painter, topRect, upsideDown ? grooveColor : highlight);
+
+                auto bottomRect(grooveRect);
+                bottomRect.setTop(handleRect.top() + Metrics::Slider_ControlThickness / 2);
+                _helper->renderSliderGroove(painter, bottomRect, upsideDown ? highlight : grooveColor);
+            }
+        }
+    }
+
+    // handle
+    if (sliderOption->subControls & SC_SliderHandle) {
+        // get rect and center
+        auto handleRect(subControlRect(CC_Slider, sliderOption, SC_SliderHandle, widget));
+
+        // handle state
+        const bool handleActive(sliderOption->activeSubControls & SC_SliderHandle);
+        const bool sunken(state & (State_On | State_Sunken));
+
+        // animation state
+        _animations->widgetStateEngine().updateState(widget, AnimationHover, handleActive && mouseOver);
+        _animations->widgetStateEngine().updateState(widget, AnimationFocus, hasFocus);
+        const AnimationMode mode(_animations->widgetStateEngine().buttonAnimationMode(widget));
+        const qreal opacity(_animations->widgetStateEngine().buttonOpacity(widget));
+
+        // define colors
+        const auto &background = palette.color(QPalette::Button);
+        auto outline(_helper->sliderOutlineColor(palette, handleActive && mouseOver, hasFocus, opacity, mode));
+        if (hasFocus || (handleActive && mouseOver)) {
+            outline = hasHighlightNeutral(widget, option, handleActive && mouseOver, hasFocus)
+                ? _helper->neutralText(palette).lighter(mouseOver || hasFocus ? 150 : 100)
+                : outline;
+        }
+        const auto shadow(_helper->shadowColor(palette));
+
+        // render
+        _helper->renderSliderHandle(painter, handleRect, background, outline, shadow, sunken);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawDialComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
+    if (!sliderOption)
+        return true;
+
+    const auto &palette(option->palette);
+    const State &state(option->state);
+    const bool enabled(state & State_Enabled);
+    const bool mouseOver(enabled && (state & State_MouseOver));
+    const bool hasFocus(enabled && (state & State_HasFocus));
+
+    // do not render tickmarks
+    if (sliderOption->subControls & SC_DialTickmarks) { }
+
+    // groove
+    if (sliderOption->subControls & SC_DialGroove) {
+        // groove rect
+        auto grooveRect(subControlRect(CC_Dial, sliderOption, SC_SliderGroove, widget));
+
+        // groove
+        const auto grooveColor(KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), 0.2));
+
+        // angles
+        const qreal first(dialAngle(sliderOption, sliderOption->minimum));
+        const qreal last(dialAngle(sliderOption, sliderOption->maximum));
+
+        // render groove
+        _helper->renderDialGroove(painter, grooveRect, grooveColor, palette.color(QPalette::Window), first, last);
+
+        if (enabled) {
+            // highlight
+            const auto &highlight = palette.color(QPalette::Highlight);
+
+            // angles
+            const qreal second(dialAngle(sliderOption, sliderOption->sliderPosition));
+
+            // render contents
+            _helper->renderDialGroove(painter, grooveRect, highlight, palette.color(QPalette::Window), first, second);
+        }
+    }
+
+    // handle
+    if (sliderOption->subControls & SC_DialHandle) {
+        // get handle rect
+        auto handleRect(subControlRect(CC_Dial, sliderOption, SC_DialHandle, widget));
+        handleRect = centerRect(handleRect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness);
+
+        // handle state
+        const bool handleActive(mouseOver && handleRect.contains(_animations->dialEngine().position(widget)));
+        const bool sunken(state & (State_On | State_Sunken));
+
+        // animation state
+        _animations->dialEngine().setHandleRect(widget, handleRect);
+        _animations->dialEngine().updateState(widget, AnimationHover, handleActive && mouseOver);
+        _animations->dialEngine().updateState(widget, AnimationFocus, hasFocus);
+        const auto mode(_animations->dialEngine().buttonAnimationMode(widget));
+        const qreal opacity(_animations->dialEngine().buttonOpacity(widget));
+
+        // define colors
+        const auto &background = palette.color(QPalette::Button);
+        const auto outline(_helper->sliderOutlineColor(palette, handleActive && mouseOver, hasFocus, opacity, mode));
+        const auto shadow(_helper->shadowColor(palette));
+
+        // render
+        _helper->renderSliderHandle(painter, handleRect, background, outline, shadow, sunken);
+    }
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawScrollBarComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // the animation for QStyle::SC_ScrollBarGroove is special: it will animate
+    // the opacity of everything else as well, included slider and arrows
+    qreal opacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
+    const bool animated(StyleConfigData::animationsEnabled() && _animations->scrollBarEngine().isAnimated(widget, AnimationHover, QStyle::SC_ScrollBarGroove));
+    const bool mouseOver(option->state & State_MouseOver);
+
+    if (opacity == AnimationData::OpacityInvalid)
+        opacity = 1;
+
+    QRect separatorRect;
+    if (option->state & State_Horizontal) {
+        separatorRect = QRect(0, 0, option->rect.width(), 1);
+    } else {
+        separatorRect = alignedRect(option->direction, Qt::AlignLeft, QSize(PenWidth::Frame, option->rect.height()), option->rect);
+    }
+
+    _helper->renderScrollBarBorder(painter, separatorRect, _helper->alphaColor(option->palette.color(QPalette::Text), 0.1));
+
+    // render full groove directly, rather than using the addPage and subPage control element methods
+    if ((!StyleConfigData::animationsEnabled() || mouseOver || animated) && option->subControls & SC_ScrollBarGroove) {
+        // retrieve groove rectangle
+        auto grooveRect(subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget));
+
+        // need to make it center due to the thin line separator
+        if (option->state & State_Horizontal) {
+            grooveRect.setTop(PenWidth::Frame);
+        } else if (option->direction == Qt::RightToLeft) {
+            grooveRect.setRight(grooveRect.right() - PenWidth::Frame);
+        } else {
+            grooveRect.setLeft(PenWidth::Frame);
+        }
+
+        const auto &palette(option->palette);
+        const auto color(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2 * (animated ? opacity : 1)));
+        const auto &state(option->state);
+        const bool horizontal(state & State_Horizontal);
+
+        if (horizontal)
+            grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidth);
+        else
+            grooveRect = centerRect(grooveRect, Metrics::ScrollBar_SliderWidth, grooveRect.height());
+
+        // render
+        _helper->renderScrollBarGroove(painter, grooveRect, color);
+    }
+
+    // call base class primitive
+    ParentStyleClass::drawComplexControl(CC_ScrollBar, option, painter, widget);
+
+    return true;
+}
+
+//______________________________________________________________
+bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
+{
+    // cast option and check
+    const auto titleBarOption(qstyleoption_cast<const QStyleOptionTitleBar *>(option));
+    if (!titleBarOption)
+        return true;
+
+    // store palette and rect
+    auto palette(option->palette);
+    const auto &rect(option->rect);
+
+    const State &flags(option->state);
+    const bool enabled(flags & State_Enabled);
+    const bool active(enabled && (titleBarOption->titleBarState & Qt::WindowActive));
+
+    if (titleBarOption->subControls & SC_TitleBarLabel) {
+        // render background
+        painter->setClipRect(rect);
+        const auto outline(active ? QColor() : _helper->frameOutlineColor(palette, false, false));
+        const auto background(_helper->titleBarColor(active));
+        _helper->renderTabWidgetFrame(painter, rect.adjusted(-1, -1, 1, 3), background, outline, CornersTop);
+
+        const bool useSeparator(active && _helper->titleBarColor(active) != palette.color(QPalette::Window)
+                                && !(titleBarOption->titleBarState & Qt::WindowMinimized));
+
+        if (useSeparator) {
+            painter->setRenderHint(QPainter::Antialiasing, false);
+            painter->setBrush(Qt::NoBrush);
+            painter->setPen(palette.color(QPalette::Highlight));
+            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+        }
+
+        // render text
+        palette.setColor(QPalette::WindowText, _helper->titleBarTextColor(active));
+        const auto textRect(subControlRect(CC_TitleBar, option, SC_TitleBarLabel, widget));
+        ParentStyleClass::drawItemText(painter, textRect, Qt::AlignCenter, palette, active, titleBarOption->text, QPalette::WindowText);
+    }
+
+    // buttons
+    static const QList<SubControl> subControls = {SC_TitleBarMinButton,
+                                                  SC_TitleBarMaxButton,
+                                                  SC_TitleBarCloseButton,
+                                                  SC_TitleBarNormalButton,
+                                                  SC_TitleBarSysMenu};
+
+    // loop over supported buttons
+    foreach (const SubControl &subControl, subControls) {
+        // skip if not requested
+        if (!(titleBarOption->subControls & subControl))
+            continue;
+
+        // find matching icon
         QIcon icon;
-        
-        foreach( const IconData& iconData, iconTypes )
-        {
+        switch (subControl) {
+        case SC_TitleBarMinButton:
+            icon = standardIcon(SP_TitleBarMinButton, option, widget);
+            break;
+        case SC_TitleBarMaxButton:
+            icon = standardIcon(SP_TitleBarMaxButton, option, widget);
+            break;
+        case SC_TitleBarCloseButton:
+            icon = standardIcon(SP_TitleBarCloseButton, option, widget);
+            break;
+        case SC_TitleBarNormalButton:
+            icon = standardIcon(SP_TitleBarNormalButton, option, widget);
+            break;
+        case SC_TitleBarSysMenu:
+            icon = titleBarOption->icon;
+            break;
+        default:
+            break;
+        }
 
-            foreach( const int& iconSize, iconSizes )
-            {
-                // create pixmap
-                QPixmap pixmap( iconSize, iconSize );
-                pixmap.fill( Qt::transparent );
+        // check icon
+        if (icon.isNull())
+            continue;
 
-                // create painter and render
-                QPainter painter( &pixmap );
-                _helper->renderDecorationButton( &painter, pixmap.rect(), iconData._foregroundColor, buttonType, iconData._inverted, iconData._paintBackground,  iconData._backgroundColor,  iconData._outlineColor, widget->devicePixelRatioF() );
+        // define icon rect
+        auto iconRect(subControlRect(CC_TitleBar, option, subControl, widget));
+        if (iconRect.isEmpty())
+            continue;
 
-                painter.end();
+        // active state
+        const bool subControlActive(titleBarOption->activeSubControls & subControl);
 
-                // store
-                icon.addPixmap( pixmap, iconData._mode, iconData._state );
+        // mouse over state
+        const bool mouseOver(!subControlActive && widget && iconRect.translated(widget->mapToGlobal(QPoint(0, 0))).contains(QCursor::pos()));
+
+        // adjust iconRect
+        const int iconWidth(pixelMetric(PM_SmallIconSize, option, widget));
+        const QSize iconSize(iconWidth, iconWidth);
+        iconRect = centerRect(iconRect, iconSize);
+
+        // set icon mode and state
+        QIcon::Mode iconMode;
+        QIcon::State iconState;
+
+        if (!enabled) {
+            iconMode = QIcon::Disabled;
+            iconState = QIcon::Off;
+
+        } else {
+            if (mouseOver)
+                iconMode = QIcon::Active;
+            else if (active)
+                iconMode = QIcon::Selected;
+            else
+                iconMode = QIcon::Normal;
+
+            iconState = subControlActive ? QIcon::On : QIcon::Off;
+        }
+
+        // get pixmap and render
+        const QPixmap pixmap = _helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState);
+        painter->drawPixmap(iconRect, pixmap);
+    }
+
+    return true;
+}
+
+//____________________________________________________________________________________________________
+void Style::renderSpinBoxArrow(const SubControl &subControl, const QStyleOptionSpinBox *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto &palette(option->palette);
+    const State &state(option->state);
+
+    // enable state
+    bool enabled(state & State_Enabled);
+
+    // check steps enable step
+    const bool atLimit((subControl == SC_SpinBoxUp && !(option->stepEnabled & QAbstractSpinBox::StepUpEnabled))
+                       || (subControl == SC_SpinBoxDown && !(option->stepEnabled & QAbstractSpinBox::StepDownEnabled)));
+
+    // update enabled state accordingly
+    enabled &= !atLimit;
+
+    // update mouse-over effect
+    const bool mouseOver(enabled && (state & State_MouseOver));
+
+    // check animation state
+    const bool subControlHover(enabled && mouseOver && (option->activeSubControls & subControl));
+    _animations->spinBoxEngine().updateState(widget, subControl, subControlHover);
+
+    const bool animated(enabled && _animations->spinBoxEngine().isAnimated(widget, subControl));
+    const qreal opacity(_animations->spinBoxEngine().opacity(widget, subControl));
+
+    auto color = _helper->arrowColor(palette, QPalette::Text);
+    if (animated) {
+        auto highlight = _helper->hoverColor(palette);
+        color = KColorUtils::mix(color, highlight, opacity);
+
+    } else if (subControlHover) {
+        color = _helper->hoverColor(palette);
+
+    } else if (atLimit) {
+        color = _helper->arrowColor(palette, QPalette::Disabled, QPalette::Text);
+    }
+
+    // arrow orientation
+    ArrowOrientation orientation((subControl == SC_SpinBoxUp) ? ArrowUp : ArrowDown);
+
+    // arrow rect
+    const auto arrowRect(subControlRect(CC_SpinBox, option, subControl, widget));
+
+    // render
+    _helper->renderArrow(painter, arrowRect, color, orientation);
+}
+
+//______________________________________________________________________________
+void Style::renderMenuTitle(const QStyleOptionToolButton *option, QPainter *painter, const QWidget *) const
+{
+    // render a background rect for the title
+    const auto &palette(option->palette);
+    QColor bgColor = palette.color(QPalette::Text);
+    bgColor.setAlphaF(0.04);
+    const auto separatorColor(_helper->separatorColor(palette));
+    _helper->renderMenuFrame(painter, option->rect, bgColor, separatorColor, true);
+
+    // render text in the center of the rect
+    // icon is discarded on purpose
+    // make text the same size as a level 4 heading so it looks more title-ish
+    painter->setFont(menuTitleFont(*option));
+    const auto contentsRect = insideMargin(option->rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight);
+    drawItemText(painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText);
+}
+
+//______________________________________________________________________________
+qreal Style::dialAngle(const QStyleOptionSlider *sliderOption, int value) const
+{
+    // calculate angle at which handle needs to be drawn
+    qreal angle(0);
+    if (sliderOption->maximum == sliderOption->minimum)
+        angle = M_PI / 2;
+    else {
+        qreal fraction(qreal(value - sliderOption->minimum) / qreal(sliderOption->maximum - sliderOption->minimum));
+        if (!sliderOption->upsideDown)
+            fraction = 1 - fraction;
+
+        if (sliderOption->dialWrapping)
+            angle = 1.5 * M_PI - fraction * 2 * M_PI;
+        else
+            angle = (M_PI * 8 - fraction * 10 * M_PI) / 6;
+    }
+
+    return angle;
+}
+
+//______________________________________________________________________________
+const QWidget *Style::scrollBarParent(const QWidget *widget) const
+{
+    // check widget and parent
+    if (!(widget && widget->parentWidget()))
+        return nullptr;
+
+    // try cast to scroll area. Must test both parent and grandparent
+    QAbstractScrollArea *scrollArea;
+    if (!(scrollArea = qobject_cast<QAbstractScrollArea *>(widget->parentWidget()))) {
+        scrollArea = qobject_cast<QAbstractScrollArea *>(widget->parentWidget()->parentWidget());
+    }
+
+    // check scrollarea
+    if (scrollArea && (widget == scrollArea->verticalScrollBar() || widget == scrollArea->horizontalScrollBar())) {
+        return scrollArea;
+
+    } else if (widget->parentWidget()->inherits("KTextEditor::View")) {
+        return widget->parentWidget();
+
+    } else
+        return nullptr;
+}
+
+//______________________________________________________________________________
+QColor Style::scrollBarArrowColor(const QStyleOptionSlider *option, const SubControl &control, const QWidget *widget) const
+{
+    const auto &rect(option->rect);
+    const auto &palette(option->palette);
+    auto color(_helper->arrowColor(palette, QPalette::WindowText));
+
+    bool widgetMouseOver((option->state & State_MouseOver));
+    if (widget)
+        widgetMouseOver = widget->underMouse();
+    // in case this QStyle is used by QQuickControls QStyle wrapper
+    else if (option->styleObject)
+        widgetMouseOver = option->styleObject->property("hover").toBool();
+
+    // check enabled state
+    const bool enabled(option->state & State_Enabled);
+    if (!enabled) {
+        if (StyleConfigData::animationsEnabled()) {
+            // finally, global opacity when ScrollBarShowOnMouseOver
+            const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
+            if (globalOpacity >= 0)
+                color.setAlphaF(globalOpacity);
+            // no mouse over and no animation in progress, don't draw arrows at all
+            else if (!widgetMouseOver)
+                return Qt::transparent;
+        }
+        return color;
+    }
+
+    if ((control == SC_ScrollBarSubLine && option->sliderValue == option->minimum)
+        || (control == SC_ScrollBarAddLine && option->sliderValue == option->maximum)) {
+        // manually disable arrow, to indicate that scrollbar is at limit
+        color = _helper->arrowColor(palette, QPalette::Disabled, QPalette::WindowText);
+        if (StyleConfigData::animationsEnabled()) {
+            // finally, global opacity when ScrollBarShowOnMouseOver
+            const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
+            if (globalOpacity >= 0)
+                color.setAlphaF(globalOpacity);
+            // no mouse over and no animation in progress, don't draw arrows at all
+            else if (!widgetMouseOver)
+                return Qt::transparent;
+        }
+        return color;
+    }
+
+    const bool mouseOver(_animations->scrollBarEngine().isHovered(widget, control));
+    const bool animated(_animations->scrollBarEngine().isAnimated(widget, AnimationHover, control));
+    const qreal opacity(_animations->scrollBarEngine().opacity(widget, control));
+
+    // retrieve mouse position from engine
+    QPoint position(mouseOver ? _animations->scrollBarEngine().position(widget) : QPoint(-1, -1));
+    if (mouseOver && rect.contains(position)) {
+        /*
+         * need to update the arrow controlRect on fly because there is no
+         * way to get it from the styles directly, outside of repaint events
+         */
+        _animations->scrollBarEngine().setSubControlRect(widget, control, rect);
+    }
+
+    if (rect.intersects(_animations->scrollBarEngine().subControlRect(widget, control))) {
+        auto highlight = _helper->hoverColor(palette);
+        if (animated) {
+            color = KColorUtils::mix(color, highlight, opacity);
+
+        } else if (mouseOver) {
+            color = highlight;
+        }
+
+    } else if (option->state & State_MouseOver) {
+        const bool activeIsSub = option->activeSubControls & SC_ScrollBarSubLine;
+        const bool activeIsAdd = option->activeSubControls & SC_ScrollBarAddLine;
+        const bool drawingSub = control == SC_ScrollBarSubLine;
+        const bool drawingAdd = control == SC_ScrollBarAddLine;
+
+        if ((activeIsSub && drawingSub) || (activeIsAdd && drawingAdd)) {
+            const auto highlight = _helper->hoverColor(palette);
+
+            color = highlight;
+        }
+    }
+
+    if (StyleConfigData::animationsEnabled()) {
+        // finally, global opacity when ScrollBarShowOnMouseOver
+        const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
+        if (globalOpacity >= 0)
+            color.setAlphaF(globalOpacity);
+        // no mouse over and no animation in progress, don't draw arrows at all
+        else if (!widgetMouseOver)
+            return Qt::transparent;
+    }
+
+    return color;
+}
+
+//____________________________________________________________________________________
+void Style::setTranslucentBackground(QWidget *widget) const
+{
+    widget->setAttribute(Qt::WA_TranslucentBackground);
+
+#ifdef Q_WS_WIN
+    // FramelessWindowHint is needed on windows to make WA_TranslucentBackground work properly
+    widget->setWindowFlags(widget->windowFlags() | Qt::FramelessWindowHint);
+#endif
+}
+
+//____________________________________________________________________________________
+QStyleOptionToolButton Style::separatorMenuItemOption(const QStyleOptionMenuItem *menuItemOption, const QWidget *widget) const
+{
+    // separator can have a title and an icon
+    // in that case they are rendered as sunken flat toolbuttons
+    QStyleOptionToolButton toolButtonOption;
+    toolButtonOption.initFrom(widget);
+    toolButtonOption.rect = menuItemOption->rect;
+    toolButtonOption.features = QStyleOptionToolButton::None;
+    toolButtonOption.state = State_Enabled | State_AutoRaise;
+    toolButtonOption.subControls = SC_ToolButton;
+    toolButtonOption.icon = QIcon();
+    toolButtonOption.iconSize = QSize();
+    toolButtonOption.text = menuItemOption->text;
+
+    toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
+    return toolButtonOption;
+}
+
+//____________________________________________________________________________________
+QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOption *option, const QWidget *widget) const
+{
+    // store palette
+    // due to Qt, it is not always safe to assume that either option, nor widget are defined
+    QPalette palette;
+    if (option)
+        palette = option->palette;
+    else if (widget)
+        palette = widget->palette();
+    else
+        palette = QApplication::palette();
+
+    // convenience class to map color to icon mode
+    struct IconData {
+        QColor _color;
+        QIcon::Mode _mode;
+        QIcon::State _state;
+    };
+
+    // map colors to icon states
+    const QList<IconData> iconTypes = {{palette.color(QPalette::Active, QPalette::WindowText), QIcon::Normal, QIcon::Off},
+                                       {palette.color(QPalette::Active, QPalette::WindowText), QIcon::Selected, QIcon::Off},
+                                       {palette.color(QPalette::Active, QPalette::WindowText), QIcon::Active, QIcon::Off},
+                                       {palette.color(QPalette::Disabled, QPalette::WindowText), QIcon::Disabled, QIcon::Off},
+
+                                       {palette.color(QPalette::Active, QPalette::HighlightedText), QIcon::Normal, QIcon::On},
+                                       {palette.color(QPalette::Active, QPalette::HighlightedText), QIcon::Selected, QIcon::On},
+                                       {palette.color(QPalette::Active, QPalette::WindowText), QIcon::Active, QIcon::On},
+                                       {palette.color(QPalette::Disabled, QPalette::WindowText), QIcon::Disabled, QIcon::On}};
+
+    // default icon sizes
+    static const QList<int> iconSizes = {8, 16, 22, 32, 48};
+
+    // decide arrow orientation
+    const ArrowOrientation orientation(standardPixmap == SP_ToolBarHorizontalExtensionButton ? ArrowRight : ArrowDown);
+
+    // create icon and fill
+    QIcon icon;
+    foreach (const IconData &iconData, iconTypes) {
+        foreach (const int &iconSize, iconSizes) {
+            // create pixmap
+            QPixmap pixmap(iconSize, iconSize);
+            pixmap.fill(Qt::transparent);
+
+            // render
+            QPainter painter(&pixmap);
+
+            // icon size
+            const int fixedIconSize(pixelMetric(QStyle::PM_SmallIconSize, option, widget));
+            const QRect fixedRect(0, 0, fixedIconSize, fixedIconSize);
+
+            painter.setWindow(fixedRect);
+            painter.translate(standardPixmap == SP_ToolBarHorizontalExtensionButton ? QPoint(1, 0) : QPoint(0, 1));
+            _helper->renderArrow(&painter, fixedRect, iconData._color, orientation);
+            painter.end();
+
+            // add to icon
+            icon.addPixmap(pixmap, iconData._mode, iconData._state);
+        }
+    }
+
+    return icon;
+}
+
+bool Style::isTabletMode() const
+{
+#if BREEZE_HAVE_QTQUICK
+    return Kirigami::TabletModeWatcher::self()->isTabletMode();
+#else
+    return false;
+#endif
+}
+
+//____________________________________________________________________________________
+QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOption *option, const QWidget *widget) const
+{
+    // map standardPixmap to button type
+    ButtonType buttonType;
+    switch (standardPixmap) {
+    case SP_TitleBarNormalButton:
+        buttonType = ButtonRestore;
+        break;
+    case SP_TitleBarMinButton:
+        buttonType = ButtonMinimize;
+        break;
+    case SP_TitleBarMaxButton:
+        buttonType = ButtonMaximize;
+        break;
+    case SP_TitleBarCloseButton:
+    case SP_DockWidgetCloseButton:
+        buttonType = ButtonClose;
+        break;
+
+    default:
+        return QIcon();
+    }
+
+    // store palette
+    // due to Qt, it is not always safe to assume that either option, nor widget are defined
+    QPalette palette;
+    if (option)
+        palette = option->palette;
+    else if (widget)
+        palette = widget->palette();
+    else
+        palette = QApplication::palette();
+
+    const bool isAlwaysShownCloseButton(
+        buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton);
+    const bool withTrafficLights(_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights);
+
+    palette.setCurrentColorGroup(QPalette::Active);
+
+    std::shared_ptr<SystemButtonColors> decorationButtonAccentColors = ColorTools::getSystemButtonColors(palette);
+
+    const QColor base(palette.color(QPalette::WindowText));
+    const QColor selected(_helper->titleBarTextColor(true));
+
+    // foreground colours
+    QColor offHoverForeground;
+    QColor onFocusForeground;
+    QColor onFocusSelectedForeground;
+    QColor offSelectedForeground;
+    QColor offForeground;
+    QColor disabledForeground;
+
+    // background colours
+    QColor offInvertedNormalStateBackground;
+    QColor disabledInvertedNormalStateBackground;
+    QColor offSelectedInvertedNormalStateBackground;
+    QColor offHoverBackground;
+    QColor onFocusBackground;
+
+    // outline colours
+    QColor outline;
+
+    if (_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText) {
+        if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+            offSelectedForeground = selected;
+
+            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
+
+            // for translucent, background colours also need to be defined
+            offInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.15);
+            disabledInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.07);
+            offSelectedInvertedNormalStateBackground = _helper->decorationConfig()->redAlwaysShownClose()
+                ? decorationButtonAccentColors->negativeReducedOpacityBackground
+                : ColorTools::alphaMix(selected, 0.15);
+            offHoverBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityBackground : ColorTools::alphaMix(base, 0.15);
+            onFocusBackground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeReducedOpacityOutline : ColorTools::alphaMix(base, 0.25);
+        } else {
+            // for non-translucent using the titlebar text colour, it is a special case in the later logic where the foreground colour is inverted to create
+            // the background
+            onFocusForeground =
+                buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            onFocusSelectedForeground = buttonType == ButtonClose ? decorationButtonAccentColors->negativeSaturated : selected;
+            if (isAlwaysShownCloseButton) {
+                offSelectedForeground = _helper->decorationConfig()->redAlwaysShownClose() ? decorationButtonAccentColors->negative : selected;
+            } else
+                offSelectedForeground = selected;
+
+            offHoverForeground =
+                buttonType == ButtonClose ? decorationButtonAccentColors->negative : KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
+            onFocusBackground = onFocusForeground; // used only for setting outline colour
+        }
+    } else {
+        // Colours used if Accent colours
+
+        if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
+            offSelectedForeground = selected;
+
+            offInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.15);
+            disabledInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.07);
+            offSelectedInvertedNormalStateBackground = (_helper->decorationConfig()->redAlwaysShownClose())
+                ? decorationButtonAccentColors->negativeReducedOpacityBackground
+                : decorationButtonAccentColors->buttonReducedOpacityBackground;
+        } else {
+            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
+            offSelectedForeground = selected;
+
+            offInvertedNormalStateBackground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
+            disabledInvertedNormalStateBackground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.07);
+            offSelectedInvertedNormalStateBackground =
+                (_helper->decorationConfig()->redAlwaysShownClose()) ? decorationButtonAccentColors->negative : decorationButtonAccentColors->buttonHover;
+        }
+
+        // hover and focus background colours
+        switch (buttonType) {
+        case ButtonClose:
+            if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+                offHoverBackground = decorationButtonAccentColors->negativeReducedOpacityBackground;
+                onFocusBackground = decorationButtonAccentColors->negativeReducedOpacityOutline;
+            } else {
+                offHoverBackground = decorationButtonAccentColors->negative;
+                onFocusBackground = decorationButtonAccentColors->negativeSaturated;
             }
-
-        }
-        
-        return icon;
-
-    }
-
-    //______________________________________________________________________________
-    const QAbstractItemView* Style::itemViewParent( const QWidget* widget ) const
-    {
-
-        const QAbstractItemView* itemView( nullptr );
-
-        // check widget directly
-        if( ( itemView = qobject_cast<const QAbstractItemView*>( widget ) ) ) return itemView;
-
-        // check widget grand-parent
-        else if(
-            widget &&
-            widget->parentWidget() &&
-            ( itemView = qobject_cast<const QAbstractItemView*>( widget->parentWidget()->parentWidget() ) ) &&
-            itemView->viewport() == widget->parentWidget() )
-        { return itemView; }
-
-        // return null otherwise
-        else return nullptr;
-    }
-
-    //____________________________________________________________________
-    bool Style::isSelectedItem( const QWidget* widget, const QPoint& localPosition ) const
-    {
-
-        // get relevant itemview parent and check
-        const QAbstractItemView* itemView( itemViewParent( widget ) );
-        if( !( itemView && itemView->hasFocus() && itemView->selectionModel() ) ) return false;
-
-        QPoint position = widget->mapTo( itemView, localPosition );
-
-        // get matching QModelIndex and check
-        const QModelIndex index( itemView->indexAt( position ) );
-        if( !index.isValid() ) return false;
-
-        // check whether index is selected
-        return itemView->selectionModel()->isSelected( index );
-
-    }
-
-    //____________________________________________________________________
-    bool Style::isQtQuickControl( const QStyleOption* option, const QWidget* widget ) const
-    {
-        #if BREEZE_HAVE_QTQUICK
-        const bool is = (widget == nullptr) && option && option->styleObject && option->styleObject->inherits( "QQuickItem" );
-        if ( is ) _windowManager->registerQuickItem( static_cast<QQuickItem*>( option->styleObject ) );
-        return is;
-        #else
-        Q_UNUSED( widget );
-        Q_UNUSED( option );
-        return false;
-        #endif
-    }
-
-    //____________________________________________________________________
-    bool Style::showIconsInMenuItems() const
-    {
-        return !QApplication::testAttribute(Qt::AA_DontShowIconsInMenus);
-    }
-
-    //____________________________________________________________________
-    bool Style::showIconsOnPushButtons() const
-    {
-        const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
-        return g.readEntry("ShowIconsOnPushButtons", true);
-    }
-
-    //____________________________________________________________________
-    bool Style::isMenuTitle( const QWidget* widget ) const
-    {
-
-        // check widget
-        if( !widget ) return false;
-
-        // check property
-        const QVariant property( widget->property( PropertyNames::menuTitle ) );
-        if( property.isValid() ) return property.toBool();
-
-        // detect menu toolbuttons
-        QWidget* parent = widget->parentWidget();
-        if( qobject_cast<QMenu*>( parent ) )
-        {
-            foreach( auto child, parent->findChildren<QWidgetAction*>() )
-            {
-                if( child->defaultWidget() != widget ) continue;
-                const_cast<QWidget*>(widget)->setProperty( PropertyNames::menuTitle, true );
-                return true;
+            break;
+        case ButtonMaximize:
+        case ButtonRestore:
+            if (withTrafficLights) {
+                if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+                    offHoverBackground = decorationButtonAccentColors->positiveReducedOpacityBackground;
+                    onFocusBackground = decorationButtonAccentColors->positiveReducedOpacityOutline;
+                } else {
+                    offHoverBackground = decorationButtonAccentColors->positiveLessSaturated;
+                    onFocusBackground = decorationButtonAccentColors->positive;
+                }
+                break;
             }
-
+        case ButtonMinimize:
+            if (withTrafficLights) {
+                if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+                    offHoverBackground = decorationButtonAccentColors->neutralReducedOpacityBackground;
+                    onFocusBackground = decorationButtonAccentColors->neutralReducedOpacityOutline;
+                } else {
+                    offHoverBackground = decorationButtonAccentColors->neutralLessSaturated;
+                    onFocusBackground = decorationButtonAccentColors->neutral;
+                }
+                break;
+            }
+        default:
+            if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+                offHoverBackground = decorationButtonAccentColors->buttonReducedOpacityBackground;
+                onFocusBackground = decorationButtonAccentColors->buttonReducedOpacityOutline;
+            } else {
+                offHoverBackground = decorationButtonAccentColors->buttonHover;
+                onFocusBackground = decorationButtonAccentColors->buttonFocus;
+            }
         }
+    }
 
-        const_cast<QWidget*>(widget)->setProperty( PropertyNames::menuTitle, false );
+    if (_helper->decorationConfig()->alwaysShowIconHighlightUsing()
+        == InternalSettings::EnumAlwaysShowIconHighlightUsing::AlwaysShowIconHighlightUsingBackgroundAndOutline
+        //&& !isAlwaysShownCloseButton
+    ) {
+        outline = onFocusBackground;
+    }
+
+    const bool setInvert(
+
+        ((_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText)
+         && (!_helper->decorationConfig()->translucentButtonBackgrounds())));
+
+    // convenience class to map color to icon mode
+    struct IconData {
+        QIcon::Mode _mode;
+        QIcon::State _state;
+        QColor _foregroundColor;
+        bool _inverted;
+        bool _paintBackground;
+        QColor _backgroundColor;
+        QColor _outlineColor;
+    };
+
+    // map colors to icon states
+    const QList<IconData> iconTypes = {
+        // state off icons
+        {QIcon::Normal, QIcon::Off, offForeground, setInvert && isAlwaysShownCloseButton, isAlwaysShownCloseButton, offInvertedNormalStateBackground, QColor()},
+        {QIcon::Selected,
+         QIcon::Off,
+         offSelectedForeground,
+         setInvert && isAlwaysShownCloseButton,
+         isAlwaysShownCloseButton,
+         offSelectedInvertedNormalStateBackground,
+         QColor()}, // used for active MDI window titlebars
+        {QIcon::Active, QIcon::Off, offHoverForeground, setInvert, true, offHoverBackground, outline},
+        {QIcon::Disabled,
+         QIcon::Off,
+         disabledForeground,
+         setInvert && isAlwaysShownCloseButton,
+         isAlwaysShownCloseButton,
+         disabledInvertedNormalStateBackground,
+         QColor()},
+
+        // state on icons
+        {QIcon::Normal, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline},
+        {QIcon::Selected, QIcon::On, onFocusSelectedForeground, setInvert, true, onFocusBackground, outline},
+        {QIcon::Active, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline},
+        {QIcon::Disabled,
+         QIcon::On,
+         disabledForeground,
+         setInvert && isAlwaysShownCloseButton,
+         isAlwaysShownCloseButton,
+         disabledInvertedNormalStateBackground,
+         QColor()}
+
+    };
+
+    // default icon sizes
+    static const QList<int> iconSizes = {8, 16, 22, 32, 48};
+
+    // output icon
+    QIcon icon;
+
+    foreach (const IconData &iconData, iconTypes) {
+        foreach (const int &iconSize, iconSizes) {
+            // create pixmap
+            QPixmap pixmap(iconSize, iconSize);
+            pixmap.fill(Qt::transparent);
+
+            // create painter and render
+            QPainter painter(&pixmap);
+            _helper->renderDecorationButton(&painter,
+                                            pixmap.rect(),
+                                            iconData._foregroundColor,
+                                            buttonType,
+                                            iconData._inverted,
+                                            iconData._paintBackground,
+                                            iconData._backgroundColor,
+                                            iconData._outlineColor,
+                                            widget->devicePixelRatioF());
+
+            painter.end();
+
+            // store
+            icon.addPixmap(pixmap, iconData._mode, iconData._state);
+        }
+    }
+
+    return icon;
+}
+
+//______________________________________________________________________________
+const QAbstractItemView *Style::itemViewParent(const QWidget *widget) const
+{
+    const QAbstractItemView *itemView(nullptr);
+
+    // check widget directly
+    if ((itemView = qobject_cast<const QAbstractItemView *>(widget)))
+        return itemView;
+
+    // check widget grand-parent
+    else if (widget && widget->parentWidget() && (itemView = qobject_cast<const QAbstractItemView *>(widget->parentWidget()->parentWidget()))
+             && itemView->viewport() == widget->parentWidget()) {
+        return itemView;
+    }
+
+    // return null otherwise
+    else
+        return nullptr;
+}
+
+//____________________________________________________________________
+bool Style::isSelectedItem(const QWidget *widget, const QPoint &localPosition) const
+{
+    // get relevant itemview parent and check
+    const QAbstractItemView *itemView(itemViewParent(widget));
+    if (!(itemView && itemView->hasFocus() && itemView->selectionModel()))
         return false;
 
+    QPoint position = widget->mapTo(itemView, localPosition);
+
+    // get matching QModelIndex and check
+    const QModelIndex index(itemView->indexAt(position));
+    if (!index.isValid())
+        return false;
+
+    // check whether index is selected
+    return itemView->selectionModel()->isSelected(index);
+}
+
+//____________________________________________________________________
+bool Style::isQtQuickControl(const QStyleOption *option, const QWidget *widget) const
+{
+#if BREEZE_HAVE_QTQUICK
+    const bool is = (widget == nullptr) && option && option->styleObject && option->styleObject->inherits("QQuickItem");
+    if (is)
+        _windowManager->registerQuickItem(static_cast<QQuickItem *>(option->styleObject));
+    return is;
+#else
+    Q_UNUSED(widget);
+    Q_UNUSED(option);
+    return false;
+#endif
+}
+
+//____________________________________________________________________
+bool Style::showIconsInMenuItems() const
+{
+    return !QApplication::testAttribute(Qt::AA_DontShowIconsInMenus);
+}
+
+//____________________________________________________________________
+bool Style::showIconsOnPushButtons() const
+{
+    const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
+    return g.readEntry("ShowIconsOnPushButtons", true);
+}
+
+//____________________________________________________________________
+bool Style::isMenuTitle(const QWidget *widget) const
+{
+    // check widget
+    if (!widget)
+        return false;
+
+    // check property
+    const QVariant property(widget->property(PropertyNames::menuTitle));
+    if (property.isValid())
+        return property.toBool();
+
+    // detect menu toolbuttons
+    QWidget *parent = widget->parentWidget();
+    if (qobject_cast<QMenu *>(parent)) {
+        foreach (auto child, parent->findChildren<QWidgetAction *>()) {
+            if (child->defaultWidget() != widget)
+                continue;
+            const_cast<QWidget *>(widget)->setProperty(PropertyNames::menuTitle, true);
+            return true;
+        }
     }
 
-    //____________________________________________________________________
-    bool Style::hasAlteredBackground( const QWidget* widget ) const
-    {
+    const_cast<QWidget *>(widget)->setProperty(PropertyNames::menuTitle, false);
+    return false;
+}
 
-        // check widget
-        if( !widget ) return false;
+//____________________________________________________________________
+bool Style::hasAlteredBackground(const QWidget *widget) const
+{
+    // check widget
+    if (!widget)
+        return false;
 
-        // check property
-        const QVariant property( widget->property( PropertyNames::alteredBackground ) );
-        if( property.isValid() ) return property.toBool();
+    // check property
+    const QVariant property(widget->property(PropertyNames::alteredBackground));
+    if (property.isValid())
+        return property.toBool();
 
-        // check if widget is of relevant type
-        bool hasAlteredBackground( false );
-        if( const auto groupBox = qobject_cast<const QGroupBox*>( widget ) ) hasAlteredBackground = !groupBox->isFlat();
-        else if( const auto tabWidget = qobject_cast<const QTabWidget*>( widget ) ) hasAlteredBackground = !tabWidget->documentMode();
-        else if( qobject_cast<const QMenu*>( widget ) ) hasAlteredBackground = true;
-        else if( StyleConfigData::dockWidgetDrawFrame() && qobject_cast<const QDockWidget*>( widget ) ) hasAlteredBackground = true;
+    // check if widget is of relevant type
+    bool hasAlteredBackground(false);
+    if (const auto groupBox = qobject_cast<const QGroupBox *>(widget))
+        hasAlteredBackground = !groupBox->isFlat();
+    else if (const auto tabWidget = qobject_cast<const QTabWidget *>(widget))
+        hasAlteredBackground = !tabWidget->documentMode();
+    else if (qobject_cast<const QMenu *>(widget))
+        hasAlteredBackground = true;
+    else if (StyleConfigData::dockWidgetDrawFrame() && qobject_cast<const QDockWidget *>(widget))
+        hasAlteredBackground = true;
 
-        if( widget->parentWidget() && !hasAlteredBackground ) hasAlteredBackground = this->hasAlteredBackground( widget->parentWidget() );
-        const_cast<QWidget*>(widget)->setProperty( PropertyNames::alteredBackground, hasAlteredBackground );
-        return hasAlteredBackground;
+    if (widget->parentWidget() && !hasAlteredBackground)
+        hasAlteredBackground = this->hasAlteredBackground(widget->parentWidget());
+    const_cast<QWidget *>(widget)->setProperty(PropertyNames::alteredBackground, hasAlteredBackground);
+    return hasAlteredBackground;
+}
 
-    }
-
-    bool Style::hasHighlightNeutral( const QObject* widget, const QStyleOption* option, bool mouseOver, bool focus) const
-    {
-        if ( !widget && ( !option || !option->styleObject ) ) {
-            return false;
-        }
-
-        const QObject* styleObject = widget;
-        if (!styleObject) {
-            styleObject = option->styleObject;
-        }
-
-        const QVariant property( styleObject->property( PropertyNames::highlightNeutral ) );
-        if ( property.isValid() ) {
-            return property.toBool();
-        }
+bool Style::hasHighlightNeutral(const QObject *widget, const QStyleOption *option, bool mouseOver, bool focus) const
+{
+    if (!widget && (!option || !option->styleObject)) {
         return false;
     }
+
+    const QObject *styleObject = widget;
+    if (!styleObject) {
+        styleObject = option->styleObject;
+    }
+
+    const QVariant property(styleObject->property(PropertyNames::highlightNeutral));
+    if (property.isValid()) {
+        return property.toBool();
+    }
+    return false;
+}
 
 }

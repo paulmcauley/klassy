@@ -9,84 +9,78 @@
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
+#include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
-#include "breeze.h"
+#include "ui_breezeconfigurationui.h"
 
 #include <KCModule>
 #include <KSharedConfig>
 
-#include <QWidget>
 #include <QSharedPointer>
+#include <QWidget>
 
 namespace Breeze
 {
 
-    //_____________________________________________
-    class ConfigWidget: public KCModule
-    {
+//_____________________________________________
+class ConfigWidget : public KCModule
+{
+    Q_OBJECT
 
-        Q_OBJECT
+public:
+    //* constructor
+    explicit ConfigWidget(QWidget *, const QVariantList &);
 
-        public:
+    //* destructor
+    virtual ~ConfigWidget() = default;
 
-        //* constructor
-        explicit ConfigWidget( QWidget*, const QVariantList& );
+    //* default
+    void defaults() override;
 
-        //* destructor
-        virtual ~ConfigWidget() = default;
+    //* load configuration
+    void load() override;
 
-        //* default
-        void defaults() override;
+    //* save configuration
+    void save() override;
 
-        //* load configuration
-        void load() override;
+protected Q_SLOTS:
 
-        //* save configuration
-        void save() override;
+    //* update changed state
+    virtual void updateChanged();
+    void setEnabledAnimationsSpeed();
+    void setEnabledTransparentTitlebarOptions();
+    void updateIconsStackedWidgetVisible();
+    void updateBackgroundShapeStackedWidgetVisible();
+    void updateCustomColorStackedWidgetVisible();
 
-        protected Q_SLOTS:
+protected:
+    //* set changed state
+    void setChanged(bool);
 
-        //* update changed state
-        virtual void updateChanged();
-        void setEnabledAnimationsSpeed();
-        void setEnabledTransparentTitlebarOptions();
-        void updateIconsStackedWidgetVisible();
-        void updateBackgroundShapeStackedWidgetVisible();
-        void updateCustomColorStackedWidgetVisible();
+private:
+    //* ui
+    Ui_BreezeConfigurationUI m_ui;
 
-        protected:
+    //* kconfiguration object
+    KSharedConfig::Ptr m_configuration;
 
-        //* set changed state
-        void setChanged( bool );
+    //* internal exception
+    InternalSettingsPtr m_internalSettings;
 
-        private:
+    //* changed state
+    bool m_changed;
 
-        //* ui
-        Ui_BreezeConfigurationUI m_ui;
+    //* defaults clicked
+    bool m_defaultsPressed = false;
 
-        //* kconfiguration object
-        KSharedConfig::Ptr m_configuration;
-
-        //* internal exception
-        InternalSettingsPtr m_internalSettings;
-
-        //* changed state
-        bool m_changed;
-        
-        //* defaults clicked
-        bool m_defaultsPressed = false;
-        
-        //system colour scheme alpha settings
-        void getTitlebarOpacityFromColorScheme();
-        bool m_translucentActiveSchemeColor = false;
-        bool m_translucentInactiveSchemeColor = false;
-        qreal m_activeSchemeColorAlpha = 1;
-        qreal m_inactiveSchemeColorAlpha = 1;
-
-    };
-
+    // system colour scheme alpha settings
+    void getTitlebarOpacityFromColorScheme();
+    bool m_translucentActiveSchemeColor = false;
+    bool m_translucentInactiveSchemeColor = false;
+    qreal m_activeSchemeColorAlpha = 1;
+    qreal m_inactiveSchemeColorAlpha = 1;
+};
 }
 
 #endif

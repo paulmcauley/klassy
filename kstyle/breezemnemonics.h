@@ -7,53 +7,52 @@
 #ifndef breezemnemonics_h
 #define breezemnemonics_h
 
+#include <QApplication>
 #include <QEvent>
 #include <QObject>
-#include <QApplication>
 
 #include "breezestyleconfigdata.h"
 
 namespace Breeze
 {
 
-    class Mnemonics: public QObject
+class Mnemonics : public QObject
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit Mnemonics(QObject *parent)
+        : QObject(parent)
     {
+    }
 
-        Q_OBJECT
+    //* set mode
+    void setMode(int);
 
-        public:
+    //* event filter
+    bool eventFilter(QObject *, QEvent *) override;
 
-        //* constructor
-        explicit Mnemonics( QObject* parent ):
-            QObject( parent )
-            {}
+    //* true if mnemonics are enabled
+    bool enabled() const
+    {
+        return _enabled;
+    }
 
-        //* set mode
-        void setMode( int );
+    //* alignment flag
+    int textFlags() const
+    {
+        return _enabled ? Qt::TextShowMnemonic : Qt::TextHideMnemonic;
+    }
 
-        //* event filter
-        bool eventFilter( QObject*, QEvent* ) override;
+protected:
+    //* set enable state
+    void setEnabled(bool);
 
-        //* true if mnemonics are enabled
-        bool enabled() const
-        { return _enabled; }
-
-        //* alignment flag
-        int textFlags() const
-        { return _enabled ? Qt::TextShowMnemonic : Qt::TextHideMnemonic; }
-
-        protected:
-
-        //* set enable state
-        void setEnabled( bool );
-
-        private:
-
-        //* enable state
-        bool _enabled = true;
-
-    };
-
+private:
+    //* enable state
+    bool _enabled = true;
+};
 }
 
 #endif

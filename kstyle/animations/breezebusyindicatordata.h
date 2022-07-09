@@ -12,56 +12,59 @@
 namespace Breeze
 {
 
-    class BusyIndicatorData: public QObject
+class BusyIndicatorData : public QObject
+{
+    Q_OBJECT
+
+public:
+    //* constructor
+    explicit BusyIndicatorData(QObject *parent)
+        : QObject(parent)
+        , _animated(false)
     {
+    }
 
-        Q_OBJECT
+    //* destructor
+    virtual ~BusyIndicatorData()
+    {
+    }
 
-        public:
+    //*@name accessors
+    //@{
 
-        //* constructor
-        explicit BusyIndicatorData( QObject* parent ):
-            QObject( parent ),
-            _animated( false )
-        {}
+    //* animated
+    bool isAnimated() const
+    {
+        return _animated;
+    }
 
-        //* destructor
-        virtual ~BusyIndicatorData()
-        {}
+    //@}
 
-        //*@name accessors
-        //@{
+    //*@name modifiers
+    //@{
 
-        //* animated
-        bool isAnimated() const
-        { return _animated; }
+    //* enabled
+    void setEnabled(bool)
+    {
+    }
 
-        //@}
+    //* enabled
+    void setDuration(int)
+    {
+    }
 
-        //*@name modifiers
-        //@{
+    //* animated
+    void setAnimated(bool value)
+    {
+        _animated = value;
+    }
 
-        //* enabled
-        void setEnabled( bool )
-        {}
+    //@}
 
-        //* enabled
-        void setDuration( int )
-        {}
-
-        //* animated
-        void setAnimated( bool value )
-        { _animated = value; }
-
-        //@}
-
-        private:
-
-        //* animated
-        bool _animated;
-
-    };
-
+private:
+    //* animated
+    bool _animated;
+};
 }
 
 #endif
