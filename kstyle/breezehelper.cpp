@@ -660,7 +660,7 @@ void Helper::renderButtonFrame(QPainter *painter,
     }
 
     // Gradient
-    if (isActiveWindow && !(flat || down || hovered || checked) && enabled) {
+    if (StyleConfigData::buttonGradient() && isActiveWindow && !(flat || down || hovered || checked) && enabled) {
         QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
         bgGradient.setColorAt(0, KColorUtils::mix(bgBrush.color(), Qt::white, 0.03125));
         bgGradient.setColorAt(0.5, bgBrush.color());
