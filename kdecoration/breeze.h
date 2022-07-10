@@ -31,11 +31,11 @@ enum Metrics {
 
     //* titlebar metrics, in units of small spacing
 
-    // Paul A McAuley: No longer used - now InternalSettings::titlebarTopBottomMargins()
+    // Paul A McAuley: No longer used - now InternalSettings::titlebarTopMargin(), InternalSettings::titlebarBottomMargin()
     // TitleBar_TopMargin = 2,
     // TitleBar_BottomMargin = 2,
 
-    // Paul A McAuley: No longer used - now InternalSettings::titlebarSideMargins()
+    // Paul A McAuley: No longer used - now InternalSettings::titlebarLeftMargin(), InternalSettings::titlebarRightMargin()
     // TitleBar_SideMargin = 2,
 
     // Paul A McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()

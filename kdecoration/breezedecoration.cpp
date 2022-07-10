@@ -429,16 +429,16 @@ void Decoration::updateTitleBar()
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically())) {
-        width = maximized ? c->width() : c->width() - 2 * m_scaledTitleBarSideMargins;
+        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
         height = borderTop();
-        x = maximized ? 0 : m_scaledTitleBarSideMargins;
+        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
         y = 0;
 
     } else {
         // for smaller circular buttons increase the resizable area
-        width = maximized ? c->width() : c->width() - 2 * m_scaledTitleBarSideMargins;
+        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
         height = maximized ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
-        x = maximized ? 0 : m_scaledTitleBarSideMargins;
+        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
         y = maximized ? 0 : m_scaledTitleBarTopMargin;
     }
 
@@ -628,7 +628,8 @@ void Decoration::recalculateBorders()
 
     // extended sizes
     const int extSize = s->largeSpacing();
-    int extSides = 0;
+    int extLeft = 0;
+    int extRight = 0;
     int extBottom = 0;
     int extTop = 0;
 
@@ -639,17 +640,26 @@ void Decoration::recalculateBorders()
     }
 
     if (hasNoBorders()) {
-        if (!isMaximizedHorizontally())
-            extSides = extSize;
-        if (!isMaximizedVertically()) {
-            extBottom = extSize;
+        if (!isMaximizedHorizontally()) {
+            extLeft = extSize;
+            extRight = extSize;
         }
+        if (!isMaximizedVertically())
+            extBottom = extSize;
 
-    } else if ((hasNoSideBorders() || (m_internalSettings->titlebarSideMargins() == 0)) && !isMaximizedHorizontally()) {
-        extSides = extSize;
+    } else if (!isMaximizedHorizontally()) {
+        if (hasNoSideBorders()) {
+            extLeft = extSize;
+            extRight = extSize;
+        } else {
+            if (m_internalSettings->titlebarLeftMargin() == 0)
+                extLeft = extSize;
+            if (m_internalSettings->titlebarRightMargin() == 0)
+                extRight = extSize;
+        }
     }
 
-    setResizeOnlyBorders(QMargins(extSides, extTop, extSides, extBottom));
+    setResizeOnlyBorders(QMargins(extLeft, extTop, extRight, extBottom));
 }
 
 //________________________________________________________________
@@ -738,7 +748,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-        const int hPadding = m_scaledTitleBarSideMargins;
+        const int hPadding = m_scaledTitleBarLeftMargin;
 
         auto firstButton = static_cast<Button *>(m_leftButtons->buttons().front().data());
         if (isLeftEdge()) {
@@ -767,7 +777,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
-        const int hPadding = m_scaledTitleBarSideMargins;
+        const int hPadding = m_scaledTitleBarRightMargin;
 
         auto lastButton = static_cast<Button *>(m_rightButtons->buttons().back().data());
         if (isRightEdge()) {
@@ -1043,19 +1053,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
         auto c = client().toStrongRef();
         Q_ASSERT(c);
 
-        // determine padding of title caption using other padding values
-        int leftButtonPadding = settings()->smallSpacing() * m_internalSettings->buttonSpacingLeft();
-        int rightButtonPadding = settings()->smallSpacing() * m_internalSettings->buttonSpacingRight();
-        if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
-            leftButtonPadding += settings()->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
-            rightButtonPadding += settings()->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
-        }
-
-        int padding = 0;
-        if (leftButtonPadding == 0 || rightButtonPadding == 0)
-            padding = qMax(leftButtonPadding, rightButtonPadding);
-        else
-            padding = qMin(leftButtonPadding, rightButtonPadding);
+        int padding = m_internalSettings->titleSidePadding() * settings()->smallSpacing();
 
         const int leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
 
@@ -1319,25 +1317,31 @@ void Decoration::setScaledTitleBarTopBottomMargins()
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    qreal topBottomMargins;
+    qreal topMargin = m_internalSettings->titlebarTopMargin();
+    qreal bottomMargin = m_internalSettings->titlebarBottomMargin();
+
     if (c->isMaximized()) {
-        topBottomMargins = m_internalSettings->titlebarTopBottomMargins() * m_internalSettings->percentMaximizedTopBottomMargins() / 100;
-    } else {
-        topBottomMargins = m_internalSettings->titlebarTopBottomMargins();
+        qreal maximizedScaleFactor = qreal(m_internalSettings->percentMaximizedTopBottomMargins()) / 100;
+        topMargin *= maximizedScaleFactor;
+        bottomMargin *= maximizedScaleFactor;
     }
 
-    m_scaledTitleBarTopMargin = int(settings()->smallSpacing() * topBottomMargins);
-    m_scaledTitleBarBottomMargin = m_scaledTitleBarTopMargin;
+    m_scaledTitleBarTopMargin = int(settings()->smallSpacing() * topMargin);
+    m_scaledTitleBarBottomMargin = int(settings()->smallSpacing() * bottomMargin);
 }
 
 void Decoration::setScaledTitleBarSideMargins()
 {
-    m_scaledTitleBarSideMargins = int(qreal(m_internalSettings->titlebarSideMargins()) * qreal(settings()->smallSpacing()));
+    m_scaledTitleBarLeftMargin = int(qreal(m_internalSettings->titlebarLeftMargin()) * qreal(settings()->smallSpacing()));
+    m_scaledTitleBarRightMargin = int(qreal(m_internalSettings->titlebarRightMargin()) * qreal(settings()->smallSpacing()));
 
-    // subtract any added margins from the side margin so the user doesn't need to adjust the side margins when changing border size
+    // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
-    if (!isMaximizedHorizontally())
-        m_scaledTitleBarSideMargins -= this->borderSize(false);
+    if (!isMaximizedHorizontally()) {
+        int borderSize = this->borderSize(false);
+        m_scaledTitleBarLeftMargin -= borderSize;
+        m_scaledTitleBarRightMargin -= borderSize;
+    }
 }
 
 void Decoration::setAddedTitleBarOpacity()

@@ -53,6 +53,14 @@ protected Q_SLOTS:
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
     void updateCustomColorStackedWidgetVisible();
+    void fullHeightButtonWidthMarginLeftChanged();
+    void fullHeightButtonWidthMarginRightChanged();
+    void titlebarTopMarginChanged();
+    void titlebarBottomMarginChanged();
+    void titlebarLeftMarginChanged();
+    void titlebarRightMarginChanged();
+    void buttonSpacingLeftChanged();
+    void buttonSpacingRightChanged();
 
 protected:
     //* set changed state
@@ -73,6 +81,9 @@ private:
 
     //* defaults clicked
     bool m_defaultsPressed = false;
+
+    bool m_processingDefaults = false;
+    bool m_loading = false;
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();
