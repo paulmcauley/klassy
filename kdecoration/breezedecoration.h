@@ -228,7 +228,8 @@ private:
     int m_scaledTitleBarBottomMargin = 1;
 
     //* titleBar side margins, scaled according to smallspacing
-    int m_scaledTitleBarSideMargins = 1;
+    int m_scaledTitleBarLeftMargin = 1;
+    int m_scaledTitleBarRightMargin = 1;
 
     //* Rectangular area of titlebar without clipped corners
     QRect m_titleRect;
