@@ -56,6 +56,27 @@ public:
         return m_flag == FlagStandalone;
     }
 
+    //*set position of buttons which are both enabled and visible
+    void setLeftmostLeftVisible(bool value = true)
+    {
+        m_leftmostLeftVisible = value;
+    }
+
+    void setRightmostLeftVisible(bool value = true)
+    {
+        m_rightmostLeftVisible = value;
+    }
+
+    void setLeftmostRightVisible(bool value = true)
+    {
+        m_leftmostRightVisible = value;
+    }
+
+    void setRightmostRightVisible(bool value = true)
+    {
+        m_rightmostRightVisible = value;
+    }
+
     //* offset for drawing icon
     void setIconOffset(const QPointF &value)
     {
@@ -161,6 +182,11 @@ private:
     QColor m_outlineColor;
 
     Flag m_flag = FlagNone;
+
+    bool m_leftmostLeftVisible = false;
+    bool m_rightmostLeftVisible = false;
+    bool m_leftmostRightVisible = false;
+    bool m_rightmostRightVisible = false;
 
     //* active state change animation
     QVariantAnimation *m_animation;
