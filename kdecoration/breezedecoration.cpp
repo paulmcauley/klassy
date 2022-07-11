@@ -705,6 +705,10 @@ void Decoration::updateButtonsGeometry()
         verticalIconOffset = (isTopEdge() ? m_scaledTitleBarTopMargin : 0) + (captionHeight() - smallButtonPaddedHeight) / 2;
     }
 
+    int leftmostLeftVisibleIndex = -1;
+    int rightmostLeftVisibleIndex = -1;
+    int i = 0;
+
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_leftButtons->buttons()) {
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             bWidth = smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
@@ -719,8 +723,27 @@ void Decoration::updateButtonsGeometry()
         static_cast<Button *>(button.data())->setIconOffset(QPointF(horizontalIconOffsetLeftButtons, verticalIconOffset));
         static_cast<Button *>(button.data())->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
         static_cast<Button *>(button.data())->setIconSize(QSizeF(iconHeight, iconHeight));
+
+        // determine leftmost left visible and rightmostLeftVisible
+        if (static_cast<Button *>(button.data())->isVisible() && static_cast<Button *>(button.data())->isEnabled()) {
+            if (leftmostLeftVisibleIndex == -1)
+                leftmostLeftVisibleIndex = i;
+            rightmostLeftVisibleIndex = i;
+        }
+
+        ++i;
     }
 
+    if (leftmostLeftVisibleIndex != -1) {
+        static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex].data())->setLeftmostLeftVisible();
+    }
+    if (rightmostLeftVisibleIndex != -1) {
+        static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex].data())->setRightmostLeftVisible();
+    }
+
+    int leftmostRightVisibleIndex = -1;
+    int rightmostRightVisibleIndex = -1;
+    i = 0;
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_rightButtons->buttons()) {
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             bWidth = smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
@@ -735,6 +758,22 @@ void Decoration::updateButtonsGeometry()
         static_cast<Button *>(button.data())->setIconOffset(QPointF(horizontalIconOffsetRightButtons, verticalIconOffset));
         static_cast<Button *>(button.data())->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
         static_cast<Button *>(button.data())->setIconSize(QSizeF(iconHeight, iconHeight));
+
+        // determine leftmost right visible and rightmostRightVisible
+        if (static_cast<Button *>(button.data())->isVisible() && static_cast<Button *>(button.data())->isEnabled()) {
+            if (leftmostRightVisibleIndex == -1)
+                leftmostRightVisibleIndex = i;
+            rightmostRightVisibleIndex = i;
+        }
+
+        ++i;
+    }
+
+    if (leftmostRightVisibleIndex != -1) {
+        static_cast<Button *>(m_rightButtons->buttons()[leftmostRightVisibleIndex].data())->setLeftmostRightVisible();
+    }
+    if (rightmostRightVisibleIndex != -1) {
+        static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex].data())->setRightmostRightVisible();
     }
 
     // left buttons
@@ -751,12 +790,12 @@ void Decoration::updateButtonsGeometry()
         const int hPadding = m_scaledTitleBarLeftMargin;
 
         auto firstButton = static_cast<Button *>(m_leftButtons->buttons().front().data());
+        firstButton->setFlag(Button::FlagFirstInList);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
             firstButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(firstButton->geometry().width() + hPadding, firstButton->geometry().height())));
             firstButton->setHorizontalIconOffset(horizontalIconOffsetLeftButtons + hPadding);
             firstButton->setFullHeightVisibleBackgroundOffset(QPointF(hPadding, 0));
-            firstButton->setFlag(Button::FlagFirstInList);
 
             m_leftButtons->setPos(QPointF(0, vPadding));
 
@@ -780,9 +819,9 @@ void Decoration::updateButtonsGeometry()
         const int hPadding = m_scaledTitleBarRightMargin;
 
         auto lastButton = static_cast<Button *>(m_rightButtons->buttons().back().data());
+        lastButton->setFlag(Button::FlagLastInList);
         if (isRightEdge()) {
             lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));
-            lastButton->setFlag(Button::FlagLastInList);
 
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 
