@@ -740,31 +740,27 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 drawOutlineUsingPath = true;
 
                 if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
-                    outerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
+                    outerRect = backgroundBoundingRect.adjusted(halfPenWidth,
                                                                 -extensionByCornerRadiusInnerOuter,
                                                                 extensionByCornerRadiusInnerOuter,
                                                                 -geometryShrinkOffsetVerticalOuter);
-                    innerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner,
+                    innerRect = backgroundBoundingRect.adjusted(penWidth + halfPenWidth,
                                                                 -extensionByCornerRadiusInnerOuter,
                                                                 extensionByCornerRadiusInnerOuter,
                                                                 -geometryShrinkOffsetVerticalInner);
-                    backgroundBoundingRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
-                                                                             -d->scaledCornerRadius(),
-                                                                             d->scaledCornerRadius(),
-                                                                             -geometryShrinkOffsetVertical);
+                    backgroundBoundingRect =
+                        backgroundBoundingRect.adjusted(penWidth, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
                 } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
                     outerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
-                                                                -geometryShrinkOffsetHorizontalOuter,
+                                                                -halfPenWidth,
                                                                 -geometryShrinkOffsetVerticalOuter);
                     innerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
-                                                                -geometryShrinkOffsetHorizontalInner,
+                                                                -penWidth - halfPenWidth,
                                                                 -geometryShrinkOffsetVerticalInner);
-                    backgroundBoundingRect = backgroundBoundingRect.adjusted(-d->scaledCornerRadius(),
-                                                                             -d->scaledCornerRadius(),
-                                                                             -geometryShrinkOffsetHorizontal,
-                                                                             -geometryShrinkOffsetVertical);
+                    backgroundBoundingRect =
+                        backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), -penWidth, -geometryShrinkOffsetVertical);
                 } else {
                     outerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
