@@ -239,6 +239,11 @@
            </item>
            <item>
             <property name="text">
+             <string>Full-height Integrated Rounded Rectangle</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
              <string>Circle</string>
             </property>
            </item>

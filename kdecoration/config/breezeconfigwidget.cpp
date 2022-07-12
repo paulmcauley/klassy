@@ -539,7 +539,8 @@ void ConfigWidget::updateIconsStackedWidgetVisible()
 void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
 {
     if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
+        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
