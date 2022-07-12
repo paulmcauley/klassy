@@ -551,7 +551,8 @@ void Decoration::reconfigure()
     setSystemAccentColors();
 
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
         m_buttonBackgroundType = ButtonBackgroundType::FullHeight;
     else
         m_buttonBackgroundType = ButtonBackgroundType::Small;
@@ -777,7 +778,7 @@ void Decoration::updateButtonsGeometry()
     }
 
     // left buttons
-    if (!m_leftButtons->buttons().isEmpty()) {
+    if (!m_leftButtons->buttons().isEmpty() && leftmostLeftVisibleIndex != -1) {
         // spacing
         m_leftButtons->setSpacing(s->smallSpacing() * m_internalSettings->buttonSpacingLeft());
 
@@ -789,7 +790,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
         const int hPadding = m_scaledTitleBarLeftMargin;
 
-        auto firstButton = static_cast<Button *>(m_leftButtons->buttons().front().data());
+        auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex].data());
         firstButton->setFlag(Button::FlagFirstInList);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
@@ -806,7 +807,7 @@ void Decoration::updateButtonsGeometry()
     }
 
     // right buttons
-    if (!m_rightButtons->buttons().isEmpty()) {
+    if (!m_rightButtons->buttons().isEmpty() && rightmostRightVisibleIndex != -1) {
         // spacing
         m_rightButtons->setSpacing(s->smallSpacing() * m_internalSettings->buttonSpacingRight());
 
@@ -818,7 +819,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
         const int hPadding = m_scaledTitleBarRightMargin;
 
-        auto lastButton = static_cast<Button *>(m_rightButtons->buttons().back().data());
+        auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex].data());
         lastButton->setFlag(Button::FlagLastInList);
         if (isRightEdge()) {
             lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));

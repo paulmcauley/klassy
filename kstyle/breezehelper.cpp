@@ -1421,10 +1421,16 @@ void Helper::renderDecorationButton(QPainter *painter,
 
         if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
             || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
+            || (decorationConfig()->cornerRadius() < 0.2
+                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
+            || (decorationConfig()->cornerRadius() < 0.2
+                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle))
+            painter->drawRect(QRectF(2, 2, 14, 14));
+        else if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
             painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
-        else {
+        else { // circle
             if (outlineColor.isValid())
                 painter->drawEllipse(QRectF(1, 1, 16, 16)); // have to shrink outlined circle otherwise it gets clipped
             else
