@@ -88,8 +88,10 @@ public:
     QColor accentedWindowOutlineColor(QColor customColor = QColor()) const;
     QColor fontMixedAccentWindowOutlineColor(QColor customColor = QColor()) const;
     QColor fontColor() const;
+    QColor overriddenOutlineColorAnimateIn() const;
+    QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
-
+    //
     //*@name maximization modes
     //@{
     inline bool isMaximized() const;
@@ -104,6 +106,8 @@ public:
     inline bool hideTitleBar() const;
     //@}
 
+    void setThinWindowOutlineOverrideColor(const bool on, const QColor &color);
+
     std::shared_ptr<QPainterPath> titleBarPath()
     {
         return m_titleBarPath;
@@ -112,7 +116,7 @@ public:
     {
         return m_windowPath;
     }
-    qreal systemScaleFactor()
+    qreal systemScaleFactor() const
     {
         return m_systemScaleFactor;
     }
@@ -141,6 +145,16 @@ public:
         return m_systemAccentColors;
     }
 
+    KDecoration2::DecorationButtonGroup *leftButtons()
+    {
+        return m_leftButtons;
+    }
+
+    KDecoration2::DecorationButtonGroup *rightButtons()
+    {
+        return m_rightButtons;
+    }
+
 public Q_SLOTS:
     void init() override;
 
@@ -167,7 +181,7 @@ private:
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-    void updateShadow(const bool force = false);
+    void updateShadow(const bool force = false, const bool noCache = false);
     QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const float strengthScale);
     void setScaledCornerRadius();
     void setSystemAccentColors();
@@ -194,9 +208,13 @@ private:
     void setScaledTitleBarSideMargins();
     void setAddedTitleBarOpacity();
     qreal titleBarSeparatorHeight() const;
+    qreal devicePixelRatio(QPainter *painter) const;
 
     //* button heights
     void calculateButtonHeights();
+
+    //* override thin window outline colour from button colour animation update
+    void updateOverrideOutlineFromButtonAnimationState();
 
     InternalSettingsPtr m_internalSettings;
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -208,10 +226,14 @@ private:
     //* active state change animation
     QVariantAnimation *m_animation;
     QVariantAnimation *m_shadowAnimation;
+    QVariantAnimation *m_overrideOutlineFromButtonAnimation;
 
     //* active state change opacity
     qreal m_opacity = 0;
+    //* shadow change opacity
     qreal m_shadowOpacity = 0;
+    //* overridden thin window outline change opacity
+    qreal m_overrideOutlineAnimationProgress = 0;
 
     //* tilebar main state opacity
     qreal m_addedTitleBarOpacityActive = 1;
@@ -221,6 +243,8 @@ private:
     qreal m_scaledCornerRadius = 3.0;
 
     bool m_tabletMode = false;
+
+    // QColor m_maximizedWindowHighlight = QColor();
 
     //* titleBar top margin, scaled according to smallspacing
     int m_scaledTitleBarTopMargin = 1;
@@ -250,6 +274,14 @@ private:
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;
+
+    //*colour to override thin window outline with, set from decoration button
+    QColor m_thinWindowOutlineOverride = QColor();
+    //*buffered existing thin window outline colours in case the above override colour is set (needed for animations)
+    QColor m_originalThinWindowOutlineActivePreOverride = QColor();
+    QColor m_originalThinWindowOutlineInactivePreOverride = QColor();
+    //*flag to animate out an overridden thin window outline
+    bool m_animateOutOverriddenThinWindowOutline = false;
 };
 
 bool Decoration::hasBorders() const

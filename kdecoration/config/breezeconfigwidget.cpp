@@ -142,6 +142,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateCustomColorStackedWidgetVisible()));
     connect(m_ui.thinWindowOutlineCustomColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
     connect(m_ui.thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
+    connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
 
     // track exception changes
     connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
@@ -226,6 +227,8 @@ void ConfigWidget::load()
     m_ui.thinWindowOutlineStyle->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle());
     m_ui.thinWindowOutlineCustomColor->setColor(m_internalSettings->thinWindowOutlineCustomColor());
     m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
+    m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
+
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
     updateCustomColorStackedWidgetVisible();
@@ -294,6 +297,7 @@ void ConfigWidget::save()
     m_internalSettings->setThinWindowOutlineStyle(m_ui.thinWindowOutlineStyle->currentIndex());
     m_internalSettings->setThinWindowOutlineCustomColor(m_ui.thinWindowOutlineCustomColor->color());
     m_internalSettings->setThinWindowOutlineThickness(m_ui.thinWindowOutlineThickness->value());
+    m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
     // save configuration
     m_internalSettings->save();
@@ -376,6 +380,7 @@ void ConfigWidget::defaults()
     m_ui.thinWindowOutlineStyle->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle());
     m_ui.thinWindowOutlineCustomColor->setColor(m_internalSettings->thinWindowOutlineCustomColor());
     m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
+    m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
@@ -490,6 +495,8 @@ void ConfigWidget::updateChanged()
     else if (m_ui.thinWindowOutlineCustomColor->color() != m_internalSettings->thinWindowOutlineCustomColor())
         modified = true;
     else if (m_ui.thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
+        modified = true;
+    else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;
 
     // exceptions

@@ -12,6 +12,7 @@
 #include <KColorScheme>
 #include <KColorUtils>
 #include <KDecoration2/DecoratedClient>
+#include <KDecoration2/DecorationButtonGroup>
 #include <KIconLoader>
 #include <KWindowSystem>
 
@@ -65,6 +66,8 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
     connect(c.data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
     connect(decoration->settings().data(), &KDecoration2::DecorationSettings::reconfigured, this, &Button::reconfigure);
     connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
+    connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
+    connect(this, &KDecoration2::DecorationButton::pressedChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
 
     reconfigure();
 }
@@ -403,7 +406,7 @@ QColor Button::foregroundColor() const
 }
 
 //__________________________________________________________________
-QColor Button::backgroundColor() const
+QColor Button::backgroundColor(bool getNonAnimatedColor) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d) {
@@ -540,7 +543,7 @@ QColor Button::backgroundColor() const
                && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
                    || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights)) {
         return buttonFocusColor;
-    } else if (m_animation->state() == QAbstractAnimation::Running) {
+    } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (type() == DecorationButtonType::Close) {
             if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
                 return KColorUtils::mix(buttonAlwaysShowColor, buttonHoverColor, m_opacity);
@@ -673,6 +676,35 @@ void Button::updateAnimationState(bool hovered)
     m_animation->setDirection(hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
     if (m_animation->state() != QAbstractAnimation::Running)
         m_animation->start();
+}
+
+void Button::updateThinWindowOutlineWithButtonColor(bool on)
+{
+    auto d = qobject_cast<Decoration *>(decoration());
+    if (!d || !d->internalSettings()->colorizeThinWindowOutlineWithButton() || isStandAlone())
+        return;
+
+    QColor color = QColor();
+    if (on) {
+        color = this->backgroundColor(true);
+        d->setThinWindowOutlineOverrideColor(on, color);
+    } else {
+        bool otherButtonIsHoveredOrPressed = false;
+
+        // Check if any other button is hovered/pressed.
+        // This is to prevent glitches when you directly mouse over one button to another and the second button does not trigger on.
+        // In the case where another button is hovered/pressed do not send an off flag.
+        for (QPointer<KDecoration2::DecorationButton> &decButton : d->leftButtons()->buttons() + d->rightButtons()->buttons()) {
+            Button *button = static_cast<Button *>(decButton.data());
+
+            if (button != this && (button->isHovered() || button->isPressed())) {
+                otherButtonIsHoveredOrPressed = true;
+                break;
+            }
+        }
+        if (!otherButtonIsHoveredOrPressed)
+            d->setThinWindowOutlineOverrideColor(on, color);
+    }
 }
 
 bool Button::shouldDrawBackgroundStroke() const

@@ -144,6 +144,9 @@ private Q_SLOTS:
     //* animation state
     void updateAnimationState(bool);
 
+    //* get colour and trigger same in thin window outline
+    void updateThinWindowOutlineWithButtonColor(bool);
+
 private:
     //* private constructor
     explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
@@ -154,7 +157,7 @@ private:
     //*@name colors
     //@{
     QColor foregroundColor() const;
-    QColor backgroundColor() const;
+    QColor backgroundColor(bool getNonAnimatedColor = false) const;
     QColor outlineColor() const;
     //@}
 
