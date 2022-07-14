@@ -155,6 +155,8 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args)
     , m_animation(new QVariantAnimation(this))
     , m_shadowAnimation(new QVariantAnimation(this))
+    , m_overrideOutlineFromButtonAnimation(new QVariantAnimation(this))
+
 {
     g_sDecoCount++;
 
@@ -294,6 +296,50 @@ QColor Decoration::fontMixedAccentWindowOutlineColor(QColor customColor) const
         return inactiveColor;
 }
 
+QColor Decoration::overriddenOutlineColorAnimateIn() const
+{
+    QColor color = m_thinWindowOutlineOverride;
+    if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        QColor originalColor;
+        c->isActive() ? originalColor = m_originalThinWindowOutlineActivePreOverride : originalColor = m_originalThinWindowOutlineInactivePreOverride;
+
+        if (originalColor.isValid())
+            return KColorUtils::mix(originalColor, color, m_overrideOutlineAnimationProgress);
+        else {
+            color.setAlphaF(color.alphaF() * m_overrideOutlineAnimationProgress);
+            return color;
+        }
+    } else
+        return color;
+}
+
+QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationColor)
+{
+    if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        QColor originalColor;
+        c->isActive() ? originalColor = m_originalThinWindowOutlineActivePreOverride : originalColor = m_originalThinWindowOutlineInactivePreOverride;
+
+        if (originalColor.isValid()) {
+            if (m_overrideOutlineAnimationProgress == 1)
+                m_animateOutOverriddenThinWindowOutline = false;
+            return KColorUtils::mix(originalColor, destinationColor, m_overrideOutlineAnimationProgress);
+        } else {
+            QColor color = destinationColor;
+            color.setAlphaF(destinationColor.alphaF() * m_overrideOutlineAnimationProgress);
+            if (m_overrideOutlineAnimationProgress == 1)
+                m_animateOutOverriddenThinWindowOutline = false;
+            return color;
+        }
+    } else {
+        m_animateOutOverriddenThinWindowOutline = false;
+        return destinationColor;
+    }
+}
+
 //________________________________________________________________
 QColor Decoration::fontColor() const
 {
@@ -326,6 +372,14 @@ void Decoration::init()
     connect(m_shadowAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_shadowOpacity = value.toReal();
         updateShadow();
+    });
+
+    m_overrideOutlineFromButtonAnimation->setStartValue(0.0);
+    m_overrideOutlineFromButtonAnimation->setEndValue(1.0);
+    m_overrideOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    connect(m_overrideOutlineFromButtonAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+        m_overrideOutlineAnimationProgress = value.toReal();
+        updateShadow(true, true);
     });
 
     // use DBus connection to update on breeze configuration change
@@ -445,7 +499,7 @@ void Decoration::updateTitleBar()
     setTitleBar(QRect(x, y, width, height));
 }
 
-//________________________________________________________________
+// For Titlebar active state and shadow animations only
 void Decoration::updateAnimationState()
 {
     if (m_shadowAnimation->duration() > 0) {
@@ -469,6 +523,22 @@ void Decoration::updateAnimationState()
 
     } else {
         update();
+    }
+}
+
+// For overrididng thin window outline with button colour
+void Decoration::updateOverrideOutlineFromButtonAnimationState()
+{
+    if (m_overrideOutlineFromButtonAnimation->duration() > 0) {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+        m_overrideOutlineFromButtonAnimation->setDirection(QAbstractAnimation::Forward);
+        m_overrideOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+        if (m_overrideOutlineFromButtonAnimation->state() != QAbstractAnimation::Running)
+            m_overrideOutlineFromButtonAnimation->start();
+
+    } else {
+        updateShadow(true, true);
     }
 }
 
@@ -574,10 +644,12 @@ void Decoration::reconfigure()
         else if (m_internalSettings->animationsSpeedRelativeSystem() > 0)
             animationsDurationFactorRelativeSystem = 1 / ((m_internalSettings->animationsSpeedRelativeSystem() + 2) / 2.0f);
         m_animation->setDuration(cg.readEntry("AnimationDurationFactor", 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
-        m_shadowAnimation->setDuration(cg.readEntry("AnimationDurationFactor", 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
+        m_shadowAnimation->setDuration(m_animation->duration());
+        m_overrideOutlineFromButtonAnimation->setDuration(m_animation->duration());
     } else {
         m_animation->setDuration(0);
         m_shadowAnimation->setDuration(0);
+        m_overrideOutlineFromButtonAnimation->setDuration(0);
     }
 
     setAddedTitleBarOpacity();
@@ -596,7 +668,6 @@ void Decoration::reconfigure()
         createSizeGrip();
     else
         deleteSizeGrip();
-    ;
 }
 
 //________________________________________________________________
@@ -875,6 +946,25 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         paintTitleBar(painter, repaintRegion);
     }
 
+    // draw highlighted button state outline for maximized windows
+    // does not work as cannot draw inside window contents
+    /*
+    if(c->isMaximized() && m_maximizedWindowHighlight.isValid()){
+        painter->save();
+        QPen pen(m_maximizedWindowHighlight);
+        qreal penWidthNoDpr = PenWidth::Symbol *2;
+        qreal dpr = devicePixelRatio(painter);
+        pen.setWidthF(dpr * penWidthNoDpr);
+        pen.setCosmetic(true);
+        painter->setPen(pen);
+        qreal shrinkOffset = penWidthNoDpr/2;
+        if(KWindowSystem::isPlatformX11())
+            shrinkOffset *= dpr;
+        QRectF windowRectShrunk = m_windowPath->boundingRect().adjusted(shrinkOffset,shrinkOffset,-shrinkOffset,-shrinkOffset);
+        painter->drawRect(windowRectShrunk);
+        painter->restore();
+    } */
+
     if (hasBorders() && !s->isAlphaChannelSupported()) {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing, false);
@@ -1135,12 +1225,11 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 }
 
 //________________________________________________________________
-void Decoration::updateShadow(const bool force)
+void Decoration::updateShadow(const bool force, const bool noCache)
 {
     auto s = settings();
     auto c = client().toStrongRef();
     Q_ASSERT(c);
-
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         setShadow(createShadowObject(0.5 + m_shadowOpacity * 0.5));
@@ -1153,24 +1242,34 @@ void Decoration::updateShadow(const bool force)
         || g_thinWindowOutlineStyle != m_internalSettings->thinWindowOutlineStyle()
         || g_thinWindowOutlineCustomColor != m_internalSettings->thinWindowOutlineCustomColor()
         || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness()) {
-        g_sShadow.clear();
-        g_sShadowInactive.clear();
-        g_shadowSizeEnum = m_internalSettings->shadowSize();
-        g_shadowStrength = m_internalSettings->shadowStrength();
-        g_shadowColor = m_internalSettings->shadowColor();
-        g_cornerRadius = m_scaledCornerRadius;
-        g_systemScaleFactor = m_systemScaleFactor;
-        g_hasNoBorders = hasNoBorders();
-        g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
-        g_thinWindowOutlineCustomColor = m_internalSettings->thinWindowOutlineCustomColor();
-        g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
+        if (!noCache) {
+            g_sShadow.clear();
+            g_sShadowInactive.clear();
+            g_shadowSizeEnum = m_internalSettings->shadowSize();
+            g_shadowStrength = m_internalSettings->shadowStrength();
+            g_shadowColor = m_internalSettings->shadowColor();
+            g_cornerRadius = m_scaledCornerRadius;
+            g_systemScaleFactor = m_systemScaleFactor;
+            g_hasNoBorders = hasNoBorders();
+            g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
+            g_thinWindowOutlineCustomColor = m_internalSettings->thinWindowOutlineCustomColor();
+            g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
+        }
     }
 
-    auto &shadow = (c->isActive()) ? g_sShadow : g_sShadowInactive;
-    if (!shadow) {
-        shadow = createShadowObject(c->isActive() ? 1.0 : 0.5);
+    QSharedPointer<KDecoration2::DecorationShadow> nonCachedShadow;
+    QSharedPointer<KDecoration2::DecorationShadow> *shadow = nullptr;
+
+    if (noCache)
+        shadow = &nonCachedShadow;
+    else // use the already cached shadow
+        shadow = (c->isActive()) ? &g_sShadow : &g_sShadowInactive;
+
+    if (!(*shadow)) { // only recreate the shadow if necessary
+        *shadow = createShadowObject(c->isActive() ? 1.0 : 0.5);
     }
-    setShadow(shadow);
+
+    setShadow(*shadow);
 }
 
 //________________________________________________________________
@@ -1274,18 +1373,37 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
 
         // Draw Thin window outline
         QPen p;
-        if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText)
-            p.setColor(withOpacity(fontColor(), 0.25));
+        QColor thinWindowOutlineColor;
+        if (m_thinWindowOutlineOverride.isValid()) {
+            thinWindowOutlineColor = overriddenOutlineColorAnimateIn();
+        } else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText)
+            thinWindowOutlineColor = withOpacity(fontColor(), 0.25);
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor)
-            p.setColor(accentedWindowOutlineColor());
+            thinWindowOutlineColor = accentedWindowOutlineColor();
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
-            p.setColor(fontMixedAccentWindowOutlineColor());
+            thinWindowOutlineColor = fontMixedAccentWindowOutlineColor();
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor)
-            p.setColor(accentedWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor()));
+            thinWindowOutlineColor = accentedWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
-            p.setColor(fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor()));
+            thinWindowOutlineColor = fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
         else
-            p.setColor(withOpacity(m_internalSettings->shadowColor(), 0.2 * strength)); // blend to shadow
+            thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), 0.2 * strength); // blend to shadow
+
+        if (m_animateOutOverriddenThinWindowOutline)
+            thinWindowOutlineColor = overriddenOutlineColorAnimateOut(thinWindowOutlineColor);
+
+        p.setColor(thinWindowOutlineColor);
+
+        // the existing thin window outline colour is stored in-case it is overridden in the future and needed by an animation
+        if (!m_thinWindowOutlineOverride.isValid()) { // non-override
+            c->isActive() ? m_originalThinWindowOutlineActivePreOverride = thinWindowOutlineColor
+                          : m_originalThinWindowOutlineInactivePreOverride = thinWindowOutlineColor;
+        } else if ((m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) && m_overrideOutlineAnimationProgress == 1) {
+            // only buffer the override colour once it has finished animating -- used for the override out animation, and when mouse moves from one overrride
+            // colour to another
+            c->isActive() ? m_originalThinWindowOutlineActivePreOverride = thinWindowOutlineColor
+                          : m_originalThinWindowOutlineInactivePreOverride = thinWindowOutlineColor;
+        }
 
         p.setWidthF(outlinePenWidth);
         painter.setPen(p);
@@ -1314,6 +1432,41 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
     ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
     ret->setShadow(shadowTexture);
     return ret;
+}
+
+void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &color)
+{
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+
+    if (on) {
+        if (c->isMaximized()) {
+            /* Attempt here to extend "Highlight button state in thin window outline to maximized windows
+                * by drawing an outline around the perimeter of a maximized window.
+                * Does not work as cannot draw inside window borders
+            m_maximizedWindowHighlight = color;
+            update();
+            */
+        } else {
+            // draw a thin window outline with this override colour
+            m_thinWindowOutlineOverride = color;
+            updateOverrideOutlineFromButtonAnimationState();
+        }
+    } else {
+        if (c->isMaximized()) {
+            /* Attempt here to extend "Highlight button state in thin window outline to maximized windows
+                * by drawing an outline around the perimeter of a maximized window.
+                * Does not work as cannot draw inside window borders
+            m_maximizedWindowHighlight = QColor();
+            update();
+            */
+        } else {
+            // reset the thin window outline
+            m_thinWindowOutlineOverride = QColor();
+            m_animateOutOverriddenThinWindowOutline = true;
+            updateOverrideOutlineFromButtonAnimationState();
+        }
+    }
 }
 
 //_________________________________________________________________
@@ -1465,6 +1618,17 @@ qreal Decoration::titleBarSeparatorHeight() const
         return 1;
     } else
         return 0;
+}
+
+qreal Decoration::devicePixelRatio(QPainter *painter) const
+{
+    // determine DPR
+    qreal dpr = painter->device()->devicePixelRatioF();
+
+    // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
+    if (KWindowSystem::isPlatformX11())
+        dpr = systemScaleFactor();
+    return dpr;
 }
 
 } // namespace
