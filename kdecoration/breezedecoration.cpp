@@ -39,14 +39,6 @@
 #include <QTextStream>
 #include <QTimer>
 
-#if BREEZE_HAVE_X11
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <private/qtx11extras_p.h>
-#else
-#include <QX11Info>
-#endif
-#endif
-
 #include <cmath>
 
 K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();
@@ -1476,8 +1468,7 @@ void Decoration::createSizeGrip()
     if (m_sizeGrip)
         return;
 
-#if BREEZE_HAVE_X11
-    if (!QX11Info::isPlatformX11())
+    if (!KWindowSystem::isPlatformX11())
         return;
 
     // access client
@@ -1492,7 +1483,6 @@ void Decoration::createSizeGrip()
         connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateSizeGripVisibility);
         connect(c.data(), &KDecoration2::DecoratedClient::resizeableChanged, this, &Decoration::updateSizeGripVisibility);
     }
-#endif
 }
 
 //_________________________________________________________________
