@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -7,80 +7,98 @@
 #include "colortools.h"
 
 #include <KColorUtils>
+#include <QTimer>
 
 namespace Breeze
 {
-std::shared_ptr<SystemButtonColors> ColorTools::getSystemButtonColors(const QPalette &palette)
+
+std::shared_ptr<DecorationColors> g_decorationColors = nullptr;
+static std::unique_ptr<QTimer> g_systemPaletteSingleUpdateTimer = std::unique_ptr<QTimer>(new QTimer());
+
+std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPalette &palette, const bool setGlobal)
 {
-    std::shared_ptr<SystemButtonColors> colors = std::make_shared<SystemButtonColors>();
+    std::shared_ptr<DecorationColors> decorationColors = std::make_shared<DecorationColors>();
 
     KStatefulBrush buttonFocusStatefulBrush;
     KStatefulBrush buttonHoverStatefulBrush;
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::NegativeText);
-    colors->negative = buttonFocusStatefulBrush.brush(palette).color();
+    decorationColors->negative = buttonFocusStatefulBrush.brush(palette).color();
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NegativeBackground );
     // colors.negativeBackground = buttonHoverStatefulBrush.brush( palette ).color();
-    colors->negativeLessSaturated = getDifferentiatedLessSaturatedColor(colors->negative);
-    colors->negativeSaturated = getDifferentiatedSaturatedColor(colors->negative);
+    decorationColors->negativeLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->negative);
+    decorationColors->negativeSaturated = getDifferentiatedSaturatedColor(decorationColors->negative);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::NeutralText);
-    colors->neutral = buttonFocusStatefulBrush.brush(palette).color();
+    decorationColors->neutral = buttonFocusStatefulBrush.brush(palette).color();
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NeutralBackground );
     // colors.neutralLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
-    colors->neutralLessSaturated = getDifferentiatedLessSaturatedColor(colors->neutral);
+    decorationColors->neutralLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->neutral);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::PositiveText);
-    colors->positive = buttonFocusStatefulBrush.brush(palette).color();
+    decorationColors->positive = buttonFocusStatefulBrush.brush(palette).color();
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::PositiveBackground );
     // colors.positiveLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
-    colors->positiveLessSaturated = getDifferentiatedLessSaturatedColor(colors->positive);
+    decorationColors->positiveLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->positive);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::FocusColor);
-    colors->buttonFocus = buttonFocusStatefulBrush.brush(palette).color();
+    decorationColors->buttonFocus = buttonFocusStatefulBrush.brush(palette).color();
     buttonHoverStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::HoverColor);
-    colors->buttonHover = buttonHoverStatefulBrush.brush(palette).color();
+    decorationColors->buttonHover = buttonHoverStatefulBrush.brush(palette).color();
 
     // this is required as the accent colours feature sets these the same
-    if (colors->buttonFocus == colors->buttonHover)
-        colors->buttonHover = getDifferentiatedLessSaturatedColor(colors->buttonFocus);
+    if (decorationColors->buttonFocus == decorationColors->buttonHover)
+        decorationColors->buttonHover = getDifferentiatedLessSaturatedColor(decorationColors->buttonFocus);
 
     //"Blue Ocean" style reduced opacity outlined buttons
-    colors->buttonReducedOpacityBackground = colors->buttonFocus;
-    colors->buttonReducedOpacityBackground.setAlphaF(colors->buttonReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->buttonReducedOpacityBackground = decorationColors->buttonFocus;
+    decorationColors->buttonReducedOpacityBackground.setAlphaF(decorationColors->buttonReducedOpacityBackground.alphaF() * 0.4);
 
-    colors->buttonReducedOpacityOutline = colors->buttonFocus;
-    colors->buttonReducedOpacityOutline.setAlphaF(colors->buttonReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->buttonReducedOpacityOutline = decorationColors->buttonFocus;
+    decorationColors->buttonReducedOpacityOutline.setAlphaF(decorationColors->buttonReducedOpacityOutline.alphaF() * 0.6);
 
-    QColor fullySaturatedNegative = getDifferentiatedSaturatedColor(colors->negative, true);
-    colors->negativeReducedOpacityBackground = fullySaturatedNegative;
-    colors->negativeReducedOpacityBackground.setAlphaF(colors->negativeReducedOpacityBackground.alphaF() * 0.5);
+    QColor fullySaturatedNegative = getDifferentiatedSaturatedColor(decorationColors->negative, true);
+    decorationColors->negativeReducedOpacityBackground = fullySaturatedNegative;
+    decorationColors->negativeReducedOpacityBackground.setAlphaF(decorationColors->negativeReducedOpacityBackground.alphaF() * 0.5);
 
-    colors->negativeReducedOpacityOutline = fullySaturatedNegative;
-    colors->negativeReducedOpacityOutline.setAlphaF(colors->negativeReducedOpacityOutline.alphaF() * 0.7);
+    decorationColors->negativeReducedOpacityOutline = fullySaturatedNegative;
+    decorationColors->negativeReducedOpacityOutline.setAlphaF(decorationColors->negativeReducedOpacityOutline.alphaF() * 0.7);
 
-    colors->negativeReducedOpacityLessSaturatedBackground = getDifferentiatedLessSaturatedColor(colors->negative);
-    colors->negativeReducedOpacityLessSaturatedBackground.setAlphaF(colors->negativeReducedOpacityLessSaturatedBackground.alphaF() * 0.6);
+    decorationColors->negativeReducedOpacityLessSaturatedBackground = getDifferentiatedLessSaturatedColor(decorationColors->negative);
+    decorationColors->negativeReducedOpacityLessSaturatedBackground.setAlphaF(decorationColors->negativeReducedOpacityLessSaturatedBackground.alphaF() * 0.6);
 
-    colors->neutralReducedOpacityBackground = colors->neutral;
-    colors->neutralReducedOpacityBackground.setAlphaF(colors->neutralReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->neutralReducedOpacityBackground = decorationColors->neutral;
+    decorationColors->neutralReducedOpacityBackground.setAlphaF(decorationColors->neutralReducedOpacityBackground.alphaF() * 0.4);
 
-    colors->neutralReducedOpacityOutline = colors->neutral;
-    colors->neutralReducedOpacityOutline.setAlphaF(colors->neutralReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->neutralReducedOpacityOutline = decorationColors->neutral;
+    decorationColors->neutralReducedOpacityOutline.setAlphaF(decorationColors->neutralReducedOpacityOutline.alphaF() * 0.6);
 
-    colors->positiveReducedOpacityBackground = colors->positive;
-    colors->positiveReducedOpacityBackground.setAlphaF(colors->positiveReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->positiveReducedOpacityBackground = decorationColors->positive;
+    decorationColors->positiveReducedOpacityBackground.setAlphaF(decorationColors->positiveReducedOpacityBackground.alphaF() * 0.4);
 
-    colors->positiveReducedOpacityOutline = colors->positive;
-    colors->positiveReducedOpacityOutline.setAlphaF(colors->positiveReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->positiveReducedOpacityOutline = decorationColors->positive;
+    decorationColors->positiveReducedOpacityOutline.setAlphaF(decorationColors->positiveReducedOpacityOutline.alphaF() * 0.6);
 
-    colors->highlight = palette.color(QPalette::Highlight);
-    colors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(colors->highlight, true);
+    decorationColors->highlight = palette.color(QPalette::Highlight);
+    decorationColors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(decorationColors->highlight, true);
 
-    return colors;
+    if (setGlobal)
+        g_decorationColors = decorationColors;
+
+    return decorationColors;
+}
+
+void ColorTools::systemPaletteUpdated(const QPalette &palette)
+{
+    // the timer ensures that generateDecorationColors(palette) will only be called once if more than one updated signal arrives at the same time
+    if (!g_systemPaletteSingleUpdateTimer->isActive()) {
+        g_systemPaletteSingleUpdateTimer->setSingleShot(true);
+        g_systemPaletteSingleUpdateTimer->start(10);
+        generateDecorationColors(palette, true);
+    }
 }
 
 QColor ColorTools::getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate)

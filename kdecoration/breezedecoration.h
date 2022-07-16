@@ -140,10 +140,6 @@ public:
     {
         return m_scaledCornerRadius;
     }
-    std::shared_ptr<SystemButtonColors> systemAccentColors()
-    {
-        return m_systemAccentColors;
-    }
 
     KDecoration2::DecorationButtonGroup *leftButtons()
     {
@@ -168,6 +164,7 @@ private Q_SLOTS:
     void updateTitleBar();
     void updateAnimationState();
     void updateSizeGripVisibility();
+
     void forceUpdateShadow()
     {
         updateShadow(true);
@@ -184,7 +181,6 @@ private:
     void updateShadow(const bool force = false, const bool noCache = false);
     QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const float strengthScale);
     void setScaledCornerRadius();
-    void setSystemAccentColors();
 
     //*@name border size
     //@{
@@ -264,8 +260,6 @@ private:
     std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
 
     qreal m_systemScaleFactor = 1.0;
-
-    std::shared_ptr<SystemButtonColors> m_systemAccentColors;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     int m_smallButtonPaddedHeight;
@@ -366,6 +360,6 @@ bool Decoration::hideTitleBar() const
     Q_ASSERT(c);
     return m_internalSettings->hideTitleBar() && !c->isShaded();
 }
-}
+} // end Breeze namespace
 
 #endif

@@ -128,7 +128,7 @@ namespace Breeze
 using KDecoration2::ColorGroup;
 using KDecoration2::ColorRole;
 
-//________________________________________________________________
+// cached shadow values
 static int g_sDecoCount = 0;
 static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
 static int g_shadowStrength = 255;
@@ -150,11 +150,11 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     , m_overrideOutlineFromButtonAnimation(new QVariantAnimation(this))
 
 {
-    g_sDecoCount++;
-
 #if CLASSIK_DECORATION_DEBUG_MODE
     setDebugOutput(CLASSIK_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
 #endif
+
+    g_sDecoCount++;
 }
 
 //________________________________________________________________
@@ -219,11 +219,11 @@ QColor Decoration::titleBarSeparatorColor() const
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor color(m_systemAccentColors->highlight);
+        QColor color(g_decorationColors->highlight);
         color.setAlpha(color.alpha() * m_opacity);
         return color;
     } else if (c->isActive())
-        return m_systemAccentColors->highlight;
+        return g_decorationColors->highlight;
     else
         return QColor();
 }
@@ -242,9 +242,9 @@ QColor Decoration::accentedWindowOutlineColor(QColor customColor) const
         inactiveColor = customColor;
         inactiveColor.setAlphaF(inactiveColor.alphaF() * 0.3);
     } else {
-        activeColor = m_systemAccentColors->highlight;
+        activeColor = g_decorationColors->highlight;
         activeColor.setAlphaF(activeColor.alphaF() * 0.87);
-        inactiveColor = m_systemAccentColors->highlightLessSaturated;
+        inactiveColor = g_decorationColors->highlightLessSaturated;
         inactiveColor.setAlphaF(inactiveColor.alphaF() * 0.4);
     }
 
@@ -270,8 +270,8 @@ QColor Decoration::fontMixedAccentWindowOutlineColor(QColor customColor) const
         accentColorActive = customColor;
         accentColorInactive = customColor;
     } else {
-        accentColorActive = m_systemAccentColors->buttonFocus;
-        accentColorInactive = m_systemAccentColors->buttonHover;
+        accentColorActive = g_decorationColors->buttonFocus;
+        accentColorInactive = g_decorationColors->buttonHover;
     }
 
     QColor activeColor = KColorUtils::mix(fontColorActive, accentColorActive, 0.75);
@@ -348,6 +348,12 @@ void Decoration::init()
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
+
+    // generate standard colours to be used in the decoration
+    if (!g_decorationColors)
+        ColorTools::generateDecorationColors(c->palette(), true);
+    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, ColorTools::systemPaletteUpdated);
+
     // active state change animation
     // It is important start and end value are of the same type, hence 0.0 and not just 0
     m_animation->setStartValue(0.0);
@@ -610,7 +616,6 @@ void Decoration::reconfigure()
     setScaledCornerRadius();
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
-    setSystemAccentColors();
 
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
@@ -1587,15 +1592,6 @@ void Decoration::updateBlur()
         } else
             setBlurRegion(QRegion());
     }
-}
-
-void Decoration::setSystemAccentColors()
-{
-    // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-
-    m_systemAccentColors = ColorTools::getSystemButtonColors(c->palette());
 }
 
 qreal Decoration::titleBarSeparatorHeight() const

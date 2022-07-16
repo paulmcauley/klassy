@@ -16,40 +16,44 @@
 namespace Breeze
 {
 
-struct BREEZECOMMON_EXPORT SystemButtonColors {
-    QColor buttonFocus;
-    QColor buttonHover;
-    QColor buttonReducedOpacityBackground;
-    QColor buttonReducedOpacityOutline;
-    QColor highlight;
-    QColor highlightLessSaturated;
-    QColor negative;
-    QColor negativeLessSaturated;
-    QColor negativeSaturated;
-    QColor negativeReducedOpacityBackground;
-    QColor negativeReducedOpacityOutline;
-    QColor negativeReducedOpacityLessSaturatedBackground;
-    QColor neutral;
-    QColor neutralLessSaturated;
-    QColor neutralReducedOpacityBackground;
-    QColor neutralReducedOpacityOutline;
-    QColor positive;
-    QColor positiveLessSaturated;
-    QColor positiveReducedOpacityBackground;
-    QColor positiveReducedOpacityOutline;
+struct BREEZECOMMON_EXPORT DecorationColors {
+    QColor buttonFocus = QColor();
+    QColor buttonHover = QColor();
+    QColor buttonReducedOpacityBackground = QColor();
+    QColor buttonReducedOpacityOutline = QColor();
+    QColor highlight = QColor();
+    QColor highlightLessSaturated = QColor();
+    QColor negative = QColor();
+    QColor negativeLessSaturated = QColor();
+    QColor negativeSaturated = QColor();
+    QColor negativeReducedOpacityBackground = QColor();
+    QColor negativeReducedOpacityOutline = QColor();
+    QColor negativeReducedOpacityLessSaturatedBackground = QColor();
+    QColor neutral = QColor();
+    QColor neutralLessSaturated = QColor();
+    QColor neutralReducedOpacityBackground = QColor();
+    QColor neutralReducedOpacityOutline = QColor();
+    QColor positive = QColor();
+    QColor positiveLessSaturated = QColor();
+    QColor positiveReducedOpacityBackground = QColor();
+    QColor positiveReducedOpacityOutline = QColor();
 };
 
+extern std::shared_ptr<DecorationColors> BREEZECOMMON_EXPORT g_decorationColors;
+
 /**
- * @brief Functions to manipulate colours within Breeze/ClassiK
+ * @brief Functions to manipulate colours within ClassiK
  *        To be used as common code base across both kdecoration and kstyle.
  */
 class BREEZECOMMON_EXPORT ColorTools
 {
 public:
     /**
-     * @brief Returns a SystemButtonColors struct containing the colours set in the KDE color scheme
+     * @brief Returns a DecorationColors struct containing the colours set in the KDE color scheme
      */
-    static std::shared_ptr<SystemButtonColors> getSystemButtonColors(const QPalette &palette);
+    static std::shared_ptr<DecorationColors> generateDecorationColors(const QPalette &palette, const bool setGlobal = false);
+
+    static void systemPaletteUpdated(const QPalette &palette);
 
     static QColor getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate = false);
 
