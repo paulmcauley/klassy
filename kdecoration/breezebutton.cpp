@@ -427,57 +427,57 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
             if (type() == DecorationButtonType::Close) {
                 if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
-                        buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
-                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        buttonAlwaysShowColor = g_decorationColors->negativeReducedOpacityBackground;
+                        buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                        buttonFocusColor = g_decorationColors->negativeReducedOpacityLessSaturatedBackground;
                     } else {
-                        buttonAlwaysShowColor = d->systemAccentColors()->buttonReducedOpacityBackground;
-                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        buttonAlwaysShowColor = g_decorationColors->buttonReducedOpacityBackground;
+                        buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                        buttonFocusColor = g_decorationColors->negativeReducedOpacityLessSaturatedBackground;
                     }
                 } else {
-                    buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
-                    buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                    buttonHoverColor = g_decorationColors->negativeReducedOpacityBackground;
+                    buttonFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonHoverColor = d->systemAccentColors()->neutralReducedOpacityBackground;
-                buttonFocusColor = d->systemAccentColors()->neutralReducedOpacityOutline;
+                buttonHoverColor = g_decorationColors->neutralReducedOpacityBackground;
+                buttonFocusColor = g_decorationColors->neutralReducedOpacityOutline;
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonHoverColor = d->systemAccentColors()->positiveReducedOpacityBackground;
-                buttonFocusColor = d->systemAccentColors()->positiveReducedOpacityOutline;
+                buttonHoverColor = g_decorationColors->positiveReducedOpacityBackground;
+                buttonFocusColor = g_decorationColors->positiveReducedOpacityOutline;
             } else {
-                buttonHoverColor = d->systemAccentColors()->buttonReducedOpacityBackground;
-                buttonFocusColor = d->systemAccentColors()->buttonReducedOpacityOutline;
+                buttonHoverColor = g_decorationColors->buttonReducedOpacityBackground;
+                buttonFocusColor = g_decorationColors->buttonReducedOpacityOutline;
             }
         } else {
             if (type() == DecorationButtonType::Close) {
                 if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
-                        buttonAlwaysShowColor = d->systemAccentColors()->negative;
-                        buttonHoverColor = d->systemAccentColors()->negativeSaturated;
-                        buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        buttonAlwaysShowColor = g_decorationColors->negative;
+                        buttonHoverColor = g_decorationColors->negativeSaturated;
+                        buttonFocusColor = g_decorationColors->negativeLessSaturated;
                     } else {
-                        buttonAlwaysShowColor = d->systemAccentColors()->buttonHover;
-                        buttonHoverColor = d->systemAccentColors()->negativeSaturated;
-                        buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        buttonAlwaysShowColor = g_decorationColors->buttonHover;
+                        buttonHoverColor = g_decorationColors->negativeSaturated;
+                        buttonFocusColor = g_decorationColors->negativeLessSaturated;
                     }
                 } else {
-                    buttonHoverColor = d->systemAccentColors()->negative;
-                    buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                    buttonHoverColor = g_decorationColors->negative;
+                    buttonFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonHoverColor = d->systemAccentColors()->neutralLessSaturated;
-                buttonFocusColor = d->systemAccentColors()->neutral;
+                buttonHoverColor = g_decorationColors->neutralLessSaturated;
+                buttonFocusColor = g_decorationColors->neutral;
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonHoverColor = d->systemAccentColors()->positiveLessSaturated;
-                buttonFocusColor = d->systemAccentColors()->positive;
+                buttonHoverColor = g_decorationColors->positiveLessSaturated;
+                buttonFocusColor = g_decorationColors->positive;
             } else {
-                buttonHoverColor = d->systemAccentColors()->buttonHover;
-                buttonFocusColor = d->systemAccentColors()->buttonFocus;
+                buttonHoverColor = g_decorationColors->buttonHover;
+                buttonFocusColor = g_decorationColors->buttonFocus;
             }
         }
 
@@ -486,18 +486,18 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
             if (type() == DecorationButtonType::Close) {
                 if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
-                        buttonAlwaysShowColor = d->systemAccentColors()->negativeReducedOpacityBackground;
-                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityLessSaturatedBackground;
+                        buttonAlwaysShowColor = g_decorationColors->negativeReducedOpacityBackground;
+                        buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                        buttonFocusColor = g_decorationColors->negativeReducedOpacityLessSaturatedBackground;
                     } else {
                         buttonAlwaysShowColor = d->fontColor();
                         buttonAlwaysShowColor.setAlphaF(buttonAlwaysShowColor.alphaF() * 0.15);
-                        buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityOutline;
-                        buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityBackground;
+                        buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                        buttonFocusColor = g_decorationColors->negativeReducedOpacityBackground;
                     }
                 } else {
-                    buttonHoverColor = d->systemAccentColors()->negativeReducedOpacityBackground;
-                    buttonFocusColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                    buttonHoverColor = g_decorationColors->negativeReducedOpacityBackground;
+                    buttonFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else {
                 buttonHoverColor = d->fontColor();
@@ -509,17 +509,17 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
             if (type() == DecorationButtonType::Close) {
                 if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
-                        buttonAlwaysShowColor = d->systemAccentColors()->negative;
-                        buttonHoverColor = d->systemAccentColors()->negativeSaturated;
-                        buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        buttonAlwaysShowColor = g_decorationColors->negative;
+                        buttonHoverColor = g_decorationColors->negativeSaturated;
+                        buttonFocusColor = g_decorationColors->negativeLessSaturated;
                     } else {
                         buttonAlwaysShowColor = d->fontColor();
-                        buttonHoverColor = d->systemAccentColors()->negativeSaturated;
-                        buttonFocusColor = d->systemAccentColors()->negativeLessSaturated;
+                        buttonHoverColor = g_decorationColors->negativeSaturated;
+                        buttonFocusColor = g_decorationColors->negativeLessSaturated;
                     }
                 } else {
-                    buttonHoverColor = d->systemAccentColors()->negative;
-                    buttonFocusColor = d->systemAccentColors()->negativeSaturated;
+                    buttonHoverColor = g_decorationColors->negative;
+                    buttonFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else {
                 buttonHoverColor = d->fontColor();
@@ -586,41 +586,41 @@ QColor Button::outlineColor() const
         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                buttonOutlineColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                buttonOutlineColor = g_decorationColors->negativeReducedOpacityOutline;
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonOutlineColor = d->systemAccentColors()->neutralReducedOpacityOutline;
+                buttonOutlineColor = g_decorationColors->neutralReducedOpacityOutline;
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonOutlineColor = d->systemAccentColors()->positiveReducedOpacityOutline;
+                buttonOutlineColor = g_decorationColors->positiveReducedOpacityOutline;
             } else {
-                buttonOutlineColor = d->systemAccentColors()->buttonReducedOpacityOutline;
+                buttonOutlineColor = g_decorationColors->buttonReducedOpacityOutline;
             }
         } else {
             if (type() == DecorationButtonType::Close) {
-                buttonOutlineColor = d->systemAccentColors()->negativeSaturated;
+                buttonOutlineColor = g_decorationColors->negativeSaturated;
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonOutlineColor = d->systemAccentColors()->neutral;
+                buttonOutlineColor = g_decorationColors->neutral;
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                buttonOutlineColor = d->systemAccentColors()->positive;
+                buttonOutlineColor = g_decorationColors->positive;
             } else {
-                buttonOutlineColor = d->systemAccentColors()->buttonFocus;
+                buttonOutlineColor = g_decorationColors->buttonFocus;
             }
         }
 
     } else {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                buttonOutlineColor = d->systemAccentColors()->negativeReducedOpacityOutline;
+                buttonOutlineColor = g_decorationColors->negativeReducedOpacityOutline;
             } else {
                 buttonOutlineColor = d->fontColor();
                 buttonOutlineColor.setAlphaF(buttonOutlineColor.alphaF() * 0.25);
             }
         } else {
             if (type() == DecorationButtonType::Close) {
-                buttonOutlineColor = d->systemAccentColors()->negativeSaturated;
+                buttonOutlineColor = g_decorationColors->negativeSaturated;
             } else {
                 buttonOutlineColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
             }
