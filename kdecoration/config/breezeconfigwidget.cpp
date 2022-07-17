@@ -46,7 +46,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 #endif
 
-    QIcon useSystemIconThemeIcon = QIcon::fromTheme("preferences-desktop-icons");
+    QIcon useSystemIconThemeIcon = QIcon::fromTheme(QStringLiteral("preferences-desktop-icons"));
     m_ui.buttonIconStyle->addItem(useSystemIconThemeIcon, "Use system icon theme");
 
     updateIconsStackedWidgetVisible();

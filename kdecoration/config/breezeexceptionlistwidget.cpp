@@ -86,7 +86,7 @@ void ExceptionListWidget::updateButtons()
 void ExceptionListWidget::add()
 {
     QPointer<ExceptionDialog> dialog = new ExceptionDialog(this);
-    dialog->setWindowTitle(i18n("New Exception - Breeze Settings"));
+    dialog->setWindowTitle(i18n("New Exception - ClassiK Settings"));
     InternalSettingsPtr exception(new InternalSettings());
 
     exception->load();
@@ -132,7 +132,7 @@ void ExceptionListWidget::edit()
 
     // create dialog
     QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
-    dialog->setWindowTitle(i18n("Edit Exception - Breeze Settings"));
+    dialog->setWindowTitle(i18n("Edit Exception - ClassiK Settings"));
     dialog->setException(exception);
 
     // map dialog
@@ -162,7 +162,7 @@ void ExceptionListWidget::remove()
     // confirmation dialog
     {
         QMessageBox messageBox(QMessageBox::Question,
-                               i18n("Question - Breeze Settings"),
+                               i18n("Question - ClassiK Settings"),
                                i18n("Remove selected exception?"),
                                QMessageBox::Yes | QMessageBox::Cancel);
         messageBox.button(QMessageBox::Yes)->setText(i18n("Remove"));
@@ -290,7 +290,7 @@ void ExceptionListWidget::resizeColumns() const
 bool ExceptionListWidget::checkException(InternalSettingsPtr exception)
 {
     while (exception->exceptionPattern().isEmpty() || !QRegularExpression(exception->exceptionPattern()).isValid()) {
-        QMessageBox::warning(this, i18n("Warning - Breeze Settings"), i18n("Regular Expression syntax is incorrect"));
+        QMessageBox::warning(this, i18n("Warning - ClassiK Settings"), i18n("Regular Expression syntax is incorrect"));
         QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
         dialog->setException(exception);
         if (dialog->exec() == QDialog::Rejected) {
