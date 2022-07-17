@@ -63,32 +63,32 @@ void RenderStyleSystemIconTheme::paintIconFromSystemTheme(QString iconName)
 
 void RenderStyleSystemIconTheme::renderCloseIcon()
 {
-    paintIconFromSystemTheme("window-close-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-close-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderMaximizeIcon()
 {
-    paintIconFromSystemTheme("window-maximize-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-maximize-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderRestoreIcon()
 {
-    paintIconFromSystemTheme("window-restore-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-restore-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderMinimizeIcon()
 {
-    paintIconFromSystemTheme("window-minimize-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-minimize-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderKeepBehindIcon()
 {
-    paintIconFromSystemTheme("window-keep-below-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-keep-below-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderKeepInFrontIcon()
 {
-    paintIconFromSystemTheme("window-keep-above-symbolic");
+    paintIconFromSystemTheme(QStringLiteral("window-keep-above-symbolic"));
 }
 
 void RenderStyleSystemIconTheme::renderContextHelpIcon()
