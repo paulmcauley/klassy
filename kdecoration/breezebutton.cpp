@@ -362,7 +362,7 @@ QColor Button::foregroundColor() const
         return color;
     } else if (m_animation->state() == QAbstractAnimation::Running) {
         if (type() == DecorationButtonType::Close) {
-            if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+            if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                 if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
                     return KColorUtils::mix(d->fontColor(), Qt::GlobalColor::white, m_opacity);
                 } else if (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText) {
@@ -391,7 +391,7 @@ QColor Button::foregroundColor() const
         else
             return d->titleBarColor();
     } else if (type() == DecorationButtonType::Close
-               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
         if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
             return d->fontColor();
         } else if (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText) {
@@ -425,7 +425,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
                         buttonAlwaysShowColor = g_decorationColors->negativeReducedOpacityBackground;
                         buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
@@ -453,7 +453,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
             }
         } else {
             if (type() == DecorationButtonType::Close) {
-                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
                         buttonAlwaysShowColor = g_decorationColors->negative;
                         buttonHoverColor = g_decorationColors->negativeSaturated;
@@ -484,7 +484,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
     } else {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
                         buttonAlwaysShowColor = g_decorationColors->negativeReducedOpacityBackground;
                         buttonHoverColor = g_decorationColors->negativeReducedOpacityOutline;
@@ -507,7 +507,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
             }
         } else {
             if (type() == DecorationButtonType::Close) {
-                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+                if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                     if (d->internalSettings()->redAlwaysShownClose() && c->isActive()) {
                         buttonAlwaysShowColor = g_decorationColors->negative;
                         buttonHoverColor = g_decorationColors->negativeSaturated;
@@ -545,7 +545,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
         return buttonFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (type() == DecorationButtonType::Close) {
-            if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+            if (d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
                 return KColorUtils::mix(buttonAlwaysShowColor, buttonHoverColor, m_opacity);
             } else {
                 QColor color(buttonHoverColor);
@@ -563,7 +563,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
         return buttonHoverColor;
 
     } else if (type() == DecorationButtonType::Close
-               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
         return buttonAlwaysShowColor;
     } else {
         return QColor();
@@ -646,7 +646,7 @@ QColor Button::outlineColor() const
         color.setAlphaF(color.alphaF() * m_opacity);
         return color;
     } else if (type() == DecorationButtonType::Close
-               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton) {
+               && d->internalSettings()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground) {
         if (isHovered()) {
             return buttonOutlineColor;
         } else
@@ -763,11 +763,12 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
             } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle) {
+                geometryShrinkOffsetVertical = d->internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 qreal halfPenWidth = penWidth / 2;
                 qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
                 qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
-                qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetHorizontalOuter;
-                qreal geometryShrinkOffsetVerticalInner = geometryShrinkOffsetHorizontalInner;
+                qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetVertical - halfPenWidth;
+                qreal geometryShrinkOffsetVerticalInner = geometryShrinkOffsetVertical + halfPenWidth;
                 qreal extensionByCornerRadiusInnerOuter = d->scaledCornerRadius() + halfPenWidth;
                 drawOutlineUsingPath = true;
 
@@ -835,12 +836,15 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
             else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle) {
+                qreal geometryShrinkOffsetVertical = d->internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
-                    backgroundBoundingRect = backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), d->scaledCornerRadius(), 0);
+                    backgroundBoundingRect =
+                        backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
                 } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
-                    backgroundBoundingRect = backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), 0, 0);
+                    backgroundBoundingRect =
+                        backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), 0, -geometryShrinkOffsetVertical);
                 } else {
-                    backgroundBoundingRect = backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), 0, 0);
+                    backgroundBoundingRect = backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), 0, -geometryShrinkOffsetVertical);
                 }
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
             } else // plain rectangle

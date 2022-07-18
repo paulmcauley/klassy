@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     KLocalizedString::setApplicationDomain("classik_style_config");
 
     QApplication app(argc, argv);
-    app.setApplicationName(i18n("ClassiK Settings"));
+    app.setApplicationName(QStringLiteral("classik-settings"));
     app.setWindowIcon(QIcon::fromTheme(QStringLiteral("classik-settings")));
 
     KCMultiDialog dialog;

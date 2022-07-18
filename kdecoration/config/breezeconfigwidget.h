@@ -1,7 +1,7 @@
 #ifndef breezeconfigwidget_h
 #define breezeconfigwidget_h
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.h
+// breezeconfigwidget.h
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -12,6 +12,7 @@
 #include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
+#include "fullheightrectanglesizing.h"
 #include "ui_breezeconfigurationui.h"
 
 #include <KCModule>
@@ -53,14 +54,15 @@ protected Q_SLOTS:
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
     void updateCustomColorStackedWidgetVisible();
-    void fullHeightButtonWidthMarginLeftChanged();
-    void fullHeightButtonWidthMarginRightChanged();
     void titlebarTopMarginChanged();
     void titlebarBottomMarginChanged();
     void titlebarLeftMarginChanged();
     void titlebarRightMarginChanged();
     void buttonSpacingLeftChanged();
     void buttonSpacingRightChanged();
+    void fullHeightIntegratedRoundedRectangleSizingButtonClicked();
+    void fullHeightRectangleSizingButtonClicked();
+    void dialogChanged(bool changed);
 
 protected:
     //* set changed state
@@ -84,6 +86,9 @@ private:
 
     bool m_processingDefaults = false;
     bool m_loading = false;
+
+    //* dialogs behind button
+    FullHeightRectangleSizing *m_fullHeightRectangleSizingDialog;
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();

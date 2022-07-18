@@ -3,13 +3,14 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-// SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+// SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfigwidget.h"
 #include "breezeexceptionlist.h"
+#include "fullheightrectanglesizing.h"
 
 #include <KLocalizedString>
 
@@ -29,8 +30,27 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     , m_configuration(KSharedConfig::openConfig(QStringLiteral("classikrc")))
     , m_changed(false)
 {
+    QDialog *parentDialog = qobject_cast<QDialog *>(parent);
+
+    // launch classik decoration config in in kcmshell5 instead of default systemsettings dialog
+    // This gives 2 benefits:
+    // 1. Adds an Apply button
+    // 2. Bypasses bug where reloading the kwin config in systemsettings prevents save from being called (though if(parentDialog) connect(parentDialog,
+    // &QDialog::accepted, this, &ConfigWidget::save); also fixes this)
+    if (QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
+        system("kcmshell5 classikdecorationconfig &");
+        if (parentDialog)
+            parentDialog->close();
+    }
+
     // configuration
     m_ui.setupUi(this);
+    m_fullHeightRectangleSizingDialog = new FullHeightRectangleSizing(this);
+
+    // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
+    // systemsettings only)
+    if (parentDialog)
+        connect(parentDialog, &QDialog::accepted, this, &ConfigWidget::save);
 
 #if CLASSIK_GIT_MASTER
     // set the long version string if from the git master
@@ -49,6 +69,13 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     QIcon useSystemIconThemeIcon = QIcon::fromTheme(QStringLiteral("preferences-desktop-icons"));
     m_ui.buttonIconStyle->addItem(useSystemIconThemeIcon, "Use system icon theme");
 
+    connect(m_ui.fullHeightIntegratedRoundedRectangleSizingButton,
+            &QAbstractButton::clicked,
+            this,
+            &ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked);
+
+    connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
+
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
     updateCustomColorStackedWidgetVisible();
@@ -60,8 +87,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()));
     connect(m_ui.scaleBackgroundPercent, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
@@ -93,19 +118,14 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.lockTitleBarTopBottomMargins, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.lockTitleBarLeftRightMargins, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.lockButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.lockFullHeightButtonWidthMargins, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
 
     // connect dual controls with same values
-    connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginLeftChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginRightChanged()));
     connect(m_ui.titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(titlebarTopMarginChanged()));
     connect(m_ui.titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()));
     connect(m_ui.titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()));
     connect(m_ui.titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()));
     connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(buttonSpacingLeftChanged()));
     connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(buttonSpacingRightChanged()));
-    connect(m_ui.titleSidePadding, SIGNAL(valueChanged(int)), m_ui.titleSidePadding_2, SLOT(setValue(int)));
-    connect(m_ui.titleSidePadding_2, SIGNAL(valueChanged(int)), m_ui.titleSidePadding, SLOT(setValue(int)));
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_2, SLOT(setValue(double)));
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_3, SLOT(setValue(double)));
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_4, SLOT(setValue(double)));
@@ -158,13 +178,13 @@ void ConfigWidget::load()
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->load();
 
+    m_fullHeightRectangleSizingDialog->load();
+
     // assign to ui
     m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
     m_ui.scaleBackgroundPercent->setValue(m_internalSettings->scaleBackgroundPercent());
-    m_ui.fullHeightButtonWidthMarginLeft->setValue(m_internalSettings->fullHeightButtonWidthMarginLeft());
-    m_ui.fullHeightButtonWidthMarginRight->setValue(m_internalSettings->fullHeightButtonWidthMarginRight());
     m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
     m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
     m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
@@ -214,7 +234,6 @@ void ConfigWidget::load()
     m_ui.lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
     m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
-    m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
 
     // load shadows
     if (m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge)
@@ -252,8 +271,6 @@ void ConfigWidget::save()
     m_internalSettings->setButtonIconStyle(m_ui.buttonIconStyle->currentIndex());
     m_internalSettings->setButtonShape(m_ui.buttonShape->currentIndex());
     m_internalSettings->setScaleBackgroundPercent(m_ui.scaleBackgroundPercent->value());
-    m_internalSettings->setFullHeightButtonWidthMarginLeft(m_ui.fullHeightButtonWidthMarginLeft->value());
-    m_internalSettings->setFullHeightButtonWidthMarginRight(m_ui.fullHeightButtonWidthMarginRight->value());
     m_internalSettings->setBackgroundColors(m_ui.backgroundColors->currentIndex());
     m_internalSettings->setAlwaysShow(m_ui.alwaysShow->currentIndex());
     m_internalSettings->setAlwaysShowIconHighlightUsing(m_ui.alwaysShowIconHighlightUsing->currentIndex());
@@ -289,7 +306,6 @@ void ConfigWidget::save()
     m_internalSettings->setLockTitleBarTopBottomMargins(m_ui.lockTitleBarTopBottomMargins->isChecked());
     m_internalSettings->setLockTitleBarLeftRightMargins(m_ui.lockTitleBarLeftRightMargins->isChecked());
     m_internalSettings->setLockButtonSpacingLeftRight(m_ui.lockButtonSpacingLeftRight->isChecked());
-    m_internalSettings->setLockFullHeightButtonWidthMargins(m_ui.lockFullHeightButtonWidthMargins->isChecked());
 
     m_internalSettings->setShadowSize(m_ui.shadowSize->currentIndex());
     m_internalSettings->setShadowStrength(qRound(qreal(m_ui.shadowStrength->value() * 255) / 100));
@@ -299,6 +315,7 @@ void ConfigWidget::save()
     m_internalSettings->setThinWindowOutlineThickness(m_ui.thinWindowOutlineThickness->value());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
+    m_fullHeightRectangleSizingDialog->save(false);
     // save configuration
     m_internalSettings->save();
 
@@ -336,8 +353,7 @@ void ConfigWidget::defaults()
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
     m_ui.scaleBackgroundPercent->setValue(m_internalSettings->scaleBackgroundPercent());
-    m_ui.fullHeightButtonWidthMarginLeft->setValue(m_internalSettings->fullHeightButtonWidthMarginLeft());
-    m_ui.fullHeightButtonWidthMarginRight->setValue(m_internalSettings->fullHeightButtonWidthMarginRight());
+    ;
     m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
     m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
     m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
@@ -372,7 +388,6 @@ void ConfigWidget::defaults()
     m_ui.lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
     m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
-    m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
 
     m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
     m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
@@ -381,6 +396,9 @@ void ConfigWidget::defaults()
     m_ui.thinWindowOutlineCustomColor->setColor(m_internalSettings->thinWindowOutlineCustomColor());
     m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
+
+    // set defaults in dialogs
+    m_fullHeightRectangleSizingDialog->defaults();
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
@@ -420,8 +438,6 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.lockButtonSpacingLeftRight->isChecked() != m_internalSettings->lockButtonSpacingLeftRight())
         modified = true;
-    else if (m_ui.lockFullHeightButtonWidthMargins->isChecked() != m_internalSettings->lockFullHeightButtonWidthMargins())
-        modified = true;
     else if (m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
         modified = true;
     else if (m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle())
@@ -429,10 +445,6 @@ void ConfigWidget::updateChanged()
     else if (m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape())
         modified = true;
     else if (m_ui.scaleBackgroundPercent->value() != m_internalSettings->scaleBackgroundPercent())
-        modified = true;
-    else if (m_ui.fullHeightButtonWidthMarginLeft->value() != m_internalSettings->fullHeightButtonWidthMarginLeft())
-        modified = true;
-    else if (m_ui.fullHeightButtonWidthMarginRight->value() != m_internalSettings->fullHeightButtonWidthMarginRight())
         modified = true;
     else if (m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors())
         modified = true;
@@ -499,6 +511,10 @@ void ConfigWidget::updateChanged()
     else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;
 
+    // dialogs
+    else if (m_fullHeightRectangleSizingDialog->m_changed)
+        modified = true;
+
     // exceptions
     else if (m_ui.exceptions->isChanged())
         modified = true;
@@ -546,9 +562,10 @@ void ConfigWidget::updateIconsStackedWidgetVisible()
 void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
 {
     if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
+        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
+    else if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
+        m_ui.backgroundShapeStackedWidget->setCurrentIndex(2);
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
 }
@@ -560,18 +577,6 @@ void ConfigWidget::updateCustomColorStackedWidgetVisible()
         m_ui.customColorStackedWidget->setCurrentIndex(1);
     else
         m_ui.customColorStackedWidget->setCurrentIndex(0);
-}
-
-void ConfigWidget::fullHeightButtonWidthMarginLeftChanged()
-{
-    if (m_ui.lockFullHeightButtonWidthMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.fullHeightButtonWidthMarginRight->setValue(m_ui.fullHeightButtonWidthMarginLeft->value());
-}
-
-void ConfigWidget::fullHeightButtonWidthMarginRightChanged()
-{
-    if (m_ui.lockFullHeightButtonWidthMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.fullHeightButtonWidthMarginLeft->setValue(m_ui.fullHeightButtonWidthMarginRight->value());
 }
 
 void ConfigWidget::titlebarTopMarginChanged()
@@ -639,5 +644,28 @@ void ConfigWidget::getTitlebarOpacityFromColorScheme()
             m_inactiveSchemeColorAlpha = inactiveTitlebarColor.alphaF();
         }
     }
+}
+
+void ConfigWidget::dialogChanged(bool changed)
+{
+    setChanged(changed);
+}
+
+void ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked()
+{
+    m_fullHeightRectangleSizingDialog->setWindowTitle(i18n("Background shape Width & Spacing - ClassiK Settings"));
+    m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setVisible(true);
+    m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPaddingLabel->setVisible(true);
+    m_fullHeightRectangleSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Integrated Rounded Rectangle Width && Spacing"));
+    m_fullHeightRectangleSizingDialog->exec();
+}
+
+void ConfigWidget::fullHeightRectangleSizingButtonClicked()
+{
+    m_fullHeightRectangleSizingDialog->setWindowTitle(i18n("Background shape Width & Spacing - ClassiK Settings"));
+    m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setVisible(false);
+    m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPaddingLabel->setVisible(false);
+    m_fullHeightRectangleSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Rectangle Width && Spacing"));
+    m_fullHeightRectangleSizingDialog->exec();
 }
 }
