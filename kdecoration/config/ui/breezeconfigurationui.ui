@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>872</width>
-    <height>587</height>
+    <width>800</width>
+    <height>604</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -53,7 +53,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>30</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -73,7 +73,7 @@
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>80</width>
+             <width>60</width>
              <height>20</height>
             </size>
            </property>
@@ -341,7 +341,7 @@
                <item row="0" column="0">
                 <widget class="QLabel" name="label_33">
                  <property name="text">
-                  <string>Scale background: </string>
+                  <string>Scale background shape: </string>
                  </property>
                  <property name="buddy">
                   <cstring>scaleBackgroundPercent</cstring>
@@ -352,8 +352,11 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="fullHeightWidths">
-            <layout class="QGridLayout" name="gridLayout_13">
+           <widget class="QWidget" name="fullHeightRectangleOptions">
+            <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="spacing">
+              <number>0</number>
+             </property>
              <property name="leftMargin">
               <number>0</number>
              </property>
@@ -366,120 +369,58 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="2" column="5">
-              <widget class="QLabel" name="label_28">
-               <property name="text">
-                <string>&amp;Right-hand 
-buttons:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>fullHeightButtonWidthMarginRight</cstring>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <spacer name="horizontalSpacer_31">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>10</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="2" column="3">
-              <widget class="QPushButton" name="lockFullHeightButtonWidthMargins">
-               <property name="toolTip">
-                <string>Lock to make Left-hand button width margin and Right-hand button width margin have the same value</string>
+             <item>
+              <widget class="QPushButton" name="fullHeightRectangleSizingButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
                <property name="text">
-                <string/>
+                <string>Background shape Width &amp;&amp; Spacing...</string>
                </property>
                <property name="icon">
-                <iconset resource="classikdecoration_config.qrc">
-                 <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-                 <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
-               </property>
-               <property name="checkable">
-                <bool>true</bool>
+                <iconset theme="transform-crop-and-resize">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
              </item>
-             <item row="2" column="7">
-              <spacer name="horizontalSpacer_32">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="fullHeightIntegratedRoundedRectangleOptions">
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="fullHeightIntegratedRoundedRectangleSizingButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>5</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_27">
                <property name="text">
-                <string>&amp;Left-hand 
-buttons:</string>
+                <string>Background shape Width &amp;&amp; Spacing...</string>
                </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-               <property name="buddy">
-                <cstring>fullHeightButtonWidthMarginLeft</cstring>
+               <property name="icon">
+                <iconset theme="transform-crop-and-resize">
+                 <normaloff>.</normaloff>.</iconset>
                </property>
               </widget>
-             </item>
-             <item row="2" column="6">
-              <widget class="QSpinBox" name="fullHeightButtonWidthMarginRight">
-               <property name="maximum">
-                <number>50</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" colspan="7">
-              <widget class="QLabel" name="label_29">
-               <property name="text">
-                <string>Width margins:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignCenter</set>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QSpinBox" name="fullHeightButtonWidthMarginLeft">
-               <property name="maximum">
-                <number>50</number>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="4">
-              <spacer name="horizontalSpacer_19">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>10</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
              </item>
             </layout>
            </widget>
@@ -861,7 +802,7 @@ buttons:</string>
            </item>
            <item>
             <property name="text">
-             <string>Icons and highlighted close button</string>
+             <string>Icons and close button's background</string>
             </property>
            </item>
           </widget>
@@ -1055,7 +996,7 @@ buttons:</string>
      </widget>
      <widget class="QWidget" name="tab_alignment_spacing">
       <attribute name="title">
-       <string>Alignment &amp;&amp; S&amp;pacing</string>
+       <string>S&amp;pacing</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0" colspan="3">
@@ -1284,361 +1225,7 @@ buttons:</string>
               <property name="verticalSpacing">
                <number>0</number>
               </property>
-              <item row="1" column="6">
-               <spacer name="horizontalSpacer_25">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="12" colspan="3">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Right-hand
-button spacing:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>buttonSpacingRight</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="3">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>Titlebar
-left margin:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>titlebarLeftMargin</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <spacer name="horizontalSpacer_14">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="2">
-               <spacer name="horizontalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="7">
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="1">
-               <widget class="QPushButton" name="lockTitleBarLeftRightMargins">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Lock to make Titlebar left margin and Titlebar right margin have the same value</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="classikdecoration_config.qrc">
-                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="8">
-               <widget class="QLabel" name="label_34">
-                <property name="text">
-                 <string>Title
-padding: </string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>titleSidePadding</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="16">
-               <spacer name="horizontalSpacer_13">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="15">
-               <spacer name="horizontalSpacer_18">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="8">
-               <widget class="QSpinBox" name="titleSidePadding">
-                <property name="maximum">
-                 <number>30</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="17">
-               <widget class="QSpinBox" name="titlebarRightMargin">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="minimum">
-                 <number>0</number>
-                </property>
-                <property name="maximum">
-                 <number>30</number>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="4" colspan="3">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Left-hand
-button spacing:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>buttonSpacingLeft</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="9">
-               <widget class="QLabel" name="label_38">
-                <property name="text">
-                 <string>Title align:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>titleAlignment</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QSpinBox" name="titlebarLeftMargin">
-                <property name="minimum">
-                 <number>0</number>
-                </property>
-                <property name="maximum">
-                 <number>30</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="13">
-               <widget class="QSpinBox" name="buttonSpacingRight">
-                <property name="suffix">
-                 <string/>
-                </property>
-                <property name="prefix">
-                 <string/>
-                </property>
-                <property name="maximum">
-                 <number>50</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="11">
-               <spacer name="horizontalSpacer_20">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="10">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Title
-padding:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="buddy">
-                 <cstring>titleSidePadding_2</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="5">
-               <widget class="QPushButton" name="lockButtonSpacingLeftRight">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="classikdecoration_config.qrc">
-                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="10">
-               <widget class="QSpinBox" name="titleSidePadding_2"/>
-              </item>
-              <item row="1" column="14">
-               <widget class="QPushButton" name="lockButtonSpacingLeftRight_2">
-                <property name="toolTip">
-                 <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="classikdecoration_config.qrc">
-                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
-                </property>
-                <property name="checkable">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="4">
-               <widget class="QSpinBox" name="buttonSpacingLeft">
-                <property name="suffix">
-                 <string/>
-                </property>
-                <property name="prefix">
-                 <string/>
-                </property>
-                <property name="maximum">
-                 <number>50</number>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="12">
-               <spacer name="horizontalSpacer_27">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Expanding</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="9">
-               <widget class="QComboBox" name="titleAlignment">
-                <item>
-                 <property name="text">
-                  <string>Left</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Centre</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Centre (Full Width)</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Right</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="18">
+              <item row="2" column="18">
                <widget class="QPushButton" name="lockTitleBarLeftRightMargins_2">
                 <property name="toolTip">
                  <string>Lock to make Titlebar left margin and Titlebar right margin have the same value</string>
@@ -1667,6 +1254,335 @@ right margin:</string>
                 </property>
                 <property name="buddy">
                  <cstring>titlebarRightMargin</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="8">
+               <spacer name="horizontalSpacer_19">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="3">
+               <spacer name="horizontalSpacer_14">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="12">
+               <spacer name="horizontalSpacer_27">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="9">
+               <widget class="QSpinBox" name="titleSidePadding">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QSpinBox" name="titlebarLeftMargin">
+                <property name="minimum">
+                 <number>0</number>
+                </property>
+                <property name="maximum">
+                 <number>30</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="7">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="12" colspan="3">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Right-hand
+button spacing:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>buttonSpacingRight</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="14">
+               <widget class="QPushButton" name="lockButtonSpacingLeftRight_2">
+                <property name="toolTip">
+                 <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="classikdecoration_config.qrc">
+                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
+                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="13">
+               <widget class="QSpinBox" name="buttonSpacingRight">
+                <property name="suffix">
+                 <string/>
+                </property>
+                <property name="prefix">
+                 <string/>
+                </property>
+                <property name="maximum">
+                 <number>50</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="4">
+               <widget class="QSpinBox" name="buttonSpacingLeft">
+                <property name="suffix">
+                 <string/>
+                </property>
+                <property name="prefix">
+                 <string/>
+                </property>
+                <property name="maximum">
+                 <number>50</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4" colspan="3">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Left-hand
+button spacing:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>buttonSpacingLeft</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="11">
+               <spacer name="horizontalSpacer_20">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0" colspan="3">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Titlebar
+left margin:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>titlebarLeftMargin</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="15">
+               <spacer name="horizontalSpacer_18">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="16">
+               <spacer name="horizontalSpacer_13">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="17">
+               <widget class="QSpinBox" name="titlebarRightMargin">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="minimum">
+                 <number>0</number>
+                </property>
+                <property name="maximum">
+                 <number>30</number>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="5">
+               <widget class="QPushButton" name="lockButtonSpacingLeftRight">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="classikdecoration_config.qrc">
+                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
+                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="6">
+               <spacer name="horizontalSpacer_25">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="2">
+               <spacer name="horizontalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="2" column="1">
+               <widget class="QPushButton" name="lockTitleBarLeftRightMargins">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Lock to make Titlebar left margin and Titlebar right margin have the same value</string>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="icon">
+                 <iconset resource="classikdecoration_config.qrc">
+                  <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
+                  <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+                </property>
+                <property name="checkable">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="10">
+               <spacer name="horizontalSpacer_21">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="8" colspan="3">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Title
+side padding:</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>titleSidePadding</cstring>
                 </property>
                </widget>
               </item>
@@ -2011,6 +1927,44 @@ right margin:</string>
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="formLayout_5">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_27">
+           <property name="text">
+            <string>Title alignment:</string>
+           </property>
+           <property name="buddy">
+            <cstring>titleAlignment</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="titleAlignment">
+           <item>
+            <property name="text">
+             <string>Left</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Centre</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Centre (Full Width)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Right</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <widget class="QCheckBox" name="drawBackgroundGradient">
@@ -2960,9 +2914,8 @@ right margin:</string>
   <tabstop>colorizeSystemIcons</tabstop>
   <tabstop>boldButtonIcons</tabstop>
   <tabstop>buttonShape</tabstop>
-  <tabstop>fullHeightButtonWidthMarginLeft</tabstop>
-  <tabstop>lockFullHeightButtonWidthMargins</tabstop>
-  <tabstop>fullHeightButtonWidthMarginRight</tabstop>
+  <tabstop>fullHeightRectangleSizingButton</tabstop>
+  <tabstop>fullHeightIntegratedRoundedRectangleSizingButton</tabstop>
   <tabstop>scaleBackgroundPercent</tabstop>
   <tabstop>backgroundColors</tabstop>
   <tabstop>translucentButtonBackgrounds</tabstop>
@@ -2981,8 +2934,6 @@ right margin:</string>
   <tabstop>buttonSpacingLeft</tabstop>
   <tabstop>lockButtonSpacingLeftRight</tabstop>
   <tabstop>titleSidePadding</tabstop>
-  <tabstop>titleAlignment</tabstop>
-  <tabstop>titleSidePadding_2</tabstop>
   <tabstop>buttonSpacingRight</tabstop>
   <tabstop>lockButtonSpacingLeftRight_2</tabstop>
   <tabstop>titlebarRightMargin</tabstop>
@@ -2992,6 +2943,7 @@ right margin:</string>
   <tabstop>cornerRadius_4</tabstop>
   <tabstop>cornerRadius_3</tabstop>
   <tabstop>percentMaximizedTopBottomMargins</tabstop>
+  <tabstop>titleAlignment</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>activeTitlebarOpacity_2</tabstop>

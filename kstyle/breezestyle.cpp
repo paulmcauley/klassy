@@ -7454,7 +7454,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         palette = QApplication::palette();
 
     const bool isAlwaysShownCloseButton(
-        buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndHighlightedCloseButton);
+        buttonType == ButtonClose && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::AlwaysShowIconsAndCloseButtonBackground);
     const bool withTrafficLights(_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights);
 
     palette.setCurrentColorGroup(QPalette::Active);

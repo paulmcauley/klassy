@@ -78,7 +78,7 @@
     <entry name="AlwaysShow" type="Enum">
         <choices>
             <choice name="AlwaysShowIcons" />
-            <choice name="AlwaysShowIconsAndHighlightedCloseButton" />
+            <choice name="AlwaysShowIconsAndCloseButtonBackground" />
         </choices>
         <default>AlwaysShowIcons</default>
     </entry>
@@ -246,6 +246,13 @@
     
     <entry name="LockFullHeightButtonWidthMargins" type = "Bool">
         <default>false</default>
+    </entry>
+    
+    <!-- Full-height Integrated Rounded Rectangle Bottom Padding -->
+    <entry name="FullHeightIntegratedRoundedRectangleBottomPadding" type = "Double">
+       <default>1.0</default>
+       <min>0</min>
+       <max>10</max>
     </entry>
     
     <!-- left button spacing -->

@@ -763,15 +763,18 @@ void Decoration::updateButtonsGeometry()
     int verticalIconOffset = 0;
     int horizontalIconOffsetLeftButtons = 0;
     int horizontalIconOffsetRightButtons = 0;
+    int buttonTopMargin = m_scaledTitleBarTopMargin;
+    if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
+        buttonTopMargin -= int(qRound(qreal(internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding()) * qreal(s->smallSpacing()) / 2.0));
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeight = borderTop();
         bHeight -= titleBarSeparatorHeight();
 
-        verticalIconOffset = m_scaledTitleBarTopMargin + (captionHeight() - smallButtonPaddedHeight) / 2;
+        verticalIconOffset = buttonTopMargin + (captionHeight() - smallButtonPaddedHeight) / 2;
     } else {
-        bHeight = captionHeight() + (isTopEdge() ? m_scaledTitleBarTopMargin : 0);
-        verticalIconOffset = (isTopEdge() ? m_scaledTitleBarTopMargin : 0) + (captionHeight() - smallButtonPaddedHeight) / 2;
+        bHeight = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
+        verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + (captionHeight() - smallButtonPaddedHeight) / 2;
     }
 
     int leftmostLeftVisibleIndex = -1;
@@ -855,7 +858,7 @@ void Decoration::updateButtonsGeometry()
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight)
             vPadding = 0;
         else
-            vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
+            vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const int hPadding = m_scaledTitleBarLeftMargin;
 
         auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex].data());
@@ -884,7 +887,7 @@ void Decoration::updateButtonsGeometry()
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight)
             vPadding = 0;
         else
-            vPadding = isTopEdge() ? 0 : m_scaledTitleBarTopMargin;
+            vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const int hPadding = m_scaledTitleBarRightMargin;
 
         auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex].data());
