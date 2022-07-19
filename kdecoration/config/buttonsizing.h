@@ -39,6 +39,8 @@ private slots:
     void fullHeightButtonWidthMarginRightChanged();
     void buttonSpacingLeftChanged();
     void buttonSpacingRightChanged();
+    void fullHeightButtonSpacingLeftChanged();
+    void fullHeightButtonSpacingRightChanged();
     void saveAndReloadKWinConfig()
     {
         save(true);

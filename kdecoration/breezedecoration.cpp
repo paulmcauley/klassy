@@ -764,17 +764,25 @@ void Decoration::updateButtonsGeometry()
     int horizontalIconOffsetLeftButtons = 0;
     int horizontalIconOffsetRightButtons = 0;
     int buttonTopMargin = m_scaledTitleBarTopMargin;
+    int buttonSpacingLeft = 0;
+    int buttonSpacingRight = 0;
+
     if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
         buttonTopMargin -= int(qRound(qreal(internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding()) * qreal(s->smallSpacing()) / 2.0));
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeight = borderTop();
         bHeight -= titleBarSeparatorHeight();
-
         verticalIconOffset = buttonTopMargin + (captionHeight() - smallButtonPaddedHeight) / 2;
+
+        buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
+        buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
     } else {
         bHeight = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
         verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + (captionHeight() - smallButtonPaddedHeight) / 2;
+
+        buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
+        buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
     }
 
     int leftmostLeftVisibleIndex = -1;
@@ -851,7 +859,7 @@ void Decoration::updateButtonsGeometry()
     // left buttons
     if (!m_leftButtons->buttons().isEmpty() && leftmostLeftVisibleIndex != -1) {
         // spacing
-        m_leftButtons->setSpacing(s->smallSpacing() * m_internalSettings->buttonSpacingLeft());
+        m_leftButtons->setSpacing(buttonSpacingLeft);
 
         // padding
         int vPadding;
@@ -880,7 +888,7 @@ void Decoration::updateButtonsGeometry()
     // right buttons
     if (!m_rightButtons->buttons().isEmpty() && rightmostRightVisibleIndex != -1) {
         // spacing
-        m_rightButtons->setSpacing(s->smallSpacing() * m_internalSettings->buttonSpacingRight());
+        m_rightButtons->setSpacing(buttonSpacingRight);
 
         // padding
         int vPadding;
