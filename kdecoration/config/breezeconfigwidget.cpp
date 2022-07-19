@@ -1,5 +1,5 @@
 //////////////////////////////////////////////////////////////////////////////
-// breezeconfigurationui.cpp
+// breezeconfigwidget.cpp
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -43,7 +43,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
             parentDialog->close();
     }
 
-    setButtons(Default | Apply);
+    setButtons(KCModule::Default | KCModule::Apply);
 
     // configuration
     m_ui.setupUi(this);
