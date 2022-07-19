@@ -25,15 +25,20 @@ ButtonSizing::ButtonSizing(QWidget *parent)
     connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.fullHeightIntegratedRoundedRectangleBottomPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
     connect(m_ui.lockFullHeightButtonWidthMargins, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
     connect(m_ui.lockButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
+    connect(m_ui.lockFullHeightButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
 
     // connect dual controls with same values
     connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginLeftChanged()));
     connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginRightChanged()));
     connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(buttonSpacingLeftChanged()));
     connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(buttonSpacingRightChanged()));
+    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingLeftChanged()));
+    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingRightChanged()));
 
     connect(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonSizing::defaults);
     connect(m_ui.buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonSizing::load);
@@ -58,9 +63,12 @@ void ButtonSizing::load()
     m_ui.fullHeightButtonWidthMarginRight->setValue(m_internalSettings->fullHeightButtonWidthMarginRight());
     m_ui.buttonSpacingRight->setValue(m_internalSettings->buttonSpacingRight());
     m_ui.buttonSpacingLeft->setValue(m_internalSettings->buttonSpacingLeft());
+    m_ui.fullHeightButtonSpacingRight->setValue(m_internalSettings->fullHeightButtonSpacingRight());
+    m_ui.fullHeightButtonSpacingLeft->setValue(m_internalSettings->fullHeightButtonSpacingLeft());
     m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setValue(m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding());
     m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
+    m_ui.lockFullHeightButtonSpacingLeftRight->setChecked(m_internalSettings->lockFullHeightButtonSpacingLeftRight());
 
     setChanged(false);
 
@@ -79,9 +87,12 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     m_internalSettings->setFullHeightButtonWidthMarginRight(m_ui.fullHeightButtonWidthMarginRight->value());
     m_internalSettings->setButtonSpacingRight(m_ui.buttonSpacingRight->value());
     m_internalSettings->setButtonSpacingLeft(m_ui.buttonSpacingLeft->value());
+    m_internalSettings->setFullHeightButtonSpacingRight(m_ui.fullHeightButtonSpacingRight->value());
+    m_internalSettings->setFullHeightButtonSpacingLeft(m_ui.fullHeightButtonSpacingLeft->value());
     m_internalSettings->setFullHeightIntegratedRoundedRectangleBottomPadding(m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->value());
     m_internalSettings->setLockFullHeightButtonWidthMargins(m_ui.lockFullHeightButtonWidthMargins->isChecked());
     m_internalSettings->setLockButtonSpacingLeftRight(m_ui.lockButtonSpacingLeftRight->isChecked());
+    m_internalSettings->setLockFullHeightButtonSpacingLeftRight(m_ui.lockFullHeightButtonSpacingLeftRight->isChecked());
 
     m_internalSettings->save();
     setChanged(false);
@@ -107,9 +118,12 @@ void ButtonSizing::defaults()
     m_ui.fullHeightButtonWidthMarginRight->setValue(m_internalSettings->fullHeightButtonWidthMarginRight());
     m_ui.buttonSpacingRight->setValue(m_internalSettings->buttonSpacingRight());
     m_ui.buttonSpacingLeft->setValue(m_internalSettings->buttonSpacingLeft());
+    m_ui.fullHeightButtonSpacingRight->setValue(m_internalSettings->fullHeightButtonSpacingRight());
+    m_ui.fullHeightButtonSpacingLeft->setValue(m_internalSettings->fullHeightButtonSpacingLeft());
     m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setValue(m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding());
     m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
+    m_ui.lockFullHeightButtonSpacingLeftRight->setChecked(m_internalSettings->lockFullHeightButtonSpacingLeftRight());
 
     m_processingDefaults = false;
     m_defaultsPressed = true;
@@ -141,11 +155,17 @@ void ButtonSizing::updateChanged()
         modified = true;
     else if (m_ui.buttonSpacingLeft->value() != m_internalSettings->buttonSpacingLeft())
         modified = true;
+    else if (m_ui.fullHeightButtonSpacingRight->value() != m_internalSettings->fullHeightButtonSpacingRight())
+        modified = true;
+    else if (m_ui.fullHeightButtonSpacingLeft->value() != m_internalSettings->fullHeightButtonSpacingLeft())
+        modified = true;
     else if (m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->value() != m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding())
         modified = true;
     else if (m_ui.lockFullHeightButtonWidthMargins->isChecked() != m_internalSettings->lockFullHeightButtonWidthMargins())
         modified = true;
     else if (m_ui.lockButtonSpacingLeftRight->isChecked() != m_internalSettings->lockButtonSpacingLeftRight())
+        modified = true;
+    else if (m_ui.lockFullHeightButtonSpacingLeftRight->isChecked() != m_internalSettings->lockFullHeightButtonSpacingLeftRight())
         modified = true;
 
     setChanged(modified);
@@ -186,4 +206,15 @@ void ButtonSizing::buttonSpacingRightChanged()
         m_ui.buttonSpacingLeft->setValue(m_ui.buttonSpacingRight->value());
 }
 
+void ButtonSizing::fullHeightButtonSpacingLeftChanged()
+{
+    if (m_ui.lockFullHeightButtonSpacingLeftRight->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui.fullHeightButtonSpacingRight->setValue(m_ui.fullHeightButtonSpacingLeft->value());
+}
+
+void ButtonSizing::fullHeightButtonSpacingRightChanged()
+{
+    if (m_ui.lockFullHeightButtonSpacingLeftRight->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui.fullHeightButtonSpacingLeft->setValue(m_ui.fullHeightButtonSpacingRight->value());
+}
 }
