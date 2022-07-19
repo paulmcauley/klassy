@@ -31,6 +31,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 {
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
 
+    /* //disabling as defaults don't save properly in kcmshell
     // launch classik decoration config in in kcmshell5 instead of default systemsettings dialog
     // This gives 2 benefits:
     // 1. Adds an Apply button
@@ -41,6 +42,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
         if (parentDialog)
             parentDialog->close();
     }
+    */
 
     setButtons(KCModule::Default | KCModule::Apply);
 
