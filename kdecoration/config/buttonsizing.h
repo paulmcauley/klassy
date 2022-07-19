@@ -1,8 +1,8 @@
-#ifndef FULLHEIGHTRECTANGLESIZING_H
-#define FULLHEIGHTRECTANGLESIZING_H
+#ifndef BUTTONSIZING_H
+#define BUTTONSIZING_H
 
 //////////////////////////////////////////////////////////////////////////////
-// fullheightrectanglesizing.h
+// buttonsizing.h
 // -------------------
 //
 // SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
@@ -12,21 +12,21 @@
 
 #include "breeze.h"
 #include "breezesettings.h"
-#include "ui_fullheightrectanglesizing.h"
+#include "ui_buttonsizing.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class FullHeightRectangleSizing : public QDialog
+class ButtonSizing : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit FullHeightRectangleSizing(QWidget *parent = nullptr);
-    ~FullHeightRectangleSizing();
+    explicit ButtonSizing(QWidget *parent = nullptr);
+    ~ButtonSizing();
 
     void load();
     void save(const bool reloadKwinConfig = true);
@@ -37,6 +37,8 @@ private slots:
     void updateChanged();
     void fullHeightButtonWidthMarginLeftChanged();
     void fullHeightButtonWidthMarginRightChanged();
+    void buttonSpacingLeftChanged();
+    void buttonSpacingRightChanged();
     void saveAndReloadKWinConfig()
     {
         save(true);
@@ -49,7 +51,7 @@ signals:
 private:
     void setChanged(bool value);
 
-    Ui_FullHeightRectangleSizing m_ui;
+    Ui_ButtonSizing m_ui;
 
     InternalSettingsPtr m_internalSettings;
 
@@ -65,4 +67,4 @@ private:
 
 }
 
-#endif // FULLHEIGHTRECTANGLESIZING_H
+#endif // BUTTONSIZING_H

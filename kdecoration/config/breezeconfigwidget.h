@@ -12,7 +12,7 @@
 #include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
-#include "fullheightrectanglesizing.h"
+#include "buttonsizing.h"
 #include "ui_breezeconfigurationui.h"
 
 #include <KCModule>
@@ -58,10 +58,9 @@ protected Q_SLOTS:
     void titlebarBottomMarginChanged();
     void titlebarLeftMarginChanged();
     void titlebarRightMarginChanged();
-    void buttonSpacingLeftChanged();
-    void buttonSpacingRightChanged();
     void fullHeightIntegratedRoundedRectangleSizingButtonClicked();
     void fullHeightRectangleSizingButtonClicked();
+    void buttonSizingButtonClicked();
     void dialogChanged(bool changed);
 
 protected:
@@ -88,7 +87,7 @@ private:
     bool m_loading = false;
 
     //* dialogs behind button
-    FullHeightRectangleSizing *m_fullHeightRectangleSizingDialog;
+    ButtonSizing *m_buttonSizingDialog;
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();
