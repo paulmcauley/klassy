@@ -43,6 +43,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
             parentDialog->close();
     }
 
+    setButtons(Default | Apply);
+
     // configuration
     m_ui.setupUi(this);
     m_fullHeightRectangleSizingDialog = new FullHeightRectangleSizing(this);
@@ -667,6 +669,7 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setVisible(false);
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPaddingLabel->setVisible(false);
     m_fullHeightRectangleSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Rectangle Width && Spacing"));
+
     if (!m_fullHeightRectangleSizingDialog->exec())
         m_fullHeightRectangleSizingDialog->load();
 }
