@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FullHeightRectangleSizing</class>
- <widget class="QDialog" name="FullHeightRectangleSizing">
+ <class>ButtonSizing</class>
+ <widget class="QDialog" name="ButtonSizing">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>633</width>
-    <height>271</height>
+    <height>298</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,61 @@
       <string>Full-Height Integrated Rounded Rectangle Width &amp;&amp; Spacing</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <spacer name="verticalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>5</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="fieldGrowthPolicy">
+         <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+        </property>
+        <property name="formAlignment">
+         <set>Qt::AlignHCenter|Qt::AlignTop</set>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="scaleBackgroundPercentLabel">
+          <property name="text">
+           <string>Scale button background: </string>
+          </property>
+          <property name="buddy">
+           <cstring>scaleBackgroundPercent</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSpinBox" name="scaleBackgroundPercent">
+          <property name="inputMethodHints">
+           <set>Qt::ImhDigitsOnly</set>
+          </property>
+          <property name="suffix">
+           <string> %</string>
+          </property>
+          <property name="minimum">
+           <number>100</number>
+          </property>
+          <property name="maximum">
+           <number>250</number>
+          </property>
+          <property name="singleStep">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item>
        <spacer name="verticalSpacer_2">
         <property name="orientation">
@@ -35,10 +90,26 @@
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="2" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_2">
+        <item row="2" column="4">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="5" colspan="2">
+         <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="0">
-           <widget class="Line" name="line">
+           <widget class="Line" name="line_2">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
@@ -46,17 +117,14 @@
           </item>
          </layout>
         </item>
-        <item row="1" column="7">
-         <widget class="QLabel" name="label_28">
+        <item row="3" column="0">
+         <widget class="QLabel" name="label">
           <property name="text">
-           <string>&amp;Right-hand buttons'
- Width margins:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <string>Spacing between
+Left-hand buttons:</string>
           </property>
           <property name="buddy">
-           <cstring>fullHeightButtonWidthMarginRight</cstring>
+           <cstring>buttonSpacingLeft</cstring>
           </property>
          </widget>
         </item>
@@ -73,21 +141,53 @@
           </property>
          </spacer>
         </item>
-        <item row="3" column="4">
-         <spacer name="verticalSpacer">
+        <item row="1" column="8">
+         <widget class="QSpinBox" name="fullHeightButtonWidthMarginRight">
+          <property name="maximum">
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="5">
+         <spacer name="horizontalSpacer_19">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
+           <enum>QSizePolicy::Fixed</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>20</width>
-            <height>20</height>
+            <width>10</width>
+            <height>0</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="3" column="2" colspan="2">
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="7">
+         <widget class="QLabel" name="fullHeightButtonWidthMarginRightLabel">
+          <property name="text">
+           <string>&amp;Right-hand buttons'
+ Width margins:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>fullHeightButtonWidthMarginRight</cstring>
+          </property>
+         </widget>
         </item>
         <item row="1" column="4">
          <widget class="QPushButton" name="lockFullHeightButtonWidthMargins">
@@ -113,24 +213,51 @@
           </property>
          </widget>
         </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_27">
-          <property name="text">
-           <string>&amp;Left-hand buttons'
- Width margins:</string>
+        <item row="3" column="1">
+         <widget class="QSpinBox" name="buttonSpacingLeft">
+          <property name="suffix">
+           <string/>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          <property name="prefix">
+           <string/>
           </property>
-          <property name="buddy">
-           <cstring>fullHeightButtonWidthMarginLeft</cstring>
+          <property name="maximum">
+           <number>50</number>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
-         <widget class="QSpinBox" name="fullHeightButtonWidthMarginLeft">
-          <property name="maximum">
-           <number>50</number>
+        <item row="3" column="4">
+         <widget class="QPushButton" name="lockButtonSpacingLeftRight">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="classikdecoration_config.qrc">
+            <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
+            <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="7">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Spacing between
+Right-hand buttons:</string>
+          </property>
+          <property name="buddy">
+           <cstring>buttonSpacingRight</cstring>
           </property>
          </widget>
         </item>
@@ -146,6 +273,44 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item row="1" column="2" colspan="2">
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="8">
+         <widget class="QSpinBox" name="buttonSpacingRight">
+          <property name="suffix">
+           <string/>
+          </property>
+          <property name="prefix">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="fullHeightButtonWidthMarginLeftLabel">
+          <property name="text">
+           <string>&amp;Left-hand buttons'
+ Width margins:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="buddy">
+           <cstring>fullHeightButtonWidthMarginLeft</cstring>
+          </property>
+         </widget>
         </item>
         <item row="0" column="3">
          <spacer name="horizontalSpacer_31">
@@ -163,39 +328,23 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="5" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="fullHeightButtonWidthMarginLeft">
+          <property name="maximum">
+           <number>50</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="5" colspan="2">
+         <layout class="QGridLayout" name="gridLayout_5">
           <item row="0" column="0">
-           <widget class="Line" name="line_2">
+           <widget class="Line" name="line_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
           </item>
          </layout>
-        </item>
-        <item row="0" column="5">
-         <spacer name="horizontalSpacer_19">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>10</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="8">
-         <widget class="QSpinBox" name="fullHeightButtonWidthMarginRight">
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
         </item>
        </layout>
       </item>
@@ -319,9 +468,13 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>scaleBackgroundPercent</tabstop>
   <tabstop>fullHeightButtonWidthMarginLeft</tabstop>
   <tabstop>lockFullHeightButtonWidthMargins</tabstop>
   <tabstop>fullHeightButtonWidthMarginRight</tabstop>
+  <tabstop>buttonSpacingLeft</tabstop>
+  <tabstop>lockButtonSpacingLeftRight</tabstop>
+  <tabstop>buttonSpacingRight</tabstop>
   <tabstop>fullHeightIntegratedRoundedRectangleBottomPadding</tabstop>
  </tabstops>
  <resources>
@@ -331,7 +484,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>FullHeightRectangleSizing</receiver>
+   <receiver>ButtonSizing</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -347,7 +500,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>FullHeightRectangleSizing</receiver>
+   <receiver>ButtonSizing</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

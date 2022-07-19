@@ -55,7 +55,7 @@ set(breezedecoration_config_SRCS
     config/breezeexceptionlistwidget.cpp
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
-    config/fullheightrectanglesizing.cpp
+    config/buttonsizing.cpp
     config/ui/classikdecoration_config.qrc
 )
 
@@ -64,7 +64,7 @@ set(breezedecoration_config_PART_FORMS
    config/ui/breezedetectwidget.ui
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
-   config/ui/fullheightrectanglesizing.ui
+   config/ui/buttonsizing.ui
 )
 
 ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
