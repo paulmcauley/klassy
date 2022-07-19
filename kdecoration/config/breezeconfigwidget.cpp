@@ -123,18 +123,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()));
     connect(m_ui.titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()));
     connect(m_ui.titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()));
-    connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_2, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_3, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), m_ui.cornerRadius_4, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_2, SIGNAL(valueChanged(double)), m_ui.cornerRadius, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_2, SIGNAL(valueChanged(double)), m_ui.cornerRadius_3, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_2, SIGNAL(valueChanged(double)), m_ui.cornerRadius_4, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_3, SIGNAL(valueChanged(double)), m_ui.cornerRadius, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_3, SIGNAL(valueChanged(double)), m_ui.cornerRadius_2, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_3, SIGNAL(valueChanged(double)), m_ui.cornerRadius_4, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_4, SIGNAL(valueChanged(double)), m_ui.cornerRadius, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_4, SIGNAL(valueChanged(double)), m_ui.cornerRadius_2, SLOT(setValue(double)));
-    connect(m_ui.cornerRadius_4, SIGNAL(valueChanged(double)), m_ui.cornerRadius_3, SLOT(setValue(double)));
     connect(m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity_2, SLOT(setValue(int)));
     connect(m_ui.activeTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity, SLOT(setValue(int)));
     connect(m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity_2, SLOT(setValue(int)));
