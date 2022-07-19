@@ -955,7 +955,7 @@ void Button::setShouldDrawBoldButtonIcons()
         if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
             break;
         // Else if HiDPI system scaling use bold icons
-        else if (m_devicePixelRatio > 1.2)
+        else if (m_devicePixelRatio > 1.4)
             m_boldButtonIcons = true;
         break;
     case InternalSettings::BoldIconsFine:
