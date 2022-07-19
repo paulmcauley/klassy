@@ -657,7 +657,8 @@ void ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked()
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setVisible(true);
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPaddingLabel->setVisible(true);
     m_fullHeightRectangleSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Integrated Rounded Rectangle Width && Spacing"));
-    m_fullHeightRectangleSizingDialog->exec();
+    if (!m_fullHeightRectangleSizingDialog->exec())
+        m_fullHeightRectangleSizingDialog->load();
 }
 
 void ConfigWidget::fullHeightRectangleSizingButtonClicked()
@@ -666,6 +667,7 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setVisible(false);
     m_fullHeightRectangleSizingDialog->m_ui.fullHeightIntegratedRoundedRectangleBottomPaddingLabel->setVisible(false);
     m_fullHeightRectangleSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Rectangle Width && Spacing"));
-    m_fullHeightRectangleSizingDialog->exec();
+    if (!m_fullHeightRectangleSizingDialog->exec())
+        m_fullHeightRectangleSizingDialog->load();
 }
 }
