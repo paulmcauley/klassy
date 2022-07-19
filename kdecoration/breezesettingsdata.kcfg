@@ -62,7 +62,7 @@
           <choice name="ShapeSmallRoundedSquare" />
           <choice name="ShapeSmallSquare" />
       </choices>
-      <default>ShapeFullHeightRoundedRectangle</default>
+      <default>ShapeFullHeightIntegratedRoundedRectangle</default>
     </entry>
     
     <!-- background colors -->
@@ -169,7 +169,7 @@
     </entry>
     
     <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>1.8</default>
+       <default>1.75</default>
        <min>1</min>
        <max>10</max>
     </entry>
@@ -232,14 +232,14 @@
     
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>3</default>
+       <default>4</default>
        <min>0</min>
        <max>50</max>
     </entry>
     
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>8</default>
+       <default>9</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -309,7 +309,7 @@
     
     <!-- top bottom margins % for maximized windows -->
     <entry name="PercentMaximizedTopBottomMargins" type = "Int">
-       <default>80</default>
+       <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
@@ -352,7 +352,7 @@
     </entry>
     
     <entry name="UseTitlebarColorForAllBorders" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <!-- background gradient -->
