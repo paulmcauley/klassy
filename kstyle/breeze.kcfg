@@ -116,7 +116,7 @@
     
     <!-- button gradient -->
     <entry name="ButtonGradient" type="Bool">
-      <default>true</default>
+      <default>false</default>
     </entry>
 
     <entry name="DockWidgetDrawFrame" type="Bool">
