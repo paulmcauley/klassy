@@ -250,7 +250,7 @@
     
     <!-- Full-height Integrated Rounded Rectangle Bottom Padding -->
     <entry name="FullHeightIntegratedRoundedRectangleBottomPadding" type = "Double">
-       <default>1.0</default>
+       <default>0.75</default>
        <min>0</min>
        <max>10</max>
     </entry>
