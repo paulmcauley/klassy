@@ -20,6 +20,7 @@ ConfigurationModule::ConfigurationModule(QWidget *parent, const QVariantList &ar
     : KCModule(parent, args)
 {
     setLayout(new QVBoxLayout(this));
+    setButtons(KCModule::Default | KCModule::Apply);
     layout()->addWidget(m_config = new StyleConfig(this));
     connect(m_config, static_cast<void (StyleConfig::*)(bool)>(&StyleConfig::changed), this, static_cast<void (KCModule::*)(bool)>(&KCModule::changed));
 }
