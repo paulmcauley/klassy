@@ -20,7 +20,7 @@ SettingsProvider *SettingsProvider::s_self = nullptr;
 
 //__________________________________________________________________
 SettingsProvider::SettingsProvider()
-    : m_config(KSharedConfig::openConfig(QStringLiteral("classikrc")))
+    : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
 {
     reconfigure();
 }

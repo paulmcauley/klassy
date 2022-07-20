@@ -26,19 +26,19 @@ namespace Breeze
 //_________________________________________________________
 ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     : KCModule(parent, args)
-    , m_configuration(KSharedConfig::openConfig(QStringLiteral("classikrc")))
+    , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
     , m_changed(false)
 {
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
 
     /* //disabling as defaults don't save properly in kcmshell
-    // launch classik decoration config in in kcmshell5 instead of default systemsettings dialog
+    // launch klassy decoration config in in kcmshell5 instead of default systemsettings dialog
     // This gives 2 benefits:
     // 1. Adds an Apply button
     // 2. Bypasses bug where reloading the kwin config in systemsettings prevents save from being called (though if(parentDialog) connect(parentDialog,
     // &QDialog::accepted, this, &ConfigWidget::save); also fixes this)
     if (QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell5 classikdecorationconfig &");
+        system("kcmshell5 klassydecorationconfig &");
         if (parentDialog)
             parentDialog->close();
     }
@@ -55,14 +55,14 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     if (parentDialog)
         connect(parentDialog, &QDialog::accepted, this, &ConfigWidget::save);
 
-#if CLASSIK_GIT_MASTER
+#if KLASSY_GIT_MASTER
     // set the long version string if from the git master
-    m_ui.version->setText("v" + QString(CLASSIK_VERSION) + ".git");
+    m_ui.version->setText("v" + QString(KLASSY_VERSION) + ".git");
 
 #else
     // set shortened version string in UI if an official release
     QRegularExpression re("\\d+\\.\\d+");
-    QRegularExpressionMatch match = re.match(CLASSIK_VERSION);
+    QRegularExpressionMatch match = re.match(KLASSY_VERSION);
     if (match.hasMatch()) {
         QString matched = match.captured(0);
         m_ui.version->setText("v" + matched);
@@ -314,7 +314,7 @@ void ConfigWidget::save()
 
     // needed for breeze style to reload shadows
     {
-        QDBusMessage message(QDBusMessage::createSignal("/ClassikDecoration", "org.kde.Classik.Style", "reparseConfiguration"));
+        QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
         QDBusConnection::sessionBus().send(message);
     }
 }
@@ -609,7 +609,7 @@ void ConfigWidget::dialogChanged(bool changed)
 void ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 400);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - ClassiK Settings"));
+    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
     m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Integrated Rounded Rectangle Width && Spacing"));
 
     m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -652,7 +652,7 @@ void ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked()
 void ConfigWidget::fullHeightRectangleSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 300);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - ClassiK Settings"));
+    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
     m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Rectangle Width && Spacing"));
 
     m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
@@ -695,7 +695,7 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
 void ConfigWidget::buttonSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 275);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Size & Spacing - ClassiK Settings"));
+    m_buttonSizingDialog->setWindowTitle(i18n("Button Size & Spacing - Klassy Settings"));
     m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Button Size && Spacing"));
 
     m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(true);

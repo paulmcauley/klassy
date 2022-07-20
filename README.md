@@ -1,4 +1,4 @@
-# ClassiK
+# Klassy
 
 ##### Table of Contents  
 [Overview](#overview)  
@@ -14,7 +14,7 @@
 <a name="overview"/>
 
 ## Overview
-_ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _ClassiK_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
+_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _Classik_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icons
@@ -53,24 +53,21 @@ _ClassiK_ (formerly _ClassikStyles_) is a highly customizable binary Window Deco
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (light)](screenshots/thin_window_outline_light_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (light)")
 
-* Configurable scrollbars:
-> ![Screenshot of scrollbar customization](screenshots/configurable_scrollbars.png?raw=true "Screenshot of scrollbar customization")
-
 * Configurable animations
 
 ### Known issues
-* GTK apps' titlebar buttons will not always update if you change a _ClassiK_ setting. Workaround: you need to select another window decoration and then select _ClassiK_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
+* GTK apps' titlebar buttons will not always update if you change a _Klassy_ setting. Workaround: you need to select another window decoration and then select _Klassy_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
 
 &nbsp;
 
 <a name="installation"/>
 
 ## Installation
-_ClassiK_ from version 3.0 onwards requires a recent version of KDE Plasma with __at least KDE Frameworks 5.86__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_Klassy_ from version 4.0 onwards requires at least __Plasma 5.25__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
-[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=classik) for OpenSUSE, Debian/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
 > NB: for OpenSUSE Leap you will [first need to install newer KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
@@ -108,13 +105,11 @@ sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11
 ### Step 2: Then, build and install
 Build and install from source script:
 ```
-chmod +x install.sh
 ./install.sh
 ```
 
 Uninstall build script:
 ```
-chmod +x uninstall.sh
 ./uninstall.sh
 ```
 
@@ -125,8 +120,8 @@ chmod +x uninstall.sh
 To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, for example, _Classik-with-Square-highlight_:
 > <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/classik_square_icons.png" alt="Screenshot of Classik with Square highlight icon theme" width="512">
 
-To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "classikstyles". Then download your theme of choice to match your Button icon style and Button highlight style:
-> ![Screenshot of downloading matching ClassiK system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching ClassiK system icons")
+To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "klassy". Then download your theme of choice to match your Button icon style and Button highlight style:
+> ![Screenshot of downloading matching Klassy system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching Klassy system icons")
 
 These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
 

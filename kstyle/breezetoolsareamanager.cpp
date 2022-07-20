@@ -49,20 +49,20 @@ void appendIfNotAlreadyExists(T1 *list, T2 item)
 inline void doTranslucency(QMainWindow *win, bool on)
 {
     if (on) {
-        if (win->property("_classik_was_translucent_set").toBool()) // if translucency has already been set don't set it again
+        if (win->property("_klassy_was_translucent_set").toBool()) // if translucency has already been set don't set it again
             return;
 
-        win->setProperty("_classik_was_translucent", win->testAttribute(Qt::WA_TranslucentBackground));
-        win->setProperty("_classik_was_translucent_set", true);
+        win->setProperty("_klassy_was_translucent", win->testAttribute(Qt::WA_TranslucentBackground));
+        win->setProperty("_klassy_was_translucent_set", true);
         win->setAttribute(Qt::WA_TranslucentBackground, true);
     } else {
-        if (!win->property("_classik_was_translucent_set").toBool()) // do not turn off translucency if it was initially set by a third party
+        if (!win->property("_klassy_was_translucent_set").toBool()) // do not turn off translucency if it was initially set by a third party
             return;
 
         win->setAttribute(Qt::WA_TranslucentBackground,
-                          win->property("_classik_was_translucent").toBool()); // set the translucency back to its initial value if altered here
-        win->setProperty("_classik_was_translucent", QVariant());
-        win->setProperty("_classik_was_translucent_set", false);
+                          win->property("_klassy_was_translucent").toBool()); // set the translucency back to its initial value if altered here
+        win->setProperty("_klassy_was_translucent", QVariant());
+        win->setProperty("_klassy_was_translucent_set", false);
     }
 }
 

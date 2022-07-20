@@ -19,13 +19,13 @@ set(breezecommon_LIB_SRCS
 
 kconfig_add_kcfg_files(breezecommon_LIB_SRCS ../kdecoration/breezesettings.kcfgc)
 
-add_library(classikcommon5 ${breezecommon_LIB_SRCS})
+add_library(klassycommon5 ${breezecommon_LIB_SRCS})
 
-generate_export_header(classikcommon5
+generate_export_header(klassycommon5
     BASE_NAME breezecommon
     EXPORT_FILE_NAME breezecommon_export.h)
 
-target_link_libraries(classikcommon5
+target_link_libraries(klassycommon5
     PUBLIC
         Qt::Core
         Qt::Gui
@@ -35,8 +35,8 @@ target_link_libraries(classikcommon5
         KF5::ConfigGui
         KF5::ConfigWidgets)
 
-set_target_properties(classikcommon5 PROPERTIES
+set_target_properties(klassycommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR})
 
-install(TARGETS classikcommon5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
+install(TARGETS klassycommon5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)

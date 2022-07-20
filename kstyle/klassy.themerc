@@ -1,7 +1,7 @@
 [Misc]
-Name=ClassiK
+Name=Klassy
 
-ConfigPage=kstyle_classik_config
+ConfigPage=kstyle_klassy_config
 Comment=Widget style for KDE Frameworks
 Comment[ar]=نمط ودجات أُطر عمل كدي
 Comment[az]=KDE Frameworks üçün Vidjet üslubu
@@ -51,4 +51,4 @@ Comment[x-test]=xxWidget style for KDE Frameworksxx
 Comment[zh_CN]=KDE 框架的部件样式
 Comment[zh_TW]=KDE Frameworks 的元件樣式
 [KDE]
-WidgetStyle=Classik
+WidgetStyle=Klassy

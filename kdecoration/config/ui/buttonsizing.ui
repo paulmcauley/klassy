@@ -108,9 +108,9 @@
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="classikdecoration_config.qrc">
-            <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+           <iconset resource="klassydecoration_config.qrc">
+            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
+            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -267,9 +267,9 @@ Left-hand buttons:</string>
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="classikdecoration_config.qrc">
-            <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+           <iconset resource="klassydecoration_config.qrc">
+            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
+            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -458,9 +458,9 @@ Right-hand buttons:</string>
            <string/>
           </property>
           <property name="icon">
-           <iconset resource="classikdecoration_config.qrc">
-            <normaloff>:/classik_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/classik_config_icons/object-locked-symbolic.svg</normalon>:/classik_config_icons/object-unlocked-symbolic.svg</iconset>
+           <iconset resource="klassydecoration_config.qrc">
+            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
+            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -589,7 +589,7 @@ Right-hand buttons:</string>
   <tabstop>fullHeightIntegratedRoundedRectangleBottomPadding</tabstop>
  </tabstops>
  <resources>
-  <include location="classikdecoration_config.qrc"/>
+  <include location="klassydecoration_config.qrc"/>
  </resources>
  <connections>
   <connection>

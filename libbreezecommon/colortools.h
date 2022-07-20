@@ -42,7 +42,7 @@ struct BREEZECOMMON_EXPORT DecorationColors {
 extern std::shared_ptr<DecorationColors> BREEZECOMMON_EXPORT g_decorationColors;
 
 /**
- * @brief Functions to manipulate colours within ClassiK
+ * @brief Functions to manipulate colours within Klassy
  *        To be used as common code base across both kdecoration and kstyle.
  */
 class BREEZECOMMON_EXPORT ColorTools
