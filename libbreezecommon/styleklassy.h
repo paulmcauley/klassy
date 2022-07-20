@@ -1,5 +1,5 @@
-#ifndef BREEZE_STYLECLASSIK_H
-#define BREEZE_STYLECLASSIK_H
+#ifndef BREEZE_STYLEKLASSY_H
+#define BREEZE_STYLEKLASSY_H
 
 /*
  * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
@@ -14,7 +14,7 @@
 namespace Breeze
 {
 
-class RenderStyleClassik18By18 : public RenderDecorationButtonIcon18By18
+class RenderStyleKlassy18By18 : public RenderDecorationButtonIcon18By18
 {
 public:
     /**
@@ -24,7 +24,7 @@ public:
      * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleClassik18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons)
+    RenderStyleKlassy18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons)
         : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons) { };
 
     void renderCloseIcon() override;

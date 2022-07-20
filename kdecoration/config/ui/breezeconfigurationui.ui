@@ -657,11 +657,11 @@
            </property>
            <item>
             <property name="text">
-             <string>  Classik</string>
+             <string>  Klassy</string>
             </property>
             <property name="icon">
              <iconset resource="klassydecoration_config.qrc">
-              <normaloff>:/klassy_config_icons/Classik.png</normaloff>:/klassy_config_icons/Classik.png</iconset>
+              <normaloff>:/klassy_config_icons/Klassy.png</normaloff>:/klassy_config_icons/Klassy.png</iconset>
             </property>
            </item>
            <item>

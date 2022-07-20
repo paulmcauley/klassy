@@ -5,8 +5,8 @@
  */
 
 #include "renderdecorationbuttonicon.h"
-#include "styleclassik.h"
 #include "stylekite.h"
+#include "styleklassy.h"
 #include "styleoxygen.h"
 #include "styleredmond.h"
 #include "styleredmond10.h"
@@ -23,9 +23,9 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
                                                                                             qreal devicePixelRatio)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::StyleClassik:
+    case InternalSettings::StyleKlassy:
     default:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleClassik18By18(painter, notInTitlebar, boldButtonIcons));
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKlassy18By18(painter, notInTitlebar, boldButtonIcons));
     case InternalSettings::StyleKite:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKite18By18(painter, notInTitlebar, boldButtonIcons));
     case InternalSettings::StyleOxygen:

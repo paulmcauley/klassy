@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "styleclassik.h"
+#include "styleklassy.h"
 
 namespace Breeze
 {
-void RenderStyleClassik18By18::renderCloseIcon()
+void RenderStyleKlassy18By18::renderCloseIcon()
 {
     pen.setWidthF(pen.widthF() * 1.166666666); // thicken up diagonal slightly to give a balanced look
     painter->setPen(pen);
@@ -28,7 +28,7 @@ void RenderStyleClassik18By18::renderCloseIcon()
     }
 }
 
-void RenderStyleClassik18By18::renderMaximizeIcon()
+void RenderStyleKlassy18By18::renderMaximizeIcon()
 {
     if (!notInTitlebar) {
         if (boldButtonIcons) {
@@ -44,7 +44,7 @@ void RenderStyleClassik18By18::renderMaximizeIcon()
     // painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
 }
 
-void RenderStyleClassik18By18::renderRestoreIcon()
+void RenderStyleKlassy18By18::renderRestoreIcon()
 {
     pen.setJoinStyle(Qt::BevelJoin);
     painter->setPen(pen);
@@ -73,7 +73,7 @@ void RenderStyleClassik18By18::renderRestoreIcon()
     }
 }
 
-void RenderStyleClassik18By18::renderMinimizeIcon()
+void RenderStyleKlassy18By18::renderMinimizeIcon()
 {
     if (boldButtonIcons) {
         // tiny filled square
@@ -100,7 +100,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
 }
 
 /*//Experimental 3 squares
-    void RenderStyleClassik18By18::renderKeepBehindIcon()
+    void RenderStyleKlassy18By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -123,7 +123,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
         );
     }
 
-    void RenderStyleClassik18By18::renderKeepInFrontIcon()
+    void RenderStyleKlassy18By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -139,7 +139,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
 */
 
 /*//Experimental 2 squares
-    void RenderStyleClassik18By18::renderKeepBehindIcon()
+    void RenderStyleKlassy18By18::renderKeepBehindIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -160,7 +160,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
 
     }
 
-    void RenderStyleClassik18By18::renderKeepInFrontIcon()
+    void RenderStyleKlassy18By18::renderKeepInFrontIcon()
     {
         pen.setJoinStyle( Qt::RoundJoin );
         painter->setPen( pen );
@@ -175,7 +175,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
 */
 
 /* //Experimental filled arrows
-    void RenderStyleClassik18By18::renderKeepBehindIcon()
+    void RenderStyleKlassy18By18::renderKeepBehindIcon()
     {
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 13.5 ), QPointF( 13.5, 13.5 ) );
@@ -192,7 +192,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
             << QPointF( 6.5, 8.5 ) );
     }
 
-    void RenderStyleClassik18By18::renderKeepInFrontIcon()
+    void RenderStyleKlassy18By18::renderKeepInFrontIcon()
     {
         //horizontal lines
         painter->drawLine( QPointF( 4.5, 4.5 ), QPointF( 13.5, 4.5 ) );
@@ -211,7 +211,7 @@ void RenderStyleClassik18By18::renderMinimizeIcon()
 */
 
 // For consistency with breeze icon set
-void RenderStyleClassik18By18::renderKeepBehindIcon()
+void RenderStyleKlassy18By18::renderKeepBehindIcon()
 {
     if ((!notInTitlebar) && boldButtonIcons) {
         // thicker pen in titlebar
@@ -230,7 +230,7 @@ void RenderStyleClassik18By18::renderKeepBehindIcon()
     painter->drawPolyline(QVector<QPointF>{QPointF(2.5, 9.5), QPointF(4.5, 11.5), QPointF(6.5, 9.5)});
 }
 
-void RenderStyleClassik18By18::renderKeepInFrontIcon()
+void RenderStyleKlassy18By18::renderKeepInFrontIcon()
 {
     if ((!notInTitlebar) && boldButtonIcons) {
         // thicker pen in titlebar
@@ -249,7 +249,7 @@ void RenderStyleClassik18By18::renderKeepInFrontIcon()
     painter->drawPolyline(QVector<QPointF>{QPointF(11.5, 8.5), QPointF(13.5, 6.5), QPointF(15.5, 8.5)});
 }
 
-void RenderStyleClassik18By18::renderContextHelpIcon()
+void RenderStyleKlassy18By18::renderContextHelpIcon()
 {
     if ((!notInTitlebar) && boldButtonIcons) {
         // thicker pen in titlebar
@@ -275,7 +275,7 @@ void RenderStyleClassik18By18::renderContextHelpIcon()
         painter->drawEllipse(QRectF(8.25, 14.25, 1.5, 1.5));
 }
 
-void RenderStyleClassik18By18::renderShadeIcon()
+void RenderStyleKlassy18By18::renderShadeIcon()
 {
     if ((!notInTitlebar) && boldButtonIcons) {
         // thicker pen in titlebar
@@ -285,7 +285,7 @@ void RenderStyleClassik18By18::renderShadeIcon()
     RenderDecorationButtonIcon18By18::renderShadeIcon();
 }
 
-void RenderStyleClassik18By18::renderUnShadeIcon()
+void RenderStyleKlassy18By18::renderUnShadeIcon()
 {
     if ((!notInTitlebar) && boldButtonIcons) {
         // thicker pen in titlebar
