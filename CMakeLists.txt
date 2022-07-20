@@ -3,7 +3,7 @@ project(breeze)
 set(PROJECT_VERSION "3.1.breeze5.25.80")
 set(PROJECT_VERSION_MAJOR 5)
 
-add_definitions( -DCLASSIK_VERSION="${PROJECT_VERSION}" -DCLASSIK_GIT_MASTER=1)
+add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=1)
 
 set(KF5_MIN_VERSION "5.94")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
@@ -48,14 +48,14 @@ endif()
 
 include(ECMSetupVersion)
 ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE
-                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/ClassikConfigVersion.cmake"
+                  PACKAGE_VERSION_FILE "${CMAKE_CURRENT_BINARY_DIR}/KlassyConfigVersion.cmake"
                   )
 
 # create a Config.cmake and a ConfigVersion.cmake file and install them
-set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Classik")
+set(CMAKECONFIG_INSTALL_DIR "${KDE_INSTALL_CMAKEPACKAGEDIR}/Klassy")
 
-configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/ClassikConfig.cmake.in"
-                                  "${CMAKE_CURRENT_BINARY_DIR}/ClassikConfig.cmake"
+configure_package_config_file("${CMAKE_CURRENT_SOURCE_DIR}/KlassyConfig.cmake.in"
+                                  "${CMAKE_CURRENT_BINARY_DIR}/KlassyConfig.cmake"
                                   PATH_VARS KDE_INSTALL_FULL_DATADIR
                                   INSTALL_DESTINATION  ${CMAKECONFIG_INSTALL_DIR}
                                   )
@@ -65,8 +65,8 @@ file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
 kde_clang_format(${ALL_CLANG_FORMAT_SOURCE_FILES})
 kde_configure_git_pre_commit_hook(CHECKS CLANG_FORMAT)
 
-install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/ClassikConfig.cmake"
-               "${CMAKE_CURRENT_BINARY_DIR}/ClassikConfigVersion.cmake"
+install(FILES  "${CMAKE_CURRENT_BINARY_DIR}/KlassyConfig.cmake"
+               "${CMAKE_CURRENT_BINARY_DIR}/KlassyConfigVersion.cmake"
         DESTINATION "${CMAKECONFIG_INSTALL_DIR}"
         COMPONENT Devel
         )

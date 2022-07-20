@@ -41,6 +41,9 @@
       <layout class="QGridLayout" name="gridLayout">
        <item row="25" column="0" colspan="6">
         <layout class="QGridLayout" name="gridLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <item row="1" column="2">
           <spacer name="horizontalSpacer_7">
            <property name="orientation">
@@ -67,19 +70,19 @@
            </property>
            <property name="minimumSize">
             <size>
-             <width>170</width>
+             <width>156</width>
              <height>64</height>
             </size>
            </property>
            <property name="maximumSize">
             <size>
-             <width>170</width>
+             <width>156</width>
              <height>64</height>
             </size>
            </property>
            <property name="baseSize">
             <size>
-             <width>170</width>
+             <width>156</width>
              <height>64</height>
             </size>
            </property>
@@ -87,7 +90,7 @@
             <enum>Qt::LayoutDirection::LeftToRight</enum>
            </property>
            <property name="styleSheet">
-            <string notr="true">border-image: url(:/images/Classik_logo.svg);</string>
+            <string notr="true">border-image: url(:/images/Klassy_logo.svg);</string>
            </property>
            <property name="interactive">
             <bool>false</bool>
@@ -131,7 +134,7 @@
            <item>
             <widget class="QLabel" name="label_24">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/paulmcauley/classik&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;Source code&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/paulmcauley/klassy&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#2980b9;&quot;&gt;Source code&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>

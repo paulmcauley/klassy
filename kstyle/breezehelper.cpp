@@ -1697,7 +1697,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
     }
     /*if (borderSize != "None" && borderSize != "NoSides") {
         return false;
-    }*/ //edited out for classik as we can set the borders to titlebar colour to avoid any such visual glitches
+    }*/ //edited out for klassy as we can set the borders to titlebar colour to avoid any such visual glitches
     return true;
 }
 }

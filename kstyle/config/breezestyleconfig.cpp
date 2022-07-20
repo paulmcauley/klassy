@@ -30,14 +30,14 @@ StyleConfig::StyleConfig(QWidget *parent)
 {
     setupUi(this);
 
-#if CLASSIK_GIT_MASTER
+#if KLASSY_GIT_MASTER
     // set the long version string if from the git master
-    _version->setText("v" + QString(CLASSIK_VERSION) + ".git");
+    _version->setText("v" + QString(KLASSY_VERSION) + ".git");
 
 #else
     // set shortened version string in UI if an official release
     QRegularExpression re("\\d+\\.\\d+");
-    QRegularExpressionMatch match = re.match(CLASSIK_VERSION);
+    QRegularExpressionMatch match = re.match(KLASSY_VERSION);
     if (match.hasMatch()) {
         QString matched = match.captured(0);
         _version->setText("v" + matched);
@@ -85,7 +85,7 @@ void StyleConfig::save()
 
     // emit dbus signal
     QDBusMessage message(
-        QDBusMessage::createSignal(QStringLiteral("/ClassikStyle"), QStringLiteral("org.kde.Classik.Style"), QStringLiteral("reparseConfiguration")));
+        QDBusMessage::createSignal(QStringLiteral("/KlassyStyle"), QStringLiteral("org.kde.Klassy.Style"), QStringLiteral("reparseConfiguration")));
     QDBusConnection::sessionBus().send(message);
 }
 

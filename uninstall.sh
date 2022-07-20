@@ -26,7 +26,7 @@ install_and_uninstall() {
     cd build &&
     uninstall
     echo It is possible that some files left over at the following locations
-    echo Please remove any files containing classik in their name
+    echo Please remove any files containing klassy in their name
     echo - /usr/lib64/qt5/plugins/org.kde.kdecoration2/
     echo - /usr/share/kservices5/
     echo - /usr/lib64/

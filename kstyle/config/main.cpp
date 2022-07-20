@@ -18,16 +18,16 @@
 //__________________________________________
 int main(int argc, char *argv[])
 {
-    KLocalizedString::setApplicationDomain("classik_style_config");
+    KLocalizedString::setApplicationDomain("klassy_style_config");
 
     QApplication app(argc, argv);
-    app.setApplicationName(QStringLiteral("classik-settings"));
-    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("classik-settings")));
+    app.setApplicationName(QStringLiteral("klassy-settings"));
+    app.setWindowIcon(QIcon::fromTheme(QStringLiteral("klassy-settings")));
 
     KCMultiDialog dialog;
-    dialog.setWindowTitle(i18n("ClassiK Settings"));
-    dialog.addModule(QStringLiteral("classikstyleconfig"));
-    dialog.addModule(QStringLiteral("classikdecorationconfig"));
+    dialog.setWindowTitle(i18n("Klassy Settings"));
+    dialog.addModule(QStringLiteral("klassystyleconfig"));
+    dialog.addModule(QStringLiteral("klassydecorationconfig"));
     dialog.show();
 
     foreach (auto child, dialog.findChildren<QAbstractScrollArea *>()) {
