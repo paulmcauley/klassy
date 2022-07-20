@@ -42,14 +42,14 @@
     <!-- button icon style -->
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
-          <choice name="StyleClassik" />
+          <choice name="StyleKlassy" />
           <choice name="StyleKite" />
           <choice name="StyleOxygen" />
           <choice name="StyleRedmond" />
           <choice name="StyleRedmond10" />
           <choice name="StyleSystemIconTheme" />
       </choices>
-      <default>StyleClassik</default>
+      <default>StyleKlassy</default>
     </entry>
     
     <!-- button background shape -->

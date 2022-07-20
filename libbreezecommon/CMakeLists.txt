@@ -8,7 +8,7 @@ set(breezecommon_LIB_SRCS
     breezeboxshadowrenderer.cpp
     colortools.cpp
     renderdecorationbuttonicon.cpp
-    styleclassik.cpp
+    styleklassy.cpp
     stylekite.cpp
     styleoxygen.cpp
     styleredmond.cpp

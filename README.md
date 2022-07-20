@@ -14,7 +14,7 @@
 <a name="overview"/>
 
 ## Overview
-_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _Classik_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
+_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _Klassy_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icons
