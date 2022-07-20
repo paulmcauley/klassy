@@ -80,7 +80,7 @@ void RenderStyleRedmond18By18::renderMinimizeIcon()
     }
 
     // horizontal line
-    painter->drawLine(QPointF(4.5, 13.5), QPointF(13.5, 13.5));
+    painter->drawLine(QPointF(4.5, 12.5), QPointF(13.5, 12.5));
 }
 
 /*//Experimental 3 squares
