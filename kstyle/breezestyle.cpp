@@ -3183,15 +3183,16 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
         } else {
             // build toolbutton option
             const QStyleOptionToolButton toolButtonOption(separatorMenuItemOption(menuItemOption, widget));
+            const QFontMetrics fm(menuTitleFont(toolButtonOption));
 
             // make sure height is large enough for icon and text
             const int iconWidth(menuItemOption->maxIconWidth);
-            const int textHeight(menuItemOption->fontMetrics.height());
+            const int textHeight(fm.height());
             if (!menuItemOption->icon.isNull())
                 size.setHeight(qMax(size.height(), iconWidth));
             if (!menuItemOption->text.isEmpty()) {
                 size.setHeight(qMax(size.height(), textHeight));
-                size.setWidth(qMax(size.width(), menuItemOption->fontMetrics.boundingRect(menuItemOption->text).width()));
+                size.setWidth(qMax(size.width(), fm.boundingRect(menuItemOption->text).width()));
             }
 
             return sizeFromContents(CT_ToolButton, &toolButtonOption, size, widget);
