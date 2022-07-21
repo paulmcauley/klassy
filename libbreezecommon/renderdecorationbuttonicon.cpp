@@ -20,33 +20,54 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
                                                                                             const bool notInTitlebar,
                                                                                             const bool boldButtonIcons,
                                                                                             qreal iconWidth,
-                                                                                            qreal devicePixelRatio)
+                                                                                            qreal devicePixelRatio,
+                                                                                            int smallSpacing,
+                                                                                            qreal iconScaleFactor)
 {
     switch (internalSettings->buttonIconStyle()) {
     case InternalSettings::StyleKlassy:
     default:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKlassy18By18(painter, notInTitlebar, boldButtonIcons));
-    case InternalSettings::StyleKite:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKite18By18(painter, notInTitlebar, boldButtonIcons));
-    case InternalSettings::StyleOxygen:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleOxygen18By18(painter, notInTitlebar, boldButtonIcons));
-    case InternalSettings::StyleRedmond:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleRedmond18By18(painter, notInTitlebar, boldButtonIcons));
-    case InternalSettings::StyleRedmond10:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleRedmond1018By18(painter, notInTitlebar, boldButtonIcons));
-    case InternalSettings::StyleSystemIconTheme:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleSystemIconTheme(painter, notInTitlebar, boldButtonIcons, iconWidth, internalSettings, devicePixelRatio));
+            new RenderStyleKlassy18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor));
+
+    case InternalSettings::StyleKite:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleKite18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor));
+    case InternalSettings::StyleOxygen:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleOxygen18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor));
+    case InternalSettings::StyleRedmond:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleRedmond18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor));
+    case InternalSettings::StyleRedmond10:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleRedmond1018By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor));
+    case InternalSettings::StyleSystemIconTheme:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleSystemIconTheme(painter,
+                                                                                                notInTitlebar,
+                                                                                                boldButtonIcons,
+                                                                                                iconWidth,
+                                                                                                internalSettings,
+                                                                                                devicePixelRatio,
+                                                                                                smallSpacing,
+                                                                                                iconScaleFactor));
     }
 }
 
-RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons)
+RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter,
+                                                                   const bool notInTitlebar,
+                                                                   const bool boldButtonIcons,
+                                                                   const qreal devicePixelRatio,
+                                                                   const int smallSpacing,
+                                                                   const bool iconScaleFactor)
+    : painter(painter)
+    , pen(painter->pen())
+    , notInTitlebar(notInTitlebar)
+    , boldButtonIcons(boldButtonIcons)
+    , m_devicePixelRatio(devicePixelRatio)
+    , m_smallSpacing(smallSpacing)
+    , m_iconScaleFactor(iconScaleFactor)
 {
-    this->painter = painter;
-    this->pen = painter->pen();
-    this->notInTitlebar = notInTitlebar;
-    this->boldButtonIcons = boldButtonIcons;
-
     painter->save();
     initPainter();
 }
@@ -170,5 +191,10 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
     painter->drawPath(path);
 
     painter->drawRect(QRectF(9, 15, 0.5, 0.5));
+}
+bool RenderDecorationButtonIcon18By18::roundedPenWidthIsOdd(const qreal &penWidth, int &outputRoundedPenWidth, const qreal boldingFactor)
+{
+    outputRoundedPenWidth = qRound(penWidth * boldingFactor);
+    return (outputRoundedPenWidth % 2 != 0);
 }
 }

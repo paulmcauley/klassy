@@ -24,8 +24,13 @@ public:
      * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleRedmond18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons) { };
+    RenderStyleRedmond18By18(QPainter *painter,
+                             const bool notInTitlebar,
+                             const bool boldButtonIcons,
+                             const qreal devicePixelRatio,
+                             const int smallSpacing,
+                             const bool iconScaleFactor)
+        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor){};
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;
@@ -36,7 +41,17 @@ public:
     void renderContextHelpIcon() override;
     void renderShadeIcon() override;
     void renderUnShadeIcon() override;
+
+private:
+    void renderRestoreIconAfterPenWidthSet();
+
+    //* how much to factor the pen width for a bold maximize button
+    static constexpr qreal m_maximizeBoldPenWidthFactor = 1.666; // 1.5;
+
+    //* how much to factor the pen width for a bold restore button
+    static constexpr qreal m_restoreBoldPenWidthFactor = 1.5;
 };
+
 }
 
 #endif
