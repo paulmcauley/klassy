@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -10,6 +10,16 @@ namespace Breeze
 {
 void RenderStyleKlassy18By18::renderCloseIcon()
 {
+    // first determine whether the close button should be enlarged to match an enlarged maximized button
+    bool isSmallerMaximize = true;
+    int roundedBoldPenWidth = 1;
+    if (!notInTitlebar) {
+        if (boldButtonIcons)
+            isSmallerMaximize = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, m_maximizeBoldPenWidthFactor);
+        else
+            isSmallerMaximize = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
+    }
+
     pen.setWidthF(pen.widthF() * 1.166666666); // thicken up diagonal slightly to give a balanced look
     painter->setPen(pen);
 
@@ -22,26 +32,39 @@ void RenderStyleKlassy18By18::renderCloseIcon()
             painter->setPen(pen);
         }
 
-        // slightly larger X to tie-in with design of square maximize button
-        painter->drawLine(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
-        painter->drawLine(QPointF(13.5, 4.5), QPointF(4.5, 13.5));
+        if (isSmallerMaximize) {
+            // slightly larger X than Breeze to tie-in with design of square maximize button
+            painter->drawLine(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
+            painter->drawLine(QPointF(13.5, 4.5), QPointF(4.5, 13.5));
+        } else {
+            // very slightly larger X again to match larger maximize button
+            painter->drawLine(QPointF(4, 4), QPointF(14, 14));
+            painter->drawLine(QPointF(14, 4), QPointF(4, 14));
+        }
     }
 }
 
 void RenderStyleKlassy18By18::renderMaximizeIcon()
 {
+    bool isOddPenWidth = true;
     if (!notInTitlebar) {
+        int roundedBoldPenWidth = 1;
         if (boldButtonIcons) {
-            // thicker pen in titlebar
-            pen.setWidthF(pen.widthF() * 1.666666);
+            isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, m_maximizeBoldPenWidthFactor);
+        } else {
+            isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
         }
+        pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
+
+        painter->setPen(pen);
     }
 
-    pen.setJoinStyle(Qt::BevelJoin);
-    painter->setPen(pen);
     // large square
-    painter->drawRoundedRect(QRectF(QPointF(4.5, 4.5), QPointF(13.5, 13.5)), 0.025, 0.025, Qt::RelativeSize);
-    // painter->drawRect( QRectF( QPointF( 4.5, 4.5 ), QPointF( 13.5, 13.5 ) ) );
+    QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
+    if (!isOddPenWidth)
+        rect.adjust(-0.5, -0.5, 0.5, 0.5);
+
+    painter->drawRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
 }
 
 void RenderStyleKlassy18By18::renderRestoreIcon()
@@ -59,18 +82,66 @@ void RenderStyleKlassy18By18::renderRestoreIcon()
 
     } else {
         if (boldButtonIcons) {
+            int roundedBoldPenWidth = 1;
+            roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, m_restoreBoldPenWidthFactor);
             // thicker pen in titlebar
-            pen.setWidthF(pen.widthF() * 1.3);
+            pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
             painter->setPen(pen);
+
+            renderRestoreIconAfterPenWidthSet();
+
+        } else {
+            int roundedBoldPenWidth = 1;
+            roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
+
+            // thicker pen in titlebar
+            pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
+            painter->setPen(pen);
+
+            renderRestoreIconAfterPenWidthSet();
         }
-
-        // overlapping windows icon
-        // foregreound square
-        painter->drawRect(QRectF(QPointF(4.5, 6.5), QPointF(11.5, 13.5)));
-
-        // background square
-        painter->drawPolyline(QVector<QPointF>{QPointF(6.5, 6), QPointF(6.5, 4.5), QPointF(13.5, 4.5), QPointF(13.5, 11.5), QPointF(12, 11.5)});
     }
+}
+
+// actually renders the overlapping windows icon
+void RenderStyleKlassy18By18::renderRestoreIconAfterPenWidthSet()
+{
+    // this is to calculate the offset to move the two rectangles further from each other onto an aligned pixel
+    // they are moved apart as the line thickness increases -- this prevents blurriness when the lines are drawn too close together
+    int roundedPenWidth = qRound(pen.widthF());
+    // the totalScalingFactor ensures that the value here converts from the scaled value on screen to the value rendered here in 18px.
+    // The dpr from the paint device is used rather than the value from Button as this value is 1 on X11 and the multiple of dpr and small spacing will work on
+    // both X11 and Wayland.
+    qreal totalScalingFactor = painter->device()->devicePixelRatioF() * m_smallSpacing * m_iconScaleFactor;
+    qreal shiftOffset;
+    if (roundedPenWidth == 2)
+        shiftOffset = 0.5 / totalScalingFactor;
+    else if (roundedPenWidth > 2)
+        shiftOffset = ((qreal(roundedPenWidth)) - 1) / 2 / totalScalingFactor;
+    else
+        shiftOffset = 0;
+
+    // overlapping windows icon
+    // foreground square
+    QRectF foregroundSquare(QPointF(4.5, 6.5), QPointF(11.5, 13.5));
+    foregroundSquare.adjust(-shiftOffset, shiftOffset, -shiftOffset, shiftOffset);
+
+    painter->drawRect(foregroundSquare);
+
+    QVector<QPointF> background{QPointF(6.5, 6), QPointF(6.5, 4.5), QPointF(13.5, 4.5), QPointF(13.5, 11.5), QPointF(12, 11.5)};
+    background[0].setX(background[0].x() + shiftOffset);
+    background[0].setY(background[0].y() + shiftOffset);
+    background[1].setX(background[1].x() + shiftOffset);
+    background[1].setY(background[1].y() - shiftOffset);
+    background[2].setX(background[2].x() + shiftOffset);
+    background[2].setY(background[2].y() - shiftOffset);
+    background[3].setX(background[3].x() + shiftOffset);
+    background[3].setY(background[3].y() - shiftOffset);
+    background[4].setX(background[4].x() - shiftOffset);
+    background[4].setY(background[4].y() - shiftOffset);
+
+    // background square
+    painter->drawPolyline(background);
 }
 
 void RenderStyleKlassy18By18::renderMinimizeIcon()

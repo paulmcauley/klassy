@@ -29,11 +29,12 @@ public:
                                const bool boldButtonIcons,
                                qreal iconWidth,
                                const QSharedPointer<InternalSettings> internalSettings,
-                               qreal devicePixelRatio)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons)
+                               qreal devicePixelRatio,
+                               int smallSpacing,
+                               qreal iconScaleFactor)
+        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor)
         , m_iconWidth{iconWidth}
-        , m_internalSettings{internalSettings}
-        , m_devicePixelRatio{devicePixelRatio} { };
+        , m_internalSettings{internalSettings} {};
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;
@@ -50,8 +51,8 @@ private:
 
     qreal m_iconWidth;
     const QSharedPointer<InternalSettings> m_internalSettings;
-    qreal m_devicePixelRatio;
 };
+
 }
 
 #endif

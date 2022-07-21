@@ -205,6 +205,9 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 void Button::drawIcon(QPainter *painter) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
+    if (!d)
+        return;
+    auto s = d->settings();
 
     painter->setRenderHints(QPainter::Antialiasing);
 
@@ -229,11 +232,14 @@ void Button::drawIcon(QPainter *painter) const
     qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
     painter->translate(iconTranslationOffset, iconTranslationOffset);
 
+    qreal scaleFactor = 1;
     if (!m_systemIconIsAvailable) {
+        scaleFactor = iconWidth / 18;
+
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )
         */
-        painter->scale(iconWidth / 18, iconWidth / 18);
+        painter->scale(scaleFactor, scaleFactor);
     }
 
     // render mark
@@ -254,71 +260,76 @@ void Button::drawIcon(QPainter *painter) const
         painter->setPen(pen);
 
         std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
-        if (d) {
-            if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-                iconRenderer =
-                    RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, iconWidth, m_devicePixelRatio);
-            } else
-                iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons);
 
-            switch (type()) {
-            case DecorationButtonType::Close: {
-                iconRenderer->renderCloseIcon();
-                break;
-            }
+        if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, iconWidth, m_devicePixelRatio);
+        } else
+            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(),
+                                                                     painter,
+                                                                     false,
+                                                                     m_boldButtonIcons,
+                                                                     18,
+                                                                     m_devicePixelRatio,
+                                                                     s->smallSpacing(),
+                                                                     scaleFactor);
 
-            case DecorationButtonType::Maximize: {
-                if (isChecked())
-                    iconRenderer->renderRestoreIcon();
-                else
-                    iconRenderer->renderMaximizeIcon();
-                break;
-            }
+        switch (type()) {
+        case DecorationButtonType::Close: {
+            iconRenderer->renderCloseIcon();
+            break;
+        }
 
-            case DecorationButtonType::Minimize: {
-                iconRenderer->renderMinimizeIcon();
-                break;
-            }
+        case DecorationButtonType::Maximize: {
+            if (isChecked())
+                iconRenderer->renderRestoreIcon();
+            else
+                iconRenderer->renderMaximizeIcon();
+            break;
+        }
 
-            case DecorationButtonType::OnAllDesktops: {
-                if (isChecked())
-                    iconRenderer->renderPinnedOnAllDesktopsIcon();
-                else
-                    iconRenderer->renderPinOnAllDesktopsIcon();
-                break;
-            }
+        case DecorationButtonType::Minimize: {
+            iconRenderer->renderMinimizeIcon();
+            break;
+        }
 
-            case DecorationButtonType::Shade: {
-                if (isChecked())
-                    iconRenderer->renderUnShadeIcon();
-                else
-                    iconRenderer->renderShadeIcon();
-                break;
-            }
+        case DecorationButtonType::OnAllDesktops: {
+            if (isChecked())
+                iconRenderer->renderPinnedOnAllDesktopsIcon();
+            else
+                iconRenderer->renderPinOnAllDesktopsIcon();
+            break;
+        }
 
-            case DecorationButtonType::KeepBelow: {
-                iconRenderer->renderKeepBehindIcon();
-                break;
-            }
+        case DecorationButtonType::Shade: {
+            if (isChecked())
+                iconRenderer->renderUnShadeIcon();
+            else
+                iconRenderer->renderShadeIcon();
+            break;
+        }
 
-            case DecorationButtonType::KeepAbove: {
-                iconRenderer->renderKeepInFrontIcon();
-                break;
-            }
+        case DecorationButtonType::KeepBelow: {
+            iconRenderer->renderKeepBehindIcon();
+            break;
+        }
 
-            case DecorationButtonType::ApplicationMenu: {
-                iconRenderer->renderApplicationMenuIcon();
-                break;
-            }
+        case DecorationButtonType::KeepAbove: {
+            iconRenderer->renderKeepInFrontIcon();
+            break;
+        }
 
-            case DecorationButtonType::ContextHelp: {
-                iconRenderer->renderContextHelpIcon();
-                break;
-            }
+        case DecorationButtonType::ApplicationMenu: {
+            iconRenderer->renderApplicationMenuIcon();
+            break;
+        }
 
-            default:
-                break;
-            }
+        case DecorationButtonType::ContextHelp: {
+            iconRenderer->renderContextHelpIcon();
+            break;
+        }
+
+        default:
+            break;
         }
     }
 }
@@ -724,6 +735,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 {
     if (m_backgroundColor.isValid()) {
         auto d = qobject_cast<Decoration *>(decoration());
+        if (!d)
+            return;
         auto s = d->settings();
 
         painter->save();
@@ -880,6 +893,8 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 {
     if (m_backgroundColor.isValid()) {
         auto d = qobject_cast<Decoration *>(decoration());
+        if (!d)
+            return;
 
         painter->save();
 
@@ -926,7 +941,8 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 void Button::setDevicePixelRatio(QPainter *painter)
 {
     auto d = qobject_cast<Decoration *>(decoration());
-
+    if (!d)
+        return;
     // determine DPR
     m_devicePixelRatio = painter->device()->devicePixelRatioF();
 
@@ -946,6 +962,8 @@ void Button::setStandardScaledPenWidth()
 void Button::setShouldDrawBoldButtonIcons()
 {
     auto d = qobject_cast<Decoration *>(decoration());
+    if (!d)
+        return;
 
     m_boldButtonIcons = false;
 
@@ -955,7 +973,7 @@ void Button::setShouldDrawBoldButtonIcons()
         if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
             break;
         // Else if HiDPI system scaling use bold icons
-        else if (m_devicePixelRatio > 1.4)
+        else if (m_devicePixelRatio > 1.15)
             m_boldButtonIcons = true;
         break;
     case InternalSettings::BoldIconsFine:

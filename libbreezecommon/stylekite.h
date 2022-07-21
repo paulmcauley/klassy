@@ -2,7 +2,7 @@
 #define BREEZE_STYLEKITE_H
 
 /*
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -17,15 +17,13 @@ namespace Breeze
 class RenderStyleKite18By18 : public RenderDecorationButtonIcon18By18
 {
 public:
-    /**
-     * @brief Constructor - calls constructor of base class
-     *
-     * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-     * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
-     */
-    RenderStyleKite18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons) { };
+    RenderStyleKite18By18(QPainter *painter,
+                          const bool notInTitlebar,
+                          const bool boldButtonIcons,
+                          qreal devicePixelRatio,
+                          int smallSpacing,
+                          qreal iconScaleFactor)
+        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor){};
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;
@@ -36,7 +34,12 @@ public:
     void renderContextHelpIcon() override;
     void renderShadeIcon() override;
     void renderUnShadeIcon() override;
+
+private:
+    //* how much to factor the pen width for a bold maximize button
+    static constexpr qreal m_maximizeBoldPenWidthFactor = 1.666; // 1.5;
 };
+
 }
 
 #endif
