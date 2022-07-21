@@ -582,7 +582,7 @@ QColor Button::backgroundColor(bool getNonAnimatedColor) const
 }
 
 //__________________________________________________________________
-QColor Button::outlineColor() const
+QColor Button::outlineColor(bool getNonAnimatedColor) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d)
@@ -652,7 +652,7 @@ QColor Button::outlineColor() const
                && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
                    || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights)) {
         return buttonOutlineColor;
-    } else if (m_animation->state() == QAbstractAnimation::Running) {
+    } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         QColor color(buttonOutlineColor);
         color.setAlphaF(color.alphaF() * m_opacity);
         return color;
@@ -697,7 +697,11 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
 
     QColor color = QColor();
     if (on) {
-        color = this->backgroundColor(true);
+        if (shouldDrawBackgroundStroke() && m_outlineColor.isValid()) // outline color valid as sometimes the former is true even when not a valid colour (i.e.
+                                                                      // when always show close background active with red button)
+            color = this->outlineColor(true);
+        else
+            color = this->backgroundColor(true);
         d->setThinWindowOutlineOverrideColor(on, color);
     } else {
         bool otherButtonIsHoveredOrPressed = false;

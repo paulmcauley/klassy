@@ -158,7 +158,7 @@ private:
     //@{
     QColor foregroundColor() const;
     QColor backgroundColor(bool getNonAnimatedColor = false) const;
-    QColor outlineColor() const;
+    QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 
     bool shouldDrawBackgroundStroke() const;
