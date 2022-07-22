@@ -290,17 +290,17 @@
              </property>
              <item>
               <property name="text">
-               <string>Auto</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Bold (for HiDPI)</string>
+               <string>Bold</string>
               </property>
              </item>
              <item>
               <property name="text">
                <string>Fine</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Bold on HiDPI only</string>
               </property>
              </item>
             </widget>

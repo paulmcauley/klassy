@@ -94,23 +94,4 @@ void RenderStyleOxygen18By18::renderContextHelpIcon()
         painter->drawEllipse(QRectF(8.25, 14.25, 1.5, 1.5));
 }
 
-void RenderStyleOxygen18By18::renderShadeIcon()
-{
-    if ((!notInTitlebar) && boldButtonIcons) {
-        pen.setWidthF(pen.widthF() * 1.6);
-        painter->setPen(pen);
-    }
-
-    RenderDecorationButtonIcon18By18::renderShadeIcon();
-}
-
-void RenderStyleOxygen18By18::renderUnShadeIcon()
-{
-    if ((!notInTitlebar) && boldButtonIcons) {
-        pen.setWidthF(pen.widthF() * 1.6);
-        painter->setPen(pen);
-    }
-
-    RenderDecorationButtonIcon18By18::renderUnShadeIcon();
-}
 }

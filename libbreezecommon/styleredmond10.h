@@ -28,9 +28,8 @@ public:
                                const bool notInTitlebar,
                                const bool boldButtonIcons,
                                const qreal devicePixelRatio,
-                               const int smallSpacing,
                                const bool iconScaleFactor)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor){};
+        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, iconScaleFactor){};
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;
@@ -39,8 +38,6 @@ public:
     void renderKeepBehindIcon() override;
     void renderKeepInFrontIcon() override;
     void renderContextHelpIcon() override;
-    void renderShadeIcon() override;
-    void renderUnShadeIcon() override;
 
 private:
     void renderRestoreIconAfterPenWidthSet();

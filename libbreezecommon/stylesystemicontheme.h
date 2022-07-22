@@ -30,9 +30,8 @@ public:
                                qreal iconWidth,
                                const QSharedPointer<InternalSettings> internalSettings,
                                qreal devicePixelRatio,
-                               int smallSpacing,
                                qreal iconScaleFactor)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, smallSpacing, iconScaleFactor)
+        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, iconScaleFactor)
         , m_iconWidth{iconWidth}
         , m_internalSettings{internalSettings} {};
 
