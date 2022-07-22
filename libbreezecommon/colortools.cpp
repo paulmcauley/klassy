@@ -146,8 +146,6 @@ QColor ColorTools::getHigherContrastForegroundColor(const QColor &foregroundColo
 {
     double contrastRatio = KColorUtils::contrastRatio(foregroundColor, backgroundColor);
 
-    // qDebug() << "Contrast ratio: " << contrastRatio;
-
     if (contrastRatio < blackWhiteContrastThreshold)
         return getBlackOrWhiteForegroundForHighContrast(backgroundColor);
     else

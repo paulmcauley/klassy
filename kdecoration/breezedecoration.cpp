@@ -613,6 +613,10 @@ void Decoration::reconfigure()
     const KConfigGroup cgKScreen(config, QStringLiteral("KScreen"));
     m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
 
+    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() ==
+    // KDecoration2::BorderSize::NoSides ) );
+    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor);
+
     setScaledCornerRadius();
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
@@ -629,9 +633,6 @@ void Decoration::reconfigure()
     const KConfigGroup cg(config, QStringLiteral("KDE"));
 
     m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(config, KColorScheme::Header);
-    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() ==
-    // KDecoration2::BorderSize::NoSides ) );
-    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor);
 
     // animation
     if (m_internalSettings->animationsEnabled()) {
@@ -1056,25 +1057,26 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 
     painter->drawPath(*m_titleBarPath);
 
+    // draw titlebar separator
     const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
-    if (titleBarSeparatorHeight() && titleBarSeparatorColor.isValid()) {
+    int separatorHeight;
+    if ((separatorHeight = titleBarSeparatorHeight()) && titleBarSeparatorColor.isValid()) {
         // outline
         painter->setRenderHint(QPainter::Antialiasing, false);
         painter->setBrush(Qt::NoBrush);
         QPen p(titleBarSeparatorColor);
-        p.setWidthF(titleBarSeparatorHeight());
+        p.setWidthF(qRound(devicePixelRatio(painter)));
         p.setCosmetic(true);
+        p.setCapStyle(Qt::FlatCap);
         painter->setPen(p);
 
-        qreal separatorYOffset = 0.5;
-        if (KWindowSystem::isPlatformWayland())
-            separatorYOffset *= painter->device()->devicePixelRatioF();
-        qreal separatorYCoOrd = qreal(m_titleRect.bottom()) - titleBarSeparatorHeight() / 2 + separatorYOffset;
+        QRectF titleRectF(m_titleRect); // use a QRectF because QRects have quirks when getting their corner positions
+        qreal separatorYCoOrd = qreal(titleRectF.bottom()) - qreal(separatorHeight) / 2;
         if (m_internalSettings->useTitlebarColorForAllBorders()) {
-            painter->drawLine(QPointF(m_titleRect.bottomLeft().x() + borderLeft() + titleBarSeparatorHeight() / 2, separatorYCoOrd),
-                              QPointF(m_titleRect.bottomRight().x() - borderRight() - titleBarSeparatorHeight() / 2, separatorYCoOrd));
+            painter->drawLine(QPointF(titleRectF.bottomLeft().x() + borderLeft(), separatorYCoOrd),
+                              QPointF(titleRectF.bottomRight().x() - borderRight(), separatorYCoOrd));
         } else {
-            painter->drawLine(QPointF(m_titleRect.bottomLeft().x(), separatorYCoOrd), QPointF(m_titleRect.bottomRight().x(), separatorYCoOrd));
+            painter->drawLine(QPointF(titleRectF.bottomLeft().x(), separatorYCoOrd), QPointF(titleRectF.bottomRight().x(), separatorYCoOrd));
         }
     }
 
@@ -1622,14 +1624,17 @@ void Decoration::updateBlur()
     }
 }
 
-qreal Decoration::titleBarSeparatorHeight() const
+int Decoration::titleBarSeparatorHeight() const
 {
     // access client
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    if (m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded()) {
-        return 1;
+    if (m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
+        qreal factor = 1;
+        if (KWindowSystem::isPlatformX11())
+            factor = m_systemScaleFactor;
+        return qRound(factor);
     } else
         return 0;
 }
