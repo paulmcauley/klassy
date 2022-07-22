@@ -1,5 +1,5 @@
-#ifndef klassys_setqdebug_logging
-#define klassys_setqdebug_logging
+#ifndef KLASSY_SETQDEBUG_LOGGING
+#define KLASSY_SETQDEBUG_LOGGING
 
 #include "QDebug"
 #include "iostream"

@@ -264,14 +264,8 @@ void Button::drawIcon(QPainter *painter) const
         if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
             iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, iconWidth, m_devicePixelRatio);
         } else
-            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(),
-                                                                     painter,
-                                                                     false,
-                                                                     m_boldButtonIcons,
-                                                                     18,
-                                                                     m_devicePixelRatio,
-                                                                     s->smallSpacing(),
-                                                                     scaleFactor);
+            iconRenderer =
+                RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, 18, m_devicePixelRatio, scaleFactor);
 
         switch (type()) {
         case DecorationButtonType::Close: {
@@ -972,19 +966,17 @@ void Button::setShouldDrawBoldButtonIcons()
     m_boldButtonIcons = false;
 
     switch (d->internalSettings()->boldButtonIcons()) {
-    case InternalSettings::BoldIconsAuto:
-        // use fine icons if using a system icon theme (these icons are the missing ones that are less important)
-        if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
-            break;
-        // Else if HiDPI system scaling use bold icons
-        else if (m_devicePixelRatio > 1.15)
-            m_boldButtonIcons = true;
-        break;
-    case InternalSettings::BoldIconsFine:
     default:
         break;
     case InternalSettings::BoldIconsBold:
         m_boldButtonIcons = true;
+        break;
+    case InternalSettings::BoldIconsFine:
+        break;
+    case InternalSettings::BoldIconsHiDpiOnly:
+        // If HiDPI system scaling use bold icons
+        if (m_devicePixelRatio > 1.15)
+            m_boldButtonIcons = true;
         break;
     }
 }
