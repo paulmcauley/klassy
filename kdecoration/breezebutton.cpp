@@ -54,12 +54,12 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
 
     // setup default geometry
     int smallButtonPaddedHeight = decoration->smallButtonPaddedHeight();
-    qreal iconHeight = decoration->iconHeight();
-    qreal smallButtonBackgroundHeight = decoration->smallButtonBackgroundHeight();
+    int iconHeight = decoration->iconHeight();
+    int smallButtonBackgroundHeight = decoration->smallButtonBackgroundHeight();
 
     setGeometry(QRect(0, 0, smallButtonPaddedHeight, smallButtonPaddedHeight));
     setSmallButtonPaddedSize(QSize(smallButtonPaddedHeight, smallButtonPaddedHeight));
-    setIconSize(QSizeF(iconHeight, iconHeight));
+    setIconSize(QSize(iconHeight, iconHeight));
     setBackgroundVisibleSize((QSizeF(smallButtonBackgroundHeight, smallButtonBackgroundHeight)));
 
     // connections
@@ -163,8 +163,8 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
         m_smallButtonPaddedSize = geometry().size().toSize();
-        qreal iconWidth = qRound(m_smallButtonPaddedSize.width() * 0.9);
-        setIconSize(QSizeF(iconWidth, iconWidth));
+        int iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
+        setIconSize(QSize(iconWidth, iconWidth));
         setBackgroundVisibleSize(QSizeF(iconWidth, iconWidth));
     }
 
@@ -224,17 +224,17 @@ void Button::drawIcon(QPainter *painter) const
     painter->translate(geometry().topLeft());
 
     const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
-    qreal iconWidth(m_iconSize.width());
+    int iconWidth(m_iconSize.width());
     if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
-    qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
+    qreal iconTranslationOffset = (smallButtonPaddedWidth - qreal(iconWidth)) / 2;
     painter->translate(iconTranslationOffset, iconTranslationOffset);
 
     qreal scaleFactor = 1;
     if (!m_systemIconIsAvailable) {
-        scaleFactor = iconWidth / 18;
+        scaleFactor = qreal(iconWidth) / 18;
 
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )

@@ -200,10 +200,14 @@
     <entry name="IconSize" type="Enum">
       <choices>
           <choice name="IconTiny" />
+          <choice name="IconVerySmall" />
           <choice name="IconSmall" />
+          <choice name="IconSmallMedium" />
           <choice name="IconDefault" />
+          <choice name="IconMediumLarge" />
           <choice name="IconLarge" />
           <choice name="IconVeryLarge" />
+          <choice name="IconHumongous" />
       </choices>
       <default>IconDefault</default>
     </entry>
@@ -211,8 +215,8 @@
     <!-- system icon size -->
     <entry name="SystemIconSize" type="Enum">
       <choices>
-          <choice name="SystemIcon9" />
-          <choice name="SystemIcon13" />
+          <choice name="SystemIcon8" />
+          <choice name="SystemIcon12" />
           <choice name="SystemIcon16" />
           <choice name="SystemIcon18" />
           <choice name="SystemIcon22" />

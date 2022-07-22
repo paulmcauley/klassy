@@ -757,9 +757,7 @@ void Decoration::updateButtonsGeometry()
     // adjust button position
     int bHeight;
     int bWidth = 0;
-    int &smallButtonPaddedHeight = m_smallButtonPaddedHeight;
-    const int &smallButtonPaddedWidth = smallButtonPaddedHeight;
-    qreal &iconHeight = m_iconHeight;
+    const int &smallButtonPaddedWidth = m_smallButtonPaddedHeight;
     int verticalIconOffset = 0;
     int horizontalIconOffsetLeftButtons = 0;
     int horizontalIconOffsetRightButtons = 0;
@@ -773,13 +771,13 @@ void Decoration::updateButtonsGeometry()
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeight = borderTop();
         bHeight -= titleBarSeparatorHeight();
-        verticalIconOffset = buttonTopMargin + (captionHeight() - smallButtonPaddedHeight) / 2;
+        verticalIconOffset = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
     } else {
         bHeight = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
-        verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + (captionHeight() - smallButtonPaddedHeight) / 2;
+        verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + (captionHeight() - m_smallButtonPaddedHeight) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
@@ -791,18 +789,18 @@ void Decoration::updateButtonsGeometry()
 
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_leftButtons->buttons()) {
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
-            bWidth = smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
+            bWidth = m_smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
             horizontalIconOffsetLeftButtons = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft() / 2;
             static_cast<Button *>(button.data())->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = smallButtonPaddedHeight;
+            bWidth = m_smallButtonPaddedHeight;
             horizontalIconOffsetLeftButtons = 0;
             static_cast<Button *>(button.data())->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundHeight, m_smallButtonBackgroundHeight));
         }
         button.data()->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
         static_cast<Button *>(button.data())->setIconOffset(QPointF(horizontalIconOffsetLeftButtons, verticalIconOffset));
         static_cast<Button *>(button.data())->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
-        static_cast<Button *>(button.data())->setIconSize(QSizeF(iconHeight, iconHeight));
+        static_cast<Button *>(button.data())->setIconSize(QSize(m_iconHeight, m_iconHeight));
 
         // determine leftmost left visible and rightmostLeftVisible
         if (static_cast<Button *>(button.data())->isVisible() && static_cast<Button *>(button.data())->isEnabled()) {
@@ -826,18 +824,18 @@ void Decoration::updateButtonsGeometry()
     i = 0;
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_rightButtons->buttons()) {
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
-            bWidth = smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
+            bWidth = m_smallButtonPaddedHeight + s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
             horizontalIconOffsetRightButtons = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight() / 2;
             static_cast<Button *>(button.data())->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = smallButtonPaddedHeight;
+            bWidth = m_smallButtonPaddedHeight;
             horizontalIconOffsetRightButtons = 0;
             static_cast<Button *>(button.data())->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundHeight, m_smallButtonBackgroundHeight));
         }
         button.data()->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
         static_cast<Button *>(button.data())->setIconOffset(QPointF(horizontalIconOffsetRightButtons, verticalIconOffset));
         static_cast<Button *>(button.data())->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
-        static_cast<Button *>(button.data())->setIconSize(QSizeF(iconHeight, iconHeight));
+        static_cast<Button *>(button.data())->setIconSize(QSize(m_iconHeight, m_iconHeight));
 
         // determine leftmost right visible and rightmostRightVisible
         if (static_cast<Button *>(button.data())->isVisible() && static_cast<Button *>(button.data())->isEnabled()) {
@@ -1105,11 +1103,10 @@ void Decoration::calculateButtonHeights()
 
     if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {
-        case InternalSettings::SystemIcon9: // 10, 9 on Wayland
-            basePaddingSize /= 2;
+        case InternalSettings::SystemIcon8: // 10, 8 on Wayland
             break;
-        case InternalSettings::SystemIcon13: // 15, 13 on Wayland
-            baseSize *= 1.5;
+        case InternalSettings::SystemIcon12: // 14, 12 on Wayland
+            baseSize *= 1.4;
             break;
         default:
         case InternalSettings::SystemIcon16: // 18, 16 on Wayland
@@ -1135,37 +1132,57 @@ void Decoration::calculateButtonHeights()
         }
     } else {
         switch (m_internalSettings->iconSize()) {
-        case InternalSettings::IconTiny: // 10, 9 on Wayland
-            basePaddingSize /= 2;
+        case InternalSettings::IconTiny: // 10, 8 on Wayland
             break;
-        case InternalSettings::IconSmall: // 15, 13.5 on Wayland
-            baseSize *= 1.5;
-            basePaddingSize = basePaddingSize / 2 * 1.5;
+        case InternalSettings::IconVerySmall: // 14, 12 on Wayland
+            baseSize *= 1.4;
+            break;
+        case InternalSettings::IconSmall: // 16, 14 on Wayland
+            baseSize *= 1.6;
+            break;
+        case InternalSettings::IconSmallMedium: // 18, 16 on Wayland
+            baseSize *= 1.8;
             break;
         default:
         case InternalSettings::IconDefault: // 20, 18 on Wayland
             baseSize *= 2;
             break;
-        case InternalSettings::IconLarge: // 25, 22.5 on Wayland
-            baseSize *= 2.5;
-            basePaddingSize = basePaddingSize / 2 * 2.5;
+        case InternalSettings::IconMediumLarge: // 24, 22 on Wayland
+            baseSize *= 2.4;
             break;
-        case InternalSettings::IconVeryLarge: // 35, 31.5 on Wayland
-            baseSize *= 3.5;
-            basePaddingSize = basePaddingSize / 2 * 3.5;
+        case InternalSettings::IconLarge: // 26, 24 on Wayland
+            baseSize *= 2.6;
+            break;
+        case InternalSettings::IconVeryLarge: // 36, 32 on Wayland
+            baseSize *= 3.6;
+            basePaddingSize *= 2;
+            break;
+        case InternalSettings::IconHumongous: // 52, 48 on Wayland
+            baseSize *= 5.2;
+            basePaddingSize *= 2;
             break;
         }
     }
 
     m_smallButtonPaddedHeight = baseSize;
     m_iconHeight = qreal(baseSize - basePaddingSize);
-    m_smallButtonBackgroundHeight = -1;
 
     if (m_buttonBackgroundType == ButtonBackgroundType::Small) {
         qreal smallBackgroundScaleFactor = qreal(m_internalSettings->scaleBackgroundPercent()) / 100;
-        m_smallButtonPaddedHeight *= smallBackgroundScaleFactor;
-        m_smallButtonBackgroundHeight = m_iconHeight * smallBackgroundScaleFactor;
+
+        m_smallButtonPaddedHeight = qRound(m_smallButtonPaddedHeight * smallBackgroundScaleFactor);
+
+        m_smallButtonBackgroundHeight = qRound(m_iconHeight * smallBackgroundScaleFactor);
     }
+
+    if (m_iconHeight % 2 == 1) // if an odd value make even
+        m_iconHeight += 1;
+
+    if (m_smallButtonPaddedHeight % 2 == 1) // if an odd value make even
+        m_smallButtonPaddedHeight += 1;
+
+    if (m_smallButtonBackgroundHeight % 2 == 1) // if an odd value make even
+        m_smallButtonBackgroundHeight += 1;
 }
 
 void Decoration::onTabletModeChanged(bool mode)

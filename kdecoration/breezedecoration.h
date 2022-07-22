@@ -128,11 +128,11 @@ public:
     {
         return m_smallButtonPaddedHeight;
     }
-    qreal iconHeight()
+    int iconHeight()
     {
         return m_iconHeight;
     }
-    qreal smallButtonBackgroundHeight()
+    int smallButtonBackgroundHeight()
     {
         return m_smallButtonBackgroundHeight;
     }
@@ -262,9 +262,9 @@ private:
     qreal m_systemScaleFactor = 1.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
-    int m_smallButtonPaddedHeight;
-    qreal m_iconHeight;
-    qreal m_smallButtonBackgroundHeight;
+    int m_smallButtonPaddedHeight = 20;
+    int m_iconHeight = 18;
+    int m_smallButtonBackgroundHeight = 18;
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;
