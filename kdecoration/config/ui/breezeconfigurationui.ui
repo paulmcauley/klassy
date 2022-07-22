@@ -804,27 +804,47 @@
                  </property>
                  <item>
                   <property name="text">
-                   <string>Tiny</string>
+                   <string>8  - Tiny</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">Small</string>
+                   <string>12 - Very Small</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">Medium</string>
+                   <string comment="@item:inlistbox Button size:">14 - Small</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">Large</string>
+                   <string>16 - Small Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">Very Large</string>
+                   <string comment="@item:inlistbox Button size:">18 - Medium</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>22 - Medium Large</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string comment="@item:inlistbox Button size:">24 - Large</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string comment="@item:inlistbox Button size:">32 - Very Large</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>48 - Humongous</string>
                   </property>
                  </item>
                 </widget>
@@ -862,42 +882,42 @@
                 <widget class="QComboBox" name="systemIconSize">
                  <item>
                   <property name="text">
-                   <string>9 (Tiny)</string>
+                   <string>8  - Tiny</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>13 (Small)</string>
+                   <string>12 - Small</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>16</string>
+                   <string>16 - Small Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>18 (Medium)</string>
+                   <string>18 - Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>22</string>
+                   <string>22 - Medium Large</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>24</string>
+                   <string>24 - Large</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>32</string>
+                   <string>32 - Very Large</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>48</string>
+                   <string>48 - Humongous</string>
                   </property>
                  </item>
                 </widget>
