@@ -1096,7 +1096,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 void Decoration::calculateButtonHeights()
 {
     int baseSize = settings()->gridUnit(); // 10 on Wayland
-    qreal basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
+    int basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
 
     if (m_tabletMode)
         baseSize *= 2;
@@ -1165,7 +1165,7 @@ void Decoration::calculateButtonHeights()
     }
 
     m_smallButtonPaddedHeight = baseSize;
-    m_iconHeight = qreal(baseSize - basePaddingSize);
+    m_iconHeight = baseSize - basePaddingSize;
 
     if (m_buttonBackgroundType == ButtonBackgroundType::Small) {
         qreal smallBackgroundScaleFactor = qreal(m_internalSettings->scaleBackgroundPercent()) / 100;

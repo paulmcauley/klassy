@@ -78,7 +78,7 @@ protected:
                                      const bool notInTitlebar,
                                      const bool boldButtonIcons,
                                      const qreal devicePixelRatio,
-                                     const bool iconScaleFactor);
+                                     const qreal iconScaleFactor);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
