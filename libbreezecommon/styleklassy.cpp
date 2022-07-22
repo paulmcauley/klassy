@@ -56,7 +56,7 @@ void RenderStyleKlassy18By18::renderMaximizeIcon()
         } else {
             isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
         }
-        pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
+        pen.setWidthF(roundedBoldPenWidth);
 
         painter->setPen(pen);
     }
@@ -67,7 +67,6 @@ void RenderStyleKlassy18By18::renderMaximizeIcon()
         qreal adjustmentOffset = convertDevicePixelsTo18By18(0.5);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
-
     painter->drawRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
 }
 
@@ -89,7 +88,7 @@ void RenderStyleKlassy18By18::renderRestoreIcon()
             int roundedBoldPenWidth = 1;
             roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, m_restoreBoldPenWidthFactor);
             // thicker pen in titlebar
-            pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
+            pen.setWidthF(roundedBoldPenWidth);
             painter->setPen(pen);
 
             renderRestoreIconAfterPenWidthSet();
@@ -99,7 +98,7 @@ void RenderStyleKlassy18By18::renderRestoreIcon()
             roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
 
             // thicker pen in titlebar
-            pen.setWidthF(roundedBoldPenWidth + 0.01); // 0.01 prevents glitches as mentioned in breeze.h
+            pen.setWidthF(roundedBoldPenWidth);
             painter->setPen(pen);
 
             renderRestoreIconAfterPenWidthSet();
@@ -293,7 +292,7 @@ void RenderStyleKlassy18By18::renderKeepBehindIcon()
         }
 
         // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth + 0.01);
+        pen.setWidthF(roundedBoldPenWidth);
         painter->setPen(pen);
     }
 
@@ -325,7 +324,7 @@ void RenderStyleKlassy18By18::renderKeepInFrontIcon()
         }
 
         // thicker pen in titlebar
-        pen.setWidthF(roundedBoldPenWidth + 0.01);
+        pen.setWidthF(roundedBoldPenWidth);
         painter->setPen(pen);
     }
 

@@ -56,7 +56,7 @@ RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *pai
                                                                    const bool notInTitlebar,
                                                                    const bool boldButtonIcons,
                                                                    const qreal devicePixelRatio,
-                                                                   const bool iconScaleFactor)
+                                                                   const qreal iconScaleFactor)
     : painter(painter)
     , pen(painter->pen())
     , notInTitlebar(notInTitlebar)
@@ -154,7 +154,7 @@ void RenderDecorationButtonIcon18By18::renderShadeIcon()
         } else {
             isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
         }
-        pen.setWidthF(roundedBoldPenWidth + 0.01);
+        pen.setWidthF(roundedBoldPenWidth);
         painter->setPen(pen);
     }
 
@@ -178,7 +178,7 @@ void RenderDecorationButtonIcon18By18::renderUnShadeIcon()
         } else {
             isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
         }
-        pen.setWidthF(roundedBoldPenWidth + 0.01);
+        pen.setWidthF(roundedBoldPenWidth);
         painter->setPen(pen);
     }
 
@@ -214,7 +214,7 @@ void RenderDecorationButtonIcon18By18::renderApplicationMenuIcon()
     if (!notInTitlebar) {
         int roundedBoldPenWidth = 1;
         isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
-        pen.setWidthF(roundedBoldPenWidth + 0.01);
+        pen.setWidthF(roundedBoldPenWidth);
     }
 
     if (!isOddPenWidth) {
@@ -247,7 +247,8 @@ qreal RenderDecorationButtonIcon18By18::convertDevicePixelsTo18By18(const qreal 
 {
     // the totalScalingFactor ensures that the value here converts from the scaled value on screen to the value rendered here in 18px.
     // The dpr used gets the X11 value directly from the KDE scaling settings page, and is not the same as that from the paint device where on X11 it is 1
-    qreal totalScalingFactor = m_devicePixelRatio * m_iconScaleFactor;
+    qreal totalScalingFactor = m_iconScaleFactor;
+    totalScalingFactor *= painter->device()->devicePixelRatioF(); // dpr from the paint device is always 1 on X11
     return (devicePixels / totalScalingFactor);
 }
 }

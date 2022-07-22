@@ -234,8 +234,7 @@ void Button::drawIcon(QPainter *painter) const
 
     qreal scaleFactor = 1;
     if (!m_systemIconIsAvailable) {
-        scaleFactor = qreal(iconWidth) / 18;
-
+        scaleFactor = static_cast<qreal>(iconWidth) / 18;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )
         */
