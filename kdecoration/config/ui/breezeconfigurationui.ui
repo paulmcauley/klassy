@@ -551,12 +551,12 @@
            </item>
            <item>
             <property name="text">
-             <string>Rounded Square</string>
+             <string>Square</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Square</string>
+             <string>Rounded Square</string>
             </property>
            </item>
           </widget>
