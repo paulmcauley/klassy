@@ -610,7 +610,7 @@ void ConfigWidget::fullHeightIntegratedRoundedRectangleSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 400);
     m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
-    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Integrated Rounded Rectangle Width && Spacing"));
+    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-height Integrated Rounded Rectangle Width && Spacing"));
 
     m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
     m_buttonSizingDialog->m_ui.scaleBackgroundPercent->setVisible(false);
@@ -653,7 +653,7 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 300);
     m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
-    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-Height Rectangle Width && Spacing"));
+    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-height Rectangle Width && Spacing"));
 
     m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
     m_buttonSizingDialog->m_ui.scaleBackgroundPercent->setVisible(false);
