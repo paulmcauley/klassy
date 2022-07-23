@@ -1110,12 +1110,18 @@ void Decoration::calculateButtonHeights()
         case InternalSettings::SystemIcon12: // 14, 12 on Wayland
             baseSize *= 1.4;
             break;
+        case InternalSettings::SystemIcon14: // 16, 14 on Wayland
+            baseSize *= 1.6;
+            break;
         default:
         case InternalSettings::SystemIcon16: // 18, 16 on Wayland
             baseSize *= 1.8;
             break;
         case InternalSettings::SystemIcon18: // 20, 18 on Wayland
             baseSize *= 2;
+            break;
+        case InternalSettings::SystemIcon20: // 22, 20 on Wayland
+            baseSize *= 2.2;
             break;
         case InternalSettings::SystemIcon22: // 24, 22 on Wayland
             baseSize *= 2.4;
@@ -1149,13 +1155,16 @@ void Decoration::calculateButtonHeights()
         case InternalSettings::IconDefault: // 20, 18 on Wayland
             baseSize *= 2;
             break;
-        case InternalSettings::IconMediumLarge: // 24, 22 on Wayland
+        case InternalSettings::IconLargeMedium: // 22, 20 on Wayland
+            baseSize *= 2.2;
+            break;
+        case InternalSettings::IconLarge: // 24, 22 on Wayland
             baseSize *= 2.4;
             break;
-        case InternalSettings::IconLarge: // 26, 24 on Wayland
+        case InternalSettings::IconVeryLarge: // 26, 24 on Wayland
             baseSize *= 2.6;
             break;
-        case InternalSettings::IconVeryLarge: // 36, 32 on Wayland
+        case InternalSettings::IconGiant: // 36, 32 on Wayland
             baseSize *= 3.6;
             basePaddingSize *= 2;
             break;

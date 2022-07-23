@@ -204,9 +204,10 @@
           <choice name="IconSmall" />
           <choice name="IconSmallMedium" />
           <choice name="IconDefault" />
-          <choice name="IconMediumLarge" />
+          <choice name="IconLargeMedium" />
           <choice name="IconLarge" />
           <choice name="IconVeryLarge" />
+          <choice name="IconGiant" />
           <choice name="IconHumongous" />
       </choices>
       <default>IconDefault</default>
@@ -217,8 +218,10 @@
       <choices>
           <choice name="SystemIcon8" />
           <choice name="SystemIcon12" />
+          <choice name="SystemIcon14" />
           <choice name="SystemIcon16" />
           <choice name="SystemIcon18" />
+          <choice name="SystemIcon20" />
           <choice name="SystemIcon22" />
           <choice name="SystemIcon24" />
           <choice name="SystemIcon32" />

@@ -814,32 +814,37 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">14 - Small</string>
+                   <string>14 - Small</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>16 - Small Medium</string>
+                   <string>16 - Small-Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">18 - Medium</string>
+                   <string>18 - Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>22 - Medium Large</string>
+                   <string>20 - Large-Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">24 - Large</string>
+                   <string>22 - Large</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string comment="@item:inlistbox Button size:">32 - Very Large</string>
+                   <string>24 - Very Large</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>32 - Giant</string>
                   </property>
                  </item>
                  <item>
@@ -887,12 +892,17 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string>12 - Small</string>
+                   <string>12 - Very Small</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>16 - Small Medium</string>
+                   <string>14 - Small</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>16 - Small-Medium</string>
                   </property>
                  </item>
                  <item>
@@ -902,17 +912,22 @@
                  </item>
                  <item>
                   <property name="text">
-                   <string>22 - Medium Large</string>
+                   <string>20 - Large-Medium</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>24 - Large</string>
+                   <string>22 - Large</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>32 - Very Large</string>
+                   <string>24 - Very Large</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>32 - Giant</string>
                   </property>
                  </item>
                  <item>
@@ -2324,27 +2339,27 @@ padding:</string>
            <widget class="QComboBox" name="shadowSize">
             <item>
              <property name="text">
-              <string comment="@item:inlistbox Button size:">None</string>
+              <string>None</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string comment="@item:inlistbox Button size:">Small</string>
+              <string>Small</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string comment="@item:inlistbox Button size:">Medium</string>
+              <string>Medium</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string comment="@item:inlistbox Button size:">Large</string>
+              <string>Large</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string comment="@item:inlistbox Button size:">Very Large</string>
+              <string>Very Large</string>
              </property>
             </item>
            </widget>
