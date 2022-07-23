@@ -1395,7 +1395,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
             thinWindowOutlineColor = accentedWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
             thinWindowOutlineColor = fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
-        else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow)
+        else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineShadowColor)
             thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), 0.2 * strength);
         else // WindowOutlineNone
             thinWindowOutlineColor = QColor();

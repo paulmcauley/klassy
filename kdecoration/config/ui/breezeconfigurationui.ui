@@ -2121,7 +2121,7 @@ padding:</string>
               </item>
               <item>
                <property name="text">
-                <string>Blend to shadow</string>
+                <string>Shadow colour</string>
                </property>
               </item>
               <item>
