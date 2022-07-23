@@ -178,8 +178,8 @@ private:
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-    void updateShadow(const bool force = false, const bool noCache = false);
-    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const float strengthScale);
+    void updateShadow(const bool force = false, const bool noCache = false, const bool isThinWindowOutlineOverride = false);
+    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const float strengthScale, const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
     //*@name border size
