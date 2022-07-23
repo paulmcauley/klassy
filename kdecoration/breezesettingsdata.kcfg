@@ -154,7 +154,7 @@
     <entry name="ThinWindowOutlineStyle" type = "Enum">
         <choices>
             <choice name="WindowOutlineNone" />
-            <choice name="WindowOutlineBlendToShadow" />
+            <choice name="WindowOutlineShadowColor" />
             <choice name="WindowOutlineContrastTitleBarText" />
             <choice name="WindowOutlineAccentColor" />
             <choice name="WindowOutlineAccentWithContrast" />
