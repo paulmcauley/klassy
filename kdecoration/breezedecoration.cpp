@@ -1630,11 +1630,11 @@ int Decoration::titleBarSeparatorHeight() const
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    if (m_internalSettings->drawTitleBarSeparator() && !c->isMaximized() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
-        qreal factor = 1;
+    if (m_internalSettings->drawTitleBarSeparator() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
+        qreal height = 1;
         if (KWindowSystem::isPlatformX11())
-            factor = m_systemScaleFactor;
-        return qRound(factor);
+            height = m_systemScaleFactor;
+        return qRound(height);
     } else
         return 0;
 }
