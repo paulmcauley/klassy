@@ -315,16 +315,20 @@ QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationCol
         QColor originalColor;
         c->isActive() ? originalColor = m_originalThinWindowOutlineActivePreOverride : originalColor = m_originalThinWindowOutlineInactivePreOverride;
 
-        if (originalColor.isValid()) {
+        if (originalColor.isValid() && destinationColor.isValid()) {
             if (m_overrideOutlineAnimationProgress == 1)
                 m_animateOutOverriddenThinWindowOutline = false;
             return KColorUtils::mix(originalColor, destinationColor, m_overrideOutlineAnimationProgress);
-        } else {
-            QColor color = destinationColor;
-            color.setAlphaF(destinationColor.alphaF() * m_overrideOutlineAnimationProgress);
+        } else if (originalColor.isValid()) {
+            QColor color = originalColor;
+            color.setAlphaF(originalColor.alphaF() * (1.0 - m_overrideOutlineAnimationProgress));
             if (m_overrideOutlineAnimationProgress == 1)
                 m_animateOutOverriddenThinWindowOutline = false;
             return color;
+        } else {
+            if (m_overrideOutlineAnimationProgress == 1)
+                m_animateOutOverriddenThinWindowOutline = false;
+            return QColor();
         }
     } else {
         m_animateOutOverriddenThinWindowOutline = false;
@@ -377,7 +381,7 @@ void Decoration::init()
     m_overrideOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
     connect(m_overrideOutlineFromButtonAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_overrideOutlineAnimationProgress = value.toReal();
-        updateShadow(true, true);
+        updateShadow(true, true, true);
     });
 
     // use DBus connection to update on breeze configuration change
@@ -536,7 +540,7 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
             m_overrideOutlineFromButtonAnimation->start();
 
     } else {
-        updateShadow(true, true);
+        updateShadow(true, true, true);
     }
 }
 
@@ -1261,14 +1265,14 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 }
 
 //________________________________________________________________
-void Decoration::updateShadow(const bool force, const bool noCache)
+void Decoration::updateShadow(const bool force, const bool noCache, const bool isThinWindowOutlineOverride)
 {
     auto s = settings();
     auto c = client().toStrongRef();
     Q_ASSERT(c);
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
-        setShadow(createShadowObject(0.5 + m_shadowOpacity * 0.5));
+        setShadow(createShadowObject(0.5 + m_shadowOpacity * 0.5, isThinWindowOutlineOverride));
         return;
     }
 
@@ -1302,18 +1306,18 @@ void Decoration::updateShadow(const bool force, const bool noCache)
         shadow = (c->isActive()) ? &g_sShadow : &g_sShadowInactive;
 
     if (!(*shadow)) { // only recreate the shadow if necessary
-        *shadow = createShadowObject(c->isActive() ? 1.0 : 0.5);
+        *shadow = createShadowObject(c->isActive() ? 1.0 : 0.5, isThinWindowOutlineOverride);
     }
 
     setShadow(*shadow);
 }
 
 //________________________________________________________________
-QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const float strengthScale)
+QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const float strengthScale, const bool isThinWindowOutlineOverride)
 {
     const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
     if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone
-        && m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) {
+        && m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone && !isThinWindowOutlineOverride) {
         return nullptr;
     }
 
@@ -1375,40 +1379,9 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
 
     painter.drawPath(roundedRectMask);
 
-    if (m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) {
-        qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
-
-        // the overlap between the thin window outline and behind the window in unscaled pixels.
-        // This is necessary for the thin window outline to sit flush with the window on Wayland,
-        // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
-        qreal outlineOverlap = 0.5;
-
-        // scale outline
-        // We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On X11
-        // this does not happen but we can use the system-set scaling value directly.
-        if (KWindowSystem::isPlatformX11()) {
-            outlinePenWidth *= m_systemScaleFactor;
-            outlineOverlap *= m_systemScaleFactor;
-        }
-
-        qreal outlineAdjustment = outlinePenWidth / 2 - outlineOverlap;
-        QRectF outlineRect;
-        outlineRect =
-            innerRect.adjusted(-outlineAdjustment,
-                               -outlineAdjustment,
-                               outlineAdjustment,
-                               outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
-        QPainterPath outlineRectPath;
-        outlineRectPath.addRect(outlineRect);
-
-        QRectF outlineRectPotentiallyTaller = outlineRect;
-
-        // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
-        if (hasNoBorders() && !c->isShaded())
-            outlineRectPotentiallyTaller = outlineRect.adjusted(0, 0, 0, m_scaledCornerRadius);
-
-        // Draw Thin window outline
-        QPen p;
+    // Draw Thin window outline
+    if (m_internalSettings->thinWindowOutlineStyle() != (InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) || isThinWindowOutlineOverride) {
+        // get the thin window outline's colour
         QColor thinWindowOutlineColor;
         if (m_thinWindowOutlineOverride.isValid()) {
             thinWindowOutlineColor = overriddenOutlineColorAnimateIn();
@@ -1422,13 +1395,13 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
             thinWindowOutlineColor = accentedWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
             thinWindowOutlineColor = fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
-        else
-            thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), 0.2 * strength); // blend to shadow
+        else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineBlendToShadow)
+            thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), 0.2 * strength);
+        else // WindowOutlineNone
+            thinWindowOutlineColor = QColor();
 
         if (m_animateOutOverriddenThinWindowOutline)
             thinWindowOutlineColor = overriddenOutlineColorAnimateOut(thinWindowOutlineColor);
-
-        p.setColor(thinWindowOutlineColor);
 
         // the existing thin window outline colour is stored in-case it is overridden in the future and needed by an animation
         if (!m_thinWindowOutlineOverride.isValid()) { // non-override
@@ -1441,25 +1414,61 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
                           : m_originalThinWindowOutlineInactivePreOverride = thinWindowOutlineColor;
         }
 
-        p.setWidthF(outlinePenWidth);
-        painter.setPen(p);
-        painter.setBrush(Qt::NoBrush);
-        painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+        if (thinWindowOutlineColor.isValid()) {
+            QPen p;
+            p.setColor(thinWindowOutlineColor);
 
-        QPainterPath roundedRectOutline;
-        qreal cornerRadius;
+            qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
 
-        if (m_scaledCornerRadius < 0.05)
-            cornerRadius = 0; // give a square corner for when corner radius is 0
-        else
-            cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
+            // the overlap between the thin window outline and behind the window in unscaled pixels.
+            // This is necessary for the thin window outline to sit flush with the window on Wayland,
+            // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
+            qreal outlineOverlap = 0.5;
 
-        roundedRectOutline.addRoundedRect(outlineRectPotentiallyTaller, cornerRadius, cornerRadius);
+            // scale outline
+            // We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On
+            // X11 this does not happen but we can use the system-set scaling value directly.
+            if (KWindowSystem::isPlatformX11()) {
+                outlinePenWidth *= m_systemScaleFactor;
+                outlineOverlap *= m_systemScaleFactor;
+            }
 
-        if (hasNoBorders() && !c->isShaded())
-            roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
+            qreal outlineAdjustment = outlinePenWidth / 2 - outlineOverlap;
+            QRectF outlineRect;
+            outlineRect =
+                innerRect.adjusted(-outlineAdjustment,
+                                   -outlineAdjustment,
+                                   outlineAdjustment,
+                                   outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
+            QPainterPath outlineRectPath;
+            outlineRectPath.addRect(outlineRect);
 
-        painter.drawPath(roundedRectOutline);
+            QRectF outlineRectPotentiallyTaller = outlineRect;
+
+            // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
+            if (hasNoBorders() && !c->isShaded())
+                outlineRectPotentiallyTaller = outlineRect.adjusted(0, 0, 0, m_scaledCornerRadius);
+
+            p.setWidthF(outlinePenWidth);
+            painter.setPen(p);
+            painter.setBrush(Qt::NoBrush);
+            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+            QPainterPath roundedRectOutline;
+            qreal cornerRadius;
+
+            if (m_scaledCornerRadius < 0.05)
+                cornerRadius = 0; // give a square corner for when corner radius is 0
+            else
+                cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
+
+            roundedRectOutline.addRoundedRect(outlineRectPotentiallyTaller, cornerRadius, cornerRadius);
+
+            if (hasNoBorders() && !c->isShaded())
+                roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
+
+            painter.drawPath(roundedRectOutline);
+        }
     }
     painter.end();
 
