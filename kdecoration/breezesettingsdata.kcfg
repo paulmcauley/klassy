@@ -59,8 +59,8 @@
           <choice name="ShapeFullHeightRoundedRectangle" />
           <choice name="ShapeFullHeightIntegratedRoundedRectangle" />
           <choice name="ShapeSmallCircle" />
-          <choice name="ShapeSmallRoundedSquare" />
           <choice name="ShapeSmallSquare" />
+          <choice name="ShapeSmallRoundedSquare" />
       </choices>
       <default>ShapeFullHeightIntegratedRoundedRectangle</default>
     </entry>
