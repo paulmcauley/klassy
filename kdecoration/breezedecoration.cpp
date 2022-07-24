@@ -1156,7 +1156,7 @@ void Decoration::calculateButtonHeights()
             baseSize *= 1.8;
             break;
         default:
-        case InternalSettings::IconDefault: // 20, 18 on Wayland
+        case InternalSettings::IconMedium: // 20, 18 on Wayland
             baseSize *= 2;
             break;
         case InternalSettings::IconLargeMedium: // 22, 20 on Wayland

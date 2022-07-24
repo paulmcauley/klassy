@@ -203,14 +203,14 @@
           <choice name="IconVerySmall" />
           <choice name="IconSmall" />
           <choice name="IconSmallMedium" />
-          <choice name="IconDefault" />
+          <choice name="IconMedium" />
           <choice name="IconLargeMedium" />
           <choice name="IconLarge" />
           <choice name="IconVeryLarge" />
           <choice name="IconGiant" />
           <choice name="IconHumongous" />
       </choices>
-      <default>IconDefault</default>
+      <default>IconLargeMedium</default>
     </entry>
     
     <!-- system icon size -->
@@ -239,14 +239,14 @@
     
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>4</default>
+       <default>3</default>
        <min>0</min>
        <max>50</max>
     </entry>
     
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>9</default>
+       <default>8</default>
        <min>0</min>
        <max>50</max>
     </entry>

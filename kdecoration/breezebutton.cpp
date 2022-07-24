@@ -224,17 +224,17 @@ void Button::drawIcon(QPainter *painter) const
     painter->translate(geometry().topLeft());
 
     const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
-    int iconWidth(m_iconSize.width());
+    qreal iconWidth(m_iconSize.width());
     if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
-    qreal iconTranslationOffset = (smallButtonPaddedWidth - qreal(iconWidth)) / 2;
+    qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
     painter->translate(iconTranslationOffset, iconTranslationOffset);
 
     qreal scaleFactor = 1;
     if (!m_systemIconIsAvailable) {
-        scaleFactor = static_cast<qreal>(iconWidth) / 18;
+        scaleFactor = iconWidth / 18;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )
         */
@@ -249,7 +249,7 @@ void Button::drawIcon(QPainter *painter) const
         // this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
         // pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonPaddedWidth ) );
 
-        // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons
+        // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons. TODO:don't use cosmetic pen for background outlines either
         if (m_isGtkCsdButton) {
             pen.setWidthF(PenWidth::Symbol);
         } else {
@@ -263,8 +263,7 @@ void Button::drawIcon(QPainter *painter) const
         if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
             iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, iconWidth, m_devicePixelRatio);
         } else
-            iconRenderer =
-                RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, 18, m_devicePixelRatio, scaleFactor);
+            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, 18, m_devicePixelRatio);
 
         switch (type()) {
         case DecorationButtonType::Close: {
