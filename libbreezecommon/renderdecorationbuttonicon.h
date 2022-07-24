@@ -31,7 +31,7 @@ public:
      * @brief Factory to return a pointer to a new inherited object to render in the specified style.
      * @param internalSettings An InternalSettingsPtr from the Window decoration config
      * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
+     * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
@@ -41,11 +41,10 @@ public:
      */
     static std::unique_ptr<RenderDecorationButtonIcon18By18> factory(const QSharedPointer<InternalSettings> internalSettings,
                                                                      QPainter *painter,
-                                                                     const bool notInTitlebar = false,
+                                                                     const bool fromKstyle = false,
                                                                      const bool boldButtonIcons = false,
                                                                      const qreal iconWidth = 18,
-                                                                     qreal devicePixelRatio = 1,
-                                                                     qreal iconScaleFactor = 1);
+                                                                     qreal devicePixelRatio = 1);
 
     virtual ~RenderDecorationButtonIcon18By18();
 
@@ -68,23 +67,42 @@ protected:
      *
      * @param internalSettings An InternalSettingsPtr from the Window decoration config
      * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param notInTitlebar Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
+     * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- usually means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
      * @param iconScaleFactor the amount this icon will be sized (excluding dpr/smallSpacing due to screen scaling)
      */
-    RenderDecorationButtonIcon18By18(QPainter *painter,
-                                     const bool notInTitlebar,
-                                     const bool boldButtonIcons,
-                                     const qreal devicePixelRatio,
-                                     const qreal iconScaleFactor);
+    RenderDecorationButtonIcon18By18(QPainter *painter, const bool fromKstyle, const bool boldButtonIcons, const qreal devicePixelRatio);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
      * No brush is normal for Breeze's simple outline style.
      */
     virtual void initPainter();
+
+    void renderCloseIconAtSquareMaximizeSize();
+    qreal renderSquareMaximizeIcon(bool returnSizeOnly = false);
+
+    void renderOverlappingWindowsIcon();
+    /**
+     * @param isOddPenWidth Whether the pen width, after rounding, is an odd or even number of pixels
+     * @param shiftOffset How much to separate the two squares to prevent blurriness
+     * @param overlappingWindowsGroup A pointer to output pointing to a group item representing the overlapping windows
+     * @param foregroundSquareItem A pointer to output pointing to an item representing the foreground squares
+     * @param backgroundSquareItem A pointer to output pointing to an item representing the background square path
+     * @return Returns an 18x18 std::unique_ptr<QGraphicsScene> of the overlapping windows icon
+     */
+    std::unique_ptr<QGraphicsScene> calculateOverlappingWindowsScene(const bool isOddPenWidth,
+                                                                     const qreal shiftOffset,
+                                                                     QGraphicsItemGroup *&overlappingWindowsGroup,
+                                                                     QGraphicsRectItem *&foregroundSquareItem,
+                                                                     QGraphicsPathItem *&backgroundSquareItem);
+
+    void renderTinySquareMinimizeIcon();
+    void renderKeepBehindIconAsFromBreezeIcons();
+    void renderKeepInFrontIconAsFromBreezeIcons();
+    void renderRounderAndBolderContextHelpIcon();
 
     /**
      *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
@@ -104,13 +122,59 @@ protected:
      */
     qreal convertDevicePixelsTo18By18(const qreal devicePixels);
 
-    QPainter *painter;
-    QPen pen;
-    bool notInTitlebar;
-    bool boldButtonIcons;
-    qreal m_devicePixelRatio;
-    int m_smallSpacing;
-    qreal m_iconScaleFactor;
+    /**
+     * @brief Translates painter so antialiased painting co-ordinates will be painted in the same position if aliased
+     * @param penWidthOdd Whether the integer pen width is an odd number
+     */
+    void translatePainterForAliasedPainting(const bool penWidthOdd);
+
+    enum class ThresholdRound { Up, Down };
+    /**
+     * @brief rounds the given number to the nearest half
+     * @param coord The number to round
+     * @param roundAtZero whether or not to round up or down at zero
+     * @return the rounded number
+     */
+    qreal roundCoordToHalf(qreal coord, const ThresholdRound roundAtZero);
+
+    /**
+     * @brief rounds the given number to the nearest whole
+     * @param coord The number to round
+     * @param roundAtZero whether or not to round up or down at half
+     * @return the rounded number
+     */
+    qreal roundCoordToWhole(qreal coord, const ThresholdRound roundAtHalf);
+
+    enum class SnapPixel { ToHalf, ToWhole };
+
+    /**
+     * @brief Given a logical 18x18 point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted equivalent 18x18
+     * logical value
+     * @param SnapX Whether to snap the X co-ordinate to a half or whole pixel
+     * @param SnapY Whether to snap the Y co-ordinate to a half or whole pixel
+     * @param roundAtThresholdX Whether to round up or down the X co-ordinate if it is at the threshold
+     * @param roundAtThresholdY Whether to round up or down the Y co-ordinate if it is at the threshold
+     * @return snapped equivalent in 18x18 logical coordinates
+     */
+    QPointF snapToNearestPixel(QPointF point18By18,
+                               const SnapPixel snapX,
+                               const SnapPixel snapY,
+                               ThresholdRound roundAtThresholdX = ThresholdRound::Up,
+                               const ThresholdRound roundAtThresholdY = ThresholdRound::Up);
+
+    QPainter *m_painter;
+    QPen m_pen;
+    bool m_fromKstyle;
+    bool m_boldButtonIcons;
+    qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11
+    qreal m_totalScalingFactor;
+    std::unique_ptr<QTransform> m_inverseDeviceTransform;
+
+    //* how much to factor the pen width for a bold restore button
+    static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;
+
+    //* how much to factor the pen width for a bold square maximize button
+    static constexpr qreal m_squareMaximizeBoldPenWidthFactor = 1.5;
 };
 }
 

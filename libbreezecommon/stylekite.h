@@ -17,8 +17,8 @@ namespace Breeze
 class RenderStyleKite18By18 : public RenderDecorationButtonIcon18By18
 {
 public:
-    RenderStyleKite18By18(QPainter *painter, const bool notInTitlebar, const bool boldButtonIcons, qreal devicePixelRatio, qreal iconScaleFactor)
-        : RenderDecorationButtonIcon18By18(painter, notInTitlebar, boldButtonIcons, devicePixelRatio, iconScaleFactor){};
+    RenderStyleKite18By18(QPainter *painter, const bool fromKstyle, const bool boldButtonIcons, qreal devicePixelRatio)
+        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio){};
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;
@@ -29,8 +29,6 @@ public:
     void renderContextHelpIcon() override;
 
 private:
-    //* how much to factor the pen width for a bold maximize button
-    static constexpr qreal m_maximizeBoldPenWidthFactor = 1.666; // 1.5;
 };
 
 }
