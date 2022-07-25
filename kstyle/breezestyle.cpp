@@ -7655,7 +7655,13 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
     // output icon
     QIcon icon;
-
+    
+    qreal devicePixelRatio;
+    if(widget)
+        devicePixelRatio = widget->devicePixelRatio();
+    else
+        devicePixelRatio = 1;
+    
     foreach (const IconData &iconData, iconTypes) {
         foreach (const int &iconSize, iconSizes) {
             // create pixmap
@@ -7672,7 +7678,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                                             iconData._paintBackground,
                                             iconData._backgroundColor,
                                             iconData._outlineColor,
-                                            widget->devicePixelRatioF());
+                                            devicePixelRatio);
 
             painter.end();
 
