@@ -145,7 +145,7 @@ void RenderDecorationButtonIcon18By18::renderShadeIcon()
         int roundedBoldPenWidth = 1;
         if (m_boldButtonIcons) {
             // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.5);
+            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.3);
         } else {
             isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
         }
@@ -174,7 +174,7 @@ void RenderDecorationButtonIcon18By18::renderUnShadeIcon()
         int roundedBoldPenWidth = 1;
         if (m_boldButtonIcons) {
             // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.5);
+            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.3);
         } else {
             isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
         }
