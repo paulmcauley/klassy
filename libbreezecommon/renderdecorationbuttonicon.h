@@ -159,7 +159,7 @@ protected:
     QPointF snapToNearestPixel(QPointF point18By18,
                                const SnapPixel snapX,
                                const SnapPixel snapY,
-                               ThresholdRound roundAtThresholdX = ThresholdRound::Up,
+                               const ThresholdRound roundAtThresholdX = ThresholdRound::Up,
                                const ThresholdRound roundAtThresholdY = ThresholdRound::Up);
 
     QPainter *m_painter;
