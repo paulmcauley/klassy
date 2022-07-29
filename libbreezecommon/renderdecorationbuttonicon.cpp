@@ -948,7 +948,7 @@ qreal RenderDecorationButtonIcon18By18::roundCoordToWhole(qreal coord, const Thr
 QPointF RenderDecorationButtonIcon18By18::snapToNearestPixel(QPointF point18By18,
                                                              const SnapPixel snapX,
                                                              const SnapPixel snapY,
-                                                             ThresholdRound roundAtThresholdX,
+                                                             const ThresholdRound roundAtThresholdX,
                                                              const ThresholdRound roundAtThresholdY)
 {
     if (!m_inverseDeviceTransform) {
