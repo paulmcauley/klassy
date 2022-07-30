@@ -295,8 +295,6 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
             isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
         }
         m_pen.setWidthF(roundedBoldPenWidth);
-
-        m_painter->setPen(m_pen);
     }
 
     QRectF rect(snapToNearestPixel(QPointF(4.5, 4.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
@@ -315,14 +313,22 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
     }
 
     // if size is still too small, increase again
-    if (!m_fromKstyle && ((rect.width() + convertDevicePixelsTo18By18(m_painter->pen().widthF())) < 10.5)) {
+    if (!m_fromKstyle && ((rect.width() + convertDevicePixelsTo18By18(m_pen.widthF())) < 10.5)) {
         qreal adjustmentOffset = convertDevicePixelsTo18By18(1);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
 
-    if (!returnSizeOnly)
+    if (!returnSizeOnly) {
+        qreal penWidth18By18 = convertDevicePixelsTo18By18(m_pen.widthF());
+        // make excessively thick pen widths translucent to balance with other buttons
+        if (penWidth18By18 > 1.79) {
+            QColor penColor = m_pen.color();
+            penColor.setAlphaF(penColor.alphaF() * 0.8);
+            m_pen.setColor(penColor);
+        }
+        m_painter->setPen(m_pen);
         m_painter->drawRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
-    else
+    } else
         m_painter->restore();
 
     return rect.height();
@@ -332,7 +338,6 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 {
     m_pen.setJoinStyle(Qt::BevelJoin);
     m_pen.setCapStyle(Qt::FlatCap);
-    m_painter->setPen(m_pen);
 
     int roundedBoldPenWidth = 1;
     bool isOddPenWidth = true;
@@ -344,7 +349,6 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     // thicker pen in titlebar
     m_pen.setWidthF(roundedBoldPenWidth);
-    m_painter->setPen(m_pen);
 
     // this is to calculate the offset to move the two rectangles further from each other onto an aligned pixel
     // they can be moved apart as the line thickness increases -- this prevents blurriness when the lines are drawn too close together
@@ -405,7 +409,12 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     overlappingWindowsGroup->setTransform(transformToAlignedCenter);
 
     */
-
+    // make excessively thick pen widths translucent to balance with other buttons
+    if (penWidth18By18 > 1.79) {
+        QColor penColor = m_pen.color();
+        penColor.setAlphaF(penColor.alphaF() * 0.8);
+        m_pen.setColor(penColor);
+    }
     // set the pen widths in all items -- do this at this point as not to have non-cosmetic pen widths in boundingRect().width() calculations above
     foregroundRect->setPen(m_pen);
     backgroundPath->setPen(m_pen);
