@@ -162,6 +162,8 @@ protected:
                                const ThresholdRound roundAtThresholdX = ThresholdRound::Up,
                                const ThresholdRound roundAtThresholdY = ThresholdRound::Up);
 
+    qreal penWidthTo18By18(const QPen &pen);
+
     QPainter *m_painter;
     QPen m_pen;
     bool m_fromKstyle;
