@@ -36,8 +36,17 @@ void RenderStyleRedmond18By18::renderMinimizeIcon()
         } else
             isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
         m_pen.setWidthF(roundedBoldPenWidth);
-        m_painter->setPen(m_pen);
     }
+
+    qreal penWidth18By18 = penWidthTo18By18(m_pen);
+    // make excessively thick pen widths translucent to balance with other buttons
+    if (penWidth18By18 > 1.62) {
+        QColor penColor = m_pen.color();
+        penColor.setAlphaF(penColor.alphaF() * 0.8);
+        m_pen.setColor(penColor);
+    }
+
+    m_painter->setPen(m_pen);
 
     // horizontal line
     if (isOddPenWidth) {
