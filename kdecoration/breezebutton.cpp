@@ -963,19 +963,21 @@ void Button::setShouldDrawBoldButtonIcons()
 
     m_boldButtonIcons = false;
 
-    switch (d->internalSettings()->boldButtonIcons()) {
-    default:
-        break;
-    case InternalSettings::BoldIconsBold:
-        m_boldButtonIcons = true;
-        break;
-    case InternalSettings::BoldIconsFine:
-        break;
-    case InternalSettings::BoldIconsHiDpiOnly:
-        // If HiDPI system scaling use bold icons
-        if (m_devicePixelRatio > 1.15)
+    if (!m_isGtkCsdButton) {
+        switch (d->internalSettings()->boldButtonIcons()) {
+        default:
+            break;
+        case InternalSettings::BoldIconsBold:
             m_boldButtonIcons = true;
-        break;
+            break;
+        case InternalSettings::BoldIconsFine:
+            break;
+        case InternalSettings::BoldIconsHiDpiOnly:
+            // If HiDPI system scaling use bold icons
+            if (m_devicePixelRatio > 1.15)
+                m_boldButtonIcons = true;
+            break;
+        }
     }
 }
 
