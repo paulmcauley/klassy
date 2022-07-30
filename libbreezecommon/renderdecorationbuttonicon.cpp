@@ -312,16 +312,16 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
 
+    qreal penWidth18By18 = penWidthTo18By18(m_pen);
     // if size is still too small, increase again
-    if (!m_fromKstyle && ((rect.width() + convertDevicePixelsTo18By18(m_pen.widthF())) < 10.5)) {
+    if (!m_fromKstyle && ((rect.width() + penWidth18By18) < 10.5)) {
         qreal adjustmentOffset = convertDevicePixelsTo18By18(1);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
 
     if (!returnSizeOnly) {
-        qreal penWidth18By18 = convertDevicePixelsTo18By18(m_pen.widthF());
         // make excessively thick pen widths translucent to balance with other buttons
-        if (penWidth18By18 > 1.79) {
+        if (penWidth18By18 > 1.62) {
             QColor penColor = m_pen.color();
             penColor.setAlphaF(penColor.alphaF() * 0.8);
             m_pen.setColor(penColor);
@@ -366,7 +366,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     qreal distanceBetweenSquares = std::min(backgroundPath->path().elementAt(3).x - backgroundPath->path().elementAt(4).x,
                                             backgroundPath->path().elementAt(1).y - backgroundPath->path().elementAt(0).y);
-    qreal penWidth18By18 = convertDevicePixelsTo18By18(m_pen.widthF());
+    qreal penWidth18By18 = penWidthTo18By18(m_pen);
 
     // if distance between squares < pen width (factoring in that the background sqaure does not join the foreground at the foreground's centre-point)
     // || distance between squares < 2
@@ -410,7 +410,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     */
     // make excessively thick pen widths translucent to balance with other buttons
-    if (penWidth18By18 > 1.79) {
+    if (penWidth18By18 > 1.62) {
         QColor penColor = m_pen.color();
         penColor.setAlphaF(penColor.alphaF() * 0.8);
         m_pen.setColor(penColor);
@@ -980,5 +980,14 @@ QPointF RenderDecorationButtonIcon18By18::snapToNearestPixel(QPointF point18By18
     }
 
     return (m_inverseDeviceTransform->map(point18By18));
+}
+
+qreal RenderDecorationButtonIcon18By18::penWidthTo18By18(const QPen &pen)
+{
+    if (pen.isCosmetic()) {
+        return convertDevicePixelsTo18By18(pen.widthF());
+    } else {
+        return pen.widthF();
+    }
 }
 }
