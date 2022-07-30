@@ -110,7 +110,9 @@ void RenderDecorationButtonIcon18By18::renderMinimizeIcon()
 
 void RenderDecorationButtonIcon18By18::renderPinnedOnAllDesktopsIcon()
 {
-    m_painter->setBrush(m_pen.color());
+    QColor color = m_pen.color();
+    color.setAlphaF(color.alphaF() * 0.8);
+    m_painter->setBrush(color);
     m_painter->setPen(Qt::NoPen);
 
     QPainterPath outerRing;
@@ -126,13 +128,16 @@ void RenderDecorationButtonIcon18By18::renderPinnedOnAllDesktopsIcon()
 
 void RenderDecorationButtonIcon18By18::renderPinOnAllDesktopsIcon()
 {
-    m_painter->setBrush(m_pen.color());
+    QColor color = m_pen.color();
+    color.setAlphaF(color.alphaF() * 0.8);
+    m_painter->setBrush(color);
     m_painter->setPen(Qt::NoPen);
     m_painter->drawConvexPolygon(QVector<QPointF>{QPointF(6.5, 8.5), QPointF(12, 3), QPointF(15, 6), QPointF(9.5, 11.5)});
 
+    m_pen.setColor(color);
     m_painter->setPen(m_pen);
     m_painter->drawLine(QPointF(5.5, 7.5), QPointF(10.5, 12.5));
-    m_painter->drawLine(QPointF(12, 6), QPointF(4.5, 13.5));
+    m_painter->drawLine(QPointF(8, 10), QPointF(4.5, 13.5));
 }
 
 void RenderDecorationButtonIcon18By18::renderShadeIcon()
