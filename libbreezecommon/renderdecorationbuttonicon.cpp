@@ -326,7 +326,7 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
 
     if (!returnSizeOnly) {
         // make excessively thick pen widths translucent to balance with other buttons
-        if (penWidth18By18 > 1.62) {
+        if (straightLineBolderThanCloseDiagonal(penWidth18By18)) {
             QColor penColor = m_pen.color();
             penColor.setAlphaF(penColor.alphaF() * 0.8);
             m_pen.setColor(penColor);
@@ -415,7 +415,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     */
     // make excessively thick pen widths translucent to balance with other buttons
-    if (penWidth18By18 > 1.62) {
+    if (straightLineBolderThanCloseDiagonal(penWidth18By18)) {
         QColor penColor = m_pen.color();
         penColor.setAlphaF(penColor.alphaF() * 0.8);
         m_pen.setColor(penColor);
@@ -994,5 +994,10 @@ qreal RenderDecorationButtonIcon18By18::penWidthTo18By18(const QPen &pen)
     } else {
         return pen.widthF();
     }
+}
+
+bool RenderDecorationButtonIcon18By18::straightLineBolderThanCloseDiagonal(qreal straightLinePenWidth18By18)
+{
+    return (straightLinePenWidth18By18 > 1.62 && m_devicePixelRatio < 1.2);
 }
 }

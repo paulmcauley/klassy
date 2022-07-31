@@ -162,7 +162,19 @@ protected:
                                const ThresholdRound roundAtThresholdX = ThresholdRound::Up,
                                const ThresholdRound roundAtThresholdY = ThresholdRound::Up);
 
+    /**
+     * @brief given a pen, returns it in 18By18 co-ordinates, accounting for whether the pen is cosmetic or not
+     * @param pen the input pen
+     * @return the pen width in 18By18 coordinates
+     */
     qreal penWidthTo18By18(const QPen &pen);
+
+    /**
+     * @brief Sometimes the diagonals of a close button look fainter than a straight line
+     * @param straightLinePenWidth18By18 The pen width used for the straight line in 18By18 coords
+     * @return Returns when this is the case
+     */
+    bool straightLineBolderThanCloseDiagonal(qreal straightLinePenWidth18By18);
 
     QPainter *m_painter;
     QPen m_pen;
