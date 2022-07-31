@@ -318,8 +318,8 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
     }
 
     qreal penWidth18By18 = penWidthTo18By18(m_pen);
-    // if size is still too small, increase again
-    if (!m_fromKstyle && ((rect.width() + penWidth18By18) < 10.5)) {
+    // if size is still smaller than original design, increase again
+    if ((rect.width()) < 9 - 0.0001) { //0.0001 as sometimes there are floating point errors
         qreal adjustmentOffset = convertDevicePixelsTo18By18(1);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
@@ -370,12 +370,15 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
         return;
 
     qreal distanceBetweenSquares = std::min(backgroundPath->path().elementAt(3).x - backgroundPath->path().elementAt(4).x,
-                                            backgroundPath->path().elementAt(1).y - backgroundPath->path().elementAt(0).y);
+                                            backgroundPath->path().elementAt(0).y - backgroundPath->path().elementAt(1).y);
     qreal penWidth18By18 = penWidthTo18By18(m_pen);
 
     // if distance between squares < pen width (factoring in that the background sqaure does not join the foreground at the foreground's centre-point)
     // || distance between squares < 2
-    if (((distanceBetweenSquares / penWidth18By18) < 1.25) || (m_boldButtonIcons && distanceBetweenSquares < 2)) {
+    if (((distanceBetweenSquares / penWidth18By18) < 1.25 - 0.0001) ||
+        (m_boldButtonIcons && distanceBetweenSquares < 2 - 0.0001) ||
+        (!m_boldButtonIcons && distanceBetweenSquares < 1.5 - 0.0001) //0.0001 is because sometimes there are floating point errors
+    ) {
         // generate it again using a larger shiftOffset to push apart the squares
         overlappingWindows.reset();
         overlappingWindowsGroup = nullptr;
