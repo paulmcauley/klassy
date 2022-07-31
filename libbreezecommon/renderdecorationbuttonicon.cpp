@@ -270,13 +270,13 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     qreal maximizeSize = renderSquareMaximizeIcon(true);
     m_pen = m_painter->pen(); // needed as previous function modifies m_pen
 
-    m_pen.setWidthF(m_pen.widthF() * 1.166666666); // thicken up diagonal slightly to give a balanced look
-    m_painter->setPen(m_pen);
-
-    if (m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.42857142857); // total factor of 1.6666
-        m_painter->setPen(m_pen);
+    if (m_fromKstyle) {
+        m_pen.setWidthF(m_pen.widthF() * 1.166666666);
+    } else if (m_boldButtonIcons) {
+        m_pen.setWidthF(m_pen.widthF() * 1.5);
     }
+
+    m_painter->setPen(m_pen);
 
     QPointF topLeft;
     topLeft.setX((18 - maximizeSize) / 2);
