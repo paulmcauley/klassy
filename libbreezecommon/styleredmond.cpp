@@ -40,7 +40,7 @@ void RenderStyleRedmond18By18::renderMinimizeIcon()
 
     qreal penWidth18By18 = penWidthTo18By18(m_pen);
     // make excessively thick pen widths translucent to balance with other buttons
-    if (penWidth18By18 > 1.62) {
+    if (straightLineBolderThanCloseDiagonal(penWidth18By18)) {
         QColor penColor = m_pen.color();
         penColor.setAlphaF(penColor.alphaF() * 0.8);
         m_pen.setColor(penColor);
