@@ -207,7 +207,6 @@ void Button::drawIcon(QPainter *painter) const
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d)
         return;
-    auto s = d->settings();
 
     painter->setRenderHints(QPainter::Antialiasing);
 
