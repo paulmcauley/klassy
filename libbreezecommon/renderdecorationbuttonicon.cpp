@@ -271,7 +271,7 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     m_pen = m_painter->pen(); // needed as previous function modifies m_pen
 
     if (m_fromKstyle) {
-        m_pen.setWidthF(m_pen.widthF() * 1.166666666);
+        m_pen.setWidthF(m_pen.widthF() * 1.3);
     } else if (m_boldButtonIcons) {
         m_pen.setWidthF(m_pen.widthF() * 1.5);
     }
@@ -317,12 +317,13 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
 
-    qreal penWidth18By18 = penWidthTo18By18(m_pen);
-    // if size is still smaller than original design, increase again
-    if ((rect.width()) < 9 - 0.0001) { //0.0001 as sometimes there are floating point errors
+    // if size is still smaller than linear to original design, increase again
+    if ((rect.width() * m_totalScalingFactor) < (9 * m_totalScalingFactor - 0.0001)) { // 0.0001 as sometimes there are floating point errors
         qreal adjustmentOffset = convertDevicePixelsTo18By18(1);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
+
+    qreal penWidth18By18 = penWidthTo18By18(m_pen);
 
     if (!returnSizeOnly) {
         // make excessively thick pen widths translucent to balance with other buttons
@@ -1001,6 +1002,6 @@ qreal RenderDecorationButtonIcon18By18::penWidthTo18By18(const QPen &pen)
 
 bool RenderDecorationButtonIcon18By18::straightLineBolderThanCloseDiagonal(qreal straightLinePenWidth18By18)
 {
-    return (straightLinePenWidth18By18 > 1.62 && m_devicePixelRatio < 1.2);
+    return (m_devicePixelRatio < 1.2); // was straightLinePenWidth18By18 > 1.62
 }
 }
