@@ -504,21 +504,18 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     int roundedBoldPenWidth;
     if (m_boldButtonIcons) {
         QColor brushColor = m_pen.color();
-        brushColor.setAlphaF(brushColor.alphaF() * 0.75);
+        brushColor.setAlphaF(brushColor.alphaF() * 0.65);
         m_pen.setJoinStyle(Qt::BevelJoin);
         m_painter->setBrush(brushColor);
 
-        isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.2);
-        if (m_pen.widthF() < 2)
-            m_pen.setWidthF(m_pen.widthF() * 1.25); // don't use a rounded pen width like the others
-        else if (m_pen.widthF() < 2.1)
-            m_pen.setWidthF(m_pen.widthF() * 0.75);
+        isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
+        m_pen.setWidthF(roundedBoldPenWidth);
 
         m_painter->setPen(m_pen);
     } else { // in fine mode the dense minimize button appears bolder than the others so reduce its opacity to compensate
         QColor penColor = m_pen.color();
         QColor brushColor = penColor;
-        brushColor.setAlphaF(brushColor.alphaF() * 0.6);
+        brushColor.setAlphaF(brushColor.alphaF() * 0.5);
         penColor.setAlphaF(penColor.alphaF() * 0.75);
         m_pen.setColor(penColor);
 
@@ -527,7 +524,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         m_painter->setBrush(brushColor);
 
         isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
-
+        m_pen.setWidthF(roundedBoldPenWidth);
         m_painter->setPen(m_pen);
     }
 
