@@ -271,9 +271,9 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     m_pen = m_painter->pen(); // needed as previous function modifies m_pen
 
     if (m_fromKstyle) {
-        m_pen.setWidthF(m_pen.widthF() * 1.3);
+        m_pen.setWidthF(m_pen.widthF() * 1.2);
     } else if (m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.5);
+        m_pen.setWidthF(qRound(m_pen.widthF() * 1.5));
     }
 
     m_painter->setPen(m_pen);
@@ -323,15 +323,14 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
 
-    qreal penWidth18By18 = penWidthTo18By18(m_pen);
-
     if (!returnSizeOnly) {
         // make excessively thick pen widths translucent to balance with other buttons
-        if (straightLineBolderThanCloseDiagonal(penWidth18By18)) {
-            QColor penColor = m_pen.color();
-            penColor.setAlphaF(penColor.alphaF() * 0.8);
-            m_pen.setColor(penColor);
-        }
+
+        qreal opacity = straightLineOpacity();
+        QColor penColor = m_pen.color();
+        penColor.setAlphaF(penColor.alphaF() * opacity);
+        m_pen.setColor(penColor);
+
         m_painter->setPen(m_pen);
         m_painter->drawRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
     } else
@@ -419,11 +418,10 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     */
     // make excessively thick pen widths translucent to balance with other buttons
-    if (straightLineBolderThanCloseDiagonal(penWidth18By18)) {
-        QColor penColor = m_pen.color();
-        penColor.setAlphaF(penColor.alphaF() * 0.8);
-        m_pen.setColor(penColor);
-    }
+    qreal opacity = straightLineOpacity();
+    QColor penColor = m_pen.color();
+    penColor.setAlphaF(penColor.alphaF() * opacity);
+    m_pen.setColor(penColor);
     // set the pen widths in all items -- do this at this point as not to have non-cosmetic pen widths in boundingRect().width() calculations above
     foregroundRect->setPen(m_pen);
     backgroundPath->setPen(m_pen);
@@ -505,16 +503,14 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     bool isOddPenWidth = true;
     int roundedBoldPenWidth;
     if (m_boldButtonIcons) {
-        QColor penColor = m_pen.color();
-        penColor.setAlphaF(penColor.alphaF() * 0.8);
-        m_pen.setColor(penColor);
-        // tiny filled square
+        QColor brushColor = m_pen.color();
+        brushColor.setAlphaF(brushColor.alphaF() * 0.75);
         m_pen.setJoinStyle(Qt::BevelJoin);
-        m_painter->setBrush(m_pen.color());
+        m_painter->setBrush(brushColor);
 
         isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1.2);
         if (m_pen.widthF() < 2)
-            m_pen.setWidthF(m_pen.widthF() * 1.2); // don't use a rounded pen width like the others
+            m_pen.setWidthF(m_pen.widthF() * 1.25); // don't use a rounded pen width like the others
         else if (m_pen.widthF() < 2.1)
             m_pen.setWidthF(m_pen.widthF() * 0.75);
 
@@ -548,6 +544,15 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         qreal adjustmentOffset = convertDevicePixelsTo18By18(0.5);
         rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
     }
+
+    /*
+    // if size is still smaller than linear to original design, increase again
+    if ((rect.width() * m_totalScalingFactor) < (3 * m_totalScalingFactor - 0.0001)) { // 0.0001 as sometimes there are floating point errors
+        qreal adjustmentOffset = convertDevicePixelsTo18By18(1);
+        rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
+    }
+    */
+
     m_painter->drawRect(rect);
 }
 
@@ -1000,8 +1005,11 @@ qreal RenderDecorationButtonIcon18By18::penWidthTo18By18(const QPen &pen)
     }
 }
 
-bool RenderDecorationButtonIcon18By18::straightLineBolderThanCloseDiagonal(qreal straightLinePenWidth18By18)
+qreal RenderDecorationButtonIcon18By18::straightLineOpacity()
 {
-    return (m_devicePixelRatio < 1.2); // was straightLinePenWidth18By18 > 1.62
+    if (m_devicePixelRatio < 1.2)
+        return 0.9;
+    else
+        return 1;
 }
 }
