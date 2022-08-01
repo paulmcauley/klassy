@@ -170,11 +170,10 @@ protected:
     qreal penWidthTo18By18(const QPen &pen);
 
     /**
-     * @brief Sometimes the diagonals of a close button look fainter than a straight line
-     * @param straightLinePenWidth18By18 The pen width used for the straight line in 18By18 coords
-     * @return Returns when this is the case
+     * @brief Sometimes the diagonals of a close button look fainter than a straight line, so reduce the opacity of the straight lines to compensate
+     * @return Returns the opacity for a straight line
      */
-    bool straightLineBolderThanCloseDiagonal(qreal straightLinePenWidth18By18);
+    qreal straightLineOpacity();
 
     QPainter *m_painter;
     QPen m_pen;
