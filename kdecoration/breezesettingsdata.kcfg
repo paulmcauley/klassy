@@ -350,7 +350,7 @@
           <choice name="BoldIconsFine" />
           <choice name="BoldIconsHiDpiOnly" />
       </choices>
-      <default>BoldIconsBold</default>
+      <default>BoldIconsHiDpiOnly</default>
     </entry>
     
     <!-- maximized windows -->

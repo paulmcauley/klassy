@@ -966,15 +966,15 @@ void Button::setShouldDrawBoldButtonIcons()
         switch (d->internalSettings()->boldButtonIcons()) {
         default:
             break;
+        case InternalSettings::BoldIconsHiDpiOnly:
+            // If HiDPI system scaling use bold icons
+            if (m_devicePixelRatio > 1.2)
+                m_boldButtonIcons = true;
+            break;
         case InternalSettings::BoldIconsBold:
             m_boldButtonIcons = true;
             break;
         case InternalSettings::BoldIconsFine:
-            break;
-        case InternalSettings::BoldIconsHiDpiOnly:
-            // If HiDPI system scaling use bold icons
-            if (m_devicePixelRatio > 1.15)
-                m_boldButtonIcons = true;
             break;
         }
     }
