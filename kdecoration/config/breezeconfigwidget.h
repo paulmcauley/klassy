@@ -58,7 +58,7 @@ protected Q_SLOTS:
     void titlebarBottomMarginChanged();
     void titlebarLeftMarginChanged();
     void titlebarRightMarginChanged();
-    void fullHeightIntegratedRoundedRectangleSizingButtonClicked();
+    void integratedRoundedRectangleSizingButtonClicked();
     void fullHeightRectangleSizingButtonClicked();
     void buttonSizingButtonClicked();
     void dialogChanged(bool changed);

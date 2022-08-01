@@ -627,7 +627,7 @@ void Decoration::reconfigure()
 
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
+        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
         m_buttonBackgroundType = ButtonBackgroundType::FullHeight;
     else
         m_buttonBackgroundType = ButtonBackgroundType::Small;
@@ -770,8 +770,8 @@ void Decoration::updateButtonsGeometry()
     int buttonSpacingLeft = 0;
     int buttonSpacingRight = 0;
 
-    if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
-        buttonTopMargin -= int(qRound(qreal(internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding()) * qreal(s->smallSpacing()) / 2.0));
+    if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
+        buttonTopMargin -= int(qRound(qreal(internalSettings()->integratedRoundedRectangleBottomPadding()) * qreal(s->smallSpacing()) / 2.0));
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeight = borderTop();

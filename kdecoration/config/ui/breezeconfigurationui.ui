@@ -461,7 +461,7 @@
              </item>
             </layout>
            </widget>
-           <widget class="QWidget" name="fullHeightIntegratedRoundedRectangleOptions">
+           <widget class="QWidget" name="integratedRoundedRectangleOptions">
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <property name="spacing">
               <number>0</number>
@@ -479,7 +479,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="QPushButton" name="fullHeightIntegratedRoundedRectangleSizingButton">
+              <widget class="QPushButton" name="integratedRoundedRectangleSizingButton">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -541,7 +541,7 @@
            </item>
            <item>
             <property name="text">
-             <string>Full-height Integrated Rounded Rectangle</string>
+             <string>Integrated Rounded Rectangle</string>
             </property>
            </item>
            <item>
@@ -2622,7 +2622,7 @@ padding:</string>
   <tabstop>boldButtonIcons</tabstop>
   <tabstop>buttonShape</tabstop>
   <tabstop>fullHeightRectangleSizingButton</tabstop>
-  <tabstop>fullHeightIntegratedRoundedRectangleSizingButton</tabstop>
+  <tabstop>integratedRoundedRectangleSizingButton</tabstop>
   <tabstop>buttonSizingButton</tabstop>
   <tabstop>backgroundColors</tabstop>
   <tabstop>translucentButtonBackgrounds</tabstop>
