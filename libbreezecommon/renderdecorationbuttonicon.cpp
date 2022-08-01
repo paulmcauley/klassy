@@ -503,8 +503,12 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     bool isOddPenWidth = true;
     int roundedBoldPenWidth;
     if (m_boldButtonIcons) {
-        QColor brushColor = m_pen.color();
-        brushColor.setAlphaF(brushColor.alphaF() * 0.65);
+        QColor penColor = m_pen.color();
+        QColor brushColor = penColor;
+        brushColor.setAlphaF(brushColor.alphaF() * 0.7);
+        penColor.setAlphaF(penColor.alphaF() * 0.9);
+        m_pen.setColor(penColor);
+
         m_pen.setJoinStyle(Qt::BevelJoin);
         m_painter->setBrush(brushColor);
 
@@ -515,11 +519,10 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     } else { // in fine mode the dense minimize button appears bolder than the others so reduce its opacity to compensate
         QColor penColor = m_pen.color();
         QColor brushColor = penColor;
-        brushColor.setAlphaF(brushColor.alphaF() * 0.5);
+        brushColor.setAlphaF(brushColor.alphaF() * 0.55);
         penColor.setAlphaF(penColor.alphaF() * 0.75);
         m_pen.setColor(penColor);
 
-        // tiny filled square
         m_pen.setJoinStyle(Qt::BevelJoin);
         m_painter->setBrush(brushColor);
 
@@ -528,6 +531,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         m_painter->setPen(m_pen);
     }
 
+    // tiny filled square
     QRectF rect(snapToNearestPixel(QPointF(7.5, 7.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
                 snapToNearestPixel(QPointF(10.5, 10.5), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down));
     qreal width = rect.width();
