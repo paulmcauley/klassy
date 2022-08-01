@@ -770,8 +770,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                                 -geometryShrinkOffsetVertical));
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
-            } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle) {
-                geometryShrinkOffsetVertical = d->internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding() * s->smallSpacing();
+            } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+                geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 qreal halfPenWidth = penWidth / 2;
                 qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
                 qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
@@ -843,8 +843,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
-            else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle) {
-                qreal geometryShrinkOffsetVertical = d->internalSettings()->fullHeightIntegratedRoundedRectangleBottomPadding() * s->smallSpacing();
+            else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+                qreal geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
                     backgroundBoundingRect =
                         backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
@@ -912,13 +912,12 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
             || ((d->internalSettings()->cornerRadius() < 0.2)
                 && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle))
             || ((d->internalSettings()->cornerRadius() < 0.2)
-                && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle))) {
+                && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))) {
             painter->drawRect(
                 QRectF(0 + geometryShrinkOffset, 0 + geometryShrinkOffset, backgroundSize - geometryShrinkOffset, backgroundSize - geometryShrinkOffset));
         } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                    || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
-                   || d->internalSettings()->buttonShape()
-                       == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle // case where standalone
+                   || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
         ) {
             painter->drawRoundedRect(
                 QRectF(0 + geometryShrinkOffset, 0 + geometryShrinkOffset, backgroundSize - geometryShrinkOffset, backgroundSize - geometryShrinkOffset),

@@ -1424,11 +1424,11 @@ void Helper::renderDecorationButton(QPainter *painter,
             || (decorationConfig()->cornerRadius() < 0.2
                 && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
             || (decorationConfig()->cornerRadius() < 0.2
-                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle))
+                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))
             painter->drawRect(QRectF(2, 2, 14, 14));
         else if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                  || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightIntegratedRoundedRectangle)
+                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
             painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
         else { // circle
             if (outlineColor.isValid())

@@ -27,7 +27,7 @@ ButtonSizing::ButtonSizing(QWidget *parent)
     connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightIntegratedRoundedRectangleBottomPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
+    connect(m_ui.integratedRoundedRectangleBottomPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
     connect(m_ui.lockFullHeightButtonWidthMargins, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
     connect(m_ui.lockButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
     connect(m_ui.lockFullHeightButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
@@ -65,7 +65,7 @@ void ButtonSizing::load()
     m_ui.buttonSpacingLeft->setValue(m_internalSettings->buttonSpacingLeft());
     m_ui.fullHeightButtonSpacingRight->setValue(m_internalSettings->fullHeightButtonSpacingRight());
     m_ui.fullHeightButtonSpacingLeft->setValue(m_internalSettings->fullHeightButtonSpacingLeft());
-    m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setValue(m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding());
+    m_ui.integratedRoundedRectangleBottomPadding->setValue(m_internalSettings->integratedRoundedRectangleBottomPadding());
     m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
     m_ui.lockFullHeightButtonSpacingLeftRight->setChecked(m_internalSettings->lockFullHeightButtonSpacingLeftRight());
@@ -89,7 +89,7 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     m_internalSettings->setButtonSpacingLeft(m_ui.buttonSpacingLeft->value());
     m_internalSettings->setFullHeightButtonSpacingRight(m_ui.fullHeightButtonSpacingRight->value());
     m_internalSettings->setFullHeightButtonSpacingLeft(m_ui.fullHeightButtonSpacingLeft->value());
-    m_internalSettings->setFullHeightIntegratedRoundedRectangleBottomPadding(m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->value());
+    m_internalSettings->setIntegratedRoundedRectangleBottomPadding(m_ui.integratedRoundedRectangleBottomPadding->value());
     m_internalSettings->setLockFullHeightButtonWidthMargins(m_ui.lockFullHeightButtonWidthMargins->isChecked());
     m_internalSettings->setLockButtonSpacingLeftRight(m_ui.lockButtonSpacingLeftRight->isChecked());
     m_internalSettings->setLockFullHeightButtonSpacingLeftRight(m_ui.lockFullHeightButtonSpacingLeftRight->isChecked());
@@ -120,7 +120,7 @@ void ButtonSizing::defaults()
     m_ui.buttonSpacingLeft->setValue(m_internalSettings->buttonSpacingLeft());
     m_ui.fullHeightButtonSpacingRight->setValue(m_internalSettings->fullHeightButtonSpacingRight());
     m_ui.fullHeightButtonSpacingLeft->setValue(m_internalSettings->fullHeightButtonSpacingLeft());
-    m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->setValue(m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding());
+    m_ui.integratedRoundedRectangleBottomPadding->setValue(m_internalSettings->integratedRoundedRectangleBottomPadding());
     m_ui.lockFullHeightButtonWidthMargins->setChecked(m_internalSettings->lockFullHeightButtonWidthMargins());
     m_ui.lockButtonSpacingLeftRight->setChecked(m_internalSettings->lockButtonSpacingLeftRight());
     m_ui.lockFullHeightButtonSpacingLeftRight->setChecked(m_internalSettings->lockFullHeightButtonSpacingLeftRight());
@@ -159,7 +159,7 @@ void ButtonSizing::updateChanged()
         modified = true;
     else if (m_ui.fullHeightButtonSpacingLeft->value() != m_internalSettings->fullHeightButtonSpacingLeft())
         modified = true;
-    else if (m_ui.fullHeightIntegratedRoundedRectangleBottomPadding->value() != m_internalSettings->fullHeightIntegratedRoundedRectangleBottomPadding())
+    else if (m_ui.integratedRoundedRectangleBottomPadding->value() != m_internalSettings->integratedRoundedRectangleBottomPadding())
         modified = true;
     else if (m_ui.lockFullHeightButtonWidthMargins->isChecked() != m_internalSettings->lockFullHeightButtonWidthMargins())
         modified = true;

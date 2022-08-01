@@ -57,12 +57,12 @@
       <choices>
           <choice name="ShapeFullHeightRectangle" />
           <choice name="ShapeFullHeightRoundedRectangle" />
-          <choice name="ShapeFullHeightIntegratedRoundedRectangle" />
+          <choice name="ShapeIntegratedRoundedRectangle" />
           <choice name="ShapeSmallCircle" />
           <choice name="ShapeSmallSquare" />
           <choice name="ShapeSmallRoundedSquare" />
       </choices>
-      <default>ShapeFullHeightIntegratedRoundedRectangle</default>
+      <default>ShapeIntegratedRoundedRectangle</default>
     </entry>
     
     <!-- background colors -->
@@ -255,8 +255,8 @@
         <default>false</default>
     </entry>
     
-    <!-- Full-height Integrated Rounded Rectangle Bottom Padding -->
-    <entry name="FullHeightIntegratedRoundedRectangleBottomPadding" type = "Double">
+    <!--Integrated Rounded Rectangle Bottom Padding -->
+    <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
        <default>0.75</default>
        <min>0</min>
        <max>10</max>
