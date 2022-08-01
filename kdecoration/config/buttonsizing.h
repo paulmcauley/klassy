@@ -63,8 +63,8 @@ private:
     //* defaults clicked
     bool m_defaultsPressed = false;
 
-    bool m_loading;
-    bool m_processingDefaults;
+    bool m_loading = false;
+    bool m_processingDefaults = false;
 };
 
 }
