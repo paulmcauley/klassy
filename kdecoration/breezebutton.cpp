@@ -771,6 +771,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
             } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+                geometryShrinkOffsetHorizontal = PenWidth::Symbol / 2;
                 geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 qreal halfPenWidth = penWidth / 2;
                 qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
@@ -781,27 +782,27 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 drawOutlineUsingPath = true;
 
                 if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
-                    outerRect = backgroundBoundingRect.adjusted(halfPenWidth,
+                    outerRect = backgroundBoundingRect.adjusted(0,
                                                                 -extensionByCornerRadiusInnerOuter,
                                                                 extensionByCornerRadiusInnerOuter,
                                                                 -geometryShrinkOffsetVerticalOuter);
-                    innerRect = backgroundBoundingRect.adjusted(penWidth + halfPenWidth,
+                    innerRect = backgroundBoundingRect.adjusted(penWidth,
                                                                 -extensionByCornerRadiusInnerOuter,
                                                                 extensionByCornerRadiusInnerOuter,
                                                                 -geometryShrinkOffsetVerticalInner);
                     backgroundBoundingRect =
-                        backgroundBoundingRect.adjusted(penWidth, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
+                        backgroundBoundingRect.adjusted(halfPenWidth, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
                 } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
                     outerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
-                                                                -halfPenWidth,
+                                                                0,
                                                                 -geometryShrinkOffsetVerticalOuter);
                     innerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
-                                                                -penWidth - halfPenWidth,
+                                                                -penWidth,
                                                                 -geometryShrinkOffsetVerticalInner);
                     backgroundBoundingRect =
-                        backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), -penWidth, -geometryShrinkOffsetVertical);
+                        backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), -halfPenWidth, -geometryShrinkOffsetVertical);
                 } else {
                     outerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                 -extensionByCornerRadiusInnerOuter,
