@@ -18,41 +18,54 @@
 namespace Breeze
 {
 
-std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory(const QSharedPointer<InternalSettings> internalSettings,
+std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory(const QSharedPointer<Breeze::InternalSettings> internalSettings,
                                                                                             QPainter *painter,
                                                                                             const bool fromKstyle,
                                                                                             const bool boldButtonIcons,
-                                                                                            qreal iconWidth,
-                                                                                            qreal devicePixelRatio)
+                                                                                            const qreal iconWidth,
+                                                                                            const qreal devicePixelRatio,
+                                                                                            const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
 {
     switch (internalSettings->buttonIconStyle()) {
     case InternalSettings::StyleKlassy:
     default:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKlassy18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio));
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleKlassy18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
 
     case InternalSettings::StyleKite:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleKite18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio));
-    case InternalSettings::StyleOxygen:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleOxygen18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio));
-    case InternalSettings::StyleRedmond:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleRedmond18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio));
-    case InternalSettings::StyleRedmond10:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio));
-    case InternalSettings::StyleSystemIconTheme:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleSystemIconTheme(painter, fromKstyle, boldButtonIcons, iconWidth, internalSettings, devicePixelRatio));
+            new RenderStyleKite18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+    case InternalSettings::StyleOxygen:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleOxygen18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+    case InternalSettings::StyleRedmond:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleRedmond18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+    case InternalSettings::StyleRedmond10:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
+            new RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+    case InternalSettings::StyleSystemIconTheme:
+        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleSystemIconTheme(painter,
+                                                                                                fromKstyle,
+                                                                                                boldButtonIcons,
+                                                                                                iconWidth,
+                                                                                                internalSettings,
+                                                                                                devicePixelRatio,
+                                                                                                deviceOffsetTitleBarTopLeftToIconTopLeft));
     }
 }
 
 RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *painter,
                                                                    const bool fromKstyle,
                                                                    const bool boldButtonIcons,
-                                                                   const qreal devicePixelRatio)
+                                                                   const qreal devicePixelRatio,
+                                                                   const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
     : m_painter(painter)
     , m_pen(painter->pen())
     , m_fromKstyle(fromKstyle)
     , m_boldButtonIcons(boldButtonIcons)
     , m_devicePixelRatio(devicePixelRatio)
+    , m_deviceOffsetTitleBarTopLeftToIconTopLeft(deviceOffsetTitleBarTopLeftToIconTopLeft)
 {
     m_painter->save();
     initPainter();
@@ -975,12 +988,11 @@ QPointF RenderDecorationButtonIcon18By18::snapToNearestPixel(QPointF point18By18
                                                              const ThresholdRound roundAtThresholdX,
                                                              const ThresholdRound roundAtThresholdY)
 {
-    if (!m_inverseDeviceTransform) {
-        m_inverseDeviceTransform = std::unique_ptr<QTransform>(new QTransform);
-        *m_inverseDeviceTransform = m_painter->deviceTransform().inverted();
-    }
+    point18By18 *= m_totalScalingFactor;
 
-    point18By18 = m_painter->deviceTransform().map(point18By18);
+    // the top-left of the titlebar is used as the reference-point at which the pixel is most likely to be whole
+    //(This, however, is not the case with fractional scaling, but cannot get an offset from the top-left of the device screen from the API)
+    point18By18 += m_deviceOffsetTitleBarTopLeftToIconTopLeft;
 
     if (snapX == SnapPixel::ToHalf) {
         point18By18.setX(roundCoordToHalf(point18By18.x(), roundAtThresholdX));
@@ -994,7 +1006,8 @@ QPointF RenderDecorationButtonIcon18By18::snapToNearestPixel(QPointF point18By18
         point18By18.setY(roundCoordToWhole(point18By18.y(), roundAtThresholdY));
     }
 
-    return (m_inverseDeviceTransform->map(point18By18));
+    point18By18 -= m_deviceOffsetTitleBarTopLeftToIconTopLeft;
+    return (point18By18 / m_totalScalingFactor);
 }
 
 qreal RenderDecorationButtonIcon18By18::penWidthTo18By18(const QPen &pen)

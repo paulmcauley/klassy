@@ -38,7 +38,6 @@ void RenderStyleRedmond1018By18::renderMinimizeIcon()
         m_pen.setWidthF(roundedBoldPenWidth);
     }
 
-    qreal penWidth18By18 = penWidthTo18By18(m_pen);
     // make excessively thick pen widths translucent to balance with other buttons
     qreal opacity = straightLineOpacity();
     QColor penColor = m_pen.color();

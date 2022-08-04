@@ -35,7 +35,7 @@ public:
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
-     * @param iconScaleFactor the amount this icon will be sized (excluding dpr/smallSpacing due to screen scaling)
+     * @param deviceOffsetTitleBarTopLeftToIconTopLeft The offset of the top-left of this icon from the top-left of the titlebar (in device pixels)
      * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new
      * sub-style object.
      */
@@ -44,7 +44,8 @@ public:
                                                                      const bool fromKstyle = false,
                                                                      const bool boldButtonIcons = false,
                                                                      const qreal iconWidth = 18,
-                                                                     qreal devicePixelRatio = 1);
+                                                                     const qreal devicePixelRatio = 1,
+                                                                     const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft = QPointF(0, 0));
 
     virtual ~RenderDecorationButtonIcon18By18();
 
@@ -71,9 +72,13 @@ protected:
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
-     * @param iconScaleFactor the amount this icon will be sized (excluding dpr/smallSpacing due to screen scaling)
+     * @param deviceOffsetTitleBarTopLeftToIconTopLeft The offset of the top-left of this icon from the top-left of the titlebar (in device pixels)
      */
-    RenderDecorationButtonIcon18By18(QPainter *painter, const bool fromKstyle, const bool boldButtonIcons, const qreal devicePixelRatio);
+    RenderDecorationButtonIcon18By18(QPainter *painter,
+                                     const bool fromKstyle,
+                                     const bool boldButtonIcons,
+                                     const qreal devicePixelRatio,
+                                     const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
@@ -181,7 +186,7 @@ protected:
     bool m_boldButtonIcons;
     qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11
     qreal m_totalScalingFactor;
-    std::unique_ptr<QTransform> m_inverseDeviceTransform;
+    QPointF m_deviceOffsetTitleBarTopLeftToIconTopLeft;
 
     //* how much to factor the pen width for a bold restore button
     static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;
