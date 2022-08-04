@@ -282,20 +282,20 @@
     
     <!-- left button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingLeft" type = "Int">
-       <default>0</default>
+       <default>1</default>
        <min>0</min>
        <max>50</max>
     </entry>
     
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>0</default>
+       <default>1</default>
        <min>0</min>
        <max>50</max>
     </entry>
     
     <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>    
     
     <entry name="TitlebarTopMargin" type = "Double">
