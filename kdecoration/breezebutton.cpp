@@ -757,6 +757,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
         painter->translate(m_fullHeightVisibleBackgroundOffset);
 
         QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
+        painter->setClipRect(backgroundBoundingRect);
         QPainterPath background;
         QPainterPath outline;
         painter->setPen(Qt::NoPen);
@@ -790,9 +791,9 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
             } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
-                geometryShrinkOffsetHorizontal = PenWidth::Symbol / 2;
-                geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 qreal halfPenWidth = penWidth / 2;
+                geometryShrinkOffsetHorizontal = halfPenWidth;
+                geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
                 qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
                 qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
                 qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetVertical - halfPenWidth;
