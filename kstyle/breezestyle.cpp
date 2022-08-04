@@ -5180,7 +5180,10 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
             const int textFlags(Qt::AlignVCenter | Qt::AlignRight);
             QString accelerator(text.mid(tabPosition + 1));
             text = text.left(tabPosition);
+            painter->save();
+            painter->setOpacity(0.7);
             drawItemText(painter, textRect, textFlags, palette, enabled, accelerator, role);
+            painter->restore();
         }
 
         // render text
