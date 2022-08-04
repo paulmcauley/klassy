@@ -27,10 +27,11 @@ public:
     RenderStyleSystemIconTheme(QPainter *painter,
                                const bool fromKstyle,
                                const bool boldButtonIcons,
-                               qreal iconWidth,
+                               const qreal iconWidth,
                                const QSharedPointer<InternalSettings> internalSettings,
-                               qreal devicePixelRatio)
-        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio)
+                               const qreal devicePixelRatio,
+                               const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
+        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft)
         , m_iconWidth{iconWidth}
         , m_internalSettings{internalSettings} {};
 
