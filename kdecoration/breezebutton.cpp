@@ -765,6 +765,13 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
         bool drawOutline = false;
         bool drawOutlineUsingPath = false;
 
+        qreal penWidth = PenWidth::Symbol;
+        qreal geometryShrinkOffsetHorizontal = PenWidth::Symbol * 1.5;
+        if (KWindowSystem::isPlatformX11()) {
+            penWidth *= m_devicePixelRatio;
+            geometryShrinkOffsetHorizontal *= m_devicePixelRatio;
+        }
+
         if (shouldDrawBackgroundStroke()) {
             QRectF innerRect;
             QRectF outerRect;
@@ -774,12 +781,6 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             // drawOutline=false is for the case when you still want to shrink the button but don't want an outline e.g. with always show
             // highlighted close button and not hovered/pressed
 
-            qreal penWidth = PenWidth::Symbol;
-            qreal geometryShrinkOffsetHorizontal = PenWidth::Symbol * 1.5;
-            if (KWindowSystem::isPlatformX11()) {
-                penWidth *= m_devicePixelRatio;
-                geometryShrinkOffsetHorizontal *= m_devicePixelRatio;
-            }
             qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal;
 
             if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
@@ -865,7 +866,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
 
             else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
-                qreal geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing();
+                qreal geometryShrinkOffsetVertical = d->internalSettings()->integratedRoundedRectangleBottomPadding() * s->smallSpacing() - penWidth;
                 if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
                     backgroundBoundingRect =
                         backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
