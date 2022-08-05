@@ -43,6 +43,7 @@
 #include <QMainWindow>
 #include <QMdiArea>
 #include <QMenu>
+#include <QMetaEnum>
 #include <QPainter>
 #include <QPushButton>
 #include <QRadioButton>
@@ -531,12 +532,24 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
         return Metrics::MenuItem_HighlightGap;
 
     // small icon size
-    case PM_SmallIconSize:
-        if (isTabletMode()) {
-            return 22;
-        } else {
-            return 16;
+    case PM_SmallIconSize: {
+        auto iconSize = ParentStyleClass::pixelMetric(metric, option, widget);
+        if (!isTabletMode()) {
+            return iconSize;
         }
+
+        // in tablet mode, we try to figure out the next size and use it
+        // see bug 455513
+        auto metaEnum = QMetaEnum::fromType<KIconLoader::StdSizes>();
+        for (int i = 0; i + 1 < metaEnum.keyCount(); ++i) {
+            if (iconSize == metaEnum.value(i)) {
+                return metaEnum.value(i + 1);
+            }
+        }
+
+        // size is either too large or unknown, just increase it by 50%
+        return iconSize * 3 / 2;
+    }
 
     // frame width
     case PM_DefaultFrameWidth:
