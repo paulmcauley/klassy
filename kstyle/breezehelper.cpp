@@ -1392,8 +1392,7 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     bool inverted,
                                     bool paintBackground,
                                     const QColor &backgroundColor,
-                                    const QColor &outlineColor,
-                                    const qreal devicePixelRatio) const
+                                    const QColor &outlineColor) const
 {
     painter->save();
     painter->setViewport(rect);
@@ -1462,11 +1461,12 @@ void Helper::renderDecorationButton(QPainter *painter,
 
     std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
     if (decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-        painter->setWindow(0, 0, 16, 16);
-        iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true, false, 16, devicePixelRatio);
-    } else
+        painter->setWindow(rect);
+        iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true, false, rect.width());
+    } else {
         iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
-
+    }
+    
     switch (buttonType) {
     case ButtonClose: {
         iconRenderer->renderCloseIcon();

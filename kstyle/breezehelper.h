@@ -305,8 +305,7 @@ public:
                                 bool inverted,
                                 bool paintBackground = false,
                                 const QColor &backgroundColor = QColor(),
-                                const QColor &outlineColor = QColor(),
-                                const qreal devicePixelRatio = 1) const;
+                                const QColor &outlineColor = QColor()) const;
 
     //* generic shadow for rounded rectangles
     void renderRoundedRectShadow(QPainter *, const QRectF &, const QColor &, qreal radius = Metrics::Frame_FrameRadius - PenWidth::Shadow / 2) const;
