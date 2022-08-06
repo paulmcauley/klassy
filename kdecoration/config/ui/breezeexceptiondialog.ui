@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>362</width>
-    <height>321</height>
+    <width>397</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,7 +64,7 @@
        <widget class="QComboBox" name="exceptionType">
         <item>
          <property name="text">
-          <string>Window Class Name</string>
+          <string>Window Class Name (X11 only)</string>
          </property>
         </item>
         <item>
@@ -83,20 +83,6 @@
       <string>Decoration Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="borderSizeCheckBox">
-        <property name="text">
-         <string>Border size:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="hideTitleBar">
-        <property name="text">
-         <string>Hide window title bar</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="borderSizeComboBox">
         <property name="enabled">
@@ -149,7 +135,7 @@
         </item>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="4" column="0" colspan="2">
        <spacer name="verticalSpacer">
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -161,6 +147,27 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="hideTitleBar">
+        <property name="text">
+         <string>Hide window titlebar</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="borderSizeCheckBox">
+        <property name="text">
+         <string>Border size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="opaqueTitleBar">
+        <property name="text">
+         <string>Opaque titlebar/header</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

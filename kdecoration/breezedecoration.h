@@ -203,6 +203,7 @@ private:
     void setScaledTitleBarTopBottomMargins();
     void setScaledTitleBarSideMargins();
     void setAddedTitleBarOpacity();
+    bool isOpaqueTitleBar();
     int titleBarSeparatorHeight() const;
     qreal devicePixelRatio(QPainter *painter) const;
 

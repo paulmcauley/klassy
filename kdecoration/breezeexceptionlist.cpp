@@ -40,6 +40,7 @@ void ExceptionList::readConfig(KSharedConfig::Ptr config)
         if (exception.mask() & BorderSize)
             configuration->setBorderSize(exception.borderSize());
         configuration->setHideTitleBar(exception.hideTitleBar());
+        configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
 
         // append to exceptions
         _exceptions.append(configuration);
@@ -73,7 +74,7 @@ QString ExceptionList::exceptionGroupName(int index)
 void ExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
     // list of items to be written
-    QStringList keys = {"Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "Mask", "BorderSize"};
+    QStringList keys = {"Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "OpaqueTitleBar", "Mask", "BorderSize"};
 
     // write all items
     foreach (auto key, keys) {
