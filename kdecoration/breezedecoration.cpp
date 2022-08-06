@@ -1588,7 +1588,7 @@ void Decoration::setAddedTitleBarOpacity()
     m_addedTitleBarOpacityActive = 1;
     m_addedTitleBarOpacityInactive = 1;
 
-    if (!(c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars())) {
+    if (!(m_internalSettings->opaqueTitleBar() || (c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars()))) {
         // only add additional translucency if the system colour does not already have translucency
         QColor systemActiveTitleBarColor = c->color(ColorGroup::Active, ColorRole::TitleBar);
         QColor systemInactiveTitlebarColor = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
@@ -1609,10 +1609,8 @@ void Decoration::updateOpaque()
     // access client
     auto c = client().toStrongRef();
     Q_ASSERT(c);
-    int titleBarOpacityToAdd = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
 
-    if ((m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())
-        || (titleBarOpacityToAdd == 100 && titleBarColor(true).alpha() == 255)) { // opaque titlebar colours
+    if (isOpaqueTitleBar()) { // opaque titlebar colours
         if (c->isMaximized())
             setOpaque(true);
         else
@@ -1624,14 +1622,8 @@ void Decoration::updateOpaque()
 
 void Decoration::updateBlur()
 {
-    // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-    int titleBarOpacityToAdd = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
-
     // disable blur if the titlebar is opaque
-    if ((m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())
-        || (titleBarOpacityToAdd == 100 && titleBarColor(true).alpha() == 255)) { // opaque titlebar colours
+    if (isOpaqueTitleBar()) { // opaque titlebar colours
         setBlurRegion(QRegion());
     } else { // transparent titlebar colours
         if (m_internalSettings->blurTransparentTitlebars()) { // enable blur
@@ -1640,6 +1632,17 @@ void Decoration::updateBlur()
         } else
             setBlurRegion(QRegion());
     }
+}
+
+bool Decoration::isOpaqueTitleBar()
+{
+    // access client
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+    int titleBarOpacityToAdd = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
+
+    return (m_internalSettings->opaqueTitleBar() // exception override
+            || (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized()) || (titleBarOpacityToAdd == 100 && titleBarColor(true).alpha() == 255));
 }
 
 int Decoration::titleBarSeparatorHeight() const

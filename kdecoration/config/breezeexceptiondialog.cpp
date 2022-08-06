@@ -46,6 +46,7 @@ ExceptionDialog::ExceptionDialog(QWidget *parent)
     }
 
     connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
+    connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
 
 // hide detection dialog on non X11 platforms
 #if BREEZE_HAVE_X11
@@ -67,6 +68,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_ui.exceptionEditor->setText(m_exception->exceptionPattern());
     m_ui.borderSizeComboBox->setCurrentIndex(m_exception->borderSize());
     m_ui.hideTitleBar->setChecked(m_exception->hideTitleBar());
+    m_ui.opaqueTitleBar->setChecked(m_exception->opaqueTitleBar());
 
     // mask
     for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
@@ -83,6 +85,7 @@ void ExceptionDialog::save()
     m_exception->setExceptionPattern(m_ui.exceptionEditor->text());
     m_exception->setBorderSize(m_ui.borderSizeComboBox->currentIndex());
     m_exception->setHideTitleBar(m_ui.hideTitleBar->isChecked());
+    m_exception->setOpaqueTitleBar(m_ui.opaqueTitleBar->isChecked());
 
     // mask
     unsigned int mask = None;
@@ -107,6 +110,8 @@ void ExceptionDialog::updateChanged()
     else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
         modified = true;
     else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->isChecked())
+        modified = true;
+    else if (m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked())
         modified = true;
     else {
         // check mask

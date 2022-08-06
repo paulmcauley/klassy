@@ -388,8 +388,13 @@
         <default>true</default>
     </entry>
 
-    <!-- hide title bar -->
+    <!-- hide title bar (exception) -->
     <entry name="HideTitleBar" type = "Bool">
+       <default>false</default>
+    </entry>
+    
+    <!-- opaque title bar (exception) -->
+    <entry name="OpaqueTitleBar" type = "Bool">
        <default>false</default>
     </entry>
 
@@ -399,7 +404,7 @@
           <choice name="ExceptionWindowClassName" />
           <choice name="ExceptionWindowTitle" />
       </choices>
-      <default>ExceptionWindowClassName</default>
+      <default>ExceptionWindowTitle</default>
     </entry>
 
     <entry name="ExceptionPattern" type = "String"/>
