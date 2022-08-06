@@ -8,13 +8,13 @@
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezeexceptionlist.h"
+#include "decorationexceptionlist.h"
 
 namespace Breeze
 {
 
 //______________________________________________________________
-void ExceptionList::readConfig(KSharedConfig::Ptr config)
+void DecorationExceptionList::readConfig(KSharedConfig::Ptr config)
 {
     _exceptions.clear();
 
@@ -32,8 +32,9 @@ void ExceptionList::readConfig(KSharedConfig::Ptr config)
 
         // apply changes from exception
         configuration->setEnabled(exception.enabled());
-        configuration->setExceptionType(exception.exceptionType());
-        configuration->setExceptionPattern(exception.exceptionPattern());
+        configuration->setExceptionWindowPropertyType(exception.exceptionWindowPropertyType());
+        configuration->setExceptionProgramNamePattern(exception.exceptionProgramNamePattern());
+        configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
         configuration->setMask(exception.mask());
 
         // propagate all features found in mask to the output configuration
@@ -41,6 +42,7 @@ void ExceptionList::readConfig(KSharedConfig::Ptr config)
             configuration->setBorderSize(exception.borderSize());
         configuration->setHideTitleBar(exception.hideTitleBar());
         configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
+        configuration->setPreventApplyOpacityToHeader(exception.preventApplyOpacityToHeader());
 
         // append to exceptions
         _exceptions.append(configuration);
@@ -48,7 +50,7 @@ void ExceptionList::readConfig(KSharedConfig::Ptr config)
 }
 
 //______________________________________________________________
-void ExceptionList::writeConfig(KSharedConfig::Ptr config)
+void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 {
     // remove all existing exceptions
     QString groupName;
@@ -65,16 +67,24 @@ void ExceptionList::writeConfig(KSharedConfig::Ptr config)
 }
 
 //_______________________________________________________________________
-QString ExceptionList::exceptionGroupName(int index)
+QString DecorationExceptionList::exceptionGroupName(int index)
 {
     return QString("Windeco Exception %1").arg(index);
 }
 
 //______________________________________________________________
-void ExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
+void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
     // list of items to be written
-    QStringList keys = {"Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "OpaqueTitleBar", "Mask", "BorderSize"};
+    QStringList keys = {"Enabled",
+                        "ExceptionProgramNamePattern",
+                        "ExceptionWindowPropertyPattern",
+                        "ExceptionWindowPropertyType",
+                        "HideTitleBar",
+                        "OpaqueTitleBar",
+                        "PreventApplyOpacityToHeader",
+                        "Mask",
+                        "BorderSize"};
 
     // write all items
     foreach (auto key, keys) {
@@ -90,7 +100,7 @@ void ExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, 
 }
 
 //______________________________________________________________
-void ExceptionList::readConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
+void DecorationExceptionList::readConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
     foreach (KConfigSkeletonItem *item, skeleton->items()) {
         if (!groupName.isEmpty())

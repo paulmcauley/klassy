@@ -33,7 +33,7 @@ ExceptionListWidget::ExceptionListWidget(QWidget *parent)
     m_ui.exceptionListView->setRootIsDecorated(false);
     m_ui.exceptionListView->setSortingEnabled(false);
     m_ui.exceptionListView->setModel(&model());
-    m_ui.exceptionListView->sortByColumn(ExceptionModel::ColumnType, Qt::AscendingOrder);
+    m_ui.exceptionListView->sortByColumn(ExceptionModel::ColumnWindowPropertyRegExp, Qt::AscendingOrder);
     m_ui.exceptionListView->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Ignored));
 
     m_ui.moveUpButton->setIcon(QIcon::fromTheme(QStringLiteral("arrow-up")));
@@ -282,14 +282,17 @@ void ExceptionListWidget::down()
 void ExceptionListWidget::resizeColumns() const
 {
     m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnEnabled);
-    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnType);
-    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnRegExp);
+    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnProgramNameRegExp);
+    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnWindowPropertyType);
+    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnWindowPropertyRegExp);
 }
 
 //_______________________________________________________
 bool ExceptionListWidget::checkException(InternalSettingsPtr exception)
 {
-    while (exception->exceptionPattern().isEmpty() || !QRegularExpression(exception->exceptionPattern()).isValid()) {
+    while ((exception->exceptionProgramNamePattern().isEmpty() && exception->exceptionWindowPropertyPattern().isEmpty())
+           || !QRegularExpression(exception->exceptionProgramNamePattern()).isValid()
+           || !QRegularExpression(exception->exceptionWindowPropertyPattern()).isValid()) {
         QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Regular Expression syntax is incorrect"));
         QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
         dialog->setException(exception);

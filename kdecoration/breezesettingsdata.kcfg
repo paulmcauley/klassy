@@ -397,9 +397,16 @@
     <entry name="OpaqueTitleBar" type = "Bool">
        <default>false</default>
     </entry>
+    
+    <!-- Prevent titlebar opacity setting from affecting entire header (exception) -->
+    <entry name="PreventApplyOpacityToHeader" type = "Bool">
+       <default>false</default>
+    </entry>
 
     <!-- window specific settings -->
-    <entry name="ExceptionType" type="Enum">
+    <entry name="ExceptionProgramNamePattern" type = "String"/>
+    
+    <entry name="ExceptionWindowPropertyType" type="Enum">
       <choices>
           <choice name="ExceptionWindowClassName" />
           <choice name="ExceptionWindowTitle" />
@@ -407,7 +414,7 @@
       <default>ExceptionWindowTitle</default>
     </entry>
 
-    <entry name="ExceptionPattern" type = "String"/>
+    <entry name="ExceptionWindowPropertyPattern" type = "String"/>
 
     <entry name="Enabled" type = "Bool">
       <default>true</default>

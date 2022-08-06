@@ -6,7 +6,7 @@
 
 #include "breezesettingsprovider.h"
 
-#include "breezeexceptionlist.h"
+#include "decorationexceptionlist.h"
 
 #include <KWindowInfo>
 
@@ -52,7 +52,7 @@ void SettingsProvider::reconfigure()
 
     m_defaultSettings->load();
 
-    ExceptionList exceptions;
+    DecorationExceptionList exceptions;
     exceptions.readConfig(m_config);
     m_exceptions = exceptions.get();
 }
@@ -60,9 +60,6 @@ void SettingsProvider::reconfigure()
 //__________________________________________________________________
 InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) const
 {
-    QString windowTitle;
-    QString className;
-
     // get the client
     auto client = decoration->client().toStrongRef();
     Q_ASSERT(client);
@@ -73,38 +70,35 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
             continue;
 
         // discard exceptions with empty exception pattern
-        if (internalSettings->exceptionPattern().isEmpty())
+        if (internalSettings->exceptionWindowPropertyPattern().isEmpty())
             continue;
 
         /*
-        decide which value is to be compared
+        decide which windowPropertyValue is to be compared
         to the regular expression, based on exception type
         */
-        QString value;
-        switch (internalSettings->exceptionType()) {
+        QString windowPropertyValue;
+        switch (internalSettings->exceptionWindowPropertyType()) {
         case InternalSettings::ExceptionWindowTitle: {
-            value = windowTitle.isEmpty() ? (windowTitle = client->caption()) : windowTitle;
+            windowPropertyValue = client->caption();
             break;
         }
 
         default:
         case InternalSettings::ExceptionWindowClassName: {
-            if (className.isEmpty()) {
-                // retrieve class name
-                KWindowInfo info(client->windowId(), {}, NET::WM2WindowClass);
-                QString window_className(QString::fromUtf8(info.windowClassName()));
-                QString window_class(QString::fromUtf8(info.windowClassClass()));
-                className = window_className + QStringLiteral(" ") + window_class;
-            }
+            // retrieve class name
+            KWindowInfo info(client->windowId(), {}, NET::WM2WindowClass);
+            QString window_className(QString::fromUtf8(info.windowClassName()));
+            QString window_class(QString::fromUtf8(info.windowClassClass()));
+            windowPropertyValue = window_className + QStringLiteral(" ") + window_class;
 
-            value = className;
             break;
         }
         }
 
         // check matching
-        QRegularExpression rx(internalSettings->exceptionPattern());
-        if (rx.match(value).hasMatch()) {
+        QRegularExpression rx(internalSettings->exceptionWindowPropertyPattern());
+        if (rx.match(windowPropertyValue).hasMatch()) {
             return internalSettings;
         }
     }

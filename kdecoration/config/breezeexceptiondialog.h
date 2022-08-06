@@ -72,6 +72,8 @@ private Q_SLOTS:
     //* read properties of selected window
     void readWindowProperties(bool);
 
+    void onOpaqueTitleBarToggled(bool);
+
 private:
     //* map mask and checkbox
     using CheckBoxMap = QMap<ExceptionMask, QCheckBox *>;

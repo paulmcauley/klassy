@@ -7,6 +7,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigW
 set(breezecommon_LIB_SRCS
     breezeboxshadowrenderer.cpp
     colortools.cpp
+    decorationexceptionlist.cpp
     renderdecorationbuttonicon.cpp
     styleklassy.cpp
     stylekite.cpp

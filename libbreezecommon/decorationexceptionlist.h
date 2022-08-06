@@ -1,8 +1,8 @@
-#ifndef breezeexceptionlist_h
-#define breezeexceptionlist_h
+#ifndef decorationexceptionlist_h
+#define decorationexceptionlist_h
 
 //////////////////////////////////////////////////////////////////////////////
-// breezeexceptionlist.h
+// decorationexceptionlist.h
 // window decoration exceptions
 // -------------------
 //
@@ -10,6 +10,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#include "breezecommon_export.h"
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -20,11 +22,11 @@ namespace Breeze
 {
 
 //! breeze exceptions list
-class ExceptionList
+class BREEZECOMMON_EXPORT DecorationExceptionList
 {
 public:
     //! constructor from list
-    explicit ExceptionList(const InternalSettingsList &exceptions = InternalSettingsList())
+    explicit DecorationExceptionList(const InternalSettingsList &exceptions = InternalSettingsList())
         : _exceptions(exceptions)
     {
     }
