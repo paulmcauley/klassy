@@ -49,7 +49,7 @@ public:
     }
 
     //* exception type
-    InternalSettings::EnumExceptionType exceptionType() const
+    InternalSettings::EnumExceptionWindowPropertyType exceptionWindowPropertyType() const
     {
         if (m_ui.windowClassCheckBox->isChecked())
             return InternalSettings::ExceptionWindowClassName;

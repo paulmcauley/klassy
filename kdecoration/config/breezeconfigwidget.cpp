@@ -9,7 +9,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfigwidget.h"
-#include "breezeexceptionlist.h"
+#include "decorationexceptionlist.h"
 
 #include <KLocalizedString>
 
@@ -232,7 +232,7 @@ void ConfigWidget::load()
     updateBackgroundShapeStackedWidgetVisible();
     updateCustomColorStackedWidgetVisible();
     // load exceptions
-    ExceptionList exceptions;
+    DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration);
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
@@ -297,7 +297,7 @@ void ConfigWidget::save()
 
     // get list of exceptions and write
     InternalSettingsList exceptions(m_ui.exceptions->exceptions());
-    ExceptionList(exceptions).writeConfig(m_configuration);
+    DecorationExceptionList(exceptions).writeConfig(m_configuration);
 
     // sync configuration
     m_configuration->sync();

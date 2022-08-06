@@ -39,7 +39,6 @@ include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
 set(breezedecoration_SRCS
     breezebutton.cpp
     breezedecoration.cpp
-    breezeexceptionlist.cpp
     breezesettingsprovider.cpp
     breezesizegrip.cpp)
 

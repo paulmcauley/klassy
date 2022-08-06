@@ -7,7 +7,12 @@
 
 #include "breezehelper.h"
 
+#if KLASSY_STYLE_DEBUG_MODE
+#include "setqdebug_logging.h"
+#endif
+
 #include "breeze.h"
+#include "breezedecorationsettingsprovider.h"
 #include "breezestyleconfigdata.h"
 #include "colortools.h"
 #include "renderdecorationbuttonicon.h"
@@ -53,8 +58,12 @@ Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
     : QObject(parent)
     , _config(std::move(config))
     , _kwinConfig(KSharedConfig::openConfig("kwinrc"))
-    , _decorationConfig(new InternalSettings())
+    , _decorationConfig(SettingsProvider::self()->internalSettings())
 {
+#if KLASSY_STYLE_DEBUG_MODE
+    setDebugOutput(KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
+#endif
+
     if (qApp) {
         connect(qApp, &QApplication::paletteChanged, this, [=]() {
             if (qApp->property("KDE_COLOR_SCHEME_PATH").isValid()) {

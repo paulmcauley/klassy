@@ -37,8 +37,9 @@ ExceptionDialog::ExceptionDialog(QWidget *parent)
     connect(m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties);
 
     // connections
-    connect(m_ui.exceptionType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.exceptionEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
+    connect(m_ui.exceptionWindowPropertyType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
+    connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
     connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
 
     for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
@@ -47,6 +48,9 @@ ExceptionDialog::ExceptionDialog(QWidget *parent)
 
     connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
     connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
+    connect(m_ui.preventApplyOpacityToHeader, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
+
+    connect(m_ui.opaqueTitleBar, &QAbstractButton::toggled, this, &ExceptionDialog::onOpaqueTitleBarToggled);
 
 // hide detection dialog on non X11 platforms
 #if BREEZE_HAVE_X11
@@ -64,11 +68,13 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_exception = exception;
 
     // type
-    m_ui.exceptionType->setCurrentIndex(m_exception->exceptionType());
-    m_ui.exceptionEditor->setText(m_exception->exceptionPattern());
+    m_ui.exceptionWindowPropertyType->setCurrentIndex(m_exception->exceptionWindowPropertyType());
+    m_ui.exceptionProgramNameEditor->setText(m_exception->exceptionProgramNamePattern());
+    m_ui.exceptionWindowPropertyEditor->setText(m_exception->exceptionWindowPropertyPattern());
     m_ui.borderSizeComboBox->setCurrentIndex(m_exception->borderSize());
     m_ui.hideTitleBar->setChecked(m_exception->hideTitleBar());
     m_ui.opaqueTitleBar->setChecked(m_exception->opaqueTitleBar());
+    m_ui.preventApplyOpacityToHeader->setChecked(m_exception->preventApplyOpacityToHeader());
 
     // mask
     for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
@@ -81,11 +87,13 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
 //___________________________________________
 void ExceptionDialog::save()
 {
-    m_exception->setExceptionType(m_ui.exceptionType->currentIndex());
-    m_exception->setExceptionPattern(m_ui.exceptionEditor->text());
+    m_exception->setExceptionWindowPropertyType(m_ui.exceptionWindowPropertyType->currentIndex());
+    m_exception->setExceptionProgramNamePattern(m_ui.exceptionProgramNameEditor->text());
+    m_exception->setExceptionWindowPropertyPattern(m_ui.exceptionWindowPropertyEditor->text());
     m_exception->setBorderSize(m_ui.borderSizeComboBox->currentIndex());
     m_exception->setHideTitleBar(m_ui.hideTitleBar->isChecked());
     m_exception->setOpaqueTitleBar(m_ui.opaqueTitleBar->isChecked());
+    m_exception->setPreventApplyOpacityToHeader(m_ui.preventApplyOpacityToHeader->isChecked());
 
     // mask
     unsigned int mask = None;
@@ -103,15 +111,19 @@ void ExceptionDialog::save()
 void ExceptionDialog::updateChanged()
 {
     bool modified(false);
-    if (m_exception->exceptionType() != m_ui.exceptionType->currentIndex())
+    if (m_exception->exceptionWindowPropertyType() != m_ui.exceptionWindowPropertyType->currentIndex())
         modified = true;
-    else if (m_exception->exceptionPattern() != m_ui.exceptionEditor->text())
+    else if (m_exception->exceptionProgramNamePattern() != m_ui.exceptionProgramNameEditor->text())
+        modified = true;
+    else if (m_exception->exceptionWindowPropertyPattern() != m_ui.exceptionWindowPropertyEditor->text())
         modified = true;
     else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
         modified = true;
     else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->isChecked())
         modified = true;
     else if (m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked())
+        modified = true;
+    else if (m_exception->preventApplyOpacityToHeader() != m_ui.preventApplyOpacityToHeader->isChecked())
         modified = true;
     else {
         // check mask
@@ -144,24 +156,30 @@ void ExceptionDialog::readWindowProperties(bool valid)
     Q_CHECK_PTR(m_detectDialog);
     if (valid) {
         // type
-        m_ui.exceptionType->setCurrentIndex(m_detectDialog->exceptionType());
+        m_ui.exceptionWindowPropertyType->setCurrentIndex(m_detectDialog->exceptionWindowPropertyType());
 
         // window info
         const KWindowInfo &info(m_detectDialog->windowInfo());
 
-        switch (m_detectDialog->exceptionType()) {
+        switch (m_detectDialog->exceptionWindowPropertyType()) {
         default:
         case InternalSettings::ExceptionWindowClassName:
-            m_ui.exceptionEditor->setText(QString::fromUtf8(info.windowClassClass()));
+            m_ui.exceptionWindowPropertyEditor->setText(QString::fromUtf8(info.windowClassClass()));
             break;
 
         case InternalSettings::ExceptionWindowTitle:
-            m_ui.exceptionEditor->setText(info.name());
+            m_ui.exceptionWindowPropertyEditor->setText(info.name());
             break;
         }
     }
 
     delete m_detectDialog;
     m_detectDialog = nullptr;
+}
+void ExceptionDialog::onOpaqueTitleBarToggled(bool toggled)
+{
+    if (toggled) {
+        m_ui.preventApplyOpacityToHeader->setChecked(true);
+    }
 }
 }

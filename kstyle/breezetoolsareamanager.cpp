@@ -1,4 +1,5 @@
 #include "breezetoolsareamanager.h"
+#include "breezedecorationsettingsprovider.h"
 #include "breezepropertynames.h"
 
 #include <QMainWindow>
@@ -48,6 +49,12 @@ void appendIfNotAlreadyExists(T1 *list, T2 item)
 
 inline void doTranslucency(QMainWindow *win, bool on)
 {
+    if (on) { // deal with opaqueTitleBar on window decoration exceptions list
+        auto windowDecorationSettings = SettingsProvider::self()->internalSettings(win);
+        if (windowDecorationSettings->preventApplyOpacityToHeader())
+            on = false;
+    }
+
     if (on) {
         if (win->property("_klassy_was_translucent_set").toBool()) // if translucency has already been set don't set it again
             return;
@@ -100,7 +107,6 @@ QRect ToolsAreaManager::toolsAreaRect(const QMainWindow *window)
 bool ToolsAreaManager::tryRegisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget)
 {
     Q_ASSERT(!widget.isNull());
-
     doTranslucency(window, _translucent);
 
     QPointer<QToolBar> toolbar;

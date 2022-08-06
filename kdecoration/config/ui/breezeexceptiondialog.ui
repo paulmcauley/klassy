@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>346</height>
+    <width>497</width>
+    <height>521</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,20 +20,36 @@
       <string>Window Identification</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>&amp;Matching window property: </string>
+         <string>&amp;Window property: </string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
-         <cstring>exceptionType</cstring>
+         <cstring>exceptionWindowPropertyType</cstring>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="1" column="1">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Regular expression &amp;to match: </string>
@@ -42,26 +58,19 @@
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
         <property name="buddy">
-         <cstring>exceptionEditor</cstring>
+         <cstring>exceptionWindowPropertyEditor</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="2">
-       <widget class="QPushButton" name="detectDialogButton">
-        <property name="text">
-         <string>Detect Window Properties</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <widget class="QLineEdit" name="exceptionEditor">
+      <item row="3" column="1" colspan="2">
+       <widget class="QLineEdit" name="exceptionWindowPropertyEditor">
         <property name="showClearButton" stdset="0">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QComboBox" name="exceptionType">
+      <item row="2" column="1" colspan="2">
+       <widget class="QComboBox" name="exceptionWindowPropertyType">
         <item>
          <property name="text">
           <string>Window Class Name (X11 only)</string>
@@ -74,13 +83,20 @@
         </item>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QPushButton" name="detectDialogButton">
+        <property name="text">
+         <string>Detect Window Properties</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Decoration Options</string>
+      <string>Window Decoration Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="0" column="1">
@@ -135,19 +151,6 @@
         </item>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="hideTitleBar">
         <property name="text">
@@ -165,12 +168,70 @@
       <item row="3" column="0">
        <widget class="QCheckBox" name="opaqueTitleBar">
         <property name="text">
-         <string>Opaque titlebar/header</string>
+         <string>&amp;Opaque titlebar</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Options affecting the Application Style</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot;font-style:italic;&quot;&gt;Application name&lt;/span&gt; regular expression to match:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buddy">
+         <cstring>exceptionProgramNameEditor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="exceptionProgramNameEditor"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QCheckBox" name="preventApplyOpacityToHeader">
+        <property name="text">
+         <string>Prevent titlebar opacity setting from affecting entire &amp;header</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -184,6 +245,17 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>detectDialogButton</tabstop>
+  <tabstop>exceptionWindowPropertyEditor</tabstop>
+  <tabstop>exceptionWindowPropertyType</tabstop>
+  <tabstop>borderSizeCheckBox</tabstop>
+  <tabstop>borderSizeComboBox</tabstop>
+  <tabstop>hideTitleBar</tabstop>
+  <tabstop>opaqueTitleBar</tabstop>
+  <tabstop>exceptionProgramNameEditor</tabstop>
+  <tabstop>preventApplyOpacityToHeader</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -193,8 +265,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>252</x>
-     <y>342</y>
+     <x>258</x>
+     <y>514</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -209,8 +281,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>320</x>
-     <y>342</y>
+     <x>326</x>
+     <y>514</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>
@@ -225,12 +297,12 @@
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>125</x>
-     <y>162</y>
+     <x>139</x>
+     <y>250</y>
     </hint>
     <hint type="destinationlabel">
-     <x>316</x>
-     <y>163</y>
+     <x>482</x>
+     <y>255</y>
     </hint>
    </hints>
   </connection>
