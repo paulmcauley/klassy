@@ -14,13 +14,13 @@ namespace Breeze
 {
 
 //______________________________________________________________
-void DecorationExceptionList::readConfig(KSharedConfig::Ptr config)
+void DecorationExceptionList::readConfig(KSharedConfig::Ptr config, const bool readDefaults)
 {
     _exceptions.clear();
     _defaultExceptions.clear();
 
     // set the default exceptions that are bundled with Klassy
-    if (!config->hasGroup(defaultExceptionGroupName(0))) {
+    if (!config->hasGroup(defaultExceptionGroupName(0)) || readDefaults) {
         InternalSettingsPtr defaultException(new InternalSettings());
         defaultException->setEnabled(true);
         defaultException->setExceptionWindowPropertyType(1);
@@ -33,9 +33,11 @@ void DecorationExceptionList::readConfig(KSharedConfig::Ptr config)
 
     QString groupName;
 
-    // load default-set exceptions from the config file
-    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
-        readIndividualExceptionFromConfig(config, groupName, _defaultExceptions);
+    if (!readDefaults) {
+        // load default-set exceptions modified from the config file (with user's changes such as unticking enable)
+        for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
+            readIndividualExceptionFromConfig(config, groupName, _defaultExceptions);
+        }
     }
 
     // load user-set exceptions from the config file
@@ -105,15 +107,6 @@ void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
     foreach (const InternalSettingsPtr &exception, _exceptions) {
         writeConfig(exception.data(), config.data(), exceptionGroupName(index));
         ++index;
-    }
-}
-
-void DecorationExceptionList::resetDefaults(KSharedConfig::Ptr config)
-{
-    QString groupName;
-    // remove all existing default-set exceptions
-    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
-        config->deleteGroup(groupName);
     }
 }
 
