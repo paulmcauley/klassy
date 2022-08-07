@@ -389,13 +389,10 @@ void ConfigWidget::defaults()
     // set defaults in dialogs
     m_buttonSizingDialog->defaults();
 
-    // delete modified default exceptions and refresh
+    // load default exceptions and refresh (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
-    exceptions.readConfig(m_configuration);
+    exceptions.readConfig(m_configuration, true);
     if (exceptions.numberDefaults()) {
-        exceptions.resetDefaults(m_configuration);
-        m_configuration->sync();
-        exceptions.readConfig(m_configuration);
         m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
     } else {
         m_ui.defaultExceptions->hide();

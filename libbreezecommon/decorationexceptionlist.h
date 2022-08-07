@@ -46,16 +46,13 @@ public:
     }
 
     //! read from KConfig
-    void readConfig(KSharedConfig::Ptr);
+    void readConfig(KSharedConfig::Ptr, const bool readDefaults = false);
 
     //! return the number of default exceptions (call afer calling readConfig)
     int numberDefaults();
 
     //! write to kconfig
     void writeConfig(KSharedConfig::Ptr);
-
-    //! delete defaults from kconfig
-    void resetDefaults(KSharedConfig::Ptr config);
 
 protected:
     //! generate exception group name for given exception index
