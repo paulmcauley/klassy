@@ -48,6 +48,17 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
     // configuration
     m_ui.setupUi(this);
+
+    // hide the push buttons for default exceptions
+    QList<QPushButton *> defaultPushButtons = m_ui.defaultExceptions->findChildren<QPushButton *>();
+    for (QPushButton *defaultPushButton : defaultPushButtons) {
+        QSizePolicy spRetain = defaultPushButton->sizePolicy();
+        spRetain.setRetainSizeWhenHidden(true);
+        defaultPushButton->setSizePolicy(spRetain);
+
+        defaultPushButton->hide();
+    }
+
     m_buttonSizingDialog = new ButtonSizing(this);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
@@ -149,6 +160,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
 
     // track exception changes
+    connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
     connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
 }
 
@@ -234,6 +246,11 @@ void ConfigWidget::load()
     // load exceptions
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration);
+    if (exceptions.numberDefaults()) {
+        m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
+    } else {
+        m_ui.defaultExceptions->hide();
+    }
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
     m_loading = false;
@@ -297,7 +314,8 @@ void ConfigWidget::save()
 
     // get list of exceptions and write
     InternalSettingsList exceptions(m_ui.exceptions->exceptions());
-    DecorationExceptionList(exceptions).writeConfig(m_configuration);
+    InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
+    DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
 
     // sync configuration
     m_configuration->sync();
@@ -370,6 +388,18 @@ void ConfigWidget::defaults()
 
     // set defaults in dialogs
     m_buttonSizingDialog->defaults();
+
+    // delete modified default exceptions and refresh
+    DecorationExceptionList exceptions;
+    exceptions.readConfig(m_configuration);
+    if (exceptions.numberDefaults()) {
+        exceptions.resetDefaults(m_configuration);
+        m_configuration->sync();
+        exceptions.readConfig(m_configuration);
+        m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
+    } else {
+        m_ui.defaultExceptions->hide();
+    }
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
@@ -479,6 +509,8 @@ void ConfigWidget::updateChanged()
         modified = true;
 
     // exceptions
+    else if (m_ui.defaultExceptions->isChanged())
+        modified = true;
     else if (m_ui.exceptions->isChanged())
         modified = true;
 

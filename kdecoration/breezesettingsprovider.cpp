@@ -54,7 +54,8 @@ void SettingsProvider::reconfigure()
 
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_config);
-    m_exceptions = exceptions.get();
+    m_exceptions = exceptions.getDefault();
+    m_exceptions.append(exceptions.get());
 }
 
 //__________________________________________________________________
