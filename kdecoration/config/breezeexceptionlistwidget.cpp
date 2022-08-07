@@ -67,8 +67,8 @@ void ExceptionListWidget::setExceptions(const InternalSettingsList &exceptions)
 //__________________________________________________________
 InternalSettingsList ExceptionListWidget::exceptions()
 {
-    return model().get();
     setChanged(false);
+    return model().get();
 }
 
 //__________________________________________________________
@@ -283,7 +283,6 @@ void ExceptionListWidget::resizeColumns() const
 {
     m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnEnabled);
     m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnProgramNameRegExp);
-    m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnWindowPropertyType);
     m_ui.exceptionListView->resizeColumnToContents(ExceptionModel::ColumnWindowPropertyRegExp);
 }
 
@@ -291,9 +290,13 @@ void ExceptionListWidget::resizeColumns() const
 bool ExceptionListWidget::checkException(InternalSettingsPtr exception)
 {
     while ((exception->exceptionProgramNamePattern().isEmpty() && exception->exceptionWindowPropertyPattern().isEmpty())
+           || (exception->preventApplyOpacityToHeader() && exception->exceptionProgramNamePattern().isEmpty())
            || !QRegularExpression(exception->exceptionProgramNamePattern()).isValid()
            || !QRegularExpression(exception->exceptionWindowPropertyPattern()).isValid()) {
-        QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Regular Expression syntax is incorrect"));
+        if (exception->preventApplyOpacityToHeader() && exception->exceptionProgramNamePattern().isEmpty()) {
+            QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Please provide an application name to match"));
+        } else
+            QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Regular Expression syntax is incorrect"));
         QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
         dialog->setException(exception);
         if (dialog->exec() == QDialog::Rejected) {

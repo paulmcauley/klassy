@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -54,7 +55,8 @@ void SettingsProvider::reconfigure()
 
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_config);
-    m_exceptions = exceptions.get();
+    m_exceptions = exceptions.getDefault();
+    m_exceptions.append(exceptions.get());
 }
 
 //__________________________________________________________________
@@ -69,58 +71,14 @@ InternalSettingsPtr SettingsProvider::internalSettings(const QMainWindow *mw) co
             continue;
 
         // discard exceptions with empty exception pattern
-        if (internalSettings->exceptionProgramNamePattern().isEmpty() && internalSettings->exceptionWindowPropertyPattern().isEmpty())
+        if (internalSettings->exceptionProgramNamePattern().isEmpty())
             continue;
 
-        bool programNameMatch = true;
-        bool windowPropertyMatch = true;
-
-        if (!internalSettings->exceptionProgramNamePattern().isEmpty()) {
-            programNameMatch = false;
-
-            // check matching
-            QRegularExpression rx(internalSettings->exceptionProgramNamePattern());
-            if (rx.match(qAppName()).hasMatch()) {
-                programNameMatch = true;
-            }
-        }
-
-        if (!internalSettings->exceptionWindowPropertyPattern().isEmpty()) {
-            windowPropertyMatch = false;
-            /*
-            decide windowPropertyValue value is to be compared
-            to the regular expression, based on exception type
-            */
-            QString windowPropertyValue;
-            switch (internalSettings->exceptionWindowPropertyType()) {
-            case InternalSettings::ExceptionWindowTitle: {
-                windowPropertyValue = mw->windowTitle();
-                windowPropertyValue += " — ";
-                windowPropertyValue += qAppName();
-                break;
-            }
-
-            default:
-            case InternalSettings::ExceptionWindowClassName: {
-                // retrieve class name
-                KWindowInfo info(mw->winId(), {}, NET::WM2WindowClass);
-                QString window_className(QString::fromUtf8(info.windowClassName()));
-                QString window_class(QString::fromUtf8(info.windowClassClass()));
-                windowPropertyValue = window_className + QStringLiteral(" ") + window_class;
-
-                break;
-            }
-            }
-
-            // check matching
-            QRegularExpression rx(internalSettings->exceptionWindowPropertyPattern());
-            if (rx.match(windowPropertyValue).hasMatch()) {
-                windowPropertyMatch = true;
-            }
-        }
-
-        if (programNameMatch && windowPropertyMatch)
+        // check matching
+        QRegularExpression rx(internalSettings->exceptionProgramNamePattern());
+        if (rx.match(qAppName()).hasMatch()) {
             return internalSettings;
+        }
     }
 
     return m_defaultSettings;

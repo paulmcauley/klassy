@@ -21,12 +21,11 @@ class ExceptionModel : public ListModel<InternalSettingsPtr>
 {
 public:
     //* number of columns
-    enum { nColumns = 4 };
+    enum { nColumns = 3 };
 
     //* column type enumeration
     enum ColumnType {
         ColumnEnabled,
-        ColumnWindowPropertyType,
         ColumnWindowPropertyRegExp,
         ColumnProgramNameRegExp,
     };

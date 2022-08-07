@@ -17,52 +17,103 @@ namespace Breeze
 void DecorationExceptionList::readConfig(KSharedConfig::Ptr config)
 {
     _exceptions.clear();
+    _defaultExceptions.clear();
+
+    // set the default exceptions that are bundled with Klassy
+    if (!config->hasGroup(defaultExceptionGroupName(0))) {
+        InternalSettingsPtr defaultException(new InternalSettings());
+        defaultException->setEnabled(true);
+        defaultException->setExceptionWindowPropertyType(1);
+        defaultException->setExceptionWindowPropertyPattern(".*Kdenlive");
+        defaultException->setOpaqueTitleBar(true);
+        defaultException->setExceptionProgramNamePattern("kdenlive");
+        defaultException->setPreventApplyOpacityToHeader(true);
+        _defaultExceptions.append(defaultException);
+    }
 
     QString groupName;
-    for (int index = 0; config->hasGroup(groupName = exceptionGroupName(index)); ++index) {
-        // create exception
-        InternalSettings exception;
 
-        // reset group
-        readConfig(&exception, config.data(), groupName);
-
-        // create new configuration
-        InternalSettingsPtr configuration(new InternalSettings());
-        configuration.data()->load();
-
-        // apply changes from exception
-        configuration->setEnabled(exception.enabled());
-        configuration->setExceptionWindowPropertyType(exception.exceptionWindowPropertyType());
-        configuration->setExceptionProgramNamePattern(exception.exceptionProgramNamePattern());
-        configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
-        configuration->setMask(exception.mask());
-
-        // propagate all features found in mask to the output configuration
-        if (exception.mask() & BorderSize)
-            configuration->setBorderSize(exception.borderSize());
-        configuration->setHideTitleBar(exception.hideTitleBar());
-        configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
-        configuration->setPreventApplyOpacityToHeader(exception.preventApplyOpacityToHeader());
-
-        // append to exceptions
-        _exceptions.append(configuration);
+    // load default-set exceptions from the config file
+    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
+        readIndividualExceptionFromConfig(config, groupName, _defaultExceptions);
     }
+
+    // load user-set exceptions from the config file
+    for (int index = 0; config->hasGroup(groupName = exceptionGroupName(index)); ++index) {
+        readIndividualExceptionFromConfig(config, groupName, _exceptions);
+    }
+}
+
+void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::Ptr config, QString &groupName, InternalSettingsList &appendTo)
+{
+    // create exception
+    InternalSettings exception;
+
+    // reset group
+    readConfig(&exception, config.data(), groupName);
+
+    // create new configuration
+    InternalSettingsPtr configuration(new InternalSettings());
+    configuration.data()->load();
+
+    // apply changes from exception
+    configuration->setEnabled(exception.enabled());
+    configuration->setExceptionWindowPropertyType(exception.exceptionWindowPropertyType());
+    configuration->setExceptionProgramNamePattern(exception.exceptionProgramNamePattern());
+    configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
+    configuration->setMask(exception.mask());
+
+    // propagate all features found in mask to the output configuration
+    if (exception.mask() & BorderSize)
+        configuration->setBorderSize(exception.borderSize());
+    configuration->setHideTitleBar(exception.hideTitleBar());
+    configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
+    configuration->setPreventApplyOpacityToHeader(exception.preventApplyOpacityToHeader());
+
+    // append to exceptions
+    appendTo.append(configuration);
+}
+
+int DecorationExceptionList::numberDefaults()
+{
+    return _defaultExceptions.size();
 }
 
 //______________________________________________________________
 void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 {
-    // remove all existing exceptions
     QString groupName;
+    // remove all existing default-set exceptions
+    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
+        config->deleteGroup(groupName);
+    }
+
+    // rewrite current default exceptions with user-set enable flag
+    int index = 0;
+    foreach (const InternalSettingsPtr &exception, _defaultExceptions) {
+        writeConfig(exception.data(), config.data(), defaultExceptionGroupName(index));
+        ++index;
+    }
+
+    // remove all existing user-set exceptions
     for (int index = 0; config->hasGroup(groupName = exceptionGroupName(index)); ++index) {
         config->deleteGroup(groupName);
     }
 
-    // rewrite current exceptions
-    int index = 0;
+    // rewrite current user-set exceptions
+    index = 0;
     foreach (const InternalSettingsPtr &exception, _exceptions) {
         writeConfig(exception.data(), config.data(), exceptionGroupName(index));
         ++index;
+    }
+}
+
+void DecorationExceptionList::resetDefaults(KSharedConfig::Ptr config)
+{
+    QString groupName;
+    // remove all existing default-set exceptions
+    for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
+        config->deleteGroup(groupName);
     }
 }
 
@@ -70,6 +121,12 @@ void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 QString DecorationExceptionList::exceptionGroupName(int index)
 {
     return QString("Windeco Exception %1").arg(index);
+}
+
+//_______________________________________________________________________
+QString DecorationExceptionList::defaultExceptionGroupName(int index)
+{
+    return QString("Default Windeco Exception %1").arg(index);
 }
 
 //______________________________________________________________
