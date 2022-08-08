@@ -23,11 +23,14 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 
 * Configurable button size, shape, translucency, colours and outlining
 
-* Default buttons are rounded rectangles with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh in Plasma 5.23, along with the Plasma 5.23 accent colour feature:
-> ![Default button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Default button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
+* Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh in Plasma 5.23, along with the Plasma 5.23 accent colour feature:
+> ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif?raw=true "Default Integrated Rounded rectangle button style, dark")
+* Alternative "Traffic lights" background colours:
+> ![Traffic lights button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Traffic lights button style, light")
+
+* Alternative "Full-height Rounded Rectangle" button shape:
+> ![Rounded rectangle button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Rounded Rectangle button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
 > ![Green button style, dark](screenshots/highlight_gifs/gdark.gif?raw=true "Green button style, dark")![Green button style, light](screenshots/highlight_gifs/glight.gif?raw=true "Green button style, light")
-> ![Pink button style, dark](screenshots/highlight_gifs/pdark.gif?raw=true "Pink button style, dark")![Pink button style, light](screenshots/highlight_gifs/plight.gif?raw=true "Pink button style, light")
-> ![Orange button style, dark](screenshots/highlight_gifs/odark.gif?raw=true "Orange button style, dark")![Orange button style, light](screenshots/highlight_gifs/olight.gif?raw=true "Orange button style, light")
 > ![Turquoise button style, dark](screenshots/highlight_gifs/tdark.gif?raw=true "Turquoise button style, dark")![Turquoise button style, light](screenshots/highlight_gifs/tlight.gif?raw=true "Turquoise button style, light")
 
 
