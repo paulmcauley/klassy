@@ -26,7 +26,7 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 * Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh in Plasma 5.23, along with the Plasma 5.23 accent colour feature:
 > ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif?raw=true "Default Integrated Rounded rectangle button style, dark")
 * Alternative "Traffic lights" background colours:
-> ![Traffic lights button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Traffic lights button style, light")
+> ![Traffic lights button style, light](screenshots/highlight_gifs/icdark_trafficlights.gif?raw=true "Traffic lights button style, light")
 
 * Alternative "Full-height Rounded Rectangle" button shape:
 > ![Rounded rectangle button style, dark](screenshots/highlight_gifs/cdark.gif?raw=true "Default button style, dark")![Rounded Rectangle button style, light](screenshots/highlight_gifs/clight.gif?raw=true "Default button style, light")
