@@ -58,9 +58,6 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 * Ability to load icons from the system icon theme. For example, the following is with the quasi-Windows 11-style _Cobalt_ icon theme:
 ![Screenshot of using system icon theme](screenshots/use_system_icon_theme.png?raw=true "Screenshot of using system icon theme")
 
-### Known issues
-* GTK apps' titlebar buttons will not always update if you change a _Klassy_ setting. Workaround: you need to select another window decoration and then select _Klassy_ again to generate the GTK titlebar buttons; alternatively you can change your colour scheme and the GTK titlebar buttons will generate.
-
 &nbsp;
 
 <a name="installation"/>
