@@ -68,7 +68,7 @@ _Klassy_ from version 4.0 onwards requires at least __Plasma 5.25__, so please c
 
 ### Pre-built packages
 [Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
-> NB: for OpenSUSE Leap you will [first need to install newer KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
+> NB: for OpenSUSE Leap you will [first need to install newer "Argon" KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
 
