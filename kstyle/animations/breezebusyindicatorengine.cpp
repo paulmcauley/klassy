@@ -109,8 +109,8 @@ void BusyIndicatorEngine::setValue(int value)
             animated = true;
 
             // emit update signal on object
-            if (const_cast<QObject *>(iter.key())->inherits("QQuickStyleItem")) {
-                // QtQuickControls "rerender" method is updateItem
+            if (const_cast<QObject *>(iter.key())->inherits("KQuickStyleItem")) {
+                // KQuickStyleItem "rerender" method is updateItem
                 QMetaObject::invokeMethod(const_cast<QObject *>(iter.key()), "updateItem", Qt::QueuedConnection);
 
             } else {
