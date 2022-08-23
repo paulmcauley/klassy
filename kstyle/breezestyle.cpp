@@ -167,7 +167,11 @@ private:
 //_______________________________________________________________
 bool isProgressBarHorizontal(const QStyleOptionProgressBar *option)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return option && (option->state & QStyle::State_Horizontal);
+#else
+    return option && ((option->state & QStyle::State_Horizontal) || option->orientation == Qt::Horizontal);
+#endif
 }
 
 enum class ToolButtonMenuArrowStyle {
