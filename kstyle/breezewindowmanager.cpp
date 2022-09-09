@@ -289,6 +289,8 @@ bool WindowManager::mousePressEvent(QObject *object, QEvent *event)
         _eventInQQuickWidget = true;
         event->setAccepted(false);
         return false;
+    } else {
+        _eventInQQuickWidget = false;
     }
 
     // check lock
