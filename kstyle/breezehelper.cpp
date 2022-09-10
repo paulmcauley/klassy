@@ -826,7 +826,7 @@ void Helper::renderCheckBoxBackground(QPainter *painter,
 
     case CheckPartial:
     case CheckOn:
-        painter->setBrush(transparent);
+        painter->setBrush(transparent.darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
         painter->drawRoundedRect(frameRect, radius, radius);
         break;
 
@@ -979,7 +979,7 @@ void Helper::renderRadioButtonBackground(QPainter *painter,
         painter->drawEllipse(frameRect);
         break;
     case RadioOn:
-        painter->setBrush(transparent);
+        painter->setBrush(transparent.darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
         painter->drawEllipse(frameRect);
         break;
     case RadioAnimated:
