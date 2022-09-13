@@ -1338,7 +1338,7 @@ void Helper::renderTabBarTab(QPainter *painter,
             frameRect.adjust(1, 0, 0, 0);
         }
         const auto windowColor = palette.color(QPalette::Window);
-        bgBrush = windowColor.darker(windowColor.lightnessF() > 0.5 ? 120 : 160);
+        bgBrush = windowColor.darker(120);
         const auto hover = alphaColor(hoverColor(palette), 0.2);
         if (animated) {
             bgBrush = KColorUtils::mix(bgBrush, hover, animation);
