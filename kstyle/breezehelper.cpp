@@ -66,8 +66,11 @@ Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
 
     if (qApp) {
         connect(qApp, &QApplication::paletteChanged, this, [=]() {
-            if (qApp->property("KDE_COLOR_SCHEME_PATH").isValid()) {
-                const auto path = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+            if (!qApp->property("KDE_COLOR_SCHEME_PATH").isValid()) {
+                return;
+            }
+            const auto path = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+            if (!path.isEmpty()) {
                 KConfig config(path, KConfig::SimpleConfig);
                 KConfigGroup group(config.group("WM"));
                 const QPalette palette(QApplication::palette());
@@ -108,17 +111,20 @@ void Helper::loadConfig()
     _cachedAutoValid = false;
     _decorationConfig->load();
 
-    KConfig config(qApp->property("KDE_COLOR_SCHEME_PATH").toString(), KConfig::SimpleConfig);
-    KConfigGroup appGroup(config.group("WM"));
     KConfigGroup globalGroup(_config->group("WM"));
-    _activeTitleBarColor =
-        appGroup.readEntry("activeBackground", globalGroup.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight)));
-    _activeTitleBarTextColor =
-        appGroup.readEntry("activeForeground", globalGroup.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText)));
-    _inactiveTitleBarColor =
-        appGroup.readEntry("inactiveBackground", globalGroup.readEntry("inactiveBackground", palette.color(QPalette::Disabled, QPalette::Highlight)));
-    _inactiveTitleBarTextColor =
-        appGroup.readEntry("inactiveForeground", globalGroup.readEntry("inactiveForeground", palette.color(QPalette::Disabled, QPalette::HighlightedText)));
+    _activeTitleBarColor = globalGroup.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
+    _activeTitleBarTextColor = globalGroup.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
+    _inactiveTitleBarColor = globalGroup.readEntry("inactiveBackground", palette.color(QPalette::Disabled, QPalette::Highlight));
+    _inactiveTitleBarTextColor = globalGroup.readEntry("inactiveForeground", palette.color(QPalette::Disabled, QPalette::HighlightedText));
+
+    if (const QString colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString(); !colorSchemePath.isEmpty()) {
+        KConfig config(colorSchemePath, KConfig::SimpleConfig);
+        KConfigGroup appGroup(config.group("WM"));
+        _activeTitleBarColor = appGroup.readEntry("activeBackground", _activeTitleBarColor);
+        _activeTitleBarTextColor = appGroup.readEntry("activeForeground", _activeTitleBarTextColor);
+        _inactiveTitleBarColor = appGroup.readEntry("inactiveBackground", _inactiveTitleBarColor);
+        _inactiveTitleBarTextColor = appGroup.readEntry("inactiveForeground", _inactiveTitleBarTextColor);
+    }
 }
 
 QColor transparentize(const QColor &color, qreal amount)
