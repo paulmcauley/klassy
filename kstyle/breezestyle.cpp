@@ -4663,23 +4663,8 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     else
         hasFocus = enabled && !mouseOver && (option->state & (State_HasFocus | State_Sunken));
 
-    const bool hasArrow(toolButtonOption->features & QStyleOptionToolButton::Arrow);
-    const bool hasIcon(!(hasArrow || toolButtonOption->icon.isNull()));
-    const bool hasText(!toolButtonOption->text.isEmpty());
-
     // contents
     auto contentsRect(rect);
-
-    // icon size
-    const QSize iconSize(toolButtonOption->iconSize);
-
-    // text size
-    int textFlags(_mnemonics->textFlags());
-    const QSize textSize(option->fontMetrics.size(textFlags, toolButtonOption->text));
-
-    // adjust text and icon rect based on options
-    QRect iconRect;
-    QRect textRect;
 
     const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
     if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineLarge) {
@@ -4688,39 +4673,71 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
         contentsRect.setRight(contentsRect.right() - arrowRect.width());
     }
 
-    if (hasText && (!(hasArrow || hasIcon) || toolButtonOption->toolButtonStyle == Qt::ToolButtonTextOnly)) {
-        // text only
+    const auto toolButtonStyle = toolButtonOption->toolButtonStyle;
+    const bool hasArrow = toolButtonOption->features & QStyleOptionToolButton::Arrow;
+    bool hasIcon = toolButtonStyle != Qt::ToolButtonTextOnly
+            && (!toolButtonOption->icon.isNull() || !toolButtonOption->iconSize.isEmpty() || hasArrow);
+    bool hasText = toolButtonStyle != Qt::ToolButtonIconOnly && !toolButtonOption->text.isEmpty();
+    const bool textUnderIcon = hasIcon && hasText && toolButtonStyle == Qt::ToolButtonTextUnderIcon;
+
+    const QSize &availableSize = contentsRect.size();
+    const QSize &iconSize = toolButtonOption->iconSize;
+    int textFlags(_mnemonics->textFlags());
+    const QSize textSize(option->fontMetrics.size(textFlags, toolButtonOption->text));
+
+    // adjust text and icon rect based on options
+    QRect iconRect;
+    QRect textRect;
+
+    if (availableSize.isEmpty()) {
+        hasIcon = false;
+        hasText = false;
+    }
+
+    if (hasIcon && !hasText) { // icon only
+        iconRect = centerRect(contentsRect, iconSize);
+    } else if (!hasIcon && hasText) { // text only
         textRect = contentsRect;
         textFlags |= Qt::AlignCenter;
-
-    } else if ((hasArrow || hasIcon) && (!hasText || toolButtonOption->toolButtonStyle == Qt::ToolButtonIconOnly)) {
-        // icon only
-        iconRect = contentsRect;
-
-    } else if (toolButtonOption->toolButtonStyle == Qt::ToolButtonTextUnderIcon) {
+    } else if (textUnderIcon) {
         const int contentsHeight(iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing);
-        iconRect = QRect(
-            QPoint(contentsRect.left() + (contentsRect.width() - iconSize.width()) / 2, contentsRect.top() + (contentsRect.height() - contentsHeight) / 2),
-            iconSize);
-        textRect = QRect(QPoint(contentsRect.left() + (contentsRect.width() - textSize.width()) / 2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
-                         textSize);
+        iconRect = {
+            QPoint(contentsRect.left() + (contentsRect.width() - iconSize.width()) / 2,
+                   contentsRect.top() + (contentsRect.height() - contentsHeight) / 2),
+            iconSize
+        };
+        textRect = {
+            QPoint(contentsRect.left() + (contentsRect.width() - textSize.width()) / 2,
+                   iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
+            textSize
+        };
         textFlags |= Qt::AlignCenter;
-
-    } else {
+    } else if (hasIcon && hasText) {
         const bool leftAlign(widget && widget->property(PropertyNames::toolButtonAlignment).toInt() == Qt::AlignLeft);
         if (leftAlign) {
             const int marginWidth(Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth + 1);
-            iconRect = QRect(QPoint(contentsRect.left() + marginWidth, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2), iconSize);
+            iconRect = {
+                QPoint(contentsRect.left() + marginWidth,
+                       contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
+                iconSize
+            };
         } else {
             const int contentsWidth(iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing);
-            iconRect = QRect(
-                QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
-                iconSize);
+            iconRect = {
+                QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2,
+                       contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
+                iconSize
+            };
         }
 
         const int padding = (contentsRect.height() - textSize.height()) / 2;
-        textRect = QRect(QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + padding),
-                         QPoint(contentsRect.right(), contentsRect.bottom() - padding));
+        textRect = {
+            QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + padding),
+            QPoint(contentsRect.right(), contentsRect.bottom() - padding)
+        };
+
+        // Don't use QRect::isEmpty(). It does not return true if size is 0x0.
+        hasText = !textRect.size().isEmpty();
 
         // handle right to left layouts
         iconRect = visualRect(option, iconRect);
@@ -4729,50 +4746,50 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
         textFlags |= Qt::AlignLeft | Qt::AlignVCenter;
     }
 
-    // make sure there is enough room for icon
-    if (iconRect.isValid())
-        iconRect = centerRect(iconRect, iconSize);
-
     // render arrow or icon
-    if (hasArrow && iconRect.isValid()) {
-        QStyleOptionToolButton copy(*toolButtonOption);
-        copy.rect = iconRect;
-        switch (toolButtonOption->arrowType) {
-        case Qt::LeftArrow:
-            drawPrimitive(PE_IndicatorArrowLeft, &copy, painter, widget);
-            break;
-        case Qt::RightArrow:
-            drawPrimitive(PE_IndicatorArrowRight, &copy, painter, widget);
-            break;
-        case Qt::UpArrow:
-            drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
-            break;
-        case Qt::DownArrow:
-            drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
-            break;
-        default:
-            break;
+    if (hasIcon) {
+        if (hasArrow) {
+            QStyleOptionToolButton copy(*toolButtonOption);
+            copy.rect = iconRect;
+            switch (toolButtonOption->arrowType) {
+            case Qt::LeftArrow:
+                drawPrimitive(PE_IndicatorArrowLeft, &copy, painter, widget);
+                break;
+            case Qt::RightArrow:
+                drawPrimitive(PE_IndicatorArrowRight, &copy, painter, widget);
+                break;
+            case Qt::UpArrow:
+                drawPrimitive(PE_IndicatorArrowUp, &copy, painter, widget);
+                break;
+            case Qt::DownArrow:
+                drawPrimitive(PE_IndicatorArrowDown, &copy, painter, widget);
+                break;
+            default:
+                break;
+            }
+
+        } else {
+            // icon state and mode
+            const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
+            QIcon::Mode iconMode;
+            if (!enabled)
+                iconMode = QIcon::Disabled;
+            else if (!flat && hasFocus)
+                iconMode = QIcon::Selected;
+            else if (mouseOver && flat)
+                iconMode = QIcon::Active;
+            else
+                iconMode = QIcon::Normal;
+
+            const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon,
+                                                        toolButtonOption->palette,
+                                                        iconSize, iconMode, iconState);
+            drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
         }
-
-    } else if (hasIcon && iconRect.isValid()) {
-        // icon state and mode
-        const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
-        QIcon::Mode iconMode;
-        if (!enabled)
-            iconMode = QIcon::Disabled;
-        else if (!flat && hasFocus)
-            iconMode = QIcon::Selected;
-        else if (mouseOver && flat)
-            iconMode = QIcon::Active;
-        else
-            iconMode = QIcon::Normal;
-
-        const QPixmap pixmap = _helper->coloredIcon(toolButtonOption->icon, toolButtonOption->palette, iconSize, iconMode, iconState);
-        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
     // render text
-    if (hasText && textRect.isValid()) {
+    if (hasText) {
         QPalette::ColorRole textRole(QPalette::ButtonText);
         if (flat)
             textRole = QPalette::WindowText;
