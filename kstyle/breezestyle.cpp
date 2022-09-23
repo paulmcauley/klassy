@@ -4731,10 +4731,8 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
         }
 
         const int padding = (contentsRect.height() - textSize.height()) / 2;
-        textRect = {
-            QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + padding),
-            QPoint(contentsRect.right(), contentsRect.bottom() - padding)
-        };
+        textRect = {QPoint(iconRect.right() + Metrics::ToolButton_ItemSpacing + 1, contentsRect.top() + padding),
+                    QSize(textSize.width(), contentsRect.height() - 2 * padding)};
 
         // Don't use QRect::isEmpty(). It does not return true if size is 0x0.
         hasText = !textRect.size().isEmpty();
