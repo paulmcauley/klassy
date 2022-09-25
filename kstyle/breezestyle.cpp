@@ -4676,7 +4676,8 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     const auto toolButtonStyle = toolButtonOption->toolButtonStyle;
     const bool hasArrow = toolButtonOption->features & QStyleOptionToolButton::Arrow;
     bool hasIcon = toolButtonStyle != Qt::ToolButtonTextOnly
-            && (!toolButtonOption->icon.isNull() || !toolButtonOption->iconSize.isEmpty() || hasArrow);
+            && ((!toolButtonOption->icon.isNull() && !toolButtonOption->iconSize.isEmpty())
+                || hasArrow);
     bool hasText = toolButtonStyle != Qt::ToolButtonIconOnly && !toolButtonOption->text.isEmpty();
     const bool textUnderIcon = hasIcon && hasText && toolButtonStyle == Qt::ToolButtonTextUnderIcon;
 
