@@ -32,7 +32,6 @@
 #include <QDial>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QFontDatabase>
 #include <QFormLayout>
 #include <QGraphicsItem>
 #include <QGraphicsProxyWidget>
@@ -424,15 +423,7 @@ void Style::polish(QWidget *widget)
 //______________________________________________________________
 void Style::polish(QApplication *application)
 {
-    const auto smallFont = QFontDatabase::systemFont(QFontDatabase::SmallestReadableFont);
-    application->setFont(smallFont, "QHeaderView");
     _toolsAreaManager->registerApplication(application);
-}
-
-//______________________________________________________________
-void Style::unpolish(QApplication *application)
-{
-    application->setFont(QFont(), "QHeaderView");
 }
 
 //______________________________________________________________

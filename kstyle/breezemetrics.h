@@ -121,7 +121,7 @@ static constexpr int ToolBox_TabMarginWidth = 8;
 static constexpr int ToolTip_FrameWidth = 3;
 
 // list headers
-static constexpr int Header_MarginWidth = 4;
+static constexpr int Header_MarginWidth = 6;
 static constexpr int Header_ItemSpacing = 4;
 static constexpr int Header_ArrowSize = 10;
 
