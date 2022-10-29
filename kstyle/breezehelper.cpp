@@ -1011,9 +1011,6 @@ void Helper::renderRadioButton(QPainter *painter,
 {
     Q_UNUSED(sunken)
 
-    // setup painter
-    painter->setRenderHint(QPainter::Antialiasing, true);
-
     // copy rect
     QRectF frameRect(rect);
     frameRect.adjust(1, 1, -1, -1);
