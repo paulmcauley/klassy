@@ -18,7 +18,7 @@ endif()
 if (TARGET Qt5::Core)
     find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
     set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
-else()
+elseif(NOT WIN32)
     set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
 endif()
 
