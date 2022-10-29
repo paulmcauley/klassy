@@ -23,7 +23,7 @@ kcmutils_generate_desktop_file(klassystyleconfig)
 set(breeze_settings_SOURCES main.cpp)
 add_executable(klassy-settings ${breeze_settings_SOURCES} )
 target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets )
-target_link_libraries(klassy-settings KF5::I18n KF5::KCMUtils)
+target_link_libraries(klassy-settings KF5::I18n KF5::KCMUtils KF5::CoreAddons)
 
 install(TARGETS klassy-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
