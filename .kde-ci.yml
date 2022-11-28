@@ -15,7 +15,7 @@ Dependencies:
     'frameworks/kiconthemes': '@latest'
     'frameworks/kirigami': '@latest'
     'frameworks/kservice': '@latest'
-    'frameworks/kstyle': '@latest'
+    'frameworks/frameworkintegration': '@latest'
     'frameworks/kwidgetsaddons': '@latest'
     'frameworks/kwindowsystem': '@latest'
 
