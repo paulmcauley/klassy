@@ -34,8 +34,9 @@ public:
     {
         if (DataMap<SpinBoxData>::Value data = _data.find(object)) {
             return data.data()->updateState(subControl, value);
-        } else
+        } else {
             return false;
+        }
     }
 
     //* true if widget is animated
@@ -43,8 +44,9 @@ public:
     {
         if (DataMap<SpinBoxData>::Value data = _data.find(object)) {
             return data.data()->isAnimated(subControl);
-        } else
+        } else {
             return false;
+        }
     }
 
     //* animation opacity
@@ -52,8 +54,9 @@ public:
     {
         if (DataMap<SpinBoxData>::Value data = _data.find(object)) {
             return data.data()->opacity(subControl);
-        } else
+        } else {
             return AnimationData::OpacityInvalid;
+        }
     }
 
     //* enability

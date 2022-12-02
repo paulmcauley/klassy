@@ -51,56 +51,60 @@ public:
     /** precedence on focus */
     AnimationMode frameAnimationMode(const QObject *object)
     {
-        if (isAnimated(object, AnimationEnable))
+        if (isAnimated(object, AnimationEnable)) {
             return AnimationEnable;
-        else if (isAnimated(object, AnimationFocus))
+        } else if (isAnimated(object, AnimationFocus)) {
             return AnimationFocus;
-        else if (isAnimated(object, AnimationHover))
+        } else if (isAnimated(object, AnimationHover)) {
             return AnimationHover;
-        else
+        } else {
             return AnimationNone;
+        }
     }
 
     //* animation opacity
     /** precedence on focus */
     qreal frameOpacity(const QObject *object)
     {
-        if (isAnimated(object, AnimationEnable))
+        if (isAnimated(object, AnimationEnable)) {
             return data(object, AnimationEnable).data()->opacity();
-        else if (isAnimated(object, AnimationFocus))
+        } else if (isAnimated(object, AnimationFocus)) {
             return data(object, AnimationFocus).data()->opacity();
-        else if (isAnimated(object, AnimationHover))
+        } else if (isAnimated(object, AnimationHover)) {
             return data(object, AnimationHover).data()->opacity();
-        else
+        } else {
             return AnimationData::OpacityInvalid;
+        }
     }
 
     //* animation mode
     /** precedence on mouseOver */
     AnimationMode buttonAnimationMode(const QObject *object)
     {
-        if (isAnimated(object, AnimationEnable))
+        if (isAnimated(object, AnimationEnable)) {
             return AnimationEnable;
-        else if (isAnimated(object, AnimationHover))
+        } else if (isAnimated(object, AnimationHover)) {
             return AnimationHover;
-        else if (isAnimated(object, AnimationFocus))
+        } else if (isAnimated(object, AnimationFocus)) {
             return AnimationFocus;
-        else
+        } else {
             return AnimationNone;
+        }
     }
 
     //* animation opacity
     /** precedence on mouseOver */
     qreal buttonOpacity(const QObject *object)
     {
-        if (isAnimated(object, AnimationEnable))
+        if (isAnimated(object, AnimationEnable)) {
             return data(object, AnimationEnable).data()->opacity();
-        else if (isAnimated(object, AnimationHover))
+        } else if (isAnimated(object, AnimationHover)) {
             return data(object, AnimationHover).data()->opacity();
-        else if (isAnimated(object, AnimationFocus))
+        } else if (isAnimated(object, AnimationFocus)) {
             return data(object, AnimationFocus).data()->opacity();
-        else
+        } else {
             return AnimationData::OpacityInvalid;
+        }
     }
 
     //* duration
@@ -128,17 +132,22 @@ public Q_SLOTS:
     //* remove widget from map
     bool unregisterWidget(QObject *object) override
     {
-        if (!object)
+        if (!object) {
             return false;
+        }
         bool found = false;
-        if (_hoverData.unregisterWidget(object))
+        if (_hoverData.unregisterWidget(object)) {
             found = true;
-        if (_focusData.unregisterWidget(object))
+        }
+        if (_focusData.unregisterWidget(object)) {
             found = true;
-        if (_enableData.unregisterWidget(object))
+        }
+        if (_enableData.unregisterWidget(object)) {
             found = true;
-        if (_pressedData.unregisterWidget(object))
+        }
+        if (_pressedData.unregisterWidget(object)) {
             found = true;
+        }
         return found;
     }
 

@@ -246,10 +246,11 @@ void ConfigWidget::load()
     m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
 
     // load shadows
-    if (m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge)
+    if (m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge) {
         m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
-    else
+    } else {
         m_ui.shadowSize->setCurrentIndex(InternalSettings::ShadowLarge);
+    }
 
     m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
@@ -428,8 +429,9 @@ void ConfigWidget::defaults()
 void ConfigWidget::updateChanged()
 {
     // check configuration
-    if (!m_internalSettings)
+    if (!m_internalSettings) {
         return;
+    }
 
     // track modifications
     bool modified(false);

@@ -14,8 +14,9 @@ namespace Breeze
 //____________________________________________________________
 bool WidgetStateEngine::registerWidget(QWidget *widget, AnimationModes mode)
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
     if (mode & AnimationHover && !_hoverData.contains(widget)) {
         _hoverData.insert(widget, new WidgetStateData(this, widget, duration()), enabled());
     }
@@ -44,29 +45,33 @@ BaseEngine::WidgetList WidgetStateEngine::registeredWidgets(AnimationModes mode)
 
     if (mode & AnimationHover) {
         foreach (const Value &value, _hoverData) {
-            if (value)
+            if (value) {
                 out.insert(value.data()->target().data());
+            }
         }
     }
 
     if (mode & AnimationFocus) {
         foreach (const Value &value, _focusData) {
-            if (value)
+            if (value) {
                 out.insert(value.data()->target().data());
+            }
         }
     }
 
     if (mode & AnimationEnable) {
         foreach (const Value &value, _enableData) {
-            if (value)
+            if (value) {
                 out.insert(value.data()->target().data());
+            }
         }
     }
 
     if (mode & AnimationPressed) {
         foreach (const Value &value, _pressedData) {
-            if (value)
+            if (value) {
                 out.insert(value.data()->target().data());
+            }
         }
     }
 

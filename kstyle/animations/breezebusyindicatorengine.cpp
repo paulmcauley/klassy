@@ -23,8 +23,9 @@ BusyIndicatorEngine::BusyIndicatorEngine(QObject *object)
 bool BusyIndicatorEngine::registerWidget(QObject *object)
 {
     // check widget validity
-    if (!object)
+    if (!object) {
         return false;
+    }
 
     // create new data class
     if (!_data.contains(object)) {
@@ -47,8 +48,9 @@ bool BusyIndicatorEngine::isAnimated(const QObject *object)
 //____________________________________________________________
 void BusyIndicatorEngine::setDuration(int value)
 {
-    if (duration() == value)
+    if (duration() == value) {
         return;
+    }
     BaseEngine::setDuration(value);
 
     // restart timer with specified time

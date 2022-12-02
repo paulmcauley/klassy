@@ -32,13 +32,15 @@ MdiWindowShadow::MdiWindowShadow(QWidget *parent, const TileSet &shadowTiles)
 //____________________________________________________________________
 void MdiWindowShadow::updateGeometry()
 {
-    if (!_widget)
+    if (!_widget) {
         return;
+    }
 
     // metrics
     const CompositeShadowParams params = ShadowHelper::lookupShadowParams(StyleConfigData::shadowSize());
-    if (params.isNone())
+    if (params.isNone()) {
         return;
+    }
 
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
@@ -79,9 +81,9 @@ void MdiWindowShadow::updateGeometry()
 
     // update geometry and mask
     const QRegion mask = QRegion(geometry) - hole.adjusted(2, 2, -2, -2);
-    if (mask.isEmpty())
+    if (mask.isEmpty()) {
         hide();
-    else {
+    } else {
         setGeometry(geometry);
         setMask(mask.translated(-geometry.topLeft()));
         show();
@@ -100,8 +102,9 @@ void MdiWindowShadow::updateZOrder()
 //____________________________________________________________________
 void MdiWindowShadow::paintEvent(QPaintEvent *event)
 {
-    if (!_shadowTiles.isValid())
+    if (!_shadowTiles.isValid()) {
         return;
+    }
 
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing);
@@ -120,14 +123,17 @@ bool MdiWindowShadowFactory::registerWidget(QWidget *widget)
 {
     // check widget type
     auto subwindow(qobject_cast<QMdiSubWindow *>(widget));
-    if (!subwindow)
+    if (!subwindow) {
         return false;
-    if (subwindow->widget() && subwindow->widget()->inherits("KMainWindow"))
+    }
+    if (subwindow->widget() && subwindow->widget()->inherits("KMainWindow")) {
         return false;
+    }
 
     // make sure widget is not already registered
-    if (isRegistered(widget))
+    if (isRegistered(widget)) {
         return false;
+    }
 
     // store in set
     _registeredWidgets.insert(widget);
@@ -150,8 +156,9 @@ bool MdiWindowShadowFactory::registerWidget(QWidget *widget)
 //____________________________________________________________________________________
 void MdiWindowShadowFactory::unregisterWidget(QWidget *widget)
 {
-    if (!isRegistered(widget))
+    if (!isRegistered(widget)) {
         return;
+    }
     widget->removeEventFilter(this);
     _registeredWidgets.remove(widget);
     removeShadow(widget);
@@ -193,15 +200,17 @@ bool MdiWindowShadowFactory::eventFilter(QObject *object, QEvent *event)
 MdiWindowShadow *MdiWindowShadowFactory::findShadow(QObject *object) const
 {
     // check object,
-    if (!object->parent())
+    if (!object->parent()) {
         return nullptr;
+    }
 
     // find existing window shadows
     auto children = object->parent()->children();
     foreach (QObject *child, children) {
         if (MdiWindowShadow *shadow = qobject_cast<MdiWindowShadow *>(child)) {
-            if (shadow->widget() == object)
+            if (shadow->widget() == object) {
                 return shadow;
+            }
         }
     }
 
@@ -213,15 +222,18 @@ void MdiWindowShadowFactory::installShadow(QObject *object)
 {
     // cast
     auto widget(static_cast<QWidget *>(object));
-    if (!widget->parentWidget())
+    if (!widget->parentWidget()) {
         return;
+    }
 
     // make sure shadow is not already installed
-    if (findShadow(object))
+    if (findShadow(object)) {
         return;
+    }
 
-    if (!_shadowHelper)
+    if (!_shadowHelper) {
         return;
+    }
 
     // create new shadow
     auto windowShadow(new MdiWindowShadow(widget->parentWidget(), _shadowHelper->shadowTiles(widget)));

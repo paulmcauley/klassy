@@ -67,17 +67,19 @@ protected:
     //* apply step
     virtual qreal digitize(const qreal &value) const
     {
-        if (_steps > 0)
+        if (_steps > 0) {
             return std::floor(value * _steps) / _steps;
-        else
+        } else {
             return value;
+        }
     }
 
     //* trigger target update
     virtual void setDirty() const
     {
-        if (_target)
+        if (_target) {
             _target.data()->update();
+        }
     }
 
 private:

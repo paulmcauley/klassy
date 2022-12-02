@@ -70,12 +70,14 @@ bool StackedWidgetData::initializeAnimation()
 bool StackedWidgetData::animate()
 {
     // check enability
-    if (!enabled())
+    if (!enabled()) {
         return false;
+    }
 
     // initialize animation
-    if (!initializeAnimation())
+    if (!initializeAnimation()) {
         return false;
+    }
 
     // show transition widget
     transition().data()->show();

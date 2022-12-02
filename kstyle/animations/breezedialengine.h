@@ -47,8 +47,9 @@ public:
         if (DataMap<WidgetStateData>::Value data = this->data(object, AnimationHover)) {
             return static_cast<const DialData *>(data.data())->position();
 
-        } else
+        } else {
             return QPoint(-1, -1);
+        }
     }
 };
 }

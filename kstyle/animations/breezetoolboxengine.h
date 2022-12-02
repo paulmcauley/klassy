@@ -60,8 +60,9 @@ public Q_SLOTS:
     //* remove widget from map
     bool unregisterWidget(QObject *data) override
     {
-        if (!data)
+        if (!data) {
             return false;
+        }
 
         // reinterpret_cast is safe here since only the address is used to find
         // data in the map

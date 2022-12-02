@@ -38,8 +38,9 @@ QModelIndexList ItemModel::indexes(int column, const QModelIndex &parent) const
     int rows(rowCount(parent));
     for (int row = 0; row < rows; row++) {
         QModelIndex index(this->index(row, column, parent));
-        if (!index.isValid())
+        if (!index.isValid()) {
             continue;
+        }
         out.append(index);
         out += indexes(column, index);
     }

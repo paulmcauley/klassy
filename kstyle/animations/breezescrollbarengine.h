@@ -54,8 +54,9 @@ public:
         if (DataMap<WidgetStateData>::Value data = this->data(object, AnimationHover)) {
             return static_cast<const ScrollBarData *>(data.data())->isHovered(control);
 
-        } else
+        } else {
             return false;
+        }
     }
 
     //* control rect associated to object
@@ -64,8 +65,9 @@ public:
         if (DataMap<WidgetStateData>::Value data = this->data(object, AnimationHover)) {
             return static_cast<const ScrollBarData *>(data.data())->subControlRect(control);
 
-        } else
+        } else {
             return QRect();
+        }
     }
 
     //* mouse position
@@ -74,8 +76,9 @@ public:
         if (DataMap<WidgetStateData>::Value data = this->data(object, AnimationHover)) {
             return static_cast<const ScrollBarData *>(data.data())->position();
 
-        } else
+        } else {
             return QPoint(-1, -1);
+        }
     }
 
     //@}

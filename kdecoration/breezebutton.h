@@ -123,8 +123,9 @@ public:
     //@{
     void setOpacity(qreal value)
     {
-        if (m_opacity == value)
+        if (m_opacity == value) {
             return;
+        }
         m_opacity = value;
         update();
     }

@@ -90,8 +90,9 @@ void ShadowHelper::reset()
 bool ShadowHelper::registerWidget(QWidget *widget, bool force)
 {
     // make sure widget is not already registered
-    if (_widgets.contains(widget))
+    if (_widgets.contains(widget)) {
         return false;
+    }
 
     // check if widget qualifies
     if (!(force || acceptWidget(widget))) {
@@ -144,8 +145,9 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
 {
     if (Helper::isX11()) {
         // check event type
-        if (event->type() != QEvent::WinIdChange)
+        if (event->type() != QEvent::WinIdChange) {
             return false;
+        }
 
         // cast widget
         QWidget *widget(static_cast<QWidget *>(object));
@@ -154,8 +156,9 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
         installShadows(widget);
 
     } else {
-        if (event->type() != QEvent::PlatformSurface)
+        if (event->type() != QEvent::PlatformSurface) {
             return false;
+        }
 
         QWidget *widget(static_cast<QWidget *>(object));
         QPlatformSurfaceEvent *surfaceEvent(static_cast<QPlatformSurfaceEvent *>(event));
@@ -280,18 +283,22 @@ bool ShadowHelper::isToolBar(QWidget *widget) const
 bool ShadowHelper::acceptWidget(QWidget *widget) const
 {
     // flags
-    if (widget->property(PropertyNames::netWMSkipShadow).toBool())
+    if (widget->property(PropertyNames::netWMSkipShadow).toBool()) {
         return false;
-    if (widget->property(PropertyNames::netWMForceShadow).toBool())
+    }
+    if (widget->property(PropertyNames::netWMForceShadow).toBool()) {
         return true;
+    }
 
     // menus
-    if (isMenu(widget))
+    if (isMenu(widget)) {
         return true;
+    }
 
     // combobox dropdown lists
-    if (widget->inherits("QComboBoxPrivateContainer"))
+    if (widget->inherits("QComboBoxPrivateContainer")) {
         return true;
+    }
 
     // tooltips
     if (isToolTip(widget) && !widget->inherits("Plasma::ToolTip")) {
@@ -337,26 +344,31 @@ KWindowShadowTile::Ptr ShadowHelper::createTile(const QPixmap &source)
 //_______________________________________________________
 void ShadowHelper::installShadows(QWidget *widget)
 {
-    if (!widget)
+    if (!widget) {
         return;
+    }
 
     // only toplevel widgets can cast drop-shadows
-    if (!widget->isWindow())
+    if (!widget->isWindow()) {
         return;
+    }
 
     // widget must have valid native window
-    if (!widget->testAttribute(Qt::WA_WState_Created))
+    if (!widget->testAttribute(Qt::WA_WState_Created)) {
         return;
+    }
 
     // create shadow tiles if needed
     shadowTiles(widget);
-    if (!_shadowTiles.isValid())
+    if (!_shadowTiles.isValid()) {
         return;
+    }
 
     // create platform shadow tiles if needed
     const QVector<KWindowShadowTile::Ptr> &tiles = createShadowTiles();
-    if (tiles.count() != numTiles)
+    if (tiles.count() != numTiles) {
         return;
+    }
 
     // get the underlying window for the widget
     QWindow *window = widget->windowHandle();

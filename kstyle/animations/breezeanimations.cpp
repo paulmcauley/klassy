@@ -85,13 +85,15 @@ void Animations::setupEngines()
 //____________________________________________________________
 void Animations::registerWidget(QWidget *widget) const
 {
-    if (!widget)
+    if (!widget) {
         return;
+    }
 
     // check against noAnimations property
     QVariant propertyValue(widget->property(PropertyNames::noAnimations));
-    if (propertyValue.isValid() && propertyValue.toBool())
+    if (propertyValue.isValid() && propertyValue.toBool()) {
         return;
+    }
 
     // all widgets are registered to the enability engine.
     _widgetEnabilityEngine->registerWidget(widget, AnimationEnable);
@@ -191,8 +193,9 @@ void Animations::registerWidget(QWidget *widget) const
 //____________________________________________________________
 void Animations::unregisterWidget(QWidget *widget) const
 {
-    if (!widget)
+    if (!widget) {
         return;
+    }
 
     _widgetEnabilityEngine->unregisterWidget(widget);
     _spinBoxEngine->unregisterWidget(widget);
@@ -203,8 +206,9 @@ void Animations::unregisterWidget(QWidget *widget) const
     // it assumes that a widget can be registered atmost in one of the
     // engines stored in the list.
     foreach (const BaseEngine::Pointer &engine, _engines) {
-        if (engine && engine.data()->unregisterWidget(widget))
+        if (engine && engine.data()->unregisterWidget(widget)) {
             break;
+        }
     }
 }
 
@@ -212,8 +216,9 @@ void Animations::unregisterWidget(QWidget *widget) const
 void Animations::unregisterEngine(QObject *object)
 {
     int index(_engines.indexOf(qobject_cast<BaseEngine *>(object)));
-    if (index >= 0)
+    if (index >= 0) {
         _engines.removeAt(index);
+    }
 }
 
 //_______________________________________________________________

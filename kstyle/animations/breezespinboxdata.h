@@ -30,12 +30,13 @@ public:
     //* animation state
     bool updateState(QStyle::SubControl subControl, bool value)
     {
-        if (subControl == QStyle::SC_SpinBoxUp)
+        if (subControl == QStyle::SC_SpinBoxUp) {
             return _upArrowData.updateState(value);
-        else if (subControl == QStyle::SC_SpinBoxDown)
+        } else if (subControl == QStyle::SC_SpinBoxDown) {
             return _downArrowData.updateState(value);
-        else
+        } else {
             return false;
+        }
     }
 
     //* animation state
@@ -48,12 +49,13 @@ public:
     //* opacity
     qreal opacity(QStyle::SubControl subControl) const
     {
-        if (subControl == QStyle::SC_SpinBoxUp)
+        if (subControl == QStyle::SC_SpinBoxUp) {
             return upArrowOpacity();
-        else if (subControl == QStyle::SC_SpinBoxDown)
+        } else if (subControl == QStyle::SC_SpinBoxDown) {
             return downArrowOpacity();
-        else
+        } else {
             return OpacityInvalid;
+        }
     }
 
     //* duration
@@ -76,8 +78,9 @@ public:
     void setUpArrowOpacity(qreal value)
     {
         value = digitize(value);
-        if (_upArrowData._opacity == value)
+        if (_upArrowData._opacity == value) {
             return;
+        }
         _upArrowData._opacity = value;
         setDirty();
     }
@@ -103,8 +106,9 @@ public:
     void setDownArrowOpacity(qreal value)
     {
         value = digitize(value);
-        if (_downArrowData._opacity == value)
+        if (_downArrowData._opacity == value) {
             return;
+        }
         _downArrowData._opacity = value;
         setDirty();
     }

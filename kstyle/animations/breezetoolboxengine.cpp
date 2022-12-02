@@ -12,8 +12,9 @@ namespace Breeze
 //____________________________________________________________
 bool ToolBoxEngine::registerWidget(QWidget *widget)
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
     if (!_data.contains(widget)) {
         _data.insert(widget, new WidgetStateData(this, widget, duration()), enabled());
     }

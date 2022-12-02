@@ -581,37 +581,43 @@ private:
 bool Style::preceeds(const QPoint &point, const QRect &bound, const QStyleOption *option) const
 {
     if (option->state & QStyle::State_Horizontal) {
-        if (option->direction == Qt::LeftToRight)
+        if (option->direction == Qt::LeftToRight) {
             return point.x() < bound.right();
-        else
+        } else {
             return point.x() > bound.x();
+        }
 
-    } else
+    } else {
         return point.y() < bound.y();
+    }
 }
 
 //_________________________________________________________________________
 QStyle::SubControl Style::scrollBarHitTest(const QRect &rect, const QPoint &point, const QStyleOption *option) const
 {
     if (option->state & QStyle::State_Horizontal) {
-        if (option->direction == Qt::LeftToRight)
+        if (option->direction == Qt::LeftToRight) {
             return point.x() < rect.center().x() ? QStyle::SC_ScrollBarSubLine : QStyle::SC_ScrollBarAddLine;
-        else
+        } else {
             return point.x() > rect.center().x() ? QStyle::SC_ScrollBarSubLine : QStyle::SC_ScrollBarAddLine;
+        }
 
-    } else
+    } else {
         return point.y() < rect.center().y() ? QStyle::SC_ScrollBarSubLine : QStyle::SC_ScrollBarAddLine;
+    }
 }
 
 //_________________________________________________________________________
 bool Style::hasParent(const QWidget *widget, const char *className) const
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
 
     while ((widget = widget->parentWidget())) {
-        if (widget->inherits(className))
+        if (widget->inherits(className)) {
             return true;
+        }
     }
 
     return false;
@@ -621,12 +627,14 @@ bool Style::hasParent(const QWidget *widget, const char *className) const
 template<typename T>
 bool Style::hasParent(const QWidget *widget) const
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
 
     while ((widget = widget->parentWidget())) {
-        if (qobject_cast<const T *>(widget))
+        if (qobject_cast<const T *>(widget)) {
             return true;
+        }
     }
 
     return false;

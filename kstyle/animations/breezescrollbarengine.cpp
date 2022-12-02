@@ -15,8 +15,9 @@ namespace Breeze
 bool ScrollBarEngine::registerWidget(QWidget *widget, AnimationModes mode)
 {
     // check widget
-    if (!widget)
+    if (!widget) {
         return false;
+    }
 
     // only handle hover and focus
     if (mode & AnimationHover && !dataMap(AnimationHover).contains(widget)) {
@@ -41,37 +42,41 @@ bool ScrollBarEngine::isAnimated(const QObject *object, AnimationMode mode, QSty
             const Animation::Pointer &animation = scrollBarData->animation(control);
             return animation.data()->isRunning();
 
-        } else
+        } else {
             return false;
+        }
 
     } else if (control == QStyle::SC_ScrollBarSlider) {
         return WidgetStateEngine::isAnimated(object, mode);
 
-    } else
+    } else {
         return false;
+    }
 }
 
 //____________________________________________________________
 AnimationMode ScrollBarEngine::animationMode(const QObject *object, QStyle::SubControl control)
 {
     // enable state
-    if (isAnimated(object, AnimationHover, control))
+    if (isAnimated(object, AnimationHover, control)) {
         return AnimationHover;
-    else if (isAnimated(object, AnimationFocus, control))
+    } else if (isAnimated(object, AnimationFocus, control)) {
         return AnimationFocus;
-    else if (isAnimated(object, AnimationPressed, control))
+    } else if (isAnimated(object, AnimationPressed, control)) {
         return AnimationPressed;
-    else
+    } else {
         return AnimationNone;
+    }
 }
 
 //____________________________________________________________
 qreal ScrollBarEngine::opacity(const QObject *object, QStyle::SubControl control)
 {
-    if (isAnimated(object, AnimationHover, control))
+    if (isAnimated(object, AnimationHover, control)) {
         return static_cast<const ScrollBarData *>(data(object, AnimationHover).data())->opacity(control);
-    else if (control == QStyle::SC_ScrollBarSlider)
+    } else if (control == QStyle::SC_ScrollBarSlider) {
         return WidgetStateEngine::buttonOpacity(object);
+    }
     return AnimationData::OpacityInvalid;
 }
 }

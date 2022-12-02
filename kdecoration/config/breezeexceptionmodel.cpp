@@ -23,8 +23,9 @@ const QString ExceptionModel::m_columnTitles[ExceptionModel::nColumns] = {QStrin
 QVariant ExceptionModel::data(const QModelIndex &index, int role) const
 {
     // check index, role and column
-    if (!index.isValid())
+    if (!index.isValid()) {
         return QVariant();
+    }
 
     // retrieve associated file info
     const InternalSettingsPtr &configuration(get(index));

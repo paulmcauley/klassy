@@ -41,23 +41,26 @@ public:
     //* insertion
     virtual typename QMap<Key, Value>::iterator insert(const Key &key, const Value &value, bool enabled = true)
     {
-        if (value)
+        if (value) {
             value.data()->setEnabled(enabled);
+        }
         return QMap<Key, Value>::insert(key, value);
     }
 
     //* find value
     Value find(Key key)
     {
-        if (!(enabled() && key))
+        if (!(enabled() && key)) {
             return Value();
-        if (key == _lastKey)
+        }
+        if (key == _lastKey) {
             return _lastValue;
-        else {
+        } else {
             Value out;
             typename QMap<Key, Value>::iterator iter(QMap<Key, Value>::find(key));
-            if (iter != QMap<Key, Value>::end())
+            if (iter != QMap<Key, Value>::end()) {
                 out = iter.value();
+            }
             _lastKey = key;
             _lastValue = out;
             return out;
@@ -68,24 +71,28 @@ public:
     bool unregisterWidget(Key key)
     {
         // check key
-        if (!key)
+        if (!key) {
             return false;
+        }
 
         // clear last value if needed
         if (key == _lastKey) {
-            if (_lastValue)
+            if (_lastValue) {
                 _lastValue.clear();
+            }
             _lastKey = NULL;
         }
 
         // find key in map
         typename QMap<Key, Value>::iterator iter(QMap<Key, Value>::find(key));
-        if (iter == QMap<Key, Value>::end())
+        if (iter == QMap<Key, Value>::end()) {
             return false;
+        }
 
         // delete value from map if found
-        if (iter.value())
+        if (iter.value()) {
             iter.value().data()->deleteLater();
+        }
         QMap<Key, Value>::erase(iter);
 
         return true;
@@ -96,8 +103,9 @@ public:
     {
         _enabled = enabled;
         foreach (const Value &value, *this) {
-            if (value)
+            if (value) {
                 value.data()->setEnabled(enabled);
+            }
         }
     }
 
@@ -111,8 +119,9 @@ public:
     void setDuration(int duration) const
     {
         foreach (const Value &value, *this) {
-            if (value)
+            if (value) {
                 value.data()->setDuration(duration);
+            }
         }
     }
 

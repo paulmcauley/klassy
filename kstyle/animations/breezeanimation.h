@@ -39,8 +39,9 @@ public:
     //* restart
     void restart()
     {
-        if (isRunning())
+        if (isRunning()) {
             stop();
+        }
         start();
     }
 };

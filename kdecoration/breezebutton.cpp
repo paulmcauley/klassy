@@ -137,8 +137,9 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 {
     Q_UNUSED(repaintRegion)
 
-    if (!decoration())
+    if (!decoration()) {
         return;
+    }
     auto d = qobject_cast<Decoration *>(decoration());
     auto c = d->client().toStrongRef();
     Q_ASSERT(c);
@@ -683,20 +684,23 @@ void Button::reconfigure()
 {
     // animation
     auto d = qobject_cast<Decoration *>(decoration());
-    if (d)
+    if (d) {
         m_animation->setDuration(d->animationsDuration());
+    }
 }
 
 //__________________________________________________________________
 void Button::updateAnimationState(bool hovered)
 {
     auto d = qobject_cast<Decoration *>(decoration());
-    if (!(d && d->animationsDuration() > 0))
+    if (!(d && d->animationsDuration() > 0)) {
         return;
+    }
 
     m_animation->setDirection(hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
-    if (m_animation->state() != QAbstractAnimation::Running)
+    if (m_animation->state() != QAbstractAnimation::Running) {
         m_animation->start();
+    }
 }
 
 void Button::updateThinWindowOutlineWithButtonColor(bool on)
