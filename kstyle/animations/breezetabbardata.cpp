@@ -30,37 +30,43 @@ TabBarData::TabBarData(QObject *parent, QWidget *target, int duration)
 //______________________________________________
 Animation::Pointer TabBarData::animation(const QPoint &position) const
 {
-    if (!enabled())
+    if (!enabled()) {
         return Animation::Pointer();
+    }
 
     const QTabBar *local(qobject_cast<const QTabBar *>(target().data()));
-    if (!local)
+    if (!local) {
         return Animation::Pointer();
+    }
 
     int index(local->tabAt(position));
-    if (index < 0)
+    if (index < 0) {
         return Animation::Pointer();
-    else if (index == currentIndex())
+    } else if (index == currentIndex()) {
         return currentIndexAnimation();
-    else if (index == previousIndex())
+    } else if (index == previousIndex()) {
         return previousIndexAnimation();
-    else
+    } else {
         return Animation::Pointer();
+    }
 }
 
 //______________________________________________
 bool TabBarData::updateState(const QPoint &position, bool hovered)
 {
-    if (!enabled())
+    if (!enabled()) {
         return false;
+    }
 
     const QTabBar *local(qobject_cast<const QTabBar *>(target().data()));
-    if (!local)
+    if (!local) {
         return false;
+    }
 
     int index(local->tabAt(position));
-    if (index < 0)
+    if (index < 0) {
         return false;
+    }
 
     if (hovered) {
         if (index != currentIndex()) {
@@ -74,8 +80,9 @@ bool TabBarData::updateState(const QPoint &position, bool hovered)
             currentIndexAnimation().data()->restart();
             return true;
 
-        } else
+        } else {
             return false;
+        }
 
     } else if (index == currentIndex()) {
         setPreviousIndex(currentIndex());
@@ -83,28 +90,32 @@ bool TabBarData::updateState(const QPoint &position, bool hovered)
         previousIndexAnimation().data()->restart();
         return true;
 
-    } else
+    } else {
         return false;
+    }
 }
 
 //______________________________________________
 qreal TabBarData::opacity(const QPoint &position) const
 {
-    if (!enabled())
+    if (!enabled()) {
         return OpacityInvalid;
+    }
 
     const QTabBar *local(qobject_cast<const QTabBar *>(target().data()));
-    if (!local)
+    if (!local) {
         return OpacityInvalid;
+    }
 
     int index(local->tabAt(position));
-    if (index < 0)
+    if (index < 0) {
         return OpacityInvalid;
-    else if (index == currentIndex())
+    } else if (index == currentIndex()) {
         return currentOpacity();
-    else if (index == previousIndex())
+    } else if (index == previousIndex()) {
         return previousOpacity();
-    else
+    } else {
         return OpacityInvalid;
+    }
 }
 }

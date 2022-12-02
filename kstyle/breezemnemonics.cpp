@@ -51,9 +51,9 @@ bool Mnemonics::eventFilter(QObject *, QEvent *event)
         }
         break;
 
-    case QEvent::ApplicationStateChange: {
+    case QEvent::ApplicationStateChange:
         setEnabled(false);
-    } break;
+        break;
 
     default:
         break;
@@ -65,8 +65,9 @@ bool Mnemonics::eventFilter(QObject *, QEvent *event)
 //____________________________________________________
 void Mnemonics::setEnabled(bool value)
 {
-    if (_enabled == value)
+    if (_enabled == value) {
         return;
+    }
 
     _enabled = value;
 

@@ -40,13 +40,15 @@ WidgetExplorer::WidgetExplorer(QObject *parent)
 //________________________________________________
 void WidgetExplorer::setEnabled(bool value)
 {
-    if (value == _enabled)
+    if (value == _enabled) {
         return;
+    }
     _enabled = value;
 
     qApp->removeEventFilter(this);
-    if (_enabled)
+    if (_enabled) {
         qApp->installEventFilter(this);
+    }
 }
 
 //________________________________________________
@@ -66,8 +68,9 @@ bool WidgetExplorer::eventFilter(QObject *object, QEvent *event)
     case QEvent::Paint:
         if (_drawWidgetRects) {
             QWidget *widget(qobject_cast<QWidget *>(object));
-            if (!widget)
+            if (!widget) {
                 return false;
+            }
 
             QPainter painter(widget);
             painter.setRenderHints(QPainter::Antialiasing);
@@ -81,13 +84,15 @@ bool WidgetExplorer::eventFilter(QObject *object, QEvent *event)
     case QEvent::MouseButtonPress: {
         // cast event and check button
         QMouseEvent *mouseEvent(static_cast<QMouseEvent *>(event));
-        if (mouseEvent->button() != Qt::LeftButton)
+        if (mouseEvent->button() != Qt::LeftButton) {
             break;
+        }
 
         // case widget and check (should not be necessary)
         QWidget *widget(qobject_cast<QWidget *>(object));
-        if (!widget)
+        if (!widget) {
             return false;
+        }
 
         QTextStream(stdout) << "Breeze::WidgetExplorer::eventFilter -"
                             << " event: " << event << " type: " << eventType(event->type()) << " widget: " << widgetInformation(widget) << Qt::endl;
@@ -100,7 +105,8 @@ bool WidgetExplorer::eventFilter(QObject *object, QEvent *event)
         }
         QTextStream(stdout) << "" << Qt::endl;
 
-    } break;
+        break;
+    }
 
     default:
         break;

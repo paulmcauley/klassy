@@ -110,8 +110,9 @@ bool ToolsAreaManager::tryRegisterToolBar(QPointer<QMainWindow> window, QPointer
     doTranslucency(window, _translucent);
 
     QPointer<QToolBar> toolbar;
-    if (!(toolbar = qobject_cast<QToolBar *>(widget)))
+    if (!(toolbar = qobject_cast<QToolBar *>(widget))) {
         return false;
+    }
 
     if (window->toolBarArea(toolbar) == Qt::TopToolBarArea) {
         widget->setPalette(palette());
@@ -129,8 +130,9 @@ void ToolsAreaManager::tryUnregisterToolBar(QPointer<QMainWindow> window, QPoint
     doTranslucency(window, false);
 
     QPointer<QToolBar> toolbar;
-    if (!(toolbar = qobject_cast<QToolBar *>(widget)))
+    if (!(toolbar = qobject_cast<QToolBar *>(widget))) {
         return;
+    }
 
     if (window->toolBarArea(toolbar) != Qt::TopToolBarArea) {
         widget->setPalette(window->palette());
@@ -259,16 +261,19 @@ bool ToolsAreaManager::eventFilter(QObject *watched, QEvent *event)
 
     if (QPointer<QMainWindow> mw = qobject_cast<QMainWindow *>(watched)) {
         QChildEvent *ev = nullptr;
-        if (event->type() == QEvent::ChildAdded || event->type() == QEvent::ChildRemoved)
+        if (event->type() == QEvent::ChildAdded || event->type() == QEvent::ChildRemoved) {
             ev = static_cast<QChildEvent *>(event);
+        }
 
         QPointer<QToolBar> tb = qobject_cast<QToolBar *>(ev->child());
-        if (tb.isNull())
+        if (tb.isNull()) {
             return false;
+        }
 
         if (ev->added()) {
-            if (mw->toolBarArea(tb) == Qt::TopToolBarArea)
+            if (mw->toolBarArea(tb) == Qt::TopToolBarArea) {
                 appendIfNotAlreadyExists(&_windows[mw], tb);
+            }
         } else if (ev->removed()) {
             _windows[mw].removeAll(tb);
         }

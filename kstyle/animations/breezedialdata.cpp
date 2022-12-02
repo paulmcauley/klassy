@@ -50,8 +50,9 @@ void DialData::hoverMoveEvent(QObject *object, QEvent *event)
 {
     // try cast object to dial
     QDial *scrollBar(qobject_cast<QDial *>(object));
-    if (!scrollBar || scrollBar->isSliderDown())
+    if (!scrollBar || scrollBar->isSliderDown()) {
         return;
+    }
 
     // cast event
     QHoverEvent *hoverEvent = static_cast<QHoverEvent *>(event);

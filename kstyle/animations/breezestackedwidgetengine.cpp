@@ -16,8 +16,9 @@ namespace Breeze
 //____________________________________________________________
 bool StackedWidgetEngine::registerWidget(QStackedWidget *widget)
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
     if (!_data.contains(widget)) {
         _data.insert(widget, new StackedWidgetData(this, widget, duration()), enabled());
     }

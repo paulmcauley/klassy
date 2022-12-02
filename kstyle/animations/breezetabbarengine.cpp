@@ -14,14 +14,17 @@ namespace Breeze
 //____________________________________________________________
 bool TabBarEngine::registerWidget(QWidget *widget)
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
 
     // create new data class
-    if (!_hoverData.contains(widget))
+    if (!_hoverData.contains(widget)) {
         _hoverData.insert(widget, new TabBarData(this, widget, duration()), enabled());
-    if (!_focusData.contains(widget))
+    }
+    if (!_focusData.contains(widget)) {
         _focusData.insert(widget, new TabBarData(this, widget, duration()), enabled());
+    }
 
     // connect destruction signal
     connect(widget, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);

@@ -49,8 +49,9 @@ public:
     //* current opacity
     void setCurrentOpacity(qreal value)
     {
-        if (_current._opacity == value)
+        if (_current._opacity == value) {
             return;
+        }
         _current._opacity = value;
         setDirty();
     }
@@ -87,8 +88,9 @@ public:
     //* previous opacity
     void setPreviousOpacity(qreal value)
     {
-        if (_previous._opacity == value)
+        if (_previous._opacity == value) {
             return;
+        }
         _previous._opacity = value;
         setDirty();
     }

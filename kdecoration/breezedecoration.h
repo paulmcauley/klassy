@@ -269,26 +269,29 @@ private:
 
 bool Decoration::hasBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
         return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
-    else
+    } else {
         return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
+    }
 }
 
 bool Decoration::hasNoBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
         return m_internalSettings->borderSize() == InternalSettings::BorderNone;
-    else
+    } else {
         return settings()->borderSize() == KDecoration2::BorderSize::None;
+    }
 }
 
 bool Decoration::hasNoSideBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
         return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
-    else
+    } else {
         return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
+    }
 }
 
 bool Decoration::isMaximized() const

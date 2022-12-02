@@ -15,8 +15,9 @@ namespace Breeze
 bool DialEngine::registerWidget(QWidget *widget, AnimationModes mode)
 {
     // check widget
-    if (!widget)
+    if (!widget) {
         return false;
+    }
 
     // only handle hover and focus
     if (mode & AnimationHover && !dataMap(AnimationHover).contains(widget)) {

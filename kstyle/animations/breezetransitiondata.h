@@ -67,10 +67,11 @@ public:
     //* start clock
     void startClock()
     {
-        if (!_clock.isValid())
+        if (!_clock.isValid()) {
             _clock.start();
-        else
+        } else {
             _clock.restart();
+        }
     }
 
     //* check if rendering is two slow
@@ -130,11 +131,13 @@ private:
 //_____________________________________________________________________________________
 bool TransitionData::hasParent(const QWidget *widget, const char *className) const
 {
-    if (!widget)
+    if (!widget) {
         return false;
+    }
     for (QWidget *parent = widget->parentWidget(); parent; parent = parent->parentWidget()) {
-        if (parent->inherits(className))
+        if (parent->inherits(className)) {
             return true;
+        }
     }
 
     return false;

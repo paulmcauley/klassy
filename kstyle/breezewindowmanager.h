@@ -190,11 +190,13 @@ private:
         explicit ExceptionId(const QString &value)
         {
             const QStringList args(value.split(QChar::fromLatin1('@')));
-            if (args.isEmpty())
+            if (args.isEmpty()) {
                 return;
+            }
             _exception.second = args[0].trimmed();
-            if (args.size() > 1)
+            if (args.size() > 1) {
                 _exception.first = args[1].trimmed();
+            }
         }
 
         const QString &appName() const
@@ -280,11 +282,13 @@ private:
 template<typename T>
 T WindowManager::findParent(const QWidget *widget) const
 {
-    if (!widget)
+    if (!widget) {
         return nullptr;
+    }
     for (QWidget *parent = widget->parentWidget(); parent; parent = parent->parentWidget()) {
-        if (T cast = qobject_cast<T>(parent))
+        if (T cast = qobject_cast<T>(parent)) {
             return cast;
+        }
     }
 
     return nullptr;

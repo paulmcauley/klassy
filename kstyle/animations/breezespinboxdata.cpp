@@ -22,13 +22,14 @@ SpinBoxData::SpinBoxData(QObject *parent, QWidget *target, int duration)
 //______________________________________________
 bool SpinBoxData::Data::updateState(bool value)
 {
-    if (_state == value)
+    if (_state == value) {
         return false;
-    else {
+    } else {
         _state = value;
         _animation.data()->setDirection(_state ? Animation::Forward : Animation::Backward);
-        if (!_animation.data()->isRunning())
+        if (!_animation.data()->isRunning()) {
             _animation.data()->start();
+        }
         return true;
     }
 }

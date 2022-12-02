@@ -24,10 +24,12 @@ namespace Breeze
 //____________________________________________________________________________________
 bool FrameShadowFactory::registerWidget(QWidget *widget, Helper &helper)
 {
-    if (!widget)
+    if (!widget) {
         return false;
-    if (isRegistered(widget))
+    }
+    if (isRegistered(widget)) {
         return false;
+    }
 
     // check whether widget is a frame, and has the proper shape
     bool accepted = false;
@@ -40,24 +42,29 @@ bool FrameShadowFactory::registerWidget(QWidget *widget, Helper &helper)
         due to Qt, splitters are set with a frame style that matches the condition below,
         though no shadow should be installed, obviously
         */
-        if (qobject_cast<QSplitter *>(widget))
+        if (qobject_cast<QSplitter *>(widget)) {
             return false;
+        }
 
         // further checks on frame shape, and parent
-        if (frame->frameStyle() == (QFrame::StyledPanel | QFrame::Sunken))
+        if (frame->frameStyle() == (QFrame::StyledPanel | QFrame::Sunken)) {
             accepted = true;
+        }
 
-    } else if (widget->inherits("KTextEditor::View"))
+    } else if (widget->inherits("KTextEditor::View")) {
         accepted = true;
+    }
 
-    if (!accepted)
+    if (!accepted) {
         return false;
+    }
 
     // make sure that the widget is not embedded into a KHTMLView
     QWidget *parent(widget->parentWidget());
     while (parent && !parent->isTopLevel()) {
-        if (parent->inherits("KHTMLView"))
+        if (parent->inherits("KHTMLView")) {
             return false;
+        }
         parent = parent->parentWidget();
     }
 
@@ -76,8 +83,9 @@ bool FrameShadowFactory::registerWidget(QWidget *widget, Helper &helper)
 //____________________________________________________________________________________
 void FrameShadowFactory::unregisterWidget(QWidget *widget)
 {
-    if (!isRegistered(widget))
+    if (!isRegistered(widget)) {
         return;
+    }
     _registeredWidgets.remove(widget);
     removeShadows(widget);
 }
@@ -202,16 +210,18 @@ FrameShadow::FrameShadow(Side area, Helper &helper)
     QWidget *viewport(this->viewport());
 
     // set cursor from viewport
-    if (viewport)
+    if (viewport) {
         setCursor(viewport->cursor());
+    }
 }
 
 //____________________________________________________________________________________
 void FrameShadow::updateGeometry(QRect rect)
 {
     // show on first call
-    if (isHidden())
+    if (isHidden()) {
         show();
+    }
 
     // store offsets between passed rect and parent widget rect
     QRect parentRect(parentWidget()->contentsRect());
@@ -277,8 +287,9 @@ void FrameShadow::updateState(bool focus, bool hover, qreal opacity, AnimationMo
             update();
             viewport->setUpdatesEnabled(true);
 
-        } else
+        } else {
             update();
+        }
     }
 }
 
@@ -287,8 +298,9 @@ void FrameShadow::paintEvent(QPaintEvent *event)
 {
     // this fixes shadows in frames that change frameStyle() after polish()
     if (QFrame *frame = qobject_cast<QFrame *>(parentWidget())) {
-        if (frame->frameStyle() != (QFrame::StyledPanel | QFrame::Sunken))
+        if (frame->frameStyle() != (QFrame::StyledPanel | QFrame::Sunken)) {
             return;
+        }
     }
 
     const QRect parentRect(parentWidget()->contentsRect().translated(mapFromParent(QPoint(0, 0))));
@@ -307,12 +319,13 @@ void FrameShadow::paintEvent(QPaintEvent *event)
 //____________________________________________________________________________________
 QWidget *FrameShadow::viewport() const
 {
-    if (!parentWidget())
+    if (!parentWidget()) {
         return nullptr;
-    else if (QAbstractScrollArea *widget = qobject_cast<QAbstractScrollArea *>(parentWidget())) {
+    } else if (QAbstractScrollArea *widget = qobject_cast<QAbstractScrollArea *>(parentWidget())) {
         return widget->viewport();
 
-    } else
+    } else {
         return nullptr;
+    }
 }
 }

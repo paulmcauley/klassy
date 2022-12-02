@@ -49,8 +49,9 @@ public:
     void setOpacity(qreal value)
     {
         value = digitize(value);
-        if (_opacity == value)
+        if (_opacity == value) {
             return;
+        }
 
         _opacity = value;
         setDirty();

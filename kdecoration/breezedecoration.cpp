@@ -168,8 +168,9 @@ Decoration::~Decoration()
 //________________________________________________________________
 void Decoration::setOpacity(qreal value)
 {
-    if (m_opacity == value)
+    if (m_opacity == value) {
         return;
+    }
     m_opacity = value;
     update();
 }
@@ -336,8 +337,9 @@ QColor Decoration::fontColor() const
     Q_ASSERT(c);
     if (m_animation->state() == QAbstractAnimation::Running) {
         return KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground), c->color(ColorGroup::Active, ColorRole::Foreground), m_opacity);
-    } else
+    } else {
         return c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground);
+    }
 }
 
 //________________________________________________________________
@@ -502,8 +504,9 @@ void Decoration::updateAnimationState()
         Q_ASSERT(c);
         m_shadowAnimation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
         m_shadowAnimation->setEasingCurve(c->isActive() ? QEasingCurve::OutCubic : QEasingCurve::InCubic);
-        if (m_shadowAnimation->state() != QAbstractAnimation::Running)
+        if (m_shadowAnimation->state() != QAbstractAnimation::Running) {
             m_shadowAnimation->start();
+        }
 
     } else {
         updateShadow();
@@ -513,8 +516,9 @@ void Decoration::updateAnimationState()
         auto c = client().toStrongRef();
         Q_ASSERT(c);
         m_animation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
-        if (m_animation->state() != QAbstractAnimation::Running)
+        if (m_animation->state() != QAbstractAnimation::Running) {
             m_animation->start();
+        }
 
     } else {
         update();
@@ -664,9 +668,9 @@ void Decoration::recalculateBorders()
     const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
 
     int top = 0;
-    if (hideTitleBar())
+    if (hideTitleBar()) {
         top = bottom;
-    else {
+    } else {
         QFontMetrics fm(s->font());
         top += qMax(fm.height(), m_smallButtonPaddedHeight);
 
@@ -695,8 +699,9 @@ void Decoration::recalculateBorders()
             extLeft = extSize;
             extRight = extSize;
         }
-        if (!isMaximizedVertically())
+        if (!isMaximizedVertically()) {
             extBottom = extSize;
+        }
 
     } else if (!isMaximizedHorizontally()) {
         if (hasNoSideBorders()) {
@@ -885,8 +890,9 @@ void Decoration::updateButtonsGeometry()
 
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 
-        } else
+        } else {
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
+        }
     }
 
     update();
@@ -926,8 +932,9 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
             // clip off the titlebar and draw bottom part
             QPainterPath windowPathMinusTitleBar = m_windowPath->intersected(clipRect);
             painter->drawPath(windowPathMinusTitleBar);
-        } else
+        } else {
             painter->drawPath(*m_windowPath);
+        }
 
         painter->restore();
     }
@@ -1019,8 +1026,9 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     const auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    if (!m_titleRect.intersects(repaintRegion))
+    if (!m_titleRect.intersects(repaintRegion)) {
         return;
+    }
 
     painter->save();
     painter->setPen(Qt::NoPen);
@@ -1198,9 +1206,9 @@ int Decoration::captionHeight() const
 //________________________________________________________________
 QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 {
-    if (hideTitleBar())
+    if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
-    else {
+    } else {
         auto c = client().toStrongRef();
         Q_ASSERT(c);
 
@@ -1234,12 +1242,13 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
             boundingRect.setHeight(captionHeight());
             boundingRect.moveLeft((size().width() - boundingRect.width()) / 2);
 
-            if (boundingRect.left() < leftOffset)
+            if (boundingRect.left() < leftOffset) {
                 return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignLeft);
-            else if (boundingRect.right() > size().width() - rightOffset)
+            } else if (boundingRect.right() > size().width() - rightOffset) {
                 return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignRight);
-            else
+            } else {
                 return qMakePair(fullRect, Qt::AlignCenter);
+            }
         }
         }
     }

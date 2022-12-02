@@ -50,10 +50,12 @@ TransitionWidget::TransitionWidget(QWidget *parent, int duration)
 QPixmap TransitionWidget::grab(QWidget *widget, QRect rect)
 {
     // change rect
-    if (!rect.isValid())
+    if (!rect.isValid()) {
         rect = widget->rect();
-    if (!rect.isValid())
+    }
+    if (!rect.isValid()) {
         return QPixmap();
+    }
 
     // initialize pixmap
     QPixmap out(rect.size());
@@ -99,15 +101,18 @@ bool TransitionWidget::event(QEvent *event)
 void TransitionWidget::paintEvent(QPaintEvent *event)
 {
     // fully transparent case
-    if (opacity() >= 1.0 && endPixmap().isNull())
+    if (opacity() >= 1.0 && endPixmap().isNull()) {
         return;
-    if (!_paintEnabled)
+    }
+    if (!_paintEnabled) {
         return;
+    }
 
     // get rect
     QRect rect = event->rect();
-    if (!rect.isValid())
+    if (!rect.isValid()) {
         rect = this->rect();
+    }
 
     // local pixmap
     const bool paintOnWidget(testFlag(PaintOnWidget) && !testFlag(Transparent));
@@ -133,19 +138,21 @@ void TransitionWidget::paintEvent(QPaintEvent *event)
                 p.setClipRect(event->rect());
 
             } else {
-                if (paintOnWidget)
+                if (paintOnWidget) {
                     p.begin(this);
-                else
+                } else {
                     p.begin(&_currentPixmap);
+                }
                 p.setClipRect(event->rect());
                 p.drawPixmap(QPoint(), _endPixmap);
             }
 
         } else {
-            if (paintOnWidget)
+            if (paintOnWidget) {
                 p.begin(this);
-            else
+            } else {
                 p.begin(&_currentPixmap);
+            }
             p.setClipRect(event->rect());
         }
 
@@ -155,8 +162,9 @@ void TransitionWidget::paintEvent(QPaintEvent *event)
                 fade(_startPixmap, _localStartPixmap, 1.0 - opacity(), rect);
                 p.drawPixmap(QPoint(), _localStartPixmap);
 
-            } else
+            } else {
                 p.drawPixmap(QPoint(), _startPixmap);
+            }
         }
 
         p.end();
@@ -174,8 +182,9 @@ void TransitionWidget::paintEvent(QPaintEvent *event)
 //________________________________________________
 void TransitionWidget::grabBackground(QPixmap &pixmap, QWidget *widget, QRect &rect) const
 {
-    if (!widget)
+    if (!widget) {
         return;
+    }
 
     QWidgetList widgets;
     if (widget->autoFillBackground()) {
@@ -186,19 +195,22 @@ void TransitionWidget::grabBackground(QPixmap &pixmap, QWidget *widget, QRect &r
 
     // get highest level parent
     for (parent = widget->parentWidget(); parent; parent = parent->parentWidget()) {
-        if (!(parent->isVisible() && parent->rect().isValid()))
+        if (!(parent->isVisible() && parent->rect().isValid())) {
             continue;
+        }
 
         // store in list
         widgets.append(parent);
 
         // stop at topLevel
-        if (parent->isTopLevel() || parent->autoFillBackground())
+        if (parent->isTopLevel() || parent->autoFillBackground()) {
             break;
+        }
     }
 
-    if (!parent)
+    if (!parent) {
         parent = widget;
+    }
 
     // painting
     QPainter p(&pixmap);
@@ -250,8 +262,9 @@ void TransitionWidget::fade(const QPixmap &source, QPixmap &target, qreal opacit
     target.fill(Qt::transparent);
 
     // check opacity
-    if (opacity * 255 < 1)
+    if (opacity * 255 < 1) {
         return;
+    }
 
     QPainter p(&target);
     p.setClipRect(rect);

@@ -63,13 +63,16 @@ public Q_SLOTS:
     //* remove widget from map
     bool unregisterWidget(QObject *object) override
     {
-        if (!object)
+        if (!object) {
             return false;
+        }
         bool found = false;
-        if (_hoverData.unregisterWidget(object))
+        if (_hoverData.unregisterWidget(object)) {
             found = true;
-        if (_focusData.unregisterWidget(object))
+        }
+        if (_focusData.unregisterWidget(object)) {
             found = true;
+        }
         return found;
     }
 

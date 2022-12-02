@@ -53,10 +53,11 @@ public:
 
     void setFlag(Flag flag, bool value = true)
     {
-        if (value)
+        if (value) {
             _flags |= flag;
-        else
+        } else {
             _flags &= (~flag);
+        }
     }
 
     bool testFlag(Flag flag) const
@@ -97,8 +98,9 @@ public:
     void setOpacity(qreal value)
     {
         value = digitize(value);
-        if (_opacity == value)
+        if (_opacity == value) {
             return;
+        }
         _opacity = value;
         update();
     }
@@ -165,15 +167,17 @@ public:
     //* end animation
     void endAnimation()
     {
-        if (_animation.data()->isRunning())
+        if (_animation.data()->isRunning()) {
             _animation.data()->stop();
+        }
     }
 
     //* animate transition
     void animate()
     {
-        if (_animation.data()->isRunning())
+        if (_animation.data()->isRunning()) {
             _animation.data()->stop();
+        }
         _animation.data()->start();
     }
 
@@ -203,10 +207,11 @@ protected:
     //* apply step
     qreal digitize(const qreal &value) const
     {
-        if (_steps > 0)
+        if (_steps > 0) {
             return std::floor(value * _steps) / _steps;
-        else
+        } else {
             return value;
+        }
     }
 
 private:

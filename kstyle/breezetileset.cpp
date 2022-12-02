@@ -76,8 +76,9 @@ TileSet::TileSet(const QPixmap &source, int w1, int h1, int w2, int h2)
     , _h3(0)
 {
     _pixmaps.reserve(9);
-    if (source.isNull())
+    if (source.isNull()) {
         return;
+    }
 
     _w3 = source.width() / devicePixelRatio(source) - (w1 + w2);
     _h3 = source.height() / devicePixelRatio(source) - (h1 + h2);
@@ -103,8 +104,9 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
     painter->setRenderHint(QPainter::SmoothPixmapTransform, true);
 
     // check initialization
-    if (_pixmaps.size() < 9)
+    if (_pixmaps.size() < 9) {
         return;
+    }
 
     // copy source rect
     QRect rect(constRect);
@@ -143,9 +145,10 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
     const int h2 = _pixmaps.at(5).height() / devicePixelRatio(_pixmaps.at(5));
 
     // corner
-    if (bits(tiles, Top | Left))
+    if (bits(tiles, Top | Left)) {
         painter->drawPixmap(x0, y0, _pixmaps.at(0), 0, 0, wLeft * devicePixelRatio(_pixmaps.at(0)), hTop * devicePixelRatio(_pixmaps.at(0)));
-    if (bits(tiles, Top | Right))
+    }
+    if (bits(tiles, Top | Right)) {
         painter->drawPixmap(x2,
                             y0,
                             _pixmaps.at(2),
@@ -153,7 +156,8 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
                             0,
                             wRight * devicePixelRatio(_pixmaps.at(2)),
                             hTop * devicePixelRatio(_pixmaps.at(2)));
-    if (bits(tiles, Bottom | Left))
+    }
+    if (bits(tiles, Bottom | Left)) {
         painter->drawPixmap(x0,
                             y2,
                             _pixmaps.at(6),
@@ -161,7 +165,8 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
                             (_h3 - hBottom) * devicePixelRatio(_pixmaps.at(6)),
                             wLeft * devicePixelRatio(_pixmaps.at(6)),
                             hBottom * devicePixelRatio(_pixmaps.at(6)));
-    if (bits(tiles, Bottom | Right))
+    }
+    if (bits(tiles, Bottom | Right)) {
         painter->drawPixmap(x2,
                             y2,
                             _pixmaps.at(8),
@@ -169,12 +174,14 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
                             (_h3 - hBottom) * devicePixelRatio(_pixmaps.at(8)),
                             wRight * devicePixelRatio(_pixmaps.at(8)),
                             hBottom * devicePixelRatio(_pixmaps.at(8)));
+    }
 
     // top and bottom
     if (w > 0) {
-        if (tiles & Top)
+        if (tiles & Top) {
             painter->drawPixmap(x1, y0, w, hTop, _pixmaps.at(1), 0, 0, w2 * devicePixelRatio(_pixmaps.at(1)), hTop * devicePixelRatio(_pixmaps.at(1)));
-        if (tiles & Bottom)
+        }
+        if (tiles & Bottom) {
             painter->drawPixmap(x1,
                                 y2,
                                 w,
@@ -184,13 +191,15 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
                                 (_h3 - hBottom) * devicePixelRatio(_pixmaps.at(7)),
                                 w2 * devicePixelRatio(_pixmaps.at(7)),
                                 hBottom * devicePixelRatio(_pixmaps.at(7)));
+        }
     }
 
     // left and right
     if (h > 0) {
-        if (tiles & Left)
+        if (tiles & Left) {
             painter->drawPixmap(x0, y1, wLeft, h, _pixmaps.at(3), 0, 0, wLeft * devicePixelRatio(_pixmaps.at(3)), h2 * devicePixelRatio(_pixmaps.at(3)));
-        if (tiles & Right)
+        }
+        if (tiles & Right) {
             painter->drawPixmap(x2,
                                 y1,
                                 wRight,
@@ -200,11 +209,13 @@ void TileSet::render(const QRect &constRect, QPainter *painter, Tiles tiles) con
                                 0,
                                 wRight * devicePixelRatio(_pixmaps.at(5)),
                                 h2 * devicePixelRatio(_pixmaps.at(5)));
+        }
     }
 
     // center
-    if ((tiles & Center) && h > 0 && w > 0)
+    if ((tiles & Center) && h > 0 && w > 0) {
         painter->drawPixmap(x1, y1, w, h, _pixmaps.at(4));
+    }
 
     // restore
     painter->setRenderHint(QPainter::SmoothPixmapTransform, oldHint);

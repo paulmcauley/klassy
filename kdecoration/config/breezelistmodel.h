@@ -57,8 +57,9 @@ public:
     //! flags
     Qt::ItemFlags flags(const QModelIndex &index) const override
     {
-        if (!index.isValid())
+        if (!index.isValid()) {
             return Qt::NoItemFlags;
+        }
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
@@ -66,12 +67,14 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override
     {
         // check if index is valid
-        if (!hasIndex(row, column, parent))
+        if (!hasIndex(row, column, parent)) {
             return QModelIndex();
+        }
 
         // return invalid index if parent is valid
-        if (parent.isValid())
+        if (parent.isValid()) {
             return QModelIndex();
+        }
 
         // check against _values
         return (row < (int)_values.size()) ? createIndex(row, column) : QModelIndex();
@@ -103,10 +106,11 @@ public:
     //! store index internal selection state
     virtual void setIndexSelected(const QModelIndex &index, bool value)
     {
-        if (value)
+        if (value) {
             _selection.push_back(get(index));
-        else
+        } else {
             _selection.erase(std::remove(_selection.begin(), _selection.end(), get(index)), _selection.end());
+        }
     }
 
     //! get list of internal selected items
@@ -115,8 +119,9 @@ public:
         QModelIndexList out;
         for (typename List::const_iterator iter = _selection.begin(); iter != _selection.end(); iter++) {
             QModelIndex index(ListModel::index(*iter));
-            if (index.isValid())
+            if (index.isValid()) {
                 out.push_back(index);
+            }
         }
         return out;
     }
@@ -140,8 +145,9 @@ public:
     {
         // check if not empty
         // this avoids sending useless signals
-        if (values.empty())
+        if (values.empty()) {
             return;
+        }
 
         emit layoutAboutToBeChanged();
 
@@ -179,9 +185,9 @@ public:
     //! insert values
     virtual void replace(const QModelIndex &index, const ValueType &value)
     {
-        if (!index.isValid())
+        if (!index.isValid()) {
             add(value);
-        else {
+        } else {
             emit layoutAboutToBeChanged();
             setIndexSelected(index, false);
             _values[index.row()] = value;
@@ -203,8 +209,9 @@ public:
     {
         // check if not empty
         // this avoids sending useless signals
-        if (values.empty())
+        if (values.empty()) {
             return;
+        }
 
         emit layoutAboutToBeChanged();
         for (typename List::const_iterator iter = values.begin(); iter != values.end(); iter++) {
@@ -236,9 +243,9 @@ public:
         for (typename List::iterator iter = _values.begin(); iter != _values.end(); iter++) {
             // see if iterator is in list
             typename List::iterator found_iter(std::find(values.begin(), values.end(), *iter));
-            if (found_iter == values.end())
+            if (found_iter == values.end()) {
                 removed_values.push_back(*iter);
-            else {
+            } else {
                 *iter = *found_iter;
                 values.erase(found_iter);
             }
@@ -292,8 +299,9 @@ public:
     {
         List out;
         for (QModelIndexList::const_iterator iter = indexes.begin(); iter != indexes.end(); iter++) {
-            if (iter->isValid() && iter->row() < int(_values.size()))
+            if (iter->isValid() && iter->row() < int(_values.size())) {
                 out.push_back(get(*iter));
+            }
         }
         return out;
     }
@@ -302,8 +310,9 @@ public:
     virtual QModelIndex index(const ValueType &value, int column = 0) const
     {
         for (int row = 0; row < _values.size(); ++row) {
-            if (value == _values[row])
+            if (value == _values[row]) {
                 return index(row, column);
+            }
         }
         return QModelIndex();
     }
@@ -327,17 +336,19 @@ protected:
     virtual void _add(const ValueType &value)
     {
         typename List::iterator iter = std::find(_values.begin(), _values.end(), value);
-        if (iter == _values.end())
+        if (iter == _values.end()) {
             _values.push_back(value);
-        else
+        } else {
             *iter = value;
+        }
     }
 
     //! add, without update
     virtual void _insert(const QModelIndex &index, const ValueType &value)
     {
-        if (!index.isValid())
+        if (!index.isValid()) {
             add(value);
+        }
         int row = 0;
         typename List::iterator iter(_values.begin());
         for (; iter != _values.end() && row != index.row(); iter++, row++) { }

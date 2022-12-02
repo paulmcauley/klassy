@@ -96,8 +96,9 @@ void ExceptionDialog::save()
     // mask
     unsigned int mask = None;
     for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
-        if (iter.value()->isChecked())
+        if (iter.value()->isChecked()) {
             mask |= iter.key();
+        }
     }
 
     m_exception->setMask(mask);

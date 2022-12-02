@@ -46,8 +46,9 @@ void SplitterFactory::setEnabled(bool value)
 
         // assign to existing splitters
         for (WidgetMap::iterator iter = _widgets.begin(); iter != _widgets.end(); ++iter) {
-            if (iter.value())
+            if (iter.value()) {
                 iter.value().data()->setEnabled(value);
+            }
         }
     }
 }
@@ -91,8 +92,9 @@ bool SplitterFactory::registerWidget(QWidget *widget)
 
         return true;
 
-    } else
+    } else {
         return false;
+    }
 }
 
 //____________________________________________________________________
@@ -100,8 +102,9 @@ void SplitterFactory::unregisterWidget(QWidget *widget)
 {
     WidgetMap::iterator iter(_widgets.find(widget));
     if (iter != _widgets.end()) {
-        if (iter.value())
+        if (iter.value()) {
             iter.value().data()->deleteLater();
+        }
         _widgets.erase(iter);
     }
 }
@@ -123,8 +126,9 @@ void SplitterProxy::setEnabled(bool value)
     // make sure status has changed
     if (_enabled != value) {
         _enabled = value;
-        if (!_enabled)
+        if (!_enabled) {
             clearSplitter();
+        }
     }
 }
 
@@ -132,12 +136,14 @@ void SplitterProxy::setEnabled(bool value)
 bool SplitterProxy::eventFilter(QObject *object, QEvent *event)
 {
     // do nothing if disabled
-    if (!_enabled)
+    if (!_enabled) {
         return false;
+    }
 
     // do nothing in case of mouse grab
-    if (mouseGrabber())
+    if (mouseGrabber()) {
         return false;
+    }
 
     switch (event->type()) {
     case QEvent::HoverEnter:
@@ -182,23 +188,24 @@ bool SplitterProxy::event(QEvent *event)
 {
     switch (event->type()) {
 #if 0
-            case QEvent::Paint:
-            {
-                QPainter painter( this );
-                painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
-                painter.setRenderHints( QPainter::Antialiasing );
-                painter.setPen( Qt::red );
-                painter.drawRect( QRectF( rect() ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
-                return true;
-            }
+    case QEvent::Paint:
+    {
+        QPainter painter( this );
+        painter.setClipRegion( static_cast<QPaintEvent*>( event )->region() );
+        painter.setRenderHints( QPainter::Antialiasing );
+        painter.setPen( Qt::red );
+        painter.drawRect( QRectF( rect() ).adjusted( 0.5, 0.5, -0.5, -0.5 ) );
+        return true;
+    }
 #endif
 
     case QEvent::MouseMove:
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease: {
         // check splitter
-        if (!_splitter)
+        if (!_splitter) {
             return false;
+        }
 
         event->accept();
 
@@ -271,8 +278,9 @@ bool SplitterProxy::event(QEvent *event)
 void SplitterProxy::setSplitter(QWidget *widget)
 {
     // check if changed
-    if (_splitter.data() == widget)
+    if (_splitter.data() == widget) {
         return;
+    }
 
     // get cursor position
     const QPoint position(QCursor::pos());
@@ -292,20 +300,23 @@ void SplitterProxy::setSplitter(QWidget *widget)
     show();
 
     // timer used to automatically hide proxy in case leave events are lost
-    if (!_timerId)
+    if (!_timerId) {
         _timerId = startTimer(150);
+    }
 }
 
 //____________________________________________________________________
 void SplitterProxy::clearSplitter()
 {
     // check if changed
-    if (!_splitter)
+    if (!_splitter) {
         return;
+    }
 
     // release mouse
-    if (mouseGrabber() == this)
+    if (mouseGrabber() == this) {
         releaseMouse();
+    }
 
     // send hover event
     if (_splitter) {

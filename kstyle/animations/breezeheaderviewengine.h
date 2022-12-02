@@ -36,8 +36,9 @@ public:
     bool isAnimated(const QObject *object, const QPoint &point)
     {
         if (DataMap<HeaderViewData>::Value data = _data.find(object)) {
-            if (Animation::Pointer animation = data.data()->animation(point))
+            if (Animation::Pointer animation = data.data()->animation(point)) {
                 return animation.data()->isRunning();
+            }
         }
         return false;
     }

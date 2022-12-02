@@ -55,8 +55,9 @@ bool BlurHelper::eventFilter(QObject *object, QEvent *event)
         // cast to widget and check
         QWidget *widget(qobject_cast<QWidget *>(object));
 
-        if (!widget)
+        if (!widget) {
             break;
+        }
 
         update(widget);
         break;
@@ -77,8 +78,9 @@ void BlurHelper::update(QWidget *widget) const
     directly from bespin code. Supposedly prevent playing with some 'pseudo-widgets'
     that have winId matching some other -random- window
     */
-    if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId()))
+    if (!(widget->testAttribute(Qt::WA_WState_Created) || widget->internalWinId())) {
         return;
+    }
 
     widget->winId(); // force creation of the window handle
     KWindowEffects::enableBlurBehind(widget->windowHandle(), true);
