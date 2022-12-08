@@ -5333,18 +5333,19 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
     }
 
     // icon
+    int iconMetric = 0;
     int iconWidth = 0;
     const bool showIcon(showIconsInMenuItems());
     if (showIcon) {
-        iconWidth =
-            isQtQuickControl(option, widget) ? qMax(pixelMetric(PM_SmallIconSize, option, widget), menuItemOption->maxIconWidth) : menuItemOption->maxIconWidth;
+        iconMetric = pixelMetric(PM_SmallIconSize, option, widget);
+        iconWidth = isQtQuickControl(option, widget) ? qMax(iconMetric, menuItemOption->maxIconWidth) : menuItemOption->maxIconWidth;
     }
 
     QRect iconRect;
     if (showIcon && iconWidth > 0) {
         iconRect = QRect(contentsRect.left(), contentsRect.top() + (contentsRect.height() - iconWidth) / 2, iconWidth, iconWidth);
         contentsRect.setLeft(iconRect.right() + Metrics::MenuItem_ItemSpacing + 1);
-        const QSize iconSize(pixelMetric(PM_SmallIconSize, option, widget), pixelMetric(PM_SmallIconSize, option, widget));
+        const QSize iconSize(iconMetric, iconMetric);
         iconRect = centerRect(iconRect, iconSize);
     } else {
         contentsRect.setLeft(contentsRect.left() + Metrics::MenuItem_ExtraLeftMargin);
