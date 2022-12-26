@@ -24,8 +24,6 @@
 
 #include <memory>
 
-class QVariantAnimation;
-
 namespace KDecoration2
 {
 class DecorationButton;
