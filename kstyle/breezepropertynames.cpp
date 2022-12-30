@@ -15,7 +15,6 @@ const char PropertyNames::netWMForceShadow[] = "_KDE_NET_WM_FORCE_SHADOW";
 const char PropertyNames::netWMSkipShadow[] = "_KDE_NET_WM_SKIP_SHADOW";
 const char PropertyNames::sidePanelView[] = "_kde_side_panel_view";
 const char PropertyNames::toolButtonAlignment[] = "_kde_toolButton_alignment";
-const char PropertyNames::menuTitle[] = "_breeze_toolButton_menutitle";
 const char PropertyNames::alteredBackground[] = "_breeze_altered_background";
 const char PropertyNames::highlightNeutral[] = "_kde_highlight_neutral";
 const char PropertyNames::noSeparator[] = "_breeze_no_separator";

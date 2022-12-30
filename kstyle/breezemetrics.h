@@ -30,12 +30,11 @@ static constexpr int LineEdit_FrameWidth = 6;
 
 // menu items
 static constexpr int Menu_FrameWidth = 0;
-static constexpr int MenuItem_MarginWidth = 8;
+static constexpr int MenuItem_MarginWidth = 5;
 static constexpr int MenuItem_HighlightGap = 4;
 static constexpr int MenuItem_ExtraLeftMargin = 4;
-static constexpr int MenuItem_MarginHeight = 4;
+static constexpr int MenuItem_MarginHeight = 3;
 static constexpr int MenuItem_ItemSpacing = 4;
-static constexpr int MenuItem_SeparatorPadding = 0;
 static constexpr int MenuItem_AcceleratorSpace = 16;
 static constexpr int MenuButton_IndicatorWidth = 20;
 
