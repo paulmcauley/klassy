@@ -3165,21 +3165,6 @@ QSize Style::pushButtonSizeFromContents(const QStyleOption *option, const QSize 
     return expandSize(size, Metrics::Frame_FrameWidth);
 }
 
-static QStyleOptionToolButton toolButtonMenuTitleOption(const QStyleOptionToolButton &option)
-{
-    QStyleOptionToolButton copy = QStyleOptionToolButton(option);
-    copy.font.setBold(false);
-    copy.state = Style::State_Enabled;
-    return copy;
-}
-
-static QFont menuTitleFont(const QStyleOptionToolButton &option)
-{
-    auto font = option.font;
-    font.setPointSize(qRound(font.pointSize() * 1.1));
-    return font;
-}
-
 //______________________________________________________________
 QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
 {
@@ -3191,12 +3176,6 @@ QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize 
 
     // copy size
     QSize size = contentsSize;
-
-    if (isMenuTitle(widget)) {
-        const QStyleOptionToolButton copy = toolButtonMenuTitleOption(*toolButtonOption);
-        const QFontMetrics fm(menuTitleFont(copy));
-        size.setWidth(std::max(size.width(), fm.size(Qt::TextShowMnemonic, copy.text).width()));
-    }
 
     // get relevant state flags
     const State &state(option->state);
@@ -3281,27 +3260,39 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
     }
 
     case QStyleOptionMenuItem::Separator: {
-        if (menuItemOption->text.isEmpty() && menuItemOption->icon.isNull()) {
-            return expandSize(QSize(0, 1), Metrics::MenuItem_MarginWidth, Metrics::MenuItem_SeparatorPadding);
+        // contentsSize for separators in QMenuPrivate::updateActionRects() is {2,2}
+        // We choose to override that.
+        // Have at least 1px for separator line.
+        int w = 1;
+        int h = 1;
 
-        } else {
-            // build toolbutton option
-            const QStyleOptionToolButton toolButtonOption(separatorMenuItemOption(menuItemOption, widget));
-            const QFontMetrics fm(menuTitleFont(toolButtonOption));
+        // If the menu item is a section, add width for text
+        // and make height the same as other menu items, plus extra top padding.
+        if (!menuItemOption->text.isEmpty()) {
+            auto font = menuItemOption->font;
+            font.setBold(true);
+            QFontMetrics fm(font);
+            QRect textRect = fm.boundingRect({}, Qt::TextSingleLine | Qt::TextHideMnemonic, menuItemOption->text);
+            w = qMax(w, textRect.width());
+            h = qMax(h, fm.height());
 
-            // make sure height is large enough for icon and text
-            const int iconWidth(menuItemOption->maxIconWidth);
-            const int textHeight(fm.height());
-            if (!menuItemOption->icon.isNull()) {
-                size.setHeight(qMax(size.height(), iconWidth));
+            if (showIconsInMenuItems()) {
+                int iconWidth = menuItemOption->maxIconWidth;
+                if (isQtQuickControl(option, widget)) {
+                    iconWidth = qMax(pixelMetric(PM_SmallIconSize, option, widget), iconWidth);
+                }
+                h = qMax(h, iconWidth);
             }
-            if (!menuItemOption->text.isEmpty()) {
-                size.setHeight(qMax(size.height(), textHeight));
-                size.setWidth(qMax(size.width(), fm.boundingRect(menuItemOption->text).width()));
+
+            if (menuItemOption->menuHasCheckableItems) {
+                h = qMax(h, Metrics::CheckBox_Size);
             }
 
-            return sizeFromContents(CT_ToolButton, &toolButtonOption, size, widget);
+            h = qMax(h, Metrics::MenuButton_IndicatorWidth);
+            h += Metrics::MenuItem_MarginHeight; // extra top padding
         }
+
+        return {w + Metrics::MenuItem_MarginWidth * 2, h + Metrics::MenuItem_MarginHeight * 2};
     }
 
     // for all other cases, return input
@@ -5225,45 +5216,61 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         return true;
     }
 
-    // copy rect and palette
-    const auto &rect(option->rect);
-    const auto &palette(option->palette);
+    // Size should be from sizeFromContents(CT_MenuItem, ...),
+    // but with width set to the widest menu item width.
+    // see QMenuPrivate::updateActionRects()
+    const auto &rect = option->rect;
+    const auto &palette = option->palette;
+
+    // store state
+    const State &state = option->state;
+    const bool enabled = state & State_Enabled;
+    const bool selected = enabled && (state & State_Selected);
+    const bool sunken = enabled && (state & (State_Sunken));
+    const bool reverseLayout = option->direction == Qt::RightToLeft;
+    const bool useStrongFocus = StyleConfigData::menuItemDrawStrongFocus();
 
     // deal with separators
     if (menuItemOption->menuItemType == QStyleOptionMenuItem::Separator) {
-        // normal separator
-        if (menuItemOption->text.isEmpty() && menuItemOption->icon.isNull()) {
-            auto color(_helper->separatorColor(palette));
-            QRect copy(rect);
-
-            if (StyleConfigData::menuOpacity() < 100) {
-                color = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
-                // don`t overlap with menu border
-                copy.adjust(1, 0, -1, 0);
-            }
-
-            _helper->renderSeparator(painter, copy, color);
-            return true;
-
+        auto contentsRect = rect.adjusted(Metrics::MenuItem_MarginWidth, 0, -Metrics::MenuItem_MarginWidth, 0);
+        QColor separatorColor;
+        if (StyleConfigData::menuOpacity() < 100) {
+            separatorColor = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
         } else {
-            /*
-             * separator can have a title and an icon
-             * in that case they are rendered as menu title buttons
-             */
-            QStyleOptionToolButton copy(separatorMenuItemOption(menuItemOption, widget));
-            renderMenuTitle(&copy, painter, widget);
-
-            return true;
+            separatorColor = _helper->separatorColor(palette);
         }
-    }
 
-    // store state
-    const State &state(option->state);
-    const bool enabled(state & State_Enabled);
-    const bool selected(enabled && (state & State_Selected));
-    const bool sunken(enabled && (state & (State_Sunken)));
-    const bool reverseLayout(option->direction == Qt::RightToLeft);
-    const bool useStrongFocus(StyleConfigData::menuItemDrawStrongFocus());
+        if (!menuItemOption->text.isEmpty()) { // icon is ignored on purpose
+            contentsRect.adjust(0, Metrics::MenuItem_MarginHeight, 0, 0);
+            int flags = visualAlignment(option->direction, Qt::AlignLeft) | Qt::AlignVCenter;
+            flags |= Qt::TextSingleLine | Qt::TextHideMnemonic | Qt::TextDontClip;
+            auto font = menuItemOption->font;
+            font.setBold(true);
+            QFontMetrics fm(font);
+            auto textRect = fm.boundingRect(contentsRect, flags, menuItemOption->text);
+            const auto &labelColor = palette.color(QPalette::Current, QPalette::WindowText);
+            painter->setFont(font);
+            painter->setBrush(Qt::NoBrush);
+            // 0.7 is from Kirigami ListSectionHeader.
+            // Not using painter->setOpacity() because it disables text antialiasing.
+            painter->setPen(_helper->alphaColor(labelColor, 0.7));
+            painter->drawText(textRect, flags, menuItemOption->text);
+            // Make spacing between label and line the same as
+            // the margin from the label to the left menu outline.
+            // This is intentionally not factored into CT_MenuItem
+            // size calculations since the line is meant to fill the
+            // remaining available area after the label has been rendered.
+            const qreal spacing = pixelMetric(PM_MenuHMargin, option, widget) + Metrics::MenuItem_MarginWidth - 1;
+            if (reverseLayout) {
+                contentsRect.setRight(textRect.left() - spacing);
+            } else {
+                contentsRect.setLeft(textRect.right() + spacing);
+            }
+        }
+
+        _helper->renderSeparator(painter, contentsRect, separatorColor);
+        return true;
+    }
 
     // render hover and focus
     if (useStrongFocus && (selected || sunken)) {
@@ -6757,15 +6764,6 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
 
     // detect buttons in tabbar, for which special rendering is needed
     const bool inTabBar(widget && qobject_cast<const QTabBar *>(widget->parentWidget()));
-    const bool isMenuTitle(this->isMenuTitle(widget));
-    if (isMenuTitle) {
-        // copy option to adjust state, and set font as not-bold
-        const QStyleOptionToolButton copy = toolButtonMenuTitleOption(*toolButtonOption);
-
-        // render
-        renderMenuTitle(&copy, painter, widget);
-        return true;
-    }
 
     // copy option and alter palette
     QStyleOptionToolButton copy(*toolButtonOption);
@@ -7470,24 +7468,6 @@ void Style::renderSpinBoxArrow(const SubControl &subControl, const QStyleOptionS
 }
 
 //______________________________________________________________________________
-void Style::renderMenuTitle(const QStyleOptionToolButton *option, QPainter *painter, const QWidget *) const
-{
-    // render a background rect for the title
-    const auto &palette(option->palette);
-    QColor bgColor = palette.color(QPalette::Text);
-    bgColor.setAlphaF(0.04);
-    const auto separatorColor(_helper->separatorColor(palette));
-    _helper->renderMenuFrame(painter, option->rect, bgColor, separatorColor, true);
-
-    // render text in the center of the rect
-    // icon is discarded on purpose
-    // make text the same size as a level 4 heading so it looks more title-ish
-    painter->setFont(menuTitleFont(*option));
-    const auto contentsRect = insideMargin(option->rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight);
-    drawItemText(painter, contentsRect, Qt::AlignCenter, palette, true, option->text, QPalette::WindowText);
-}
-
-//______________________________________________________________________________
 qreal Style::dialAngle(const QStyleOptionSlider *sliderOption, int value) const
 {
     // calculate angle at which handle needs to be drawn
@@ -8066,36 +8046,6 @@ bool Style::showIconsOnPushButtons() const
 {
     const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
     return g.readEntry("ShowIconsOnPushButtons", true);
-}
-
-//____________________________________________________________________
-bool Style::isMenuTitle(const QWidget *widget) const
-{
-    // check widget
-    if (!widget) {
-        return false;
-    }
-
-    // check property
-    const QVariant property(widget->property(PropertyNames::menuTitle));
-    if (property.isValid()) {
-        return property.toBool();
-    }
-
-    // detect menu toolbuttons
-    QWidget *parent = widget->parentWidget();
-    if (qobject_cast<QMenu *>(parent)) {
-        foreach (auto child, parent->findChildren<QWidgetAction *>()) {
-            if (child->defaultWidget() != widget) {
-                continue;
-            }
-            const_cast<QWidget *>(widget)->setProperty(PropertyNames::menuTitle, true);
-            return true;
-        }
-    }
-
-    const_cast<QWidget *>(widget)->setProperty(PropertyNames::menuTitle, false);
-    return false;
 }
 
 //____________________________________________________________________
