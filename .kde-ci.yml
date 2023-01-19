@@ -15,12 +15,12 @@ Dependencies:
     'frameworks/kiconthemes': '@latest'
     'frameworks/kirigami': '@latest'
     'frameworks/kservice': '@latest'
-    'frameworks/frameworkintegration': '@latest'
     'frameworks/kwidgetsaddons': '@latest'
     'frameworks/kwindowsystem': '@latest'
 
 - 'on': ['Linux', 'FreeBSD']
   'require':
     'plasma/kdecoration': '@same'
+    'frameworks/frameworkintegration': '@latest'
 Options:
   require-passing-tests-on: [ 'Linux', 'FreeBSD']
