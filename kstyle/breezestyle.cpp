@@ -6807,7 +6807,11 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
         if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
             drawIndicatorArrowPrimitive(ArrowDown_Small, &copy, painter, widget);
         } else {
-            copy.rect.translate(-Metrics::Button_ItemSpacing, 0);
+            if (option->direction == Qt::RightToLeft) {
+                copy.rect.translate(Metrics::Button_ItemSpacing, 0);
+            } else {
+                copy.rect.translate(-Metrics::Button_ItemSpacing, 0);
+            }
             drawIndicatorArrowPrimitive(ArrowDown, &copy, painter, widget);
         }
     }
