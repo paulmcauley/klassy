@@ -4852,7 +4852,7 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     if (hasIcon && !hasText) { // icon only
         iconRect = contentsRect;
     } else if (!hasIcon && hasText) { // text only
-        textRect = contentsRect;
+        textRect = visualRect(option, contentsRect);
         textFlags |= Qt::AlignCenter;
     } else if (textUnderIcon) {
         const int contentsHeight(iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing);
