@@ -5364,8 +5364,8 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
 
         // icon state
         const QIcon::State iconState(sunken ? QIcon::On : QIcon::Off);
-        const QPixmap icon = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), mode, iconState);
-        painter->drawPixmap(iconRect, icon);
+        const QPixmap pixmap = _helper->coloredIcon(menuItemOption->icon, menuItemOption->palette, iconRect.size(), mode, iconState);
+        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
     // arrow
@@ -7418,7 +7418,7 @@ bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPaint
 
         // get pixmap and render
         const QPixmap pixmap = _helper->coloredIcon(icon, option->palette, iconSize, iconMode, iconState);
-        painter->drawPixmap(iconRect, pixmap);
+        drawItemPixmap(painter, iconRect, Qt::AlignCenter, pixmap);
     }
 
     return true;
