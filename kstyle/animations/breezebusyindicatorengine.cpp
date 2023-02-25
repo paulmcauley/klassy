@@ -127,14 +127,11 @@ void BusyIndicatorEngine::setValue(int value)
             // update animation flag
             animated = true;
 
-            // emit update signal on object
-            if (const_cast<QObject *>(iter.key())->inherits("KQuickStyleItem")) {
-                // KQuickStyleItem "rerender" method is updateItem
-                QMetaObject::invokeMethod(const_cast<QObject *>(iter.key()), "updateItem", Qt::QueuedConnection);
-
-            } else {
-                QMetaObject::invokeMethod(const_cast<QObject *>(iter.key()), "update", Qt::QueuedConnection);
+#if BREEZE_HAVE_QTQUICK
+            if (QQuickItem *item = qobject_cast<QQuickItem *>(const_cast<QObject *>(iter.key()))) {
+                item->polish();
             }
+#endif
         }
     }
 
