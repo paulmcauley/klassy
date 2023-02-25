@@ -4,9 +4,15 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+#include "config-breeze.h"
+
 #include "breezebusyindicatorengine.h"
 
 #include "breezemetrics.h"
+
+#if BREEZE_HAVE_QTQUICK
+#include <QQuickItem>
+#endif
 
 #include <QVariant>
 
@@ -33,6 +39,17 @@ bool BusyIndicatorEngine::registerWidget(QObject *object)
 
         // connect destruction signal
         connect(object, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+
+#if BREEZE_HAVE_QTQUICK
+        if (QQuickItem *item = qobject_cast<QQuickItem *>(object)) {
+            connect(item, &QQuickItem::visibleChanged, this, [=]() {
+                if (!item->isVisible()) {
+                    this->setAnimated(object, false);
+                }
+                // no need for the else {} branch, as its animation will be reset anyway
+            });
+        }
+#endif
     }
 
     return true;
