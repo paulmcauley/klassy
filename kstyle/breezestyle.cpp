@@ -5554,7 +5554,7 @@ bool Style::drawProgressBarContentsControl(const QStyleOption *option, QPainter 
     // check if anything is to be drawn
     const bool busy((progressBarOption->minimum == 0 && progressBarOption->maximum == 0));
     if (busy) {
-        const qreal progress(_animations->busyIndicatorEngine().value());
+        const int progress(_animations->busyIndicatorEngine().value());
 
         const auto &first = palette.color(QPalette::Highlight);
         const auto second(KColorUtils::mix(palette.color(QPalette::Highlight), palette.color(QPalette::Window), 0.7));
