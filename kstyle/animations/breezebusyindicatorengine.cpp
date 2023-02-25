@@ -38,7 +38,7 @@ bool BusyIndicatorEngine::registerWidget(QObject *object)
         _data.insert(object, new BusyIndicatorData(this));
 
         // connect destruction signal
-        connect(object, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+        connect(object, &QObject::destroyed, this, &BusyIndicatorEngine::unregisterWidget, Qt::UniqueConnection);
 
 #if BREEZE_HAVE_QTQUICK
         if (QQuickItem *item = qobject_cast<QQuickItem *>(object)) {
