@@ -31,7 +31,7 @@ include(GtkUpdateIconCache)
 
 option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
 
-if(WIN32 OR APPLE)
+if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
     set(WITH_DECORATIONS OFF)
 endif()
 
