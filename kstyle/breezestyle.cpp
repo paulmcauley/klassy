@@ -2990,12 +2990,12 @@ QSize Style::comboBoxSizeFromContents(const QStyleOption *option, const QSize &c
     // copy size
     QSize size(contentsSize);
 
+    // make sure there is enough height for the button
+    size.setHeight(qMax(size.height(), int(Metrics::MenuButton_IndicatorWidth)));
+
     // add relevant margin
     const int frameWidth(pixelMetric(PM_ComboBoxFrameWidth, option, widget));
     size = expandSize(size, frameWidth);
-
-    // make sure there is enough height for the button
-    size.setHeight(qMax(size.height(), int(Metrics::MenuButton_IndicatorWidth)));
 
     // add button width and spacing
     size.rwidth() += Metrics::MenuButton_IndicatorWidth + 2;
