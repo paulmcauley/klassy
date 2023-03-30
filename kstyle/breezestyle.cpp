@@ -7762,6 +7762,9 @@ QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOpt
 
 bool Style::isTabletMode() const
 {
+    if (qEnvironmentVariableIsSet("BREEZE_IS_TABLET_MODE")) {
+        return qEnvironmentVariableIntValue("BREEZE_IS_TABLET_MODE");
+    }
 #if BREEZE_HAVE_QTQUICK
     return Kirigami::TabletModeWatcher::self()->isTabletMode();
 #else
