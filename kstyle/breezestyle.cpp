@@ -4981,6 +4981,8 @@ bool Style::drawCheckBoxLabelControl(const QStyleOption *option, QPainter *paint
 
     // text rect
     auto textRect(rect);
+    // focus rect
+    auto focusRect(rect);
 
     // render icon
     if (!buttonOption->icon.isNull()) {
@@ -4991,32 +4993,43 @@ bool Style::drawCheckBoxLabelControl(const QStyleOption *option, QPainter *paint
         // adjust rect (copied from QCommonStyle)
         textRect.setLeft(textRect.left() + buttonOption->iconSize.width() + 4);
         textRect = visualRect(option, textRect);
+        // shrink, flip and vertically center
+        focusRect.setWidth(buttonOption->iconSize.width());
+        focusRect = visualRect(option, focusRect);
+        focusRect = centerRect(focusRect, buttonOption->iconSize);
     }
 
     // render text
     if (!buttonOption->text.isEmpty()) {
         textRect = option->fontMetrics.boundingRect(textRect, textFlags, buttonOption->text);
-        drawItemText(painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText);
-
-        // check focus state
-        const bool hasFocus(enabled && (state & State_HasFocus));
-
-        // update animation state
-        _animations->widgetStateEngine().updateState(widget, AnimationFocus, hasFocus);
-        const bool isFocusAnimated(_animations->widgetStateEngine().isAnimated(widget, AnimationFocus));
-        const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationFocus));
-
-        // focus color
-        QColor focusColor;
-        if (isFocusAnimated) {
-            focusColor = _helper->alphaColor(_helper->focusColor(palette), opacity);
-        } else if (hasFocus) {
-            focusColor = _helper->focusColor(palette);
+        focusRect.setTop(textRect.top());
+        focusRect.setBottom(textRect.bottom());
+        if (reverseLayout) {
+            focusRect.setLeft(textRect.left());
+        } else {
+            focusRect.setRight(textRect.right());
         }
-
-        // render focus
-        _helper->renderFocusLine(painter, textRect, focusColor);
+        drawItemText(painter, textRect, textFlags, palette, enabled, buttonOption->text, QPalette::WindowText);
     }
+
+    // check focus state
+    const bool hasFocus(enabled && (state & State_HasFocus));
+
+    // update animation state
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, hasFocus);
+
+    const bool isFocusAnimated(_animations->widgetStateEngine().isAnimated(widget, AnimationFocus));
+    const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationFocus));
+    // focus color
+    QColor focusColor;
+    if (isFocusAnimated) {
+        focusColor = _helper->alphaColor(_helper->focusColor(palette), opacity);
+    } else if (hasFocus) {
+        focusColor = _helper->focusColor(palette);
+    }
+
+    // render focus
+    _helper->renderFocusLine(painter, focusRect, focusColor);
 
     return true;
 }
