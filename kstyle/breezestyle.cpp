@@ -5923,7 +5923,6 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         innerRect = subElementRect(SE_CheckBoxIndicator, &opt, checkBox);
         innerRect.adjust(2, 2, -2, -2);
         innerRect.translate(hmargin, vmargin);
-        innerRect = visualRect(option, innerRect);
         focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
         outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
         focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
@@ -5944,7 +5943,6 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         innerRect = subElementRect(SE_RadioButtonIndicator, &opt, radioButton);
         innerRect.adjust(2, 2, -2, -2);
         innerRect.translate(hmargin, vmargin);
-        innerRect = visualRect(option, innerRect);
         innerRadius = innerRect.height() / 2.0;
         focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
         outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
