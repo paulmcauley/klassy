@@ -4977,7 +4977,8 @@ bool Style::drawCheckBoxLabelControl(const QStyleOption *option, QPainter *paint
 
     // text alignment
     const bool reverseLayout(option->direction == Qt::RightToLeft);
-    const int textFlags(_mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft));
+    const Qt::Alignment iconFlags(Qt::AlignVCenter | Qt::AlignLeft);
+    const Qt::Alignment textFlags(_mnemonics->textFlags() | Qt::AlignVCenter | (reverseLayout ? Qt::AlignRight : Qt::AlignLeft));
 
     // text rect
     auto textRect(rect);
@@ -4988,7 +4989,7 @@ bool Style::drawCheckBoxLabelControl(const QStyleOption *option, QPainter *paint
     if (!buttonOption->icon.isNull()) {
         const QIcon::Mode mode(enabled ? QIcon::Normal : QIcon::Disabled);
         const QPixmap pixmap(_helper->coloredIcon(buttonOption->icon, buttonOption->palette, buttonOption->iconSize, mode));
-        drawItemPixmap(painter, rect, textFlags, pixmap);
+        drawItemPixmap(painter, rect, iconFlags, pixmap);
 
         // adjust rect (copied from QCommonStyle)
         textRect.setLeft(textRect.left() + buttonOption->iconSize.width() + 4);
