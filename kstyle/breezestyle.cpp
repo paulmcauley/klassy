@@ -7658,6 +7658,8 @@ QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOpt
         palette = QApplication::palette();
     }
 
+    const auto direction = option ? option->direction : QGuiApplication::layoutDirection();
+
     // convenience class to map color to icon mode
     struct IconData {
         QColor _color;
@@ -7680,7 +7682,8 @@ QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOpt
     static const QList<int> iconSizes = {8, 16, 22, 32, 48};
 
     // decide arrow orientation
-    const ArrowOrientation orientation(standardPixmap == SP_ToolBarHorizontalExtensionButton ? ArrowRight : ArrowDown);
+    const ArrowOrientation orientation(standardPixmap == SP_ToolBarHorizontalExtensionButton ? (direction == Qt::RightToLeft ? ArrowLeft : ArrowRight)
+                                                                                             : ArrowDown);
 
     // create icon and fill
     QIcon icon;
