@@ -2605,11 +2605,13 @@ QRect Style::toolButtonSubControlRect(const QStyleOptionComplex *option, SubCont
             return QRect();
         }
 
-        // check features
         auto menuRect(rect);
-        menuRect.setLeft(rect.right() - menuButtonWidth + 1);
         if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
-            menuRect.setTop(menuRect.bottom() - menuButtonWidth + 1);
+            QRect arrowRect(0, 0, Metrics::SmallArrowSize, Metrics::SmallArrowSize);
+            arrowRect.moveBottomRight(menuRect.bottomRight() - QPoint(4, 3));
+            menuRect = arrowRect;
+        } else {
+            menuRect.setLeft(rect.right() - menuButtonWidth + 1);
         }
 
         return visualRect(option, menuRect);
@@ -6803,7 +6805,7 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
         copy.state &= ~State_On;
 
         if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::InlineSmall) {
-            drawIndicatorArrowPrimitive(ArrowDown_Small, &copy, painter, widget);
+            drawIndicatorArrowPrimitive(ArrowDown, &copy, painter, widget);
         } else {
             if (option->direction == Qt::RightToLeft) {
                 copy.rect.translate(Metrics::Button_ItemSpacing, 0);
