@@ -158,7 +158,6 @@ enum BREEZECOMMON_EXPORT ArrowOrientation {
     ArrowDown,
     ArrowLeft,
     ArrowRight,
-    ArrowDown_Small,
 };
 
 //* button type

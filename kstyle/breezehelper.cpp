@@ -1386,35 +1386,64 @@ void Helper::renderTabBarTab(QPainter *painter,
 //______________________________________________________________________________
 void Helper::renderArrow(QPainter *painter, const QRect &rect, const QColor &color, ArrowOrientation orientation) const
 {
-    // define polygon
+    int size = std::min({rect.width(), rect.height(), Metrics::ArrowSize});
+    // No point in trying to draw if it's too small
+    if (size <= 0) {
+        return;
+    }
+
+    qreal penOffset = PenWidth::Symbol / 2.0;
+    qreal center = size / 2.0;
+    qreal maxExtent = size * 0.75;
+    qreal minExtent = size / 4.0;
+    qreal sizeOffset = 0;
+    int remainder = size % 4;
+    if (remainder == 2) {
+        sizeOffset = 0.5;
+    } else if (remainder == 1) {
+        sizeOffset = -0.25;
+    } else if (remainder == 3) {
+        sizeOffset = 0.25;
+    }
+
     QPolygonF arrow;
     switch (orientation) {
-    /* The inner points of the normal arrows are not on half pixels because
-     * they need to have an even width (up/down) or height (left/right).
-     * An even width/height makes them easier to align with other UI elements.
-     */
     case ArrowUp:
-        arrow = QVector<QPointF>{QPointF(-4.5, 1.5), QPointF(0, -3), QPointF(4.5, 1.5)};
+        arrow = QVector<QPointF>{
+            {penOffset, maxExtent - penOffset - sizeOffset}, // left
+            {center, minExtent - sizeOffset}, // mid
+            {size - penOffset, maxExtent - penOffset - sizeOffset} // right
+        };
         break;
     case ArrowDown:
-        arrow = QVector<QPointF>{QPointF(-4.5, -1.5), QPointF(0, 3), QPointF(4.5, -1.5)};
+        arrow = QVector<QPointF>{
+            {penOffset, minExtent + penOffset + sizeOffset}, // left
+            {center, maxExtent + sizeOffset}, // mid
+            {size - penOffset, minExtent + penOffset + sizeOffset} // right
+        };
         break;
     case ArrowLeft:
-        arrow = QVector<QPointF>{QPointF(1.5, -4.5), QPointF(-3, 0), QPointF(1.5, 4.5)};
+        arrow = QVector<QPointF>{
+            {maxExtent - penOffset - sizeOffset, penOffset}, // top
+            {minExtent - sizeOffset, center}, // mid
+            {maxExtent - penOffset - sizeOffset, size - penOffset}, // bottom
+        };
         break;
     case ArrowRight:
-        arrow = QVector<QPointF>{QPointF(-1.5, -4.5), QPointF(3, 0), QPointF(-1.5, 4.5)};
-        break;
-    case ArrowDown_Small:
-        arrow = QVector<QPointF>{QPointF(1.5, 3.5), QPointF(3.5, 5.5), QPointF(5.5, 3.5)};
+        arrow = QVector<QPointF>{
+            {minExtent + penOffset + sizeOffset, penOffset}, // top
+            {maxExtent + sizeOffset, center}, // mid
+            {minExtent + penOffset + sizeOffset, size - penOffset}, // bottom
+        };
         break;
     default:
         break;
     }
 
+    arrow.translate(rect.x() + (rect.width() - size) / 2.0, rect.y() + (rect.height() - size) / 2.0);
+
     painter->save();
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->translate(QRectF(rect).center());
     painter->setBrush(Qt::NoBrush);
     QPen pen(color, PenWidth::Symbol);
     pen.setCapStyle(Qt::SquareCap);
