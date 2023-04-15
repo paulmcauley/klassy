@@ -15,7 +15,7 @@ namespace Breeze
 //_________________________________________________
 QStyle *StylePlugin::create(const QString &key)
 {
-    if (key.toLower() == QStringLiteral("klassy")) {
+    if (key.compare(QLatin1String("klassy"), Qt::CaseInsensitive) == 0) {
         return new Style;
     }
     return nullptr;
