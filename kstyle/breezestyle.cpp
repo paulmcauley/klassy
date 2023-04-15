@@ -4865,6 +4865,11 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
                    iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
             textSize
         };
+
+        // handle right to left layouts
+        iconRect = visualRect(option, iconRect);
+        textRect = visualRect(option, textRect);
+
         textFlags |= Qt::AlignCenter;
     } else if (hasIcon && hasText) {
         const bool leftAlign(widget && widget->property(PropertyNames::toolButtonAlignment).toInt() == Qt::AlignLeft);
