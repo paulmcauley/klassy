@@ -170,12 +170,6 @@ private:
     //*@name subelementRect specialized functions
     //@{
 
-    //* default implementation. Does not change anything
-    QRect defaultSubElementRect(const QStyleOption *option, const QWidget *) const
-    {
-        return option->rect;
-    }
-
     QRect pushButtonContentsRect(const QStyleOption *, const QWidget *) const;
     QRect checkBoxContentsRect(const QStyleOption *, const QWidget *) const;
     QRect lineEditContentsRect(const QStyleOption *, const QWidget *) const;
@@ -384,30 +378,11 @@ private:
     void drawToolsAreaSeparator(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw);
     void drawToolsAreaBackground(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw, const QRect &rect);
 
-    /**
-    separator can have a title and an icon
-    in that case they are rendered as sunken flat toolbuttons
-    return toolbutton option that matches named separator menu items
-    */
-    QStyleOptionToolButton separatorMenuItemOption(const QStyleOptionMenuItem *, const QWidget *) const;
-
     //* create toolbar extension icon
     QIcon toolBarExtensionIcon(StandardPixmap, const QStyleOption *, const QWidget *) const;
 
     //* create title bar button icon
     QIcon titleBarButtonIcon(StandardPixmap, const QStyleOption *, const QWidget *) const;
-
-    //* returns item view parent if any
-    /** needed to have correct color on focused checkboxes and radiobuttons */
-    const QAbstractItemView *itemViewParent(const QWidget *) const;
-
-    //* returns true if a given widget is a selected item in a focused list
-    /**
-    This is necessary to have the correct colors used for e.g. checkboxes and radiobuttons in lists
-    @param widget The widget to be checked
-    @param position Used to find the relevant QModelIndex
-    */
-    bool isSelectedItem(const QWidget *, const QPoint &) const;
 
     //* return true if option corresponds to QtQuick control
     bool isQtQuickControl(const QStyleOption *, const QWidget *) const;
@@ -479,10 +454,6 @@ private:
 
     //! return true if one of the widget's parent inherits requested type
     inline bool hasParent(const QWidget *, const char *) const;
-
-    //* return true if one of the widget's parent inherits requested type
-    template<typename T>
-    bool hasParent(const QWidget *) const;
 
     //* return true if icons should be shown in menus
     bool showIconsInMenuItems() const;
@@ -610,23 +581,6 @@ bool Style::hasParent(const QWidget *widget, const char *className) const
 
     while ((widget = widget->parentWidget())) {
         if (widget->inherits(className)) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//_________________________________________________________________________
-template<typename T>
-bool Style::hasParent(const QWidget *widget) const
-{
-    if (!widget) {
-        return false;
-    }
-
-    while ((widget = widget->parentWidget())) {
-        if (qobject_cast<const T *>(widget)) {
             return true;
         }
     }

@@ -7643,25 +7643,6 @@ void Style::setTranslucentBackground(QWidget *widget) const
 }
 
 //____________________________________________________________________________________
-QStyleOptionToolButton Style::separatorMenuItemOption(const QStyleOptionMenuItem *menuItemOption, const QWidget *widget) const
-{
-    // separator can have a title and an icon
-    // in that case they are rendered as sunken flat toolbuttons
-    QStyleOptionToolButton toolButtonOption;
-    toolButtonOption.initFrom(widget);
-    toolButtonOption.rect = menuItemOption->rect;
-    toolButtonOption.features = QStyleOptionToolButton::None;
-    toolButtonOption.state = State_Enabled | State_AutoRaise;
-    toolButtonOption.subControls = SC_ToolButton;
-    toolButtonOption.icon = QIcon();
-    toolButtonOption.iconSize = QSize();
-    toolButtonOption.text = menuItemOption->text;
-
-    toolButtonOption.toolButtonStyle = Qt::ToolButtonTextBesideIcon;
-    return toolButtonOption;
-}
-
-//____________________________________________________________________________________
 QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOption *option, const QWidget *widget) const
 {
     // store palette
@@ -8001,46 +7982,6 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     }
 
     return icon;
-}
-
-//______________________________________________________________________________
-const QAbstractItemView *Style::itemViewParent(const QWidget *widget) const
-{
-    const QAbstractItemView *itemView(nullptr);
-
-    // check widget directly
-    if ((itemView = qobject_cast<const QAbstractItemView *>(widget))) {
-        return itemView;
-
-    // check widget grand-parent
-    } else if (widget && widget->parentWidget() && (itemView = qobject_cast<const QAbstractItemView *>(widget->parentWidget()->parentWidget()))
-               && itemView->viewport() == widget->parentWidget()) {
-        return itemView;
-
-    } else {
-        return nullptr;
-    }
-}
-
-//____________________________________________________________________
-bool Style::isSelectedItem(const QWidget *widget, const QPoint &localPosition) const
-{
-    // get relevant itemview parent and check
-    const QAbstractItemView *itemView(itemViewParent(widget));
-    if (!(itemView && itemView->hasFocus() && itemView->selectionModel())) {
-        return false;
-    }
-
-    QPoint position = widget->mapTo(itemView, localPosition);
-
-    // get matching QModelIndex and check
-    const QModelIndex index(itemView->indexAt(position));
-    if (!index.isValid()) {
-        return false;
-    }
-
-    // check whether index is selected
-    return itemView->selectionModel()->isSelected(index);
 }
 
 //____________________________________________________________________
