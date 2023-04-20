@@ -4052,7 +4052,8 @@ bool Style::drawPanelButtonToolPrimitive(const QStyleOption *option, QPainter *p
     const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
     if (menuStyle == BreezePrivate::ToolButtonMenuArrowStyle::SubControl) {
         // NOTE: working around weird issue with flat toolbuttons having unusually wide rects
-        painter->setClipRect(baseRect.adjusted(0, 0, flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0, 0));
+        const auto clipRect = baseRect.adjusted(0, 0, flat ? -Metrics::ToolButton_InlineIndicatorWidth - Metrics::ToolButton_ItemSpacing * 2 : 0, 0);
+        painter->setClipRect(visualRect(option, clipRect));
         baseRect.adjust(0, 0, Metrics::Frame_FrameRadius + PenWidth::Shadow, 0);
         baseRect = visualRect(option, baseRect);
     }
@@ -4386,8 +4387,9 @@ bool Style::drawIndicatorButtonDropDownPrimitive(const QStyleOption *option, QPa
     qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
 
     QRect baseRect = option->rect;
-    painter->setClipRect(baseRect);
-    baseRect.adjust(-Metrics::Frame_FrameRadius - PenWidth::Shadow, 0, 0, 0);
+    const auto clipRect = visualRect(option, baseRect);
+    painter->setClipRect(clipRect);
+    baseRect.adjust(-Metrics::Frame_FrameRadius - qRound(PenWidth::Shadow), 0, 0, 0);
     baseRect = visualRect(option, baseRect);
 
     QHash<QByteArray, bool> stateProperties;
@@ -4406,11 +4408,12 @@ bool Style::drawIndicatorButtonDropDownPrimitive(const QStyleOption *option, QPa
 
     // also render separator
     if (!flat || activeFocus || hovered || down || checked || penAnimation != AnimationData::OpacityInvalid) {
-        QRectF separatorRect = frameRect.adjusted(Metrics::Frame_FrameRadius + PenWidth::Shadow, 0, 0, 0);
         painter->setBrush(Qt::NoBrush);
         if (option->direction == Qt::RightToLeft) {
+            QRectF separatorRect = frameRect.adjusted(0, 0, -Metrics::Frame_FrameRadius - PenWidth::Shadow, 0);
             painter->drawLine(separatorRect.topRight(), separatorRect.bottomRight());
         } else {
+            QRectF separatorRect = frameRect.adjusted(Metrics::Frame_FrameRadius + PenWidth::Shadow, 0, 0, 0);
             painter->drawLine(separatorRect.topLeft(), separatorRect.bottomLeft());
         }
     }
