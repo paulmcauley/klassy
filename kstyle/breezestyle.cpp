@@ -1432,11 +1432,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
     } else if (auto commandLinkButton = qobject_cast<QCommandLinkButton *>(object)) {
         return eventFilterCommandLinkButton(commandLinkButton, event);
     }
-#if QT_VERSION < 0x050D00 // Check if Qt version < 5.13
-    else if (object == qApp && event->type() == QEvent::ApplicationPaletteChange) {
-        loadConfiguration();
-    }
-#elif QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (object == qApp && event->type() == QEvent::PaletteChange) {
         loadConfiguration();
     }
