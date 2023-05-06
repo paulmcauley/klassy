@@ -217,6 +217,9 @@ private:
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
 
+    //* Whether the paint() method is active
+    bool m_painting = false;
+
     //* size grip widget
     SizeGrip *m_sizeGrip = nullptr;
 

@@ -918,6 +918,8 @@ void Decoration::updateButtonsGeometry()
 //________________________________________________________________
 void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 {
+    m_painting = true;
+
     // TODO: optimize based on repaintRegion
     auto c = client().toStrongRef();
     Q_ASSERT(c);
@@ -985,6 +987,8 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         painter->drawRect(rect().adjusted(0, 0, -1, -1));
         painter->restore();
     }
+
+    m_painting = false;
 }
 
 void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
@@ -1270,6 +1274,15 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
     auto s = settings();
     auto c = client().toStrongRef();
     Q_ASSERT(c);
+
+    // if the decoration is painting, abandon setting the shadow.
+    // Setting the shadow at the same time as paint() being executed causes a EGL_BAD_SURFACE error and a SEGFAULT from Plasma 5.26 onwards.
+    if (m_painting) {
+        qWarning("Klassy: paint() occuring at same time as shadow creation for \"%s\" - abandonning setting shadow to prevent EGL_BAD_SURFACE.",
+                 c->caption().toLatin1().data());
+        return;
+    }
+
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         setShadow(createShadowObject(0.5 + m_shadowOpacity * 0.5, isThinWindowOutlineOverride));
