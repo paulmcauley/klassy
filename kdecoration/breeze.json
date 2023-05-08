@@ -10,6 +10,6 @@
     },
     "org.kde.kdecoration2": {
         "kcmodule": true,
-        "recommendedBorderSize": "NoSides"
+        "recommendedBorderSize": "None"
     }
 }

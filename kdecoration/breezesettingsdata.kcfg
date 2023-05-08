@@ -338,7 +338,7 @@
     </entry>
     
     <entry name="CornerRadius" type = "Double">
-       <default>1.6</default>
+       <default>1</default>
        <min>0</min>
        <max>12</max>
     </entry>
