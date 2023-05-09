@@ -21,6 +21,11 @@
 #include <QSharedPointer>
 #include <QWidget>
 
+// needed to display images when qrc is statically linked
+// must be in global namespace to work
+void initKlassydecorationConfigQrc();
+void cleanupKlassydecorationConfigQrc();
+
 namespace Breeze
 {
 
@@ -34,7 +39,7 @@ public:
     explicit ConfigWidget(QWidget *, const QVariantList &);
 
     //* destructor
-    virtual ~ConfigWidget() = default;
+    virtual ~ConfigWidget();
 
     //* default
     void defaults() override;

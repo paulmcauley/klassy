@@ -20,6 +20,20 @@
 #include <QIcon>
 #include <QRegularExpression>
 
+void initKlassydecorationConfigQrc()
+{
+    // needed to display images when qrc is statically linked
+    // must be in global namespace to work
+    Q_INIT_RESOURCE(klassydecoration_config);
+}
+
+void cleanupKlassydecorationConfigQrc()
+{
+    // needed to free qrc resources
+    // must be in global namespace to work
+    Q_CLEANUP_RESOURCE(klassydecoration_config);
+}
+
 namespace Breeze
 {
 
@@ -45,6 +59,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     */
 
     setButtons(KCModule::Default | KCModule::Apply);
+    initKlassydecorationConfigQrc();
 
     // configuration
     m_ui.setupUi(this);
@@ -162,6 +177,11 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // track exception changes
     connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
     connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
+}
+
+ConfigWidget::~ConfigWidget()
+{
+    cleanupKlassydecorationConfigQrc();
 }
 
 //_________________________________________________________
