@@ -14,6 +14,7 @@
 
 #include <KCMultiDialog>
 #include <KLocalizedString>
+#include <KPluginMetaData>
 
 //__________________________________________
 int main(int argc, char *argv[])
@@ -26,8 +27,8 @@ int main(int argc, char *argv[])
 
     KCMultiDialog dialog;
     dialog.setWindowTitle(i18n("Klassy Settings"));
-    dialog.addModule(QStringLiteral("klassystyleconfig"));
-    dialog.addModule(QStringLiteral("klassydecorationconfig"));
+    dialog.addModule(KPluginMetaData(QStringLiteral("plasma/kcms/systemsettings_qwidgets/klassystyleconfig")));
+    dialog.addModule(KPluginMetaData(QStringLiteral("plasma/kcms/systemsettings_qwidgets/kcm_klassydecoration")));
     dialog.show();
 
     foreach (auto child, dialog.findChildren<QAbstractScrollArea *>()) {

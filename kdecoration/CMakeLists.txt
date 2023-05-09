@@ -42,11 +42,7 @@ set(breezedecoration_SRCS
     breezesettingsprovider.cpp
     breezesizegrip.cpp)
 
-# This is removed as kdecoration InternalSettings is now generated from libbreezecommon
-#kconfig_add_kcfg_files(breezedecoration_SRCS breezesettings.kcfgc)
-
 ### config classes
-### they are kept separately because they might move in a separate library in the future
 set(breezedecoration_config_SRCS
     config/breezeconfigwidget.cpp
     config/breezedetectwidget.cpp
@@ -55,10 +51,9 @@ set(breezedecoration_config_SRCS
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
     config/buttonsizing.cpp
-    config/ui/klassydecoration_config.qrc
 )
 
-set(breezedecoration_config_PART_FORMS
+ki18n_wrap_ui(breezedecoration_config_SRCS
    config/ui/breezeconfigurationui.ui
    config/ui/breezedetectwidget.ui
    config/ui/breezeexceptiondialog.ui
@@ -66,22 +61,21 @@ set(breezedecoration_config_PART_FORMS
    config/ui/buttonsizing.ui
 )
 
-ki18n_wrap_ui(breezedecoration_config_PART_FORMS_HEADERS ${breezedecoration_config_PART_FORMS})
+qt_add_resources(breezedecoration_config_SRCS config/ui/klassydecoration_config.qrc)
 
-### build library
-add_library(klassydecoration MODULE
-    ${breezedecoration_SRCS}
-    ${breezedecoration_config_SRCS}
-    ${breezedecoration_config_PART_FORMS_HEADERS})
+add_library(klassydecoration_STATIC STATIC ${breezedecoration_config_SRCS})
+# Needed to link this static lib to shared libs
+set_property(TARGET klassydecoration_STATIC PROPERTY POSITION_INDEPENDENT_CODE ON)
 
-target_link_libraries(klassydecoration
+#This is removed as kdecoration InternalSettings is now generated from libbreezecommon
+#kconfig_add_kcfg_files(klassydecoration_STATIC breezesettings.kcfgc)
+target_link_libraries(klassydecoration_STATIC
     PUBLIC
         Qt::Core
         Qt::Gui
         Qt::DBus
-    PRIVATE
-        klassycommon5
         KDecoration2::KDecoration
+    PRIVATE
         #KF5::ConfigCore
         KF5::CoreAddons
         KF5::ConfigWidgets
@@ -91,14 +85,31 @@ target_link_libraries(klassydecoration
         KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
-  target_link_libraries(klassydecoration PUBLIC XCB::XCB)
+  target_link_libraries(klassydecoration_STATIC PUBLIC XCB::XCB)
   if (TARGET Qt5::X11Extras)
-    target_link_libraries(klassydecoration PUBLIC Qt5::X11Extras)
+    target_link_libraries(klassydecoration_STATIC PUBLIC Qt5::X11Extras)
   else ()
-    target_link_libraries(klassydecoration PUBLIC Qt6::GuiPrivate)
+    target_link_libraries(klassydecoration_STATIC PUBLIC Qt6::GuiPrivate)
   endif()
 endif()
 
 
+### build library
+add_library(klassydecoration MODULE
+    ${breezedecoration_SRCS}
+    ${breezedecoration_config_PART_FORMS_HEADERS})
+
+target_link_libraries(klassydecoration
+    PRIVATE
+        klassycommon5
+        klassydecoration_STATIC
+        KF5::CoreAddons
+        KF5::ConfigWidgets
+        KF5::GuiAddons
+        KF5::I18n
+        KF5::IconThemes
+        KF5::WindowSystem)
+
 install(TARGETS klassydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/klassydecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
+
+add_subdirectory(config)

@@ -35,6 +35,8 @@ if(WIN32 OR APPLE)
     set(WITH_DECORATIONS OFF)
 endif()
 
+find_package(KF5KCMUtils ${KF5_MIN_VERSION} REQUIRED)
+
 if(WITH_DECORATIONS)
     find_package(KDecoration2 REQUIRED)
     add_subdirectory(kdecoration)
