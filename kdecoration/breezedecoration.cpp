@@ -14,11 +14,9 @@
 #endif
 
 #include "breezesettingsprovider.h"
-#include "config-breeze.h"
 #include "config/breezeconfigwidget.h"
 
 #include "breezebutton.h"
-#include "breezesizegrip.h"
 
 #include "breezeboxshadowrenderer.h"
 
@@ -165,8 +163,6 @@ Decoration::~Decoration()
         // last deco destroyed, clean up shadow
         g_sShadow.clear();
     }
-
-    deleteSizeGrip();
 }
 
 //________________________________________________________________
@@ -176,9 +172,6 @@ void Decoration::setOpacity(qreal value)
         return;
     m_opacity = value;
     update();
-
-    if (m_sizeGrip)
-        m_sizeGrip->update();
 }
 
 //________________________________________________________________
@@ -545,16 +538,6 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
 }
 
 //________________________________________________________________
-void Decoration::updateSizeGripVisibility()
-{
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-    if (m_sizeGrip) {
-        m_sizeGrip->setVisible(c->isResizeable() && !isMaximized() && !c->isShaded());
-    }
-}
-
-//________________________________________________________________
 int Decoration::borderSize(bool bottom) const
 {
     const int baseSize = settings()->smallSpacing();
@@ -664,12 +647,6 @@ void Decoration::reconfigure()
 
     // shadow
     updateShadow();
-
-    // size grip
-    if (hasNoBorders() && m_internalSettings->drawSizeGrip())
-        createSizeGrip();
-    else
-        deleteSizeGrip();
 }
 
 //________________________________________________________________
@@ -1524,39 +1501,6 @@ void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &
             m_animateOutOverriddenThinWindowOutline = true;
             updateOverrideOutlineFromButtonAnimationState();
         }
-    }
-}
-
-//_________________________________________________________________
-void Decoration::createSizeGrip()
-{
-    // do nothing if size grip already exist
-    if (m_sizeGrip)
-        return;
-
-    if (!KWindowSystem::isPlatformX11())
-        return;
-
-    // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-    if (!c)
-        return;
-
-    if (c->windowId() != 0) {
-        m_sizeGrip = new SizeGrip(this);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateSizeGripVisibility);
-        connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateSizeGripVisibility);
-        connect(c.data(), &KDecoration2::DecoratedClient::resizeableChanged, this, &Decoration::updateSizeGripVisibility);
-    }
-}
-
-//_________________________________________________________________
-void Decoration::deleteSizeGrip()
-{
-    if (m_sizeGrip) {
-        m_sizeGrip->deleteLater();
-        m_sizeGrip = nullptr;
     }
 }
 

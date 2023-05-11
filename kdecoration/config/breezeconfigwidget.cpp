@@ -131,7 +131,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.redAlwaysShownClose, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.drawSizeGrip, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.useTitlebarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
@@ -233,7 +232,6 @@ void ConfigWidget::load()
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.redAlwaysShownClose->setChecked(m_internalSettings->redAlwaysShownClose());
-    m_ui.drawSizeGrip->setChecked(m_internalSettings->drawSizeGrip());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
@@ -306,7 +304,6 @@ void ConfigWidget::save()
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
     m_internalSettings->setRedAlwaysShownClose(m_ui.redAlwaysShownClose->isChecked());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
-    m_internalSettings->setDrawSizeGrip(m_ui.drawSizeGrip->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
     m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
@@ -384,7 +381,6 @@ void ConfigWidget::defaults()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.redAlwaysShownClose->setChecked(m_internalSettings->redAlwaysShownClose());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
-    m_ui.drawSizeGrip->setChecked(m_internalSettings->drawSizeGrip());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
@@ -475,8 +471,6 @@ void ConfigWidget::updateChanged()
     else if (m_ui.redAlwaysShownClose->isChecked() != m_internalSettings->redAlwaysShownClose())
         modified = true;
     else if (m_ui.drawBorderOnMaximizedWindows->isChecked() != m_internalSettings->drawBorderOnMaximizedWindows())
-        modified = true;
-    else if (m_ui.drawSizeGrip->isChecked() != m_internalSettings->drawSizeGrip())
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;

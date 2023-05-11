@@ -2299,13 +2299,6 @@ Scrollbars and window close buttons will shift positions and will not touch scre
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="drawSizeGrip">
-            <property name="text">
-             <string>Add handle to resize windows with no border</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -2695,7 +2688,6 @@ Scrollbars and window close buttons will shift positions and will not touch scre
   <tabstop>cornerRadius</tabstop>
   <tabstop>useTitlebarColorForAllBorders</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
-  <tabstop>drawSizeGrip</tabstop>
   <tabstop>thinWindowOutlineStyle</tabstop>
   <tabstop>thinWindowOutlineCustomColor</tabstop>
   <tabstop>thinWindowOutlineThickness</tabstop>

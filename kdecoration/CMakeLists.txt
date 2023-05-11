@@ -3,33 +3,6 @@ add_definitions(-DTRANSLATION_DOMAIN="klassy_kwin_deco")
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
 
-### XCB
-find_package(XCB COMPONENTS XCB)
-set_package_properties(XCB PROPERTIES
-  DESCRIPTION "X protocol C-language Binding"
-  URL "https://xcb.freedesktop.org"
-  TYPE OPTIONAL
-  PURPOSE "Required to pass style properties to native Windows on X11 Platform"
-)
-
-if(UNIX AND NOT APPLE)
-
-  set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
-  if (XCB_XCB_FOUND AND TARGET Qt5::Core)
-    find_package(Qt5 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS X11Extras)
-  endif()
-
-else()
-
-  set(BREEZE_HAVE_X11 FALSE)
-
-endif()
-
-set(CMAKE_AUTORCC ON)
-
-################# configuration #################
-configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
-
 ################# includes #################
 include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
 include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
@@ -40,7 +13,7 @@ set(breezedecoration_SRCS
     breezebutton.cpp
     breezedecoration.cpp
     breezesettingsprovider.cpp
-    breezesizegrip.cpp)
+)
 
 ### config classes
 set(breezedecoration_config_SRCS
@@ -81,17 +54,8 @@ target_link_libraries(klassydecoration_STATIC
         KF5::GuiAddons
         KF5::I18n
         KF5::IconThemes
-        KF5::WindowSystem)
-
-if(BREEZE_HAVE_X11)
-  target_link_libraries(klassydecoration_STATIC PUBLIC XCB::XCB)
-  if (TARGET Qt5::X11Extras)
-    target_link_libraries(klassydecoration_STATIC PUBLIC Qt5::X11Extras)
-  else ()
-    target_link_libraries(klassydecoration_STATIC PUBLIC Qt6::GuiPrivate)
-  endif()
-endif()
-
+        KF5::WindowSystem
+)
 
 ### build library
 add_library(klassydecoration MODULE
