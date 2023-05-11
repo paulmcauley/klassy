@@ -147,7 +147,7 @@
           <choice name="BorderVeryHuge" />
           <choice name="BorderOversized" />
       </choices>
-      <default>BorderNoSides</default>
+      <default>BorderNone</default>
     </entry>
     
     <!-- Draw thin window outline -->
@@ -411,7 +411,7 @@
           <choice name="ExceptionWindowClassName" />
           <choice name="ExceptionWindowTitle" />
       </choices>
-      <default>ExceptionWindowTitle</default>
+      <default>ExceptionWindowClassName</default>
     </entry>
 
     <entry name="ExceptionWindowPropertyPattern" type = "String"/>

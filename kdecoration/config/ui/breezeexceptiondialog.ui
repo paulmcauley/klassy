@@ -73,7 +73,7 @@
        <widget class="QComboBox" name="exceptionWindowPropertyType">
         <item>
          <property name="text">
-          <string>Window Class Name (X11 only)</string>
+          <string>Window Class Name</string>
          </property>
         </item>
         <item>
@@ -86,7 +86,7 @@
       <item row="4" column="1">
        <widget class="QPushButton" name="detectDialogButton">
         <property name="text">
-         <string>Detect Window Properties</string>
+         <string>Detect Window Properties...</string>
         </property>
        </widget>
       </item>

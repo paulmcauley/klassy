@@ -8,8 +8,6 @@
 
 #include "decorationexceptionlist.h"
 
-#include <KWindowInfo>
-
 #include <QRegularExpression>
 #include <QTextStream>
 
@@ -87,12 +85,7 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
 
         default:
         case InternalSettings::ExceptionWindowClassName: {
-            // retrieve class name
-            KWindowInfo info(client->windowId(), {}, NET::WM2WindowClass);
-            QString window_className(QString::fromUtf8(info.windowClassName()));
-            QString window_class(QString::fromUtf8(info.windowClassClass()));
-            windowPropertyValue = window_className + QStringLiteral(" ") + window_class;
-
+            windowPropertyValue = client->windowClass(); // windowClass() available from KDecoration 5.27 onwards
             break;
         }
         }
