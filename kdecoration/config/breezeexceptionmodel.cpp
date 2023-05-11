@@ -28,14 +28,21 @@ QVariant ExceptionModel::data(const QModelIndex &index, int role) const
 
     // retrieve associated file info
     const InternalSettingsPtr &configuration(get(index));
+    QString windowPropertyRegexpStr = QString();
 
     // return text associated to file and column
     if (role == Qt::DisplayRole) {
         switch (index.column()) {
-
         case ColumnWindowPropertyRegExp:
-            return configuration->exceptionWindowPropertyPattern();
-
+            if (!configuration->exceptionWindowPropertyPattern().isEmpty()) {
+                if (configuration->exceptionWindowPropertyType() == InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName) {
+                    windowPropertyRegexpStr = i18n("Class");
+                } else if (configuration->exceptionWindowPropertyType() == InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowTitle) {
+                    windowPropertyRegexpStr = i18n("Title");
+                }
+                windowPropertyRegexpStr += ":\t" + configuration->exceptionWindowPropertyPattern();
+            }
+            return windowPropertyRegexpStr;
         case ColumnProgramNameRegExp:
             return configuration->exceptionProgramNamePattern();
 
