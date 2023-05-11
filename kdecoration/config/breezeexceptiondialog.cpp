@@ -11,14 +11,6 @@
 #include "breezedetectwidget.h"
 #include "config-breeze.h"
 
-#if BREEZE_HAVE_X11
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <private/qtx11extras_p.h>
-#else
-#include <QX11Info>
-#endif
-#endif
-
 namespace Breeze
 {
 
@@ -51,14 +43,6 @@ ExceptionDialog::ExceptionDialog(QWidget *parent)
     connect(m_ui.preventApplyOpacityToHeader, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
 
     connect(m_ui.opaqueTitleBar, &QAbstractButton::toggled, this, &ExceptionDialog::onOpaqueTitleBarToggled);
-
-// hide detection dialog on non X11 platforms
-#if BREEZE_HAVE_X11
-    if (!QX11Info::isPlatformX11())
-        m_ui.detectDialogButton->hide();
-#else
-    m_ui.detectDialogButton->hide();
-#endif
 }
 
 //___________________________________________
@@ -147,7 +131,7 @@ void ExceptionDialog::selectWindowProperties()
         connect(m_detectDialog, &DetectDialog::detectionDone, this, &ExceptionDialog::readWindowProperties);
     }
 
-    m_detectDialog->detect(0);
+    m_detectDialog->detect();
 }
 
 //___________________________________________
@@ -155,20 +139,17 @@ void ExceptionDialog::readWindowProperties(bool valid)
 {
     Q_CHECK_PTR(m_detectDialog);
     if (valid) {
-        // type
-        m_ui.exceptionWindowPropertyType->setCurrentIndex(m_detectDialog->exceptionWindowPropertyType());
-
         // window info
-        const KWindowInfo &info(m_detectDialog->windowInfo());
+        const QVariantMap properties = m_detectDialog->properties();
 
-        switch (m_detectDialog->exceptionWindowPropertyType()) {
+        switch (m_ui.exceptionWindowPropertyType->currentIndex()) {
         default:
         case InternalSettings::ExceptionWindowClassName:
-            m_ui.exceptionWindowPropertyEditor->setText(QString::fromUtf8(info.windowClassClass()));
+            m_ui.exceptionWindowPropertyEditor->setText(properties.value(QStringLiteral("resourceClass")).toString());
             break;
 
         case InternalSettings::ExceptionWindowTitle:
-            m_ui.exceptionWindowPropertyEditor->setText(info.name());
+            m_ui.exceptionWindowPropertyEditor->setText(properties.value(QStringLiteral("caption")).toString());
             break;
         }
     }

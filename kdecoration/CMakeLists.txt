@@ -55,7 +55,6 @@ set(breezedecoration_config_SRCS
 
 ki18n_wrap_ui(breezedecoration_config_SRCS
    config/ui/breezeconfigurationui.ui
-   config/ui/breezedetectwidget.ui
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
    config/ui/buttonsizing.ui

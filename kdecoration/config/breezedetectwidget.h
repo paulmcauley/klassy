@@ -14,82 +14,32 @@
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
-#include "breezesettings.h"
-#include "ui_breezedetectwidget.h"
-
-#include <QByteArray>
-#include <QCheckBox>
-#include <QDialog>
-#include <QEvent>
-#include <QLabel>
-
-#include <kwindowsystem.h>
+#include <QObject>
+#include <QVariantMap>
 
 namespace Breeze
 {
 
-class DetectDialog : public QDialog
+class DetectDialog : public QObject
 {
     Q_OBJECT
 
 public:
     //* constructor
-    explicit DetectDialog(QWidget *);
+    explicit DetectDialog(QObject *parent = nullptr);
 
     //* read window properties or select one from mouse grab
-    void detect(WId window);
+    void detect();
 
-    //* selected class
-    QByteArray selectedClass() const;
-
-    //* window information
-    const KWindowInfo &windowInfo() const
-    {
-        return *(m_info.data());
-    }
-
-    //* exception type
-    InternalSettings::EnumExceptionWindowPropertyType exceptionWindowPropertyType() const
-    {
-        if (m_ui.windowClassCheckBox->isChecked())
-            return InternalSettings::ExceptionWindowClassName;
-        else if (m_ui.windowTitleCheckBox->isChecked())
-            return InternalSettings::ExceptionWindowTitle;
-        else
-            return InternalSettings::ExceptionWindowClassName;
-    }
+    //* window properties
+    QVariantMap properties() const;
 
 Q_SIGNALS:
-
     void detectionDone(bool);
 
-protected:
-    bool eventFilter(QObject *o, QEvent *e) override;
-
 private:
-    //* select window from grab
-    void selectWindow();
-
-    //* read window properties
-    void readWindow(WId window);
-
-    //* find window under cursor
-    WId findWindow();
-
-    //* execute
-    void executeDialog();
-
-    //* ui
-    Ui::BreezeDetectWidget m_ui;
-
-    //* invisible dialog used to grab mouse
-    QDialog *m_grabber = nullptr;
-
-    //* current window information
-    QScopedPointer<KWindowInfo> m_info;
-
-    //* wm state atom
-    quint32 m_wmStateAtom = 0;
+    //* properties
+    QVariantMap m_properties;
 };
 
 } // namespace
