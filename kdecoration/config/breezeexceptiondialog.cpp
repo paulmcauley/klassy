@@ -9,7 +9,6 @@
 
 #include "breezeexceptiondialog.h"
 #include "breezedetectwidget.h"
-#include "config-breeze.h"
 
 namespace Breeze
 {

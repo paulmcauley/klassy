@@ -367,11 +367,6 @@
         <default>false</default>
     </entry>
 
-    <!-- size grip -->
-    <entry name="DrawSizeGrip" type = "Bool">
-        <default>false</default>
-    </entry>
-    
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
         <default>true</default>

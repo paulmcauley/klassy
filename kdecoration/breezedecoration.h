@@ -34,7 +34,6 @@ class DecorationButtonGroup;
 
 namespace Breeze
 {
-class SizeGrip;
 
 enum struct ButtonBackgroundType {
     Small,
@@ -163,7 +162,6 @@ private Q_SLOTS:
     void updateButtonsGeometryDelayed();
     void updateTitleBar();
     void updateAnimationState();
-    void updateSizeGripVisibility();
 
     void forceUpdateShadow()
     {
@@ -190,16 +188,6 @@ private:
     inline bool hasNoSideBorders() const;
     //@}
 
-    //*@name size grip
-    //@{
-    void createSizeGrip();
-    void deleteSizeGrip();
-    SizeGrip *sizeGrip() const
-    {
-        return m_sizeGrip;
-    }
-    //@}
-
     void setScaledTitleBarTopBottomMargins();
     void setScaledTitleBarSideMargins();
     void setAddedTitleBarOpacity();
@@ -219,9 +207,6 @@ private:
 
     //* Whether the paint() method is active
     bool m_painting = false;
-
-    //* size grip widget
-    SizeGrip *m_sizeGrip = nullptr;
 
     //* active state change animation
     QVariantAnimation *m_animation;
