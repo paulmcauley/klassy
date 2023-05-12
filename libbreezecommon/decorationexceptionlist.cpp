@@ -20,23 +20,28 @@ void DecorationExceptionList::readConfig(KSharedConfig::Ptr config, const bool r
     _defaultExceptions.clear();
 
     // set the default exceptions that are bundled with Klassy
-    if (!config->hasGroup(defaultExceptionGroupName(0)) || readDefaults) {
-        InternalSettingsPtr defaultException(new InternalSettings());
-        defaultException->setEnabled(true);
-        defaultException->setExceptionWindowPropertyType(1);
-        defaultException->setExceptionWindowPropertyPattern(".*Kdenlive");
-        defaultException->setOpaqueTitleBar(true);
-        defaultException->setExceptionProgramNamePattern("kdenlive");
-        defaultException->setPreventApplyOpacityToHeader(true);
-        _defaultExceptions.append(defaultException);
-    }
+    InternalSettingsPtr defaultException0(new InternalSettings());
+    defaultException0->setExceptionWindowPropertyType(InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName);
+    defaultException0->setExceptionWindowPropertyPattern("");
+    defaultException0->setOpaqueTitleBar(false);
+    defaultException0->setExceptionProgramNamePattern("VirtualBox.*");
+    defaultException0->setPreventApplyOpacityToHeader(true);
+    _defaultExceptions.append(defaultException0);
+
+    InternalSettingsPtr defaultException1(new InternalSettings());
+    defaultException1->setExceptionWindowPropertyType(InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName);
+    defaultException1->setExceptionWindowPropertyPattern("org.kde.digikam");
+    defaultException1->setOpaqueTitleBar(true);
+    defaultException1->setExceptionProgramNamePattern("digikam");
+    defaultException1->setPreventApplyOpacityToHeader(true);
+    _defaultExceptions.append(defaultException1);
 
     QString groupName;
 
+    // load default enabled settings for the default exceptions
     if (!readDefaults) {
-        // load default-set exceptions modified from the config file (with user's changes such as unticking enable)
-        for (int index = 0; config->hasGroup(groupName = defaultExceptionGroupName(index)); ++index) {
-            readIndividualExceptionFromConfig(config, groupName, _defaultExceptions);
+        for (int index = 0; index < _defaultExceptions.count(); ++index) {
+            readExceptionEnabledFromConfig(config, defaultExceptionGroupName(index), _defaultExceptions, index);
         }
     }
 
@@ -76,6 +81,18 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
     appendTo.append(configuration);
 }
 
+void DecorationExceptionList::readExceptionEnabledFromConfig(KSharedConfig::Ptr config, QString groupName, InternalSettingsList &settingsList, int index)
+{
+    // create exception
+    InternalSettings exception;
+
+    // reset group
+    readConfig(&exception, config.data(), groupName);
+
+    // append to exceptions
+    settingsList[index]->setEnabled(exception.enabled());
+}
+
 int DecorationExceptionList::numberDefaults()
 {
     return _defaultExceptions.size();
@@ -93,7 +110,7 @@ void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
     // rewrite current default exceptions with user-set enable flag
     int index = 0;
     foreach (const InternalSettingsPtr &exception, _defaultExceptions) {
-        writeConfig(exception.data(), config.data(), defaultExceptionGroupName(index));
+        writeDefaultsConfig(exception.data(), config.data(), defaultExceptionGroupName(index));
         ++index;
     }
 
@@ -135,6 +152,25 @@ void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig
                         "PreventApplyOpacityToHeader",
                         "Mask",
                         "BorderSize"};
+
+    // write all items
+    foreach (auto key, keys) {
+        KConfigSkeletonItem *item(skeleton->findItem(key));
+        if (!item)
+            continue;
+
+        if (!groupName.isEmpty())
+            item->setGroup(groupName);
+        KConfigGroup configGroup(config, item->group());
+        configGroup.writeEntry(item->key(), item->property());
+    }
+}
+
+//______________________________________________________________
+void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
+{
+    // list of items to be written
+    QStringList keys = {"Enabled"};
 
     // write all items
     foreach (auto key, keys) {

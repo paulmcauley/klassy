@@ -67,8 +67,12 @@ protected:
     //! write configuration
     static void writeConfig(KCoreConfigSkeleton *, KConfig *, const QString &);
 
+    //! wrrite configuration for defaults (enabled key only)
+    void writeDefaultsConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
+
 private:
     void readIndividualExceptionFromConfig(KSharedConfig::Ptr config, QString &groupName, InternalSettingsList &appendTo);
+    void readExceptionEnabledFromConfig(KSharedConfig::Ptr config, QString groupName, InternalSettingsList &settingsList, int index);
 
     //! exceptions
     InternalSettingsList _exceptions;
