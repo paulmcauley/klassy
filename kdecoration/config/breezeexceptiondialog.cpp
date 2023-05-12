@@ -19,6 +19,21 @@ ExceptionDialog::ExceptionDialog(QWidget *parent)
 {
     m_ui.setupUi(this);
 
+    // disable controls if this is the default exceptions list
+    QWidget *parentExceptionListWidget = parentWidget();
+    if (parentExceptionListWidget && parentExceptionListWidget->objectName() == "defaultExceptions") {
+        m_ui.borderSizeCheckBox->setDisabled(true);
+        m_ui.borderSizeComboBox->setDisabled(true);
+        m_ui.detectDialogButton->setDisabled(true);
+        m_ui.buttonBox->setHidden(true);
+        m_ui.exceptionProgramNameEditor->setDisabled(true);
+        m_ui.exceptionWindowPropertyEditor->setDisabled(true);
+        m_ui.exceptionWindowPropertyType->setDisabled(true);
+        m_ui.hideTitleBar->setDisabled(true);
+        m_ui.opaqueTitleBar->setDisabled(true);
+        m_ui.preventApplyOpacityToHeader->setDisabled(true);
+    }
+
     connect(m_ui.buttonBox->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &QWidget::close);
 
     // store checkboxes from ui into list

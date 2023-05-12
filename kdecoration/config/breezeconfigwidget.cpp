@@ -268,6 +268,8 @@ void ConfigWidget::load()
         m_ui.defaultExceptions->setExceptions(exceptions.getDefault());
     } else {
         m_ui.defaultExceptions->hide();
+        m_ui.defaultExceptionsLabel->hide();
+        m_ui.defaultExceptionsSpacer->setGeometry(QRect());
     }
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
