@@ -1416,6 +1416,9 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
         if (thinWindowOutlineColor.isValid()) {
             QPen p;
             p.setColor(thinWindowOutlineColor);
+            // use a miter join rather than the default bevel join to git sharp corners at low radii
+            if (m_internalSettings->cornerRadius() < 0.2)
+                p.setJoinStyle(Qt::MiterJoin);
 
             qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
 
@@ -1456,8 +1459,8 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
             QPainterPath roundedRectOutline;
             qreal cornerRadius;
 
-            if (m_scaledCornerRadius < 0.05)
-                cornerRadius = 0; // give a square corner for when corner radius is 0
+            if (m_internalSettings->cornerRadius() < 0.2)
+                cornerRadius = m_scaledCornerRadius; // give a square corner for when corner radius is 0
             else
                 cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
 
