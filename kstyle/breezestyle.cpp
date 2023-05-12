@@ -1624,11 +1624,8 @@ bool Style::eventFilterComboBoxContainer(QWidget *widget, QEvent *event)
         const bool hasAlpha(_helper->hasAlphaChannel(widget));
         if (hasAlpha) {
             painter.setCompositionMode(QPainter::CompositionMode_Source);
-            _helper->renderMenuFrame(&painter, rect, background, outline, true);
-
-        } else {
-            _helper->renderMenuFrame(&painter, rect, background, outline, false);
         }
+        _helper->renderMenuFrame(&painter, rect, background, outline, hasAlpha);
     }
 
     return false;
