@@ -67,7 +67,7 @@ _Klassy_ from version 4.0 onwards requires at least __Plasma 5.25__, so please c
 <a name="prebuilt"/>
 
 ### Pre-built packages
-[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
 > NB: for OpenSUSE Leap you will [first need to install newer "Argon" KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
@@ -122,6 +122,8 @@ To make your Plasma Desktop fully consistent, there are also matching system ico
 
 To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "klassy". Then download your theme of choice to match your Button icon style and Button highlight style:
 > ![Screenshot of downloading matching Klassy system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching Klassy system icons")
+
+Alternatively, the icons can be downloaded from [the icons source repository](https://github.com/paulmcauley/klassy-icons/releases) and installed via System Settings->Appearance->Icons->Install from file...
 
 These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
 
