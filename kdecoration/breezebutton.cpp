@@ -176,10 +176,14 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
         if (d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton))
             paintFullHeightButtonBackground(painter);
 
-        // translate from icon offset
+        // translate from icon offset -- translates to the edge of smallButtonPaddedSize
         painter->translate(m_iconOffset);
 
-        const QRectF iconRect(geometry().topLeft(), m_smallButtonPaddedSize);
+        // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
+        qreal iconTranslationOffset = (m_smallButtonPaddedSize.width() - m_iconSize.width()) / 2;
+        painter->translate(iconTranslationOffset, iconTranslationOffset);
+
+        const QRectF iconRect(geometry().topLeft(), m_iconSize);
         if (auto deco = qobject_cast<Decoration *>(decoration())) {
             const QPalette activePalette = KIconLoader::global()->customPalette();
             QPalette palette = c->palette();
