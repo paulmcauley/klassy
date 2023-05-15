@@ -49,6 +49,7 @@ target_link_libraries(klassydecoration_STATIC
         KDecoration2::KDecoration
     PRIVATE
         #KF5::ConfigCore
+        klassycommon5
         KF5::CoreAddons
         KF5::ConfigWidgets
         KF5::GuiAddons
