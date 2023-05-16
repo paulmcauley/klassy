@@ -232,14 +232,14 @@ QColor Decoration::accentedWindowOutlineColor(QColor customColor) const
 
     if (customColor.isValid()) {
         activeColor = customColor;
-        activeColor.setAlphaF(activeColor.alphaF() * 0.87);
+        activeColor.setAlphaF(activeColor.alphaF() * m_internalSettings->windowOutlineCustomColorOpacityActive());
         inactiveColor = customColor;
-        inactiveColor.setAlphaF(inactiveColor.alphaF() * 0.3);
+        inactiveColor.setAlphaF(inactiveColor.alphaF() * m_internalSettings->windowOutlineCustomColorOpacityInactive());
     } else {
         activeColor = g_decorationColors->highlight;
-        activeColor.setAlphaF(activeColor.alphaF() * 0.87);
+        activeColor.setAlphaF(activeColor.alphaF() * m_internalSettings->windowOutlineAccentColorOpacityActive());
         inactiveColor = g_decorationColors->highlightLessSaturated;
-        inactiveColor.setAlphaF(inactiveColor.alphaF() * 0.4);
+        inactiveColor.setAlphaF(inactiveColor.alphaF() * m_internalSettings->windowOutlineAccentColorOpacityInactive());
     }
 
     if (m_animation->state() == QAbstractAnimation::Running) {
@@ -259,20 +259,26 @@ QColor Decoration::fontMixedAccentWindowOutlineColor(QColor customColor) const
     QColor fontColorInactive = c->color(ColorGroup::Inactive, ColorRole::Foreground);
     QColor accentColorActive;
     QColor accentColorInactive;
+    qreal opacityFactorActive;
+    qreal opacityFactorInactive;
 
     if (customColor.isValid()) {
         accentColorActive = customColor;
         accentColorInactive = customColor;
+        opacityFactorActive = m_internalSettings->windowOutlineCustomWithContrastOpacityActive();
+        opacityFactorInactive = m_internalSettings->windowOutlineCustomWithContrastOpacityInactive();
     } else {
         accentColorActive = g_decorationColors->buttonFocus;
         accentColorInactive = g_decorationColors->buttonHover;
+        opacityFactorActive = m_internalSettings->windowOutlineAccentWithContrastOpacityActive();
+        opacityFactorInactive = m_internalSettings->windowOutlineAccentWithContrastOpacityInactive();
     }
 
     QColor activeColor = KColorUtils::mix(fontColorActive, accentColorActive, 0.75);
-    activeColor.setAlphaF(activeColor.alphaF() * 0.4);
+    activeColor.setAlphaF(activeColor.alphaF() * opacityFactorActive);
 
     QColor inactiveColor = KColorUtils::mix(fontColorInactive, accentColorInactive, 0.75);
-    inactiveColor.setAlphaF(inactiveColor.alphaF() * 0.25);
+    inactiveColor.setAlphaF(inactiveColor.alphaF() * opacityFactorInactive);
 
     if (m_animation->state() == QAbstractAnimation::Running) {
         return KColorUtils::mix(inactiveColor, activeColor, m_opacity);
@@ -386,7 +392,7 @@ void Decoration::init()
                  QStringLiteral("org.kde.KGlobalSettings"),
                  QStringLiteral("notifyChange"),
                  this,
-                 SLOT(reconfigure()));
+                 SLOT(reconfigureWithForcedShadowUpdate()));
 
     // Implement tablet mode DBus connection
     dbus.connect(QStringLiteral("org.kde.KWin"),
@@ -430,7 +436,7 @@ void Decoration::init()
     connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
-    connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
+    connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigureWithForcedShadowUpdate);
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection);
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
@@ -459,8 +465,7 @@ void Decoration::init()
     connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
     connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
-    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::reconfigure);
-    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::forceUpdateShadow);
+    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::reconfigureWithForcedShadowUpdate);
 
     createButtons();
     updateShadow();
@@ -594,7 +599,7 @@ int Decoration::borderSize(bool bottom) const
 }
 
 //________________________________________________________________
-void Decoration::reconfigure()
+void Decoration::reconfigureMain(const bool forceUpdateShadow)
 {
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
@@ -650,7 +655,10 @@ void Decoration::reconfigure()
     updateBlur();
 
     // shadow
-    updateShadow();
+    if (forceUpdateShadow)
+        this->forceUpdateShadow();
+    else
+        updateShadow();
 }
 
 //________________________________________________________________
@@ -1379,13 +1387,15 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
     painter.drawPath(roundedRectMask);
 
     // Draw Thin window outline
-    if (m_internalSettings->thinWindowOutlineStyle() != (InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) || isThinWindowOutlineOverride) {
+    if ((m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) || isThinWindowOutlineOverride) {
         // get the thin window outline's colour
         QColor thinWindowOutlineColor;
         if (m_thinWindowOutlineOverride.isValid()) {
             thinWindowOutlineColor = overriddenOutlineColorAnimateIn();
-        } else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrastTitleBarText)
-            thinWindowOutlineColor = withOpacity(fontColor(), 0.25);
+        } else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrast)
+            thinWindowOutlineColor = withOpacity(fontColor(),
+                                                 c->isActive() ? m_internalSettings->windowOutlineContrastOpacityActive()
+                                                               : m_internalSettings->windowOutlineContrastOpacityInactive());
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor)
             thinWindowOutlineColor = accentedWindowOutlineColor();
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
@@ -1395,7 +1405,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
             thinWindowOutlineColor = fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
         else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineShadowColor)
-            thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), 0.2 * strength);
+            thinWindowOutlineColor = withOpacity(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * strength);
         else // WindowOutlineNone
             thinWindowOutlineColor = QColor();
 

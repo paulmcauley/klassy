@@ -155,7 +155,7 @@
         <choices>
             <choice name="WindowOutlineNone" />
             <choice name="WindowOutlineShadowColor" />
-            <choice name="WindowOutlineContrastTitleBarText" />
+            <choice name="WindowOutlineContrast" />
             <choice name="WindowOutlineAccentColor" />
             <choice name="WindowOutlineAccentWithContrast" />
             <choice name="WindowOutlineCustomColor" />
@@ -172,6 +172,72 @@
        <default>1.75</default>
        <min>1</min>
        <max>10</max>
+    </entry>
+    
+    <entry name="WindowOutlineShadowColorOpacity" type = "Double">
+       <default>0.2</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineContrastOpacityActive" type = "Double">
+       <default>0.25</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineContrastOpacityInactive" type = "Double">
+       <default>0.25</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineAccentColorOpacityActive" type = "Double">
+       <default>0.87</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineAccentColorOpacityInactive" type = "Double">
+       <default>0.4</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineAccentWithContrastOpacityActive" type = "Double">
+       <default>0.4</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineAccentWithContrastOpacityInactive" type = "Double">
+       <default>0.25</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineCustomColorOpacityActive" type = "Double">
+       <default>0.87</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineCustomColorOpacityInactive" type = "Double">
+       <default>0.3</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineCustomWithContrastOpacityActive" type = "Double">
+       <default>0.4</default>
+       <min>0</min>
+       <max>1</max>
+    </entry>
+    
+    <entry name="WindowOutlineCustomWithContrastOpacityInactive" type = "Double">
+       <default>0.25</default>
+       <min>0</min>
+       <max>1</max>
     </entry>
     
     <entry name="ColorizeThinWindowOutlineWithButton" type = "Bool">

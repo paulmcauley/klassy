@@ -152,7 +152,14 @@ public Q_SLOTS:
     void init() override;
 
 private Q_SLOTS:
-    void reconfigure();
+    void reconfigure()
+    {
+        reconfigureMain(false);
+    }
+    void reconfigureWithForcedShadowUpdate()
+    {
+        reconfigureMain(true);
+    }
     void recalculateBorders();
     void updateOpaque();
     void updateBlur();
@@ -171,6 +178,7 @@ private:
     //* return the rect in which caption will be drawn
     QPair<QRect, Qt::Alignment> captionRect() const;
 
+    void reconfigureMain(const bool forceUpdateShadow = false);
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);

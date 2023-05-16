@@ -24,6 +24,7 @@ set(breezedecoration_config_SRCS
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
     config/buttonsizing.cpp
+    config/windowoutlineopacity.cpp
 )
 
 ki18n_wrap_ui(breezedecoration_config_SRCS
@@ -31,6 +32,7 @@ ki18n_wrap_ui(breezedecoration_config_SRCS
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
    config/ui/buttonsizing.ui
+   config/ui/windowoutlineopacity.ui
 )
 
 qt_add_resources(breezedecoration_config_SRCS config/ui/klassydecoration_config.qrc)
