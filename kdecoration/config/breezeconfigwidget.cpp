@@ -75,6 +75,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 
     m_buttonSizingDialog = new ButtonSizing(this);
+    m_windowOutlineOpacityDialog = new WindowOutlineOpacity(this);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
@@ -101,6 +102,13 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::integratedRoundedRectangleSizingButtonClicked);
 
     connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
+
+    connect(m_ui.windowOutlineShadowColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineShadowColorOpacityButtonClicked);
+    connect(m_ui.windowOutlineContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineContrastOpacityButtonClicked);
+    connect(m_ui.windowOutlineAccentColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineAccentColorOpacityButtonClicked);
+    connect(m_ui.windowOutlineAccentWithContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineAccentWithContrastOpacityButtonClicked);
+    connect(m_ui.windowOutlineCustomColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineCustomColorOpacityButtonClicked);
+    connect(m_ui.windowOutlineCustomWithContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineCustomWithContrastOpacityButtonClicked);
 
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
 
@@ -194,6 +202,7 @@ void ConfigWidget::load()
     m_internalSettings->load();
 
     m_buttonSizingDialog->load();
+    m_windowOutlineOpacityDialog->load();
 
     // assign to ui
     m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
@@ -329,6 +338,7 @@ void ConfigWidget::save()
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
     m_buttonSizingDialog->save(false);
+    m_windowOutlineOpacityDialog->save(false);
     // save configuration
     m_internalSettings->save();
 
@@ -379,7 +389,9 @@ void ConfigWidget::defaults()
     m_ui.titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
     m_ui.cornerRadius->setValue(m_internalSettings->cornerRadius());
     m_ui.activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
+    m_ui.activeTitlebarOpacity_2->setValue(m_ui.activeTitlebarOpacity->value());
     m_ui.inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
+    m_ui.inactiveTitlebarOpacity_2->setValue(m_ui.inactiveTitlebarOpacity->value());
     setEnabledTransparentTitlebarOptions();
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.redAlwaysShownClose->setChecked(m_internalSettings->redAlwaysShownClose());
@@ -407,6 +419,7 @@ void ConfigWidget::defaults()
 
     // set defaults in dialogs
     m_buttonSizingDialog->defaults();
+    m_windowOutlineOpacityDialog->defaults();
 
     // load default exceptions and refresh (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
@@ -521,6 +534,8 @@ void ConfigWidget::updateChanged()
 
     // dialogs
     else if (m_buttonSizingDialog->m_changed)
+        modified = true;
+    else if (m_windowOutlineOpacityDialog->m_changed)
         modified = true;
 
     // exceptions
@@ -650,6 +665,7 @@ void ConfigWidget::dialogChanged(bool changed)
     setChanged(changed);
 }
 
+// these 3 functions would be better rewritten with a stacked widget (like for windowOutlineButtonClicked) for simplicity
 void ConfigWidget::integratedRoundedRectangleSizingButtonClicked()
 {
     m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 400);
@@ -689,7 +705,8 @@ void ConfigWidget::integratedRoundedRectangleSizingButtonClicked()
     m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
     m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-    m_buttonSizingDialog->load();
+    if (!m_buttonSizingDialog->m_loaded)
+        m_buttonSizingDialog->load();
     m_buttonSizingDialog->exec();
 }
 
@@ -732,7 +749,8 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
     m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
     m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-    m_buttonSizingDialog->load();
+    if (!m_buttonSizingDialog->m_loaded)
+        m_buttonSizingDialog->load();
     m_buttonSizingDialog->exec();
 }
 
@@ -775,7 +793,17 @@ void ConfigWidget::buttonSizingButtonClicked()
     m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    m_buttonSizingDialog->load();
+    if (!m_buttonSizingDialog->m_loaded)
+        m_buttonSizingDialog->load();
     m_buttonSizingDialog->exec();
+}
+
+void ConfigWidget::windowOutlineButtonClicked(int index)
+{
+    m_windowOutlineOpacityDialog->setWindowTitle(i18n("Window Outline Opacity - Klassy Settings"));
+    m_windowOutlineOpacityDialog->m_ui->windowOutlineOpacityDialogStackedWidget->setCurrentIndex(index);
+    if (!m_windowOutlineOpacityDialog->m_loaded)
+        m_windowOutlineOpacityDialog->load();
+    m_windowOutlineOpacityDialog->exec();
 }
 }

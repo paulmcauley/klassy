@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>645</height>
+    <height>652</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -2014,225 +2014,6 @@ padding:</string>
        <string>&amp;Window</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="8" column="0">
-        <spacer name="verticalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>10</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="0">
-        <spacer name="verticalSpacer_7">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>5</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <widget class="QGroupBox" name="Corners">
-         <property name="title">
-          <string>Corners</string>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_15">
-          <item>
-           <layout class="QFormLayout" name="formLayout_11">
-            <item row="0" column="0">
-             <widget class="QLabel" name="cornerRadiusLabel">
-              <property name="text">
-               <string>Corner radius:</string>
-              </property>
-              <property name="buddy">
-               <cstring>cornerRadius</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="cornerRadius">
-              <property name="decimals">
-               <number>1</number>
-              </property>
-              <property name="maximum">
-               <double>12.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.100000000000000</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="5" column="0" colspan="2">
-        <widget class="QGroupBox" name="groupBox">
-         <property name="title">
-          <string>Thin window outline</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <property name="leftMargin">
-           <number>10</number>
-          </property>
-          <property name="topMargin">
-           <number>10</number>
-          </property>
-          <property name="rightMargin">
-           <number>10</number>
-          </property>
-          <property name="bottomMargin">
-           <number>10</number>
-          </property>
-          <item row="0" column="0">
-           <layout class="QFormLayout" name="formLayout_6">
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_23">
-              <property name="text">
-               <string>Style:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>thinWindowOutlineStyle</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="thinWindowOutlineStyle">
-              <item>
-               <property name="text">
-                <string>None</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Shadow colour</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Contrast</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Accent colour</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Contrast blended with accent colour</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Custom colour</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>Contrast blended with custom colour</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_30">
-              <property name="text">
-               <string>Thickness:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-              <property name="buddy">
-               <cstring>thinWindowOutlineThickness</cstring>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="thinWindowOutlineThickness">
-              <property name="minimum">
-               <double>1.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>10.000000000000000</double>
-              </property>
-              <property name="singleStep">
-               <double>0.050000000000000</double>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="1">
-           <widget class="QStackedWidget" name="customColorStackedWidget">
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <widget class="QWidget" name="blank_page"/>
-            <widget class="QWidget" name="custom_colour">
-             <layout class="QFormLayout" name="formLayout">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>Custom colour:</string>
-                </property>
-                <property name="buddy">
-                 <cstring>thinWindowOutlineCustomColor</cstring>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="KColorButton" name="thinWindowOutlineCustomColor"/>
-              </item>
-             </layout>
-            </widget>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="colorizeThinWindowOutlineWithButton">
-            <property name="text">
-             <string>Colourize with highlighted button's colour</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <spacer name="verticalSpacer">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>5</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
        <item row="7" column="2">
         <spacer name="horizontalSpacer_5">
          <property name="orientation">
@@ -2245,62 +2026,6 @@ padding:</string>
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="4" column="0">
-        <spacer name="verticalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::Fixed</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>5</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="3" column="0" colspan="2">
-        <widget class="QGroupBox" name="borders_groupBox">
-         <property name="title">
-          <string>Borders</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_4">
-          <property name="leftMargin">
-           <number>10</number>
-          </property>
-          <property name="topMargin">
-           <number>10</number>
-          </property>
-          <property name="rightMargin">
-           <number>10</number>
-          </property>
-          <property name="bottomMargin">
-           <number>10</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="useTitlebarColorForAllBorders">
-            <property name="text">
-             <string>Use titlebar colour for all window borders</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
-            <property name="toolTip">
-             <string>This setting will allow you to resize from window edges touching screen edges.
-
-Scrollbars and window close buttons will shift positions and will not touch screen edges.</string>
-            </property>
-            <property name="text">
-             <string>Draw border on maximized and tiled windows</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </item>
        <item row="7" column="0" colspan="2">
         <widget class="QGroupBox" name="groupBox_5">
@@ -2407,6 +2132,91 @@ Scrollbars and window close buttons will shift positions and will not touch scre
          </layout>
         </widget>
        </item>
+       <item row="3" column="0" colspan="2">
+        <widget class="QGroupBox" name="borders_groupBox">
+         <property name="title">
+          <string>Borders</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>10</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="useTitlebarColorForAllBorders">
+            <property name="text">
+             <string>Use titlebar colour for all window borders</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
+            <property name="toolTip">
+             <string>This setting will allow you to resize from window edges touching screen edges.
+
+Scrollbars and window close buttons will shift positions and will not touch screen edges.</string>
+            </property>
+            <property name="text">
+             <string>Draw border on maximized and tiled windows</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <spacer name="verticalSpacer_6">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="8" column="0">
+        <spacer name="verticalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="6" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item row="0" column="0">
         <spacer name="verticalSpacer_11">
          <property name="orientation">
@@ -2422,6 +2232,468 @@ Scrollbars and window close buttons will shift positions and will not touch scre
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="2" column="0">
+        <spacer name="verticalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QGroupBox" name="Corners">
+         <property name="title">
+          <string>Corners</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_15">
+          <item>
+           <layout class="QFormLayout" name="formLayout_11">
+            <item row="0" column="0">
+             <widget class="QLabel" name="cornerRadiusLabel">
+              <property name="text">
+               <string>Corner radius:</string>
+              </property>
+              <property name="buddy">
+               <cstring>cornerRadius</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QDoubleSpinBox" name="cornerRadius">
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <double>12.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Thin window outline</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <property name="leftMargin">
+           <number>10</number>
+          </property>
+          <property name="topMargin">
+           <number>10</number>
+          </property>
+          <property name="rightMargin">
+           <number>10</number>
+          </property>
+          <property name="bottomMargin">
+           <number>10</number>
+          </property>
+          <item row="0" column="1">
+           <widget class="QStackedWidget" name="customColorStackedWidget">
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="blank_page"/>
+            <widget class="QWidget" name="custom_colour">
+             <layout class="QFormLayout" name="formLayout">
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_31">
+                <property name="text">
+                 <string>Custom colour:</string>
+                </property>
+                <property name="buddy">
+                 <cstring>thinWindowOutlineCustomColor</cstring>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="KColorButton" name="thinWindowOutlineCustomColor"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <layout class="QFormLayout" name="formLayout_6">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_23">
+              <property name="text">
+               <string>Style:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>thinWindowOutlineStyle</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="thinWindowOutlineStyle">
+              <item>
+               <property name="text">
+                <string>None</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Shadow colour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Contrast</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Accent colour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Contrast blended with accent colour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Custom colour</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Contrast blended with custom colour</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_30">
+              <property name="text">
+               <string>Thickness:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>thinWindowOutlineThickness</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QDoubleSpinBox" name="thinWindowOutlineThickness">
+              <property name="minimum">
+               <double>1.000000000000000</double>
+              </property>
+              <property name="maximum">
+               <double>10.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.050000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QStackedWidget" name="windowOutlineOpacityStackedWidget">
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="windowOutlineNonePage"/>
+              <widget class="QWidget" name="windowOutlineShadowPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineShadowColorOpacity">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="windowOutlineContrastPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineContrastOpacity">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="windowOutlineAccentColorPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineAccentColorOpacity">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_14">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="windowOutlineAccentWithContrastPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineAccentWithContrastOpacity">
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_18">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="windowOutlineCustomColorPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineCustomColorOpacity">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_20">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>163</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="windowOutlineCustomWithContrastPage">
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="windowOutlineCustomWithContrastOpacity">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Opacity...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_22">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>163</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="colorizeThinWindowOutlineWithButton">
+            <property name="text">
+             <string>Colourize with highlighted button's colour</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -2584,6 +2856,22 @@ Scrollbars and window close buttons will shift positions and will not touch scre
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
        <item>
+        <spacer name="verticalSpacer_15">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>10</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QLabel" name="defaultExceptionsLabel">
          <property name="text">
           <string>Default overrides (can be enabled/disabled only):</string>
@@ -2629,7 +2917,7 @@ Scrollbars and window close buttons will shift positions and will not touch scre
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>5</height>
+           <height>10</height>
           </size>
          </property>
         </spacer>
@@ -2721,12 +3009,20 @@ Scrollbars and window close buttons will shift positions and will not touch scre
   <tabstop>thinWindowOutlineStyle</tabstop>
   <tabstop>thinWindowOutlineCustomColor</tabstop>
   <tabstop>thinWindowOutlineThickness</tabstop>
+  <tabstop>windowOutlineShadowColorOpacity</tabstop>
+  <tabstop>windowOutlineContrastOpacity</tabstop>
+  <tabstop>windowOutlineAccentColorOpacity</tabstop>
+  <tabstop>windowOutlineAccentWithContrastOpacity</tabstop>
+  <tabstop>windowOutlineCustomColorOpacity</tabstop>
+  <tabstop>windowOutlineCustomWithContrastOpacity</tabstop>
   <tabstop>colorizeThinWindowOutlineWithButton</tabstop>
   <tabstop>shadowSize</tabstop>
   <tabstop>shadowStrength</tabstop>
   <tabstop>shadowColor</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>
@@ -2739,12 +3035,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>448</x>
-     <y>460</y>
+     <x>436</x>
+     <y>464</y>
     </hint>
     <hint type="destinationlabel">
-     <x>760</x>
-     <y>530</y>
+     <x>721</x>
+     <y>460</y>
     </hint>
    </hints>
   </connection>
@@ -2755,12 +3051,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>453</x>
-     <y>109</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>453</x>
-     <y>371</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -2771,12 +3067,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>453</x>
-     <y>371</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>453</x>
-     <y>109</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -2787,12 +3083,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>113</x>
-     <y>246</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>774</x>
-     <y>246</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -2803,12 +3099,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>774</x>
-     <y>246</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>106</x>
-     <y>231</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -2819,12 +3115,12 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>296</x>
-     <y>221</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>485</x>
-     <y>222</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
    </hints>
   </connection>
@@ -2835,12 +3131,28 @@ Scrollbars and window close buttons will shift positions and will not touch scre
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>498</x>
-     <y>234</y>
+     <x>115</x>
+     <y>74</y>
     </hint>
     <hint type="destinationlabel">
-     <x>291</x>
-     <y>235</y>
+     <x>115</x>
+     <y>74</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>thinWindowOutlineStyle</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>windowOutlineOpacityStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>197</x>
+     <y>329</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>405</y>
     </hint>
    </hints>
   </connection>

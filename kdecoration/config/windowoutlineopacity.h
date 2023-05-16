@@ -1,32 +1,32 @@
-#ifndef BUTTONSIZING_H
-#define BUTTONSIZING_H
+#ifndef WINDOWOUTLINEOPACITY_H
+#define WINDOWOUTLINEOPACITY_H
 
 //////////////////////////////////////////////////////////////////////////////
-// buttonsizing.h
+// windowoutlineopacity.h
 // -------------------
 //
-// SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+// SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breeze.h"
 #include "breezesettings.h"
-#include "ui_buttonsizing.h"
+#include "ui_windowoutlineopacity.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class ButtonSizing : public QDialog
+class WindowOutlineOpacity : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit ButtonSizing(QWidget *parent = nullptr);
-    ~ButtonSizing();
+    explicit WindowOutlineOpacity(QWidget *parent = nullptr);
+    ~WindowOutlineOpacity();
 
     void load();
     void save(const bool reloadKwinConfig = true);
@@ -35,12 +35,6 @@ public:
 private slots:
     void accept() override;
     void updateChanged();
-    void fullHeightButtonWidthMarginLeftChanged();
-    void fullHeightButtonWidthMarginRightChanged();
-    void buttonSpacingLeftChanged();
-    void buttonSpacingRightChanged();
-    void fullHeightButtonSpacingLeftChanged();
-    void fullHeightButtonSpacingRightChanged();
     void saveAndReloadKWinConfig()
     {
         save(true);
@@ -53,7 +47,7 @@ signals:
 private:
     void setChanged(bool value);
 
-    Ui_ButtonSizing m_ui;
+    Ui_WindowOutlineOpacity *m_ui;
 
     InternalSettingsPtr m_internalSettings;
 
@@ -64,10 +58,10 @@ private:
     bool m_defaultsPressed = false;
 
     bool m_loading = false;
-    bool m_loaded;
+    bool m_loaded = false;
     bool m_processingDefaults = false;
 };
 
 }
 
-#endif // BUTTONSIZING_H
+#endif // WINDOWOUTLINEOPACITY_H

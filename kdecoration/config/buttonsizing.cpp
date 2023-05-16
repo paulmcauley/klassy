@@ -73,6 +73,7 @@ void ButtonSizing::load()
     setChanged(false);
 
     m_loading = false;
+    m_loaded = true;
 }
 
 void ButtonSizing::save(const bool reloadKwinConfig)

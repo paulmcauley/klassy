@@ -14,6 +14,7 @@
 #include "breezesettings.h"
 #include "buttonsizing.h"
 #include "ui_breezeconfigurationui.h"
+#include "windowoutlineopacity.h"
 
 #include <KCModule>
 #include <KSharedConfig>
@@ -66,6 +67,31 @@ protected Q_SLOTS:
     void integratedRoundedRectangleSizingButtonClicked();
     void fullHeightRectangleSizingButtonClicked();
     void buttonSizingButtonClicked();
+    void windowOutlineShadowColorOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(0);
+    }
+    void windowOutlineContrastOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(1);
+    }
+    void windowOutlineAccentColorOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(2);
+    }
+    void windowOutlineAccentWithContrastOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(3);
+    }
+    void windowOutlineCustomColorOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(4);
+    }
+    void windowOutlineCustomWithContrastOpacityButtonClicked()
+    {
+        windowOutlineButtonClicked(5);
+    }
+
     void dialogChanged(bool changed);
 
 protected:
@@ -93,6 +119,9 @@ private:
 
     //* dialogs behind button
     ButtonSizing *m_buttonSizingDialog;
+    WindowOutlineOpacity *m_windowOutlineOpacityDialog;
+
+    void windowOutlineButtonClicked(int index);
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();
