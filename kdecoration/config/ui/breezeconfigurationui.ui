@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>652</height>
+    <height>680</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -2282,6 +2282,13 @@ Scrollbars and window close buttons will shift positions and will not touch scre
             </item>
            </layout>
           </item>
+          <item>
+           <widget class="QCheckBox" name="roundBottomCornersWhenNoBorders">
+            <property name="text">
+             <string>Round bottom corners when no borders</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -2333,6 +2340,9 @@ Scrollbars and window close buttons will shift positions and will not touch scre
           </item>
           <item row="0" column="0">
            <layout class="QFormLayout" name="formLayout_6">
+            <property name="fieldGrowthPolicy">
+             <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+            </property>
             <item row="0" column="0">
              <widget class="QLabel" name="label_23">
               <property name="text">

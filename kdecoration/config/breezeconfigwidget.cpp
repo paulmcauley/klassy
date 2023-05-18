@@ -142,6 +142,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.useTitlebarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
+    connect(m_ui.roundBottomCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.opaqueMaximizedTitlebars, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.blurTransparentTitlebars, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.applyOpacityToHeader, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
@@ -246,6 +247,7 @@ void ConfigWidget::load()
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.useTitlebarColorForAllBorders->setChecked(m_internalSettings->useTitlebarColorForAllBorders());
+    m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
     m_ui.opaqueMaximizedTitlebars->setChecked(m_internalSettings->opaqueMaximizedTitlebars());
     m_ui.blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
     m_ui.applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
@@ -321,6 +323,7 @@ void ConfigWidget::save()
     m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
     m_internalSettings->setAnimationsSpeedRelativeSystem(m_ui.animationsSpeedRelativeSystem->value());
     m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
+    m_internalSettings->setRoundBottomCornersWhenNoBorders(m_ui.roundBottomCornersWhenNoBorders->isChecked());
     m_internalSettings->setOpaqueMaximizedTitlebars(m_ui.opaqueMaximizedTitlebars->isChecked());
     m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
     m_internalSettings->setApplyOpacityToHeader(m_ui.applyOpacityToHeader->isChecked());
@@ -401,6 +404,7 @@ void ConfigWidget::defaults()
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.useTitlebarColorForAllBorders->setChecked(m_internalSettings->useTitlebarColorForAllBorders());
+    m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
     m_ui.opaqueMaximizedTitlebars->setChecked(m_internalSettings->opaqueMaximizedTitlebars());
     m_ui.blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
     m_ui.applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
@@ -452,6 +456,8 @@ void ConfigWidget::updateChanged()
     if (m_ui.drawTitleBarSeparator->isChecked() != m_internalSettings->drawTitleBarSeparator())
         modified = true;
     else if (m_ui.useTitlebarColorForAllBorders->isChecked() != m_internalSettings->useTitlebarColorForAllBorders())
+        modified = true;
+    else if (m_ui.roundBottomCornersWhenNoBorders->isChecked() != m_internalSettings->roundBottomCornersWhenNoBorders())
         modified = true;
     else if (m_ui.opaqueMaximizedTitlebars->isChecked() != m_internalSettings->opaqueMaximizedTitlebars())
         modified = true;

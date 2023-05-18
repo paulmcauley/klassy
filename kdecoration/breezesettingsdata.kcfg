@@ -409,6 +409,10 @@
        <max>12</max>
     </entry>
     
+   <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
+        <default>false</default>
+    </entry> 
+    
     <!-- bold button icons -->
     <entry name="BoldButtonIcons" type="Enum">
       <choices>
