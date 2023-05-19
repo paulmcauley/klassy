@@ -190,7 +190,7 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
         activeTitleBarColor.setAlpha(255);
 
     // do not animate titlebar if there is a tools area/header area as it causes glitches
-    if (!m_toolsAreaWillBeDrawn && m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
+    if (!m_toolsAreaWillBeDrawn && (m_animation->state() == QAbstractAnimation::Running) && !returnNonAnimatedColor) {
         return KColorUtils::mix(inactiveTitlebarColor, activeTitleBarColor, m_opacity);
     } else
         return c->isActive() ? activeTitleBarColor : inactiveTitlebarColor;
@@ -611,10 +611,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     const KConfigGroup cgKScreen(config, QStringLiteral("KScreen"));
     m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
 
-    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() ==
-    // KDecoration2::BorderSize::NoSides ) );
-    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor);
-
     setScaledCornerRadius();
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
@@ -631,6 +627,10 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     const KConfigGroup cg(config, QStringLiteral("KDE"));
 
     m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(config, KColorScheme::Header);
+
+    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() ==
+    // KDecoration2::BorderSize::NoSides ) );
+    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor);
 
     // animation
     if (m_internalSettings->animationsEnabled()) {
