@@ -156,7 +156,7 @@ private Q_SLOTS:
     {
         reconfigureMain(false);
     }
-    void reconfigureWithForcedShadowUpdate()
+    void reconfigureWithNoShadowUpdate()
     {
         reconfigureMain(true);
     }
@@ -178,12 +178,12 @@ private:
     //* return the rect in which caption will be drawn
     QPair<QRect, Qt::Alignment> captionRect() const;
 
-    void reconfigureMain(const bool forceUpdateShadow = false);
+    void reconfigureMain(const bool noUpdateShadow = false);
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
     void updateShadow(const bool force = false, const bool noCache = false, const bool isThinWindowOutlineOverride = false);
-    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const float strengthScale, const bool isThinWindowOutlineOverride = false);
+    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
     //*@name border size
@@ -206,6 +206,12 @@ private:
 
     //* override thin window outline colour from button colour animation update
     void updateOverrideOutlineFromButtonAnimationState();
+
+    //* sets m_shadowStrength
+    void setShadowStrength(const float strengthScale);
+
+    //* calculates and sets m_thinWindowOutline
+    void setThinWindowOutlineColor();
 
     InternalSettingsPtr m_internalSettings;
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
@@ -264,6 +270,11 @@ private:
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;
 
+    //*shadowStrength, qreal between 0 and 1 (cf internalSettings value between 0 and 255)
+    qreal m_shadowStrength = 1.0;
+
+    //*the actual thin window outline colour to output
+    QColor m_thinWindowOutline = QColor();
     //*colour to override thin window outline with, set from decoration button
     QColor m_thinWindowOutlineOverride = QColor();
     //*buffered existing thin window outline colours in case the above override colour is set (needed for animations)
