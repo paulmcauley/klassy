@@ -134,6 +134,7 @@ static QColor g_shadowColor = Qt::black;
 static qreal g_cornerRadius = 3;
 static qreal g_systemScaleFactor = 1;
 static bool g_hasNoBorders = true;
+static bool g_roundBottomCornersWhenNoBorders = false;
 static int g_thinWindowOutlineStyle = 0;
 static QColor g_thinWindowOutlineCustomColor = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
@@ -1286,6 +1287,7 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
     if (force || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
         || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
         || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()
+        || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
         || g_thinWindowOutlineStyle != m_internalSettings->thinWindowOutlineStyle()
         || g_thinWindowOutlineCustomColor != m_internalSettings->thinWindowOutlineCustomColor()
         || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness()) {
@@ -1298,6 +1300,7 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
             g_cornerRadius = m_scaledCornerRadius;
             g_systemScaleFactor = m_systemScaleFactor;
             g_hasNoBorders = hasNoBorders();
+            g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
             g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
             g_thinWindowOutlineCustomColor = m_internalSettings->thinWindowOutlineCustomColor();
             g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
