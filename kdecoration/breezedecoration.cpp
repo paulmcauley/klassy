@@ -995,35 +995,26 @@ void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
         m_titleBarPath->clear(); // clear the path for subsequent calls to this function
         if (isMaximized() || !s->isAlphaChannelSupported()) {
             m_titleBarPath->addRect(m_titleRect);
-
         } else if (c->isShaded()) {
             m_titleBarPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
-
         } else {
-            QPainterPath clipRect;
-            clipRect.addRect(m_titleRect);
-
-            // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
-            m_titleBarPath->addRoundedRect(m_titleRect.adjusted(isLeftEdge() ? -m_scaledCornerRadius : 0,
-                                                                isTopEdge() ? -m_scaledCornerRadius : 0,
-                                                                isRightEdge() ? m_scaledCornerRadius : 0,
-                                                                m_scaledCornerRadius),
-                                           m_scaledCornerRadius,
-                                           m_scaledCornerRadius);
-
-            *m_titleBarPath = m_titleBarPath->intersected(clipRect);
+            *m_titleBarPath = constructRoundedTopRectangle(m_titleRect, m_scaledCornerRadius);
         }
     }
 
     // set windowPath
     m_windowPath->clear(); // clear the path for subsequent calls to this function
     if (!c->isShaded()) {
-        if (s->isAlphaChannelSupported() && !isMaximized())
-            m_windowPath->addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
-        else
+        if (s->isAlphaChannelSupported() && !isMaximized()) {
+            if (hasNoBorders()) { // round at top, square at bottom
+                *m_windowPath = constructRoundedTopRectangle(rect(), m_scaledCornerRadius);
+            } else {
+                m_windowPath->addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
+            }
+        } else // maximized / no alpha
             m_windowPath->addRect(rect());
 
-    } else {
+    } else { // shaded
         *m_windowPath = *m_titleBarPath;
     }
 }
@@ -1371,20 +1362,12 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
     painter.setBrush(Qt::black);
     painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
 
-    QRectF innerRectPotentiallyTaller = innerRect;
-
-    QPainterPath innerRectPath;
-    innerRectPath.addRect(innerRect);
-
-    // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
-    if (hasNoBorders() && !c->isShaded())
-        innerRectPotentiallyTaller.adjust(0, 0, 0, m_scaledCornerRadius);
-
     QPainterPath roundedRectMask;
-    roundedRectMask.addRoundedRect(innerRectPotentiallyTaller, m_scaledCornerRadius + 0.5, m_scaledCornerRadius + 0.5);
-
-    if (hasNoBorders() && !c->isShaded())
-        roundedRectMask = roundedRectMask.intersected(innerRectPath);
+    if (hasNoBorders() && !c->isShaded()) {
+        roundedRectMask = constructRoundedTopRectangle(innerRect, m_scaledCornerRadius + 0.5);
+    } else {
+        roundedRectMask.addRoundedRect(innerRect, m_scaledCornerRadius + 0.5, m_scaledCornerRadius + 0.5);
+    }
 
     painter.drawPath(roundedRectMask);
 
@@ -1419,21 +1402,13 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
                                    -outlineAdjustment,
                                    outlineAdjustment,
                                    outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
-            QPainterPath outlineRectPath;
-            outlineRectPath.addRect(outlineRect);
-
-            QRectF outlineRectPotentiallyTaller = outlineRect;
-
-            // if we have no borders we don't have rounded bottom corners, so make a taller rounded rectangle and clip off its bottom
-            if (hasNoBorders() && !c->isShaded())
-                outlineRectPotentiallyTaller = outlineRect.adjusted(0, 0, 0, m_scaledCornerRadius);
 
             p.setWidthF(outlinePenWidth);
             painter.setPen(p);
             painter.setBrush(Qt::NoBrush);
             painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
-            QPainterPath roundedRectOutline;
+            QPainterPath outlinePath;
             qreal cornerRadius;
 
             if (m_internalSettings->cornerRadius() < 0.2)
@@ -1441,12 +1416,13 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
             else
                 cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
 
-            roundedRectOutline.addRoundedRect(outlineRectPotentiallyTaller, cornerRadius, cornerRadius);
+            if (hasNoBorders() && !c->isShaded()) {
+                outlinePath = constructRoundedTopRectangle(outlineRect, cornerRadius);
+            } else {
+                outlinePath.addRoundedRect(outlineRect, cornerRadius, cornerRadius);
+            }
 
-            if (hasNoBorders() && !c->isShaded())
-                roundedRectOutline = roundedRectOutline.intersected(outlineRectPath);
-
-            painter.drawPath(roundedRectOutline);
+            painter.drawPath(outlinePath);
         }
     }
     painter.end();
@@ -1535,6 +1511,34 @@ void Decoration::setThinWindowOutlineColor()
         c->isActive() ? m_originalThinWindowOutlineActivePreOverride = m_thinWindowOutline
                       : m_originalThinWindowOutlineInactivePreOverride = m_thinWindowOutline;
     }
+}
+
+QPainterPath Decoration::constructRoundedTopRectangle(const QRectF &rect, const qreal &cornerRadius)
+{
+    QPainterPath path;
+
+    if (cornerRadius > 0) {
+        qreal cornerSize = cornerRadius * 2;
+        QRectF cornerRect(rect.left(), rect.top(), cornerSize, cornerSize);
+
+        // construct rounded top corners, starting at top-left
+        path.arcMoveTo(cornerRect, 180);
+        path.arcTo(cornerRect, 180, -90);
+        cornerRect.moveTopRight(rect.topRight());
+        path.arcTo(cornerRect, 90, -90);
+
+        // construct straight bottom corners
+        path.lineTo(rect.bottomRight());
+        path.lineTo(rect.bottomLeft());
+
+        // close path
+        path.closeSubpath();
+
+    } else { // 0 cornerRadius
+        path.addRect(rect);
+    }
+
+    return path;
 }
 
 void Decoration::setScaledTitleBarTopBottomMargins()
