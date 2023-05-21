@@ -100,4 +100,6 @@ target_link_libraries(klassydecoration
 
 install(TARGETS klassydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 
-add_subdirectory(config)
+if (TARGET "KF${QT_MAJOR_VERSION}::KCMUtils")
+    add_subdirectory(config)
+endif()

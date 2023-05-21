@@ -35,7 +35,12 @@ if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
     set(WITH_DECORATIONS OFF)
 endif()
 
-find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION} REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION})
+set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
+    TYPE REQUIRED
+    DESCRIPTION "Helps create configuration modules"
+    PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+)
 
 
 find_package(KDecoration2 REQUIRED)

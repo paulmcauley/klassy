@@ -121,4 +121,7 @@ install(TARGETS klassy DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
 install(FILES klassy.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
 
 ########### subdirectories ###############
-add_subdirectory(config)
+
+if (TARGET "KF${QT_MAJOR_VERSION}::KCMUtils")
+    add_subdirectory(config)
+endif()
