@@ -34,7 +34,6 @@ WindowOutlineOpacity::WindowOutlineOpacity(QWidget *parent)
     connect(m_ui->windowOutlineCustomWithContrastOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui->windowOutlineCustomWithContrastOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
 
-    connect(m_ui->windowOutlineShadowColorOpacity_2, SIGNAL(valueChanged(int)), SLOT(debugWindowOutlineShadowColorOpacity_2()));
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &WindowOutlineOpacity::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &WindowOutlineOpacity::load);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &WindowOutlineOpacity::saveAndReloadKWinConfig);
