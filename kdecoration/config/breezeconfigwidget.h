@@ -13,6 +13,7 @@
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
 #include "buttonsizing.h"
+#include "loadpreset.h"
 #include "ui_breezeconfigurationui.h"
 #include "windowoutlineopacity.h"
 
@@ -47,9 +48,11 @@ public:
 
     //* load configuration
     void load() override;
+    void loadMain(QString loadPresetName = QString());
 
     //* save configuration
     void save() override;
+    void saveMain(QString saveAsPresetName = QString());
 
 protected Q_SLOTS:
 
@@ -91,6 +94,7 @@ protected Q_SLOTS:
     {
         windowOutlineButtonClicked(5);
     }
+    void presetsButtonClicked();
 
     void dialogChanged(bool changed);
 
@@ -101,6 +105,8 @@ protected:
 private:
     //* ui
     Ui_BreezeConfigurationUI m_ui;
+
+    QPushButton *m_presetsButton;
 
     //* kconfiguration object
     KSharedConfig::Ptr m_configuration;
@@ -120,8 +126,11 @@ private:
     //* dialogs behind button
     ButtonSizing *m_buttonSizingDialog;
     WindowOutlineOpacity *m_windowOutlineOpacityDialog;
+    LoadPreset *m_loadPresetDialog;
 
     void windowOutlineButtonClicked(int index);
+    QString presetGroupName(QString str);
+    void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();

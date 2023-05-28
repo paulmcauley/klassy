@@ -25,12 +25,18 @@ class ButtonSizing : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ButtonSizing(QWidget *parent = nullptr);
+    explicit ButtonSizing(KSharedConfig::Ptr config, QWidget *parent = nullptr);
     ~ButtonSizing();
 
-    void load();
+    void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
     void defaults();
+
+public slots:
+    void load()
+    {
+        loadMain();
+    }
 
 private slots:
     void accept() override;
@@ -56,7 +62,7 @@ private:
     Ui_ButtonSizing m_ui;
 
     InternalSettingsPtr m_internalSettings;
-
+    KSharedConfig::Ptr m_configuration;
     //* changed state
     bool m_changed;
 

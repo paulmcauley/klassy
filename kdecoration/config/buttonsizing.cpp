@@ -8,14 +8,16 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "buttonsizing.h"
+#include "presetsmodel.h"
 #include <QDBusConnection>
 #include <QDBusMessage>
 
 namespace Breeze
 {
 
-ButtonSizing::ButtonSizing(QWidget *parent)
+ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, QWidget *parent)
     : QDialog(parent)
+    , m_configuration(config)
 {
     m_ui.setupUi(this);
 
@@ -50,13 +52,17 @@ ButtonSizing::~ButtonSizing()
 {
 }
 
-void ButtonSizing::load()
+void ButtonSizing::loadMain(const QString loadPreset)
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    m_internalSettings->load();
+    if (loadPreset.isEmpty()) { // normal cases
+        m_internalSettings->load();
+    } else { // loading preset
+        PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+    }
 
     m_ui.scaleBackgroundPercent->setValue(m_internalSettings->scaleBackgroundPercent());
     m_ui.fullHeightButtonWidthMarginLeft->setValue(m_internalSettings->fullHeightButtonWidthMarginLeft());
