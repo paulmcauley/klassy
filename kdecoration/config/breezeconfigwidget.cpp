@@ -3,13 +3,14 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-// SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+// SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfigwidget.h"
 #include "decorationexceptionlist.h"
+#include "presetsmodel.h"
 
 #include <KLocalizedString>
 
@@ -19,6 +20,7 @@
 #include <QDBusMessage>
 #include <QIcon>
 #include <QRegularExpression>
+#include <QStackedLayout>
 
 void initKlassydecorationConfigQrc()
 {
@@ -64,6 +66,15 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // configuration
     m_ui.setupUi(this);
 
+    // add the "Presets..." button
+    QVBoxLayout *presetsButtonVLayout = new QVBoxLayout();
+    presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
+    m_presetsButton = new QPushButton("Presets...");
+    presetsButtonVLayout->addWidget(m_presetsButton);
+    m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
+
+    connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
+
     // hide the push buttons for default exceptions
     QList<QPushButton *> defaultPushButtons = m_ui.defaultExceptions->findChildren<QPushButton *>();
     for (QPushButton *defaultPushButton : defaultPushButtons) {
@@ -74,8 +85,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
         defaultPushButton->hide();
     }
 
-    m_buttonSizingDialog = new ButtonSizing(this);
-    m_windowOutlineOpacityDialog = new WindowOutlineOpacity(this);
+    m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
+    m_windowOutlineOpacityDialog = new WindowOutlineOpacity(m_configuration, this);
+    m_loadPresetDialog = new LoadPreset(m_configuration, this);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
@@ -195,15 +207,25 @@ ConfigWidget::~ConfigWidget()
 //_________________________________________________________
 void ConfigWidget::load()
 {
+    loadMain();
+}
+
+void ConfigWidget::loadMain(QString loadPresetName)
+{
     m_loading = true;
     getTitlebarOpacityFromColorScheme();
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    m_internalSettings->load();
-
-    m_buttonSizingDialog->load();
-    m_windowOutlineOpacityDialog->load();
+    if (loadPresetName.isEmpty()) { // normal case
+        m_internalSettings->load();
+        m_buttonSizingDialog->load();
+        m_windowOutlineOpacityDialog->load();
+    } else {
+        PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName);
+        m_buttonSizingDialog->loadMain(loadPresetName);
+        m_windowOutlineOpacityDialog->loadMain(loadPresetName);
+    }
 
     // assign to ui
     m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
@@ -286,10 +308,17 @@ void ConfigWidget::load()
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
     m_loading = false;
+    if (!loadPresetName.isEmpty())
+        save();
 }
 
 //_________________________________________________________
 void ConfigWidget::save()
+{
+    saveMain();
+}
+
+void ConfigWidget::saveMain(QString saveAsPresetName)
 {
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
@@ -340,30 +369,42 @@ void ConfigWidget::save()
     m_internalSettings->setThinWindowOutlineThickness(m_ui.thinWindowOutlineThickness->value());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
-    m_buttonSizingDialog->save(false);
-    m_windowOutlineOpacityDialog->save(false);
-    // save configuration
-    m_internalSettings->save();
+    if (saveAsPresetName.isEmpty()) { // normal case
+        m_buttonSizingDialog->save(false);
+        m_windowOutlineOpacityDialog->save(false);
 
-    // get list of exceptions and write
-    InternalSettingsList exceptions(m_ui.exceptions->exceptions());
-    InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
-    DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
+        // save configuration
+        m_internalSettings->save();
+
+        // get list of exceptions and write
+        InternalSettingsList exceptions(m_ui.exceptions->exceptions());
+        InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
+        DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
+    } else { // set the preset
+        // delete the preset if one of that name already exists
+        PresetsModel::deletePreset(m_configuration.data(), saveAsPresetName);
+
+        // write the new internalSettings value as a new preset
+        PresetsModel::writePreset(m_internalSettings.data(), m_configuration.data(), saveAsPresetName);
+    }
 
     // sync configuration
     m_configuration->sync();
-    setChanged(false);
 
-    // needed to tell kwin to reload when running from external kcmshell
-    {
-        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-        QDBusConnection::sessionBus().send(message);
-    }
+    if (saveAsPresetName.isEmpty()) {
+        setChanged(false);
 
-    // needed for breeze style to reload shadows
-    {
-        QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
-        QDBusConnection::sessionBus().send(message);
+        // needed to tell kwin to reload when running from external kcmshell
+        {
+            QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+            QDBusConnection::sessionBus().send(message);
+        }
+
+        // needed for breeze style to reload shadows
+        {
+            QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
+            QDBusConnection::sessionBus().send(message);
+        }
     }
 }
 
@@ -811,5 +852,12 @@ void ConfigWidget::windowOutlineButtonClicked(int index)
     if (!m_windowOutlineOpacityDialog->m_loaded)
         m_windowOutlineOpacityDialog->load();
     m_windowOutlineOpacityDialog->exec();
+}
+
+void ConfigWidget::presetsButtonClicked()
+{
+    m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
+    m_loadPresetDialog->initPresetsList();
+    m_loadPresetDialog->exec();
 }
 }

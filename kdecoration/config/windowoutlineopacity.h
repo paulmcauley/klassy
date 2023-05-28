@@ -25,12 +25,18 @@ class WindowOutlineOpacity : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit WindowOutlineOpacity(QWidget *parent = nullptr);
+    explicit WindowOutlineOpacity(KSharedConfig::Ptr config, QWidget *parent = nullptr);
     ~WindowOutlineOpacity();
 
-    void load();
+    void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
     void defaults();
+
+public slots:
+    void load()
+    {
+        loadMain();
+    }
 
 private slots:
     void accept() override;
@@ -50,6 +56,7 @@ private:
     Ui_WindowOutlineOpacity *m_ui;
 
     InternalSettingsPtr m_internalSettings;
+    KSharedConfig::Ptr m_configuration;
 
     //* changed state
     bool m_changed;

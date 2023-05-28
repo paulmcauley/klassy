@@ -175,7 +175,7 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
     // write all items
     foreach (auto key, keys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
-        if (!item)
+        if (!item || item->isEqual(true)) // don't write true to file as it's already the default
             continue;
 
         if (!groupName.isEmpty())

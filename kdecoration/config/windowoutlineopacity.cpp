@@ -8,6 +8,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "windowoutlineopacity.h"
+#include "presetsmodel.h"
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QPushButton>
@@ -15,9 +16,10 @@
 namespace Breeze
 {
 
-WindowOutlineOpacity::WindowOutlineOpacity(QWidget *parent)
+WindowOutlineOpacity::WindowOutlineOpacity(KSharedConfig::Ptr config, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_WindowOutlineOpacity)
+    , m_configuration(config)
 {
     m_ui->setupUi(this);
 
@@ -45,13 +47,17 @@ WindowOutlineOpacity::~WindowOutlineOpacity()
     delete m_ui;
 }
 
-void WindowOutlineOpacity::load()
+void WindowOutlineOpacity::loadMain(const QString loadPreset)
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    m_internalSettings->load();
+    if (loadPreset.isEmpty()) { // normal cases
+        m_internalSettings->load();
+    } else { // loading preset
+        PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+    }
 
     m_ui->windowOutlineShadowColorOpacity->setValue(m_internalSettings->windowOutlineShadowColorOpacity() * 100);
     m_ui->windowOutlineShadowColorOpacity_2->setValue(m_ui->windowOutlineShadowColorOpacity->value());
