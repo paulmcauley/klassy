@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "addpreset.h"
 
 namespace Breeze

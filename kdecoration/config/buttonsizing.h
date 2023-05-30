@@ -1,14 +1,11 @@
 #ifndef BUTTONSIZING_H
 #define BUTTONSIZING_H
 
-//////////////////////////////////////////////////////////////////////////////
-// buttonsizing.h
-// -------------------
-//
-// SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
-//
-// SPDX-License-Identifier: MIT
-//////////////////////////////////////////////////////////////////////////////
+/*
+ * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include "breeze.h"
 #include "breezesettings.h"

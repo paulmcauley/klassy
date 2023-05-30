@@ -1,14 +1,11 @@
 #ifndef WINDOWOUTLINEOPACITY_H
 #define WINDOWOUTLINEOPACITY_H
 
-//////////////////////////////////////////////////////////////////////////////
-// windowoutlineopacity.h
-// -------------------
-//
-// SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
-//
-// SPDX-License-Identifier: MIT
-//////////////////////////////////////////////////////////////////////////////
+/*
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include "breeze.h"
 #include "breezesettings.h"
