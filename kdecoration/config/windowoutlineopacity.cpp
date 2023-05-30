@@ -1,11 +1,8 @@
-//////////////////////////////////////////////////////////////////////////////
-// windowoutlineopacity.cpp
-// -------------------
-//
-// SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
-//
-// SPDX-License-Identifier: MIT
-//////////////////////////////////////////////////////////////////////////////
+/*
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include "windowoutlineopacity.h"
 #include "presetsmodel.h"

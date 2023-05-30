@@ -1,11 +1,8 @@
-//////////////////////////////////////////////////////////////////////////////
-// buttonsizing.cpp
-// -------------------
-//
-// SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
-//
-// SPDX-License-Identifier: MIT
-//////////////////////////////////////////////////////////////////////////////
+/*
+ * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
 
 #include "buttonsizing.h"
 #include "presetsmodel.h"

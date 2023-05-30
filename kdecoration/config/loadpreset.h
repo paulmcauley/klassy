@@ -1,6 +1,12 @@
 #ifndef LOADPRESET_H
 #define LOADPRESET_H
 
+/*
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
 #include "breeze.h"
 #include "ui_loadpreset.h"
 #include <QDialog>
