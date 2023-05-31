@@ -485,9 +485,12 @@
       <default>true</default>
     </entry>
 
+    <!-- used with BorderSize -->
     <entry name="Mask" type = "Int">
       <default>0</default>
     </entry>
+    
+    <entry name="ExceptionPreset" type = "String"/>
 
   </group>
 

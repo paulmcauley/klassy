@@ -5,6 +5,8 @@
  */
 
 #include "presetsmodel.h"
+#include <KConfigGroup>
+#include <QRegularExpression>
 
 namespace Breeze
 {
@@ -19,20 +21,11 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
 {
     bool keyInBlacklist;
     QString groupName = presetGroupName(presetName);
-    // list of items to be written
-    QStringList blacklistKeys = {"Enabled",
-                                 "ExceptionProgramNamePattern",
-                                 "ExceptionWindowPropertyPattern",
-                                 "ExceptionWindowPropertyType",
-                                 "HideTitleBar",
-                                 "OpaqueTitleBar",
-                                 "PreventApplyOpacityToHeader",
-                                 "Mask",
-                                 "BorderSize"};
 
     foreach (auto item, skeleton->items()) {
         keyInBlacklist = false;
-        foreach (auto blacklistKey, blacklistKeys) {
+        // do not write a key in windecoExceptionKeys
+        foreach (auto blacklistKey, windecoExceptionKeys) {
             if (item->key() == blacklistKey) {
                 keyInBlacklist = true;
                 continue;
@@ -73,11 +66,25 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
 
 void PresetsModel::readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName)
 {
+    bool keyInBlacklist;
     QString groupName = presetGroupName(presetName);
 
+    if (groupName.isEmpty() || !config->hasGroup(groupName))
+        return;
+
     foreach (KConfigSkeletonItem *item, skeleton->items()) {
-        if (!groupName.isEmpty())
-            item->setGroup(groupName);
+        keyInBlacklist = false;
+        // do not read a key in windecoExceptionKeys
+        foreach (auto blacklistKey, windecoExceptionKeys) {
+            if (item->key() == blacklistKey) {
+                keyInBlacklist = true;
+                continue;
+            }
+        }
+
+        if (keyInBlacklist)
+            continue;
+        item->setGroup(groupName);
         item->readConfig(config);
     }
 }
@@ -90,4 +97,22 @@ void PresetsModel::deletePreset(KConfig *config, const QString &presetName)
         config->deleteGroup(groupName);
 }
 
+QStringList PresetsModel::readPresetsList(KConfig *config)
+{
+    QStringList presetsList;
+    QRegularExpression re("^Windeco Preset (.+)");
+    foreach (const QString group, config->groupList()) {
+        QRegularExpressionMatch match = re.match(group);
+        if (match.hasMatch()) {
+            QString presetName = match.captured(1);
+            presetsList.append(presetName);
+        }
+    }
+    return presetsList;
+}
+
+bool PresetsModel::isPresetPresent(KConfig *config, const QString &presetName)
+{
+    return readPresetsList(config).contains(presetName);
+}
 }

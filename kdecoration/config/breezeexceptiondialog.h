@@ -12,6 +12,7 @@
 #include "breeze.h"
 #include "ui_breezeexceptiondialog.h"
 
+#include <KSharedConfig>
 #include <QCheckBox>
 #include <QMap>
 
@@ -27,7 +28,7 @@ class ExceptionDialog : public QDialog
 
 public:
     //* constructor
-    explicit ExceptionDialog(QWidget *parent);
+    explicit ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent);
 
     //* destructor
     virtual ~ExceptionDialog()
@@ -85,6 +86,9 @@ private:
 
     //* internal exception
     InternalSettingsPtr m_exception;
+
+    //* kconfiguration object
+    KSharedConfig::Ptr m_configuration;
 
     //* detection dialog
     DetectDialog *m_detectDialog = nullptr;

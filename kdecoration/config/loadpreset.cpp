@@ -38,13 +38,9 @@ void LoadPreset::initPresetsList()
     m_ui->loadButton->setEnabled(false);
     m_ui->removeButton->setEnabled(false);
     m_ui->presetsList->clear();
-    QRegularExpression re("^Windeco Preset (.+)");
-    foreach (auto group, m_configuration->groupList()) {
-        QRegularExpressionMatch match = re.match(group);
-        if (match.hasMatch()) {
-            QString presetName = match.captured(1);
-            m_ui->presetsList->addItem(presetName);
-        }
+    QStringList presets(PresetsModel::readPresetsList(m_configuration.data()));
+    foreach (const QString presetName, presets) {
+        m_ui->presetsList->addItem(presetName);
     }
 }
 

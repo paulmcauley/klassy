@@ -1,12 +1,12 @@
+#ifndef breeze_h
+#define breeze_h
+
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
-
-#ifndef breeze_h
-#define breeze_h
 
 #define KLASSY_DECORATION_DEBUG_MODE 0
 #define KLASSY_STYLE_DEBUG_MODE 0
@@ -50,6 +50,20 @@ struct BREEZECOMMON_EXPORT PenWidth {
 enum BREEZECOMMON_EXPORT ExceptionMask {
     None = 0,
     BorderSize = 1 << 4,
+};
+
+// list of keys used for window decoration exceptions
+static QStringList windecoExceptionKeys = {
+    "Enabled",
+    "ExceptionProgramNamePattern",
+    "ExceptionWindowPropertyPattern",
+    "ExceptionWindowPropertyType",
+    "HideTitleBar",
+    "OpaqueTitleBar",
+    "PreventApplyOpacityToHeader",
+    "Mask",
+    "BorderSize",
+    "ExceptionPreset",
 };
 
 // KDECORATION-------------------------------------------------------------

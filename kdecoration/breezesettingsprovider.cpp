@@ -5,7 +5,7 @@
  */
 
 #include "breezesettingsprovider.h"
-
+#include "config/presetsmodel.h"
 #include "decorationexceptionlist.h"
 
 #include <QRegularExpression>
@@ -95,6 +95,10 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
         // check matching
         QRegularExpression rx(internalSettings->exceptionWindowPropertyPattern());
         if (rx.match(windowPropertyValue).hasMatch()) {
+            // load preset if set
+            if (!internalSettings->exceptionPreset().isEmpty()) {
+                PresetsModel::readPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+            }
             return internalSettings;
         }
     }
