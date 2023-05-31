@@ -7875,6 +7875,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                 }
                 break;
             }
+            [[fallthrough]]; // fallthrough to default if not withTrafficLights
         case ButtonMinimize:
             if (withTrafficLights) {
                 if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
@@ -7886,6 +7887,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                 }
                 break;
             }
+            [[fallthrough]]; // fallthrough to default if not withTrafficLights
         default:
             if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
                 offHoverBackground = g_decorationColors->buttonReducedOpacityBackground;
