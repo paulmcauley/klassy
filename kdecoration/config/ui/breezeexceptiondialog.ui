@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>497</width>
-    <height>521</height>
+    <height>524</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -205,7 +205,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
-      <string>Options affecting the Application Style</string>
+      <string>Application Style Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
@@ -227,7 +227,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QCheckBox" name="preventApplyOpacityToHeader">
         <property name="text">
-         <string>Prevent titlebar opacity setting from affecting entire &amp;header</string>
+         <string>Opaque &amp;header</string>
         </property>
        </widget>
       </item>

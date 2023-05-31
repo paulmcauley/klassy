@@ -8,6 +8,7 @@
  */
 
 #include "breeze.h"
+#include "breezecommon_export.h"
 
 namespace Breeze
 {
@@ -15,7 +16,7 @@ namespace Breeze
 /**
  * @brief Functions to read and write Presets from/to config file within Klassy
  */
-class PresetsModel
+class BREEZECOMMON_EXPORT PresetsModel
 {
 public:
     static QString presetGroupName(const QString str);

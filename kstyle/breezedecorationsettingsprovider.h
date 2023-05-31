@@ -33,8 +33,8 @@ public:
     //* singleton
     static SettingsProvider *self();
 
-    //* internal settings for given QMainWindow
-    InternalSettingsPtr internalSettings(const QMainWindow *mw = nullptr) const;
+    //* decoration internal settings for qApp
+    InternalSettingsPtr internalSettings() const;
 
 public Q_SLOTS:
 

@@ -27,7 +27,6 @@ set(breezedecoration_config_SRCS
     config/windowoutlineopacity.cpp
     config/loadpreset.cpp
     config/addpreset.cpp
-    config/presetsmodel.cpp
 )
 
 ki18n_wrap_ui(breezedecoration_config_SRCS

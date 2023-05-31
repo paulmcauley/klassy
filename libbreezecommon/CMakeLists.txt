@@ -8,6 +8,7 @@ set(breezecommon_LIB_SRCS
     breezeboxshadowrenderer.cpp
     colortools.cpp
     decorationexceptionlist.cpp
+    presetsmodel.cpp
     renderdecorationbuttonicon.cpp
     styleklassy.cpp
     stylekite.cpp
