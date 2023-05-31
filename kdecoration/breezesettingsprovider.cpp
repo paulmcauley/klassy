@@ -5,8 +5,8 @@
  */
 
 #include "breezesettingsprovider.h"
-#include "config/presetsmodel.h"
 #include "decorationexceptionlist.h"
+#include "presetsmodel.h"
 
 #include <QRegularExpression>
 #include <QTextStream>

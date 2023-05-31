@@ -6,8 +6,8 @@
  */
 
 #include "breezedecorationsettingsprovider.h"
-
 #include "decorationexceptionlist.h"
+#include "presetsmodel.h"
 
 #include <KWindowInfo>
 
@@ -60,11 +60,8 @@ void SettingsProvider::reconfigure()
 }
 
 //__________________________________________________________________
-InternalSettingsPtr SettingsProvider::internalSettings(const QMainWindow *mw) const
+InternalSettingsPtr SettingsProvider::internalSettings() const
 {
-    if (!mw)
-        return m_defaultSettings;
-
     foreach (auto internalSettings, m_exceptions) {
         // discard disabled exceptions
         if (!internalSettings->enabled())
@@ -77,11 +74,14 @@ InternalSettingsPtr SettingsProvider::internalSettings(const QMainWindow *mw) co
         // check matching
         QRegularExpression rx(internalSettings->exceptionProgramNamePattern());
         if (rx.match(qAppName()).hasMatch()) {
+            // load window decoration preset if set
+            if (!internalSettings->exceptionPreset().isEmpty()) {
+                PresetsModel::readPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+            }
             return internalSettings;
         }
     }
 
     return m_defaultSettings;
 }
-
 }
