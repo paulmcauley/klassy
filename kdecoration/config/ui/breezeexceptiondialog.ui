@@ -99,7 +99,21 @@
       <string>Window Decoration Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="1">
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="hideTitleBar">
+        <property name="text">
+         <string>Hide window titlebar</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="borderSizeCheckBox">
+        <property name="text">
+         <string>Border size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
        <widget class="QComboBox" name="borderSizeComboBox">
         <property name="enabled">
          <bool>false</bool>
@@ -151,24 +165,24 @@
         </item>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QCheckBox" name="hideTitleBar">
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="opaqueTitleBar">
         <property name="text">
-         <string>Hide window titlebar</string>
+         <string>&amp;Opaque titlebar</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0">
-       <widget class="QCheckBox" name="borderSizeCheckBox">
+       <widget class="QCheckBox" name="exceptionPresetCheckBox">
         <property name="text">
-         <string>Border size:</string>
+         <string>Preset:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="opaqueTitleBar">
-        <property name="text">
-         <string>&amp;Opaque titlebar</string>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="exceptionPresetComboBox">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -249,6 +263,8 @@
   <tabstop>detectDialogButton</tabstop>
   <tabstop>exceptionWindowPropertyEditor</tabstop>
   <tabstop>exceptionWindowPropertyType</tabstop>
+  <tabstop>exceptionPresetCheckBox</tabstop>
+  <tabstop>exceptionPresetComboBox</tabstop>
   <tabstop>borderSizeCheckBox</tabstop>
   <tabstop>borderSizeComboBox</tabstop>
   <tabstop>hideTitleBar</tabstop>
@@ -298,11 +314,27 @@
    <hints>
     <hint type="sourcelabel">
      <x>139</x>
-     <y>250</y>
+     <y>285</y>
     </hint>
     <hint type="destinationlabel">
      <x>482</x>
-     <y>255</y>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exceptionPresetCheckBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>exceptionPresetComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>78</x>
+     <y>240</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>312</x>
+     <y>246</y>
     </hint>
    </hints>
   </connection>

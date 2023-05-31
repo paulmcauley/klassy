@@ -86,7 +86,7 @@ void ExceptionListWidget::updateButtons()
 //_______________________________________________________
 void ExceptionListWidget::add()
 {
-    QPointer<ExceptionDialog> dialog = new ExceptionDialog(this);
+    QPointer<ExceptionDialog> dialog = new ExceptionDialog(m_configuration, this);
     dialog->setWindowTitle(i18n("New Exception - Klassy Settings"));
     InternalSettingsPtr exception(new InternalSettings());
 
@@ -134,7 +134,7 @@ void ExceptionListWidget::edit()
     InternalSettingsPtr exception(model().get(current));
 
     // create dialog
-    QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
+    QPointer<ExceptionDialog> dialog(new ExceptionDialog(m_configuration, this));
     dialog->setWindowTitle(i18n("Edit Exception - Klassy Settings"));
     dialog->setException(exception);
 
@@ -306,7 +306,7 @@ bool ExceptionListWidget::checkException(InternalSettingsPtr exception)
             QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Please provide an application name to match"));
         } else
             QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Regular Expression syntax is incorrect"));
-        QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
+        QPointer<ExceptionDialog> dialog(new ExceptionDialog(m_configuration, this));
         dialog->setException(exception);
         if (dialog->exec() == QDialog::Rejected) {
             delete dialog;

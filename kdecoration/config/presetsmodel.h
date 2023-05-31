@@ -23,6 +23,8 @@ public:
     static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, const QStringList &whiteListKeys);
     static void readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
     static void deletePreset(KConfig *config, const QString &presetName);
+    static QStringList readPresetsList(KConfig *config);
+    static bool isPresetPresent(KConfig *config, const QString &presetName);
 };
 
 }

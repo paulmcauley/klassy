@@ -15,7 +15,6 @@
 #include <KLocalizedString>
 
 #include <KColorScheme>
-#include <KConfigGroup>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QIcon>
@@ -65,6 +64,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
     // configuration
     m_ui.setupUi(this);
+
+    m_ui.defaultExceptions->setKConfig(m_configuration);
+    m_ui.exceptions->setKConfig(m_configuration);
 
     // add the "Presets..." button
     QVBoxLayout *presetsButtonVLayout = new QVBoxLayout();

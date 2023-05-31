@@ -11,6 +11,7 @@
 
 #include "breezeexceptionmodel.h"
 #include "ui_breezeexceptionlistwidget.h"
+#include <KSharedConfig>
 
 //* QDialog used to commit selected files
 namespace Breeze
@@ -30,6 +31,11 @@ public:
 
     //* get exceptions
     InternalSettingsList exceptions();
+
+    void setKConfig(KSharedConfig::Ptr config)
+    {
+        m_configuration = config;
+    }
 
     //* true if changed
     virtual bool isChanged() const
@@ -93,6 +99,8 @@ protected:
     }
 
 private:
+    KSharedConfig::Ptr m_configuration;
+
     //* model
     ExceptionModel m_model;
 

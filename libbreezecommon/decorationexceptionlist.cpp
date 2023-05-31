@@ -69,6 +69,8 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
     configuration->setExceptionWindowPropertyType(exception.exceptionWindowPropertyType());
     configuration->setExceptionProgramNamePattern(exception.exceptionProgramNamePattern());
     configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
+
+    configuration->setExceptionPreset(exception.exceptionPreset());
     configuration->setMask(exception.mask());
 
     // propagate all features found in mask to the output configuration
@@ -143,19 +145,8 @@ QString DecorationExceptionList::defaultExceptionGroupName(int index)
 //______________________________________________________________
 void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
-    // list of items to be written
-    QStringList keys = {"Enabled",
-                        "ExceptionProgramNamePattern",
-                        "ExceptionWindowPropertyPattern",
-                        "ExceptionWindowPropertyType",
-                        "HideTitleBar",
-                        "OpaqueTitleBar",
-                        "PreventApplyOpacityToHeader",
-                        "Mask",
-                        "BorderSize"};
-
-    // write all items
-    foreach (auto key, keys) {
+    // write all items in windecoExceptionKeys
+    foreach (auto key, windecoExceptionKeys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
         if (!item)
             continue;
