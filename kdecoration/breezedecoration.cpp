@@ -1273,7 +1273,7 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
     // if the decoration is painting, abandon setting the shadow.
     // Setting the shadow at the same time as paint() being executed causes a EGL_BAD_SURFACE error and a SEGFAULT from Plasma 5.26 onwards.
     if (m_painting) {
-        qWarning("Klassy: paint() occuring at same time as shadow creation for \"%s\" - abandonning setting shadow to prevent EGL_BAD_SURFACE.",
+        qWarning("Klassy: paint() occurring at same time as shadow creation for \"%s\" - abandoning setting shadow to prevent EGL_BAD_SURFACE.",
                  c->caption().toLatin1().data());
         return;
     }
