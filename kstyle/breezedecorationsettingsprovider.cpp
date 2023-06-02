@@ -17,40 +17,39 @@
 namespace Breeze
 {
 
-SettingsProvider *SettingsProvider::s_self = nullptr;
+DecorationSettingsProvider *DecorationSettingsProvider::s_self = nullptr;
 
 //__________________________________________________________________
-SettingsProvider::SettingsProvider()
+DecorationSettingsProvider::DecorationSettingsProvider()
     : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
 {
     reconfigure();
 }
 
 //__________________________________________________________________
-SettingsProvider::~SettingsProvider()
+DecorationSettingsProvider::~DecorationSettingsProvider()
 {
     s_self = nullptr;
 }
 
 //__________________________________________________________________
-SettingsProvider *SettingsProvider::self()
+DecorationSettingsProvider *DecorationSettingsProvider::self()
 {
     // TODO: this is not thread safe!
     if (!s_self) {
-        s_self = new SettingsProvider();
+        s_self = new DecorationSettingsProvider();
     }
 
     return s_self;
 }
 
 //__________________________________________________________________
-void SettingsProvider::reconfigure()
+void DecorationSettingsProvider::reconfigure()
 {
     if (!m_defaultSettings) {
         m_defaultSettings = InternalSettingsPtr(new InternalSettings());
         m_defaultSettings->setCurrentGroup(QStringLiteral("Windeco"));
     }
-
     m_defaultSettings->load();
 
     DecorationExceptionList exceptions;
@@ -60,9 +59,9 @@ void SettingsProvider::reconfigure()
 }
 
 //__________________________________________________________________
-InternalSettingsPtr SettingsProvider::internalSettings() const
+InternalSettingsPtr DecorationSettingsProvider::internalSettings() const
 {
-    foreach (auto internalSettings, m_exceptions) {
+    for (const auto &internalSettings : m_exceptions) {
         // discard disabled exceptions
         if (!internalSettings->enabled())
             continue;

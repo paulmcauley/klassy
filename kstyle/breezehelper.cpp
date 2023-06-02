@@ -58,7 +58,7 @@ Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
     : QObject(parent)
     , _config(std::move(config))
     , _kwinConfig(KSharedConfig::openConfig("kwinrc"))
-    , _decorationConfig(SettingsProvider::self()->internalSettings())
+    , _decorationConfig(DecorationSettingsProvider::self()->internalSettings())
 {
 #if KLASSY_STYLE_DEBUG_MODE
     setDebugOutput(KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
@@ -109,7 +109,7 @@ void Helper::loadConfig()
     _config->reparseConfiguration();
     _kwinConfig->reparseConfiguration();
     _cachedAutoValid = false;
-    _decorationConfig->load();
+    DecorationSettingsProvider::self()->reconfigure();
 
     KConfigGroup globalGroup(_config->group("WM"));
     _activeTitleBarColor = globalGroup.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));

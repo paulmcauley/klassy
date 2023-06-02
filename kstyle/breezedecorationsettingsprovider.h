@@ -1,7 +1,7 @@
 #ifndef breezedecorationsettingsprovider_h
 #define breezedecorationsettingsprovider_h
 /*
- * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -22,16 +22,16 @@
 namespace Breeze
 {
 
-class SettingsProvider : public QObject
+class DecorationSettingsProvider : public QObject
 {
     Q_OBJECT
 
 public:
     //* destructor
-    ~SettingsProvider();
+    ~DecorationSettingsProvider();
 
     //* singleton
-    static SettingsProvider *self();
+    static DecorationSettingsProvider *self();
 
     //* decoration internal settings for qApp
     InternalSettingsPtr internalSettings() const;
@@ -43,7 +43,7 @@ public Q_SLOTS:
 
 private:
     //* constructor
-    SettingsProvider();
+    DecorationSettingsProvider();
 
     //* default configuration
     InternalSettingsPtr m_defaultSettings;
@@ -55,7 +55,7 @@ private:
     KSharedConfigPtr m_config;
 
     //* singleton
-    static SettingsProvider *s_self;
+    static DecorationSettingsProvider *s_self;
 };
 
 }
