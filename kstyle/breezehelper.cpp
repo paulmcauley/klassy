@@ -110,6 +110,7 @@ void Helper::loadConfig()
     _kwinConfig->reparseConfiguration();
     _cachedAutoValid = false;
     DecorationSettingsProvider::self()->reconfigure();
+    _decorationConfig = DecorationSettingsProvider::self()->internalSettings();
 
     KConfigGroup globalGroup(_config->group("WM"));
     _activeTitleBarColor = globalGroup.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
