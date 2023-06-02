@@ -32,6 +32,7 @@ class ToolsAreaManager : public QObject
     Q_OBJECT
 
 private:
+    inline void doTranslucency(QMainWindow *win, bool on);
     Helper *_helper;
     QHash<const QMainWindow *, QVector<QPointer<QToolBar>>> _windows;
     KSharedConfigPtr _config;

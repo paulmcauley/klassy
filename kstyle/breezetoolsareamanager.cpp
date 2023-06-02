@@ -47,12 +47,12 @@ void appendIfNotAlreadyExists(T1 *list, T2 item)
     list->append(item);
 }
 
-inline void doTranslucency(QMainWindow *win, bool on)
+void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 {
     if (on) { // deal with opaqueTitleBar on window decoration exceptions list
-        auto windowDecorationSettings = SettingsProvider::self()->internalSettings();
-        if (windowDecorationSettings->preventApplyOpacityToHeader())
+        if (_helper->decorationConfig()->preventApplyOpacityToHeader()) {
             on = false;
+        }
     }
 
     if (on) {
