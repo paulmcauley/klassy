@@ -23,7 +23,8 @@ DecorationSettingsProvider *DecorationSettingsProvider::s_self = nullptr;
 DecorationSettingsProvider::DecorationSettingsProvider()
     : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
 {
-    reconfigure();
+    m_defaultSettings = InternalSettingsPtr(new InternalSettings());
+    m_defaultSettings->setCurrentGroup(QStringLiteral("Windeco"));
 }
 
 //__________________________________________________________________
@@ -46,10 +47,6 @@ DecorationSettingsProvider *DecorationSettingsProvider::self()
 //__________________________________________________________________
 void DecorationSettingsProvider::reconfigure()
 {
-    if (!m_defaultSettings) {
-        m_defaultSettings = InternalSettingsPtr(new InternalSettings());
-        m_defaultSettings->setCurrentGroup(QStringLiteral("Windeco"));
-    }
     m_defaultSettings->load();
 
     DecorationExceptionList exceptions;
