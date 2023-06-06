@@ -187,8 +187,10 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 
     QColor activeTitleBarColor = c->color(ColorGroup::Active, ColorRole::TitleBar);
     QColor inactiveTitlebarColor = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
-    if (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())
+    if (m_internalSettings->opaqueTitleBar() || (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())) {
         activeTitleBarColor.setAlpha(255);
+        inactiveTitlebarColor.setAlpha(255);
+    }
 
     // do not animate titlebar if there is a tools area/header area as it causes glitches
     if (!m_toolsAreaWillBeDrawn && (m_animation->state() == QAbstractAnimation::Running) && !returnNonAnimatedColor) {
