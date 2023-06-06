@@ -47,11 +47,12 @@ private:
 protected:
     bool tryRegisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
     void tryUnregisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
-    void configUpdated();
 
 public:
     explicit ToolsAreaManager(Helper *helper, QObject *parent = nullptr);
     ~ToolsAreaManager();
+
+    void configUpdated();
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 

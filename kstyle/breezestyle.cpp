@@ -1431,20 +1431,26 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
         painter.save();
 
-        auto bg = mw->rect();
-        auto rect = _toolsAreaManager->toolsAreaRect(mw);
-        bg.setTop(rect.height());
-
-        painter.setPen(mw->palette().color(QPalette::Window));
-        painter.setBrush(mw->palette().color(QPalette::Window));
-        painter.drawRect(bg);
-
         if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+            auto rect = _toolsAreaManager->toolsAreaRect(mw);
             if (rect.height() == 0) {
                 drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
             } else {
+                auto bg = mw->rect();
+                auto rect = _toolsAreaManager->toolsAreaRect(mw);
+                bg.setTop(rect.height());
+
+                painter.setPen(mw->palette().color(QPalette::Window));
+                painter.setBrush(mw->palette().color(QPalette::Window));
+                painter.drawRect(bg);
                 drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
             }
+        } else {
+            auto bg = mw->rect();
+
+            painter.setPen(mw->palette().color(QPalette::Window));
+            painter.setBrush(mw->palette().color(QPalette::Window));
+            painter.drawRect(bg);
         }
         painter.restore();
     }
@@ -1825,6 +1831,8 @@ void Style::loadConfiguration()
 {
     // load helper configuration
     _helper->loadConfig();
+
+    _toolsAreaManager->configUpdated();
 
     loadGlobalAnimationSettings();
 
