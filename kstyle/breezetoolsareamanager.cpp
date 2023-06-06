@@ -49,12 +49,6 @@ void appendIfNotAlreadyExists(T1 *list, T2 item)
 
 void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 {
-    if (on) { // deal with opaqueTitleBar on window decoration exceptions list
-        if (_helper->decorationConfig()->preventApplyOpacityToHeader()) {
-            on = false;
-        }
-    }
-
     if (on) {
         if (win->property("_klassy_was_translucent_set").toBool()) // if translucency has already been set don't set it again
             return;
@@ -149,12 +143,10 @@ void ToolsAreaManager::configUpdated()
     auto inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
     auto disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
 
-    if (_colorSchemeHasHeaderColor && _helper->decorationConfig()->applyOpacityToHeader()) {
-        translucent = translucent || !active.background().isOpaque();
-        translucent = translucent || !inactive.background().isOpaque();
-        translucent = translucent || !disabled.background().isOpaque();
-        translucent = translucent || _helper->decorationConfig()->activeTitlebarOpacity() < 100;
-        translucent = translucent || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100;
+    if (_colorSchemeHasHeaderColor && _helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
+        if (!active.background().isOpaque() || !inactive.background().isOpaque() || !disabled.background().isOpaque()
+            || _helper->decorationConfig()->activeTitlebarOpacity() < 100 || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100)
+            translucent = true;
     }
 
     if (translucent != _translucent) {
