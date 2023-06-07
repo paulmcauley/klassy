@@ -20,6 +20,7 @@ namespace Breeze
 ConfigurationModule::ConfigurationModule(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
     : KCModule(parent, data, args)
 {
+    widget()->setLayout(new QVBoxLayout);
     widget()->layout()->addWidget(m_config = new StyleConfig(widget()));
     setButtons(KCModule::Default | KCModule::Apply);
     connect(m_config, &StyleConfig::changed, this, &KCModule::setNeedsSave);
