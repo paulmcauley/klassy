@@ -17,8 +17,8 @@ namespace Breeze
 
 //_______________________________________________________________________
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-ConfigurationModule::ConfigurationModule(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
-    : KCModule(parent, data, args)
+ConfigurationModule::ConfigurationModule(QObject *parent, const KPluginMetaData &data)
+    : KCModule(parent, data)
 {
     widget()->setLayout(new QVBoxLayout);
     widget()->layout()->addWidget(m_config = new StyleConfig(widget()));

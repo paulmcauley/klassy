@@ -42,8 +42,8 @@ namespace Breeze
 {
 
 //_________________________________________________________
-ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
-    : KCModule(parent, data, args)
+ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList & /*args*/)
+    : KCModule(parent, data)
     , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
     , m_presetsConfiguration(KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc")))
     , m_changed(false)
