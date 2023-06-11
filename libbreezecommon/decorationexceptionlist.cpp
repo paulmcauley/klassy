@@ -29,14 +29,6 @@ void DecorationExceptionList::readConfig(KSharedConfig::Ptr config, const bool r
     defaultException0->setPreventApplyOpacityToHeader(true);
     _defaultExceptions.append(defaultException0);
 
-    InternalSettingsPtr defaultException1(new InternalSettings());
-    defaultException1->setExceptionWindowPropertyType(InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName);
-    defaultException1->setExceptionWindowPropertyPattern("org.kde.digikam");
-    defaultException1->setOpaqueTitleBar(true);
-    defaultException1->setExceptionProgramNamePattern("digikam");
-    defaultException1->setPreventApplyOpacityToHeader(true);
-    _defaultExceptions.append(defaultException1);
-
     QString groupName;
 
     // load default enabled settings for the default exceptions
