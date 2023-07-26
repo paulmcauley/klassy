@@ -136,7 +136,7 @@ private:
     //* editable combobox arrow hover effect
     WidgetStateEngine *_comboBoxEngine = nullptr;
 
-    //* mennu toolbutton arrow hover effect
+    //* menu toolbutton arrow hover effect
     WidgetStateEngine *_toolButtonEngine = nullptr;
 
     //* item view engine
