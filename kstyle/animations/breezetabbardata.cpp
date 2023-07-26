@@ -15,7 +15,7 @@ namespace Breeze
 {
 
 //______________________________________________
-TabBarData::TabBarData(QObject *parent, QWidget *target, int duration)
+TabBarData::TabBarData(QObject *parent, QObject *target, int duration)
     : AnimationData(parent, target)
 {
     _current._animation = new Animation(duration, this);

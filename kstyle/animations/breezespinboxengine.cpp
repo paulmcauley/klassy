@@ -12,19 +12,19 @@ namespace Breeze
 {
 
 //____________________________________________________________
-bool SpinBoxEngine::registerWidget(QWidget *widget)
+bool SpinBoxEngine::registerWidget(QObject *target)
 {
-    if (!widget) {
+    if (!target) {
         return false;
     }
 
     // create new data class
-    if (!_data.contains(widget)) {
-        _data.insert(widget, new SpinBoxData(this, widget, duration()), enabled());
+    if (!_data.contains(target)) {
+        _data.insert(target, new SpinBoxData(this, target, duration()), enabled());
     }
 
     // connect destruction signal
-    connect(widget, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+    connect(target, &QObject::destroyed, this, &SpinBoxEngine::unregisterWidget, Qt::UniqueConnection);
     return true;
 }
 }

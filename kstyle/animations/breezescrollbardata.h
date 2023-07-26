@@ -24,7 +24,7 @@ class ScrollBarData : public WidgetStateData
 
 public:
     //* constructor
-    ScrollBarData(QObject *parent, QWidget *target, int);
+    ScrollBarData(QObject *parent, QObject *target, int duration);
 
     //* event filter
     bool eventFilter(QObject *, QEvent *) override;

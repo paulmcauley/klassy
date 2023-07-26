@@ -19,7 +19,7 @@ class DialData : public WidgetStateData
 
 public:
     //* constructor
-    DialData(QObject *parent, QWidget *target, int);
+    DialData(QObject *parent, QObject *target, int duration);
 
     //* event filter
     bool eventFilter(QObject *, QEvent *) override;

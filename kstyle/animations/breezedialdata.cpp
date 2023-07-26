@@ -13,7 +13,7 @@ namespace Breeze
 {
 
 //______________________________________________
-DialData::DialData(QObject *parent, QWidget *target, int duration)
+DialData::DialData(QObject *parent, QObject *target, int duration)
     : WidgetStateData(parent, target, duration)
     , _position(-1, -1)
 {

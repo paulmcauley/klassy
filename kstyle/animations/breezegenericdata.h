@@ -12,6 +12,7 @@
 
 #include <QObject>
 #include <QTextStream>
+
 namespace Breeze
 {
 
@@ -25,7 +26,7 @@ class GenericData : public AnimationData
 
 public:
     //* constructor
-    GenericData(QObject *parent, QWidget *widget, int duration);
+    GenericData(QObject *parent, QObject *target, int duration);
 
     //* return animation object
     const Animation::Pointer &animation() const

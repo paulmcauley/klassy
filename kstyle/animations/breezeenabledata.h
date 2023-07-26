@@ -19,7 +19,7 @@ class EnableData : public WidgetStateData
 
 public:
     //* constructor
-    EnableData(QObject *parent, QWidget *target, int duration, bool state = true)
+    EnableData(QObject *parent, QObject *target, int duration, bool state = true)
         : WidgetStateData(parent, target, duration, state)
     {
         target->installEventFilter(this);

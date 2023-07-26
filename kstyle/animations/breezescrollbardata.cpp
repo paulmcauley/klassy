@@ -16,7 +16,7 @@ namespace Breeze
 {
 
 //______________________________________________
-ScrollBarData::ScrollBarData(QObject *parent, QWidget *target, int duration)
+ScrollBarData::ScrollBarData(QObject *parent, QObject *target, int duration)
     : WidgetStateData(parent, target, duration)
     , _position(-1, -1)
 {

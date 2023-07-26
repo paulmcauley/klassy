@@ -12,22 +12,22 @@ namespace Breeze
 {
 
 //____________________________________________________________
-bool TabBarEngine::registerWidget(QWidget *widget)
+bool TabBarEngine::registerWidget(QObject *target)
 {
-    if (!widget) {
+    if (!target) {
         return false;
     }
 
     // create new data class
-    if (!_hoverData.contains(widget)) {
-        _hoverData.insert(widget, new TabBarData(this, widget, duration()), enabled());
+    if (!_hoverData.contains(target)) {
+        _hoverData.insert(target, new TabBarData(this, target, duration()), enabled());
     }
-    if (!_focusData.contains(widget)) {
-        _focusData.insert(widget, new TabBarData(this, widget, duration()), enabled());
+    if (!_focusData.contains(target)) {
+        _focusData.insert(target, new TabBarData(this, target, duration()), enabled());
     }
 
     // connect destruction signal
-    connect(widget, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+    connect(target, &QObject::destroyed, this, &TabBarEngine::unregisterWidget, Qt::UniqueConnection);
     return true;
 }
 

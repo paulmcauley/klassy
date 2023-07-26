@@ -27,7 +27,7 @@ public:
     }
 
     //* register widget
-    bool registerWidget(QWidget *);
+    bool registerWidget(QObject *target);
 
     //* state
     bool updateState(const QObject *object, QStyle::SubControl subControl, bool value)
