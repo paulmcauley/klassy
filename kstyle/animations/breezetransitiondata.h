@@ -74,7 +74,7 @@ public:
         }
     }
 
-    //* check if rendering is two slow
+    //* check if rendering is too slow
     bool slow() const
     {
         return !(!_clock.isValid() || _clock.elapsed() <= maxRenderTime());
