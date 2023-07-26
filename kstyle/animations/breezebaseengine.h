@@ -10,7 +10,6 @@
 #include "breeze.h"
 
 #include <QObject>
-#include <QSet>
 
 namespace Breeze
 {
@@ -56,15 +55,6 @@ public:
 
     //* unregister widget
     virtual bool unregisterWidget(QObject *object) = 0;
-
-    //* list of widgets
-    using WidgetList = QSet<QWidget *>;
-
-    //* returns registered widgets
-    virtual WidgetList registeredWidgets() const
-    {
-        return WidgetList();
-    }
 
 private:
     //* engine enability

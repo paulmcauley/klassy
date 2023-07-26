@@ -30,11 +30,6 @@ public:
     //* register widget
     bool registerWidget(QWidget *, AnimationModes);
 
-    //* returns registered widgets
-    WidgetList registeredWidgets(AnimationModes) const;
-
-    using BaseEngine::registeredWidgets;
-
     //* true if widget hover state is changed
     bool updateState(const QObject *, AnimationMode, bool);
 
