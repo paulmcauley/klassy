@@ -37,48 +37,6 @@ bool WidgetStateEngine::registerWidget(QWidget *widget, AnimationModes mode)
 }
 
 //____________________________________________________________
-BaseEngine::WidgetList WidgetStateEngine::registeredWidgets(AnimationModes mode) const
-{
-    WidgetList out;
-
-    using Value = DataMap<WidgetStateData>::Value;
-
-    if (mode & AnimationHover) {
-        for (const Value &value : std::as_const(_hoverData)) {
-            if (value) {
-                out.insert(value.data()->target().data());
-            }
-        }
-    }
-
-    if (mode & AnimationFocus) {
-        for (const Value &value : std::as_const(_focusData)) {
-            if (value) {
-                out.insert(value.data()->target().data());
-            }
-        }
-    }
-
-    if (mode & AnimationEnable) {
-        for (const Value &value : std::as_const(_enableData)) {
-            if (value) {
-                out.insert(value.data()->target().data());
-            }
-        }
-    }
-
-    if (mode & AnimationPressed) {
-        for (const Value &value : std::as_const(_pressedData)) {
-            if (value) {
-                out.insert(value.data()->target().data());
-            }
-        }
-    }
-
-    return out;
-}
-
-//____________________________________________________________
 bool WidgetStateEngine::updateState(const QObject *object, AnimationMode mode, bool value)
 {
     DataMap<WidgetStateData>::Value data(WidgetStateEngine::data(object, mode));
