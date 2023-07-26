@@ -200,7 +200,7 @@ void Animations::unregisterWidget(QWidget *widget) const
     _widgetEnabilityEngine->unregisterWidget(widget);
     _spinBoxEngine->unregisterWidget(widget);
     _comboBoxEngine->unregisterWidget(widget);
-    _busyIndicatorEngine->registerWidget(widget);
+    _busyIndicatorEngine->unregisterWidget(widget);
 
     // the following allows some optimization of widget unregistration
     // it assumes that a widget can be registered atmost in one of the
