@@ -31,7 +31,7 @@ public:
     }
 
     //* register scrollbar
-    virtual bool registerWidget(QWidget *, AnimationModes);
+    virtual bool registerWidget(QObject *target, AnimationModes modes);
 
     //*@name accessors
     //@{

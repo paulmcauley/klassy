@@ -28,7 +28,7 @@ public:
     }
 
     //* register widget
-    bool registerWidget(QWidget *, AnimationModes);
+    bool registerWidget(QObject *target, AnimationModes modes);
 
     //* true if widget hover state is changed
     bool updateState(const QObject *, AnimationMode, bool);

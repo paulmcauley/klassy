@@ -12,23 +12,23 @@ namespace Breeze
 {
 
 //____________________________________________________________
-bool ScrollBarEngine::registerWidget(QWidget *widget, AnimationModes mode)
+bool ScrollBarEngine::registerWidget(QObject *target, AnimationModes modes)
 {
     // check widget
-    if (!widget) {
+    if (!target) {
         return false;
     }
 
     // only handle hover and focus
-    if (mode & AnimationHover && !dataMap(AnimationHover).contains(widget)) {
-        dataMap(AnimationHover).insert(widget, new ScrollBarData(this, widget, duration()), enabled());
+    if (modes & AnimationHover && !dataMap(AnimationHover).contains(target)) {
+        dataMap(AnimationHover).insert(target, new ScrollBarData(this, target, duration()), enabled());
     }
-    if (mode & AnimationFocus && !dataMap(AnimationFocus).contains(widget)) {
-        dataMap(AnimationFocus).insert(widget, new WidgetStateData(this, widget, duration()), enabled());
+    if (modes & AnimationFocus && !dataMap(AnimationFocus).contains(target)) {
+        dataMap(AnimationFocus).insert(target, new WidgetStateData(this, target, duration()), enabled());
     }
 
     // connect destruction signal
-    connect(widget, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+    connect(target, &QObject::destroyed, this, &ScrollBarEngine::unregisterWidget, Qt::UniqueConnection);
 
     return true;
 }

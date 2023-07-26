@@ -10,7 +10,7 @@ namespace Breeze
 {
 
 //______________________________________________
-GenericData::GenericData(QObject *parent, QWidget *target, int duration)
+GenericData::GenericData(QObject *parent, QObject *target, int duration)
     : AnimationData(parent, target)
     , _animation(new Animation(duration, this))
     , _opacity(0)

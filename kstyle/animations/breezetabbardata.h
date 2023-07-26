@@ -25,7 +25,7 @@ class TabBarData : public AnimationData
 
 public:
     //* constructor
-    TabBarData(QObject *parent, QWidget *target, int duration);
+    TabBarData(QObject *parent, QObject *target, int duration);
 
     //* duration
     void setDuration(int duration) override

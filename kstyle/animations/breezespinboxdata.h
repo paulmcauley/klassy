@@ -25,7 +25,7 @@ class SpinBoxData : public AnimationData
 
 public:
     //* constructor
-    SpinBoxData(QObject *, QWidget *, int);
+    SpinBoxData(QObject *parent, QObject *target, int duration);
 
     //* animation state
     bool updateState(QStyle::SubControl subControl, bool value)

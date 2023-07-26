@@ -19,7 +19,7 @@ class WidgetStateData : public GenericData
 
 public:
     //* constructor
-    WidgetStateData(QObject *parent, QWidget *target, int duration, bool state = false)
+    WidgetStateData(QObject *parent, QObject *target, int duration, bool state = false)
         : GenericData(parent, target, duration)
         , _initialized(false)
         , _state(state)

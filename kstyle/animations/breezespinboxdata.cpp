@@ -10,7 +10,7 @@ namespace Breeze
 {
 
 //________________________________________________
-SpinBoxData::SpinBoxData(QObject *parent, QWidget *target, int duration)
+SpinBoxData::SpinBoxData(QObject *parent, QObject *target, int duration)
     : AnimationData(parent, target)
 {
     _upArrowData._animation = new Animation(duration, this);

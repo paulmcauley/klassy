@@ -20,7 +20,7 @@ bool ToolBoxEngine::registerWidget(QWidget *widget)
     }
 
     // connect destruction signal
-    connect(widget, SIGNAL(destroyed(QObject *)), this, SLOT(unregisterWidget(QObject *)), Qt::UniqueConnection);
+    connect(widget, &QObject::destroyed, this, &ToolBoxEngine::unregisterWidget, Qt::UniqueConnection);
     return true;
 }
 
