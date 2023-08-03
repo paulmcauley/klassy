@@ -42,15 +42,20 @@ find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     GuiAddons
     I18n
     IconThemes
-    KCMUtils
     WindowSystem)
 
-find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION})
-set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
-    TYPE REQUIRED
-    DESCRIPTION "Helps create configuration modules"
-    PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
-)
+if (QT_MAJOR_VERSION STREQUAL "6")
+    find_package(KF6ColorScheme ${KF_MIN_VERSION} REQUIRED)
+endif()
+
+if (NOT WIN32 AND NOT APPLE)
+    find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION})
+    set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
+        TYPE REQUIRED
+        DESCRIPTION "Helps create configuration modules"
+        PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+    )
+endif()
 
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
 set(BREEZE_HAVE_QTQUICK ${Qt${QT_MAJOR_VERSION}Quick_FOUND})
