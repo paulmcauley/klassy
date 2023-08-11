@@ -6,7 +6,7 @@ set(PROJECT_VERSION_MAJOR 5)
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=1)
 
 set(KF5_MIN_VERSION "5.102.0")
-set(KF_MIN_VERSION "5.240.0")
+set(KF6_MIN_VERSION "5.240.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 set(QT5_MIN_VERSION "5.15.2")
 set(QT_MIN_VERSION "6.5")
@@ -53,7 +53,7 @@ if(BUILD_QT6)
     include(KDEInstallDirs6)
     include(KDECMakeSettings)
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
-    find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
+    find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
         ColorScheme
         Config
@@ -62,7 +62,7 @@ if(BUILD_QT6)
         IconThemes
         WindowSystem)
     if(NOT WIN32 AND NOT APPLE)
-        find_package(KF6KCMUtils ${KF_MIN_VERSION})
+        find_package(KF6KCMUtils ${KF6_MIN_VERSION})
         set_package_properties(KF6KCMUtils PROPERTIES
             TYPE REQUIRED
             DESCRIPTION "Helps create configuration modules"
@@ -72,10 +72,10 @@ if(BUILD_QT6)
 
     find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
     if(${Qt6Quick_FOUND})
-        find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+        find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
     endif()
 
-    find_package(KF6FrameworkIntegration ${KF_MIN_VERSION} CONFIG )
+    find_package(KF6FrameworkIntegration ${KF6_MIN_VERSION} CONFIG )
     set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
         DESCRIPTION "KF6 Framework Integration"
         URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
