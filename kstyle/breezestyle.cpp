@@ -7128,7 +7128,7 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
             }
 
             // colors
-            const auto reverseTicks = option->direction == Qt::LeftToRight ? upsideDown : !upsideDown;
+            const auto reverse(option->direction == Qt::RightToLeft);
             const auto base(_helper->separatorColor(palette));
             const auto &highlight =
                 hasHighlightNeutral(widget, option, mouseOver, hasFocus) ? _helper->neutralText(palette) : palette.color(QPalette::Highlight);
@@ -7139,12 +7139,12 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
                 painter->setPen(color);
 
                 // calculate positions and draw lines
-                int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available) + fudge);
+                int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available, upsideDown) + fudge);
                 for (const QLine &tickLine : std::as_const(tickLines)) {
                     if (horizontal) {
-                        painter->drawLine(tickLine.translated(reverseTicks ? (rect.width() - position) : position, 0));
+                        painter->drawLine(tickLine.translated(reverse ? (rect.width() - position) : position, 0));
                     } else {
-                        painter->drawLine(tickLine.translated(0, reverseTicks ? (rect.height() - position) : position));
+                        painter->drawLine(tickLine.translated(0, position));
                     }
                 }
 
