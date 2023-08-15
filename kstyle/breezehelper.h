@@ -368,7 +368,12 @@ public:
         return rect.adjusted(shadowSize, shadowSize, -shadowSize, -shadowSize);
     }
 
-    QPixmap coloredIcon(const QIcon &icon, const QPalette &palette, const QSize &size, QIcon::Mode mode = QIcon::Normal, QIcon::State state = QIcon::Off);
+    QPixmap coloredIcon(const QIcon &icon,
+                        const QPalette &palette,
+                        const QSize &size,
+                        qreal devicePixelRatio,
+                        QIcon::Mode mode = QIcon::Normal,
+                        QIcon::State state = QIcon::Off);
 
 protected:
     //* return rounded path in a given rect, with only selected corners rounded, and for a given radius

@@ -1723,14 +1723,19 @@ bool Helper::hasAlphaChannel(const QWidget *widget) const
 
 //______________________________________________________________________________________
 
-QPixmap Helper::coloredIcon(const QIcon &icon, const QPalette &palette, const QSize &size, QIcon::Mode mode, QIcon::State state)
+QPixmap Helper::coloredIcon(const QIcon &icon, const QPalette &palette, const QSize &size, qreal devicePixelRatio, QIcon::Mode mode, QIcon::State state)
 {
     const QPalette activePalette = KIconLoader::global()->customPalette();
     const bool changePalette = activePalette != palette;
     if (changePalette) {
         KIconLoader::global()->setCustomPalette(palette);
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const QPixmap pixmap = icon.pixmap(size, devicePixelRatio, mode, state);
+#else
+    Q_UNUSED(devicePixelRatio);
     const QPixmap pixmap = icon.pixmap(size, mode, state);
+#endif
     if (changePalette) {
         if (activePalette == QPalette()) {
             KIconLoader::global()->resetPalette();
