@@ -1,6 +1,7 @@
 /* SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2016 The Qt Company Ltd.
  * SPDX-FileCopyrightText: 2021 Noah Davis <noahadvs@gmail.com>
+ * SPDX-FileCopyrightText: 2023 ivan tkachenko <me@ratijas.tk>
  * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -2029,10 +2030,9 @@ QRect Style::progressBarContentsRect(const QStyleOption *option, const QWidget *
     const bool horizontal(BreezePrivate::isProgressBarHorizontal(progressBarOption));
 
     // check inverted appearance
-    bool inverted(progressBarOption->invertedAppearance);
-    if (horizontal) {
-        // un-invert in RTL layout
-        inverted ^= option->direction == Qt::RightToLeft;
+    bool reverse = (horizontal && (option->direction == Qt::RightToLeft)) || !horizontal;
+    if (progressBarOption->invertedAppearance) {
+        reverse = !reverse;
     }
 
     // get progress and steps
@@ -2041,17 +2041,15 @@ QRect Style::progressBarContentsRect(const QStyleOption *option, const QWidget *
 
     // Calculate width fraction
     const qreal position = qreal(progress) / qreal(steps);
-    const qreal visualPosition = inverted ? 1 - position : position;
 
     // convert the pixel width
-    const int indicatorSize(visualPosition * (horizontal ? rect.width() : rect.height()));
+    const int indicatorSize(position * (horizontal ? rect.width() : rect.height()));
 
     QRect indicatorRect;
     if (horizontal) {
-        indicatorRect = QRect(rect.left(), rect.y(), indicatorSize, rect.height());
-        indicatorRect = visualRect(option->direction, rect, indicatorRect);
+        indicatorRect = QRect(rect.left() + (reverse ? rect.width() - indicatorSize : 0), rect.y(), indicatorSize, rect.height());
     } else {
-        indicatorRect = QRect(rect.x(), inverted ? rect.top() : (rect.bottom() - indicatorSize + 1), rect.width(), indicatorSize);
+        indicatorRect = QRect(rect.x(), reverse ? rect.top() : (rect.bottom() - indicatorSize + 1), rect.width(), indicatorSize);
     }
 
     return indicatorRect;
