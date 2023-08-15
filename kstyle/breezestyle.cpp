@@ -6004,15 +6004,14 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         QStyleOptionSlider opt;
         opt.initFrom(slider);
         opt.orientation = slider->orientation();
+        opt.upsideDown = !(opt.orientation == Qt::Horizontal);
+        if (slider->invertedAppearance()) {
+            opt.upsideDown = !opt.upsideDown;
+        }
         opt.maximum = slider->maximum();
         opt.minimum = slider->minimum();
         opt.tickPosition = slider->tickPosition();
         opt.tickInterval = slider->tickInterval();
-        if (opt.orientation == Qt::Horizontal) {
-            opt.upsideDown = slider->invertedAppearance() && opt.direction != Qt::RightToLeft;
-        } else {
-            opt.upsideDown = !slider->invertedAppearance();
-        }
         opt.sliderPosition = slider->sliderPosition();
         opt.sliderValue = slider->value();
         opt.singleStep = slider->singleStep();
@@ -6022,7 +6021,12 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         }
         innerRect = subControlRect(CC_Slider, &opt, SC_SliderHandle, slider);
         innerRect.adjust(1, 1, -1, -1);
-        innerRect.translate(hmargin, vmargin);
+        // Subtracting some of the hmargin back from vertical RTL sliders
+        // because painting code being consistently off by 1px due to some
+        // rounding while pens being 1.001px thick. Not 100% sure, and I've
+        // seen some slider positions that still break this math by 1px.
+        const auto h = (opt.direction == Qt::RightToLeft && opt.orientation == Qt::Vertical) ? -hmargin + 1 : hmargin;
+        innerRect.translate(h, vmargin);
         innerRadius = innerRect.height() / 2.0;
         focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
         outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
