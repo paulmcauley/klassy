@@ -321,6 +321,7 @@ private:
     bool drawToolBoxTabLabelControl(const QStyleOption *, QPainter *, const QWidget *) const;
     bool drawToolBoxTabShapeControl(const QStyleOption *, QPainter *, const QWidget *) const;
     bool drawDockWidgetTitleControl(const QStyleOption *, QPainter *, const QWidget *) const;
+    bool drawSplitterControl(const QStyleOption *, QPainter *, const QWidget *) const;
 
     //*@}
 
