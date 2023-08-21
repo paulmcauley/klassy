@@ -801,9 +801,10 @@ int Style::styleHint(StyleHint hint, const QStyleOption *option, const QWidget *
     case SH_Menu_SloppySubMenus:
         return true;
 
-    // TODO Qt6: drop deprecated SH_Widget_Animate
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     case SH_Widget_Animate:
         return StyleConfigData::animationsEnabled();
+#endif
     case SH_Menu_SupportsSections:
         return true;
     case SH_Widget_Animation_Duration:
