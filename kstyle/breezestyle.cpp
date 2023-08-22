@@ -1123,6 +1123,9 @@ void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, 
     case PE_IndicatorDockWidgetResizeHandle:
         fcn = &Style::drawDockWidgetResizeHandlePrimitive;
         break;
+    case PE_PanelStatusBar:
+        fcn = &Style::drawPanelStatusBarPrimitive;
+        break;
     case PE_Widget:
         fcn = &Style::drawWidgetPrimitive;
         break;
@@ -4871,9 +4874,19 @@ bool Style::drawDockWidgetResizeHandlePrimitive(const QStyleOption *option, QPai
 {
     auto rect(option->rect);
     const auto color(_helper->separatorColor(option->palette));
-    const bool isVertical(option->state & QStyle::State_Horizontal);
+    const bool isVertical(!(option->state & QStyle::State_Horizontal));
+    _helper->renderSeparator(painter, rect, color, isVertical);
+
+    return true;
+}
+
+bool Style::drawPanelStatusBarPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    auto rect(option->rect);
+    const auto color(_helper->separatorColor(option->palette));
     const auto size = pixelMetric(QStyle::PM_SplitterWidth, option, widget);
-    _helper->renderSeparator(painter, rect, color, !isVertical);
+    rect.setHeight(size);
+    _helper->renderSeparator(painter, rect, color, false);
 
     return true;
 }
