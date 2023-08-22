@@ -383,7 +383,6 @@ void Style::polish(QWidget *widget)
         // add event filter on dock widgets
         // and alter palette
         widget->setAutoFillBackground(false);
-        widget->setContentsMargins(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth);
         addEventFilter(widget);
 
     } else if (qobject_cast<QMdiSubWindow *>(widget)) {
@@ -1121,6 +1120,9 @@ void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, 
     case PE_FrameFocusRect:
         fcn = _frameFocusPrimitive;
         break;
+    case PE_IndicatorDockWidgetResizeHandle:
+        fcn = &Style::drawDockWidgetResizeHandlePrimitive;
+        break;
     case PE_Widget:
         fcn = &Style::drawWidgetPrimitive;
         break;
@@ -1762,10 +1764,6 @@ bool Style::eventFilterDockWidget(QDockWidget *dockWidget, QEvent *event)
         // render
         if (dockWidget->isFloating()) {
             _helper->renderMenuFrame(&painter, rect, background, outline, false);
-
-        } else if (StyleConfigData::dockWidgetDrawFrame()
-                   || (dockWidget->features() & (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable))) {
-            _helper->renderFrame(&painter, rect, background, outline);
         }
     }
 
@@ -4865,6 +4863,17 @@ bool Style::drawIndicatorBranchPrimitive(const QStyleOption *option, QPainter *p
         const QLineF line(QPointF(center.x(), center.y() + expanderAdjust), QPointF(center.x(), rect.bottom()));
         painter->drawLine(line);
     }
+
+    return true;
+}
+
+bool Style::drawDockWidgetResizeHandlePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    auto rect(option->rect);
+    const auto color(_helper->separatorColor(option->palette));
+    const bool isVertical(option->state & QStyle::State_Horizontal);
+    const auto size = pixelMetric(QStyle::PM_SplitterWidth, option, widget);
+    _helper->renderSeparator(painter, rect, color, !isVertical);
 
     return true;
 }
