@@ -3756,6 +3756,75 @@ bool Style::drawFrameLineEditPrimitive(const QStyleOption *option, QPainter *pai
     const auto &palette(option->palette);
     const auto &rect(option->rect);
 
+    if (widget) {
+        const auto borders = widget->property(PropertyNames::bordersSides);
+        if (borders.isValid()) {
+            const auto value = borders.value<Qt::Edges>();
+
+            // copy state
+            const State &state(option->state);
+            const bool enabled(state & State_Enabled);
+            const bool mouseOver(enabled && (state & State_MouseOver));
+            const bool hasFocus(enabled && (state & State_HasFocus));
+
+            // Draw background
+            const auto &background = palette.color(QPalette::Base);
+            painter->setPen(Qt::NoPen);
+            painter->setBrush(background);
+            painter->drawRect(rect);
+
+            // Draw focus frame
+            if (mouseOver || hasFocus) {
+                // Retrieve animation mode and opacity
+                const AnimationMode mode(_animations->inputWidgetEngine().frameAnimationMode(widget));
+                const qreal opacity(_animations->inputWidgetEngine().frameOpacity(widget));
+
+                const auto outline(hasHighlightNeutral(widget, option, mouseOver, hasFocus)
+                                       ? _helper->neutralText(palette)
+                                       : _helper->frameOutlineColor(palette, mouseOver, hasFocus, opacity, mode));
+
+                auto outlineRect = rect.adjusted(0, 0, -1, -1);
+                if (value & Qt::LeftEdge) {
+                    outlineRect = outlineRect.adjusted(1, 0, 0, 0);
+                }
+                if (value & Qt::TopEdge) {
+                    outlineRect = outlineRect.adjusted(0, 1, 0, 0);
+                }
+                if (value & Qt::RightEdge) {
+                    outlineRect = outlineRect.adjusted(0, 0, -1, 0);
+                }
+                if (value & Qt::BottomEdge) {
+                    outlineRect = outlineRect.adjusted(0, 0, 0, -1);
+                }
+
+                painter->setPen(outline);
+                painter->setBrush(Qt::NoBrush);
+                painter->drawRect(outlineRect);
+            }
+
+            // Draw border
+            const auto borderColor = _helper->frameOutlineColor(palette, false, false, 1, AnimationMode::AnimationNone);
+            painter->setRenderHint(QPainter::Antialiasing, false);
+            painter->setBrush(Qt::NoBrush);
+            painter->setPen(borderColor);
+
+            if (value & Qt::LeftEdge) {
+                painter->drawLine(rect.topLeft(), rect.bottomLeft());
+            }
+            if (value & Qt::RightEdge) {
+                painter->drawLine(rect.topRight(), rect.bottomRight());
+            }
+            if (value & Qt::TopEdge) {
+                painter->drawLine(rect.topLeft(), rect.topRight());
+            }
+            if (value & Qt::BottomEdge) {
+                painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+            }
+
+            return true;
+        }
+    }
+
     // make sure there is enough room to render frame
     if (rect.height() < 2 * Metrics::LineEdit_FrameWidth + option->fontMetrics.height()) {
         const auto &background = palette.color(QPalette::Base);
