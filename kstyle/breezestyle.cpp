@@ -7008,6 +7008,16 @@ bool Style::drawDockWidgetTitleControl(const QStyleOption *option, QPainter *pai
         rect.adjust(4, 0, 0, 0);
     }
 
+    if (!verticalTitleBar) {
+        auto rect(option->rect);
+        rect.setY(rect.height() - 1);
+        rect.setHeight(1);
+        auto palette = option->palette;
+        palette.setCurrentColorGroup(QPalette::Disabled);
+        const auto color(_helper->separatorColor(palette));
+        _helper->renderSeparator(painter, rect, color, false);
+    }
+
     QString title(dockWidgetOption->title);
     int titleWidth = dockWidgetOption->fontMetrics.size(_mnemonics->textFlags(), title).width();
     int width = verticalTitleBar ? rect.height() : rect.width();
