@@ -611,6 +611,14 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
             }
         }
 
+        const auto forceFrame = widget->property(PropertyNames::forceFrame);
+        if (forceFrame.isValid() && !forceFrame.toBool()) {
+            return 0;
+        }
+        if (widget && (forceFrame.toBool() || widget->property(PropertyNames::bordersSides).isValid())) {
+            return Metrics::Frame_FrameWidth;
+        }
+
         if (qobject_cast<const QAbstractScrollArea *>(widget)) {
             if (widget->parentWidget() && widget->parentWidget()->objectName() == QStringLiteral("centralwidget")) {
                 return 0;
