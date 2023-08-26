@@ -4000,6 +4000,31 @@ bool Style::drawFrameTabWidgetPrimitive(const QStyleOption *option, QPainter *pa
 
     const auto tabBarRect(tabOption->tabBarRect);
     const QSize tabBarSize(tabOption->tabBarSize);
+
+    // define colors
+    const auto &palette(option->palette);
+    const auto background(_helper->frameBackgroundColor(palette));
+    const auto outline(_helper->frameOutlineColor(palette));
+
+    if (const auto bordersSides = widget->property(PropertyNames::bordersSides); bordersSides.isValid()) {
+        rect.adjust(0, 1, 0, 0);
+        const auto value = bordersSides.value<Qt::Edges>();
+        painter->setPen(outline);
+        if (value & Qt::TopEdge) {
+            painter->drawLine(rect.topLeft(), rect.topRight());
+        }
+        if (value & Qt::BottomEdge) {
+            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+        }
+        if (value & Qt::LeftEdge) {
+            painter->drawLine(rect.topLeft(), rect.bottomLeft());
+        }
+        if (value & Qt::RightEdge) {
+            painter->drawLine(rect.topRight(), rect.bottomLeft());
+        }
+        return true;
+    }
+
     Corners corners = AllCorners;
 
     // adjust corners to deal with oversized tabbars
@@ -4072,10 +4097,6 @@ bool Style::drawFrameTabWidgetPrimitive(const QStyleOption *option, QPainter *pa
         break;
     }
 
-    // define colors
-    const auto &palette(option->palette);
-    const auto background(_helper->frameBackgroundColor(palette));
-    const auto outline(_helper->frameOutlineColor(palette));
     _helper->renderTabWidgetFrame(painter, rect, background, outline, corners);
 
     return true;
