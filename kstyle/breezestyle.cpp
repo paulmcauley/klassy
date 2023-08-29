@@ -384,6 +384,7 @@ void Style::polish(QWidget *widget)
         // add event filter on dock widgets
         // and alter palette
         widget->setAutoFillBackground(false);
+        widget->setContentsMargins(Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth, Metrics::Frame_FrameWidth);
         addEventFilter(widget);
 
     } else if (qobject_cast<QMdiSubWindow *>(widget)) {
@@ -595,7 +596,10 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
     }
 
     // frame width
-    case PM_DefaultFrameWidth:
+    case PM_DefaultFrameWidth: {
+        if (!widget) {
+            return 0;
+        }
         if (qobject_cast<const QMenu *>(widget)) {
             return Metrics::Menu_FrameWidth;
         }
@@ -609,6 +613,8 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
             } else if (elementType == QLatin1String("combobox")) {
                 return Metrics::ComboBox_FrameWidth;
             }
+
+            return Metrics::Frame_FrameWidth;
         }
 
         const auto forceFrame = widget->property(PropertyNames::forceFrame);
@@ -647,6 +653,7 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
 
         // fallback
         return 0;
+    }
 
     case PM_ComboBoxFrameWidth: {
         const auto comboBoxOption(qstyleoption_cast<const QStyleOptionComboBox *>(option));
@@ -1802,6 +1809,9 @@ bool Style::eventFilterDockWidget(QDockWidget *dockWidget, QEvent *event)
         // render
         if (dockWidget->isFloating()) {
             _helper->renderMenuFrame(&painter, rect, background, outline, false);
+        } else if (StyleConfigData::dockWidgetDrawFrame()
+                   || (dockWidget->features() & (QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable))) {
+            _helper->renderFrame(&painter, rect, background, outline);
         }
     }
 
@@ -4997,10 +5007,11 @@ bool Style::drawIndicatorBranchPrimitive(const QStyleOption *option, QPainter *p
 
 bool Style::drawDockWidgetResizeHandlePrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    auto rect(option->rect);
-    const auto color(_helper->separatorColor(option->palette));
-    const bool isVertical(!(option->state & QStyle::State_Horizontal));
-    _helper->renderSeparator(painter, rect, color, isVertical);
+    Q_UNUSED(widget);
+
+    painter->setBrush(_helper->separatorColor(option->palette));
+    painter->setPen(Qt::NoPen);
+    painter->drawRect(option->rect);
 
     return true;
 }
