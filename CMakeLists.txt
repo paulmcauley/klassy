@@ -21,6 +21,14 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH}  ${CMAKE_SOURCE_DI
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# We need this because we can't include KDECMakeSettings here, because that
+# would need KDEInstallDirs, which we can only include in the qt{5,6} builds
+# to get the correct installation dirs for each Qt version.
+option(BUILD_TESTING "Build the testing tree." ON)
+if(BUILD_TESTING)
+    enable_testing()
+endif()
+
 include(CMakePackageConfigHelpers)
 include(ECMInstallIcons)
 include(KDECompilerSettings NO_POLICY_SCOPE)
