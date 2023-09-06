@@ -445,6 +445,10 @@ private:
         return QRect(rect.left() + (rect.width() - width) / 2, rect.top() + (rect.height() - height) / 2, width, height);
     }
 
+    static int sliderTickMarksLength();
+
+    static QRect sliderRectWithoutTickMarks(const QStyleOptionSlider *option);
+
     /*
     Checks whether the point is before the bound rect for bound of given orientation.
     This is needed to implement custom number of buttons in scrollbars,

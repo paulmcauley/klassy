@@ -2961,20 +2961,39 @@ QRect Style::sliderSubControlRect(const QStyleOptionComplex *option, SubControl 
         return ParentStyleClass::subControlRect(CC_Slider, option, subControl, widget);
     }
 
-    switch (subControl) {
-    case SC_SliderGroove: {
-        // direction
-        const bool horizontal(sliderOption->orientation == Qt::Horizontal);
+    // direction
+    const bool horizontal(sliderOption->orientation == Qt::Horizontal);
 
-        // get base class rect
-        auto grooveRect(ParentStyleClass::subControlRect(CC_Slider, option, subControl, widget));
-        grooveRect = insideMargin(grooveRect, pixelMetric(PM_DefaultFrameWidth, option, widget));
+    // somewhat a copy-pasta of QCommonStyle::subControlRect, except we want
+    // to account for our specific tick marks, and perform centering.
+    auto rect(sliderRectWithoutTickMarks(sliderOption));
+
+    switch (subControl) {
+    case SC_SliderHandle: {
+        QRect ret(centerRect(rect, Metrics::Slider_ControlThickness, Metrics::Slider_ControlThickness));
+        constexpr int len = Metrics::Slider_ControlThickness;
+        const int sliderPos = sliderPositionFromValue(sliderOption->minimum,
+                                                      sliderOption->maximum,
+                                                      sliderOption->sliderPosition,
+                                                      (horizontal ? rect.width() : rect.height()) - len,
+                                                      sliderOption->upsideDown);
+        if (horizontal) {
+            ret.moveLeft(rect.x() + sliderPos);
+        } else {
+            ret.moveTop(rect.y() + sliderPos);
+        }
+        ret = visualRect(option->direction, rect, ret);
+        return ret;
+    }
+
+    case SC_SliderGroove: {
+        auto grooveRect = insideMargin(rect, pixelMetric(PM_DefaultFrameWidth, option, widget));
 
         // centering
         if (horizontal) {
-            grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::Slider_GrooveThickness);
+            grooveRect = centerRect(rect, grooveRect.width(), Metrics::Slider_GrooveThickness);
         } else {
-            grooveRect = centerRect(grooveRect, Metrics::Slider_GrooveThickness, grooveRect.height());
+            grooveRect = centerRect(rect, Metrics::Slider_GrooveThickness, grooveRect.height());
         }
         return grooveRect;
     }
@@ -3077,6 +3096,49 @@ QSize Style::spinBoxSizeFromContents(const QStyleOption *option, const QSize &co
     return size;
 }
 
+int Style::sliderTickMarksLength()
+{
+    const bool disableTicks(!StyleConfigData::sliderDrawTickMarks());
+
+    /*
+     * Qt adds its own tick length directly inside QSlider.
+     * Take it out and replace by ours, if needed
+     */
+    const int tickLength(disableTicks ? 0
+                                      : (Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth
+                                         + (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness) / 2));
+    constexpr int builtInTickLength(5);
+    return tickLength - builtInTickLength;
+}
+
+QRect Style::sliderRectWithoutTickMarks(const QStyleOptionSlider *option)
+{
+    // store tick position and orientation
+    const QSlider::TickPosition tickPosition(option->tickPosition);
+    const bool horizontal(option->orientation == Qt::Horizontal);
+    const int tick = sliderTickMarksLength();
+
+    auto rect(option->rect);
+
+    if (horizontal) {
+        if (tickPosition & QSlider::TicksAbove) {
+            rect.setTop(-tick);
+        }
+        if (tickPosition & QSlider::TicksBelow) {
+            rect.setBottom(rect.bottom() + tick);
+        }
+    } else {
+        if (tickPosition & QSlider::TicksAbove) {
+            rect.setLeft(-tick);
+        }
+        if (tickPosition & QSlider::TicksBelow) {
+            rect.setRight(rect.right() + tick);
+        }
+    }
+
+    return rect;
+}
+
 //______________________________________________________________
 QSize Style::sliderSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
 {
@@ -3087,40 +3149,29 @@ QSize Style::sliderSizeFromContents(const QStyleOption *option, const QSize &con
     }
 
     // store tick position and orientation
-    const QSlider::TickPosition &tickPosition(sliderOption->tickPosition);
+    const QSlider::TickPosition tickPosition(sliderOption->tickPosition);
     const bool horizontal(sliderOption->orientation == Qt::Horizontal);
-    const bool disableTicks(!StyleConfigData::sliderDrawTickMarks());
+    const int tick = sliderTickMarksLength();
 
     // do nothing if no ticks are requested
     if (tickPosition == QSlider::NoTicks) {
         return contentsSize;
     }
 
-    /*
-     * Qt adds its own tick length directly inside QSlider.
-     * Take it out and replace by ours, if needed
-     */
-    const int tickLength(disableTicks ? 0
-                                      : (Metrics::Slider_TickLength + Metrics::Slider_TickMarginWidth
-                                         + (Metrics::Slider_GrooveThickness - Metrics::Slider_ControlThickness) / 2));
-
-    const int builtInTickLength(5);
-
     QSize size(contentsSize);
     if (horizontal) {
         if (tickPosition & QSlider::TicksAbove) {
-            size.rheight() += tickLength - builtInTickLength;
+            size.rheight() += tick;
         }
         if (tickPosition & QSlider::TicksBelow) {
-            size.rheight() += tickLength - builtInTickLength;
+            size.rheight() += tick;
         }
-
     } else {
         if (tickPosition & QSlider::TicksAbove) {
-            size.rwidth() += tickLength - builtInTickLength;
+            size.rwidth() += tick;
         }
         if (tickPosition & QSlider::TicksBelow) {
-            size.rwidth() += tickLength - builtInTickLength;
+            size.rwidth() += tick;
         }
     }
 
@@ -7147,7 +7198,7 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
                 painter->setPen(color);
 
                 // calculate positions and draw lines
-                int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available, upsideDown) + fudge);
+                const int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available, upsideDown) + fudge);
                 for (const QLine &tickLine : std::as_const(tickLines)) {
                     if (horizontal) {
                         painter->drawLine(tickLine.translated(reverse ? (rect.width() - position) : position, 0));
