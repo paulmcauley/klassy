@@ -24,6 +24,9 @@
 #include <QToolBar>
 #include <QWidget>
 
+class QSlider;
+class QStyleOptionSlider;
+
 namespace Breeze
 {
 
@@ -270,6 +273,12 @@ public:
 
     //* slider groove
     void renderSliderGroove(QPainter *, const QRect &, const QColor &) const;
+
+    //* reimplementation of protected method
+    void initSliderStyleOption(const QSlider *, QStyleOptionSlider *) const;
+
+    //* slider focus frame
+    QRectF pathForSliderHandleFocusFrame(QPainterPath &, const QRect &, int hmargin, int vmargin) const;
 
     //* slider handle
     void renderSliderHandle(QPainter *, const QRect &, const QColor &, const QColor &outline, const QColor &shadow, bool sunken) const;

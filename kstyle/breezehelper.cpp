@@ -37,6 +37,7 @@
 #include <QMdiArea>
 #include <QMenuBar>
 #include <QPainter>
+#include <QStyleOption>
 #include <QWindow>
 
 namespace Breeze
@@ -1147,6 +1148,45 @@ void Helper::renderDialGroove(QPainter *painter, const QRect &rect, const QColor
             painter->drawArc(grooveRect, angleStart, angleSpan);
         }
     }
+}
+
+//______________________________________________________________________________
+void Helper::initSliderStyleOption(const QSlider *slider, QStyleOptionSlider *option) const
+{
+    option->initFrom(slider);
+    option->subControls = QStyle::SC_None;
+    option->activeSubControls = QStyle::SC_None;
+    option->orientation = slider->orientation();
+    option->maximum = slider->maximum();
+    option->minimum = slider->minimum();
+    option->tickPosition = slider->tickPosition();
+    option->tickInterval = slider->tickInterval();
+    option->upsideDown = (slider->orientation() == Qt::Horizontal) //
+        ? (slider->invertedAppearance() != (option->direction == Qt::RightToLeft))
+        : (!slider->invertedAppearance());
+    option->direction = Qt::LeftToRight; // we use the upsideDown option instead
+    option->sliderPosition = slider->sliderPosition();
+    option->sliderValue = slider->value();
+    option->singleStep = slider->singleStep();
+    option->pageStep = slider->pageStep();
+    if (slider->orientation() == Qt::Horizontal) {
+        option->state |= QStyle::State_Horizontal;
+    }
+    // Can't fetch activeSubControls, because it's private API
+}
+
+//______________________________________________________________________________
+QRectF Helper::pathForSliderHandleFocusFrame(QPainterPath &focusFramePath, const QRect &rect, int hmargin, int vmargin) const
+{
+    // Mimics path and adjustments of renderSliderHandle
+    QRectF frameRect(rect);
+    frameRect.translate(hmargin, vmargin);
+    frameRect.adjust(1, 1, -1, -1);
+    frameRect = strokedRect(frameRect);
+    focusFramePath.addEllipse(frameRect);
+    frameRect.adjust(-hmargin, -vmargin, hmargin, vmargin);
+    focusFramePath.addEllipse(frameRect);
+    return frameRect;
 }
 
 //______________________________________________________________________________
