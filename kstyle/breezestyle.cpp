@@ -6054,39 +6054,12 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
     } else if (auto slider = qobject_cast<const QSlider *>(targetWidget)) {
         QStyleOptionSlider opt;
-        opt.initFrom(slider);
-        opt.orientation = slider->orientation();
-        opt.upsideDown = !(opt.orientation == Qt::Horizontal);
-        if (slider->invertedAppearance()) {
-            opt.upsideDown = !opt.upsideDown;
-        }
-        opt.maximum = slider->maximum();
-        opt.minimum = slider->minimum();
-        opt.tickPosition = slider->tickPosition();
-        opt.tickInterval = slider->tickInterval();
-        opt.sliderPosition = slider->sliderPosition();
-        opt.sliderValue = slider->value();
-        opt.singleStep = slider->singleStep();
-        opt.pageStep = slider->pageStep();
-        if (opt.orientation == Qt::Horizontal) {
-            opt.state |= QStyle::State_Horizontal;
-        }
+        _helper->initSliderStyleOption(slider, &opt);
         innerRect = subControlRect(CC_Slider, &opt, SC_SliderHandle, slider);
-        innerRect.adjust(1, 1, -1, -1);
-        // Subtracting some of the hmargin back from vertical RTL sliders
-        // because painting code being consistently off by 1px due to some
-        // rounding while pens being 1.001px thick. Not 100% sure, and I've
-        // seen some slider positions that still break this math by 1px.
-        const auto h = (opt.direction == Qt::RightToLeft && opt.orientation == Qt::Vertical) ? -hmargin + 1 : hmargin;
-        innerRect.translate(h, vmargin);
-        innerRadius = innerRect.height() / 2.0;
-        focusFramePath.addRoundedRect(innerRect, innerRadius, innerRadius);
-        outerRect = innerRect.adjusted(-hmargin, -vmargin, hmargin, vmargin);
-        outerRadius = outerRect.height() / 2.0;
-        focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
+        auto outerRect = _helper->pathForSliderHandleFocusFrame(focusFramePath, innerRect, hmargin, vmargin);
         if (_focusFrame) {
             // Workaround QFocusFrame not fully repainting outside the bounds of the targetWidget
-            auto previousRect = _focusFrame->property("_lastOuterRect").value<QRect>();
+            auto previousRect = _focusFrame->property("_lastOuterRect").value<QRectF>();
             if (previousRect != outerRect) {
                 _focusFrame->update();
                 _focusFrame->setProperty("_lastOuterRect", outerRect);
