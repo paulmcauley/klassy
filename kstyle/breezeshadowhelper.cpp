@@ -236,7 +236,7 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
     painter.end();
 
     const QPoint innerRectTopLeft = outerRect.center();
-    _shadowTiles = TileSet(QPixmap::fromImage(shadowTexture), innerRectTopLeft.x(), innerRectTopLeft.y(), 1, 1);
+    _shadowTiles = TileSet(QPixmap::fromImage(std::move(shadowTexture)), innerRectTopLeft.x(), innerRectTopLeft.y(), 1, 1);
 
     return _shadowTiles;
 }
