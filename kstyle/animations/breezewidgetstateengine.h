@@ -34,10 +34,12 @@ public:
     bool updateState(const QObject *, AnimationMode, bool);
 
     //* true if widget is animated
-    bool isAnimated(const QObject *, AnimationMode);
+    // void* because object is just used as key for lookup
+    bool isAnimated(const void *, AnimationMode);
 
-    //* animation opacity
-    qreal opacity(const QObject *object, AnimationMode mode)
+    //* animation opacity,
+    // void* because object is just used as key for lookup
+    qreal opacity(const void *object, AnimationMode mode)
     {
         return isAnimated(object, mode) ? data(object, mode).data()->opacity() : AnimationData::OpacityInvalid;
     }
@@ -148,7 +150,8 @@ public Q_SLOTS:
 
 protected:
     //* returns data associated to widget
-    DataMap<WidgetStateData>::Value data(const QObject *, AnimationMode);
+    // void* because object is just used as key for lookup
+    DataMap<WidgetStateData>::Value data(const void *, AnimationMode);
 
     //* returns data map associated to animation mode
     DataMap<WidgetStateData> &dataMap(AnimationMode);
