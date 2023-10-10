@@ -27,14 +27,14 @@ bool ToolBoxEngine::registerWidget(QWidget *widget)
 //____________________________________________________________
 bool ToolBoxEngine::updateState(const QPaintDevice *object, bool value)
 {
-    PaintDeviceDataMap<WidgetStateData>::Value data(ToolBoxEngine::data(object));
+    const QPointer<WidgetStateData> data = ToolBoxEngine::data(object);
     return (data && data.data()->updateState(value));
 }
 
 //____________________________________________________________
 bool ToolBoxEngine::isAnimated(const QPaintDevice *object)
 {
-    PaintDeviceDataMap<WidgetStateData>::Value data(ToolBoxEngine::data(object));
+    const QPointer<WidgetStateData> data = ToolBoxEngine::data(object);
     return (data && data.data()->animation() && data.data()->animation().data()->isRunning());
 }
 }

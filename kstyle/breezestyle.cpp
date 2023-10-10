@@ -1328,12 +1328,12 @@ void Style::drawItemText(QPainter *painter,
     if (_animations->widgetEnabilityEngine().enabled()) {
         /*
          * check if painter engine is registered to WidgetEnabilityEngine, and animated
-         * if yes, merge the palettes. Note: a static_cast is safe here, since only the address
-         * of the pointer is used, not the actual content.
+         * if yes, merge the palettes. Note: void * is used here because we only care
+         * about the pointer value which is used a as a key to lookup a value in a map
          */
-        const QWidget *widget(static_cast<const QWidget *>(painter->device()));
-        if (_animations->widgetEnabilityEngine().isAnimated(widget, AnimationEnable)) {
-            const QPalette copy(_helper->disabledPalette(palette, _animations->widgetEnabilityEngine().opacity(widget, AnimationEnable)));
+        const void *key = painter->device();
+        if (_animations->widgetEnabilityEngine().isAnimated(key, AnimationEnable)) {
+            const QPalette copy(_helper->disabledPalette(palette, _animations->widgetEnabilityEngine().opacity(key, AnimationEnable)));
             return ParentStyleClass::drawItemText(painter, rect, flags, copy, enabled, text, textRole);
         }
     }

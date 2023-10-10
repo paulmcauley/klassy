@@ -44,14 +44,14 @@ bool WidgetStateEngine::updateState(const QObject *object, AnimationMode mode, b
 }
 
 //____________________________________________________________
-bool WidgetStateEngine::isAnimated(const QObject *object, AnimationMode mode)
+bool WidgetStateEngine::isAnimated(const void *object, AnimationMode mode)
 {
     DataMap<WidgetStateData>::Value data(WidgetStateEngine::data(object, mode));
     return (data && data.data()->animation() && data.data()->animation().data()->isRunning());
 }
 
 //____________________________________________________________
-DataMap<WidgetStateData>::Value WidgetStateEngine::data(const QObject *object, AnimationMode mode)
+DataMap<WidgetStateData>::Value WidgetStateEngine::data(const void *object, AnimationMode mode)
 {
     switch (mode) {
     case AnimationHover:

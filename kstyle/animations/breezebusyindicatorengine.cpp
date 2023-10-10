@@ -128,7 +128,9 @@ void BusyIndicatorEngine::setValue(int value)
             animated = true;
 
 #if BREEZE_HAVE_QTQUICK
-            if (QQuickItem *item = qobject_cast<QQuickItem *>(const_cast<QObject *>(iter.key()))) {
+            const void *key = iter.key();
+            QObject *obj = const_cast<QObject *>(static_cast<const QObject *>(key));
+            if (QQuickItem *item = qobject_cast<QQuickItem *>(obj)) {
                 item->polish();
             }
 #endif
