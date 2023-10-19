@@ -443,6 +443,17 @@ void Style::polish(QWidget *widget)
         auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(pushButton->parent());
         pushButton->setAutoDefault(autoDefaultNoDialog || (autoDefaultInDialog && dialogButtonBox));
     }
+    if (_toolsAreaManager->hasHeaderColors()) {
+        // style TitleWidget and Search KPageView to look the same as KDE System Settings
+        if (widget->objectName() == QLatin1String("KPageView::TitleWidget")) {
+            widget->setAutoFillBackground(true);
+            widget->setPalette(_toolsAreaManager->palette());
+        } else if (widget->objectName() == QLatin1String("KPageView::Search")) {
+            widget->setBackgroundRole(QPalette::Window);
+            widget->setAutoFillBackground(true);
+            widget->setPalette(_toolsAreaManager->palette());
+        }
+    }
 
     // base class polishing
     ParentStyleClass::polish(widget);
