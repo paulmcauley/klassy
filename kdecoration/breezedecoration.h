@@ -166,7 +166,11 @@ Q_SIGNALS:
     void reconfigured();
 
 public Q_SLOTS:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    bool init() override;
+#else
     void init() override;
+#endif
 
 private Q_SLOTS:
     void reconfigure()
