@@ -280,7 +280,11 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 }
 
 //________________________________________________________________
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+bool Decoration::init()
+#else
 void Decoration::init()
+#endif
 {
     auto c = client();
 
@@ -406,6 +410,9 @@ void Decoration::init()
 
     createButtons();
     updateShadow();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    return true;
+#endif
 }
 
 //________________________________________________________________
