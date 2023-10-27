@@ -130,7 +130,7 @@ function(build_Qt6)
 
     find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
     if(${Qt6Quick_FOUND})
-        find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+        find_package(KF6KirigamiPlatform ${KF6_MIN_VERSION} REQUIRED)
     endif()
 
     find_package(KF6FrameworkIntegration ${KF6_MIN_VERSION} CONFIG )

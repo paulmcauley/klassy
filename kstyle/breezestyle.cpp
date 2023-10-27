@@ -62,11 +62,17 @@
 
 #if BREEZE_HAVE_QTQUICK
 #include <KCoreAddons>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <Kirigami/Platform/TabletModeWatcher>
+using TabletModeWatcher = Kirigami::Platform::TabletModeWatcher;
+#else
 #if __has_include(<Kirigami/TabletModeWatcher>)
 // the namespaced include is new in KF 5.91
 #include <Kirigami/TabletModeWatcher>
 #else
 #include <TabletModeWatcher>
+#endif
+using TabletModeWatcher = Kirigami::TabletModeWatcher;
 #endif
 #include <QQuickWindow>
 #endif
@@ -7817,7 +7823,7 @@ bool Style::isTabletMode() const
         return qEnvironmentVariableIntValue("BREEZE_IS_TABLET_MODE");
     }
 #if BREEZE_HAVE_QTQUICK
-    return Kirigami::TabletModeWatcher::self()->isTabletMode();
+    return TabletModeWatcher::self()->isTabletMode();
 #else
     return false;
 #endif
