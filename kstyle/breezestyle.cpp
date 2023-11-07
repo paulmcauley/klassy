@@ -5016,6 +5016,9 @@ bool Style::drawDockWidgetResizeHandlePrimitive(const QStyleOption *option, QPai
 
 bool Style::drawPanelStatusBarPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
+    if (widget && widget->parent() && !widget->parent()->inherits("QMainWindow")) {
+        return true;
+    }
     auto rect(option->rect);
     const auto color(_helper->separatorColor(option->palette));
     const auto size = pixelMetric(QStyle::PM_SplitterWidth, option, widget);
