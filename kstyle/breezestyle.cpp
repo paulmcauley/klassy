@@ -597,7 +597,8 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
 
     // frame width
     case PM_DefaultFrameWidth: {
-        if (!widget) {
+        const auto isControl = isQtQuickControl(option, widget);
+        if (!widget && !isControl) {
             return 0;
         }
         if (qobject_cast<const QMenu *>(widget)) {
@@ -605,7 +606,7 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
         }
         if (qobject_cast<const QLineEdit *>(widget)) {
             return Metrics::LineEdit_FrameWidth;
-        } else if (isQtQuickControl(option, widget)) {
+        } else if (isControl) {
             const QString &elementType = option->styleObject->property("elementType").toString();
             if (elementType == QLatin1String("edit") || elementType == QLatin1String("spinbox")) {
                 return Metrics::LineEdit_FrameWidth;
