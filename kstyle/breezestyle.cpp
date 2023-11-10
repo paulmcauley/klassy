@@ -589,6 +589,40 @@ void Style::unpolish(QWidget *widget)
     ParentStyleClass::unpolish(widget);
 }
 
+/// Find direct parent layout as the parentWidget()->layout() might not be
+/// the direct parent layout but just a parent layout.
+QLayout *findParentLayout(const QWidget *widget)
+{
+    if (!widget->parentWidget()) {
+        return nullptr;
+    }
+
+    auto layout = widget->parentWidget()->layout();
+    if (!layout) {
+        return nullptr;
+    }
+
+    if (layout->indexOf(const_cast<QWidget *>(widget)) > -1) {
+        return layout;
+    }
+
+    QList<QObject *> children = layout->children();
+
+    while (!children.isEmpty()) {
+        layout = qobject_cast<QLayout *>(children.takeFirst());
+        if (!layout) {
+            continue;
+        }
+
+        if (layout->indexOf(const_cast<QWidget *>(widget)) > -1) {
+            return layout;
+        }
+        children += layout->children();
+    }
+
+    return nullptr;
+}
+
 //______________________________________________________________
 int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWidget *widget) const
 {
@@ -650,20 +684,29 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
         }
 
         if (qobject_cast<const QAbstractScrollArea *>(widget)) {
-            if (widget->parentWidget() && widget->parentWidget()->layout()) {
-                auto layout = widget->parentWidget()->layout();
+            auto layout = findParentLayout(widget);
 
+            if (!layout) {
+                if (widget->parentWidget() && widget->parentWidget()->layout()) {
+                    layout = widget->parentWidget()->layout();
+                }
+            }
+
+            if (layout) {
                 if (layout->inherits("QDockWidgetLayout") || layout->inherits("QMainWindowLayout") || qobject_cast<const QStackedLayout *>(layout)) {
                     return 0;
                 }
-                if (layout->spacing() > 0 && layout->count() > 1) {
-                    return Metrics::Frame_FrameWidth;
-                }
 
-                if (auto grid = qobject_cast<const QGridLayout *>(widget->parentWidget()->layout())) {
+                if (auto grid = qobject_cast<const QGridLayout *>(layout)) {
                     if (grid->horizontalSpacing() > 0 || grid->verticalSpacing() > 0) {
                         return Metrics::Frame_FrameWidth;
                     }
+                }
+
+                // Add frame when scroll area is in a layout with more than an item and the
+                // layout has some spacing.
+                if (layout->spacing() > 0 && layout->count() > 1) {
+                    return Metrics::Frame_FrameWidth;
                 }
             }
         }
