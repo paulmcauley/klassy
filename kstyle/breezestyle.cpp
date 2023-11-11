@@ -455,6 +455,8 @@ void Style::polish(QWidget *widget)
     } else if (qobject_cast<QDialog *>(widget)) {
         widget->setAttribute(Qt::WA_StyledBackground);
         addEventFilter(widget);
+    } else if (qobject_cast<QDialogButtonBox *>(widget)) {
+        addEventFilter(widget);
     } else if (auto pushButton = qobject_cast<QPushButton *>(widget)) {
         QDialog *dialog = nullptr;
         auto p = pushButton->parentWidget();
@@ -1520,7 +1522,13 @@ bool Style::eventFilter(QObject *object, QEvent *event)
 
     if (object->isWidgetType()) {
         QWidget *widget = static_cast<QWidget *>(object);
-        if (widget->inherits("QAbstractScrollArea") || widget->inherits("KTextEditor::View")) {
+
+        if (auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(object)) {
+            if (widget->parentWidget() && widget->parentWidget()->inherits("KPageView")) {
+                // QDialogButtonBox has no paintEvent
+                return eventFilterDialogButtonBox(dialogButtonBox, event);
+            }
+        } else if (widget->inherits("QAbstractScrollArea") || widget->inherits("KTextEditor::View")) {
             return eventFilterScrollArea(widget, event);
         } else if (widget->inherits("QComboBoxPrivateContainer")) {
             return eventFilterComboBoxContainer(widget, event);
@@ -1529,6 +1537,27 @@ bool Style::eventFilter(QObject *object, QEvent *event)
 
     // fallback
     return ParentStyleClass::eventFilter(object, event);
+}
+
+//____________________________________________________________________________
+bool Style::eventFilterDialogButtonBox(QDialogButtonBox *widget, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        QPainter painter(widget);
+        auto paintEvent = static_cast<QPaintEvent *>(event);
+        painter.setClipRegion(paintEvent->region());
+
+        // store rect and palette
+        auto rect(widget->rect());
+        rect.setHeight(1);
+        const auto &palette(widget->palette());
+
+        // define color and render
+        const auto color(_helper->separatorColor(palette));
+        _helper->renderSeparator(&painter, rect, color, false);
+    }
+
+    return false;
 }
 
 //____________________________________________________________________________
