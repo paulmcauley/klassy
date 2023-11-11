@@ -435,11 +435,9 @@ void Style::polish(QWidget *widget)
         };
 
         const Position position = static_cast<Position>(widget->property("position").toInt());
-
         const auto splitterWidth = Metrics::Splitter_SplitterWidth;
-        const auto frameWidth = pixelMetric(QStyle::PM_DefaultFrameWidth, nullptr, widget);
 
-        int left = frameWidth, right = frameWidth;
+        int left = 1, right = 1;
         if ((position == Position::Left && widget->layoutDirection() == Qt::LeftToRight)
             || (position == Position::Right && widget->layoutDirection() == Qt::RightToLeft)) {
             right += splitterWidth;
@@ -447,7 +445,7 @@ void Style::polish(QWidget *widget)
                    || (position == Position::Left && widget->layoutDirection() == Qt::RightToLeft)) {
             left += splitterWidth;
         }
-        widget->setContentsMargins(left, frameWidth, right, frameWidth);
+        widget->setContentsMargins(left, splitterWidth, right, splitterWidth);
 
     } else if (qobject_cast<QMainWindow *>(widget)) {
         widget->setAttribute(Qt::WA_StyledBackground);
