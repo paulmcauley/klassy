@@ -2263,10 +2263,12 @@ QRect Style::frameContentsRect(const QStyleOption *option, const QWidget *widget
             const auto value = borders.value<Qt::Edges>();
             auto rect = option->rect;
 
-            if (value & Qt::LeftEdge) {
+            if ((value & Qt::LeftEdge && widget->layoutDirection() == Qt::LeftToRight)
+                || (value & Qt::RightEdge && widget->layoutDirection() == Qt::RightToLeft)) {
                 rect.adjust(1, 0, 0, 0);
             }
-            if (value & Qt::RightEdge) {
+            if ((value & Qt::RightEdge && widget->layoutDirection() == Qt::LeftToRight)
+                || (value & Qt::LeftEdge && widget->layoutDirection() == Qt::RightToLeft)) {
                 rect.adjust(0, 0, -1, 0);
             }
             if (value & Qt::TopEdge) {
