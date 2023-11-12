@@ -25,7 +25,7 @@ LoadPreset::LoadPreset(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui->addButton, &QAbstractButton::clicked, this, &LoadPreset::addButtonClicked);
     connect(m_ui->loadButton, &QAbstractButton::clicked, this, &LoadPreset::loadButtonClicked);
     connect(m_ui->removeButton, &QAbstractButton::clicked, this, &LoadPreset::removeButtonClicked);
-    connect(m_ui->presetsList, &QListWidget::activated, this, &LoadPreset::presetsListActivated);
+    connect(m_ui->presetsList, &QListWidget::itemSelectionChanged, this, &LoadPreset::presetsListActivated);
 }
 
 LoadPreset::~LoadPreset()
@@ -90,6 +90,8 @@ void LoadPreset::addButtonClicked()
 
 void LoadPreset::presetsListActivated()
 {
+    if (!m_ui->presetsList->selectedItems().count())
+        return;
     m_ui->loadButton->setEnabled(true);
     m_ui->removeButton->setEnabled(true);
 }
@@ -105,6 +107,9 @@ void LoadPreset::loadButtonClicked()
 
 void LoadPreset::removeButtonClicked()
 {
+    if (!m_ui->presetsList->selectedItems().count())
+        return;
+
     // confirmation dialog
     QMessageBox messageBox(QMessageBox::Question,
                            i18n("Question - Klassy Settings"),
