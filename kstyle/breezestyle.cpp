@@ -484,10 +484,11 @@ void Style::polish(QWidget *widget)
         if (widget->objectName() == QLatin1String("KPageView::TitleWidget")) {
             widget->setAutoFillBackground(true);
             widget->setPalette(_toolsAreaManager->palette());
+            addEventFilter(widget);
         } else if (widget->objectName() == QLatin1String("KPageView::Search")) {
             widget->setBackgroundRole(QPalette::Window);
-            widget->setAutoFillBackground(true);
             widget->setPalette(_toolsAreaManager->palette());
+            addEventFilter(widget);
         }
     }
 
@@ -1619,6 +1620,22 @@ bool Style::eventFilterPageViewHeader(QWidget *widget, QEvent *event)
         painter.setBrush(palette.color(QPalette::Window));
         painter.setPen(Qt::NoPen);
         painter.drawRect(widget->rect());
+
+        // Add separator next to the search field
+        if (widget->objectName() == QLatin1String("KPageView::Search")) {
+            auto rect(widget->rect());
+            if (widget->layoutDirection() == Qt::RightToLeft) {
+                rect.setWidth(1);
+            } else {
+                rect.setLeft(rect.width() - 1);
+            }
+            rect.setHeight(rect.height() - Metrics::ToolBar_SeparatorVerticalMargin * 2);
+            rect.setY(Metrics::ToolBar_SeparatorVerticalMargin);
+
+            // define color and render
+            const auto color(_helper->separatorColor(palette));
+            _helper->renderSeparator(&painter, rect, color, true);
+        }
     }
 
     return false;
