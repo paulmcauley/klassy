@@ -115,4 +115,58 @@ bool PresetsModel::isPresetPresent(KConfig *config, const QString &presetName)
 {
     return readPresetsList(config).contains(presetName);
 }
+
+void PresetsModel::exportPreset(KConfig *config, const QString &presetName, const QString &fileName)
+{
+    if (presetName.isEmpty())
+        return;
+
+    KSharedConfig::Ptr outputPresetConfig = KSharedConfig::openConfig(fileName);
+    QString groupName = presetGroupName(presetName);
+
+    if (groupName.isEmpty() || !config->hasGroup(groupName))
+        return;
+
+    KConfigGroup inputPresetGroup = config->group(groupName);
+    KConfigGroup outputGlobalGroup = outputPresetConfig->group("Klassy Window Decoration Preset File");
+    KConfigGroup outputPresetGroup = outputPresetConfig->group(groupName);
+
+    outputGlobalGroup.writeEntry("version", QString(KLASSY_VERSION));
+
+    for (QString &inputKey : inputPresetGroup.keyList()) {
+        outputPresetGroup.writeEntry(inputKey, inputPresetGroup.readEntry(inputKey));
+    }
+    outputPresetConfig->sync();
+}
+
+void PresetsModel::importPresetValidate(const QString &fileName,
+                                        KSharedConfig::Ptr &importPresetConfig,
+                                        bool &validGlobalGroup,
+                                        bool &versionValid,
+                                        QString &presetName)
+{
+    importPresetConfig = KSharedConfig::openConfig(fileName);
+
+    if (!(validGlobalGroup = importPresetConfig->hasGroup("Klassy Window Decoration Preset File")))
+        return;
+    KConfigGroup importGlobalGroup = importPresetConfig->group("Klassy Window Decoration Preset File");
+    QString importVersion = importGlobalGroup.readEntry("version");
+    versionValid = (importVersion == QString(KLASSY_VERSION));
+
+    presetName = readPresetsList(importPresetConfig.data())[0];
+}
+
+void PresetsModel::importPreset(KConfig *config, KSharedConfig::Ptr &importPresetConfig, const QString &presetName)
+{
+    QString importGroupName = presetGroupName(presetName);
+
+    if (!importPresetConfig->hasGroup(importGroupName))
+        return;
+    KConfigGroup importGroup = importPresetConfig->group(importGroupName);
+
+    for (QString &importKey : importGroup.keyList()) {
+        KConfigGroup configGroup(config, importGroupName);
+        configGroup.writeEntry(importKey, importGroup.readEntry(importKey));
+    }
+}
 }

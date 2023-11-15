@@ -7,6 +7,7 @@
  * SPDX-License-Identifier: MIT
  */
 
+#include "addpreset.h"
 #include "breeze.h"
 #include "ui_loadpreset.h"
 #include <QDialog>
@@ -28,9 +29,12 @@ protected Q_SLOTS:
     void presetsListActivated();
     void loadButtonClicked();
     void removeButtonClicked();
+    void importButtonClicked();
+    void exportButtonClicked();
 
 private:
     Ui_LoadPreset *m_ui;
+    AddPreset *m_addDialog;
 
     //* kconfiguration object
     KSharedConfig::Ptr m_configuration;

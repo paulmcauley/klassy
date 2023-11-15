@@ -26,6 +26,10 @@ public:
     static void deletePreset(KConfig *config, const QString &presetName);
     static QStringList readPresetsList(KConfig *config);
     static bool isPresetPresent(KConfig *config, const QString &presetName);
+    static void exportPreset(KConfig *config, const QString &presetName, const QString &fileName);
+    static void
+    importPresetValidate(const QString &fileName, KSharedConfig::Ptr &importPresetConfig, bool &validGlobalGroup, bool &versionValid, QString &presetName);
+    static void importPreset(KConfig *config, KSharedConfig::Ptr &importPresetConfig, const QString &presetName);
 };
 
 }
