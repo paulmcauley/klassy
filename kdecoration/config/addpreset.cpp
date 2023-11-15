@@ -14,6 +14,7 @@ AddPreset::AddPreset(QWidget *parent)
     , m_ui(new Ui_AddPreset)
 {
     m_ui->setupUi(this);
+    connect(m_ui->importButton, &QAbstractButton::clicked, this, &AddPreset::importButtonClicked);
 }
 
 AddPreset::~AddPreset()
@@ -21,4 +22,9 @@ AddPreset::~AddPreset()
     delete m_ui;
 }
 
+void AddPreset::importButtonClicked()
+{
+    reject();
+    emit importClicked();
+}
 }

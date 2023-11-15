@@ -6,22 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>466</width>
     <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
-   <item>
-    <widget class="QListWidget" name="presetsList">
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1" rowspan="3">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QPushButton" name="loadButton">
@@ -52,7 +45,7 @@
      <item>
       <widget class="QPushButton" name="addButton">
        <property name="text">
-        <string>Add</string>
+        <string>Add...</string>
        </property>
        <property name="icon">
         <iconset theme="list-add">
@@ -71,6 +64,22 @@
        <property name="icon">
         <iconset theme="list-remove">
          <normaloff>.</normaloff>.</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="exportButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Export To File...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="document-export"/>
        </property>
       </widget>
      </item>
@@ -99,8 +108,23 @@
      </item>
     </layout>
    </item>
+   <item row="0" column="0" rowspan="3">
+    <widget class="QListWidget" name="presetsList">
+     <property name="sortingEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>presetsList</tabstop>
+  <tabstop>loadButton</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>exportButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -126,8 +150,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>353</x>
-     <y>232</y>
+     <x>376</x>
+     <y>272</y>
     </hint>
     <hint type="destinationlabel">
      <x>333</x>

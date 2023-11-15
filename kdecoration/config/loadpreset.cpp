@@ -8,6 +8,7 @@
 #include "addpreset.h"
 #include "breezeconfigwidget.h"
 #include "presetsmodel.h"
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <memory>
@@ -17,6 +18,7 @@ namespace Breeze
 LoadPreset::LoadPreset(KSharedConfig::Ptr config, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_LoadPreset)
+    , m_addDialog(new AddPreset)
     , m_configuration(config)
     , m_parent(parent)
 {
@@ -26,17 +28,22 @@ LoadPreset::LoadPreset(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui->loadButton, &QAbstractButton::clicked, this, &LoadPreset::loadButtonClicked);
     connect(m_ui->removeButton, &QAbstractButton::clicked, this, &LoadPreset::removeButtonClicked);
     connect(m_ui->presetsList, &QListWidget::itemSelectionChanged, this, &LoadPreset::presetsListActivated);
+
+    connect(m_ui->exportButton, &QAbstractButton::clicked, this, &LoadPreset::exportButtonClicked);
+    connect(m_addDialog, &AddPreset::importClicked, this, &LoadPreset::importButtonClicked);
 }
 
 LoadPreset::~LoadPreset()
 {
     delete m_ui;
+    delete m_addDialog;
 }
 
 void LoadPreset::initPresetsList()
 {
     m_ui->loadButton->setEnabled(false);
     m_ui->removeButton->setEnabled(false);
+    m_ui->exportButton->setEnabled(false);
     m_ui->presetsList->clear();
     QStringList presets(PresetsModel::readPresetsList(m_configuration.data()));
     foreach (const QString presetName, presets) {
@@ -46,45 +53,39 @@ void LoadPreset::initPresetsList()
 
 void LoadPreset::addButtonClicked()
 {
-    AddPreset *addDialog = new AddPreset();
-    addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
+    m_addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
+    m_addDialog->m_ui->presetName->clear();
 
-    if (!addDialog->exec()) {
-        delete addDialog;
+    if (!m_addDialog->exec()) {
         return;
     }
 
     QRegularExpression re("\\w+");
-    while (!re.match(addDialog->m_ui->presetName->text()).hasMatch()) {
+    while (!re.match(m_addDialog->m_ui->presetName->text()).hasMatch()) {
         QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Please provide a name for the Preset"));
-        delete addDialog;
-        addDialog = new AddPreset();
-        addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
-        if (addDialog->exec() == QDialog::Rejected) {
-            delete addDialog;
+        m_addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
+        if (m_addDialog->exec() == QDialog::Rejected) {
             return;
         }
     }
 
     // if a preset already exists with the same name
-    if ((m_ui->presetsList->findItems(addDialog->m_ui->presetName->text(), Qt::MatchExactly)).count()) {
+    if ((m_ui->presetsList->findItems(m_addDialog->m_ui->presetName->text(), Qt::MatchExactly)).count()) {
         // confirmation dialog
         QMessageBox messageBox(QMessageBox::Question,
                                i18n("Question - Klassy Settings"),
-                               i18n("A preset with the name \"") + addDialog->m_ui->presetName->text() + i18n("\" already exists. Overwrite?"),
+                               i18n("A preset with the name \"") + m_addDialog->m_ui->presetName->text() + i18n("\" already exists. Overwrite?"),
                                QMessageBox::Yes | QMessageBox::Cancel);
         messageBox.button(QMessageBox::Yes)->setText(i18n("Overwrite"));
         messageBox.setDefaultButton(QMessageBox::Cancel);
         if (messageBox.exec() == QMessageBox::Cancel) {
-            delete addDialog;
             return;
         }
     }
 
     ConfigWidget *configWidget = qobject_cast<ConfigWidget *>(m_parent);
     if (configWidget)
-        configWidget->saveMain(addDialog->m_ui->presetName->text());
-    delete addDialog;
+        configWidget->saveMain(m_addDialog->m_ui->presetName->text());
     initPresetsList();
 }
 
@@ -94,6 +95,7 @@ void LoadPreset::presetsListActivated()
         return;
     m_ui->loadButton->setEnabled(true);
     m_ui->removeButton->setEnabled(true);
+    m_ui->exportButton->setEnabled(true);
 }
 
 void LoadPreset::loadButtonClicked()
@@ -125,4 +127,69 @@ void LoadPreset::removeButtonClicked()
     initPresetsList();
 }
 
+void LoadPreset::importButtonClicked()
+{
+    QStringList files = QFileDialog::getOpenFileNames(this, i18n("Select Klassy Preset to Import"), "", i18n("Klassy Preset (*.klp)"));
+    for (QString fileName : files) {
+        KSharedConfig::Ptr importPresetConfig;
+        bool validGlobalGroup;
+        bool versionValid;
+        QString presetName;
+
+        PresetsModel::importPresetValidate(fileName, importPresetConfig, validGlobalGroup, versionValid, presetName);
+        if (!validGlobalGroup) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n("Invalid Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.exec();
+            continue;
+        }
+
+        if (!versionValid) {
+            // confirmation dialog
+            QMessageBox messageBox(QMessageBox::Question,
+                                   i18n("Question - Klassy Settings"),
+                                   i18n("The file to import at \"") + fileName
+                                       + i18n("\" was created for a different version of Klassy.\n Try to import anyway?"),
+                                   QMessageBox::Yes | QMessageBox::Cancel);
+            messageBox.button(QMessageBox::Yes)->setText(i18n("Continue Import"));
+            messageBox.setDefaultButton(QMessageBox::Cancel);
+            if (messageBox.exec() == QMessageBox::Cancel) {
+                continue;
+            }
+        }
+
+        // if a preset already exists with the same name
+        if ((m_ui->presetsList->findItems(presetName, Qt::MatchExactly)).count()) {
+            // confirmation dialog
+            QMessageBox messageBox(QMessageBox::Question,
+                                   i18n("Question - Klassy Settings"),
+                                   i18n("A preset with the name \"") + presetName + i18n("\" already exists. Overwrite?"),
+                                   QMessageBox::Yes | QMessageBox::Cancel);
+            messageBox.button(QMessageBox::Yes)->setText(i18n("Overwrite"));
+            messageBox.setDefaultButton(QMessageBox::Cancel);
+            if (messageBox.exec() == QMessageBox::Cancel) {
+                continue;
+            } else {
+                PresetsModel::deletePreset(m_configuration.data(), presetName);
+            }
+        }
+
+        PresetsModel::importPreset(m_configuration.data(), importPresetConfig, presetName);
+        m_configuration->sync();
+        initPresetsList();
+    }
+}
+
+void LoadPreset::exportButtonClicked()
+{
+    if (!m_ui->presetsList->selectedItems().count())
+        return;
+
+    QString fileName = QFileDialog::getSaveFileName(this,
+                                                    i18n("Export Klassy Preset to File"),
+                                                    "~/" + m_ui->presetsList->selectedItems().first()->text() + ".klp",
+                                                    i18n("Klassy Preset (*.klp)"));
+
+    PresetsModel::exportPreset(m_configuration.data(), m_ui->presetsList->selectedItems().first()->text(), fileName);
+}
 }

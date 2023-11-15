@@ -23,8 +23,12 @@ public:
     explicit AddPreset(QWidget *parent = nullptr);
     ~AddPreset();
 
+signals:
+    void importClicked();
+
 private:
     Ui_AddPreset *m_ui;
+    void importButtonClicked();
 };
 
 }
