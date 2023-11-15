@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
 
     KCMultiDialog dialog;
     dialog.setWindowTitle(i18n("Klassy Settings"));
-    dialog.setMinimumWidth(935);
+    dialog.setMinimumWidth(960);
     dialog.addModule(KPluginMetaData(QStringLiteral("plasma/kcms/systemsettings_qwidgets/klassystyleconfig")));
     dialog.addModule(KPluginMetaData(QStringLiteral("plasma/kcms/klassy/kcm_klassydecoration")));
     dialog.show();
