@@ -1255,7 +1255,7 @@ bool Style::drawWidgetPrimitive(const QStyleOption *option, QPainter *painter, c
 {
     // Paint functions for QMainWindow and QDialog tools areas are moved to eventFilter() to allow translucent headers to be painted early enough
 
-    if (widget->inherits("KMultiTabBar")) {
+    if (widget && widget->inherits("KMultiTabBar")) {
         enum class Position {
             Left,
             Right,
