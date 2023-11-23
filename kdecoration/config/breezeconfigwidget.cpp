@@ -98,7 +98,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
 #if KLASSY_GIT_MASTER
     // set the long version string if from the git master
-    m_ui.version->setText("v" + QString(KLASSY_VERSION) + ".git");
+    m_ui.version->setText("v" + klassyLongVersion());
 
 #else
     // set shortened version string in UI if an official release
