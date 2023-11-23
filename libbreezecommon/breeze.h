@@ -26,6 +26,9 @@ namespace Breeze
 {
 
 // COMMON-------------------------------------------------------------------
+
+QString BREEZECOMMON_EXPORT klassyLongVersion();
+
 //* standard pen widths
 struct BREEZECOMMON_EXPORT PenWidth {
     /* Using 1 instead of slightly more than 1 causes symbols drawn with

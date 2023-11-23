@@ -131,7 +131,7 @@ void PresetsModel::exportPreset(KConfig *config, const QString &presetName, cons
     KConfigGroup outputGlobalGroup = outputPresetConfig->group("Klassy Window Decoration Preset File");
     KConfigGroup outputPresetGroup = outputPresetConfig->group(groupName);
 
-    outputGlobalGroup.writeEntry("version", QString(KLASSY_VERSION));
+    outputGlobalGroup.writeEntry("version", klassyLongVersion());
 
     for (QString &inputKey : inputPresetGroup.keyList()) {
         outputPresetGroup.writeEntry(inputKey, inputPresetGroup.readEntry(inputKey));
@@ -151,7 +151,7 @@ void PresetsModel::importPresetValidate(const QString &fileName,
         return;
     KConfigGroup importGlobalGroup = importPresetConfig->group("Klassy Window Decoration Preset File");
     QString importVersion = importGlobalGroup.readEntry("version");
-    versionValid = (importVersion == QString(KLASSY_VERSION));
+    versionValid = (importVersion == klassyLongVersion());
 
     presetName = readPresetsList(importPresetConfig.data())[0];
 }
