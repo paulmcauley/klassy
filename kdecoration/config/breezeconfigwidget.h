@@ -135,6 +135,9 @@ private:
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();
+
+    void importBundledPresets();
+
     bool m_translucentActiveSchemeColor = false;
     bool m_translucentInactiveSchemeColor = false;
     qreal m_activeSchemeColorAlpha = 1;

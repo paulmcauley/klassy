@@ -17,6 +17,7 @@
 #include <KColorScheme>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDir>
 #include <QIcon>
 #include <QRegularExpression>
 #include <QStackedLayout>
@@ -223,6 +224,7 @@ void ConfigWidget::loadMain(QString loadPresetName)
         m_internalSettings->load();
         m_buttonSizingDialog->load();
         m_windowOutlineOpacityDialog->load();
+        importBundledPresets();
     } else {
         PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName);
         m_buttonSizingDialog->loadMain(loadPresetName);
@@ -861,5 +863,48 @@ void ConfigWidget::presetsButtonClicked()
     m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
     m_loadPresetDialog->exec();
+}
+
+// copies bundled presets in /usr/lib64/qt5/plugins/plasma/kcms/klassy/presets into ~/.config/klassyrc once per release
+void ConfigWidget::importBundledPresets()
+{
+    if (m_internalSettings->bundledWindecoPresetsImportedVersion() == klassyLongVersion()) {
+        return;
+    }
+
+    // qDebug() << "librarypaths: " << QCoreApplication::libraryPaths(); //librarypaths:  ("/usr/lib64/qt5/plugins", "/usr/bin")
+
+    for (QString libraryPath : QCoreApplication::libraryPaths()) {
+        libraryPath += "/plasma/kcms/klassy/presets";
+        QDir presetsDir(libraryPath);
+        if (presetsDir.exists()) {
+            QStringList filters;
+            filters << "*.klp";
+            presetsDir.setNameFilters(filters);
+            QStringList presetFiles = presetsDir.entryList();
+
+            for (QString presetFile : presetFiles) {
+                presetFile = libraryPath + "/" + presetFile; // set absolute full path
+                KSharedConfig::Ptr importPresetConfig;
+                bool validGlobalGroup;
+                bool versionValid;
+                QString presetName;
+
+                PresetsModel::importPresetValidate(presetFile, importPresetConfig, validGlobalGroup, versionValid, presetName);
+                if (!validGlobalGroup || !versionValid) {
+                    continue;
+                }
+                if (PresetsModel::isPresetPresent(m_configuration.data(), presetName)) {
+                    PresetsModel::deletePreset(m_configuration.data(), presetName);
+                }
+
+                PresetsModel::importPreset(m_configuration.data(), importPresetConfig, presetName);
+            }
+        }
+    }
+
+    m_internalSettings->setBundledWindecoPresetsImportedVersion(klassyLongVersion());
+    m_internalSettings->save();
+    m_configuration->sync();
 }
 }

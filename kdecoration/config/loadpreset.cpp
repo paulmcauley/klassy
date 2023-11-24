@@ -8,6 +8,7 @@
 #include "addpreset.h"
 #include "breezeconfigwidget.h"
 #include "presetsmodel.h"
+#include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -189,6 +190,11 @@ void LoadPreset::exportButtonClicked()
                                                     i18n("Export Klassy Preset to File"),
                                                     "~/" + m_ui->presetsList->selectedItems().first()->text() + ".klp",
                                                     i18n("Klassy Preset (*.klp)"));
+    if (fileName.isEmpty())
+        return;
+    QDir dir;
+    if (dir.exists(fileName))
+        dir.remove(fileName);
 
     PresetsModel::exportPreset(m_configuration.data(), m_ui->presetsList->selectedItems().first()->text(), fileName);
 }
