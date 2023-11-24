@@ -24,8 +24,12 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
 
     foreach (auto item, skeleton->items()) {
         keyInBlacklist = false;
-        // do not write a key in windecoExceptionKeys
-        foreach (auto blacklistKey, windecoExceptionKeys) {
+
+        QStringList blacklistKeys = windecoExceptionKeys;
+        blacklistKeys << "BundledWindecoPresetsImportedVersion";
+
+        // do not write a key in blacklist
+        foreach (auto blacklistKey, blacklistKeys) {
             if (item->key() == blacklistKey) {
                 keyInBlacklist = true;
                 continue;
@@ -74,8 +78,12 @@ void PresetsModel::readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, co
 
     foreach (KConfigSkeletonItem *item, skeleton->items()) {
         keyInBlacklist = false;
+
+        QStringList blacklistKeys = windecoExceptionKeys;
+        blacklistKeys << "BundledWindecoPresetsImportedVersion";
+
         // do not read a key in windecoExceptionKeys
-        foreach (auto blacklistKey, windecoExceptionKeys) {
+        foreach (auto blacklistKey, blacklistKeys) {
             if (item->key() == blacklistKey) {
                 keyInBlacklist = true;
                 continue;
@@ -118,7 +126,7 @@ bool PresetsModel::isPresetPresent(KConfig *config, const QString &presetName)
 
 void PresetsModel::exportPreset(KConfig *config, const QString &presetName, const QString &fileName)
 {
-    if (presetName.isEmpty())
+    if (presetName.isEmpty() || fileName.isEmpty())
         return;
 
     KSharedConfig::Ptr outputPresetConfig = KSharedConfig::openConfig(fileName);

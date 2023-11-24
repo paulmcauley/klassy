@@ -125,6 +125,8 @@
     <entry name="ColorizeSystemIcons" type = "Bool">
         <default>true</default>
     </entry>
+
+    <entry name="BundledWindecoPresetsImportedVersion" type = "String"/>
     
   </group>
 
