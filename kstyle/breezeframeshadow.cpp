@@ -61,7 +61,7 @@ bool FrameShadowFactory::registerWidget(QWidget *widget, Helper &helper)
 
     // make sure that the widget is not embedded into a KHTMLView
     QWidget *parent(widget->parentWidget());
-    while (parent && !parent->isTopLevel()) {
+    while (parent && !parent->isWindow()) {
         if (parent->inherits("KHTMLView")) {
             return false;
         }

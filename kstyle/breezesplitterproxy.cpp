@@ -221,14 +221,28 @@ bool SplitterProxy::event(QEvent *event)
         // get relevant position to post mouse drag event to application
         if (event->type() == QEvent::MouseButtonPress) {
             // use hook, to make sure splitter is properly dragged
-            QMouseEvent copy(mouseEvent->type(), _hook, mouseEvent->button(), mouseEvent->buttons(), mouseEvent->modifiers());
+            QMouseEvent copy(mouseEvent->type(),
+                             _hook,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+                             mouseEvent->globalPosition().toPoint(),
+#endif
+                             mouseEvent->button(),
+                             mouseEvent->buttons(),
+                             mouseEvent->modifiers());
 
             QCoreApplication::sendEvent(_splitter.data(), &copy);
 
         } else {
             // map event position to current splitter and post.
             QMouseEvent copy(mouseEvent->type(),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                             _splitter.data()->mapFromGlobal(mouseEvent->globalPosition().toPoint()),
+#else
                              _splitter.data()->mapFromGlobal(mouseEvent->globalPos()),
+#endif
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+                             mouseEvent->globalPosition().toPoint(),
+#endif
                              mouseEvent->button(),
                              mouseEvent->buttons(),
                              mouseEvent->modifiers());
@@ -326,6 +340,9 @@ void SplitterProxy::clearSplitter()
         _splitter.clear();
         QHoverEvent hoverEvent(qobject_cast<QSplitterHandle *>(splitter.data()) ? QEvent::HoverLeave : QEvent::HoverMove,
                                splitter.data()->mapFromGlobal(QCursor::pos()),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+                               splitter.data()->mapFromGlobal(QCursor::pos()),
+#endif
                                _hook);
         QCoreApplication::sendEvent(splitter.data(), &hoverEvent);
     }
