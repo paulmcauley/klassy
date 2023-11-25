@@ -100,7 +100,7 @@ public:
     }
 
     //* shadow
-    QColor shadowColor(const QPalette &palette, qreal opacity = 0.125) const
+    QColor shadowColor([[maybe_unused]] const QPalette &palette, qreal opacity = 0.125) const
     {
         return QColor::fromRgbF(0, 0, 0, opacity);
     }

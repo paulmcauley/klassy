@@ -1699,7 +1699,14 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
             }
 
             // copy event, send and return
-            QMouseEvent copy(mouseEvent->type(), position, mouseEvent->button(), mouseEvent->buttons(), mouseEvent->modifiers());
+            QMouseEvent copy(mouseEvent->type(),
+                             position,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
+                             QCursor::pos(),
+#endif
+                             mouseEvent->button(),
+                             mouseEvent->buttons(),
+                             mouseEvent->modifiers());
 
             QCoreApplication::sendEvent(scrollBar, &copy);
             event->setAccepted(true);
@@ -3526,7 +3533,7 @@ QSize Style::pushButtonSizeFromContents(const QStyleOption *option, const QSize 
 }
 
 //______________________________________________________________
-QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+QSize Style::toolButtonSizeFromContents(const QStyleOption *option, const QSize &contentsSize, [[maybe_unused]] const QWidget *widget) const
 {
     // cast option and check
     const auto toolButtonOption = qstyleoption_cast<const QStyleOptionToolButton *>(option);
@@ -4416,8 +4423,6 @@ bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter
     bool hasMenu = false;
     // Use to determine if this button is a default button.
     bool defaultButton = false;
-    // Use to determine if this button is capable of being a default button when focused.
-    bool autoDefault = false;
     bool hasNeutralHighlight = hasHighlightNeutral(widget, option);
 
     const auto buttonOption = qstyleoption_cast<const QStyleOptionButton *>(option);
@@ -4432,7 +4437,6 @@ bool Style::drawPanelButtonCommandPrimitive(const QStyleOption *option, QPainter
         // default button when a QPushButton in a QDialog outside of a
         // QDialogButtonBox is focused.
         defaultButton = buttonOption->features & QStyleOptionButton::DefaultButton;
-        autoDefault = buttonOption->features & QStyleOptionButton::AutoDefaultButton;
     }
 
     // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
@@ -5802,9 +5806,6 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         // checkbox state
 
         CheckBoxState state(menuItemOption->checked ? CheckOn : CheckOff);
-        const bool active(menuItemOption->checked);
-        const auto shadow(_helper->shadowColor(palette));
-        const auto color(_helper->checkBoxIndicatorColor(palette, false, enabled && active));
         _helper->renderCheckBoxBackground(painter, checkBoxRect, palette, state, false, sunken);
         _helper->renderCheckBox(painter, checkBoxRect, palette, false, state, state, false, sunken);
 
@@ -7159,7 +7160,7 @@ bool Style::drawDockWidgetTitleControl(const QStyleOption *option, QPainter *pai
 }
 
 //______________________________________________________________
-bool Style::drawSplitterControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+bool Style::drawSplitterControl(const QStyleOption *option, QPainter *painter, [[maybe_unused]] const QWidget *widget) const
 {
     painter->setBrush(_helper->separatorColor(option->palette));
     painter->setPen(Qt::NoPen);
@@ -7230,12 +7231,8 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
     }
 
     // need to alter palette for focused buttons
-    const bool enabled = option->state & QStyle::State_Enabled;
     const bool activeFocus = option->state & QStyle::State_HasFocus;
-    bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
     const bool hovered = option->state & QStyle::State_MouseOver;
-    const bool down = option->state & QStyle::State_Sunken;
-    const bool checked = option->state & QStyle::State_On;
     bool flat = option->state & QStyle::State_AutoRaise;
 
     // update animation state
@@ -7248,9 +7245,6 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
 
     // copy option and alter palette
     QStyleOptionToolButton copy(*toolButtonOption);
-
-    const bool hasPopupMenu(toolButtonOption->features & QStyleOptionToolButton::MenuButtonPopup);
-    const bool hasInlineIndicator(toolButtonOption->features & QStyleOptionToolButton::HasMenu && !hasPopupMenu);
 
     const auto menuStyle = BreezePrivate::toolButtonMenuArrowStyle(option);
 
@@ -8043,7 +8037,6 @@ QColor Style::scrollBarArrowColor(const QStyleOptionSlider *option, const SubCon
         }
         return color;
     }
-
     if ((control == SC_ScrollBarSubLine && option->sliderValue == option->minimum)
         || (control == SC_ScrollBarAddLine && option->sliderValue == option->maximum)) {
         // manually disable arrow, to indicate that scrollbar is at limit
@@ -8391,7 +8384,7 @@ bool Style::showIconsInMenuItems() const
 //____________________________________________________________________
 bool Style::showIconsOnPushButtons() const
 {
-    const KConfigGroup g(KSharedConfig::openConfig(), "KDE");
+    const KConfigGroup g(KSharedConfig::openConfig(), QStringLiteral("KDE"));
     return g.readEntry("ShowIconsOnPushButtons", true);
 }
 
@@ -8428,7 +8421,7 @@ bool Style::hasAlteredBackground(const QWidget *widget) const
     return hasAlteredBackground;
 }
 
-bool Style::hasHighlightNeutral(const QObject *widget, const QStyleOption *option, bool mouseOver, bool focus) const
+bool Style::hasHighlightNeutral(const QObject *widget, const QStyleOption *option, [[maybe_unused]] bool mouseOver, [[maybe_unused]] bool focus) const
 {
     if (!widget && (!option || !option->styleObject)) {
         return false;

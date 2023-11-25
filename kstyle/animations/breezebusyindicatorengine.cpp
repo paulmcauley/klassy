@@ -42,7 +42,7 @@ bool BusyIndicatorEngine::registerWidget(QObject *object)
 
 #if BREEZE_HAVE_QTQUICK
         if (QQuickItem *item = qobject_cast<QQuickItem *>(object)) {
-            connect(item, &QQuickItem::visibleChanged, this, [=]() {
+            connect(item, &QQuickItem::visibleChanged, this, [this, item, object]() {
                 if (!item->isVisible()) {
                     this->setAnimated(object, false);
                 }

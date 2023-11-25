@@ -1360,9 +1360,7 @@ void Helper::renderTabBarTab(QPainter *painter,
                              qreal animation) const
 {
     bool enabled = stateProperties.value("enabled", true);
-    bool visualFocus = stateProperties.value("visualFocus");
     bool hovered = stateProperties.value("hovered");
-    bool down = stateProperties.value("down");
     bool selected = stateProperties.value("selected");
     bool documentMode = stateProperties.value("documentMode");
     bool north = stateProperties.value("north");
@@ -1802,7 +1800,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
     static bool isAuto = false;
     static QString borderSize;
     if (!_cachedAutoValid) {
-        KConfigGroup kdecorationGroup(_kwinConfig->group("org.kde.kdecoration2"));
+        KConfigGroup kdecorationGroup(_kwinConfig->group(QStringLiteral("org.kde.kdecoration2")));
         isAuto = kdecorationGroup.readEntry("BorderSizeAuto", true);
         borderSize = kdecorationGroup.readEntry("BorderSize", "Normal");
         _cachedAutoValid = true;
