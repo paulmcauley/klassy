@@ -437,7 +437,7 @@ void Style::polish(QWidget *widget)
         const Position position = static_cast<Position>(widget->property("position").toInt());
         const auto splitterWidth = Metrics::Splitter_SplitterWidth;
 
-        int left = 1, right = 1;
+        int left = 0, right = 0;
         if ((position == Position::Left && widget->layoutDirection() == Qt::LeftToRight)
             || (position == Position::Right && widget->layoutDirection() == Qt::RightToLeft)) {
             right += splitterWidth;
