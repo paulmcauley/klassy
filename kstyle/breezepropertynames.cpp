@@ -19,6 +19,7 @@ const char PropertyNames::alteredBackground[] = "_breeze_altered_background";
 const char PropertyNames::highlightNeutral[] = "_kde_highlight_neutral";
 const char PropertyNames::noSeparator[] = "_breeze_no_separator";
 const char PropertyNames::isTopMenu[] = "_breeze_menu_is_top";
+const char PropertyNames::menuSeamlessEdges[] = "_breeze_menu_seamless_edges";
 const char PropertyNames::bordersSides[] = "_breeze_borders_sides";
 const char PropertyNames::forceFrame[] = "_breeze_force_frame";
 }

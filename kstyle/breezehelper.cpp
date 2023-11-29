@@ -13,6 +13,7 @@
 
 #include "breeze.h"
 #include "breezedecorationsettingsprovider.h"
+#include "breezepropertynames.h"
 #include "breezestyleconfigdata.h"
 #include "renderdecorationbuttonicon.h"
 #include "systemicontheme.h"
@@ -573,7 +574,7 @@ void Helper::renderSidePanelFrame(QPainter *painter, const QRect &rect, const QC
 }
 
 //______________________________________________________________________________
-void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, bool roundCorners, bool isTopMenu) const
+void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, bool roundCorners, Qt::Edges seamlessEdges) const
 {
     painter->save();
 
@@ -586,7 +587,7 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
 
     // We simulate being able to independently adjust corner radii by
     // setting a clip region and then extending the rectangle beyond it.
-    if (isTopMenu) {
+    if (seamlessEdges != Qt::Edges()) {
         painter->setClipRect(rect);
     }
 
@@ -595,9 +596,11 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
         QRectF frameRect(rect);
         qreal radius(frameRadius(PenWidth::NoPen));
 
-        if (isTopMenu) {
-            frameRect.adjust(0, -radius, 0, 0);
-        }
+        frameRect.adjust( //
+            seamlessEdges.testFlag(Qt::LeftEdge) ? -radius : 0,
+            seamlessEdges.testFlag(Qt::TopEdge) ? -radius : 0,
+            seamlessEdges.testFlag(Qt::RightEdge) ? radius : 0,
+            seamlessEdges.testFlag(Qt::BottomEdge) ? radius : 0);
 
         // set pen
         if (outline.isValid()) {
@@ -615,9 +618,12 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
     } else {
         painter->setRenderHint(QPainter::Antialiasing, false);
         QRect frameRect(rect);
-        if (isTopMenu) {
-            frameRect.adjust(0, 1, 0, 0);
-        }
+
+        frameRect.adjust( //
+            seamlessEdges.testFlag(Qt::LeftEdge) ? 1 : 0,
+            seamlessEdges.testFlag(Qt::TopEdge) ? 1 : 0,
+            seamlessEdges.testFlag(Qt::RightEdge) ? -1 : 0,
+            seamlessEdges.testFlag(Qt::BottomEdge) ? -1 : 0);
 
         if (outline.isValid()) {
             painter->setPen(outline);
@@ -1825,5 +1831,18 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
         return false;
     }*/ //commented out for klassy as we can set the borders to titlebar colour to avoid any such visual glitches
     return true;
+}
+
+Qt::Edges Helper::menuSeamlessEdges(const QWidget *widget)
+{
+    if (widget) {
+        auto edges = widget->property(PropertyNames::menuSeamlessEdges).value<Qt::Edges>();
+        // Fallback to older property
+        if (edges == Qt::Edges() && widget->property(PropertyNames::isTopMenu).toBool()) {
+            edges = Qt::TopEdge;
+        }
+        return edges;
+    }
+    return Qt::Edges();
 }
 }

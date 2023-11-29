@@ -4595,7 +4595,7 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
 
     const auto &palette(option->palette);
     const bool hasAlpha(_helper->hasAlphaChannel(widget));
-    const bool isTopMenu(widget != nullptr && widget->property(PropertyNames::isTopMenu).toBool());
+    const auto seamlessEdges = _helper->menuSeamlessEdges(widget);
     auto background(_helper->frameBackgroundColor(palette));
     auto outline(_helper->frameOutlineColor(palette));
 
@@ -4609,7 +4609,7 @@ bool Style::drawPanelMenuPrimitive(const QStyleOption *option, QPainter *painter
         outline = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
     }
 
-    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha, isTopMenu);
+    _helper->renderMenuFrame(painter, option->rect, background, outline, hasAlpha, seamlessEdges);
 
     painter->restore();
 
@@ -5762,16 +5762,18 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
 
         Sides sides;
         if (!menuItemOption->menuRect.isNull()) {
-            if (rect.top() <= menuItemOption->menuRect.top() && !(widget && widget->property(PropertyNames::isTopMenu).toBool())) {
+            const auto seamlessEdges = _helper->menuSeamlessEdges(widget);
+
+            if (rect.top() <= menuItemOption->menuRect.top() && !seamlessEdges.testFlag(Qt::TopEdge)) {
                 sides |= SideTop;
             }
-            if (rect.bottom() >= menuItemOption->menuRect.bottom()) {
+            if (rect.bottom() >= menuItemOption->menuRect.bottom() && !seamlessEdges.testFlag(Qt::BottomEdge)) {
                 sides |= SideBottom;
             }
-            if (rect.left() <= menuItemOption->menuRect.left()) {
+            if (rect.left() <= menuItemOption->menuRect.left() && !seamlessEdges.testFlag(Qt::LeftEdge)) {
                 sides |= SideLeft;
             }
-            if (rect.right() >= menuItemOption->menuRect.right()) {
+            if (rect.right() >= menuItemOption->menuRect.right() && !seamlessEdges.testFlag(Qt::RightEdge)) {
                 sides |= SideRight;
             }
         }

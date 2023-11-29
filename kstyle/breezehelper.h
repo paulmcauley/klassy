@@ -207,7 +207,8 @@ public:
     void renderSidePanelFrame(QPainter *, const QRect &, const QColor &outline, Side) const;
 
     //* menu frame
-    void renderMenuFrame(QPainter *, const QRect &, const QColor &color, const QColor &outline, bool roundCorners = true, bool isTopMenu = false) const;
+    void renderMenuFrame(QPainter *, const QRect &, const QColor &color, const QColor &outline, bool roundCorners = true, Qt::Edges seamlessEdges = Qt::Edges())
+        const;
 
     //* button frame
     void renderButtonFrame(QPainter *painter,
@@ -382,6 +383,8 @@ public:
                         qreal devicePixelRatio,
                         QIcon::Mode mode = QIcon::Normal,
                         QIcon::State state = QIcon::Off);
+
+    static Qt::Edges menuSeamlessEdges(const QWidget *);
 
 protected:
     //* return rounded path in a given rect, with only selected corners rounded, and for a given radius
