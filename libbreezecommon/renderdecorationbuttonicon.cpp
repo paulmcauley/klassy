@@ -27,24 +27,24 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
                                                                                             const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::StyleKlassy:
+    case InternalSettings::EnumButtonIconStyle::StyleKlassy:
     default:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleKlassy18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
 
-    case InternalSettings::StyleKite:
+    case InternalSettings::EnumButtonIconStyle::StyleKite:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleKite18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
-    case InternalSettings::StyleOxygen:
+    case InternalSettings::EnumButtonIconStyle::StyleOxygen:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleOxygen18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
-    case InternalSettings::StyleRedmond:
+    case InternalSettings::EnumButtonIconStyle::StyleRedmond:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleRedmond18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
-    case InternalSettings::StyleRedmond10:
+    case InternalSettings::EnumButtonIconStyle::StyleRedmond10:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
-    case InternalSettings::StyleSystemIconTheme:
+    case InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleSystemIconTheme(painter,
                                                                                                 fromKstyle,
                                                                                                 boldButtonIcons,

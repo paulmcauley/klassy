@@ -153,7 +153,7 @@
     </entry>
     
     <!-- Draw thin window outline -->
-    <entry name="ThinWindowOutlineStyle" type = "Enum">
+    <entry name="ThinWindowOutlineStyleActive" type = "Enum">
         <choices>
             <choice name="WindowOutlineNone" />
             <choice name="WindowOutlineShadowColor" />
@@ -165,8 +165,35 @@
         </choices>
         <default>WindowOutlineAccentWithContrast</default>
     </entry>
+
+
+
+    <entry name="ThinWindowOutlineStyleInactive" type = "Enum">
+        <choices>
+            <choice name="WindowOutlineNone" />
+            <choice name="WindowOutlineShadowColor" />
+            <choice name="WindowOutlineContrast" />
+            <choice name="WindowOutlineAccentColor" />
+            <choice name="WindowOutlineAccentWithContrast" />
+            <choice name="WindowOutlineCustomColor" />
+            <choice name="WindowOutlineCustomWithContrast" />
+        </choices>
+        <default>WindowOutlineAccentWithContrast</default>
+    </entry>
+
+    <entry name="LockThinWindowOutlineStyleActiveInactive" type = "Bool">
+        <default>true</default>
+    </entry>
     
-    <entry name="ThinWindowOutlineCustomColor" type = "Color">
+    <entry name="ThinWindowOutlineCustomColorActive" type = "Color">
+       <default>0, 0, 0</default>
+    </entry>
+
+    <entry name="LockThinWindowOutlineCustomColorActiveInactive" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="ThinWindowOutlineCustomColorInactive" type = "Color">
        <default>0, 0, 0</default>
     </entry>
     

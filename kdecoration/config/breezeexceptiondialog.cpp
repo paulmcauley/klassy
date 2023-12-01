@@ -198,11 +198,11 @@ void ExceptionDialog::readWindowProperties(bool valid)
 
         switch (m_ui.exceptionWindowPropertyType->currentIndex()) {
         default:
-        case InternalSettings::ExceptionWindowClassName:
+        case InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName:
             m_ui.exceptionWindowPropertyEditor->setText(properties.value(QStringLiteral("resourceClass")).toString());
             break;
 
-        case InternalSettings::ExceptionWindowTitle:
+        case InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowTitle:
             m_ui.exceptionWindowPropertyEditor->setText(properties.value(QStringLiteral("caption")).toString());
             break;
         }

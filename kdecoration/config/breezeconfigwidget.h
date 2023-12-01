@@ -16,7 +16,7 @@
 #include "buttonsizing.h"
 #include "loadpreset.h"
 #include "ui_breezeconfigurationui.h"
-#include "windowoutlineopacity.h"
+#include "windowoutlinestyle.h"
 
 #include <KCModule>
 #include <KSharedConfig>
@@ -63,7 +63,6 @@ protected Q_SLOTS:
     void setEnabledTransparentTitlebarOptions();
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
-    void updateCustomColorStackedWidgetVisible();
     void titlebarTopMarginChanged();
     void titlebarBottomMarginChanged();
     void titlebarLeftMarginChanged();
@@ -71,30 +70,7 @@ protected Q_SLOTS:
     void integratedRoundedRectangleSizingButtonClicked();
     void fullHeightRectangleSizingButtonClicked();
     void buttonSizingButtonClicked();
-    void windowOutlineShadowColorOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(0);
-    }
-    void windowOutlineContrastOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(1);
-    }
-    void windowOutlineAccentColorOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(2);
-    }
-    void windowOutlineAccentWithContrastOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(3);
-    }
-    void windowOutlineCustomColorOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(4);
-    }
-    void windowOutlineCustomWithContrastOpacityButtonClicked()
-    {
-        windowOutlineButtonClicked(5);
-    }
+    void windowOutlineStyleButtonClicked();
     void presetsButtonClicked();
 
     void dialogChanged(bool changed);
@@ -126,10 +102,9 @@ private:
 
     //* dialogs behind button
     ButtonSizing *m_buttonSizingDialog;
-    WindowOutlineOpacity *m_windowOutlineOpacityDialog;
+    WindowOutlineStyle *m_windowOutlineStyleDialog;
     LoadPreset *m_loadPresetDialog;
 
-    void windowOutlineButtonClicked(int index);
     QString presetGroupName(QString str);
     void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
