@@ -1,5 +1,5 @@
-#ifndef WINDOWOUTLINEOPACITY_H
-#define WINDOWOUTLINEOPACITY_H
+#ifndef WINDOWOUTLINESTYLE_H
+#define WINDOWOUTLINESTYLE_H
 
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
@@ -9,21 +9,21 @@
 
 #include "breeze.h"
 #include "breezesettings.h"
-#include "ui_windowoutlineopacity.h"
+#include "ui_windowoutlinestyle.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class WindowOutlineOpacity : public QDialog
+class WindowOutlineStyle : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit WindowOutlineOpacity(KSharedConfig::Ptr config, QWidget *parent = nullptr);
-    ~WindowOutlineOpacity();
+    explicit WindowOutlineStyle(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    ~WindowOutlineStyle();
 
     void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
@@ -43,6 +43,10 @@ private slots:
         save(true);
     }
     void setApplyButtonState(const bool on);
+    void thinWindowOutlineStyleActiveChanged();
+    void thinWindowOutlineStyleInactiveChanged();
+    void thinWindowOutlineCustomColorActiveChanged();
+    void thinWindowOutlineCustomColorInactiveChanged();
 
 signals:
     void changed(bool);
@@ -50,7 +54,7 @@ signals:
 private:
     void setChanged(bool value);
 
-    Ui_WindowOutlineOpacity *m_ui;
+    Ui_WindowOutlineStyle *m_ui;
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
@@ -68,4 +72,4 @@ private:
 
 }
 
-#endif // WINDOWOUTLINEOPACITY_H
+#endif // WINDOWOUTLINESTYLE_H

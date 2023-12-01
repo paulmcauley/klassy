@@ -82,9 +82,9 @@ public:
     QColor titleBarColor(bool returnNonAnimatedColor = false) const;
     QColor titleBarColorWithAddedTransparency() const;
     QColor titleBarSeparatorColor() const;
-    QColor accentedWindowOutlineColor(QColor customColor = QColor()) const;
-    QColor fontMixedAccentWindowOutlineColor(QColor customColor = QColor()) const;
-    QColor fontColor() const;
+    QColor accentedFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
+    QColor fontMixedAccentFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
+    QColor fontColor(bool returnNonAnimatedColor = false) const;
     QColor overriddenOutlineColorAnimateIn() const;
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
@@ -290,7 +290,7 @@ private:
 bool Decoration::hasBorders() const
 {
     if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
+        return m_internalSettings->borderSize() > InternalSettings::EnumBorderSize::BorderNoSides;
     } else {
         return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
     }
@@ -299,7 +299,7 @@ bool Decoration::hasBorders() const
 bool Decoration::hasNoBorders() const
 {
     if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() == InternalSettings::BorderNone;
+        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::BorderNone;
     } else {
         return settings()->borderSize() == KDecoration2::BorderSize::None;
     }
@@ -308,7 +308,7 @@ bool Decoration::hasNoBorders() const
 bool Decoration::hasNoSideBorders() const
 {
     if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
+        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::BorderNoSides;
     } else {
         return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
     }

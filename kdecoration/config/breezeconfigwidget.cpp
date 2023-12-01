@@ -89,7 +89,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 
     m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
-    m_windowOutlineOpacityDialog = new WindowOutlineOpacity(m_configuration, this);
+    m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
     m_loadPresetDialog = new LoadPreset(m_configuration, this);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
@@ -118,18 +118,12 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
     connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
 
-    connect(m_ui.windowOutlineShadowColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineShadowColorOpacityButtonClicked);
-    connect(m_ui.windowOutlineContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineContrastOpacityButtonClicked);
-    connect(m_ui.windowOutlineAccentColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineAccentColorOpacityButtonClicked);
-    connect(m_ui.windowOutlineAccentWithContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineAccentWithContrastOpacityButtonClicked);
-    connect(m_ui.windowOutlineCustomColorOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineCustomColorOpacityButtonClicked);
-    connect(m_ui.windowOutlineCustomWithContrastOpacity, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineCustomWithContrastOpacityButtonClicked);
+    connect(m_ui.thinWindowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
 
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
-    updateCustomColorStackedWidgetVisible();
 
     // track ui changes
     connect(m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
@@ -191,9 +185,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
-    connect(m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.thinWindowOutlineStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateCustomColorStackedWidgetVisible()));
-    connect(m_ui.thinWindowOutlineCustomColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
     connect(m_ui.thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
     connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
 
@@ -223,12 +214,12 @@ void ConfigWidget::loadMain(QString loadPresetName)
     if (loadPresetName.isEmpty()) { // normal case
         m_internalSettings->load();
         m_buttonSizingDialog->load();
-        m_windowOutlineOpacityDialog->load();
+        m_windowOutlineStyleDialog->load();
         importBundledPresets();
     } else {
         PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName);
         m_buttonSizingDialog->loadMain(loadPresetName);
-        m_windowOutlineOpacityDialog->loadMain(loadPresetName);
+        m_windowOutlineStyleDialog->loadMain(loadPresetName);
     }
 
     // assign to ui
@@ -283,22 +274,19 @@ void ConfigWidget::loadMain(QString loadPresetName)
     m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
 
     // load shadows
-    if (m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge) {
+    if (m_internalSettings->shadowSize() <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
         m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
     } else {
-        m_ui.shadowSize->setCurrentIndex(InternalSettings::ShadowLarge);
+        m_ui.shadowSize->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
     }
 
     m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
-    m_ui.thinWindowOutlineStyle->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle());
-    m_ui.thinWindowOutlineCustomColor->setColor(m_internalSettings->thinWindowOutlineCustomColor());
     m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
-    updateCustomColorStackedWidgetVisible();
     // load exceptions
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration);
@@ -368,14 +356,12 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setShadowSize(m_ui.shadowSize->currentIndex());
     m_internalSettings->setShadowStrength(qRound(qreal(m_ui.shadowStrength->value() * 255) / 100));
     m_internalSettings->setShadowColor(m_ui.shadowColor->color());
-    m_internalSettings->setThinWindowOutlineStyle(m_ui.thinWindowOutlineStyle->currentIndex());
-    m_internalSettings->setThinWindowOutlineCustomColor(m_ui.thinWindowOutlineCustomColor->color());
     m_internalSettings->setThinWindowOutlineThickness(m_ui.thinWindowOutlineThickness->value());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
     if (saveAsPresetName.isEmpty()) { // normal case
         m_buttonSizingDialog->save(false);
-        m_windowOutlineOpacityDialog->save(false);
+        m_windowOutlineStyleDialog->save(false);
 
         // save configuration
         m_internalSettings->save();
@@ -461,14 +447,12 @@ void ConfigWidget::defaults()
     m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
     m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
-    m_ui.thinWindowOutlineStyle->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle());
-    m_ui.thinWindowOutlineCustomColor->setColor(m_internalSettings->thinWindowOutlineCustomColor());
     m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     // set defaults in dialogs
     m_buttonSizingDialog->defaults();
-    m_windowOutlineOpacityDialog->defaults();
+    m_windowOutlineStyleDialog->defaults();
 
     // load default exceptions and refresh (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
@@ -481,7 +465,6 @@ void ConfigWidget::defaults()
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
-    updateCustomColorStackedWidgetVisible();
 
     m_processingDefaults = false;
     m_defaultsPressed = true;
@@ -574,10 +557,6 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.shadowColor->color() != m_internalSettings->shadowColor())
         modified = true;
-    else if (m_ui.thinWindowOutlineStyle->currentIndex() != m_internalSettings->thinWindowOutlineStyle())
-        modified = true;
-    else if (m_ui.thinWindowOutlineCustomColor->color() != m_internalSettings->thinWindowOutlineCustomColor())
-        modified = true;
     else if (m_ui.thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
         modified = true;
     else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
@@ -586,7 +565,7 @@ void ConfigWidget::updateChanged()
     // dialogs
     else if (m_buttonSizingDialog->m_changed)
         modified = true;
-    else if (m_windowOutlineOpacityDialog->m_changed)
+    else if (m_windowOutlineStyleDialog->m_changed)
         modified = true;
 
     // exceptions
@@ -644,15 +623,6 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(2);
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
-}
-
-void ConfigWidget::updateCustomColorStackedWidgetVisible()
-{
-    if (m_ui.thinWindowOutlineStyle->currentIndex() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor
-        || m_ui.thinWindowOutlineStyle->currentIndex() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
-        m_ui.customColorStackedWidget->setCurrentIndex(1);
-    else
-        m_ui.customColorStackedWidget->setCurrentIndex(0);
 }
 
 void ConfigWidget::titlebarTopMarginChanged()
@@ -849,13 +819,12 @@ void ConfigWidget::buttonSizingButtonClicked()
     m_buttonSizingDialog->exec();
 }
 
-void ConfigWidget::windowOutlineButtonClicked(int index)
+void ConfigWidget::windowOutlineStyleButtonClicked()
 {
-    m_windowOutlineOpacityDialog->setWindowTitle(i18n("Window Outline Opacity - Klassy Settings"));
-    m_windowOutlineOpacityDialog->m_ui->windowOutlineOpacityDialogStackedWidget->setCurrentIndex(index);
-    if (!m_windowOutlineOpacityDialog->m_loaded)
-        m_windowOutlineOpacityDialog->load();
-    m_windowOutlineOpacityDialog->exec();
+    m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
+    if (!m_windowOutlineStyleDialog->m_loaded)
+        m_windowOutlineStyleDialog->load();
+    m_windowOutlineStyleDialog->exec();
 }
 
 void ConfigWidget::presetsButtonClicked()

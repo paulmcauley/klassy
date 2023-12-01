@@ -103,15 +103,15 @@ const CompositeShadowParams s_shadowParams[] = {
 inline CompositeShadowParams lookupShadowParams(int size)
 {
     switch (size) {
-    case Breeze::InternalSettings::ShadowNone:
+    case Breeze::InternalSettings::EnumShadowSize::ShadowNone:
         return s_shadowParams[0];
-    case Breeze::InternalSettings::ShadowSmall:
+    case Breeze::InternalSettings::EnumShadowSize::ShadowSmall:
         return s_shadowParams[1];
-    case Breeze::InternalSettings::ShadowMedium:
+    case Breeze::InternalSettings::EnumShadowSize::ShadowMedium:
         return s_shadowParams[2];
-    case Breeze::InternalSettings::ShadowLarge:
+    case Breeze::InternalSettings::EnumShadowSize::ShadowLarge:
         return s_shadowParams[3];
-    case Breeze::InternalSettings::ShadowVeryLarge:
+    case Breeze::InternalSettings::EnumShadowSize::ShadowVeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.
@@ -128,14 +128,15 @@ using KDecoration2::ColorRole;
 
 // cached shadow values
 static int g_sDecoCount = 0;
-static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
+static int g_shadowSizeEnum = InternalSettings::EnumShadowSize::ShadowLarge;
 static int g_shadowStrength = 255;
 static QColor g_shadowColor = Qt::black;
 static qreal g_cornerRadius = 3;
 static qreal g_systemScaleFactor = 1;
 static bool g_hasNoBorders = true;
 static bool g_roundBottomCornersWhenNoBorders = false;
-static int g_thinWindowOutlineStyle = 0;
+static int g_thinWindowOutlineStyleActive = 0;
+static int g_thinWindowOutlineStyleInactive = 0;
 static QColor g_thinWindowOutlineColorActive = Qt::black;
 static QColor g_thinWindowOutlineColorInactive = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
@@ -226,70 +227,54 @@ QColor Decoration::titleBarSeparatorColor() const
         return QColor();
 }
 
-QColor Decoration::accentedWindowOutlineColor(QColor customColor) const
+QColor Decoration::accentedFinalWindowOutlineColor(bool active, QColor customColor) const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-
-    QColor activeColor;
-    QColor inactiveColor;
-
     if (customColor.isValid()) {
-        activeColor = customColor;
-        activeColor.setAlphaF(activeColor.alphaF() * m_internalSettings->windowOutlineCustomColorOpacityActive());
-        inactiveColor = customColor;
-        inactiveColor.setAlphaF(inactiveColor.alphaF() * m_internalSettings->windowOutlineCustomColorOpacityInactive());
-    } else {
-        activeColor = g_decorationColors->highlight;
-        activeColor.setAlphaF(activeColor.alphaF() * m_internalSettings->windowOutlineAccentColorOpacityActive());
-        inactiveColor = g_decorationColors->highlightLessSaturated;
-        inactiveColor.setAlphaF(inactiveColor.alphaF() * m_internalSettings->windowOutlineAccentColorOpacityInactive());
-    }
+        if (active)
+            return ColorTools::alphaMix(customColor, m_internalSettings->windowOutlineCustomColorOpacityActive());
+        else
+            return ColorTools::alphaMix(customColor, m_internalSettings->windowOutlineCustomColorOpacityInactive());
 
-    if (m_animation->state() == QAbstractAnimation::Running) {
-        return KColorUtils::mix(inactiveColor, activeColor, m_opacity);
-    } else if (c->isActive())
-        return activeColor;
-    else
-        return inactiveColor;
+    } else {
+        if (active)
+            return ColorTools::alphaMix(g_decorationColors->highlight, m_internalSettings->windowOutlineAccentColorOpacityActive());
+        else
+            return ColorTools::alphaMix(g_decorationColors->highlightLessSaturated, m_internalSettings->windowOutlineAccentColorOpacityInactive());
+    }
 }
 
-QColor Decoration::fontMixedAccentWindowOutlineColor(QColor customColor) const
+QColor Decoration::fontMixedAccentFinalWindowOutlineColor(bool active, QColor customColor) const
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    QColor fontColorActive = c->color(ColorGroup::Active, ColorRole::Foreground);
-    QColor fontColorInactive = c->color(ColorGroup::Inactive, ColorRole::Foreground);
-    QColor accentColorActive;
-    QColor accentColorInactive;
-    qreal opacityFactorActive;
-    qreal opacityFactorInactive;
-
     if (customColor.isValid()) {
-        accentColorActive = customColor;
-        accentColorInactive = customColor;
-        opacityFactorActive = m_internalSettings->windowOutlineCustomWithContrastOpacityActive();
-        opacityFactorInactive = m_internalSettings->windowOutlineCustomWithContrastOpacityInactive();
-    } else {
-        accentColorActive = g_decorationColors->buttonFocus;
-        accentColorInactive = g_decorationColors->buttonHover;
-        opacityFactorActive = m_internalSettings->windowOutlineAccentWithContrastOpacityActive();
-        opacityFactorInactive = m_internalSettings->windowOutlineAccentWithContrastOpacityInactive();
+        if (active) {
+            return ColorTools::alphaMix(
+                KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground), customColor, 0.75) // foreground active font mixed with custom
+                ,
+                m_internalSettings->windowOutlineCustomWithContrastOpacityActive());
+        } else {
+            return ColorTools::alphaMix(
+                KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground), customColor, 0.75) // foreground inactive font mixed with custom
+                ,
+                m_internalSettings->windowOutlineCustomWithContrastOpacityInactive());
+        }
+    } else { // not a custom color
+        if (active) {
+            return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground),
+                                                         g_decorationColors->buttonFocus,
+                                                         0.75) // foreground active font mixed with accent
+                                        ,
+                                        m_internalSettings->windowOutlineAccentWithContrastOpacityActive());
+        } else {
+            return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground),
+                                                         g_decorationColors->buttonHover,
+                                                         0.75) // foreground inactive font mixed with accent
+                                        ,
+                                        m_internalSettings->windowOutlineAccentWithContrastOpacityInactive());
+        }
     }
-
-    QColor activeColor = KColorUtils::mix(fontColorActive, accentColorActive, 0.75);
-    activeColor.setAlphaF(activeColor.alphaF() * opacityFactorActive);
-
-    QColor inactiveColor = KColorUtils::mix(fontColorInactive, accentColorInactive, 0.75);
-    inactiveColor.setAlphaF(inactiveColor.alphaF() * opacityFactorInactive);
-
-    if (m_animation->state() == QAbstractAnimation::Running) {
-        return KColorUtils::mix(inactiveColor, activeColor, m_opacity);
-    } else if (c->isActive())
-        return activeColor;
-    else
-        return inactiveColor;
 }
 
 QColor Decoration::overriddenOutlineColorAnimateIn() const
@@ -341,11 +326,11 @@ QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationCol
 }
 
 //________________________________________________________________
-QColor Decoration::fontColor() const
+QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
-    if (m_animation->state() == QAbstractAnimation::Running) {
+    if (m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
         return KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground), c->color(ColorGroup::Active, ColorRole::Foreground), m_opacity);
     } else {
         return c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground);
@@ -558,24 +543,24 @@ int Decoration::borderSize(bool bottom) const
     const int baseSize = settings()->smallSpacing();
     if (m_internalSettings && (m_internalSettings->mask() & BorderSize)) {
         switch (m_internalSettings->borderSize()) {
-        case InternalSettings::BorderNone:
+        case InternalSettings::EnumBorderSize::BorderNone:
             return 0;
-        case InternalSettings::BorderNoSides:
+        case InternalSettings::EnumBorderSize::BorderNoSides:
             return bottom ? qMax(4, baseSize) : 0;
         default:
-        case InternalSettings::BorderTiny:
+        case InternalSettings::EnumBorderSize::BorderTiny:
             return bottom ? qMax(4, baseSize) : baseSize;
-        case InternalSettings::BorderNormal:
+        case InternalSettings::EnumBorderSize::BorderNormal:
             return baseSize * 2;
-        case InternalSettings::BorderLarge:
+        case InternalSettings::EnumBorderSize::BorderLarge:
             return baseSize * 3;
-        case InternalSettings::BorderVeryLarge:
+        case InternalSettings::EnumBorderSize::BorderVeryLarge:
             return baseSize * 4;
-        case InternalSettings::BorderHuge:
+        case InternalSettings::EnumBorderSize::BorderHuge:
             return baseSize * 5;
-        case InternalSettings::BorderVeryHuge:
+        case InternalSettings::EnumBorderSize::BorderVeryHuge:
             return baseSize * 6;
-        case InternalSettings::BorderOversized:
+        case InternalSettings::EnumBorderSize::BorderOversized:
             return baseSize * 10;
         }
 
@@ -1102,70 +1087,70 @@ void Decoration::calculateButtonHeights()
 
     if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {
-        case InternalSettings::SystemIcon8: // 10, 8 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon8: // 10, 8 on Wayland
             break;
-        case InternalSettings::SystemIcon12: // 14, 12 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon12: // 14, 12 on Wayland
             baseSize *= 1.4;
             break;
-        case InternalSettings::SystemIcon14: // 16, 14 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon14: // 16, 14 on Wayland
             baseSize *= 1.6;
             break;
         default:
-        case InternalSettings::SystemIcon16: // 18, 16 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon16: // 18, 16 on Wayland
             baseSize *= 1.8;
             break;
-        case InternalSettings::SystemIcon18: // 20, 18 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon18: // 20, 18 on Wayland
             baseSize *= 2;
             break;
-        case InternalSettings::SystemIcon20: // 22, 20 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon20: // 22, 20 on Wayland
             baseSize *= 2.2;
             break;
-        case InternalSettings::SystemIcon22: // 24, 22 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon22: // 24, 22 on Wayland
             baseSize *= 2.4;
             break;
-        case InternalSettings::SystemIcon24: // 26, 24 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon24: // 26, 24 on Wayland
             baseSize *= 2.6;
             break;
-        case InternalSettings::SystemIcon32: // 36, 32 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon32: // 36, 32 on Wayland
             baseSize *= 3.6;
             basePaddingSize *= 2;
             break;
-        case InternalSettings::SystemIcon48: // 52, 48 on Wayland
+        case InternalSettings::EnumSystemIconSize::SystemIcon48: // 52, 48 on Wayland
             baseSize *= 5.2;
             basePaddingSize *= 2;
             break;
         }
     } else {
         switch (m_internalSettings->iconSize()) {
-        case InternalSettings::IconTiny: // 10, 8 on Wayland
+        case InternalSettings::EnumIconSize::IconTiny: // 10, 8 on Wayland
             break;
-        case InternalSettings::IconVerySmall: // 14, 12 on Wayland
+        case InternalSettings::EnumIconSize::IconVerySmall: // 14, 12 on Wayland
             baseSize *= 1.4;
             break;
-        case InternalSettings::IconSmall: // 16, 14 on Wayland
+        case InternalSettings::EnumIconSize::IconSmall: // 16, 14 on Wayland
             baseSize *= 1.6;
             break;
-        case InternalSettings::IconSmallMedium: // 18, 16 on Wayland
+        case InternalSettings::EnumIconSize::IconSmallMedium: // 18, 16 on Wayland
             baseSize *= 1.8;
             break;
         default:
-        case InternalSettings::IconMedium: // 20, 18 on Wayland
+        case InternalSettings::EnumIconSize::IconMedium: // 20, 18 on Wayland
             baseSize *= 2;
             break;
-        case InternalSettings::IconLargeMedium: // 22, 20 on Wayland
+        case InternalSettings::EnumIconSize::IconLargeMedium: // 22, 20 on Wayland
             baseSize *= 2.2;
             break;
-        case InternalSettings::IconLarge: // 24, 22 on Wayland
+        case InternalSettings::EnumIconSize::IconLarge: // 24, 22 on Wayland
             baseSize *= 2.4;
             break;
-        case InternalSettings::IconVeryLarge: // 26, 24 on Wayland
+        case InternalSettings::EnumIconSize::IconVeryLarge: // 26, 24 on Wayland
             baseSize *= 2.6;
             break;
-        case InternalSettings::IconGiant: // 36, 32 on Wayland
+        case InternalSettings::EnumIconSize::IconGiant: // 36, 32 on Wayland
             baseSize *= 3.6;
             basePaddingSize *= 2;
             break;
-        case InternalSettings::IconHumongous: // 52, 48 on Wayland
+        case InternalSettings::EnumIconSize::IconHumongous: // 52, 48 on Wayland
             baseSize *= 5.2;
             basePaddingSize *= 2;
             break;
@@ -1226,17 +1211,17 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
         const QRect maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
 
         switch (m_internalSettings->titleAlignment()) {
-        case InternalSettings::AlignLeft:
+        case InternalSettings::EnumTitleAlignment::AlignLeft:
             return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignLeft);
 
-        case InternalSettings::AlignRight:
+        case InternalSettings::EnumTitleAlignment::AlignRight:
             return qMakePair(maxRect, Qt::AlignVCenter | Qt::AlignRight);
 
-        case InternalSettings::AlignCenter:
+        case InternalSettings::EnumTitleAlignment::AlignCenter:
             return qMakePair(maxRect, Qt::AlignCenter);
 
         default:
-        case InternalSettings::AlignCenterFullWidth: {
+        case InternalSettings::EnumTitleAlignment::AlignCenterFullWidth: {
             // full caption rect
             const QRect fullRect = QRect(0, yOffset, size().width(), captionHeight());
             QRect boundingRect(settings()->fontMetrics().boundingRect(c->caption()).toRect());
@@ -1287,7 +1272,8 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
         || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
         || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()
         || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
-        || g_thinWindowOutlineStyle != m_internalSettings->thinWindowOutlineStyle()
+        || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyleActive()
+        || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyleInactive()
         || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
         || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness()) {
         if (!noCache) {
@@ -1300,7 +1286,8 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
             g_systemScaleFactor = m_systemScaleFactor;
             g_hasNoBorders = hasNoBorders();
             g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
-            g_thinWindowOutlineStyle = m_internalSettings->thinWindowOutlineStyle();
+            g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyleActive();
+            g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyleInactive();
             c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
             g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
         }
@@ -1325,17 +1312,25 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
 //________________________________________________________________
 QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const bool isThinWindowOutlineOverride)
 {
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+
+    // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
+    bool windowOutlineNone =
+        ((m_internalSettings->thinWindowOutlineStyleActive() == InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineNone
+          && m_internalSettings->thinWindowOutlineStyleInactive() == InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineNone)
+         || (m_animation->state() != QAbstractAnimation::Running
+             && ((c->isActive() && m_internalSettings->thinWindowOutlineStyleActive() == InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineNone)
+                 || (!c->isActive()
+                     && m_internalSettings->thinWindowOutlineStyleInactive() == InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineNone))));
+
     const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
-    if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone
-        && m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone && !isThinWindowOutlineOverride) {
+    if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isThinWindowOutlineOverride) {
         return nullptr;
     }
 
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
-
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
 
     BoxShadowRenderer shadowRenderer;
 
@@ -1379,11 +1374,11 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
     painter.drawPath(roundedRectMask);
 
     // Draw Thin window outline
-    if ((m_internalSettings->thinWindowOutlineStyle() != InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone) || isThinWindowOutlineOverride) {
+    if (!windowOutlineNone || isThinWindowOutlineOverride) {
         if (m_thinWindowOutline.isValid()) {
             QPen p;
             p.setColor(m_thinWindowOutline);
-            // use a miter join rather than the default bevel join to git sharp corners at low radii
+            // use a miter join rather than the default bevel join to get sharp corners at low radii
             if (m_internalSettings->cornerRadius() < 0.2)
                 p.setJoinStyle(Qt::MiterJoin);
 
@@ -1488,23 +1483,79 @@ void Decoration::setThinWindowOutlineColor()
 
     if (m_thinWindowOutlineOverride.isValid()) {
         m_thinWindowOutline = overriddenOutlineColorAnimateIn();
-    } else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrast)
-        m_thinWindowOutline = ColorTools::alphaMix(fontColor(),
-                                                   c->isActive() ? m_internalSettings->windowOutlineContrastOpacityActive()
-                                                                 : m_internalSettings->windowOutlineContrastOpacityInactive());
-    else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor)
-        m_thinWindowOutline = accentedWindowOutlineColor();
-    else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast)
-        m_thinWindowOutline = fontMixedAccentWindowOutlineColor();
-    else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor)
-        m_thinWindowOutline = accentedWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
-    else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast)
-        m_thinWindowOutline = fontMixedAccentWindowOutlineColor(m_internalSettings->thinWindowOutlineCustomColor());
-    else if (m_internalSettings->thinWindowOutlineStyle() == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineShadowColor)
-        m_thinWindowOutline = ColorTools::alphaMix(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * m_shadowStrength);
-    else // WindowOutlineNone
-        m_thinWindowOutline = QColor();
+    } else { // normal case, not an override
 
+        QColor thinWindowOutlineActiveFinal;
+        QColor thinWindowOutlineInactiveFinal;
+
+        // get active final window outline colour
+        if (!(!c->isActive() && (m_animation->state() != QAbstractAnimation::Running))) { // don't need the active final outline colour if unanimated inactive
+            switch (m_internalSettings->thinWindowOutlineStyleActive()) {
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineContrast:
+                thinWindowOutlineActiveFinal = ColorTools::alphaMix(fontColor(true), m_internalSettings->windowOutlineContrastOpacityActive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineAccentColor:
+                thinWindowOutlineActiveFinal = accentedFinalWindowOutlineColor(true);
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineAccentWithContrast:
+                thinWindowOutlineActiveFinal = fontMixedAccentFinalWindowOutlineColor(true);
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineCustomColor:
+                thinWindowOutlineActiveFinal = accentedFinalWindowOutlineColor(true, m_internalSettings->thinWindowOutlineCustomColorActive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineCustomWithContrast:
+                thinWindowOutlineActiveFinal = fontMixedAccentFinalWindowOutlineColor(true, m_internalSettings->thinWindowOutlineCustomColorActive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineShadowColor:
+                thinWindowOutlineActiveFinal =
+                    ColorTools::alphaMix(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * m_shadowStrength);
+                break;
+            }
+        }
+
+        // get inactive final window outline colour
+        if (!(c->isActive() && (m_animation->state() != QAbstractAnimation::Running))) { // don't need the inactive final outline colour if unanimated active
+            switch (m_internalSettings->thinWindowOutlineStyleInactive()) {
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineContrast:
+                thinWindowOutlineInactiveFinal = ColorTools::alphaMix(fontColor(true), m_internalSettings->windowOutlineContrastOpacityInactive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineAccentColor:
+                thinWindowOutlineInactiveFinal = accentedFinalWindowOutlineColor(false);
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineAccentWithContrast:
+                thinWindowOutlineInactiveFinal = fontMixedAccentFinalWindowOutlineColor(false);
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineCustomColor:
+                thinWindowOutlineInactiveFinal = accentedFinalWindowOutlineColor(false, m_internalSettings->thinWindowOutlineCustomColorInactive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineCustomWithContrast:
+                thinWindowOutlineInactiveFinal = fontMixedAccentFinalWindowOutlineColor(false, m_internalSettings->thinWindowOutlineCustomColorInactive());
+                break;
+            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineShadowColor:
+                thinWindowOutlineInactiveFinal =
+                    ColorTools::alphaMix(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * m_shadowStrength);
+                break;
+            }
+        }
+
+        // get blended colour if animated
+        if (m_animation->state() == QAbstractAnimation::Running) {
+            // deal with animation cases where there is an invalid colour (WindowOutlineNone)
+            if (!(thinWindowOutlineActiveFinal.isValid() && thinWindowOutlineInactiveFinal.isValid())) {
+                if (!thinWindowOutlineInactiveFinal.isValid() && thinWindowOutlineActiveFinal.isValid()) {
+                    m_thinWindowOutline = ColorTools::alphaMix(thinWindowOutlineActiveFinal, m_opacity);
+                } else if (thinWindowOutlineInactiveFinal.isValid() && !thinWindowOutlineActiveFinal.isValid()) {
+                    m_thinWindowOutline = ColorTools::alphaMix(thinWindowOutlineInactiveFinal, (1.0 - m_opacity));
+                }
+            } else { // standard animated case with both valid colours
+                m_thinWindowOutline = KColorUtils::mix(thinWindowOutlineInactiveFinal, thinWindowOutlineActiveFinal, m_opacity);
+            }
+        } else { // normal non-animated final colour
+            m_thinWindowOutline = c->isActive() ? thinWindowOutlineActiveFinal : thinWindowOutlineInactiveFinal;
+        }
+    }
+
+    // deal with override colours ("Colourize with highlighted button's colour")
     if (m_animateOutOverriddenThinWindowOutline)
         m_thinWindowOutline = overriddenOutlineColorAnimateOut(m_thinWindowOutline);
 

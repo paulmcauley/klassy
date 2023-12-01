@@ -76,13 +76,13 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
         */
         QString windowPropertyValue;
         switch (internalSettings->exceptionWindowPropertyType()) {
-        case InternalSettings::ExceptionWindowTitle: {
+        case InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowTitle: {
             windowPropertyValue = client->caption();
             break;
         }
 
         default:
-        case InternalSettings::ExceptionWindowClassName: {
+        case InternalSettings::EnumExceptionWindowPropertyType::ExceptionWindowClassName: {
             windowPropertyValue = client->windowClass(); // windowClass() available from KDecoration 5.27 onwards
             break;
         }

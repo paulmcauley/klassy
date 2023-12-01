@@ -5,5 +5,5 @@ IncludeFiles=\"breezecommon_export.h\"
 NameSpace=Breeze
 Singleton=false
 Mutators=true
-GlobalEnums=true
+GlobalEnums=false
 Notifiers=AlwaysShow
