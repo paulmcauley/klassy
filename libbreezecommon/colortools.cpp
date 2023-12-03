@@ -36,6 +36,7 @@ std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPa
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NeutralBackground );
     // colors.neutralLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
     decorationColors->neutralLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->neutral);
+    decorationColors->neutralSaturated = getDifferentiatedSaturatedColor(decorationColors->neutral);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::PositiveText);
     decorationColors->positive = buttonFocusStatefulBrush.brush(palette).color();
@@ -43,6 +44,7 @@ std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPa
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::PositiveBackground );
     // colors.positiveLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
     decorationColors->positiveLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->positive);
+    decorationColors->positiveSaturated = getDifferentiatedSaturatedColor(decorationColors->positive);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::FocusColor);
     decorationColors->buttonFocus = buttonFocusStatefulBrush.brush(palette).color();
@@ -60,11 +62,11 @@ std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPa
     decorationColors->buttonReducedOpacityOutline = decorationColors->buttonFocus;
     decorationColors->buttonReducedOpacityOutline.setAlphaF(decorationColors->buttonReducedOpacityOutline.alphaF() * 0.6);
 
-    QColor fullySaturatedNegative = getDifferentiatedSaturatedColor(decorationColors->negative, true);
-    decorationColors->negativeReducedOpacityBackground = fullySaturatedNegative;
+    decorationColors->fullySaturatedNegative = getDifferentiatedSaturatedColor(decorationColors->negative, true);
+    decorationColors->negativeReducedOpacityBackground = decorationColors->fullySaturatedNegative;
     decorationColors->negativeReducedOpacityBackground.setAlphaF(decorationColors->negativeReducedOpacityBackground.alphaF() * 0.5);
 
-    decorationColors->negativeReducedOpacityOutline = fullySaturatedNegative;
+    decorationColors->negativeReducedOpacityOutline = decorationColors->fullySaturatedNegative;
     decorationColors->negativeReducedOpacityOutline.setAlphaF(decorationColors->negativeReducedOpacityOutline.alphaF() * 0.7);
 
     decorationColors->negativeReducedOpacityLessSaturatedBackground = getDifferentiatedLessSaturatedColor(decorationColors->negative);

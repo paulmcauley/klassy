@@ -36,7 +36,7 @@
     
     <!-- red outline close button -->
     <entry name="RedAlwaysShownClose" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
     
     <!-- button icon style -->
@@ -77,22 +77,112 @@
     
     <entry name="AlwaysShow" type="Enum">
         <choices>
-            <choice name="AlwaysShowIcons" />
-            <choice name="AlwaysShowIconsAndCloseButtonBackground" />
+            <choice name="Icons" />
+            <choice name="IconsAndCloseButtonBackground" />
+            <choice name="IconsAndCloseButtonOutline" />
+            <choice name="IconsOutlines" />
+            <choice name="IconsOutlinesAndCloseButtonBackground" />
+            <choice name="IconsAndBackgrounds" />
+            <choice name="IconsBackgroundsAndOutlines" />
+            <choice name="Backgrounds" />
+            <choice name="BackgroundsAndOutlines" />
         </choices>
-        <default>AlwaysShowIcons</default>
+        <default>Icons</default>
     </entry>
     
-    <!-- Always show icon highlight using -->
+    <!-- used for AlwaysShowIcons-->
     <entry name="AlwaysShowIconHighlightUsing" type="Enum">
         <choices>
-            <choice name="AlwaysShowIconHighlightUsingBackground" />
-            <choice name="AlwaysShowIconHighlightUsingBackgroundAndOutline" />
+            <choice name="Background" />
+            <choice name="BackgroundAndOutline" />
+            <choice name="Outline" />
         </choices>
-        <default>AlwaysShowIconHighlightUsingBackgroundAndOutline</default>
+        <default>BackgroundAndOutline</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsAndCloseButtonBackground -->
+    <entry name="AlwaysShowIconCloseButtonBackgroundHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Background" />
+            <choice name="BackgroundAndOutline" />
+            <choice name="Outline" />
+        </choices>
+        <default>BackgroundAndOutline</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsAndCloseButtonOutline -->
+    <entry name="AlwaysShowIconCloseButtonOutlineHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Background" />
+            <choice name="BackgroundAndOutline" />
+            <choice name="Outline" />
+        </choices>
+        <default>BackgroundAndOutline</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsOutlines -->
+    <entry name="AlwaysShowIconOutlineHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Background" />
+            <!-- <choice name="DifferentColoredOutline" />
+            <choice name="BackgroundDifferentColoredOutline" /> -->
+        </choices>
+        <default>Background</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsOutlinesAndCloseButtonBackground-->
+    <entry name="AlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Background" />
+            <!-- <choice name="DifferentColoredOutline" />
+            <choice name="BackgroundDifferentColoredOutline" /> -->
+        </choices>
+        <default>Background</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsAndBackgrounds-->
+    <entry name="AlwaysShowIconBackgroundHighlightUsing" type="Enum">
+        <choices>
+            <!-- <choice name="Outline" /> -->
+            <choice name="DifferentColoredBackground" />
+            <choice name="DifferentColoredBackgroundOutline" />
+        </choices>
+        <default>DifferentColoredBackgroundOutline</default>
+    </entry>
+
+    <!-- used for AlwaysShowIconsBackgroundsAndOutlines-->
+    <entry name="AlwaysShowIconBackgroundOutlineHighlightUsing" type="Enum">
+        <choices>
+            <choice name="DifferentColoredBackground" />
+            <!-- <choice name="DifferentColoredOutline" /> -->
+            <!-- <choice name="DifferentColoredBackgroundDifferentColoredOutline" /> -->
+        </choices>
+        <default>DifferentColoredBackground</default>
+    </entry>
+
+    <!-- used for AlwaysShowBackgrounds -->
+    <entry name="AlwaysShowBackgroundHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Icon" />
+            <!-- <choice name="IconOutline" /> -->
+            <choice name="IconDifferentColoredBackground" />
+            <choice name="IconOutlineDifferentColoredBackground" />
+        </choices>
+        <default>IconOutlineDifferentColoredBackground</default>
+    </entry>
+
+    <!-- used for AlwaysShowBackgroundsAndOutlines-->
+    <entry name="AlwaysShowBackgroundOutlineHighlightUsing" type="Enum">
+        <choices>
+            <choice name="Icon" />
+            <choice name="IconDifferentColoredBackground" />
+            <!-- <choice name="IconDifferentColoredOutline" />
+            <choice name="IconDifferentColoredBackgroundDifferentColoredOutline" /> -->
+        </choices>
+        <default>IconDifferentColoredBackground</default>
     </entry>
     
-        <!-- Titlebar opacity for active window -->
+    <!-- Titlebar opacity for active window -->
     <entry name="ActiveTitlebarOpacity" type = "Int">
        <default>100</default>
        <min>0</min>

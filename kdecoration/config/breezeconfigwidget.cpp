@@ -134,6 +134,14 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowIconBackgroundOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui.alwaysShowBackgroundOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
@@ -229,6 +237,15 @@ void ConfigWidget::loadMain(QString loadPresetName)
     m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
     m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
     m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
+    m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing());
+    m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing());
+    m_ui.alwaysShowIconOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconOutlineHighlightUsing());
+    m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->setCurrentIndex(
+        m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing());
+    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
+    m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing());
+    m_ui.alwaysShowBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundHighlightUsing());
+    m_ui.alwaysShowBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
     m_ui.titleSidePadding->setValue(m_internalSettings->titleSidePadding());
@@ -323,6 +340,15 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setBackgroundColors(m_ui.backgroundColors->currentIndex());
     m_internalSettings->setAlwaysShow(m_ui.alwaysShow->currentIndex());
     m_internalSettings->setAlwaysShowIconHighlightUsing(m_ui.alwaysShowIconHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconCloseButtonBackgroundHighlightUsing(m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconCloseButtonOutlineHighlightUsing(m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconOutlineHighlightUsing(m_ui.alwaysShowIconOutlineHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing(
+        m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconBackgroundHighlightUsing(m_ui.alwaysShowIconBackgroundHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowIconBackgroundOutlineHighlightUsing(m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowBackgroundHighlightUsing(m_ui.alwaysShowBackgroundHighlightUsing->currentIndex());
+    m_internalSettings->setAlwaysShowBackgroundOutlineHighlightUsing(m_ui.alwaysShowBackgroundOutlineHighlightUsing->currentIndex());
     m_internalSettings->setIconSize(m_ui.iconSize->currentIndex());
     m_internalSettings->setSystemIconSize(m_ui.systemIconSize->currentIndex());
     m_internalSettings->setTitleSidePadding(m_ui.titleSidePadding->value());
@@ -413,6 +439,16 @@ void ConfigWidget::defaults()
     m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
     m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
     m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
+    m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing());
+    m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing());
+    m_ui.alwaysShowIconOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconOutlineHighlightUsing());
+    m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->setCurrentIndex(
+        m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing());
+    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
+    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
+    m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing());
+    m_ui.alwaysShowBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundHighlightUsing());
+    m_ui.alwaysShowBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
     m_ui.titleSidePadding->setValue(m_internalSettings->titleSidePadding());
@@ -512,6 +548,23 @@ void ConfigWidget::updateChanged()
     else if (m_ui.alwaysShow->currentIndex() != m_internalSettings->alwaysShow())
         modified = true;
     else if (m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconOutlineHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->currentIndex()
+             != m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconBackgroundHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowBackgroundHighlightUsing())
+        modified = true;
+    else if (m_ui.alwaysShowBackgroundOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing())
         modified = true;
     else if (m_ui.iconSize->currentIndex() != m_internalSettings->iconSize())
         modified = true;

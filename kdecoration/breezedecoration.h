@@ -148,6 +148,26 @@ public:
         return m_rightButtons;
     }
 
+    struct ButtonBehaviouralParameters {
+        bool drawBackgroundAlways;
+        bool drawBackgroundOnHover;
+        bool drawBackgroundOnFocus;
+        // bool drawBackgroundDifferentColoredHover;
+        bool drawCloseBackgroundAlways;
+        bool drawCloseBackgroundOnHover;
+        bool drawCloseBackgroundOnFocus;
+        bool drawOutlineAlways;
+        bool drawOutlineOnHover;
+        bool drawOutlineOnFocus;
+        // bool drawOutlineDifferentColoredHover;
+        bool drawCloseOutlineAlways;
+        bool drawCloseOutlineOnHover;
+        bool drawCloseOutlineOnFocus;
+        bool drawIconAlways;
+        bool drawIconOnHover;
+        bool drawIconOnFocus;
+    } m_buttonBehaviouralParameters;
+
 public Q_SLOTS:
     void init() override;
 
@@ -179,6 +199,7 @@ private:
     QPair<QRect, Qt::Alignment> captionRect() const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
+    void setButtonBehaviouralParameters();
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
