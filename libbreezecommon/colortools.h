@@ -17,26 +17,29 @@ namespace Breeze
 {
 
 struct BREEZECOMMON_EXPORT DecorationColors {
-    QColor buttonFocus = QColor();
-    QColor buttonHover = QColor();
-    QColor buttonReducedOpacityBackground = QColor();
-    QColor buttonReducedOpacityOutline = QColor();
-    QColor highlight = QColor();
-    QColor highlightLessSaturated = QColor();
-    QColor negative = QColor();
-    QColor negativeLessSaturated = QColor();
-    QColor negativeSaturated = QColor();
-    QColor negativeReducedOpacityBackground = QColor();
-    QColor negativeReducedOpacityOutline = QColor();
-    QColor negativeReducedOpacityLessSaturatedBackground = QColor();
-    QColor neutral = QColor();
-    QColor neutralLessSaturated = QColor();
-    QColor neutralReducedOpacityBackground = QColor();
-    QColor neutralReducedOpacityOutline = QColor();
-    QColor positive = QColor();
-    QColor positiveLessSaturated = QColor();
-    QColor positiveReducedOpacityBackground = QColor();
-    QColor positiveReducedOpacityOutline = QColor();
+    QColor buttonFocus;
+    QColor buttonHover;
+    QColor buttonReducedOpacityBackground;
+    QColor buttonReducedOpacityOutline;
+    QColor highlight;
+    QColor highlightLessSaturated;
+    QColor negative;
+    QColor negativeLessSaturated;
+    QColor negativeSaturated;
+    QColor negativeReducedOpacityBackground;
+    QColor negativeReducedOpacityOutline;
+    QColor negativeReducedOpacityLessSaturatedBackground;
+    QColor fullySaturatedNegative;
+    QColor neutral;
+    QColor neutralLessSaturated;
+    QColor neutralSaturated;
+    QColor neutralReducedOpacityBackground;
+    QColor neutralReducedOpacityOutline;
+    QColor positive;
+    QColor positiveLessSaturated;
+    QColor positiveSaturated;
+    QColor positiveReducedOpacityBackground;
+    QColor positiveReducedOpacityOutline;
 };
 
 extern std::shared_ptr<DecorationColors> BREEZECOMMON_EXPORT g_decorationColors;

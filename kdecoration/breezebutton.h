@@ -158,11 +158,10 @@ private:
     //*@name colors
     //@{
     QColor foregroundColor() const;
-    QColor backgroundColor(bool getNonAnimatedColor = false) const;
+    QColor backgroundColor(QColor &alwaysShowColor, QColor &hoverColor, QColor &focusColor, bool getNonAnimatedColor = false) const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 
-    bool shouldDrawBackgroundStroke() const;
     bool isSystemIconAvailable();
     void setDevicePixelRatio(QPainter *painter);
     void setShouldDrawBoldButtonIcons();
@@ -183,6 +182,9 @@ private:
 
     QColor m_foregroundColor;
     QColor m_backgroundColor;
+    QColor m_backgroundAlwaysShowColor;
+    QColor m_backgroundHoverColor;
+    QColor m_backgroundFocusColor;
     QColor m_outlineColor;
 
     Flag m_flag = FlagNone;

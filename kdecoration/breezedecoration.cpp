@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -605,6 +605,8 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
 
+    setButtonBehaviouralParameters();
+
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
@@ -714,6 +716,526 @@ void Decoration::recalculateBorders()
     }
 
     setResizeOnlyBorders(QMargins(extLeft, extTop, extRight, extBottom));
+}
+
+void Decoration::setButtonBehaviouralParameters()
+{
+    m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+    m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+    ;
+    m_buttonBehaviouralParameters.drawBackgroundOnFocus = false;
+    m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+    m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = false;
+    m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = false;
+    m_buttonBehaviouralParameters.drawOutlineAlways = false;
+    m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+    m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+    m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+    m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+    m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+    m_buttonBehaviouralParameters.drawIconAlways = false;
+    m_buttonBehaviouralParameters.drawIconOnHover = false;
+    m_buttonBehaviouralParameters.drawIconOnFocus = false;
+
+    switch (m_internalSettings->alwaysShow()) {
+    case InternalSettings::EnumAlwaysShow::Icons:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsAndCloseButtonBackground:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsAndCloseButtonOutline:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsOutlines:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconOutlineHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::Background:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+            /*case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::DifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = false;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;
+            case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::BackgroundDifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;*/
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsOutlinesAndCloseButtonBackground:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing::Background:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+            /*case InternalSettings::EnumAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing::DifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;
+            case InternalSettings::EnumAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing::BackgroundDifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = false;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;*/
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsAndBackgrounds:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconBackgroundHighlightUsing()) {
+        /*case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::Outline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;*/
+        case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::DifferentColoredBackground:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+            break;
+        case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::DifferentColoredBackgroundOutline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::IconsBackgroundsAndOutlines:
+        m_buttonBehaviouralParameters.drawIconAlways = true;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredBackground:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+            /*case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;*/
+            /*case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredBackgroundDifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;*/
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::Backgrounds:
+        m_buttonBehaviouralParameters.drawIconAlways = false;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowBackgroundHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::Icon:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            // m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+            break;
+        /*case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconOutline:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            //m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            //m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;*/
+        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconDifferentColoredBackground:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = false;
+            // m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = false;
+            break;
+        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconOutlineDifferentColoredBackground:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            // m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        }
+        break;
+    case InternalSettings::EnumAlwaysShow::BackgroundsAndOutlines:
+        m_buttonBehaviouralParameters.drawIconAlways = false;
+        m_buttonBehaviouralParameters.drawIconOnHover = true;
+        m_buttonBehaviouralParameters.drawIconOnFocus = true;
+        switch (m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing()) {
+        case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::Icon:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            // m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+        case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredBackground:
+            m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+            // m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+
+            m_buttonBehaviouralParameters.drawOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+            // m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = false;
+            m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+            m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+            break;
+            /*case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = false;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;
+            case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredBackgroundDifferentColoredOutline:
+                m_buttonBehaviouralParameters.drawBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawBackgroundDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundAlways = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawOutlineOnFocus = true;
+                m_buttonBehaviouralParameters.drawOutlineDifferentColoredHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineAlways = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnHover = true;
+                m_buttonBehaviouralParameters.drawCloseOutlineOnFocus = true;
+                break;*/
+        }
+        break;
+    }
 }
 
 //________________________________________________________________
