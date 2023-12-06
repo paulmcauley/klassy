@@ -6063,8 +6063,9 @@ bool Style::drawProgressBarLabelControl(const QStyleOption *option, QPainter *pa
     const bool enabled(state & State_Enabled);
 
     // define text rect
-    Qt::Alignment hAlign((progressBarOption->textAlignment == Qt::AlignLeft) ? Qt::AlignHCenter : progressBarOption->textAlignment);
-    drawItemText(painter, rect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, QPalette::WindowText);
+    const Qt::Alignment hAlign((progressBarOption->textAlignment == Qt::AlignLeft) ? Qt::AlignHCenter : progressBarOption->textAlignment);
+    const QPalette::ColorRole role(progressBarOption->state.testFlag(QStyle::State_Selected) ? QPalette::HighlightedText : QPalette::Text);
+    drawItemText(painter, rect, Qt::AlignVCenter | hAlign, palette, enabled, progressBarOption->text, role);
 
     return true;
 }
