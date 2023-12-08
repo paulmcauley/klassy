@@ -843,13 +843,14 @@ int Style::pixelMetric(PixelMetric metric, const QStyleOption *option, const QWi
 
     // checkboxes and radio buttons
     case PM_IndicatorWidth:
-        return Metrics::CheckBox_Size;
     case PM_IndicatorHeight:
-        return Metrics::CheckBox_Size;
     case PM_ExclusiveIndicatorWidth:
-        return Metrics::CheckBox_Size;
     case PM_ExclusiveIndicatorHeight:
         return Metrics::CheckBox_Size;
+
+    case PM_CheckBoxLabelSpacing:
+    case PM_RadioButtonLabelSpacing:
+        return Metrics::CheckBox_ItemSpacing;
 
     // list headers
     case PM_HeaderMarkSize:
