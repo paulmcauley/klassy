@@ -465,6 +465,10 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
     auto c = d->client().toStrongRef();
     Q_ASSERT(c);
 
+    buttonAlwaysShowColor = QColor();
+    buttonHoverColor = QColor();
+    buttonFocusColor = QColor();
+
     // set hover and focus colours
     if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
@@ -737,8 +741,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
                 } else {
                     if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
-                        buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
@@ -802,8 +806,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
                 } else {
                     if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
-                        buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
+                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
@@ -870,8 +874,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
                 } else {
                     if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
-                        buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
+                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else {
                 if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
@@ -907,8 +911,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
                 } else {
                     if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
-                        buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
+                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else {
                 if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {

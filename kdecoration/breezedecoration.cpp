@@ -722,7 +722,6 @@ void Decoration::setButtonBehaviouralParameters()
 {
     m_buttonBehaviouralParameters.drawBackgroundAlways = false;
     m_buttonBehaviouralParameters.drawBackgroundOnHover = false;
-    ;
     m_buttonBehaviouralParameters.drawBackgroundOnFocus = false;
     m_buttonBehaviouralParameters.drawCloseBackgroundAlways = false;
     m_buttonBehaviouralParameters.drawCloseBackgroundOnHover = false;
