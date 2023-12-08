@@ -111,9 +111,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 #endif
 
-    QIcon useSystemIconThemeIcon = QIcon::fromTheme(QStringLiteral("preferences-desktop-icons"));
-    m_ui.buttonIconStyle->addItem(useSystemIconThemeIcon, "Use system icon theme");
-
     connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::integratedRoundedRectangleSizingButtonClicked);
 
     connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
