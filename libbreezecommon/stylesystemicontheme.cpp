@@ -1,15 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
 #include "stylesystemicontheme.h"
-#include <QGraphicsColorizeEffect>
-#include <QGraphicsItem>
-#include <QGraphicsScene>
 #include <QIcon>
-#include <memory>
+#include <vector>
 
 namespace Breeze
 {
@@ -17,48 +14,46 @@ namespace Breeze
 void RenderStyleSystemIconTheme::paintIconFromSystemTheme(QString iconName)
 {
     // QIcon::setThemeName(QIcon::themeName()); //doing this hack allows Adwaita icon theme to be partially loaded
-    std::unique_ptr<QIcon> icon(new QIcon(QIcon::fromTheme(iconName)));
-    QRect rect(QPoint(0, 0), QSize(m_iconWidth, m_iconWidth));
+    QIcon icon(QIcon::fromTheme(iconName));
+    QSize pixmapSize(m_iconWidth, m_iconWidth);
+    QRect rect(QPoint(0, 0), pixmapSize); // Why not rectF, QSizeF??? experiment
 
     if (m_internalSettings->colorizeSystemIcons()) {
-        std::unique_ptr<QGraphicsScene> scene(new QGraphicsScene);
-        QGraphicsPixmapItem *item = new QGraphicsPixmapItem; // raw pointer as QGraphicsScene takes ownership of QGraphicsPixmapItem
+        // convert the alpha of the icon into tinted colour on transparent
+        // TODO: use pixmap(const QSize &size, qreal devicePixelRatio, QIcon::Mode mode = Normal, QIcon::State state = Off) const
+        //      this allows setting devicePixelRatioF in Qt6, fixing display of icons on multimonitor setups
+        QImage tintedIcon(convertAlphaToColorOnTransparent(icon.pixmap(pixmapSize).toImage(), m_pen.color()));
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        /* the following paragraph is a silly workaround to fix a Qt problem with multiple monitors with different DPIs on Wayland
-         * When returning a pixmap from a QIcon Qt will give the pixmap the devicePixelRatio of the monitor with the highest devicePixelRatio
-         * Qt does not give it the devicePixelRatio of the current monitor. This causes blurry icons on the lower-dpr screens.
-         * Therefore have to make an icon scaled by the difference and set the devicePixelRatio manually
-         * Qt6 should offer a better solution as has the option to specify the devicePixelRatio when requesting a QPixmap from a QIcon
-         */
-        QPixmap *iconPixmapToRender = nullptr;
-        std::unique_ptr<QPixmap> iconPixmap(new QPixmap(icon->pixmap(QSize(m_iconWidth, m_iconWidth))));
-        std::unique_ptr<QPixmap> iconPixmap2;
-        qreal qIconDefaultDevicePixelRatio = iconPixmap->devicePixelRatioF();
-        if (qAbs(qIconDefaultDevicePixelRatio - m_devicePixelRatio) < 0.05)
-            iconPixmapToRender = iconPixmap.get();
-        else {
-            iconPixmap2.reset(new QPixmap());
-            int reducedIconWidth = qRound(m_iconWidth * m_devicePixelRatio / qIconDefaultDevicePixelRatio);
-            *iconPixmap2 = icon->pixmap(reducedIconWidth, reducedIconWidth);
-            iconPixmap2->setDevicePixelRatio(m_devicePixelRatio);
-            iconPixmapToRender = iconPixmap2.get();
-        }
-        if (iconPixmapToRender)
-            item->setPixmap(*iconPixmapToRender);
-
-#else
-        item->setPixmap(icon->pixmap(QSize(m_iconWidth, m_iconWidth), m_devicePixelRatio)); // need Qt6 for this more straightforward line to work
-#endif
-        /* Tint the icon with the pen colour */
-        QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect; // raw pointer as QGraphicsPixmapItem takes ownership of QGraphicsColorizeEffect
-        effect->setColor(m_pen.color());
-        item->setGraphicsEffect(effect);
-
-        scene->addItem(item);
-        scene->render(m_painter, rect, rect);
+        m_painter->drawImage(rect, tintedIcon);
     } else
-        icon->paint(m_painter, QRect(QPoint(0, 0), QSize(m_iconWidth, m_iconWidth)));
+        icon.paint(m_painter, rect);
+}
+
+QImage RenderStyleSystemIconTheme::convertAlphaToColorOnTransparent(const QImage &srcImage, const QColor &tintColor)
+{
+    // copy raw srcImage data to STL container
+    std::vector<QRgb> pixels;
+    qreal totalPixels = srcImage.height() * srcImage.width();
+    pixels.resize(totalPixels);
+    memmove(pixels.data(), srcImage.bits(), totalPixels * sizeof(QRgb));
+
+    QColor outputColor(tintColor);
+    int alpha;
+
+    // for each pixel with opacity set the colour to the tintColor and alphablend
+    // TODO:enable the following line instead with #include <execution> for parallelism, requires C++17 gcc9.1, TBB
+    // (https://oneapi-src.github.io/oneTBB/GSG/integrate.html#integrate)
+    //  (TBB conflicts with Qt - need to set add_definitions(-DQT_NO_KEYWORDS) to CMake and replace emit, signal, slot and foreach keywords)
+    // std::for_each(std::execution::parallel_unsequenced_policy,
+    std::for_each(pixels.begin(), pixels.end(), [&](QRgb &pixel) {
+        alpha = qAlpha(pixel);
+        if (alpha > 0) {
+            outputColor.setAlphaF((qreal(alpha) / 255) * tintColor.alphaF());
+            pixel = outputColor.rgba();
+        }
+    });
+
+    return (QImage((uchar *)pixels.data(), srcImage.width(), srcImage.height(), QImage::Format_ARGB32));
 }
 
 void RenderStyleSystemIconTheme::renderCloseIcon()
