@@ -6,7 +6,6 @@
 
 #include "stylesystemicontheme.h"
 #include <QIcon>
-#include <vector>
 
 namespace Breeze
 {
@@ -22,38 +21,34 @@ void RenderStyleSystemIconTheme::paintIconFromSystemTheme(QString iconName)
         // convert the alpha of the icon into tinted colour on transparent
         // TODO: use pixmap(const QSize &size, qreal devicePixelRatio, QIcon::Mode mode = Normal, QIcon::State state = Off) const
         //      this allows setting devicePixelRatioF in Qt6, fixing display of icons on multimonitor setups
-        QImage tintedIcon(convertAlphaToColorOnTransparent(icon.pixmap(pixmapSize).toImage(), m_pen.color()));
+        QImage iconImage(icon.pixmap(pixmapSize).toImage());
+        convertAlphaToColorOnTransparent(iconImage, m_pen.color());
 
-        m_painter->drawImage(rect, tintedIcon);
+        m_painter->drawImage(rect, iconImage);
     } else
         icon.paint(m_painter, rect);
 }
 
-QImage RenderStyleSystemIconTheme::convertAlphaToColorOnTransparent(const QImage &srcImage, const QColor &tintColor)
+void RenderStyleSystemIconTheme::convertAlphaToColorOnTransparent(QImage &image, const QColor &tintColor)
 {
-    // copy raw srcImage data to STL container
-    std::vector<QRgb> pixels;
-    qreal totalPixels = srcImage.height() * srcImage.width();
-    pixels.resize(totalPixels);
-    memmove(pixels.data(), srcImage.bits(), totalPixels * sizeof(QRgb));
+    if (image.isNull())
+        return;
+    image.convertTo(QImage::Format_ARGB32);
 
     QColor outputColor(tintColor);
     int alpha;
 
-    // for each pixel with opacity set the colour to the tintColor and alphablend
-    // TODO:enable the following line instead with #include <execution> for parallelism, requires C++17 gcc9.1, TBB
-    // (https://oneapi-src.github.io/oneTBB/GSG/integrate.html#integrate)
-    //  (TBB conflicts with Qt - need to set add_definitions(-DQT_NO_KEYWORDS) to CMake and replace emit, signal, slot and foreach keywords)
-    // std::for_each(std::execution::parallel_unsequenced_policy,
-    std::for_each(pixels.begin(), pixels.end(), [&](QRgb &pixel) {
-        alpha = qAlpha(pixel);
-        if (alpha > 0) {
-            outputColor.setAlphaF((qreal(alpha) / 255) * tintColor.alphaF());
-            pixel = outputColor.rgba();
+    for (int y = 0; y < image.height(); ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(image.scanLine(y));
+        for (int x = 0; x < image.width(); ++x) {
+            // line[x] is a pixel
+            alpha = qAlpha(line[x]);
+            if (alpha > 0) {
+                outputColor.setAlphaF((qreal(alpha) / 255) * tintColor.alphaF());
+                line[x] = outputColor.rgba();
+            }
         }
-    });
-
-    return (QImage((uchar *)pixels.data(), srcImage.width(), srcImage.height(), QImage::Format_ARGB32));
+    }
 }
 
 void RenderStyleSystemIconTheme::renderCloseIcon()
