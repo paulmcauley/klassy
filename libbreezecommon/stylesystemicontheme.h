@@ -47,7 +47,7 @@ public:
 
 private:
     void paintIconFromSystemTheme(QString iconName);
-    QImage convertAlphaToColorOnTransparent(const QImage &srcImage, const QColor &tintColor);
+    void convertAlphaToColorOnTransparent(QImage &image, const QColor &tintColor);
 
     qreal m_iconWidth;
     const QSharedPointer<InternalSettings> m_internalSettings;
