@@ -1032,7 +1032,8 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
             color = this->backgroundColor(true); // use a background colour if outline colour not valid
         d->setThinWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
     } else {
-        bool otherButtonIsHoveredOrPressed = false;
+        if (!isHovered() && isPressed())
+            return; // don't remove the window outline highlight if the button is still pressed
 
         // Check if any other button is hovered/pressed.
         // This is to prevent glitches when you directly mouse over one button to another and the second button does not trigger on.
@@ -1041,12 +1042,11 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
             Button *button = static_cast<Button *>(decButton.data());
 
             if (button != this && (button->isHovered() || button->isPressed())) {
-                otherButtonIsHoveredOrPressed = true;
-                break;
+                return;
             }
         }
-        if (!otherButtonIsHoveredOrPressed)
-            d->setThinWindowOutlineOverrideColor(on, color);
+
+        d->setThinWindowOutlineOverrideColor(on, color);
     }
 }
 
