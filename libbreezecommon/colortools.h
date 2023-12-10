@@ -69,9 +69,13 @@ public:
      * @param foregroundColor The foreground colour to potentially replace
      * @param backgroundColor The background colour to compare with
      * @param blackWhiteContrastThreshold The contrast threshold, below which a black or white foreground colour will be returned
-     * @return the higher contrast QColor
+     * @param outputColor The potentially-adjusted output colour
+     * @return returns true if a higher contrast colour was generated, false if the colour remained the same
      */
-    static QColor getHigherContrastForegroundColor(const QColor &foregroundColor, const QColor &backgroundColor, double blackWhiteContrastThreshold);
+    static bool getHigherContrastForegroundColor(const QColor &foregroundColor,
+                                                 const QColor &backgroundColor,
+                                                 const qreal blackWhiteContrastThreshold,
+                                                 QColor &outputColor);
 
     /**
      * @brief Given a background colour, will return either a black or white foregreound colour, depending upon which gives the best contrast
