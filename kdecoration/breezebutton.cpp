@@ -151,8 +151,9 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
         m_systemIconIsAvailable = isSystemIconAvailable();
     setStandardScaledPenWidth();
 
-    m_backgroundColor = this->backgroundColor(m_backgroundAlwaysShowColor, m_backgroundHoverColor, m_backgroundFocusColor);
-    m_foregroundColor = this->foregroundColor();
+    QColor backgroundForegroundoregroundContrastedColor;
+    m_backgroundColor = this->backgroundColor(backgroundForegroundoregroundContrastedColor);
+    m_foregroundColor = this->foregroundColor(backgroundForegroundoregroundContrastedColor);
 
     m_lowContrastBetweenTitleBarAndBackground = (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText
                                                  && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3));
@@ -349,7 +350,7 @@ void Button::drawIcon(QPainter *painter) const
 }
 
 //__________________________________________________________________
-QColor Button::foregroundColor() const
+QColor Button::foregroundColor(const QColor &backgroundContrastedColor) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d)
@@ -359,19 +360,17 @@ QColor Button::foregroundColor() const
     Q_ASSERT(c);
 
     QColor color;
-    // contrast heuristic between foreground and background of button when not translucent
-    if (!d->internalSettings()->translucentButtonBackgrounds()) {
-        QColor mainBackgroundColorForHueristicAnalysis;
-        if (d->m_buttonBehaviouralParameters.drawBackgroundAlways)
-            mainBackgroundColorForHueristicAnalysis = m_backgroundHoverColor;
-        else
-            mainBackgroundColorForHueristicAnalysis = m_backgroundAlwaysShowColor;
-        if (mainBackgroundColorForHueristicAnalysis.isValid())
-            color = ColorTools::getHigherContrastForegroundColor(d->fontColor(), mainBackgroundColorForHueristicAnalysis, 2.3);
-        else
-            color = d->fontColor();
-    } else
+    if (backgroundContrastedColor.isValid()) {
+        ColorTools::getHigherContrastForegroundColor(d->fontColor(), backgroundContrastedColor, 2.3, color);
+
+        /*
+        bool adjustedForContrastForeground = ColorTools::getHigherContrastForegroundColor(d->fontColor(), backgroundContrastedColor, 2.3, color);
+        if(adjustedForContrastForeground) qDebug() << "adjustedForContrastForeground" << adjustedForContrastForeground << "for type" << int(type()) << "original
+        foreground colour was" << d->fontColor() << "background is" << backgroundContrastedColor <<  "now foreground is" << color;
+        */
+    } else {
         color = d->fontColor();
+    }
 
     if (isPressed() && d->m_buttonBehaviouralParameters.drawIconOnFocus) {
         if (type() == DecorationButtonType::Close)
@@ -379,7 +378,7 @@ QColor Button::foregroundColor() const
         else if (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText) {
             return color;
         } else if (d->internalSettings()->translucentButtonBackgrounds())
-            return color; //???was fontColor
+            return color;
         else
             return d->titleBarColor();
 
@@ -388,7 +387,7 @@ QColor Button::foregroundColor() const
         if (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText)
             return color;
         else if (d->internalSettings()->translucentButtonBackgrounds())
-            return color; //???was fontColor???
+            return color;
         else
             return d->titleBarColor();
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()
@@ -421,10 +420,11 @@ QColor Button::foregroundColor() const
             return d->m_buttonBehaviouralParameters.drawIconAlways ? color : ColorTools::alphaMix(color, m_opacity);
         } else if (d->internalSettings()->translucentButtonBackgrounds()) {
             return d->m_buttonBehaviouralParameters.drawIconAlways ? color : ColorTools::alphaMix(color, m_opacity);
-        } else {
-            return d->m_buttonBehaviouralParameters.drawIconAlways ? KColorUtils::mix(color, d->titleBarColor(), m_opacity)
+        } else if (d->m_buttonBehaviouralParameters.drawBackgroundAlways) {
+            return d->m_buttonBehaviouralParameters.drawIconAlways ? d->titleBarColor() : ColorTools::alphaMix(d->titleBarColor(), m_opacity);
+        } else
+            return d->m_buttonBehaviouralParameters.drawIconAlways ? KColorUtils::mix(d->titleBarColor(), color, m_opacity)
                                                                    : ColorTools::alphaMix(color, m_opacity);
-        }
 
     } else if (isHovered() && d->m_buttonBehaviouralParameters.drawIconOnHover) {
         if (type() == DecorationButtonType::Close)
@@ -447,15 +447,26 @@ QColor Button::foregroundColor() const
         else
             return d->titleBarColor();
     } else {
-        if (d->m_buttonBehaviouralParameters.drawIconAlways)
-            return color;
-        else
+        if (d->m_buttonBehaviouralParameters.drawIconAlways) {
+            if (d->m_buttonBehaviouralParameters.drawBackgroundAlways
+                && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText
+                && !d->internalSettings()->translucentButtonBackgrounds())
+                return d->titleBarColor();
+            else
+                return color;
+        } else
             return QColor();
     }
 }
 
+QColor Button::backgroundColor(const bool getNonAnimatedColor) const
+{
+    QColor foregroundContrastedColor;
+    return this->backgroundColor(foregroundContrastedColor, getNonAnimatedColor);
+}
+
 //__________________________________________________________________
-QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHoverColor, QColor &buttonFocusColor, bool getNonAnimatedColor) const
+QColor Button::backgroundColor(QColor &foregroundContrastedColor, const bool getNonAnimatedColor) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d) {
@@ -465,9 +476,17 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
     auto c = d->client().toStrongRef();
     Q_ASSERT(c);
 
-    buttonAlwaysShowColor = QColor();
-    buttonHoverColor = QColor();
-    buttonFocusColor = QColor();
+    QColor buttonAlwaysShowColor;
+    QColor buttonHoverColor;
+    QColor buttonFocusColor;
+    foregroundContrastedColor = QColor(); // for contrast heuristic between foreground and background of button when not translucent
+
+    // heuristic for contrast detection between background and foreground is only enabled for system accent colours from the system because system colour
+    // schemes can be imperfect. Not enabled for translucent because usually the translucencty alleviates any contrast problems
+    bool analyseContrastWithForeground =
+        (!d->internalSettings()->translucentButtonBackgrounds()
+         && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
+             || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights));
 
     // set hover and focus colours
     if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
@@ -546,7 +565,7 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
                         if (d->m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus)
                             buttonFocusColor = g_decorationColors->negativeLessSaturated;
                     } else {
-                        buttonAlwaysShowColor = g_decorationColors->buttonHover;
+                        buttonAlwaysShowColor = KColorUtils::mix(d->titleBarColor(), g_decorationColors->buttonHover, 0.5);
                         if (d->m_buttonBehaviouralParameters.drawCloseBackgroundOnHover)
                             buttonHoverColor = g_decorationColors->negativeSaturated;
                         if (d->m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus)
@@ -595,9 +614,9 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
                         buttonFocusColor = g_decorationColors->buttonFocus;
                 } else {
                     if (d->m_buttonBehaviouralParameters.drawBackgroundOnHover)
-                        buttonHoverColor = g_decorationColors->buttonHover;
+                        buttonHoverColor = KColorUtils::mix(d->titleBarColor(), g_decorationColors->buttonHover, 0.5);
                     if (d->m_buttonBehaviouralParameters.drawBackgroundOnFocus)
-                        buttonFocusColor = g_decorationColors->buttonFocus;
+                        buttonFocusColor = g_decorationColors->buttonHover;
                 }
             }
         }
@@ -662,9 +681,9 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
                 }
             } else {
                 if (d->m_buttonBehaviouralParameters.drawBackgroundAlways) {
-                    buttonAlwaysShowColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
+                    buttonAlwaysShowColor = d->fontColor();
                     if (d->m_buttonBehaviouralParameters.drawBackgroundOnHover)
-                        buttonHoverColor = d->fontColor();
+                        buttonHoverColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
                     if (d->m_buttonBehaviouralParameters.drawBackgroundOnFocus)
                         buttonFocusColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.6);
                 } else {
@@ -679,27 +698,43 @@ QColor Button::backgroundColor(QColor &buttonAlwaysShowColor, QColor &buttonHove
 
     if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade) && isChecked()) {
         if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
-            || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights)
+            || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
+            if (analyseContrastWithForeground)
+                foregroundContrastedColor = buttonFocusColor;
             return buttonFocusColor;
-        else
+        } else {
+            if (analyseContrastWithForeground)
+                foregroundContrastedColor = buttonHoverColor;
             return buttonHoverColor;
-
+        }
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()
                && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
                    || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights)) {
+        if (analyseContrastWithForeground)
+            foregroundContrastedColor = buttonFocusColor;
         return buttonFocusColor;
     } else if (isPressed()) {
+        if (analyseContrastWithForeground)
+            foregroundContrastedColor = buttonFocusColor;
         return buttonFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (buttonAlwaysShowColor.isValid() && buttonHoverColor.isValid()) {
+            if (analyseContrastWithForeground)
+                foregroundContrastedColor = buttonHoverColor;
             return KColorUtils::mix(buttonAlwaysShowColor, buttonHoverColor, m_opacity);
         } else if (buttonHoverColor.isValid()) {
+            if (analyseContrastWithForeground)
+                foregroundContrastedColor = buttonHoverColor;
             return ColorTools::alphaMix(buttonHoverColor, m_opacity);
         } else
             return QColor();
     } else if (isHovered()) {
+        if (analyseContrastWithForeground)
+            foregroundContrastedColor = buttonHoverColor;
         return buttonHoverColor;
     } else {
+        if (analyseContrastWithForeground && buttonAlwaysShowColor.isValid())
+            foregroundContrastedColor = buttonAlwaysShowColor;
         return buttonAlwaysShowColor;
     }
 }
@@ -892,7 +927,7 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
                 }
             }
         } else { // titlebar text colour, non-translucent
-            if (type() == DecorationButtonType::Close /*&& (d->internalSettings()->redAlwaysShownClose())*/) {
+            if (type() == DecorationButtonType::Close) {
                 if (d->m_buttonBehaviouralParameters.drawCloseOutlineAlways) {
                     if (d->internalSettings()->redAlwaysShownClose()) {
                         buttonOutlineAlwaysShowColor = g_decorationColors->negativeSaturated;
@@ -994,10 +1029,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
     if (on) {
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
-            color = this->backgroundColor(m_backgroundAlwaysShowColor,
-                                          m_backgroundHoverColor,
-                                          m_backgroundFocusColor,
-                                          true); // use a background colour if outline colour not valid
+            color = this->backgroundColor(true); // use a background colour if outline colour not valid
         d->setThinWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
     } else {
         bool otherButtonIsHoveredOrPressed = false;

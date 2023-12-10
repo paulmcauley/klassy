@@ -157,8 +157,9 @@ private:
 
     //*@name colors
     //@{
-    QColor foregroundColor() const;
-    QColor backgroundColor(QColor &alwaysShowColor, QColor &hoverColor, QColor &focusColor, bool getNonAnimatedColor = false) const;
+    QColor backgroundColor(QColor &foregroundContrastedColor, const bool getNonAnimatedColor = false) const;
+    QColor backgroundColor(bool getNonAnimatedColor = false) const;
+    QColor foregroundColor(const QColor &backgroundContrastedColor) const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 
@@ -180,11 +181,9 @@ private:
      */
     void paintSmallSizedButtonBackground(QPainter *painter) const;
 
-    QColor m_foregroundColor;
+    //* these are the actual colors to be outputted (including for animations)
     QColor m_backgroundColor;
-    QColor m_backgroundAlwaysShowColor;
-    QColor m_backgroundHoverColor;
-    QColor m_backgroundFocusColor;
+    QColor m_foregroundColor;
     QColor m_outlineColor;
 
     Flag m_flag = FlagNone;

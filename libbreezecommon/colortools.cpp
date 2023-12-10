@@ -144,14 +144,20 @@ QColor ColorTools::getLessSaturatedColorForWindowHighlight(const QColor &inputCo
     return outputColor;
 }
 
-QColor ColorTools::getHigherContrastForegroundColor(const QColor &foregroundColor, const QColor &backgroundColor, double blackWhiteContrastThreshold)
+bool ColorTools::getHigherContrastForegroundColor(const QColor &foregroundColor,
+                                                  const QColor &backgroundColor,
+                                                  const qreal blackWhiteContrastThreshold,
+                                                  QColor &outputColor)
 {
-    double contrastRatio = KColorUtils::contrastRatio(foregroundColor, backgroundColor);
+    qreal contrastRatio = KColorUtils::contrastRatio(foregroundColor, backgroundColor);
 
-    if (contrastRatio < blackWhiteContrastThreshold)
-        return getBlackOrWhiteForegroundForHighContrast(backgroundColor);
-    else
-        return foregroundColor;
+    if (contrastRatio < blackWhiteContrastThreshold) {
+        outputColor = getBlackOrWhiteForegroundForHighContrast(backgroundColor);
+        return true;
+    } else {
+        outputColor = foregroundColor;
+        return false;
+    }
 }
 
 QColor ColorTools::getBlackOrWhiteForegroundForHighContrast(const QColor &backgroundColor)
