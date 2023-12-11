@@ -157,8 +157,8 @@ private:
 
     //*@name colors
     //@{
-    QColor backgroundColor(QColor &foregroundContrastedColor, const bool getNonAnimatedColor = false) const;
     QColor backgroundColor(bool getNonAnimatedColor = false) const;
+    QColor backgroundColor(QColor &foregroundContrastedColor, bool getNonAnimatedColor = false) const;
     QColor foregroundColor(const QColor &backgroundContrastedColor) const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
@@ -185,6 +185,9 @@ private:
     QColor m_backgroundColor;
     QColor m_foregroundColor;
     QColor m_outlineColor;
+
+    //* these are the cached non-animated colours used for animations
+    QColor m_previousForegroundColor;
 
     Flag m_flag = FlagNone;
 
