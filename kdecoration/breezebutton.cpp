@@ -1250,12 +1250,17 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
     qreal translationOffset = (m_smallButtonPaddedSize.width() - m_backgroundVisibleSize.width()) / 2;
     painter->translate(translationOffset, translationOffset);
-    qreal geometryShrinkOffset = 0;
+    qreal geometryEnlargeOffset = 0;
     qreal backgroundSize = m_backgroundVisibleSize.width();
+
+    qreal penWidth = PenWidth::Symbol;
+    if (KWindowSystem::isPlatformX11()) {
+        penWidth *= m_devicePixelRatio;
+    }
 
     if (m_outlineColor.isValid()) {
         QPen pen(m_outlineColor);
-        pen.setWidthF(m_standardScaledPenWidth);
+        pen.setWidthF(penWidth);
         pen.setCosmetic(true);
         painter->setPen(pen);
     } else
@@ -1271,20 +1276,30 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
             && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle))
         || ((d->internalSettings()->cornerRadius() < 0.2)
             && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))) {
-        painter->drawRect(
-            QRectF(0 + geometryShrinkOffset, 0 + geometryShrinkOffset, backgroundSize - geometryShrinkOffset, backgroundSize - geometryShrinkOffset));
+        if (m_outlineColor.isValid())
+            geometryEnlargeOffset = penWidth / 2;
+        painter->drawRect(QRectF(0 - geometryEnlargeOffset,
+                                 0 - geometryEnlargeOffset,
+                                 backgroundSize + geometryEnlargeOffset * 2,
+                                 backgroundSize + geometryEnlargeOffset * 2));
     } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
     ) {
-        painter->drawRoundedRect(
-            QRectF(0 + geometryShrinkOffset, 0 + geometryShrinkOffset, backgroundSize - geometryShrinkOffset, backgroundSize - geometryShrinkOffset),
-            20,
-            20,
-            Qt::RelativeSize);
+        if (m_outlineColor.isValid())
+            geometryEnlargeOffset = penWidth / 2;
+        painter->drawRoundedRect(QRectF(0 - geometryEnlargeOffset,
+                                        0 - geometryEnlargeOffset,
+                                        backgroundSize + geometryEnlargeOffset * 2,
+                                        backgroundSize + geometryEnlargeOffset * 2),
+                                 20,
+                                 20,
+                                 Qt::RelativeSize);
     } else
-        painter->drawEllipse(
-            QRectF(0 + geometryShrinkOffset, 0 + geometryShrinkOffset, backgroundSize - geometryShrinkOffset, backgroundSize - geometryShrinkOffset));
+        painter->drawEllipse(QRectF(0 - geometryEnlargeOffset,
+                                    0 - geometryEnlargeOffset,
+                                    backgroundSize + geometryEnlargeOffset * 2,
+                                    backgroundSize + geometryEnlargeOffset * 2));
 
     painter->restore();
 }
