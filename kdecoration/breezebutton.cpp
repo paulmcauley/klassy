@@ -1260,7 +1260,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
     if (m_outlineColor.isValid()) {
         QPen pen(m_outlineColor);
-        pen.setWidthF(penWidth);
+        pen.setWidthF(m_standardScaledPenWidth);
         pen.setCosmetic(true);
         painter->setPen(pen);
     } else
