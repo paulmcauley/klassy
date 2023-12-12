@@ -160,11 +160,11 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     m_outlineColor = this->outlineColor();
 
-    // cache colours for future animations if an animation is not running
-    if (m_animation->state() != QAbstractAnimation::Running) {
-        m_previousForegroundColor = m_foregroundColor;
-        m_previousBackgroundColor = m_backgroundColor;
-        m_previousOutlineColor = m_outlineColor;
+    // cache colours for future animations
+    if (m_animation->state() != QAbstractAnimation::Running && !isHovered()) {
+        m_preAnimationForegroundColor = m_foregroundColor;
+        m_preAnimationBackgroundColor = m_backgroundColor;
+        m_preAnimationOutlineColor = m_outlineColor;
     }
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
@@ -470,8 +470,8 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor) const
     case ForegroundColorState::defaultShown:
         return defaultShownForeground;
     case ForegroundColorState::animatedBetweenDefaultShownAndHover:
-        return m_previousForegroundColor.isValid() ? KColorUtils::mix(m_previousForegroundColor, hoverForeground, m_opacity)
-                                                   : ColorTools::alphaMix(hoverForeground, m_opacity);
+        return m_preAnimationForegroundColor.isValid() ? KColorUtils::mix(m_preAnimationForegroundColor, hoverForeground, m_opacity)
+                                                       : ColorTools::alphaMix(hoverForeground, m_opacity);
     case ForegroundColorState::hover:
         return hoverForeground;
     case ForegroundColorState::focus:
@@ -755,11 +755,11 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool getNonAni
             foregroundContrastedColor = buttonFocusColor;
         return buttonFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_previousBackgroundColor.isValid() && buttonHoverColor.isValid()) {
+        if (m_preAnimationBackgroundColor.isValid() && buttonHoverColor.isValid()) {
             if (analyseContrastWithForeground)
                 foregroundContrastedColor = buttonHoverColor;
 
-            return KColorUtils::mix(m_previousBackgroundColor, buttonHoverColor, m_opacity);
+            return KColorUtils::mix(m_preAnimationBackgroundColor, buttonHoverColor, m_opacity);
         } else if (buttonHoverColor.isValid()) {
             if (analyseContrastWithForeground)
                 foregroundContrastedColor = buttonHoverColor;
@@ -1045,8 +1045,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else if (isPressed()) {
         return buttonOutlineFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_previousOutlineColor.isValid() && buttonOutlineHoverColor.isValid()) {
-            return KColorUtils::mix(m_previousOutlineColor, buttonOutlineHoverColor, m_opacity);
+        if (m_preAnimationOutlineColor.isValid() && buttonOutlineHoverColor.isValid()) {
+            return KColorUtils::mix(m_preAnimationOutlineColor, buttonOutlineHoverColor, m_opacity);
         } else if (buttonOutlineHoverColor.isValid()) {
             return ColorTools::alphaMix(buttonOutlineHoverColor, m_opacity);
         } else
