@@ -155,6 +155,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     m_backgroundColor = this->backgroundColor(backgroundColorToContrastWithForeground);
     m_foregroundColor = this->foregroundColor(backgroundColorToContrastWithForeground);
 
+    // determines if there is low contrast between the titlebar and background. If so, then outlineColor will draw an outline when there is a background
     m_lowContrastBetweenTitleBarAndBackground = (d->internalSettings()->backgroundColors() != InternalSettings::EnumBackgroundColors::ColorsTitlebarText
                                                  && (KColorUtils::contrastRatio(m_backgroundColor, d->titleBarColor()) < 1.3));
 
@@ -163,6 +164,8 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     // cache colours for future animations if an animation is not running
     if (m_animation->state() != QAbstractAnimation::Running) {
         m_previousForegroundColor = m_foregroundColor;
+        m_previousBackgroundColor = m_backgroundColor;
+        m_previousOutlineColor = m_outlineColor;
     }
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
@@ -444,7 +447,7 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor) const
                 focusForeground = Qt::GlobalColor::white;
             }
         }
-    } else {
+    } else { // non-close button
         if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText
             && !d->internalSettings()->translucentButtonBackgrounds()) {
             if (d->m_buttonBehaviouralParameters.drawBackgroundAlways) {
@@ -457,25 +460,25 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor) const
                 focusForeground = d->titleBarColor();
             }
         } else {
-            defaultShownForeground =
-                foregroundColorState == ForegroundColorState::animatedBetweenDefaultShownAndHover ? m_previousForegroundColor : fontColorContrastBoosted;
+            defaultShownForeground = fontColorContrastBoosted;
             hoverForeground = fontColorContrastBoosted;
             focusForeground = fontColorContrastBoosted;
         }
     }
 
+    // return the appropriate palette colour for each state
     switch (foregroundColorState) {
     case ForegroundColorState::defaultShown:
         return defaultShownForeground;
     case ForegroundColorState::animatedBetweenDefaultShownAndHover:
-        return defaultShownForeground.isValid() ? KColorUtils::mix(defaultShownForeground, hoverForeground, m_opacity)
-                                                : ColorTools::alphaMix(hoverForeground, m_opacity);
+        return m_previousForegroundColor.isValid() ? KColorUtils::mix(m_previousForegroundColor, hoverForeground, m_opacity)
+                                                   : ColorTools::alphaMix(hoverForeground, m_opacity);
     case ForegroundColorState::hover:
         return hoverForeground;
     case ForegroundColorState::focus:
         return focusForeground;
     case ForegroundColorState::fadeInToHover:
-        return ColorTools::alphaMix(focusForeground, m_opacity);
+        return ColorTools::alphaMix(hoverForeground, m_opacity);
     case ForegroundColorState::none:
     default:
         return QColor();
@@ -508,7 +511,7 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool getNonAni
          && (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
              || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights));
 
-    // set hover and focus colours
+    // set alwaysShow, hover and focus colours
     if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
@@ -730,6 +733,7 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool getNonAni
         }
     }
 
+    // return a variant of alwaysShow, hover and focus colours, depending on state
     if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade) && isChecked()) {
         if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
             || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
@@ -752,10 +756,11 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool getNonAni
             foregroundContrastedColor = buttonFocusColor;
         return buttonFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (buttonAlwaysShowColor.isValid() && buttonHoverColor.isValid()) {
+        if (m_previousBackgroundColor.isValid() && buttonHoverColor.isValid()) {
             if (analyseContrastWithForeground)
                 foregroundContrastedColor = buttonHoverColor;
-            return KColorUtils::mix(buttonAlwaysShowColor, buttonHoverColor, m_opacity);
+
+            return KColorUtils::mix(m_previousBackgroundColor, buttonHoverColor, m_opacity);
         } else if (buttonHoverColor.isValid()) {
             if (analyseContrastWithForeground)
                 foregroundContrastedColor = buttonHoverColor;
@@ -773,147 +778,167 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool getNonAni
     }
 }
 
-//__________________________________________________________________
+// Returns a colour if an outline is to be drawn around the button
 QColor Button::outlineColor(bool getNonAnimatedColor) const
 {
     auto d = qobject_cast<Decoration *>(decoration());
     if (!d)
         return QColor();
 
+    // In the case where there is poor contrast between the background and the titlebar, we want to draw a button outline
+    // Therefore, override the button outline behavioural logic by OR-ing with button background behavioural logic
+    bool drawOutlineAlways = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawOutlineAlways || d->m_buttonBehaviouralParameters.drawBackgroundAlways
+        : d->m_buttonBehaviouralParameters.drawOutlineAlways;
+    bool drawOutlineOnHover = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawOutlineOnHover || d->m_buttonBehaviouralParameters.drawBackgroundOnHover
+        : d->m_buttonBehaviouralParameters.drawOutlineOnHover;
+    bool drawOutlineOnFocus = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawOutlineOnFocus || d->m_buttonBehaviouralParameters.drawBackgroundOnFocus
+        : d->m_buttonBehaviouralParameters.drawOutlineOnFocus;
+    bool drawCloseOutlineAlways = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawCloseOutlineAlways || d->m_buttonBehaviouralParameters.drawCloseBackgroundAlways
+        : d->m_buttonBehaviouralParameters.drawCloseOutlineAlways;
+    bool drawCloseOutlineOnHover = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover || d->m_buttonBehaviouralParameters.drawCloseBackgroundOnHover
+        : d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover;
+    bool drawCloseOutlineOnFocus = m_lowContrastBetweenTitleBarAndBackground
+        ? d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus || d->m_buttonBehaviouralParameters.drawCloseBackgroundOnFocus
+        : d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus;
+
     QColor buttonOutlineAlwaysShowColor;
     QColor buttonOutlineHoverColor;
     QColor buttonOutlineFocusColor;
 
-    // set colour
+    // set alwaysShow, hover and focus colours
     if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                if (d->m_buttonBehaviouralParameters.drawCloseOutlineAlways) {
+                if (drawCloseOutlineAlways) {
                     if (d->internalSettings()->redAlwaysShownClose()) {
                         buttonOutlineAlwaysShowColor =
                             g_decorationColors->negativeReducedOpacityOutline; // may want to change these to be distinct colours in the future
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                     } else {
                         buttonOutlineAlwaysShowColor = g_decorationColors->buttonReducedOpacityOutline;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                     }
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                    if (drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                    if (drawCloseOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->neutralReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->neutralReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->neutralReducedOpacityOutline;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->neutralReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->neutralReducedOpacityOutline;
                 }
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->positiveReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->positiveReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->positiveReducedOpacityOutline;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->positiveReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->positiveReducedOpacityOutline;
                 }
             } else {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->buttonReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->buttonReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->buttonReducedOpacityOutline;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->buttonReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->buttonReducedOpacityOutline;
                 }
             }
         } else { // non-translucent accent colours
             if (type() == DecorationButtonType::Close) {
-                if (d->m_buttonBehaviouralParameters.drawCloseOutlineAlways) {
+                if (drawCloseOutlineAlways) {
                     if (d->internalSettings()->redAlwaysShownClose()) {
                         buttonOutlineAlwaysShowColor = g_decorationColors->negativeSaturated;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                        ;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                     } else {
                         buttonOutlineAlwaysShowColor = g_decorationColors->buttonFocus;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                     }
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                    if (drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                    if (drawCloseOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else if (type() == DecorationButtonType::Minimize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->neutral;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->neutral;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->neutral;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->neutral;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->neutral;
                 }
             } else if (type() == DecorationButtonType::Maximize
                        && d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->positive;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->positive;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->positive;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->positive;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->positive;
                 }
             } else {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = g_decorationColors->buttonFocus;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->buttonFocus;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->buttonFocus;
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->buttonFocus;
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->buttonFocus;
                 }
             }
@@ -922,88 +947,96 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else { // titlebar text colour, translucent
         if (d->internalSettings()->translucentButtonBackgrounds()) {
             if (type() == DecorationButtonType::Close) {
-                if (d->m_buttonBehaviouralParameters.drawCloseOutlineAlways) {
+                if (drawCloseOutlineAlways) {
                     if (d->internalSettings()->redAlwaysShownClose()) {
                         buttonOutlineAlwaysShowColor = g_decorationColors->negativeReducedOpacityOutline;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                        ;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                     } else {
                         buttonOutlineAlwaysShowColor = ColorTools::alphaMix(d->fontColor(), 0.25);
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                     }
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                    if (drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeReducedOpacityOutline;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                    if (drawCloseOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->negativeReducedOpacityOutline;
                 }
             } else {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = ColorTools::alphaMix(d->fontColor(), 0.25);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = ColorTools::alphaMix(d->fontColor(), 0.25);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = ColorTools::alphaMix(d->fontColor(), 0.25);
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = ColorTools::alphaMix(d->fontColor(), 0.25);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = ColorTools::alphaMix(d->fontColor(), 0.25);
                 }
             }
         } else { // titlebar text colour, non-translucent
             if (type() == DecorationButtonType::Close) {
-                if (d->m_buttonBehaviouralParameters.drawCloseOutlineAlways) {
+                if (drawCloseOutlineAlways) {
                     if (d->internalSettings()->redAlwaysShownClose()) {
                         buttonOutlineAlwaysShowColor = g_decorationColors->negativeSaturated;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
                         ;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                     } else {
                         buttonOutlineAlwaysShowColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                        if (drawCloseOutlineOnHover)
                             buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                        if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                        if (drawCloseOutlineOnFocus)
                             buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                     }
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnHover)
+                    if (drawCloseOutlineOnHover)
                         buttonOutlineHoverColor = g_decorationColors->negativeSaturated;
-                    if (d->m_buttonBehaviouralParameters.drawCloseOutlineOnFocus)
+                    if (drawCloseOutlineOnFocus)
                         buttonOutlineFocusColor = g_decorationColors->negativeSaturated;
                 }
             } else {
-                if (d->m_buttonBehaviouralParameters.drawOutlineAlways) {
+                if (drawOutlineAlways) {
                     buttonOutlineAlwaysShowColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
                 } else {
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnHover)
+                    if (drawOutlineOnHover)
                         buttonOutlineHoverColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
-                    if (d->m_buttonBehaviouralParameters.drawOutlineOnFocus)
+                    if (drawOutlineOnFocus)
                         buttonOutlineFocusColor = KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
                 }
             }
         }
     }
 
-    /* //TODO: re-enable this later
-    if ((d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
-         || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights)
-        && KColorUtils::contrastRatio(buttonOutlineColor, d->titleBarColor()) < 1.3) {
-        buttonOutlineColor = ColorTools::alphaMix(d->fontColor(), 0.8);
-    }*/
+    // low contrast correction between outline and titlebar
+    if (d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccent
+        || d->internalSettings()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights) {
+        if (buttonOutlineAlwaysShowColor.isValid() && KColorUtils::contrastRatio(buttonOutlineAlwaysShowColor, d->titleBarColor()) < 1.3) {
+            buttonOutlineAlwaysShowColor = KColorUtils::mix(buttonOutlineAlwaysShowColor, d->fontColor(), 0.4);
+        }
 
+        if (buttonOutlineHoverColor.isValid() && KColorUtils::contrastRatio(buttonOutlineHoverColor, d->titleBarColor()) < 1.3) {
+            buttonOutlineHoverColor = KColorUtils::mix(buttonOutlineHoverColor, d->fontColor(), 0.4);
+        }
+        if (buttonOutlineFocusColor.isValid() && KColorUtils::contrastRatio(buttonOutlineFocusColor, d->titleBarColor()) < 1.3) {
+            buttonOutlineFocusColor = KColorUtils::mix(buttonOutlineFocusColor, d->fontColor(), 0.4);
+        }
+    }
+
+    // return a variant of alwaysShow, hover and focus colours, depending on state
     if ((isChecked() && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade))) {
         return buttonOutlineFocusColor;
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()
@@ -1013,8 +1046,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else if (isPressed()) {
         return buttonOutlineFocusColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (buttonOutlineAlwaysShowColor.isValid() && buttonOutlineHoverColor.isValid()) {
-            return KColorUtils::mix(buttonOutlineAlwaysShowColor, buttonOutlineHoverColor, m_opacity);
+        if (m_previousOutlineColor.isValid() && buttonOutlineHoverColor.isValid()) {
+            return KColorUtils::mix(m_previousOutlineColor, buttonOutlineHoverColor, m_opacity);
         } else if (buttonOutlineHoverColor.isValid()) {
             return ColorTools::alphaMix(buttonOutlineHoverColor, m_opacity);
         } else
