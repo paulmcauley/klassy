@@ -46,9 +46,8 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
     });
 
     // detect the kde-gtk-config-daemon
+    // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk
     if (QCoreApplication::applicationName() == QStringLiteral("kded5")) {
-        // From Chris Holland https://github.com/Zren/material-decoration/
-        // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk.
         m_isGtkCsdButton = true;
     }
 
@@ -274,7 +273,7 @@ void Button::drawIcon(QPainter *painter) const
         // this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
         // pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonPaddedWidth ) );
 
-        // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons. TODO:don't use cosmetic pen for background outlines either
+        // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons.
         if (m_isGtkCsdButton) {
             pen.setWidthF(PenWidth::Symbol);
         } else {
@@ -1293,8 +1292,13 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
     if (m_outlineColor.isValid()) {
         QPen pen(m_outlineColor);
-        pen.setWidthF(m_standardScaledPenWidth);
-        pen.setCosmetic(true);
+        if (m_isGtkCsdButton) { // kde-gtk-config GTK CSD button generator does not work properly with cosmetic pens
+            pen.setWidthF(penWidth);
+            pen.setCosmetic(false);
+        } else { // standard case
+            pen.setWidthF(m_standardScaledPenWidth); // this is a scaled pen width for use with drawing cosmetic pen outlines
+            pen.setCosmetic(true);
+        }
         painter->setPen(pen);
     } else
         painter->setPen(Qt::NoPen);
