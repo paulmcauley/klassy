@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=4.4.8.breeze5.27.5.git
+version=4.4.9.breeze5.27.5.git
 
 [Windeco Preset Tronkite]
 ActiveTitlebarOpacity=100
@@ -48,20 +48,21 @@ ButtonStateCheckedActive=Press
 ButtonStateCheckedInactive=Press
 CloseButtonIconColorActive=AsSelected
 CloseButtonIconColorInactive=AsSelected
-ColorizeSystemIcons=true
 ColorizeThinWindowOutlineWithButton=true
 CornerRadius=1
 DrawBackgroundGradient=false
 DrawBorderOnMaximizedWindows=false
 DrawTitleBarSeparator=false
+ForceColorizeSystemIcons=false
 FullHeightButtonSpacingLeft=1
 FullHeightButtonSpacingRight=1
 FullHeightButtonWidthMarginLeft=3
 FullHeightButtonWidthMarginRight=8
 IconSize=IconLargeMedium
 InactiveTitlebarOpacity=100
-IntegratedRoundedRectangleBottomPadding=1.25
+IntegratedRoundedRectangleBottomPadding=1
 KwinBorderSize=None
+LockButtonBehaviourActiveInactive=true
 LockButtonColorsActiveInactive=false
 LockButtonSpacingLeftRight=false
 LockCloseButtonBehaviourActive=true
@@ -156,9 +157,8 @@ WindowOutlineAccentWithContrastOpacityActive=50
 WindowOutlineAccentWithContrastOpacityInactive=25
 WindowOutlineContrastOpacityActive=25
 WindowOutlineContrastOpacityInactive=25
-WindowOutlineCustomColorOpacityActive=1
-WindowOutlineCustomColorOpacityInactive=1
-WindowOutlineCustomWithContrastOpacityActive=1
-WindowOutlineCustomWithContrastOpacityInactive=1
+WindowOutlineCustomColorOpacityActive=87
+WindowOutlineCustomColorOpacityInactive=50
+WindowOutlineCustomWithContrastOpacityActive=40
+WindowOutlineCustomWithContrastOpacityInactive=25
 WindowOutlineShadowColorOpacity=20
-lockButtonBehaviourActiveInactive=true

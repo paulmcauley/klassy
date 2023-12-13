@@ -204,7 +204,7 @@ private:
     QVariantAnimation *m_animation;
 
     //* icon offset (for rendering)
-    QPointF m_iconOffset;
+    mutable QPointF m_iconOffset;
 
     //* offset for rendering a large or Full-sized background
     QPointF m_fullHeightVisibleBackgroundOffset = QPointF();

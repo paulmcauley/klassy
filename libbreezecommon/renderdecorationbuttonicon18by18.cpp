@@ -258,28 +258,51 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
         pen.setWidthF(roundedBoldPenWidth);
     }
 
-    QRectF rect(snapToNearestPixel(QPointF(4.5, 4.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                snapToNearestPixel(QPointF(13.5, 13.5), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down));
+    QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
+    qreal adjustmentOffset = 0;
+    constexpr int maxIterations = 4;
+    int i = 0;
+    do {
+        if (isOddPenWidth) {
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
+        } else {
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
+        }
 
-    qreal width = rect.width();
-    qreal height = rect.height();
-    if (width != height) { // happens on display scales which are not a factor of 0.5
-        qreal maxSide = std::max(width, height);
-        rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
-    }
+        qreal snappedWidth = rect.width();
+        qreal snappedHeight = rect.height();
+        if (snappedWidth != snappedHeight) { // happens on display scales which are not a factor of 0.5
+            qreal maxSide = std::max(snappedWidth, snappedHeight);
+            rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
+        }
 
-    if (!isOddPenWidth) { // enlarge the rectangle if even to snap to whole pixels
-        qreal adjustmentOffset = convertDevicePixelsToLocal(0.5);
-        rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
-    }
-
-    // if size is still smaller than linear to original design, increase again
-    if ((rect.width() * m_totalScalingFactor) < (9 * m_totalScalingFactor - 0.0001)) { // 0.0001 as sometimes there are floating point errors
-        qreal adjustmentOffset = convertDevicePixelsToLocal(1);
-        rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
-    }
+        // if size is still smaller than linear to original design, increase again
+        if ((rect.width() * m_totalScalingFactor) < (9 * m_totalScalingFactor - 0.001)) { // 0.001 as sometimes there are floating point errors
+            adjustmentOffset = convertDevicePixelsToLocal(0.5);
+            rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
+        } else {
+            adjustmentOffset = 0;
+        }
+        i++;
+    } while (adjustmentOffset && i < maxIterations);
 
     if (!returnSizeOnly) {
+        // centre -- the generated square is not always centred
+        QPointF centerTranslate = QPointF(9, 9) - rect.center();
+        if (centerTranslate != QPointF(0, 0)) {
+            QPointF centrePixelRealignmentOffset;
+
+            // realign to pixel grid after centring -- use top-left of rect to sample
+            if (isOddPenWidth) {
+                centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
+            } else {
+                centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
+            }
+            m_painter->translate(centrePixelRealignmentOffset);
+        }
+
         // make excessively thick pen widths translucent to balance with other buttons
 
         qreal opacity = straightLineOpacity();
@@ -313,67 +336,92 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     // thicker pen in titlebar
     pen.setWidthF(roundedBoldPenWidth);
 
+    qreal singleDevicePixelin18By18 = convertDevicePixelsToLocal(1);
     // this is to calculate the offset to move the two rectangles further from each other onto an aligned pixel
     // they can be moved apart as the line thickness increases -- this prevents blurriness when the lines are drawn too close together
-    qreal shiftOffset = 0;
+    qreal shiftOffsetX = singleDevicePixelin18By18;
+    qreal shiftOffsetY = singleDevicePixelin18By18;
+    bool shiftX = true;
+    bool shiftY = true;
 
-    QGraphicsItemGroup *overlappingWindowsGroup = nullptr;
-    QGraphicsRectItem *foregroundRect = nullptr;
     QGraphicsPathItem *backgroundPath = nullptr;
 
-    std::unique_ptr<QGraphicsScene> overlappingWindows =
-        calculateOverlappingWindowsScene(isOddPenWidth, shiftOffset, overlappingWindowsGroup, foregroundRect, backgroundPath);
+    std::unique_ptr<QGraphicsScene> overlappingWindows = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
+    int maxIterations = 6 * qRound(m_devicePixelRatio); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
+                                                        // crash in some circunstances
 
-    if (!(overlappingWindows && overlappingWindowsGroup && foregroundRect && backgroundPath))
-        return;
+    QGraphicsItemGroup *overlappingWindowsGroup = new QGraphicsItemGroup;
 
-    qreal distanceBetweenSquares = std::min(backgroundPath->path().elementAt(3).x - backgroundPath->path().elementAt(4).x,
-                                            backgroundPath->path().elementAt(0).y - backgroundPath->path().elementAt(1).y);
-    qreal penWidth18By18 = penWidthToLocal(pen);
+    overlappingWindows->addItem(overlappingWindowsGroup);
 
-    // if distance between squares < pen width (factoring in that the background sqaure does not join the foreground at the foreground's centre-point)
-    // || distance between squares < 2
-    if (((distanceBetweenSquares / penWidth18By18) < 1.25 - 0.0001) || (m_boldButtonIcons && distanceBetweenSquares < 2 - 0.0001)
-        || (!m_boldButtonIcons && distanceBetweenSquares < 1.5 - 0.0001) // 0.0001 is because sometimes there are floating point errors
-    ) {
-        // generate it again using a larger shiftOffset to push apart the squares
-        overlappingWindows.reset();
-        overlappingWindowsGroup = nullptr;
-        foregroundRect = nullptr;
-        backgroundPath = nullptr;
-        overlappingWindows = calculateOverlappingWindowsScene(isOddPenWidth,
-                                                              shiftOffset + convertDevicePixelsToLocal(1),
-                                                              overlappingWindowsGroup,
-                                                              foregroundRect,
-                                                              backgroundPath);
+    // foreground square
+    QPointF topLeft{4.5, 6.5};
+    if (isOddPenWidth)
+        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToHalf, SnapPixel::ToHalf);
+    else
+        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToWhole, SnapPixel::ToWhole);
+
+    QPointF bottomRight{11.5, 13.5};
+    if (isOddPenWidth)
+        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToHalf, SnapPixel::ToHalf);
+    else
+        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToWhole, SnapPixel::ToWhole);
+
+    qreal diameter = qMax((bottomRight.y() - topLeft.y()), (bottomRight.x() - topLeft.x()));
+
+    QRectF foregroundSquare(QPointF(bottomRight.x() - diameter, topLeft.y()), QPointF(bottomRight.x(), topLeft.y() + diameter));
+    QGraphicsRectItem *foregroundRect = new QGraphicsRectItem(foregroundSquare);
+    overlappingWindowsGroup->addToGroup(foregroundRect);
+    // set no pen to make all dimension calculations simpler
+    foregroundRect->setPen(Qt::PenStyle::NoPen);
+
+    // calculate the geometry of the background square, iterate until an appropriate separation from foreground square achieved
+    for (int i = 0; (shiftX || shiftY) && (i < maxIterations); i++) {
+        calculateBackgroundSquareGeometry(shiftOffsetX, shiftOffsetY, overlappingWindowsGroup, foregroundRect, backgroundPath);
+
         if (!(overlappingWindows && overlappingWindowsGroup && foregroundRect && backgroundPath))
             return;
+
+        qreal distanceBetweenSquaresX = backgroundPath->path().elementAt(3).x - backgroundPath->path().elementAt(4).x;
+        qreal distanceBetweenSquaresY = backgroundPath->path().elementAt(0).y - backgroundPath->path().elementAt(1).y;
+        qreal penWidth18By18 = penWidthToLocal(pen);
+
+        // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
+        if (((distanceBetweenSquaresX / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.001)
+            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.4 - 0.001) // 0.001 is because sometimes there are floating point errors
+        ) {
+            shiftX = true;
+            shiftOffsetX += singleDevicePixelin18By18;
+        } else {
+            shiftX = false;
+        }
+
+        // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
+        if (((distanceBetweenSquaresY / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.001)
+            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.4 - 0.001) // 0.001 is because sometimes there are floating point errors
+        ) {
+            shiftY = true;
+            shiftOffsetY += singleDevicePixelin18By18;
+        } else {
+            shiftY = false;
+        }
     }
 
-    // the following comment block is for centring the result, and then snapping the centred position to a pixel boundary -- no longer deemed needed
-    /*
-     // centre -- the generated group is not always centred
-    QPointF centerTranslate = QPointF(9,9) - overlappingWindowsGroup->boundingRect().center();
+    // centre -- centre the result, then snap centred position to a pixel boundary
+    QPointF centerTranslate = QPointF(9, 9) - overlappingWindowsGroup->boundingRect().center();
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
 
-    qreal centrePixelRealignmentOffsetX;
-    qreal centrePixelRealignmentOffsetY;
-
-    //realign to pixel grid after centering -- use top-left of foregroundRect to sample
-    if (isOddPenWidth) {
-        centrePixelRealignmentOffsetX = snapToNearestHalfPixel(foregroundRect->boundingRect().topLeft().x() + centerTranslate.x(), true) -
-    foregroundRect->boundingRect().topLeft().x(); centrePixelRealignmentOffsetY = snapToNearestHalfPixel(foregroundRect->boundingRect().topLeft().y() +
-    centerTranslate.y(), true) - foregroundRect->boundingRect().topLeft().y(); } else { centrePixelRealignmentOffsetX =
-    snapToNearestWholePixel(foregroundRect->boundingRect().topLeft().x() + centerTranslate.x(), true) - foregroundRect->boundingRect().topLeft().x();
-        centrePixelRealignmentOffsetY = snapToNearestWholePixel(foregroundRect->boundingRect().topLeft().y() + centerTranslate.y(), true) -
-    foregroundRect->boundingRect().topLeft().y();
+        // realign to pixel grid after centering -- use top-left of foregroundRect to sample
+        centrePixelRealignmentOffset = snapToNearestPixel(foregroundRect->boundingRect().topLeft() + centerTranslate,
+                                                          isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole,
+                                                          isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole)
+            - foregroundRect->boundingRect().topLeft();
+        QTransform transformToAlignedCenter;
+        transformToAlignedCenter.translate(centrePixelRealignmentOffset.x(), centrePixelRealignmentOffset.y());
+        overlappingWindowsGroup->setTransform(transformToAlignedCenter);
     }
 
-
-    QTransform transformToAlignedCenter;
-    transformToAlignedCenter.translate(centrePixelRealignmentOffsetX,centrePixelRealignmentOffsetY);
-    overlappingWindowsGroup->setTransform(transformToAlignedCenter);
-
-    */
     // make excessively thick pen widths translucent to balance with other buttons
     qreal opacity = straightLineOpacity();
     QColor penColor = pen.color();
@@ -387,50 +435,23 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     overlappingWindows->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
 
-std::unique_ptr<QGraphicsScene> RenderDecorationButtonIcon18By18::calculateOverlappingWindowsScene(const bool isOddPenWidth,
-                                                                                                   const qreal shiftOffset,
-                                                                                                   QGraphicsItemGroup *&overlappingWindowsGroup,
-                                                                                                   QGraphicsRectItem *&foregroundSquareItem,
-                                                                                                   QGraphicsPathItem *&backgroundSquareItem)
+void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const qreal shiftOffsetX,
+                                                                         const qreal shiftOffsetY,
+                                                                         QGraphicsItemGroup *overlappingWindowsGroup,
+                                                                         QGraphicsRectItem *foregroundSquareItem,
+                                                                         QGraphicsPathItem *&backgroundSquareItem)
 {
-    std::unique_ptr<QGraphicsScene> overlappingWindows = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
-
-    overlappingWindowsGroup = new QGraphicsItemGroup;
-
-    overlappingWindows->addItem(overlappingWindowsGroup);
-
-    // overlapping windows icon
-    // foreground square
-    QPointF topLeft{4.5, 6.5};
-    if (isOddPenWidth)
-        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down);
-    else
-        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToWhole, SnapPixel::ToWhole);
-
-    QPointF bottomRight{11.5, 13.5};
-    if (isOddPenWidth)
-        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down);
-    else
-        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToWhole, SnapPixel::ToWhole);
-
-    qreal diameter = qMax((bottomRight.ry() - topLeft.y()), (bottomRight.x() - topLeft.x()));
-
-    QRectF foregroundSquare(QPointF(bottomRight.x() - diameter, topLeft.y()), QPointF(bottomRight.x(), topLeft.y() + diameter));
-    foregroundSquare.adjust(-shiftOffset, shiftOffset, -shiftOffset, shiftOffset);
-    diameter = foregroundSquare.width();
-
-    foregroundSquareItem = new QGraphicsRectItem(foregroundSquare);
+    qreal diameter = foregroundSquareItem->rect().width();
 
     // background square
-    QVector<QPointF> background{QPointF(6.5, 6), QPointF(6.5, 4.5), QPointF(13.5, 4.5), QPointF(13.5, 11.5), QPointF(12, 11.5)};
+    QVector<QPointF> background;
+    background.resize(5);
 
-    if (isOddPenWidth)
-        background[1] = snapToNearestPixel(background[1], SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down);
-    else
-        background[1] = snapToNearestPixel(background[1], SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down);
-
+    background[1] = foregroundSquareItem->rect().topLeft();
+    background[1].setX(background[1].x() + shiftOffsetX);
     background[0].setX(background[1].x());
-    background[0].setY(foregroundSquare.top() - convertDevicePixelsToLocal(0.5));
+    background[0].setY(foregroundSquareItem->rect().top() - convertDevicePixelsToLocal(0.5));
+    background[1].setY(foregroundSquareItem->rect().top() - shiftOffsetY);
 
     background[2].setX(background[1].x() + diameter);
     background[2].setY(background[1].y());
@@ -438,21 +459,17 @@ std::unique_ptr<QGraphicsScene> RenderDecorationButtonIcon18By18::calculateOverl
     background[3].setX(background[2].x());
     background[3].setY(background[2].y() + diameter);
 
-    background[4].setX(foregroundSquare.right() + convertDevicePixelsToLocal(0.5));
+    background[4].setX(foregroundSquareItem->rect().right() + convertDevicePixelsToLocal(0.5));
     background[4].setY(background[3].y());
 
     QPainterPath backgroundSquarePath;
     backgroundSquarePath.addPolygon(background);
     backgroundSquareItem = new QGraphicsPathItem(backgroundSquarePath);
 
-    overlappingWindowsGroup->addToGroup(foregroundSquareItem);
     overlappingWindowsGroup->addToGroup(backgroundSquareItem);
 
     // set no pen to make all dimension calculations simpler
-    foregroundSquareItem->setPen(Qt::PenStyle::NoPen);
     backgroundSquareItem->setPen(Qt::PenStyle::NoPen);
-
-    return overlappingWindows;
 }
 
 void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
@@ -464,8 +481,8 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     if (m_boldButtonIcons) {
         QColor penColor = pen.color();
         QColor brushColor = penColor;
-        brushColor.setAlphaF(brushColor.alphaF() * 0.7);
-        penColor.setAlphaF(penColor.alphaF() * 0.9);
+        brushColor.setAlphaF(brushColor.alphaF() * 0.65);
+        penColor.setAlphaF(penColor.alphaF() * 0.85);
         pen.setColor(penColor);
 
         pen.setJoinStyle(Qt::BevelJoin);
@@ -478,8 +495,8 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     } else { // in fine mode the dense minimize button appears bolder than the others so reduce its opacity to compensate
         QColor penColor = pen.color();
         QColor brushColor = penColor;
-        brushColor.setAlphaF(brushColor.alphaF() * 0.55);
-        penColor.setAlphaF(penColor.alphaF() * 0.75);
+        brushColor.setAlphaF(brushColor.alphaF() * 0.45);
+        penColor.setAlphaF(penColor.alphaF() * 0.65);
         pen.setColor(penColor);
 
         pen.setJoinStyle(Qt::BevelJoin);
@@ -491,27 +508,48 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     }
 
     // tiny filled square
-    QRectF rect(snapToNearestPixel(QPointF(7.5, 7.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                snapToNearestPixel(QPointF(10.5, 10.5), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down));
-    qreal width = rect.width();
-    qreal height = rect.height();
-    if (width != height) { // happens on display scales which are not a factor of 0.5
-        qreal maxSide = std::max(width, height);
-        rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
-    }
+    QRectF rect(QPointF(7.5, 7.5), QPointF(10.5, 10.5));
+    qreal adjustmentOffset = 0;
+    constexpr int maxIterations = 4;
+    int i = 0;
+    do {
+        if (isOddPenWidth) {
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
+        } else {
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
+        }
+        qreal snappedWidth = rect.width();
+        qreal snappedHeight = rect.height();
+        if (snappedWidth != snappedHeight) { // happens on display scales which are not a factor of 0.5
+            qreal maxSide = std::max(snappedWidth, snappedHeight);
+            rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
+        }
 
-    if (!isOddPenWidth) { // enlarge the rectangle if even to snap to whole pixels
-        qreal adjustmentOffset = convertDevicePixelsToLocal(0.5);
-        rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
-    }
+        // if size is still smaller than linear to original design, increase again
+        if ((rect.width() * m_totalScalingFactor) < (3 * m_totalScalingFactor - 0.001)) { // 0.001 as sometimes there are floating point errors
+            adjustmentOffset = convertDevicePixelsToLocal(0.5);
+            rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
+        } else {
+            adjustmentOffset = 0;
+        }
+        i++;
+    } while (adjustmentOffset && i < maxIterations);
 
-    /*
-    // if size is still smaller than linear to original design, increase again
-    if ((rect.width() * m_totalScalingFactor) < (3 * m_totalScalingFactor - 0.0001)) { // 0.0001 as sometimes there are floating point errors
-        qreal adjustmentOffset = convertDevicePixelsToLocal(1);
-        rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
+    // centre -- the generated square is not always centred
+    QPointF centerTranslate = QPointF(9, 9) - rect.center();
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
+
+        // realign to pixel grid after centring -- use top-left of rect to sample
+        if (isOddPenWidth) {
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
+        } else {
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
+        }
+        m_painter->translate(centrePixelRealignmentOffset);
     }
-    */
 
     m_painter->drawRect(rect);
 }

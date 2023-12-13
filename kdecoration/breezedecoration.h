@@ -266,6 +266,8 @@ private:
     int m_scaledTitleBarTopMargin = 1;
     //* titleBar bottom margin, scaled according to smallspacing
     int m_scaledTitleBarBottomMargin = 1;
+    //* integrated rounded rectangle bottom padding, scaled according to smallspacing
+    qreal m_scaledIntegratedRoundedRectangleBottomPadding = 0;
 
     //* titleBar side margins, scaled according to smallspacing
     int m_scaledTitleBarLeftMargin = 1;

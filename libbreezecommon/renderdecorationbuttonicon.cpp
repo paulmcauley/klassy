@@ -236,8 +236,7 @@ QPointF RenderDecorationButtonIcon::snapToNearestPixel(QPointF pointLocal,
 {
     pointLocal *= m_totalScalingFactor;
 
-    // the top-left of the titlebar is used as the reference-point at which the pixel is most likely to be whole
-    //(This, however, is not the case with fractional scaling, but cannot get an offset from the top-left of the device screen from the API)
+    // the top-left of the decoration is used as the reference-point at which the pixel is most whole, as this point is snapped to a whole pixel
     pointLocal += m_deviceOffsetFromZeroReference;
 
     if (snapX == SnapPixel::ToHalf) {
