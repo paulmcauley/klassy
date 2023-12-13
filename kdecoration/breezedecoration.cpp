@@ -1462,25 +1462,6 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         paintTitleBar(painter, repaintRegion);
     }
 
-    // draw highlighted button state outline for maximized windows
-    // does not work as cannot draw inside window contents
-    /*
-    if(c->isMaximized() && m_maximizedWindowHighlight.isValid()){
-        painter->save();
-        QPen pen(m_maximizedWindowHighlight);
-        qreal penWidthNoDpr = PenWidth::Symbol *2;
-        qreal dpr = devicePixelRatio(painter);
-        pen.setWidthF(dpr * penWidthNoDpr);
-        pen.setCosmetic(true);
-        painter->setPen(pen);
-        qreal shrinkOffset = penWidthNoDpr/2;
-        if(KWindowSystem::isPlatformX11())
-            shrinkOffset *= dpr;
-        QRectF windowRectShrunk = m_windowPath->boundingRect().adjusted(shrinkOffset,shrinkOffset,-shrinkOffset,-shrinkOffset);
-        painter->drawRect(windowRectShrunk);
-        painter->restore();
-    } */
-
     if (hasBorders() && !s->isAlphaChannelSupported()) {
         painter->save();
         painter->setRenderHint(QPainter::Antialiasing, false);
@@ -1963,27 +1944,13 @@ void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &
     Q_ASSERT(c);
 
     if (on) {
-        if (c->isMaximized()) {
-            /* Attempt here to extend "Highlight button state in thin window outline to maximized windows
-                * by drawing an outline around the perimeter of a maximized window.
-                * Does not work as cannot draw inside window borders
-            m_maximizedWindowHighlight = color;
-            update();
-            */
-        } else {
+        if (!c->isMaximized()) {
             // draw a thin window outline with this override colour
             m_thinWindowOutlineOverride = color;
             updateOverrideOutlineFromButtonAnimationState();
         }
     } else {
-        if (c->isMaximized()) {
-            /* Attempt here to extend "Highlight button state in thin window outline to maximized windows
-                * by drawing an outline around the perimeter of a maximized window.
-                * Does not work as cannot draw inside window borders
-            m_maximizedWindowHighlight = QColor();
-            update();
-            */
-        } else {
+        if (!c->isMaximized()) {
             // reset the thin window outline
             m_thinWindowOutlineOverride = QColor();
             m_animateOutOverriddenThinWindowOutline = true;
