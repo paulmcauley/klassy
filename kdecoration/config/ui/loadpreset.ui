@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
+    <width>502</width>
     <height>300</height>
    </rect>
   </property>
@@ -99,10 +99,10 @@
      <item>
       <widget class="QPushButton" name="cancelButton">
        <property name="text">
-        <string>Cancel</string>
+        <string>Close</string>
        </property>
        <property name="icon">
-        <iconset theme="dialog-cancel"/>
+        <iconset theme="dialog-close"/>
        </property>
       </widget>
      </item>
@@ -128,30 +128,14 @@
  <resources/>
  <connections>
   <connection>
-   <sender>loadButton</sender>
-   <signal>clicked()</signal>
-   <receiver>LoadPreset</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>337</x>
-     <y>21</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>323</x>
-     <y>50</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>cancelButton</sender>
    <signal>clicked()</signal>
    <receiver>LoadPreset</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>376</x>
-     <y>272</y>
+     <x>481</x>
+     <y>292</y>
     </hint>
     <hint type="destinationlabel">
      <x>333</x>

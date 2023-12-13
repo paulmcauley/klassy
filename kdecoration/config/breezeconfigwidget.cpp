@@ -72,7 +72,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // add the "Presets..." button
     QVBoxLayout *presetsButtonVLayout = new QVBoxLayout();
     presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
-    m_presetsButton = new QPushButton("Presets...");
+    m_presetsButton = new QPushButton(i18n("&Presets..."));
     presetsButtonVLayout->addWidget(m_presetsButton);
     m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
 
