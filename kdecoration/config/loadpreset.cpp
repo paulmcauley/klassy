@@ -50,12 +50,14 @@ void LoadPreset::initPresetsList()
     foreach (const QString presetName, presets) {
         m_ui->presetsList->addItem(presetName);
     }
+    m_ui->presetsList->setFocus();
 }
 
 void LoadPreset::addButtonClicked()
 {
     m_addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
     m_addDialog->m_ui->presetName->clear();
+    m_addDialog->m_ui->presetName->setFocus();
 
     if (!m_addDialog->exec()) {
         return;
