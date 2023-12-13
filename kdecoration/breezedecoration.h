@@ -265,8 +265,6 @@ private:
 
     bool m_tabletMode = false;
 
-    // QColor m_maximizedWindowHighlight = QColor();
-
     //* titleBar top margin, scaled according to smallspacing
     int m_scaledTitleBarTopMargin = 1;
     //* titleBar bottom margin, scaled according to smallspacing
