@@ -43,18 +43,17 @@ protected:
 
     void renderOverlappingWindowsIcon();
     /**
-     * @param isOddPenWidth Whether the pen width, after rounding, is an odd or even number of pixels
-     * @param shiftOffset How much to separate the two squares to prevent blurriness
+     * @param shiftOffsetX How much to separate the two squares to prevent blurriness
+     * @param shiftOffsetY How much to separate the two squares to prevent blurriness
      * @param overlappingWindowsGroup A pointer to output pointing to a group item representing the overlapping windows
      * @param foregroundSquareItem A pointer to output pointing to an item representing the foreground squares
      * @param backgroundSquareItem A pointer to output pointing to an item representing the background square path
-     * @return Returns an 18x18 std::unique_ptr<QGraphicsScene> of the overlapping windows icon
      */
-    std::unique_ptr<QGraphicsScene> calculateOverlappingWindowsScene(const bool isOddPenWidth,
-                                                                     const qreal shiftOffset,
-                                                                     QGraphicsItemGroup *&overlappingWindowsGroup,
-                                                                     QGraphicsRectItem *&foregroundSquareItem,
-                                                                     QGraphicsPathItem *&backgroundSquareItem);
+    void calculateBackgroundSquareGeometry(const qreal shiftOffsetX,
+                                           const qreal shiftOffsetY,
+                                           QGraphicsItemGroup *overlappingWindowsGroup,
+                                           QGraphicsRectItem *foregroundSquareItem,
+                                           QGraphicsPathItem *&backgroundSquareItem);
 
     void renderTinySquareMinimizeIcon();
     void renderKeepBehindIconAsFromBreezeIcons();

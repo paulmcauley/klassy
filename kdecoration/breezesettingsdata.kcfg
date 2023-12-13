@@ -197,7 +197,7 @@
 
     <!--Integrated Rounded Rectangle Bottom Padding -->
     <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
-       <default>1.25</default>
+       <default>1</default>
        <min>0</min>
        <max>10</max>
     </entry>

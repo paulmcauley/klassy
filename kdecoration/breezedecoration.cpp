@@ -793,29 +793,42 @@ void Decoration::updateButtonsGeometry()
     setScaledTitleBarSideMargins();
 
     // adjust button position
-    int bHeight;
-    int bWidth = 0;
+    qreal bHeight;
+    qreal bWidth = 0;
     const int &smallButtonPaddedWidth = m_smallButtonPaddedHeight;
-    int verticalIconOffset = 0;
-    int horizontalIconOffsetLeftButtons = 0;
-    int horizontalIconOffsetRightButtons = 0;
+    qreal verticalIconOffset = 0;
+    qreal horizontalIconOffsetLeftButtons = 0;
+    qreal horizontalIconOffsetRightButtons = 0;
     int buttonTopMargin = m_scaledTitleBarTopMargin;
     int buttonSpacingLeft = 0;
     int buttonSpacingRight = 0;
-
-    if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
-        buttonTopMargin -= int(qRound(qreal(internalSettings()->integratedRoundedRectangleBottomPadding()) * qreal(s->smallSpacing()) / 2.0));
+    int titleBarSeparatorHeight = this->titleBarSeparatorHeight();
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeight = borderTop();
-        bHeight -= titleBarSeparatorHeight();
-        verticalIconOffset = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2;
+        bHeight = qMax(bHeight - titleBarSeparatorHeight, 0.0);
+        if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+            bHeight = qMax(bHeight - m_scaledIntegratedRoundedRectangleBottomPadding, 0.0);
+            qreal shrinkOffsetWithOutline = 0;
+            if (m_internalSettings->showOutlineNormally(true) || m_internalSettings->showOutlineOnHover(true) || m_internalSettings->showOutlineOnPress(true)
+                || m_internalSettings->showOutlineNormally(false) || m_internalSettings->showOutlineOnHover(false)
+                || m_internalSettings->showOutlineOnPress(false)) {
+                shrinkOffsetWithOutline = PenWidth::Symbol / 2;
+                if (KWindowSystem::isPlatformX11()) {
+                    shrinkOffsetWithOutline *= m_systemScaleFactorX11;
+                }
+            }
+            verticalIconOffset = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2 - m_scaledIntegratedRoundedRectangleBottomPadding / 2
+                - shrinkOffsetWithOutline;
+        } else {
+            verticalIconOffset = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2;
+        }
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
     } else {
         bHeight = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
-        verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + (captionHeight() - m_smallButtonPaddedHeight) / 2;
+        verticalIconOffset = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight() - m_smallButtonPaddedHeight) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
@@ -1579,7 +1592,11 @@ void Decoration::setScaledTitleBarTopBottomMargins()
 
     qreal topMargin = m_internalSettings->titlebarTopMargin();
     qreal bottomMargin = m_internalSettings->titlebarBottomMargin();
-
+    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+        m_scaledIntegratedRoundedRectangleBottomPadding = m_internalSettings->integratedRoundedRectangleBottomPadding() * settings()->smallSpacing();
+    } else {
+        m_scaledIntegratedRoundedRectangleBottomPadding = 0;
+    }
     if (c->isMaximized()) {
         qreal maximizedScaleFactor = qreal(m_internalSettings->percentMaximizedTopBottomMargins()) / 100;
         topMargin *= maximizedScaleFactor;
