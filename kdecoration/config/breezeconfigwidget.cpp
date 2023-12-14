@@ -893,6 +893,10 @@ void ConfigWidget::importBundledPresets()
 
     // qDebug() << "librarypaths: " << QCoreApplication::libraryPaths(); //librarypaths:  ("/usr/lib64/qt5/plugins", "/usr/bin")
 
+    // delete bundled presets from a previous release first
+    // if the user modified the preset it will not contain the BundledPreset flag and hence won't be deleted
+    PresetsModel::deleteBundledPresets(m_configuration.data());
+
     for (QString libraryPath : QCoreApplication::libraryPaths()) {
         libraryPath += "/plasma/kcms/klassy/presets";
         QDir presetsDir(libraryPath);
@@ -904,20 +908,13 @@ void ConfigWidget::importBundledPresets()
 
             for (QString presetFile : presetFiles) {
                 presetFile = libraryPath + "/" + presetFile; // set absolute full path
-                KSharedConfig::Ptr importPresetConfig;
-                bool validGlobalGroup;
-                bool versionValid;
                 QString presetName;
+                QString error;
 
-                PresetsModel::importPresetValidate(presetFile, importPresetConfig, validGlobalGroup, versionValid, presetName);
-                if (!validGlobalGroup || !versionValid) {
+                PresetsErrorFlag importErrors = PresetsModel::importPreset(m_configuration.data(), presetFile, presetName, error, false, true);
+                if (importErrors != PresetsErrorFlag::None) {
                     continue;
                 }
-                if (PresetsModel::isPresetPresent(m_configuration.data(), presetName)) {
-                    PresetsModel::deletePreset(m_configuration.data(), presetName);
-                }
-
-                PresetsModel::importPreset(m_configuration.data(), importPresetConfig, presetName);
             }
         }
     }

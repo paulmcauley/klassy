@@ -7,3 +7,4 @@ Singleton=false
 Mutators=true
 GlobalEnums=false
 Notifiers=AlwaysShow
+UseEnumTypes=false

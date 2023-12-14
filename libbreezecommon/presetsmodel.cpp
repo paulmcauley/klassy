@@ -22,14 +22,14 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
     bool keyInBlacklist;
     QString groupName = presetGroupName(presetName);
 
-    foreach (auto item, skeleton->items()) {
+    for (auto item : skeleton->items()) {
         keyInBlacklist = false;
 
         QStringList blacklistKeys = windecoExceptionKeys;
         blacklistKeys << "BundledWindecoPresetsImportedVersion";
 
         // do not write a key in blacklist
-        foreach (auto blacklistKey, blacklistKeys) {
+        for (const QString &blacklistKey : blacklistKeys) {
             if (item->key() == blacklistKey) {
                 keyInBlacklist = true;
                 continue;
@@ -41,7 +41,16 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
         if (!groupName.isEmpty())
             item->setGroup(groupName);
         KConfigGroup configGroup(config, item->group());
-        configGroup.writeEntry(item->key(), item->property());
+
+        // enum properties are ints, but it is more robust to write the full string name to the file, rather than an int
+        // therefore if an enum get the name instead
+        if (auto enumItem = dynamic_cast<KCoreConfigSkeleton::ItemEnum *>(item)) { // if the item is an enum
+            if (item->property().toInt() >= 0) { // invalid enum values are set to -1
+                configGroup.writeEntry(item->key(), enumItem->choices()[item->property().toInt()].name);
+            }
+        } else {
+            configGroup.writeEntry(item->key(), item->property());
+        }
     }
 }
 
@@ -50,9 +59,9 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
     bool keyInWhitelist;
     QString groupName = presetGroupName(presetName);
 
-    foreach (auto item, skeleton->items()) {
+    for (auto item : skeleton->items()) {
         keyInWhitelist = false;
-        foreach (auto whitelistKey, whitelistKeys) {
+        for (const QString &whitelistKey : whitelistKeys) {
             if (item->key() == whitelistKey) {
                 keyInWhitelist = true;
                 continue;
@@ -64,7 +73,16 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
         if (!groupName.isEmpty())
             item->setGroup(groupName);
         KConfigGroup configGroup(config, item->group());
-        configGroup.writeEntry(item->key(), item->property());
+
+        // enum properties are ints, but it is more robust to write the full string name to the file, rather than an int
+        // therefore if an enum get the name instead
+        if (auto enumItem = dynamic_cast<KCoreConfigSkeleton::ItemEnum *>(item)) { // if the item is an enum
+            if (item->property().toInt() >= 0) { // invalid enum values are set to -1
+                configGroup.writeEntry(item->key(), enumItem->choices()[item->property().toInt()].name);
+            }
+        } else {
+            configGroup.writeEntry(item->key(), item->property());
+        }
     }
 }
 
@@ -76,14 +94,14 @@ void PresetsModel::readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, co
     if (groupName.isEmpty() || !config->hasGroup(groupName))
         return;
 
-    foreach (KConfigSkeletonItem *item, skeleton->items()) {
+    for (KConfigSkeletonItem *item : skeleton->items()) {
         keyInBlacklist = false;
 
         QStringList blacklistKeys = windecoExceptionKeys;
         blacklistKeys << "BundledWindecoPresetsImportedVersion";
 
         // do not read a key in windecoExceptionKeys
-        foreach (auto blacklistKey, blacklistKeys) {
+        for (const QString &blacklistKey : blacklistKeys) {
             if (item->key() == blacklistKey) {
                 keyInBlacklist = true;
                 continue;
@@ -105,11 +123,27 @@ void PresetsModel::deletePreset(KConfig *config, const QString &presetName)
         config->deleteGroup(groupName);
 }
 
+void PresetsModel::deleteBundledPresets(KConfig *config)
+{
+    QStringList presetList = readPresetsList(config);
+    for (const QString &presetName : presetList) {
+        QString groupName = presetGroupName(presetName);
+        if (config->hasGroup(groupName)) {
+            KConfigGroup presetGroup = config->group(groupName);
+            if (presetGroup.hasKey("BundledPreset")) {
+                if (presetGroup.readEntry("BundledPreset") == "true") {
+                    config->deleteGroup(groupName);
+                }
+            }
+        }
+    }
+}
+
 QStringList PresetsModel::readPresetsList(KConfig *config)
 {
     QStringList presetsList;
     QRegularExpression re("^Windeco Preset (.+)");
-    foreach (const QString group, config->groupList()) {
+    for (const QString &group : config->groupList()) {
         QRegularExpressionMatch match = re.match(group);
         if (match.hasMatch()) {
             QString presetName = match.captured(1);
@@ -121,7 +155,22 @@ QStringList PresetsModel::readPresetsList(KConfig *config)
 
 bool PresetsModel::isPresetPresent(KConfig *config, const QString &presetName)
 {
-    return readPresetsList(config).contains(presetName);
+    QStringList list = readPresetsList(config);
+    return list.contains(presetName);
+}
+
+bool PresetsModel::isPresetFromFilePresent(KConfig *config, const QString &presetFileName, QString &presetName)
+{
+    KSharedConfig::Ptr importPresetConfig = KSharedConfig::openConfig(presetFileName);
+    if (!importPresetConfig) {
+        return false;
+    }
+
+    QStringList list = readPresetsList(importPresetConfig.data());
+    if (!list.count())
+        return false;
+    presetName = list[0];
+    return isPresetPresent(config, presetName);
 }
 
 void PresetsModel::exportPreset(KConfig *config, const QString &presetName, const QString &fileName)
@@ -141,40 +190,87 @@ void PresetsModel::exportPreset(KConfig *config, const QString &presetName, cons
 
     outputGlobalGroup.writeEntry("version", klassyLongVersion());
 
-    for (QString &inputKey : inputPresetGroup.keyList()) {
-        outputPresetGroup.writeEntry(inputKey, inputPresetGroup.readEntry(inputKey));
+    auto internalSettings = InternalSettingsPtr(new InternalSettings());
+
+    for (const QString &inputKey : inputPresetGroup.keyList()) {
+        auto item = internalSettings->findItem(inputKey);
+        if (!item)
+            continue;
+
+        QString exportProperty = inputPresetGroup.readEntry(inputKey);
+        outputPresetGroup.writeEntry(inputKey, exportProperty);
     }
     outputPresetConfig->sync();
 }
 
-void PresetsModel::importPresetValidate(const QString &fileName,
-                                        KSharedConfig::Ptr &importPresetConfig,
-                                        bool &validGlobalGroup,
-                                        bool &versionValid,
-                                        QString &presetName)
+PresetsErrorFlag
+PresetsModel::importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion, bool markAsBundled)
 {
-    importPresetConfig = KSharedConfig::openConfig(fileName);
+    KSharedConfig::Ptr importPresetConfig = KSharedConfig::openConfig(fileName);
 
-    if (!(validGlobalGroup = importPresetConfig->hasGroup("Klassy Window Decoration Preset File")))
-        return;
+    // perform validation first
+    if (!(importPresetConfig->hasGroup("Klassy Window Decoration Preset File")))
+        return PresetsErrorFlag::InvalidGlobalGroup;
     KConfigGroup importGlobalGroup = importPresetConfig->group("Klassy Window Decoration Preset File");
     QString importVersion = importGlobalGroup.readEntry("version");
-    versionValid = (importVersion == klassyLongVersion());
+    bool versionValid = (importVersion == klassyLongVersion());
+    if (!versionValid && !forceInvalidVersion)
+        return PresetsErrorFlag::InvalidVersion;
 
-    presetName = readPresetsList(importPresetConfig.data())[0];
-}
+    QStringList presetsList = readPresetsList(importPresetConfig.data());
+    if (presetsList.count())
+        presetName = presetsList[0];
+    else {
+        return PresetsErrorFlag::InvalidGroup;
+    }
 
-void PresetsModel::importPreset(KConfig *config, KSharedConfig::Ptr &importPresetConfig, const QString &presetName)
-{
     QString importGroupName = presetGroupName(presetName);
 
-    if (!importPresetConfig->hasGroup(importGroupName))
-        return;
     KConfigGroup importGroup = importPresetConfig->group(importGroupName);
 
-    for (QString &importKey : importGroup.keyList()) {
-        KConfigGroup configGroup(config, importGroupName);
-        configGroup.writeEntry(importKey, importGroup.readEntry(importKey));
+    for (const QString &importKey : importGroup.keyList()) {
+        if (!isKeyValid(importKey)) {
+            error = importKey;
+            return PresetsErrorFlag::InvalidKey;
+        }
     }
+
+    // end of validation
+
+    // delete an existing preset if has the same name
+    if (isPresetPresent(config, presetName)) {
+        deletePreset(config, presetName);
+    }
+
+    // start writing the values
+
+    auto internalSettings = InternalSettingsPtr(new InternalSettings());
+    KConfigGroup configGroup(config, importGroupName);
+
+    for (const QString &importKey : importGroup.keyList()) {
+        auto item = internalSettings->findItem(importKey);
+        if (!item)
+            return PresetsErrorFlag::InvalidKey;
+        QString importProperty = importGroup.readEntry(importKey);
+
+        configGroup.writeEntry(importKey, importProperty);
+    }
+
+    if (markAsBundled)
+        configGroup.writeEntry("BundledPreset", "true");
+
+    return PresetsErrorFlag::None;
+}
+
+bool PresetsModel::isKeyValid(const QString &key)
+{
+    auto internalSettings = InternalSettingsPtr(new InternalSettings());
+
+    for (const auto &item : internalSettings->items()) {
+        if (item->key() == key) {
+            return true;
+        }
+    }
+    return false;
 }
 }

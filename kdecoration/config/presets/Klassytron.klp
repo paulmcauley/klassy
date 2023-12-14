@@ -1,9 +1,9 @@
 [Klassy Window Decoration Preset File]
 version=4.4.1.breeze5.27.5.git
 
-[Windeco Preset Klassy]
+[Windeco Preset Klassytron]
 ActiveTitlebarOpacity=100
-AlwaysShow=Icons
+AlwaysShow=IconsOutlinesAndCloseButtonBackground
 AlwaysShowBackgroundHighlightUsing=IconOutlineDifferentColoredBackground
 AlwaysShowBackgroundOutlineHighlightUsing=IconDifferentColoredBackground
 AlwaysShowIconBackgroundHighlightUsing=DifferentColoredBackgroundOutline
@@ -16,11 +16,11 @@ AlwaysShowIconOutlineHighlightUsing=Background
 AnimationsEnabled=true
 AnimationsSpeedRelativeSystem=0
 ApplyOpacityToHeader=true
-BackgroundColors=ColorsAccent
+BackgroundColors=ColorsAccentWithTrafficLights
 BlurTransparentTitlebars=true
 BoldButtonIcons=BoldIconsHiDpiOnly
 ButtonIconStyle=StyleKlassy
-ButtonShape=ShapeIntegratedRoundedRectangle
+ButtonShape=ShapeFullHeightRoundedRectangle
 ButtonSpacingLeft=3
 ButtonSpacingRight=5
 ColorizeSystemIcons=true
@@ -28,7 +28,7 @@ ColorizeThinWindowOutlineWithButton=true
 CornerRadius=1
 DrawBackgroundGradient=false
 DrawBorderOnMaximizedWindows=false
-DrawTitleBarSeparator=false
+DrawTitleBarSeparator=true
 FullHeightButtonSpacingLeft=1
 FullHeightButtonSpacingRight=1
 FullHeightButtonWidthMarginLeft=3
@@ -59,15 +59,15 @@ ThinWindowOutlineStyleInactive=WindowOutlineAccentWithContrast
 ThinWindowOutlineThickness=1.75
 TitleAlignment=AlignCenterFullWidth
 TitleSidePadding=2
-TitlebarBottomMargin=1.7
+TitlebarBottomMargin=1.25
 TitlebarLeftMargin=0
 TitlebarRightMargin=0
-TitlebarTopMargin=1.7
+TitlebarTopMargin=1.25
 TranslucentButtonBackgrounds=true
 UseTitlebarColorForAllBorders=true
 WindowOutlineAccentColorOpacityActive=0.87
 WindowOutlineAccentColorOpacityInactive=0.4
-WindowOutlineAccentWithContrastOpacityActive=0.4
+WindowOutlineAccentWithContrastOpacityActive=0.5
 WindowOutlineAccentWithContrastOpacityInactive=0.25
 WindowOutlineContrastOpacityActive=0.25
 WindowOutlineContrastOpacityInactive=0.25
