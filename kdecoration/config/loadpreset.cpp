@@ -67,6 +67,7 @@ void LoadPreset::addButtonClicked()
     while (!re.match(m_addDialog->m_ui->presetName->text()).hasMatch()) {
         QMessageBox::warning(this, i18n("Warning - Klassy Settings"), i18n("Please provide a name for the Preset"));
         m_addDialog->setWindowTitle(i18n("Add Preset - Klassy Settings"));
+        m_addDialog->m_ui->presetName->setFocus();
         if (m_addDialog->exec() == QDialog::Rejected) {
             return;
         }
@@ -127,6 +128,7 @@ void LoadPreset::removeButtonClicked()
     }
 
     PresetsModel::deletePreset(m_configuration.data(), m_ui->presetsList->selectedItems().first()->text());
+    m_configuration->sync();
     initPresetsList();
 }
 
@@ -134,20 +136,35 @@ void LoadPreset::importButtonClicked()
 {
     QStringList files = QFileDialog::getOpenFileNames(this, i18n("Select Klassy Preset to Import"), "", i18n("Klassy Preset (*.klp)"));
     for (QString fileName : files) {
-        KSharedConfig::Ptr importPresetConfig;
-        bool validGlobalGroup;
-        bool versionValid;
         QString presetName;
+        QString error;
 
-        PresetsModel::importPresetValidate(fileName, importPresetConfig, validGlobalGroup, versionValid, presetName);
-        if (!validGlobalGroup) {
+        bool presetWithSameNameExists = false;
+        // if a preset already exists with the same name
+        if (PresetsModel::isPresetFromFilePresent(m_configuration.data(), fileName, presetName)) {
+            presetWithSameNameExists = true;
+            // confirmation dialog
+            QMessageBox messageBox(QMessageBox::Question,
+                                   i18n("Question - Klassy Settings"),
+                                   i18n("A preset with the name \"") + presetName + i18n("\" already exists. Overwrite?"),
+                                   QMessageBox::Yes | QMessageBox::Cancel);
+            messageBox.button(QMessageBox::Yes)->setText(i18n("Overwrite"));
+            messageBox.setDefaultButton(QMessageBox::Cancel);
+            if (messageBox.exec() == QMessageBox::Cancel) {
+                continue;
+            }
+        }
+
+        PresetsErrorFlag importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, false);
+
+        if (importErrors == PresetsErrorFlag::InvalidGlobalGroup) {
             QMessageBox msgBox;
             msgBox.setText(i18n("Invalid Klassy Preset file at \"") + fileName + i18n("\"."));
             msgBox.exec();
             continue;
         }
 
-        if (!versionValid) {
+        if (importErrors == PresetsErrorFlag::InvalidVersion) {
             // confirmation dialog
             QMessageBox messageBox(QMessageBox::Question,
                                    i18n("Question - Klassy Settings"),
@@ -161,23 +178,26 @@ void LoadPreset::importButtonClicked()
             }
         }
 
-        // if a preset already exists with the same name
-        if ((m_ui->presetsList->findItems(presetName, Qt::MatchExactly)).count()) {
-            // confirmation dialog
-            QMessageBox messageBox(QMessageBox::Question,
-                                   i18n("Question - Klassy Settings"),
-                                   i18n("A preset with the name \"") + presetName + i18n("\" already exists. Overwrite?"),
-                                   QMessageBox::Yes | QMessageBox::Cancel);
-            messageBox.button(QMessageBox::Yes)->setText(i18n("Overwrite"));
-            messageBox.setDefaultButton(QMessageBox::Cancel);
-            if (messageBox.exec() == QMessageBox::Cancel) {
-                continue;
-            } else {
-                PresetsModel::deletePreset(m_configuration.data(), presetName);
-            }
+        presetName = QString();
+        error = QString();
+        // if unsuccessful, try to import again with forceInvalidVersion flag true
+        if (presetWithSameNameExists || importErrors != PresetsErrorFlag::None)
+            importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, true);
+
+        if (importErrors == PresetsErrorFlag::InvalidGroup) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n("No preset group found in Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.exec();
+            continue;
         }
 
-        PresetsModel::importPreset(m_configuration.data(), importPresetConfig, presetName);
+        if (importErrors == PresetsErrorFlag::InvalidKey) {
+            QMessageBox msgBox;
+            msgBox.setText(i18n("Invalid key \"") + error + i18n("\" in Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.exec();
+            continue;
+        }
+
         m_configuration->sync();
         initPresetsList();
     }

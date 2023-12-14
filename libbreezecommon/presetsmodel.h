@@ -13,6 +13,14 @@
 namespace Breeze
 {
 
+enum struct BREEZECOMMON_EXPORT PresetsErrorFlag {
+    None,
+    InvalidGlobalGroup,
+    InvalidVersion,
+    InvalidGroup,
+    InvalidKey,
+};
+
 /**
  * @brief Functions to read and write Presets from/to config file within Klassy
  */
@@ -24,12 +32,15 @@ public:
     static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, const QStringList &whiteListKeys);
     static void readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
     static void deletePreset(KConfig *config, const QString &presetName);
+    static void deleteBundledPresets(KConfig *config);
     static QStringList readPresetsList(KConfig *config);
     static bool isPresetPresent(KConfig *config, const QString &presetName);
+    static bool isPresetFromFilePresent(KConfig *config, const QString &presetFileName, QString &presetName);
     static void exportPreset(KConfig *config, const QString &presetName, const QString &fileName);
-    static void
-    importPresetValidate(const QString &fileName, KSharedConfig::Ptr &importPresetConfig, bool &validGlobalGroup, bool &versionValid, QString &presetName);
-    static void importPreset(KConfig *config, KSharedConfig::Ptr &importPresetConfig, const QString &presetName);
+    static PresetsErrorFlag
+    importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion = false, bool markAsBundled = false);
+    static bool isKeyValid(const QString &key);
+    static bool isEnumValueValid(const QString &key, const QString &property);
 };
 
 }
