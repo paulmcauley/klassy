@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(breeze)
+project(klassy)
 set(PROJECT_VERSION "4.4.1.breeze5.27.5")
 set(PROJECT_VERSION_MAJOR 5)
 
@@ -29,7 +29,7 @@ include(KDEGitCommitHooks)
 
 include(GtkUpdateIconCache)
 
-option(WITH_DECORATIONS "Build Breeze window decorations for KWin" ON)
+option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
 
 if(WIN32 OR APPLE)
     set(WITH_DECORATIONS OFF)
