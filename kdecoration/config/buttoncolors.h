@@ -1,29 +1,29 @@
-#ifndef BUTTONSIZING_H
-#define BUTTONSIZING_H
+#ifndef BUTTONCOLORS_H
+#define BUTTONCOLORS_H
 
 /*
- * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "breeze.h"
 #include "breezesettings.h"
-#include "ui_buttonsizing.h"
+#include "ui_buttoncolors.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class ButtonSizing : public QDialog
+class ButtonColors : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit ButtonSizing(KSharedConfig::Ptr config, QWidget *parent = nullptr);
-    ~ButtonSizing();
+    explicit ButtonColors(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    ~ButtonColors();
 
     void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
@@ -38,12 +38,6 @@ public Q_SLOTS:
 private Q_SLOTS:
     void accept() override;
     void updateChanged();
-    void fullHeightButtonWidthMarginLeftChanged();
-    void fullHeightButtonWidthMarginRightChanged();
-    void buttonSpacingLeftChanged();
-    void buttonSpacingRightChanged();
-    void fullHeightButtonSpacingLeftChanged();
-    void fullHeightButtonSpacingRightChanged();
     void saveAndReloadKWinConfig()
     {
         save(true);
@@ -56,10 +50,11 @@ Q_SIGNALS:
 private:
     void setChanged(bool value);
 
-    Ui_ButtonSizing m_ui;
+    Ui_ButtonColors *m_ui;
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+
     //* changed state
     bool m_changed;
 
@@ -67,10 +62,10 @@ private:
     bool m_defaultsPressed = false;
 
     bool m_loading = false;
-    bool m_loaded;
+    bool m_loaded = false;
     bool m_processingDefaults = false;
 };
 
 }
 
-#endif // BUTTONSIZING_H
+#endif // BUTTONCOLORS_H

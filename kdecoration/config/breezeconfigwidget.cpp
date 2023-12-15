@@ -14,7 +14,6 @@
 
 #include <KLocalizedString>
 
-#include <KColorScheme>
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDir>
@@ -88,9 +87,14 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
         defaultPushButton->hide();
     }
 
-    m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
-    m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
     m_loadPresetDialog = new LoadPreset(m_configuration, this);
+    m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
+    m_buttonColorsDialog = new ButtonColors(m_configuration, this);
+    m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, this);
+    m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, this);
+    m_titleBarOpacityDialog = new TitleBarOpacity(m_configuration, this);
+    m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
+    m_shadowStyleDialog = new ShadowStyle(m_configuration, this);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
@@ -112,68 +116,33 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 #endif
 
     connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::integratedRoundedRectangleSizingButtonClicked);
-
     connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
-
-    connect(m_ui.thinWindowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
-
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
+    connect(m_ui.buttonColorsButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonColorsButtonClicked);
+    connect(m_ui.buttonBehaviourButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonBehaviourButtonClicked);
+    connect(m_ui.titleBarSpacingButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarSpacingButtonClicked);
+    connect(m_ui.titleBarOpacityButton, &QAbstractButton::clicked, this, &ConfigWidget::titleBarOpacityButtonClicked);
+    connect(m_ui.thinWindowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
+    connect(m_ui.shadowStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::shadowStyleButtonClicked);
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
 
     // track ui changes
-    connect(m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()));
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()));
-    connect(m_ui.backgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShow, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowIconBackgroundOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowBackgroundHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.alwaysShowBackgroundOutlineHighlightUsing, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui.titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui.percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.redAlwaysShownClose, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.useTitlebarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.roundBottomCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.opaqueMaximizedTitlebars, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.blurTransparentTitlebars, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.applyOpacityToHeader, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.translucentButtonBackgrounds, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.colorizeSystemIcons, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.lockTitleBarTopBottomMargins, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.lockTitleBarLeftRightMargins, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-
-    // connect dual controls with same values
-    connect(m_ui.titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(titlebarTopMarginChanged()));
-    connect(m_ui.titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()));
-    connect(m_ui.titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()));
-    connect(m_ui.titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()));
-    connect(m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity_2, SLOT(setValue(int)));
-    connect(m_ui.activeTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.activeTitlebarOpacity, SLOT(setValue(int)));
-    connect(m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity_2, SLOT(setValue(int)));
-    connect(m_ui.inactiveTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui.inactiveTitlebarOpacity, SLOT(setValue(int)));
 
     // only enable animationsSpeed when animationsEnabled is checked
     connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::setEnabledAnimationsSpeed);
@@ -182,15 +151,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
     connect(m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
 
-    // only enable transparency options when transparency is setActiveTitlebarOpacity
-    connect(m_ui.activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()));
-    connect(m_ui.inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()));
-
-    // track shadows changes
-    connect(m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
-    connect(m_ui.thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
     connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
 
     // track exception changes
@@ -212,91 +172,47 @@ void ConfigWidget::load()
 void ConfigWidget::loadMain(QString loadPresetName)
 {
     m_loading = true;
-    getTitlebarOpacityFromColorScheme();
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     if (loadPresetName.isEmpty()) { // normal case
         m_internalSettings->load();
         m_buttonSizingDialog->load();
+        m_buttonColorsDialog->load();
+        m_buttonBehaviourDialog->load();
+        m_titleBarSpacingDialog->load();
+        m_titleBarOpacityDialog->load();
+        m_shadowStyleDialog->load();
         m_windowOutlineStyleDialog->load();
         importBundledPresets();
     } else {
         PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName, true);
         m_buttonSizingDialog->loadMain(loadPresetName);
+        m_buttonColorsDialog->loadMain(loadPresetName);
+        m_buttonBehaviourDialog->loadMain(loadPresetName);
+        m_titleBarSpacingDialog->loadMain(loadPresetName);
+        m_titleBarOpacityDialog->loadMain(loadPresetName);
+        m_shadowStyleDialog->loadMain(loadPresetName);
         m_windowOutlineStyleDialog->loadMain(loadPresetName);
     }
 
     // assign to ui
-    m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
-    m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
-    m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
-    m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
-    m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing());
-    m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing());
-    m_ui.alwaysShowIconOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconOutlineHighlightUsing());
-    m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->setCurrentIndex(
-        m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing());
-    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
-    m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing());
-    m_ui.alwaysShowBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundHighlightUsing());
-    m_ui.alwaysShowBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
-    m_ui.titleSidePadding->setValue(m_internalSettings->titleSidePadding());
-    m_ui.titlebarTopMargin->setValue(m_internalSettings->titlebarTopMargin());
-    m_ui.titlebarBottomMargin->setValue(m_internalSettings->titlebarBottomMargin());
-    m_ui.percentMaximizedTopBottomMargins->setValue(m_internalSettings->percentMaximizedTopBottomMargins());
-    m_ui.titlebarLeftMargin->setValue(m_internalSettings->titlebarLeftMargin());
-    m_ui.titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
     m_ui.cornerRadius->setValue(m_internalSettings->cornerRadius());
-
-    // if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it
-    if (m_translucentActiveSchemeColor) {
-        m_ui.activeTitlebarOpacity->setValue(m_activeSchemeColorAlpha * 100);
-        m_ui.activeTitlebarOpacity->setEnabled(false);
-        m_ui.activeTitlebarOpacity_2->setEnabled(false);
-    } else
-        m_ui.activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
-    m_ui.activeTitlebarOpacity_2->setValue(m_ui.activeTitlebarOpacity->value());
-    if (m_translucentInactiveSchemeColor) {
-        m_ui.inactiveTitlebarOpacity->setValue(m_inactiveSchemeColorAlpha * 100);
-        m_ui.inactiveTitlebarOpacity->setEnabled(false);
-        m_ui.inactiveTitlebarOpacity_2->setEnabled(false);
-    } else
-        m_ui.inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
-    m_ui.inactiveTitlebarOpacity_2->setValue(m_ui.inactiveTitlebarOpacity->value());
-    setEnabledTransparentTitlebarOptions();
 
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
-    m_ui.redAlwaysShownClose->setChecked(m_internalSettings->redAlwaysShownClose());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.useTitlebarColorForAllBorders->setChecked(m_internalSettings->useTitlebarColorForAllBorders());
     m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
-    m_ui.opaqueMaximizedTitlebars->setChecked(m_internalSettings->opaqueMaximizedTitlebars());
-    m_ui.blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
-    m_ui.applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
-    m_ui.translucentButtonBackgrounds->setChecked(m_internalSettings->translucentButtonBackgrounds());
     m_ui.colorizeSystemIcons->setChecked(m_internalSettings->colorizeSystemIcons());
-    m_ui.lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
-    m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
 
-    // load shadows
-    if (m_internalSettings->shadowSize() <= InternalSettings::EnumShadowSize::ShadowVeryLarge) {
-        m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
-    } else {
-        m_ui.shadowSize->setCurrentIndex(InternalSettings::EnumShadowSize::ShadowLarge);
-    }
-
-    m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
-    m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
-    m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     updateIconsStackedWidgetVisible();
@@ -335,36 +251,12 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->load();
 
     // apply modifications from ui
-    m_internalSettings->setTitleAlignment(m_ui.titleAlignment->currentIndex());
     m_internalSettings->setButtonIconStyle(m_ui.buttonIconStyle->currentIndex());
     m_internalSettings->setButtonShape(m_ui.buttonShape->currentIndex());
-    m_internalSettings->setBackgroundColors(m_ui.backgroundColors->currentIndex());
-    m_internalSettings->setAlwaysShow(m_ui.alwaysShow->currentIndex());
-    m_internalSettings->setAlwaysShowIconHighlightUsing(m_ui.alwaysShowIconHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconCloseButtonBackgroundHighlightUsing(m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconCloseButtonOutlineHighlightUsing(m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconOutlineHighlightUsing(m_ui.alwaysShowIconOutlineHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing(
-        m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconBackgroundHighlightUsing(m_ui.alwaysShowIconBackgroundHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowIconBackgroundOutlineHighlightUsing(m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowBackgroundHighlightUsing(m_ui.alwaysShowBackgroundHighlightUsing->currentIndex());
-    m_internalSettings->setAlwaysShowBackgroundOutlineHighlightUsing(m_ui.alwaysShowBackgroundOutlineHighlightUsing->currentIndex());
     m_internalSettings->setIconSize(m_ui.iconSize->currentIndex());
     m_internalSettings->setSystemIconSize(m_ui.systemIconSize->currentIndex());
-    m_internalSettings->setTitleSidePadding(m_ui.titleSidePadding->value());
-    m_internalSettings->setTitlebarTopMargin(m_ui.titlebarTopMargin->value());
-    m_internalSettings->setTitlebarBottomMargin(m_ui.titlebarBottomMargin->value());
-    m_internalSettings->setPercentMaximizedTopBottomMargins(m_ui.percentMaximizedTopBottomMargins->value());
-    m_internalSettings->setTitlebarLeftMargin(m_ui.titlebarLeftMargin->value());
-    m_internalSettings->setTitlebarRightMargin(m_ui.titlebarRightMargin->value());
     m_internalSettings->setCornerRadius(m_ui.cornerRadius->value());
-    if (!m_translucentActiveSchemeColor || m_defaultsPressed)
-        m_internalSettings->setActiveTitlebarOpacity(m_ui.activeTitlebarOpacity->value());
-    if (!m_translucentInactiveSchemeColor || m_defaultsPressed)
-        m_internalSettings->setInactiveTitlebarOpacity(m_ui.inactiveTitlebarOpacity->value());
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
-    m_internalSettings->setRedAlwaysShownClose(m_ui.redAlwaysShownClose->isChecked());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
@@ -372,22 +264,16 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setAnimationsSpeedRelativeSystem(m_ui.animationsSpeedRelativeSystem->value());
     m_internalSettings->setUseTitlebarColorForAllBorders(m_ui.useTitlebarColorForAllBorders->isChecked());
     m_internalSettings->setRoundBottomCornersWhenNoBorders(m_ui.roundBottomCornersWhenNoBorders->isChecked());
-    m_internalSettings->setOpaqueMaximizedTitlebars(m_ui.opaqueMaximizedTitlebars->isChecked());
-    m_internalSettings->setBlurTransparentTitlebars(m_ui.blurTransparentTitlebars->isChecked());
-    m_internalSettings->setApplyOpacityToHeader(m_ui.applyOpacityToHeader->isChecked());
-    m_internalSettings->setTranslucentButtonBackgrounds(m_ui.translucentButtonBackgrounds->isChecked());
     m_internalSettings->setColorizeSystemIcons(m_ui.colorizeSystemIcons->isChecked());
-    m_internalSettings->setLockTitleBarTopBottomMargins(m_ui.lockTitleBarTopBottomMargins->isChecked());
-    m_internalSettings->setLockTitleBarLeftRightMargins(m_ui.lockTitleBarLeftRightMargins->isChecked());
-
-    m_internalSettings->setShadowSize(m_ui.shadowSize->currentIndex());
-    m_internalSettings->setShadowStrength(qRound(qreal(m_ui.shadowStrength->value() * 255) / 100));
-    m_internalSettings->setShadowColor(m_ui.shadowColor->color());
-    m_internalSettings->setThinWindowOutlineThickness(m_ui.thinWindowOutlineThickness->value());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
     if (saveAsPresetName.isEmpty()) { // normal case
         m_buttonSizingDialog->save(false);
+        m_buttonColorsDialog->save(false);
+        m_buttonBehaviourDialog->save(false);
+        m_titleBarSpacingDialog->save(false);
+        m_titleBarOpacityDialog->save(false);
+        m_shadowStyleDialog->save(false);
         m_windowOutlineStyleDialog->save(false);
 
         // save configuration
@@ -413,21 +299,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
 
         // needed to tell kwin to reload when running from external kcmshell
         kwinReloadConfig();
-
-        // needed for breeze style to reload shadows
-        {
-            QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
-            QDBusConnection::sessionBus().send(message);
-        }
-
-        // try to regenerate GTK CSD buttons with kde-gtk-config, also try to update the display of window decoration border setting (latter not working)
-        {
-            QDBusMessage message =
-                QDBusMessage::createSignal(QStringLiteral("/KGlobalSettings"), QStringLiteral("org.kde.KGlobalSettings"), QStringLiteral("notifyChange"));
-            message.setArguments({2, 0}); // 2 corresponds to StyleChanged - se
-                                          // https://invent.kde.org/plasma/plasma-workspace/-/blob/master/kcms/kcms-common_p.h
-            QDBusConnection::sessionBus().send(message);
-        }
+        kstyleReloadConfig();
     }
 }
 
@@ -440,38 +312,12 @@ void ConfigWidget::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
-    m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
-    m_ui.backgroundColors->setCurrentIndex(m_internalSettings->backgroundColors());
-    m_ui.alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
-    m_ui.alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());
-    m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing());
-    m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing());
-    m_ui.alwaysShowIconOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconOutlineHighlightUsing());
-    m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->setCurrentIndex(
-        m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing());
-    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
-    m_ui.alwaysShowIconBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundHighlightUsing());
-    m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing());
-    m_ui.alwaysShowBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundHighlightUsing());
-    m_ui.alwaysShowBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
-    m_ui.titleSidePadding->setValue(m_internalSettings->titleSidePadding());
-    m_ui.titlebarTopMargin->setValue(m_internalSettings->titlebarTopMargin());
-    m_ui.titlebarBottomMargin->setValue(m_internalSettings->titlebarBottomMargin());
-    m_ui.percentMaximizedTopBottomMargins->setValue(m_internalSettings->percentMaximizedTopBottomMargins());
-    m_ui.titlebarLeftMargin->setValue(m_internalSettings->titlebarLeftMargin());
-    m_ui.titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
     m_ui.cornerRadius->setValue(m_internalSettings->cornerRadius());
-    m_ui.activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
-    m_ui.activeTitlebarOpacity_2->setValue(m_ui.activeTitlebarOpacity->value());
-    m_ui.inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
-    m_ui.inactiveTitlebarOpacity_2->setValue(m_ui.inactiveTitlebarOpacity->value());
-    setEnabledTransparentTitlebarOptions();
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
-    m_ui.redAlwaysShownClose->setChecked(m_internalSettings->redAlwaysShownClose());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
@@ -479,23 +325,17 @@ void ConfigWidget::defaults()
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.useTitlebarColorForAllBorders->setChecked(m_internalSettings->useTitlebarColorForAllBorders());
     m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
-    m_ui.opaqueMaximizedTitlebars->setChecked(m_internalSettings->opaqueMaximizedTitlebars());
-    m_ui.blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
-    m_ui.applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
-    m_ui.translucentButtonBackgrounds->setChecked(m_internalSettings->translucentButtonBackgrounds());
     m_ui.colorizeSystemIcons->setChecked(m_internalSettings->colorizeSystemIcons());
-    m_ui.lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
-    m_ui.lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
-
-    m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
-    m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
-    m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
-    m_ui.thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     // set defaults in dialogs
     m_buttonSizingDialog->defaults();
+    m_buttonColorsDialog->defaults();
+    m_buttonBehaviourDialog->defaults();
+    m_titleBarSpacingDialog->defaults();
+    m_titleBarOpacityDialog->defaults();
     m_windowOutlineStyleDialog->defaults();
+    m_shadowStyleDialog->defaults();
 
     // load default exceptions and refresh (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
@@ -530,48 +370,11 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.roundBottomCornersWhenNoBorders->isChecked() != m_internalSettings->roundBottomCornersWhenNoBorders())
         modified = true;
-    else if (m_ui.opaqueMaximizedTitlebars->isChecked() != m_internalSettings->opaqueMaximizedTitlebars())
-        modified = true;
-    else if (m_ui.blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars())
-        modified = true;
-    else if (m_ui.applyOpacityToHeader->isChecked() != m_internalSettings->applyOpacityToHeader())
-        modified = true;
-    else if (m_ui.translucentButtonBackgrounds->isChecked() != m_internalSettings->translucentButtonBackgrounds())
-        modified = true;
     else if (m_ui.colorizeSystemIcons->isChecked() != m_internalSettings->colorizeSystemIcons())
-        modified = true;
-    else if (m_ui.lockTitleBarTopBottomMargins->isChecked() != m_internalSettings->lockTitleBarTopBottomMargins())
-        modified = true;
-    else if (m_ui.lockTitleBarLeftRightMargins->isChecked() != m_internalSettings->lockTitleBarLeftRightMargins())
-        modified = true;
-    else if (m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
         modified = true;
     else if (m_ui.buttonIconStyle->currentIndex() != m_internalSettings->buttonIconStyle())
         modified = true;
     else if (m_ui.buttonShape->currentIndex() != m_internalSettings->buttonShape())
-        modified = true;
-    else if (m_ui.backgroundColors->currentIndex() != m_internalSettings->backgroundColors())
-        modified = true;
-    else if (m_ui.alwaysShow->currentIndex() != m_internalSettings->alwaysShow())
-        modified = true;
-    else if (m_ui.alwaysShowIconHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconCloseButtonBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconCloseButtonOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconCloseButtonOutlineHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconOutlineHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing->currentIndex()
-             != m_internalSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconBackgroundHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowIconBackgroundOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowIconBackgroundOutlineHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowBackgroundHighlightUsing->currentIndex() != m_internalSettings->alwaysShowBackgroundHighlightUsing())
-        modified = true;
-    else if (m_ui.alwaysShowBackgroundOutlineHighlightUsing->currentIndex() != m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing())
         modified = true;
     else if (m_ui.iconSize->currentIndex() != m_internalSettings->iconSize())
         modified = true;
@@ -579,47 +382,19 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons())
         modified = true;
-    else if (m_ui.redAlwaysShownClose->isChecked() != m_internalSettings->redAlwaysShownClose())
-        modified = true;
     else if (m_ui.drawBorderOnMaximizedWindows->isChecked() != m_internalSettings->drawBorderOnMaximizedWindows())
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;
-    else if (m_ui.titleSidePadding->value() != m_internalSettings->titleSidePadding())
-        modified = true;
-    else if (m_ui.titlebarTopMargin->value() != m_internalSettings->titlebarTopMargin())
-        modified = true;
-    else if (m_ui.titlebarBottomMargin->value() != m_internalSettings->titlebarBottomMargin())
-        modified = true;
-    else if (m_ui.percentMaximizedTopBottomMargins->value() != m_internalSettings->percentMaximizedTopBottomMargins())
-        modified = true;
-    else if (m_ui.titlebarLeftMargin->value() != m_internalSettings->titlebarLeftMargin())
-        modified = true;
-    else if (m_ui.titlebarRightMargin->value() != m_internalSettings->titlebarRightMargin())
-        modified = true;
     else if (m_ui.cornerRadius->value() != m_internalSettings->cornerRadius())
         modified = true;
-    else if ((!m_translucentActiveSchemeColor) && (m_ui.activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity()))
-        modified = true;
-    else if ((!m_translucentInactiveSchemeColor) && (m_ui.inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity()))
+    else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;
 
     // animations
     else if (m_ui.animationsEnabled->isChecked() != m_internalSettings->animationsEnabled())
         modified = true;
     else if (m_ui.animationsSpeedRelativeSystem->value() != m_internalSettings->animationsSpeedRelativeSystem())
-        modified = true;
-
-    // shadows
-    else if (m_ui.shadowSize->currentIndex() != m_internalSettings->shadowSize())
-        modified = true;
-    else if (qRound(qreal(m_ui.shadowStrength->value() * 255) / 100) != m_internalSettings->shadowStrength())
-        modified = true;
-    else if (m_ui.shadowColor->color() != m_internalSettings->shadowColor())
-        modified = true;
-    else if (m_ui.thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
-        modified = true;
-    else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;
 
     // dialogs
@@ -640,7 +415,7 @@ void ConfigWidget::updateChanged()
 //_______________________________________________
 void ConfigWidget::setChanged(bool value)
 {
-    emit changed(value);
+    Q_EMIT changed(value);
 }
 
 // only enable animationsSpeedRelativeSystem and animationsSpeedLabelx when animationsEnabled is checked
@@ -650,20 +425,6 @@ void ConfigWidget::setEnabledAnimationsSpeed()
     m_ui.animationsSpeedLabel1->setEnabled(m_ui.animationsEnabled->isChecked());
     m_ui.animationsSpeedLabel2->setEnabled(m_ui.animationsEnabled->isChecked());
     m_ui.animationsSpeedLabel4->setEnabled(m_ui.animationsEnabled->isChecked());
-}
-
-// only enable blurTransparentTitlebars and opaqueMaximizedTitlebars options if transparent titlebars are enabled
-void ConfigWidget::setEnabledTransparentTitlebarOptions()
-{
-    if (m_ui.activeTitlebarOpacity->value() != 100 || m_ui.inactiveTitlebarOpacity->value() != 100) {
-        m_ui.opaqueMaximizedTitlebars->setEnabled(true);
-        m_ui.blurTransparentTitlebars->setEnabled(true);
-        m_ui.applyOpacityToHeader->setEnabled(true);
-    } else {
-        m_ui.opaqueMaximizedTitlebars->setEnabled(false);
-        m_ui.blurTransparentTitlebars->setEnabled(false);
-        m_ui.applyOpacityToHeader->setEnabled(false);
-    }
 }
 
 void ConfigWidget::updateIconsStackedWidgetVisible()
@@ -683,62 +444,6 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(2);
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
-}
-
-void ConfigWidget::titlebarTopMarginChanged()
-{
-    if (m_ui.lockTitleBarTopBottomMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.titlebarBottomMargin->setValue(m_ui.titlebarTopMargin->value());
-}
-
-void ConfigWidget::titlebarBottomMarginChanged()
-{
-    if (m_ui.lockTitleBarTopBottomMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.titlebarTopMargin->setValue(m_ui.titlebarBottomMargin->value());
-}
-
-void ConfigWidget::titlebarLeftMarginChanged()
-{
-    if (m_ui.lockTitleBarLeftRightMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.titlebarRightMargin->setValue(m_ui.titlebarLeftMargin->value());
-}
-
-void ConfigWidget::titlebarRightMarginChanged()
-{
-    if (m_ui.lockTitleBarLeftRightMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui.titlebarLeftMargin->setValue(m_ui.titlebarRightMargin->value());
-}
-
-
-void ConfigWidget::getTitlebarOpacityFromColorScheme()
-{
-    KSharedConfig::Ptr config = KSharedConfig::openConfig();
-
-    bool colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(config, KColorScheme::Header);
-
-    // get the alpha values from the system colour scheme
-    if (colorSchemeHasHeaderColor) {
-        KColorScheme activeHeader = KColorScheme(QPalette::Active, KColorScheme::Header, config);
-        m_translucentActiveSchemeColor = !activeHeader.background().isOpaque();
-        m_activeSchemeColorAlpha = activeHeader.background().color().alphaF();
-
-        KColorScheme inactiveHeader = KColorScheme(QPalette::Inactive, KColorScheme::Header, config);
-        m_translucentInactiveSchemeColor = !inactiveHeader.background().isOpaque();
-        m_inactiveSchemeColorAlpha = inactiveHeader.background().color().alphaF();
-    } else {
-        KConfigGroup wmConfig(config, QStringLiteral("WM"));
-        if (wmConfig.exists()) {
-            QColor activeTitlebarColor;
-            QColor inactiveTitlebarColor;
-            activeTitlebarColor = wmConfig.readEntry("activeBackground", QColorConstants::Black);
-            inactiveTitlebarColor = wmConfig.readEntry("inactiveBackground", QColorConstants::Black);
-
-            m_translucentActiveSchemeColor = (activeTitlebarColor.alpha() != 255);
-            m_translucentInactiveSchemeColor = (inactiveTitlebarColor.alpha() != 255);
-            m_activeSchemeColorAlpha = activeTitlebarColor.alphaF();
-            m_inactiveSchemeColorAlpha = inactiveTitlebarColor.alphaF();
-        }
-    }
 }
 
 void ConfigWidget::dialogChanged(bool changed)
@@ -879,6 +584,47 @@ void ConfigWidget::buttonSizingButtonClicked()
     m_buttonSizingDialog->exec();
 }
 
+void ConfigWidget::buttonColorsButtonClicked()
+{
+    m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
+    m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
+    if (!m_buttonColorsDialog->m_loaded)
+        m_buttonColorsDialog->load();
+    m_buttonColorsDialog->exec();
+}
+
+void ConfigWidget::buttonBehaviourButtonClicked()
+{
+    m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
+    if (!m_buttonBehaviourDialog->m_loaded)
+        m_buttonBehaviourDialog->load();
+    m_buttonBehaviourDialog->exec();
+}
+
+void ConfigWidget::titleBarSpacingButtonClicked()
+{
+    m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing - Klassy Settings"));
+    if (!m_titleBarSpacingDialog->m_loaded)
+        m_titleBarSpacingDialog->load();
+    m_titleBarSpacingDialog->exec();
+}
+
+void ConfigWidget::titleBarOpacityButtonClicked()
+{
+    m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
+    if (!m_titleBarOpacityDialog->m_loaded)
+        m_titleBarOpacityDialog->load();
+    m_titleBarOpacityDialog->exec();
+}
+
+void ConfigWidget::shadowStyleButtonClicked()
+{
+    m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style - Klassy Settings"));
+    if (!m_shadowStyleDialog->m_loaded)
+        m_shadowStyleDialog->load();
+    m_shadowStyleDialog->exec();
+}
+
 void ConfigWidget::windowOutlineStyleButtonClicked()
 {
     m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
@@ -937,9 +683,14 @@ void ConfigWidget::importBundledPresets()
 void ConfigWidget::kwinReloadConfig()
 {
     // needed to tell kwin to reload when running from external kcmshell
-    {
-        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-        QDBusConnection::sessionBus().send(message);
-    }
+    QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+    QDBusConnection::sessionBus().send(message);
+}
+
+void ConfigWidget::kstyleReloadConfig()
+{
+    // needed for klassy application style to reload shadows
+    QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
+    QDBusConnection::sessionBus().send(message);
 }
 }

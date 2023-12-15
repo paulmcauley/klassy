@@ -5,6 +5,7 @@
  */
 
 #include "buttonsizing.h"
+#include "breezeconfigwidget.h"
 #include "presetsmodel.h"
 #include <QDBusConnection>
 #include <QDBusMessage>
@@ -102,11 +103,7 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig)
-    // needed to tell kwin to reload when running from external kcmshell
-    {
-        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-        QDBusConnection::sessionBus().send(message);
-    }
+        ConfigWidget::kwinReloadConfig();
 }
 
 void ButtonSizing::defaults()
@@ -137,7 +134,7 @@ void ButtonSizing::setChanged(bool value)
 {
     m_changed = value;
     setApplyButtonState(value);
-    // emit changed(value);
+    // Q_EMIT changed(value);
 }
 
 void ButtonSizing::updateChanged()

@@ -25,6 +25,6 @@ AddPreset::~AddPreset()
 void AddPreset::importButtonClicked()
 {
     reject();
-    emit importClicked();
+    Q_EMIT importClicked();
 }
 }

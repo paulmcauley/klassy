@@ -57,7 +57,7 @@ protected:
     virtual void setChanged(bool value)
     {
         m_changed = value;
-        emit changed(value);
+        Q_EMIT changed(value);
     }
 
 protected Q_SLOTS:

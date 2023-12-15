@@ -13,8 +13,13 @@
 #include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
+#include "buttonbehaviour.h"
+#include "buttoncolors.h"
 #include "buttonsizing.h"
 #include "loadpreset.h"
+#include "shadowstyle.h"
+#include "titlebaropacity.h"
+#include "titlebarspacing.h"
 #include "ui_breezeconfigurationui.h"
 #include "windowoutlinestyle.h"
 
@@ -56,25 +61,27 @@ public:
     void save() override;
     void saveMain(QString saveAsPresetName = QString());
 
+    static void kwinReloadConfig();
+    static void kstyleReloadConfig();
+
 protected Q_SLOTS:
 
     //* update changed state
     virtual void updateChanged();
     void setEnabledAnimationsSpeed();
-    void setEnabledTransparentTitlebarOptions();
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
-    void titlebarTopMarginChanged();
-    void titlebarBottomMarginChanged();
-    void titlebarLeftMarginChanged();
-    void titlebarRightMarginChanged();
     void integratedRoundedRectangleSizingButtonClicked();
     void fullHeightRectangleSizingButtonClicked();
     void buttonSizingButtonClicked();
+    void buttonColorsButtonClicked();
+    void buttonBehaviourButtonClicked();
+    void titleBarSpacingButtonClicked();
+    void titleBarOpacityButtonClicked();
+    void shadowStyleButtonClicked();
     void windowOutlineStyleButtonClicked();
     void presetsButtonClicked();
     void dialogChanged(bool changed);
-    void kwinReloadConfig();
 
 protected:
     //* set changed state
@@ -103,21 +110,18 @@ private:
 
     //* dialogs behind button
     ButtonSizing *m_buttonSizingDialog;
+    ButtonColors *m_buttonColorsDialog;
+    ButtonBehaviour *m_buttonBehaviourDialog;
+    TitleBarSpacing *m_titleBarSpacingDialog;
+    TitleBarOpacity *m_titleBarOpacityDialog;
+    ShadowStyle *m_shadowStyleDialog;
     WindowOutlineStyle *m_windowOutlineStyleDialog;
     LoadPreset *m_loadPresetDialog;
 
     QString presetGroupName(QString str);
     void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
-    // system colour scheme alpha settings
-    void getTitlebarOpacityFromColorScheme();
-
     void importBundledPresets();
-
-    bool m_translucentActiveSchemeColor = false;
-    bool m_translucentInactiveSchemeColor = false;
-    qreal m_activeSchemeColorAlpha = 1;
-    qreal m_inactiveSchemeColorAlpha = 1;
 };
 }
 

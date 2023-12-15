@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ButtonBehaviour</class>
+ <widget class="QDialog" name="ButtonBehaviour">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>580</width>
+    <height>195</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="activeWindowGroupBox">
+     <property name="title">
+      <string/>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_25">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Always show:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <property name="buddy">
+           <cstring>alwaysShow</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="alwaysShow">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Icons</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons and close button's background</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons and close button's outline</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons and outlines</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons, outlines &amp; close button's background</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons and backgrounds</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Icons and backgrounds with outlines</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Backgrounds</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Backgrounds with outlines</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QStackedWidget" name="highlightUsingStackedWidget">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>72</height>
+           </size>
+          </property>
+          <property name="inputMethodHints">
+           <set>Qt::ImhNone</set>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="midLineWidth">
+           <number>0</number>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="page_alwaysShowIconHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_19">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconHighlightUsing">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Background with outline</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Outline</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconCloseButtonBackgroundHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_21">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconCloseButtonBackgroundHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Background with outline</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Outline</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconCloseButtonOutlineHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_20">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconCloseButtonOutlineHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Background with outline</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Outline</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconOutlineHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconOutlineHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_22">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Background</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconBackgroundHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_12">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconBackgroundHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <item>
+               <property name="text">
+                <string>Different-coloured background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Different-coloured background with outline</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowIconBackgroundOutlineHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_13">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowIconBackgroundOutlineHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="frame">
+               <bool>true</bool>
+              </property>
+              <item>
+               <property name="text">
+                <string>Different-coloured background</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowBackgroundHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_17">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowBackgroundHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="frame">
+               <bool>true</bool>
+              </property>
+              <item>
+               <property name="text">
+                <string>Icon</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Icon and different-coloured background</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Icon and diff-coloured background, outline</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_alwaysShowBackgroundOutlineHighlightUsing">
+           <layout class="QVBoxLayout" name="verticalLayout_18">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QComboBox" name="alwaysShowBackgroundOutlineHighlightUsing">
+              <property name="minimumSize">
+               <size>
+                <width>255</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="frame">
+               <bool>true</bool>
+              </property>
+              <item>
+               <property name="text">
+                <string>Icon</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Icon and different-coloured background</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_26">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>72</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>&amp;Highlight using:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="margin">
+           <number>2</number>
+          </property>
+          <property name="buddy">
+           <cstring>alwaysShowIconHighlightUsing</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <spacer name="verticalSpacer">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="klassydecoration_config.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>alwaysShow</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>highlightUsingStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>180</x>
+     <y>40</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>187</x>
+     <y>55</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>ButtonBehaviour</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>388</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>ButtonBehaviour</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>530</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>577</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

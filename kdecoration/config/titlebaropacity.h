@@ -1,29 +1,29 @@
-#ifndef BUTTONSIZING_H
-#define BUTTONSIZING_H
+#ifndef TITLEBAROPACITY_H
+#define TITLEBAROPACITY_H
 
 /*
- * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "breeze.h"
 #include "breezesettings.h"
-#include "ui_buttonsizing.h"
+#include "ui_titlebaropacity.h"
 #include <QDialog>
 
 namespace Breeze
 {
 
-class ButtonSizing : public QDialog
+class TitleBarOpacity : public QDialog
 {
     Q_OBJECT
 
     friend class ConfigWidget;
 
 public:
-    explicit ButtonSizing(KSharedConfig::Ptr config, QWidget *parent = nullptr);
-    ~ButtonSizing();
+    explicit TitleBarOpacity(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    ~TitleBarOpacity();
 
     void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
@@ -38,17 +38,12 @@ public Q_SLOTS:
 private Q_SLOTS:
     void accept() override;
     void updateChanged();
-    void fullHeightButtonWidthMarginLeftChanged();
-    void fullHeightButtonWidthMarginRightChanged();
-    void buttonSpacingLeftChanged();
-    void buttonSpacingRightChanged();
-    void fullHeightButtonSpacingLeftChanged();
-    void fullHeightButtonSpacingRightChanged();
     void saveAndReloadKWinConfig()
     {
         save(true);
     }
     void setApplyButtonState(const bool on);
+    void setEnabledTransparentTitlebarOptions();
 
 Q_SIGNALS:
     void changed(bool);
@@ -56,10 +51,14 @@ Q_SIGNALS:
 private:
     void setChanged(bool value);
 
-    Ui_ButtonSizing m_ui;
+    // system colour scheme alpha settings
+    void getTitlebarOpacityFromColorScheme();
+
+    Ui_TitleBarOpacity *m_ui;
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+
     //* changed state
     bool m_changed;
 
@@ -67,10 +66,15 @@ private:
     bool m_defaultsPressed = false;
 
     bool m_loading = false;
-    bool m_loaded;
+    bool m_loaded = false;
     bool m_processingDefaults = false;
+
+    bool m_translucentActiveSchemeColor = false;
+    bool m_translucentInactiveSchemeColor = false;
+    qreal m_activeSchemeColorAlpha = 1;
+    qreal m_inactiveSchemeColorAlpha = 1;
 };
 
 }
 
-#endif // BUTTONSIZING_H
+#endif // TITLEBAROPACITY_H
