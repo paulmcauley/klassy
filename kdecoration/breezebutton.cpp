@@ -8,6 +8,7 @@
 #include "breezebutton.h"
 #include "colortools.h"
 #include "renderdecorationbuttonicon.h"
+#include "stylesystemicontheme.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -145,9 +146,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     setDevicePixelRatio(painter);
     setShouldDrawBoldButtonIcons();
-    m_systemIconIsAvailable = false;
-    if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
-        m_systemIconIsAvailable = isSystemIconAvailable();
+    m_renderSystemIcon = d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
     setStandardScaledPenWidth();
 
     QColor backgroundColorToContrastWithForeground;
@@ -176,7 +175,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     painter->save();
 
-    // menu button
+    // menu button (with application icon)
     if (type() == DecorationButtonType::Menu) {
         // draw a background only with Full-sized background shapes;
         // for standalone/GTK we draw small buttons so can't draw menu
@@ -257,7 +256,7 @@ void Button::drawIcon(QPainter *painter) const
     deviceOffsetTitleBarTopLeftToIconTopLeft += (QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF());
 
     qreal scaleFactor = 1;
-    if (!m_systemIconIsAvailable) {
+    if (!m_renderSystemIcon) {
         scaleFactor = iconWidth / 18;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )
@@ -282,76 +281,72 @@ void Button::drawIcon(QPainter *painter) const
         }
         painter->setPen(pen);
 
-        std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
+        if (m_renderSystemIcon) {
+            QString systemIconName;
+            systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
+            RenderStyleSystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
+            iconRenderer.renderIcon();
+        } else {
+            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer =
+                RenderDecorationButtonIcon18By18::factory(d->internalSettings(),
+                                                          painter,
+                                                          false,
+                                                          m_boldButtonIcons,
+                                                          m_devicePixelRatio,
+                                                          deviceOffsetTitleBarTopLeftToIconTopLeft);
 
-        if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(), painter, false, m_boldButtonIcons, iconWidth, m_devicePixelRatio);
-        } else
-            iconRenderer = RenderDecorationButtonIcon18By18::factory(d->internalSettings(),
-                                                                     painter,
-                                                                     false,
-                                                                     m_boldButtonIcons,
-                                                                     18,
-                                                                     m_devicePixelRatio,
-                                                                     deviceOffsetTitleBarTopLeftToIconTopLeft);
+            switch (type()) {
+            case DecorationButtonType::Close:
+                iconRenderer->renderCloseIcon();
+                break;
 
-        switch (type()) {
-        case DecorationButtonType::Close: {
-            iconRenderer->renderCloseIcon();
-            break;
-        }
+            case DecorationButtonType::Maximize:
+                if (isChecked()) {
+                    iconRenderer->renderRestoreIcon();
+                } else {
+                    iconRenderer->renderMaximizeIcon();
+                }
+                break;
 
-        case DecorationButtonType::Maximize: {
-            if (isChecked())
-                iconRenderer->renderRestoreIcon();
-            else
-                iconRenderer->renderMaximizeIcon();
-            break;
-        }
+            case DecorationButtonType::Minimize:
+                iconRenderer->renderMinimizeIcon();
+                break;
 
-        case DecorationButtonType::Minimize: {
-            iconRenderer->renderMinimizeIcon();
-            break;
-        }
+            case DecorationButtonType::OnAllDesktops:
+                if (isChecked()) {
+                    iconRenderer->renderPinnedOnAllDesktopsIcon();
+                } else {
+                    iconRenderer->renderPinOnAllDesktopsIcon();
+                }
+                break;
 
-        case DecorationButtonType::OnAllDesktops: {
-            if (isChecked())
-                iconRenderer->renderPinnedOnAllDesktopsIcon();
-            else
-                iconRenderer->renderPinOnAllDesktopsIcon();
-            break;
-        }
+            case DecorationButtonType::Shade:
+                if (isChecked()) {
+                    iconRenderer->renderUnShadeIcon();
+                } else {
+                    iconRenderer->renderShadeIcon();
+                }
+                break;
 
-        case DecorationButtonType::Shade: {
-            if (isChecked())
-                iconRenderer->renderUnShadeIcon();
-            else
-                iconRenderer->renderShadeIcon();
-            break;
-        }
+            case DecorationButtonType::KeepBelow:
+                iconRenderer->renderKeepBehindIcon();
+                break;
 
-        case DecorationButtonType::KeepBelow: {
-            iconRenderer->renderKeepBehindIcon();
-            break;
-        }
+            case DecorationButtonType::KeepAbove:
+                iconRenderer->renderKeepInFrontIcon();
+                break;
 
-        case DecorationButtonType::KeepAbove: {
-            iconRenderer->renderKeepInFrontIcon();
-            break;
-        }
+            case DecorationButtonType::ApplicationMenu:
+                iconRenderer->renderApplicationMenuIcon();
+                break;
 
-        case DecorationButtonType::ApplicationMenu: {
-            iconRenderer->renderApplicationMenuIcon();
-            break;
-        }
+            case DecorationButtonType::ContextHelp:
+                iconRenderer->renderContextHelpIcon();
+                break;
 
-        case DecorationButtonType::ContextHelp: {
-            iconRenderer->renderContextHelpIcon();
-            break;
-        }
-
-        default:
-            break;
+            default:
+                break;
+            }
         }
     }
 }
@@ -1060,9 +1055,11 @@ void Button::reconfigure()
 {
     // animation
     auto d = qobject_cast<Decoration *>(decoration());
-    if (d) {
-        m_animation->setDuration(d->animationsDuration());
-    }
+    if (!d)
+        return;
+    m_animation->setDuration(d->animationsDuration());
+
+    configureSystemIcons();
 }
 
 //__________________________________________________________________
@@ -1386,13 +1383,88 @@ void Button::setShouldDrawBoldButtonIcons()
 }
 
 // When "Use system icon theme" is selected for the icons then not all icons are available as a window-*-symbolic icon
-bool Button::isSystemIconAvailable()
+// sets m_systemIconName and m_systemIconCheckedName
+void Button::configureSystemIcons()
 {
-    if (type() == DecorationButtonType::Menu || type() == DecorationButtonType::ApplicationMenu || type() == DecorationButtonType::OnAllDesktops
-        || type() == DecorationButtonType::ContextHelp || type() == DecorationButtonType::Shade || type() == DecorationButtonType::Custom)
-        return false;
-    else
-        return true;
+    m_systemIconName.clear();
+    m_systemIconCheckedName.clear();
+
+    auto d = qobject_cast<Decoration *>(decoration());
+    if (!d)
+        return;
+    if (d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
+        return;
+
+    switch (type()) {
+    case DecorationButtonType::Close:
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    case DecorationButtonType::Maximize:
+        m_systemIconCheckedName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
+        break;
+
+    case DecorationButtonType::Minimize:
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    case DecorationButtonType::OnAllDesktops:
+        m_systemIconCheckedName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-unpin-symbolic"), QStringLiteral("window-unpin"));
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-pin-symbolic"), QStringLiteral("window-pin"));
+        break;
+
+    case DecorationButtonType::Shade:
+        m_systemIconCheckedName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-unshade-symbolic"), QStringLiteral("window-unshade"));
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-shade-symbolic"), QStringLiteral("window-shade"));
+        break;
+
+    case DecorationButtonType::KeepBelow:
+        m_systemIconName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-keep-below-symbolic"), QStringLiteral("window-keep-below"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    case DecorationButtonType::KeepAbove:
+        m_systemIconName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-keep-above-symbolic"), QStringLiteral("window-keep-above"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    case DecorationButtonType::ApplicationMenu:
+        m_systemIconName =
+            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("application-menu-symbolic"), QStringLiteral("application-menu"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    case DecorationButtonType::ContextHelp:
+        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("help-contextual-symbolic"), QStringLiteral("help-contextual"));
+        m_systemIconCheckedName = m_systemIconName;
+        break;
+
+    default:
+        break;
+    }
+}
+
+bool Button::isSystemIconAvailable() const
+{
+    if (isChecked()) {
+        if (m_systemIconCheckedName.isEmpty())
+            return false;
+        else
+            return true;
+    } else {
+        if (m_systemIconName.isEmpty())
+            return false;
+        else
+            return true;
+    }
 }
 
 } // namespace

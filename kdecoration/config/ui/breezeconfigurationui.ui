@@ -831,8 +831,7 @@
                <string>Use system icon theme</string>
               </property>
               <property name="icon">
-               <iconset theme="preferences-desktop-icons">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="preferences-desktop-icons"/>
               </property>
              </item>
             </widget>

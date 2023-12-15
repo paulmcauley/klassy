@@ -43,7 +43,6 @@ public:
                                                                      QPainter *painter,
                                                                      const bool fromKstyle = false,
                                                                      const bool boldButtonIcons = false,
-                                                                     const qreal iconWidth = 18,
                                                                      const qreal devicePixelRatio = 1,
                                                                      const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft = QPointF(0, 0));
 

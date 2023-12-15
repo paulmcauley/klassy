@@ -6,51 +6,48 @@
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
-
-#include "renderdecorationbuttonicon.h"
-
+#include "breezecommon_export.h"
+#include "breezesettings.h"
 #include <QPainter>
 
 namespace Breeze
 {
 
-class RenderStyleSystemIconTheme : public RenderDecorationButtonIcon18By18
+class BREEZECOMMON_EXPORT RenderStyleSystemIconTheme
 {
 public:
     /**
-     * @brief Constructor - calls constructor of base class
+     * @brief
      *
      * @param painter A QPainter object already initialised with an 18x18 reference window and pen.
-     * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
-     * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
+     * @param iconWidth The width and height of the icon (assumed square) - will be converted to int internally at present
+     * @param iconName The name of the icon in the system icon m_systemIconFromTheme
+     * @param internalSettings Window Decoration internal settings pointer
+     * @param devicePixelRatio devicePixelRatio of paint device - set separately here as the value from the device does not work on X11
      */
     RenderStyleSystemIconTheme(QPainter *painter,
-                               const bool fromKstyle,
-                               const bool boldButtonIcons,
                                const qreal iconWidth,
+                               const QString &iconName,
                                const QSharedPointer<InternalSettings> internalSettings,
-                               const qreal devicePixelRatio,
-                               const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
-        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft)
-        , m_iconWidth{iconWidth}
-        , m_internalSettings{internalSettings} {};
+                               const qreal devicePixelRatio)
+        : m_painter(painter)
+        , m_iconWidth(iconWidth)
+        , m_systemIconFromTheme(iconName)
+        , m_internalSettings(internalSettings)
+        , m_devicePixelRatio(devicePixelRatio){};
 
-    void renderCloseIcon() override;
-    void renderMaximizeIcon() override;
-    void renderRestoreIcon() override;
-    void renderMinimizeIcon() override;
-    void renderKeepBehindIcon() override;
-    void renderKeepInFrontIcon() override;
-    void renderContextHelpIcon() override;
-    void renderShadeIcon() override;
-    void renderUnShadeIcon() override;
+    void renderIcon();
+    static QString isSystemIconNameAvailable(const QString &preferredIconName, const QString &backupIconName);
 
 private:
     void paintIconFromSystemTheme(QString iconName);
     void convertAlphaToColorOnTransparent(QImage &image, const QColor &tintColor);
 
-    qreal m_iconWidth;
+    QPainter *m_painter;
+    const qreal m_iconWidth;
+    QString m_systemIconFromTheme;
     const QSharedPointer<InternalSettings> m_internalSettings;
+    const qreal m_devicePixelRatio;
 };
 
 }

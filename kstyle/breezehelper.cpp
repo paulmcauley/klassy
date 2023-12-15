@@ -16,6 +16,7 @@
 #include "breezestyleconfigdata.h"
 #include "colortools.h"
 #include "renderdecorationbuttonicon.h"
+#include "stylesystemicontheme.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -1530,37 +1531,49 @@ void Helper::renderDecorationButton(QPainter *painter,
     pen.setWidthF(PenWidth::Symbol * qMax(1.0, 18.0 / rect.width()));
     painter->setPen(pen);
 
-    std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer;
+    QString systemIconName;
     if (decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        switch (buttonType) {
+        case ButtonClose:
+            systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
+            break;
+        case ButtonMaximize:
+            systemIconName =
+                RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
+            break;
+        case ButtonMinimize:
+            systemIconName =
+                RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
+            break;
+        case ButtonRestore:
+            systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
+            break;
+        default:
+            break;
+        }
+    }
+    if (!systemIconName.isEmpty()) {
         painter->setWindow(rect);
-        iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true, false, rect.width());
+        RenderStyleSystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
+        iconRenderer.renderIcon();
     } else {
-        iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
-    }
-    
-    switch (buttonType) {
-    case ButtonClose: {
-        iconRenderer->renderCloseIcon();
-        break;
-    }
-
-    case ButtonMaximize: {
-        iconRenderer->renderMaximizeIcon();
-        break;
-    }
-
-    case ButtonMinimize: {
-        iconRenderer->renderMinimizeIcon();
-        break;
-    }
-
-    case ButtonRestore: {
-        iconRenderer->renderRestoreIcon();
-        break;
-    }
-
-    default:
-        break;
+        std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
+        switch (buttonType) {
+        case ButtonClose:
+            iconRenderer->renderCloseIcon();
+            break;
+        case ButtonMaximize:
+            iconRenderer->renderMaximizeIcon();
+            break;
+        case ButtonMinimize:
+            iconRenderer->renderMinimizeIcon();
+            break;
+        case ButtonRestore:
+            iconRenderer->renderRestoreIcon();
+            break;
+        default:
+            break;
+        }
     }
 
     painter->restore();
