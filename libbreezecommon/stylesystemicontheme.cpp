@@ -22,7 +22,7 @@ void RenderStyleSystemIconTheme::paintIconFromSystemTheme(QString iconName)
         // TODO: use pixmap(const QSize &size, qreal devicePixelRatio, QIcon::Mode mode = Normal, QIcon::State state = Off) const
         //      this allows setting devicePixelRatioF in Qt6, fixing display of icons on multimonitor setups
         QImage iconImage(icon.pixmap(pixmapSize).toImage());
-        convertAlphaToColorOnTransparent(iconImage, m_pen.color());
+        convertAlphaToColorOnTransparent(iconImage, m_painter->pen().color());
 
         m_painter->drawImage(rect, iconImage);
     } else
@@ -51,48 +51,18 @@ void RenderStyleSystemIconTheme::convertAlphaToColorOnTransparent(QImage &image,
     }
 }
 
-void RenderStyleSystemIconTheme::renderCloseIcon()
+void RenderStyleSystemIconTheme::renderIcon()
 {
-    paintIconFromSystemTheme(QStringLiteral("window-close-symbolic"));
+    paintIconFromSystemTheme(m_systemIconFromTheme);
 }
 
-void RenderStyleSystemIconTheme::renderMaximizeIcon()
+QString RenderStyleSystemIconTheme::isSystemIconNameAvailable(const QString &preferredIconName, const QString &backupIconName)
 {
-    paintIconFromSystemTheme(QStringLiteral("window-maximize-symbolic"));
-}
-
-void RenderStyleSystemIconTheme::renderRestoreIcon()
-{
-    paintIconFromSystemTheme(QStringLiteral("window-restore-symbolic"));
-}
-
-void RenderStyleSystemIconTheme::renderMinimizeIcon()
-{
-    paintIconFromSystemTheme(QStringLiteral("window-minimize-symbolic"));
-}
-
-void RenderStyleSystemIconTheme::renderKeepBehindIcon()
-{
-    paintIconFromSystemTheme(QStringLiteral("window-keep-below-symbolic"));
-}
-
-void RenderStyleSystemIconTheme::renderKeepInFrontIcon()
-{
-    paintIconFromSystemTheme(QStringLiteral("window-keep-above-symbolic"));
-}
-
-void RenderStyleSystemIconTheme::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
-
-void RenderStyleSystemIconTheme::renderShadeIcon()
-{
-    RenderDecorationButtonIcon18By18::renderShadeIcon();
-}
-
-void RenderStyleSystemIconTheme::renderUnShadeIcon()
-{
-    RenderDecorationButtonIcon18By18::renderUnShadeIcon();
+    if (QIcon::hasThemeIcon(preferredIconName))
+        return preferredIconName;
+    else if (QIcon::hasThemeIcon(backupIconName))
+        return backupIconName;
+    else
+        return QString();
 }
 }

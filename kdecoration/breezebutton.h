@@ -163,7 +163,11 @@ private:
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 
-    bool isSystemIconAvailable();
+    //* sets m_systemIconName and m_systemIconCheckedName
+    void configureSystemIcons();
+
+    bool isSystemIconAvailable() const;
+
     void setDevicePixelRatio(QPainter *painter);
     void setShouldDrawBoldButtonIcons();
     void setStandardScaledPenWidth();
@@ -219,7 +223,9 @@ private:
     //* active state change opacity
     qreal m_opacity = 0;
 
-    bool m_systemIconIsAvailable;
+    bool m_renderSystemIcon;
+    QString m_systemIconName;
+    QString m_systemIconCheckedName;
     bool m_lowContrastBetweenTitleBarAndBackground = false;
     bool m_isGtkCsdButton;
     qreal m_devicePixelRatio = 1.0;

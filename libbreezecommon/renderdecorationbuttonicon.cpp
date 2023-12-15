@@ -22,7 +22,6 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
                                                                                             QPainter *painter,
                                                                                             const bool fromKstyle,
                                                                                             const bool boldButtonIcons,
-                                                                                            const qreal iconWidth,
                                                                                             const qreal devicePixelRatio,
                                                                                             const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft)
 {
@@ -44,14 +43,6 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
     case InternalSettings::EnumButtonIconStyle::StyleRedmond10:
         return std::unique_ptr<RenderDecorationButtonIcon18By18>(
             new RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
-    case InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(new RenderStyleSystemIconTheme(painter,
-                                                                                                fromKstyle,
-                                                                                                boldButtonIcons,
-                                                                                                iconWidth,
-                                                                                                internalSettings,
-                                                                                                devicePixelRatio,
-                                                                                                deviceOffsetTitleBarTopLeftToIconTopLeft));
     }
 }
 
