@@ -5,6 +5,7 @@
  */
 
 #include "windowoutlinestyle.h"
+#include "breezeconfigwidget.h"
 #include "presetsmodel.h"
 #include <KColorButton>
 #include <QDBusConnection>
@@ -22,6 +23,7 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, QWidget *paren
     m_ui->setupUi(this);
 
     // track ui changes
+    connect(m_ui->thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
     connect(m_ui->thinWindowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(m_ui->thinWindowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(thinWindowOutlineStyleActiveChanged()));
     connect(m_ui->thinWindowOutlineStyleInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
@@ -71,6 +73,7 @@ void WindowOutlineStyle::loadMain(const QString loadPreset)
         PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
     }
 
+    m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleActive());
     m_ui->thinWindowOutlineStyleInactive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleInactive());
     m_ui->lockThinWindowOutlineStyleActive->setChecked(m_internalSettings->lockThinWindowOutlineStyleActiveInactive());
@@ -120,6 +123,7 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
+    m_internalSettings->setThinWindowOutlineThickness(m_ui->thinWindowOutlineThickness->value());
     m_internalSettings->setThinWindowOutlineStyleActive(m_ui->thinWindowOutlineStyleActive->currentIndex());
     m_internalSettings->setThinWindowOutlineStyleInactive(m_ui->thinWindowOutlineStyleInactive->currentIndex());
     m_internalSettings->setLockThinWindowOutlineStyleActiveInactive(m_ui->lockThinWindowOutlineStyleActive->isChecked());
@@ -142,11 +146,7 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig)
-    // needed to tell kwin to reload when running from external kcmshell
-    {
-        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-        QDBusConnection::sessionBus().send(message);
-    }
+        ConfigWidget::kwinReloadConfig();
 }
 
 void WindowOutlineStyle::defaults()
@@ -157,6 +157,7 @@ void WindowOutlineStyle::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
+    m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleActive());
     m_ui->thinWindowOutlineStyleInactive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleInactive());
     m_ui->lockThinWindowOutlineStyleActive->setChecked(m_internalSettings->lockThinWindowOutlineStyleActiveInactive());
@@ -201,7 +202,7 @@ void WindowOutlineStyle::setChanged(bool value)
 {
     m_changed = value;
     setApplyButtonState(value);
-    // emit changed(value);
+    // Q_EMIT changed(value);
 }
 
 void WindowOutlineStyle::accept()
@@ -219,7 +220,9 @@ void WindowOutlineStyle::updateChanged()
     // track modifications
     bool modified(false);
 
-    if (m_ui->thinWindowOutlineStyleActive->currentIndex() != m_internalSettings->thinWindowOutlineStyleActive())
+    if (m_ui->thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
+        modified = true;
+    else if (m_ui->thinWindowOutlineStyleActive->currentIndex() != m_internalSettings->thinWindowOutlineStyleActive())
         modified = true;
     else if (m_ui->thinWindowOutlineStyleInactive->currentIndex() != m_internalSettings->thinWindowOutlineStyleInactive())
         modified = true;

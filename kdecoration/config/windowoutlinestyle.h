@@ -29,13 +29,13 @@ public:
     void save(const bool reloadKwinConfig = true);
     void defaults();
 
-public slots:
+public Q_SLOTS:
     void load()
     {
         loadMain();
     }
 
-private slots:
+private Q_SLOTS:
     void accept() override;
     void updateChanged();
     void saveAndReloadKWinConfig()
@@ -48,7 +48,7 @@ private slots:
     void thinWindowOutlineCustomColorActiveChanged();
     void thinWindowOutlineCustomColorInactiveChanged();
 
-signals:
+Q_SIGNALS:
     void changed(bool);
 
 private:

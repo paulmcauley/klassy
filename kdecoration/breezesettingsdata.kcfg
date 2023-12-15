@@ -74,6 +74,10 @@
         </choices>
         <default>ColorsAccent</default>
     </entry>
+
+    <entry name="LockButtonBackgroundColorsActive" type = "Bool">
+        <default>true</default>
+    </entry>
     
     <entry name="AlwaysShow" type="Enum">
         <choices>

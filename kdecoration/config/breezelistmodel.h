@@ -134,10 +134,10 @@ public:
     //! add value
     virtual void add(const ValueType &value)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         _add(value);
         privateSort();
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! add values
@@ -149,28 +149,28 @@ public:
             return;
         }
 
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
 
         for (typename List::const_iterator iter = values.begin(); iter != values.end(); iter++) {
             _add(*iter);
         }
 
         privateSort();
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! insert values
     virtual void insert(const QModelIndex &index, const ValueType &value)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         _insert(index, value);
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! insert values
     virtual void insert(const QModelIndex &index, const List &values)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
 
         // need to loop in reverse order so that the "values" ordering is preserved
         ListIterator iter(values);
@@ -179,7 +179,7 @@ public:
             _insert(index, iter.previous());
         }
 
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! insert values
@@ -188,20 +188,20 @@ public:
         if (!index.isValid()) {
             add(value);
         } else {
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             setIndexSelected(index, false);
             _values[index.row()] = value;
             setIndexSelected(index, true);
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
         }
     }
 
     //! remove
     virtual void remove(const ValueType &value)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         _remove(value);
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! remove
@@ -213,11 +213,11 @@ public:
             return;
         }
 
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         for (typename List::const_iterator iter = values.begin(); iter != values.end(); iter++) {
             _remove(*iter);
         }
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! clear
@@ -234,7 +234,7 @@ public:
     */
     virtual void update(List values)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
 
         // store values to be removed
         List removed_values;
@@ -262,17 +262,17 @@ public:
         }
 
         privateSort();
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! set all values
     virtual void set(const List &values)
     {
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         _values = values;
         _selection.clear();
         privateSort();
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
     }
 
     //! return all values

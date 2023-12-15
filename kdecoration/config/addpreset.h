@@ -23,7 +23,7 @@ public:
     explicit AddPreset(QWidget *parent = nullptr);
     ~AddPreset();
 
-signals:
+Q_SIGNALS:
     void importClicked();
 
 private:

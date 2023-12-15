@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>502</width>
+    <width>510</width>
     <height>300</height>
    </rect>
   </property>
@@ -79,7 +79,8 @@
         <string>Export To File...</string>
        </property>
        <property name="icon">
-        <iconset theme="document-export"/>
+        <iconset theme="document-export">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>
@@ -102,7 +103,8 @@
         <string>Close</string>
        </property>
        <property name="icon">
-        <iconset theme="dialog-close"/>
+        <iconset theme="dialog-close">
+         <normaloff>.</normaloff>.</iconset>
        </property>
       </widget>
      </item>

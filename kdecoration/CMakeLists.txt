@@ -27,6 +27,11 @@ set(breezedecoration_config_SRCS
     config/windowoutlinestyle.cpp
     config/loadpreset.cpp
     config/addpreset.cpp
+    config/buttoncolors.cpp
+    config/buttonbehaviour.cpp
+    config/titlebarspacing.cpp
+    config/titlebaropacity.cpp
+    config/shadowstyle.cpp
 )
 
 ki18n_wrap_ui(breezedecoration_config_SRCS
@@ -37,6 +42,11 @@ ki18n_wrap_ui(breezedecoration_config_SRCS
    config/ui/windowoutlinestyle.ui
    config/ui/loadpreset.ui
    config/ui/addpreset.ui
+   config/ui/buttoncolors.ui
+   config/ui/buttonbehaviour.ui
+   config/ui/titlebarspacing.ui
+   config/ui/titlebaropacity.ui
+   config/ui/shadowstyle.ui
 )
 
 qt_add_resources(breezedecoration_config_SRCS config/ui/klassydecoration_config.qrc)
