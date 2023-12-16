@@ -63,10 +63,9 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
     configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
 
     configuration->setExceptionPreset(exception.exceptionPreset());
-    configuration->setMask(exception.mask());
+    configuration->setExceptionBorder(exception.exceptionBorder());
 
-    // propagate all features found in mask to the output configuration
-    if (exception.mask() & BorderSize)
+    if (exception.exceptionBorder())
         configuration->setBorderSize(exception.borderSize());
     configuration->setHideTitleBar(exception.hideTitleBar());
     configuration->setOpaqueTitleBar(exception.opaqueTitleBar());

@@ -30,7 +30,15 @@ public:
     static QString presetGroupName(const QString str);
     static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
     static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, const QStringList &whiteListKeys);
-    static void readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
+    static void loadPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, bool writeKwinBorderConfig = false);
+
+    static bool presetHasKwinBorderSizeKey(KConfig *config, const QString &presetName);
+
+    //* used in the case where you want to use the preset KwinBorderSize in an exception (window-specific override)
+    // returns true if the preset has a set KwinBorderSize key
+    static void copyKwinBorderSizeFromPresetToExceptionBorderSize(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
+
+    static void writeBorderSizeToKwinConfig(const QString &borderSize);
     static void deletePreset(KConfig *config, const QString &presetName);
     static void deleteBundledPresets(KConfig *config);
     static QStringList readPresetsList(KConfig *config);

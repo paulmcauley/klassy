@@ -72,7 +72,7 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings() const
         if (rx.match(qAppName()).hasMatch()) {
             // load window decoration preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
-                PresetsModel::readPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+                PresetsModel::loadPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
             }
             return internalSettings;
         }

@@ -308,8 +308,8 @@ private:
 
 bool Decoration::hasBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() > InternalSettings::EnumBorderSize::BorderNoSides;
+    if (m_internalSettings && m_internalSettings->exceptionBorder()) {
+        return m_internalSettings->borderSize() > InternalSettings::EnumBorderSize::NoSides;
     } else {
         return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
     }
@@ -317,8 +317,8 @@ bool Decoration::hasBorders() const
 
 bool Decoration::hasNoBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::BorderNone;
+    if (m_internalSettings && m_internalSettings->exceptionBorder()) {
+        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::None;
     } else {
         return settings()->borderSize() == KDecoration2::BorderSize::None;
     }
@@ -326,8 +326,8 @@ bool Decoration::hasNoBorders() const
 
 bool Decoration::hasNoSideBorders() const
 {
-    if (m_internalSettings && m_internalSettings->mask() & BorderSize) {
-        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::BorderNoSides;
+    if (m_internalSettings && m_internalSettings->exceptionBorder()) {
+        return m_internalSettings->borderSize() == InternalSettings::EnumBorderSize::NoSides;
     } else {
         return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
     }

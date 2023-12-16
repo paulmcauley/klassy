@@ -50,9 +50,6 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent)
     } else
         m_ui.exceptionPresetCheckBox->setEnabled(false);
 
-    // store checkboxes from ui into list
-    m_checkboxes.insert(BorderSize, m_ui.borderSizeCheckBox);
-
     // detect window properties
     connect(m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties);
 
@@ -61,11 +58,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
     connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
     connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-
-    for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
-        connect(iter.value(), &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    }
-
+    connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
     connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
     connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
     connect(m_ui.preventApplyOpacityToHeader, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
@@ -101,11 +94,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_ui.hideTitleBar->setChecked(m_exception->hideTitleBar());
     m_ui.opaqueTitleBar->setChecked(m_exception->opaqueTitleBar());
     m_ui.preventApplyOpacityToHeader->setChecked(m_exception->preventApplyOpacityToHeader());
-
-    // mask
-    for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
-        iter.value()->setChecked(m_exception->mask() & iter.key());
-    }
+    m_ui.borderSizeCheckBox->setChecked(m_exception->exceptionBorder());
 
     setChanged(false);
 }
@@ -127,16 +116,7 @@ void ExceptionDialog::save()
     m_exception->setHideTitleBar(m_ui.hideTitleBar->isChecked());
     m_exception->setOpaqueTitleBar(m_ui.opaqueTitleBar->isChecked());
     m_exception->setPreventApplyOpacityToHeader(m_ui.preventApplyOpacityToHeader->isChecked());
-
-    // mask
-    unsigned int mask = None;
-    for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
-        if (iter.value()->isChecked()) {
-            mask |= iter.key();
-        }
-    }
-
-    m_exception->setMask(mask);
+    m_exception->setExceptionBorder(m_ui.borderSizeCheckBox->isChecked());
 
     setChanged(false);
 }
@@ -163,15 +143,8 @@ void ExceptionDialog::updateChanged()
         modified = true;
     else if (!m_exception->exceptionPreset().isEmpty() && !m_ui.exceptionPresetCheckBox->isChecked())
         modified = true;
-    else {
-        // check mask
-        for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
-            if (iter.value()->isChecked() != (bool)(m_exception->mask() & iter.key())) {
-                modified = true;
-                break;
-            }
-        }
-    }
+    else if (m_exception->exceptionBorder() != m_ui.borderSizeCheckBox->isChecked())
+        modified = true;
 
     setChanged(modified);
 }

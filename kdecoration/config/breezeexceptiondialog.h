@@ -76,13 +76,7 @@ private Q_SLOTS:
     void onOpaqueTitleBarToggled(bool);
 
 private:
-    //* map mask and checkbox
-    using CheckBoxMap = QMap<ExceptionMask, QCheckBox *>;
-
     Ui::BreezeExceptionDialog m_ui;
-
-    //* map mask and checkbox
-    CheckBoxMap m_checkboxes;
 
     //* internal exception
     InternalSettingsPtr m_exception;

@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=4.4.1.breeze5.27.5.git
+version=4.4.2.breeze5.27.5.git
 
 [Windeco Preset Windows 8]
 ActiveTitlebarOpacity=100
@@ -36,6 +36,7 @@ FullHeightButtonWidthMarginRight=10
 IconSize=IconLargeMedium
 InactiveTitlebarOpacity=100
 IntegratedRoundedRectangleBottomPadding=4
+KwinBorderSize=Normal
 LockButtonSpacingLeftRight=false
 LockFullHeightButtonSpacingLeftRight=true
 LockFullHeightButtonWidthMargins=false

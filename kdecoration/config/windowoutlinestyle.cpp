@@ -68,7 +68,7 @@ void WindowOutlineStyle::loadMain(const QString loadPreset)
     if (loadPreset.isEmpty()) { // normal cases
         m_internalSettings->load();
     } else { // loading preset
-        PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+        PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
     }
 
     m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleActive());
