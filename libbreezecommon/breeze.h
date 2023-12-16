@@ -49,12 +49,6 @@ struct BREEZECOMMON_EXPORT PenWidth {
     static constexpr int NoPen = 0;
 };
 
-//* exception
-enum BREEZECOMMON_EXPORT ExceptionMask {
-    None = 0,
-    BorderSize = 1 << 4,
-};
-
 // list of keys used for window decoration exceptions
 static QStringList windecoExceptionKeys = {
     "Enabled",
@@ -64,7 +58,7 @@ static QStringList windecoExceptionKeys = {
     "HideTitleBar",
     "OpaqueTitleBar",
     "PreventApplyOpacityToHeader",
-    "Mask",
+    "ExceptionBorder",
     "BorderSize",
     "ExceptionPreset",
 };

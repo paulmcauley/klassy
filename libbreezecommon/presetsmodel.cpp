@@ -22,6 +22,7 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
     bool keyInBlacklist;
     QString groupName = presetGroupName(presetName);
 
+    // write window decoration configuration as a preset
     for (auto item : skeleton->items()) {
         keyInBlacklist = false;
 
@@ -50,6 +51,22 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
             }
         } else {
             configGroup.writeEntry(item->key(), item->property());
+        }
+    }
+
+    // read kwin window border setting and write to the preset
+    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
+    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
+        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+        QString borderSize;
+        if (!kdecoration2Group.hasKey(QStringLiteral("BorderSize"))) {
+            borderSize = QStringLiteral("Normal"); // Normal is the KWin default, so will nor write a BorderSize key in this case
+        } else {
+            borderSize = kdecoration2Group.readEntry(QStringLiteral("BorderSize"));
+        }
+        if (!groupName.isEmpty()) {
+            KConfigGroup configGroup(config, groupName);
+            configGroup.writeEntry(QStringLiteral("KwinBorderSize"), borderSize);
         }
     }
 }
@@ -84,9 +101,25 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
             configGroup.writeEntry(item->key(), item->property());
         }
     }
+
+    // read kwin window border setting and write to the preset
+    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
+    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
+        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+        QString borderSize;
+        if (!kdecoration2Group.hasKey(QStringLiteral("BorderSize"))) {
+            borderSize = QStringLiteral("Normal"); // Normal is the KWin default, so will nor write a BorderSize key in this case
+        } else {
+            borderSize = kdecoration2Group.readEntry(QStringLiteral("BorderSize"));
+        }
+        if (!groupName.isEmpty()) {
+            KConfigGroup configGroup(config, groupName);
+            configGroup.writeEntry(QStringLiteral("KwinBorderSize"), borderSize);
+        }
+    }
 }
 
-void PresetsModel::readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName)
+void PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, bool writeKwinBorderConfig)
 {
     bool keyInBlacklist;
     QString groupName = presetGroupName(presetName);
@@ -113,6 +146,57 @@ void PresetsModel::readPreset(KCoreConfigSkeleton *skeleton, KConfig *config, co
         item->setGroup(groupName);
         item->readConfig(config);
     }
+
+    // writes the value of KwinBorderSize from the preset into the kwinrc file
+    if (writeKwinBorderConfig) {
+        KConfigGroup configGroup = config->group(groupName);
+        if (configGroup.hasKey(QStringLiteral("KwinBorderSize"))) {
+            writeBorderSizeToKwinConfig(configGroup.readEntry(QStringLiteral("KwinBorderSize")));
+        }
+    }
+}
+
+void PresetsModel::copyKwinBorderSizeFromPresetToExceptionBorderSize(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName)
+{
+    QString groupName = presetGroupName(presetName);
+
+    if (groupName.isEmpty() || !config->hasGroup(groupName))
+        return;
+
+    KCoreConfigSkeleton::ItemEnum *borderSize = static_cast<KCoreConfigSkeleton::ItemEnum *>(skeleton->findItem("BorderSize"));
+    KConfigGroup configGroup = config->group(groupName);
+    if (configGroup.hasKey(QStringLiteral("KwinBorderSize"))) {
+        auto choiceList = borderSize->choices();
+        int borderValue = -1;
+        for (int i = 0; i < choiceList.count(); i++) { // need to convert the string value of the enum value to an int for compatibility
+            if (choiceList[i].name == configGroup.readEntry(QStringLiteral("KwinBorderSize")))
+                borderValue = i;
+        }
+        if (borderValue == -1)
+            return;
+        borderSize->setProperty(borderValue);
+    }
+}
+
+bool PresetsModel::presetHasKwinBorderSizeKey(KConfig *config, const QString &presetName)
+{
+    QString groupName = presetGroupName(presetName);
+
+    if (groupName.isEmpty() || !config->hasGroup(groupName))
+        return false;
+    KConfigGroup configGroup = config->group(groupName);
+    if (configGroup.hasKey(QStringLiteral("KwinBorderSize")))
+        return true;
+    else
+        return false;
+}
+
+void PresetsModel::writeBorderSizeToKwinConfig(const QString &borderSize)
+{
+    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
+    KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+    kdecoration2Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
+    kwinConfig->sync();
 }
 
 void PresetsModel::deletePreset(KConfig *config, const QString &presetName)
@@ -200,6 +284,9 @@ void PresetsModel::exportPreset(KConfig *config, const QString &presetName, cons
         QString exportProperty = inputPresetGroup.readEntry(inputKey);
         outputPresetGroup.writeEntry(inputKey, exportProperty);
     }
+    if (inputPresetGroup.hasKey("KwinBorderSize"))
+        outputPresetGroup.writeEntry("KwinBorderSize", inputPresetGroup.readEntry("KwinBorderSize"));
+
     outputPresetConfig->sync();
 }
 
@@ -243,16 +330,11 @@ PresetsModel::importPreset(KConfig *config, const QString &fileName, QString &pr
     }
 
     // start writing the values
-
     auto internalSettings = InternalSettingsPtr(new InternalSettings());
     KConfigGroup configGroup(config, importGroupName);
 
     for (const QString &importKey : importGroup.keyList()) {
-        auto item = internalSettings->findItem(importKey);
-        if (!item)
-            return PresetsErrorFlag::InvalidKey;
         QString importProperty = importGroup.readEntry(importKey);
-
         configGroup.writeEntry(importKey, importProperty);
     }
 
@@ -271,6 +353,10 @@ bool PresetsModel::isKeyValid(const QString &key)
             return true;
         }
     }
+
+    if (key == "KwinBorderSize")
+        return true; // additional valid key containing KWin border size setting from kwinrc
+
     return false;
 }
 }

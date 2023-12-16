@@ -222,7 +222,7 @@ void ConfigWidget::loadMain(QString loadPresetName)
         m_windowOutlineStyleDialog->load();
         importBundledPresets();
     } else {
-        PresetsModel::readPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName);
+        PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName, true);
         m_buttonSizingDialog->loadMain(loadPresetName);
         m_windowOutlineStyleDialog->loadMain(loadPresetName);
     }
@@ -314,8 +314,12 @@ void ConfigWidget::loadMain(QString loadPresetName)
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
     m_loading = false;
-    if (!loadPresetName.isEmpty())
+    if (!loadPresetName.isEmpty()) {
         save();
+        // TODO:investigate if can reset to pre-Preset condition with setChanged(false);
+        // if Load is clicked twice the corruption when changing border sizes clears, therefore tell kwin to reconfigure again after 1 second
+        QTimer::singleShot(1000, this, &ConfigWidget::kwinReloadConfig);
+    }
 }
 
 //_________________________________________________________
@@ -408,14 +412,20 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
         setChanged(false);
 
         // needed to tell kwin to reload when running from external kcmshell
-        {
-            QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-            QDBusConnection::sessionBus().send(message);
-        }
+        kwinReloadConfig();
 
         // needed for breeze style to reload shadows
         {
             QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
+            QDBusConnection::sessionBus().send(message);
+        }
+
+        // try to regenerate GTK CSD buttons with kde-gtk-config, also try to update the display of window decoration border setting (latter not working)
+        {
+            QDBusMessage message =
+                QDBusMessage::createSignal(QStringLiteral("/KGlobalSettings"), QStringLiteral("org.kde.KGlobalSettings"), QStringLiteral("notifyChange"));
+            message.setArguments({2, 0}); // 2 corresponds to StyleChanged - se
+                                          // https://invent.kde.org/plasma/plasma-workspace/-/blob/master/kcms/kcms-common_p.h
             QDBusConnection::sessionBus().send(message);
         }
     }
@@ -922,5 +932,14 @@ void ConfigWidget::importBundledPresets()
     m_internalSettings->setBundledWindecoPresetsImportedVersion(klassyLongVersion());
     m_internalSettings->save();
     m_configuration->sync();
+}
+
+void ConfigWidget::kwinReloadConfig()
+{
+    // needed to tell kwin to reload when running from external kcmshell
+    {
+        QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+        QDBusConnection::sessionBus().send(message);
+    }
 }
 }

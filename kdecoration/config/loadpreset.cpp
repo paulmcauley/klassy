@@ -139,10 +139,8 @@ void LoadPreset::importButtonClicked()
         QString presetName;
         QString error;
 
-        bool presetWithSameNameExists = false;
         // if a preset already exists with the same name
         if (PresetsModel::isPresetFromFilePresent(m_configuration.data(), fileName, presetName)) {
-            presetWithSameNameExists = true;
             // confirmation dialog
             QMessageBox messageBox(QMessageBox::Question,
                                    i18n("Question - Klassy Settings"),
@@ -153,6 +151,7 @@ void LoadPreset::importButtonClicked()
             if (messageBox.exec() == QMessageBox::Cancel) {
                 continue;
             }
+            presetName = QString();
         }
 
         PresetsErrorFlag importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, false);
@@ -176,13 +175,12 @@ void LoadPreset::importButtonClicked()
             if (messageBox.exec() == QMessageBox::Cancel) {
                 continue;
             }
-        }
 
-        presetName = QString();
-        error = QString();
-        // if unsuccessful, try to import again with forceInvalidVersion flag true
-        if (presetWithSameNameExists || importErrors != PresetsErrorFlag::None)
+            // reset and try again
+            presetName = QString();
+            error = QString();
             importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, true);
+        }
 
         if (importErrors == PresetsErrorFlag::InvalidGroup) {
             QMessageBox msgBox;

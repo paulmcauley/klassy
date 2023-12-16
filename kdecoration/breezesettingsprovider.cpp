@@ -93,7 +93,18 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
         if (rx.match(windowPropertyValue).hasMatch()) {
             // load preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
-                PresetsModel::readPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+                // load the preset values into internalSettings if a preset is set as an exception
+                PresetsModel::loadPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+
+                // if a border size exception is not set then replace it with the KwinBorderSize value from the preset
+                if ((!internalSettings->exceptionBorder())) {
+                    if (PresetsModel::presetHasKwinBorderSizeKey(m_config.data(), internalSettings->exceptionPreset())) {
+                        PresetsModel::copyKwinBorderSizeFromPresetToExceptionBorderSize(internalSettings.data(),
+                                                                                        m_config.data(),
+                                                                                        internalSettings->exceptionPreset());
+                        internalSettings->setExceptionBorder(true);
+                    }
+                }
             }
             return internalSettings;
         }

@@ -22,6 +22,7 @@
 #include <KSharedConfig>
 
 #include <QSharedPointer>
+#include <QTimer>
 #include <QWidget>
 
 // needed to display images when qrc is statically linked
@@ -72,8 +73,8 @@ protected Q_SLOTS:
     void buttonSizingButtonClicked();
     void windowOutlineStyleButtonClicked();
     void presetsButtonClicked();
-
     void dialogChanged(bool changed);
+    void kwinReloadConfig();
 
 protected:
     //* set changed state

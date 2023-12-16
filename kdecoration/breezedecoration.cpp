@@ -541,26 +541,26 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
 int Decoration::borderSize(bool bottom) const
 {
     const int baseSize = settings()->smallSpacing();
-    if (m_internalSettings && (m_internalSettings->mask() & BorderSize)) {
+    if (m_internalSettings && (m_internalSettings->exceptionBorder())) {
         switch (m_internalSettings->borderSize()) {
-        case InternalSettings::EnumBorderSize::BorderNone:
+        case InternalSettings::EnumBorderSize::None:
             return 0;
-        case InternalSettings::EnumBorderSize::BorderNoSides:
+        case InternalSettings::EnumBorderSize::NoSides:
             return bottom ? qMax(4, baseSize) : 0;
         default:
-        case InternalSettings::EnumBorderSize::BorderTiny:
+        case InternalSettings::EnumBorderSize::Tiny:
             return bottom ? qMax(4, baseSize) : baseSize;
-        case InternalSettings::EnumBorderSize::BorderNormal:
+        case InternalSettings::EnumBorderSize::Normal:
             return baseSize * 2;
-        case InternalSettings::EnumBorderSize::BorderLarge:
+        case InternalSettings::EnumBorderSize::Large:
             return baseSize * 3;
-        case InternalSettings::EnumBorderSize::BorderVeryLarge:
+        case InternalSettings::EnumBorderSize::VeryLarge:
             return baseSize * 4;
-        case InternalSettings::EnumBorderSize::BorderHuge:
+        case InternalSettings::EnumBorderSize::Huge:
             return baseSize * 5;
-        case InternalSettings::EnumBorderSize::BorderVeryHuge:
+        case InternalSettings::EnumBorderSize::VeryHuge:
             return baseSize * 6;
-        case InternalSettings::EnumBorderSize::BorderOversized:
+        case InternalSettings::EnumBorderSize::Oversized:
             return baseSize * 10;
         }
 
