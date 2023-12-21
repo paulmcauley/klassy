@@ -5119,7 +5119,7 @@ bool Style::drawDockWidgetResizeHandlePrimitive(const QStyleOption *option, QPai
 
 bool Style::drawPanelStatusBarPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    if (widget && widget->parent() && !widget->parent()->inherits("QMainWindow")) {
+    if (widget && !widget->property("_breeze_statusbar_separator").toBool() && widget->parent() && !widget->parent()->inherits("QMainWindow")) {
         return true;
     }
     auto rect(option->rect);
