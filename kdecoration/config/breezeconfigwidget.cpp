@@ -87,6 +87,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
         defaultPushButton->hide();
     }
 
+    // add corner icon
+    m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
+
     m_loadPresetDialog = new LoadPreset(m_configuration, this);
     m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
     m_buttonColorsDialog = new ButtonColors(m_configuration, this);
@@ -493,7 +496,9 @@ void ConfigWidget::integratedRoundedRectangleSizingButtonClicked()
 
     if (!m_buttonSizingDialog->m_loaded)
         m_buttonSizingDialog->load();
-    m_buttonSizingDialog->exec();
+    if (!m_buttonSizingDialog->exec()) {
+        m_buttonSizingDialog->load();
+    }
 }
 
 void ConfigWidget::fullHeightRectangleSizingButtonClicked()
@@ -537,7 +542,9 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
 
     if (!m_buttonSizingDialog->m_loaded)
         m_buttonSizingDialog->load();
-    m_buttonSizingDialog->exec();
+    if (!m_buttonSizingDialog->exec()) {
+        m_buttonSizingDialog->load();
+    }
 }
 
 void ConfigWidget::buttonSizingButtonClicked()
@@ -581,7 +588,9 @@ void ConfigWidget::buttonSizingButtonClicked()
 
     if (!m_buttonSizingDialog->m_loaded)
         m_buttonSizingDialog->load();
-    m_buttonSizingDialog->exec();
+    if (!m_buttonSizingDialog->exec()) {
+        m_buttonSizingDialog->load();
+    }
 }
 
 void ConfigWidget::buttonColorsButtonClicked()
@@ -590,7 +599,9 @@ void ConfigWidget::buttonColorsButtonClicked()
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
     if (!m_buttonColorsDialog->m_loaded)
         m_buttonColorsDialog->load();
-    m_buttonColorsDialog->exec();
+    if (!m_buttonColorsDialog->exec()) {
+        m_buttonColorsDialog->load();
+    }
 }
 
 void ConfigWidget::buttonBehaviourButtonClicked()
@@ -598,7 +609,9 @@ void ConfigWidget::buttonBehaviourButtonClicked()
     m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
     if (!m_buttonBehaviourDialog->m_loaded)
         m_buttonBehaviourDialog->load();
-    m_buttonBehaviourDialog->exec();
+    if (!m_buttonBehaviourDialog->exec()) {
+        m_buttonBehaviourDialog->load();
+    }
 }
 
 void ConfigWidget::titleBarSpacingButtonClicked()
@@ -606,7 +619,9 @@ void ConfigWidget::titleBarSpacingButtonClicked()
     m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing - Klassy Settings"));
     if (!m_titleBarSpacingDialog->m_loaded)
         m_titleBarSpacingDialog->load();
-    m_titleBarSpacingDialog->exec();
+    if (!m_titleBarSpacingDialog->exec()) {
+        m_titleBarSpacingDialog->load();
+    }
 }
 
 void ConfigWidget::titleBarOpacityButtonClicked()
@@ -614,7 +629,9 @@ void ConfigWidget::titleBarOpacityButtonClicked()
     m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
     if (!m_titleBarOpacityDialog->m_loaded)
         m_titleBarOpacityDialog->load();
-    m_titleBarOpacityDialog->exec();
+    if (!m_titleBarOpacityDialog->exec()) {
+        m_titleBarOpacityDialog->load();
+    }
 }
 
 void ConfigWidget::shadowStyleButtonClicked()
@@ -622,7 +639,9 @@ void ConfigWidget::shadowStyleButtonClicked()
     m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style - Klassy Settings"));
     if (!m_shadowStyleDialog->m_loaded)
         m_shadowStyleDialog->load();
-    m_shadowStyleDialog->exec();
+    if (!m_shadowStyleDialog->exec()) {
+        m_shadowStyleDialog->load();
+    }
 }
 
 void ConfigWidget::windowOutlineStyleButtonClicked()
@@ -630,7 +649,9 @@ void ConfigWidget::windowOutlineStyleButtonClicked()
     m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
     if (!m_windowOutlineStyleDialog->m_loaded)
         m_windowOutlineStyleDialog->load();
-    m_windowOutlineStyleDialog->exec();
+    if (!m_windowOutlineStyleDialog->exec()) {
+        m_windowOutlineStyleDialog->load();
+    }
 }
 
 void ConfigWidget::presetsButtonClicked()

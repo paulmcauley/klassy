@@ -49,54 +49,21 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
             if (item->property().toInt() >= 0) { // invalid enum values are set to -1
                 configGroup.writeEntry(item->key(), enumItem->choices()[item->property().toInt()].name);
             }
-        } else {
-            configGroup.writeEntry(item->key(), item->property());
-        }
-    }
+        } else if (auto intListItem = dynamic_cast<KCoreConfigSkeleton::ItemIntList *>(
+                       item)) { // if the item is an IntList, need to loop through each element in list and write
+            QVariant property = intListItem->property();
+            QList<int> *list = static_cast<QList<int> *>(property.data());
 
-    // read kwin window border setting and write to the preset
-    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
-    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
-        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
-        QString borderSize;
-        if (!kdecoration2Group.hasKey(QStringLiteral("BorderSize"))) {
-            borderSize = QStringLiteral("Normal"); // Normal is the KWin default, so will nor write a BorderSize key in this case
-        } else {
-            borderSize = kdecoration2Group.readEntry(QStringLiteral("BorderSize"));
-        }
-        if (!groupName.isEmpty()) {
-            KConfigGroup configGroup(config, groupName);
-            configGroup.writeEntry(QStringLiteral("KwinBorderSize"), borderSize);
-        }
-    }
-}
-
-void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, const QStringList &whitelistKeys)
-{
-    bool keyInWhitelist;
-    QString groupName = presetGroupName(presetName);
-
-    for (auto item : skeleton->items()) {
-        keyInWhitelist = false;
-        for (const QString &whitelistKey : whitelistKeys) {
-            if (item->key() == whitelistKey) {
-                keyInWhitelist = true;
-                continue;
+            QString colorListString;
+            int i = 0;
+            for (int colorInt : *list) {
+                QTextStream(&colorListString) << colorInt;
+                if (i < (list->count() - 1))
+                    colorListString += ",";
+                i++;
             }
-        }
-
-        if (!keyInWhitelist)
-            continue;
-        if (!groupName.isEmpty())
-            item->setGroup(groupName);
-        KConfigGroup configGroup(config, item->group());
-
-        // enum properties are ints, but it is more robust to write the full string name to the file, rather than an int
-        // therefore if an enum get the name instead
-        if (auto enumItem = dynamic_cast<KCoreConfigSkeleton::ItemEnum *>(item)) { // if the item is an enum
-            if (item->property().toInt() >= 0) { // invalid enum values are set to -1
-                configGroup.writeEntry(item->key(), enumItem->choices()[item->property().toInt()].name);
-            }
+            if (!colorListString.isNull())
+                configGroup.writeEntry(item->key(), colorListString);
         } else {
             configGroup.writeEntry(item->key(), item->property());
         }

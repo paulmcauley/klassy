@@ -54,9 +54,10 @@ public:
     /**
      * @brief Returns a DecorationColors struct containing the colours set in the KDE color scheme
      */
-    static std::shared_ptr<DecorationColors> generateDecorationColors(const QPalette &palette, const bool setGlobal = false);
+    static std::shared_ptr<DecorationColors>
+    generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings, const bool setGlobal = false);
 
-    static void systemPaletteUpdated(const QPalette &palette);
+    static void systemPaletteUpdated(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings);
 
     static QColor getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate = false);
 

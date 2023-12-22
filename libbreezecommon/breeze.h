@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#define KLASSY_DECORATION_DEBUG_MODE 0
+#define KLASSY_DECORATION_DEBUG_MODE 1
 #define KLASSY_STYLE_DEBUG_MODE 0
 #define KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/klassy_debug.txt"
 
@@ -61,6 +61,38 @@ static QStringList windecoExceptionKeys = {
     "ExceptionBorder",
     "BorderSize",
     "ExceptionPreset",
+};
+
+enum struct BREEZECOMMON_EXPORT ColorOverridableButtonTypes {
+    Close,
+    Maximize,
+    Restore,
+    Minimize,
+    ContextHelp,
+    Shade,
+    Unshade,
+    PinOnAllDesktops,
+    Unpin,
+    KeepBelow,
+    KeepBelowChecked,
+    KeepAbove,
+    KeepAboveChecked,
+    ApplicationMenu,
+    Menu,
+    Count,
+};
+
+enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
+    IconNormal,
+    IconHover,
+    IconPress,
+    BackgroundNormal,
+    BackgroundHover,
+    BackgroundPress,
+    OutlineNormal,
+    OutlineHover,
+    OutlinePress,
+    Count,
 };
 
 // KDECORATION-------------------------------------------------------------

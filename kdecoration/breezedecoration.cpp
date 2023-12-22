@@ -143,6 +143,9 @@ static qreal g_thinWindowOutlineThickness = 1;
 static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
+// cached values needed for base window decoration colour generation
+static qreal g_translucentButtonBackgroundsOpacity = 0.5;
+
 //________________________________________________________________
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args)
@@ -343,11 +346,6 @@ void Decoration::init()
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    // generate standard colours to be used in the decoration
-    if (!g_decorationColors)
-        ColorTools::generateDecorationColors(c->palette(), true);
-    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, ColorTools::systemPaletteUpdated);
-    
     reconfigureMain(true);
     
     // active state change animation
@@ -592,8 +590,23 @@ int Decoration::borderSize(bool bottom) const
 //________________________________________________________________
 void Decoration::reconfigureMain(const bool noUpdateShadow)
 {
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+
     SettingsProvider::self()->reconfigure();
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
+
+    // generate standard colours to be used in the decoration
+    connect(c.data(),
+            &KDecoration2::DecoratedClient::paletteChanged,
+            this,
+            &Decoration::generateDecorationColorsOnSystemPaletteUpdate,
+            Qt::UniqueConnection); // connection goes here, rather than init as need the value of translucentButtonBackgroundsOpacity from m_internalSettings.
+                                   // Only want one connection per decoration, so use Qt::UniqueConnection
+    if (!g_decorationColors || (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity())) {
+        g_translucentButtonBackgroundsOpacity = m_internalSettings->translucentButtonBackgroundsOpacity();
+        ColorTools::generateDecorationColors(c->palette(), m_internalSettings, true);
+    }
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
 
@@ -651,6 +664,14 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     // shadow
     if (!noUpdateShadow)
         this->updateShadow();
+}
+
+void Decoration::generateDecorationColorsOnSystemPaletteUpdate()
+{
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+
+    ColorTools::systemPaletteUpdated(c->palette(), m_internalSettings);
 }
 
 //________________________________________________________________
