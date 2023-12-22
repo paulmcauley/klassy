@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
-
 #include "colortools.h"
+#include "breeze.h"
 
 #include <KColorUtils>
 #include <QTimer>
@@ -15,7 +15,8 @@ namespace Breeze
 std::shared_ptr<DecorationColors> g_decorationColors = nullptr;
 static std::unique_ptr<QTimer> g_systemPaletteSingleUpdateTimer = std::unique_ptr<QTimer>(new QTimer());
 
-std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPalette &palette, const bool setGlobal)
+std::shared_ptr<DecorationColors>
+ColorTools::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings, const bool setGlobal)
 {
     std::shared_ptr<DecorationColors> decorationColors = std::make_shared<DecorationColors>();
 
@@ -56,33 +57,27 @@ std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPa
         decorationColors->buttonHover = getDifferentiatedLessSaturatedColor(decorationColors->buttonFocus);
 
     //"Blue Ocean" style reduced opacity outlined buttons
-    decorationColors->buttonReducedOpacityBackground = decorationColors->buttonFocus;
-    decorationColors->buttonReducedOpacityBackground.setAlphaF(decorationColors->buttonReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->buttonReducedOpacityBackground = alphaMix(decorationColors->buttonFocus, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
 
-    decorationColors->buttonReducedOpacityOutline = decorationColors->buttonFocus;
-    decorationColors->buttonReducedOpacityOutline.setAlphaF(decorationColors->buttonReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->buttonReducedOpacityOutline = alphaMix(decorationColors->buttonFocus, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
 
     decorationColors->fullySaturatedNegative = getDifferentiatedSaturatedColor(decorationColors->negative, true);
-    decorationColors->negativeReducedOpacityBackground = decorationColors->fullySaturatedNegative;
-    decorationColors->negativeReducedOpacityBackground.setAlphaF(decorationColors->negativeReducedOpacityBackground.alphaF() * 0.5);
+    decorationColors->negativeReducedOpacityBackground =
+        alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity());
 
-    decorationColors->negativeReducedOpacityOutline = decorationColors->fullySaturatedNegative;
-    decorationColors->negativeReducedOpacityOutline.setAlphaF(decorationColors->negativeReducedOpacityOutline.alphaF() * 0.7);
+    decorationColors->negativeReducedOpacityOutline =
+        alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity() * 1.4);
 
-    decorationColors->negativeReducedOpacityLessSaturatedBackground = getDifferentiatedLessSaturatedColor(decorationColors->negative);
-    decorationColors->negativeReducedOpacityLessSaturatedBackground.setAlphaF(decorationColors->negativeReducedOpacityLessSaturatedBackground.alphaF() * 0.6);
+    decorationColors->negativeReducedOpacityLessSaturatedBackground =
+        alphaMix(getDifferentiatedLessSaturatedColor(decorationColors->negative), decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
 
-    decorationColors->neutralReducedOpacityBackground = decorationColors->neutral;
-    decorationColors->neutralReducedOpacityBackground.setAlphaF(decorationColors->neutralReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->neutralReducedOpacityBackground = alphaMix(decorationColors->neutral, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
 
-    decorationColors->neutralReducedOpacityOutline = decorationColors->neutral;
-    decorationColors->neutralReducedOpacityOutline.setAlphaF(decorationColors->neutralReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->neutralReducedOpacityOutline = alphaMix(decorationColors->neutral, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
 
-    decorationColors->positiveReducedOpacityBackground = decorationColors->positive;
-    decorationColors->positiveReducedOpacityBackground.setAlphaF(decorationColors->positiveReducedOpacityBackground.alphaF() * 0.4);
+    decorationColors->positiveReducedOpacityBackground = alphaMix(decorationColors->positive, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
 
-    decorationColors->positiveReducedOpacityOutline = decorationColors->positive;
-    decorationColors->positiveReducedOpacityOutline.setAlphaF(decorationColors->positiveReducedOpacityOutline.alphaF() * 0.6);
+    decorationColors->positiveReducedOpacityOutline = alphaMix(decorationColors->positive, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
 
     decorationColors->highlight = palette.color(QPalette::Highlight);
     decorationColors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(decorationColors->highlight, true);
@@ -93,13 +88,13 @@ std::shared_ptr<DecorationColors> ColorTools::generateDecorationColors(const QPa
     return decorationColors;
 }
 
-void ColorTools::systemPaletteUpdated(const QPalette &palette)
+void ColorTools::systemPaletteUpdated(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings)
 {
-    // the timer ensures that generateDecorationColors(palette) will only be called once if more than one updated signal arrives at the same time
+    // the timer ensures that generateDecorationColors(palette) will only be called once if more than one updated signal arrives in a very short space of time
     if (!g_systemPaletteSingleUpdateTimer->isActive()) {
         g_systemPaletteSingleUpdateTimer->setSingleShot(true);
         g_systemPaletteSingleUpdateTimer->start(10);
-        generateDecorationColors(palette, true);
+        generateDecorationColors(palette, decorationSettings, true);
     }
 }
 

@@ -54,6 +54,9 @@ static const qreal highlightBackgroundAlpha = 0.33;
 
 static const auto radioCheckSunkenDarkeningFactor = 110;
 
+// cached values needed for base window decoration colour generation
+static qreal g_translucentButtonBackgroundsOpacity = 0.5;
+
 //____________________________________________________________________
 Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
     : QObject(parent)
@@ -127,6 +130,18 @@ void Helper::loadConfig()
         _inactiveTitleBarColor = appGroup.readEntry("inactiveBackground", _inactiveTitleBarColor);
         _inactiveTitleBarTextColor = appGroup.readEntry("inactiveForeground", _inactiveTitleBarTextColor);
     }
+
+    // generate standard colours to be used in the decoration
+    connect(qApp,
+            &QApplication::paletteChanged,
+            this,
+            &Helper::generateDecorationColorsOnSystemPaletteUpdate,
+            Qt::UniqueConnection); // connection goes here, rather than init as need the value of translucentButtonBackgroundsOpacity from _decorationConfig.
+                                   // Only want one connection per app, so use Qt::UniqueConnection
+    if (!g_decorationColors || (g_translucentButtonBackgroundsOpacity != _decorationConfig->translucentButtonBackgroundsOpacity())) {
+        g_translucentButtonBackgroundsOpacity = _decorationConfig->translucentButtonBackgroundsOpacity();
+        ColorTools::generateDecorationColors(QApplication::palette(), _decorationConfig, true);
+    }
 }
 
 QColor transparentize(const QColor &color, qreal amount)
@@ -134,6 +149,11 @@ QColor transparentize(const QColor &color, qreal amount)
     auto clone = color;
     clone.setAlphaF(amount);
     return clone;
+}
+
+void Helper::generateDecorationColorsOnSystemPaletteUpdate()
+{
+    ColorTools::systemPaletteUpdated(QApplication::palette(), _decorationConfig);
 }
 
 //____________________________________________________________________

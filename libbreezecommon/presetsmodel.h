@@ -29,7 +29,6 @@ class BREEZECOMMON_EXPORT PresetsModel
 public:
     static QString presetGroupName(const QString str);
     static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName);
-    static void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, const QStringList &whiteListKeys);
     static void loadPreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &presetName, bool writeKwinBorderConfig = false);
 
     static bool presetHasKwinBorderSizeKey(KConfig *config, const QString &presetName);

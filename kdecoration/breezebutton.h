@@ -158,8 +158,8 @@ private:
     //*@name colors
     //@{
     QColor backgroundColor(bool getNonAnimatedColor = false) const;
-    QColor backgroundColor(QColor &foregroundContrastedColor, bool getNonAnimatedColor = false) const;
-    QColor foregroundColor(const QColor &backgroundContrastedColor) const;
+    QColor backgroundColor(QColor &foregroundContrastedColor, bool &negativeCloseColor, bool getNonAnimatedColor = false) const;
+    QColor foregroundColor(const QColor &backgroundContrastedColor, const bool negativeBackgroundColor) const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 

@@ -260,7 +260,6 @@ Style::Style()
 
     dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
 
-    connect(qApp, &QApplication::paletteChanged, ColorTools::systemPaletteUpdated);
     connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
     // call the slot directly; this initial call will set up things that also
     // need to be reset when the system palette changes
@@ -7772,13 +7771,17 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
     const bool isAlwaysShownCloseButton(buttonType == ButtonClose
                                         && _helper->decorationConfig()->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsAndCloseButtonBackground);
-    const bool withTrafficLights(_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsAccentWithTrafficLights);
+    const bool withTrafficLights(_helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
+
+    const bool negativeCloseCategory(
+        _helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+        || _helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+        || _helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
+
+    const bool negativeCloseBackgroundHoverPress = _helper->decorationConfig()->negativeCloseBackgroundHoverPress()
+        && _helper->decorationConfig()->buttonBackgroundColors() != InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights;
 
     palette.setCurrentColorGroup(QPalette::Active);
-
-    if (!g_decorationColors) {
-        ColorTools::generateDecorationColors(QApplication::palette(), true);
-    }
 
     const QColor base(palette.color(QPalette::WindowText));
     const QColor selected(_helper->titleBarTextColor(true));
@@ -7794,42 +7797,70 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     // background colours
     QColor offInvertedNormalStateBackground;
     QColor disabledInvertedNormalStateBackground;
-    QColor offSelectedInvertedNormalStateBackground;
+    QColor offSelectedInvertedNormalStateBackground; // selected is for an active MDI titlebar, others are on tabs etc.
     QColor offHoverBackground;
     QColor onFocusBackground;
 
     // outline colours
     QColor outline;
 
-    if (_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText) {
+    if (_helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+        || _helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose) {
         if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
-            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
-            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
+            onFocusForeground = buttonType
+                    == (ButtonClose && negativeCloseCategory
+                        && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground = buttonType
+                    == (ButtonClose && negativeCloseCategory
+                        && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : selected;
             offSelectedForeground = selected;
 
-            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            offHoverForeground = buttonType
+                    == (ButtonClose && negativeCloseCategory
+                        && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
             offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
             disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
 
             // for translucent, background colours also need to be defined
             offInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.15);
             disabledInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.07);
-            offSelectedInvertedNormalStateBackground = _helper->decorationConfig()->redAlwaysShownClose() ? g_decorationColors->negativeReducedOpacityBackground
-                                                                                                          : ColorTools::alphaMix(selected, 0.15);
-            offHoverBackground = buttonType == ButtonClose ? g_decorationColors->negativeReducedOpacityBackground : ColorTools::alphaMix(base, 0.15);
-            onFocusBackground = buttonType == ButtonClose ? g_decorationColors->negativeReducedOpacityOutline : ColorTools::alphaMix(base, 0.25);
+            offSelectedInvertedNormalStateBackground = (negativeCloseCategory && !negativeCloseBackgroundHoverPress)
+                ? g_decorationColors->negativeReducedOpacityBackground
+                : ColorTools::alphaMix(selected, 0.15);
+            offHoverBackground =
+                buttonType == (ButtonClose && negativeCloseCategory) ? g_decorationColors->negativeReducedOpacityBackground : ColorTools::alphaMix(base, 0.15);
+            onFocusBackground =
+                buttonType == (ButtonClose && negativeCloseCategory) ? g_decorationColors->negativeReducedOpacityOutline : ColorTools::alphaMix(base, 0.25);
         } else {
             // for non-translucent using the titlebar text colour, it is a special case in the later logic where the foreground colour is inverted to create
             // the background
-            onFocusForeground =
-                buttonType == ButtonClose ? g_decorationColors->negativeSaturated : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
-            onFocusSelectedForeground = buttonType == ButtonClose ? g_decorationColors->negativeSaturated : selected;
+            onFocusForeground = buttonType
+                    == (ButtonClose && negativeCloseCategory
+                        && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? g_decorationColors->negativeSaturated
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            onFocusSelectedForeground = buttonType
+                    == (ButtonClose && negativeCloseCategory
+                        && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? g_decorationColors->negativeSaturated
+                : selected;
             if (isAlwaysShownCloseButton) {
-                offSelectedForeground = _helper->decorationConfig()->redAlwaysShownClose() ? g_decorationColors->negative : selected;
+                offSelectedForeground =
+                    (negativeCloseCategory && !negativeCloseBackgroundHoverPress
+                     && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                    ? g_decorationColors->negative
+                    : selected;
             } else
                 offSelectedForeground = selected;
 
-            offHoverForeground = buttonType == ButtonClose ? g_decorationColors->negative : KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
+            offHoverForeground = buttonType == (ButtonClose && negativeCloseCategory) ? g_decorationColors->negative
+                                                                                      : KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
             offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
             disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
             onFocusBackground = onFocusForeground; // used only for setting outline colour
@@ -7838,22 +7869,42 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         // Colours used if Accent colours
 
         if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
-            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
-            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
-            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            onFocusForeground = (buttonType == ButtonClose
+                                 && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground =
+                (buttonType == ButtonClose
+                 && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : selected;
+            offHoverForeground = buttonType
+                    == (ButtonClose && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
             offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
             disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
             offSelectedForeground = selected;
 
             offInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.15);
             disabledInvertedNormalStateBackground = ColorTools::alphaMix(base, 0.07);
-            offSelectedInvertedNormalStateBackground = (_helper->decorationConfig()->redAlwaysShownClose())
+            offSelectedInvertedNormalStateBackground = (negativeCloseCategory && !negativeCloseBackgroundHoverPress)
                 ? g_decorationColors->negativeReducedOpacityBackground
                 : g_decorationColors->buttonReducedOpacityBackground;
         } else {
-            onFocusForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
-            onFocusSelectedForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : selected;
-            offHoverForeground = buttonType == ButtonClose ? Qt::GlobalColor::white : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
+            onFocusForeground = (buttonType == ButtonClose
+                                 && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.8);
+            onFocusSelectedForeground =
+                (buttonType == ButtonClose
+                 && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : selected;
+            offHoverForeground = (buttonType == ButtonClose
+                                  && _helper->decorationConfig()->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::Same)
+                ? Qt::GlobalColor::white
+                : KColorUtils::mix(palette.color(QPalette::Window), base, 0.7);
             offForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.5);
             disabledForeground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
             offSelectedForeground = selected;
@@ -7861,20 +7912,23 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
             offInvertedNormalStateBackground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.2);
             disabledInvertedNormalStateBackground = KColorUtils::mix(palette.color(QPalette::Window), base, 0.07);
             offSelectedInvertedNormalStateBackground =
-                (_helper->decorationConfig()->redAlwaysShownClose()) ? g_decorationColors->negative : g_decorationColors->buttonHover;
+                (negativeCloseCategory && !negativeCloseBackgroundHoverPress) ? g_decorationColors->negative : g_decorationColors->buttonHover;
         }
 
         // hover and focus background colours
         switch (buttonType) {
         case ButtonClose:
-            if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
-                offHoverBackground = g_decorationColors->negativeReducedOpacityBackground;
-                onFocusBackground = g_decorationColors->negativeReducedOpacityOutline;
-            } else {
-                offHoverBackground = g_decorationColors->negative;
-                onFocusBackground = g_decorationColors->negativeSaturated;
+            if (negativeCloseCategory) {
+                if (_helper->decorationConfig()->translucentButtonBackgrounds()) {
+                    offHoverBackground = g_decorationColors->negativeReducedOpacityBackground;
+                    onFocusBackground = g_decorationColors->negativeReducedOpacityOutline;
+                } else {
+                    offHoverBackground = g_decorationColors->negative;
+                    onFocusBackground = g_decorationColors->negativeSaturated;
+                }
+                break;
             }
-            break;
+            [[fallthrough]]; // fallthrough to default if not negativeClose
         case ButtonMaximize:
         case ButtonRestore:
             if (withTrafficLights) {
@@ -7919,7 +7973,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
     const bool setInvert(
 
-        ((_helper->decorationConfig()->backgroundColors() == InternalSettings::EnumBackgroundColors::ColorsTitlebarText)
+        ((_helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+          || _helper->decorationConfig()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
          && (!_helper->decorationConfig()->translucentButtonBackgrounds())));
 
     // convenience class to map color to icon mode
@@ -7937,6 +7992,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     const QList<IconData> iconTypes = {
         // state off icons
         {QIcon::Normal, QIcon::Off, offForeground, setInvert && isAlwaysShownCloseButton, isAlwaysShownCloseButton, offInvertedNormalStateBackground, QColor()},
+
         {QIcon::Selected,
          QIcon::Off,
          offSelectedForeground,
@@ -7944,7 +8000,9 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
          isAlwaysShownCloseButton,
          offSelectedInvertedNormalStateBackground,
          QColor()}, // used for active MDI window titlebars
+
         {QIcon::Active, QIcon::Off, offHoverForeground, setInvert, true, offHoverBackground, outline},
+
         {QIcon::Disabled,
          QIcon::Off,
          disabledForeground,
@@ -7955,8 +8013,11 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 
         // state on icons
         {QIcon::Normal, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline},
+
         {QIcon::Selected, QIcon::On, onFocusSelectedForeground, setInvert, true, onFocusBackground, outline},
+
         {QIcon::Active, QIcon::On, onFocusForeground, setInvert, true, onFocusBackground, outline},
+
         {QIcon::Disabled,
          QIcon::On,
          disabledForeground,

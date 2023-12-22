@@ -180,6 +180,7 @@ private Q_SLOTS:
     {
         reconfigureMain(true);
     }
+    void generateDecorationColorsOnSystemPaletteUpdate();
     void recalculateBorders();
     void updateOpaque();
     void updateBlur();

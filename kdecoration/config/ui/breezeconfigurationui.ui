@@ -1272,14 +1272,25 @@ Scrollbars and window close buttons will shift positions and will not touch scre
             <item>
              <layout class="QFormLayout" name="formLayout_11">
               <item row="0" column="0">
-               <widget class="QLabel" name="cornerRadiusLabel">
-                <property name="text">
-                 <string>&amp;Corner Radius</string>
-                </property>
-                <property name="buddy">
-                 <cstring>cornerRadius</cstring>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QLabel" name="cornerRadiusIcon">
+                  <property name="text">
+                   <string>Icon</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="cornerRadiusLabel">
+                  <property name="text">
+                   <string>&amp;Corner Radius:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cornerRadius</cstring>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item row="0" column="1">
                <widget class="QDoubleSpinBox" name="cornerRadius">
@@ -1641,6 +1652,7 @@ Scrollbars and window close buttons will shift positions and will not touch scre
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
   <tabstop>buttonIconStyle</tabstop>
   <tabstop>iconSize</tabstop>
   <tabstop>systemIconSize</tabstop>
@@ -1666,7 +1678,6 @@ Scrollbars and window close buttons will shift positions and will not touch scre
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
   <tabstop>graphicsView</tabstop>
-  <tabstop>tabWidget</tabstop>
  </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>

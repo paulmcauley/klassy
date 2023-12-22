@@ -34,11 +34,6 @@
         <default>false</default>
     </entry>
     
-    <!-- red outline close button -->
-    <entry name="RedAlwaysShownClose" type = "Bool">
-        <default>true</default>
-    </entry>
-    
     <!-- button icon style -->
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
@@ -65,17 +60,56 @@
       <default>ShapeIntegratedRoundedRectangle</default>
     </entry>
     
-    <!-- background colors -->
-    <entry name="BackgroundColors" type="Enum">
+    <!-- button icon colors -->
+    <entry name="ButtonIconColors" type="Enum">
         <choices>
-            <choice name="ColorsTitlebarText" />
-            <choice name="ColorsAccent" />
-            <choice name="ColorsAccentWithTrafficLights" />
+            <choice name="TitlebarText" />
+            <choice name="TitlebarTextNegativeClose" />
+            <choice name="Accent" />
+            <choice name="AccentNegativeClose" />
+            <choice name="AccentTrafficLights" />
         </choices>
-        <default>ColorsAccent</default>
+        <default>TitlebarText</default>
     </entry>
 
-    <entry name="LockButtonBackgroundColorsActive" type = "Bool">
+    <entry name="CloseIconNegativeBackground" type="Enum">
+        <choices>
+            <choice name="Same" />
+            <choice name="White" />
+            <choice name="WhiteWhenHoverPress" />
+        </choices>
+        <default>WhiteWhenHoverPress</default>
+    </entry>
+
+    <entry name="BlackWhiteIconOnPoorContrast" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!-- button background colors -->
+    <entry name="ButtonBackgroundColors" type="Enum">
+        <choices>
+            <choice name="TitlebarText" />
+            <choice name="TitlebarTextNegativeClose" />
+            <choice name="Accent" />
+            <choice name="AccentNegativeClose" />
+            <choice name="AccentTrafficLights" />
+        </choices>
+        <default>AccentNegativeClose</default>
+    </entry>
+
+    <entry name="NegativeCloseBackgroundHoverPress" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="AdjustBackgroundColorOnPoorContrast" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="LockButtonColorsActive" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="LockButtonColorsInactive" type = "Bool">
         <default>true</default>
     </entry>
     
@@ -214,14 +248,98 @@
     <entry name="TranslucentButtonBackgrounds" type = "Bool">
         <default>true</default>
     </entry>
+
+    <entry name="TranslucentButtonBackgroundsOpacity" type ="Double">
+        <default>0.5</default>
+        <min>0</min>
+        <max>1</max>
+    </entry>
     
     <!-- colourize icons from system icon theme -->
     <entry name="ColorizeSystemIcons" type = "Bool">
         <default>true</default>
     </entry>
 
+    <!-- version stamp indicating the Klassy version which last auto-imported installed presets -->
     <entry name="BundledWindecoPresetsImportedVersion" type = "String"/>
-    
+
+    <!-- button override colours -->
+    <entry name="ButtonOverrideColorsClose" type = "IntList"/>
+    <entry name="ButtonOverrideColorsCloseFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMaximize" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMaximizeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsRestore" type = "IntList"/>
+    <entry name="ButtonOverrideColorsRestoreFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMinimize" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMinimizeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsContextHelp" type = "IntList"/>
+    <entry name="ButtonOverrideColorsContextHelpFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsShade" type = "IntList"/>
+    <entry name="ButtonOverrideColorsShadeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsUnshade" type = "IntList"/>
+    <entry name="ButtonOverrideColorsUnshadeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsPinOnAllDesktops" type = "IntList"/>
+    <entry name="ButtonOverrideColorsPinOnAllDesktopsFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsUnpin" type = "IntList"/>
+    <entry name="ButtonOverrideColorsUnpinFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepBelow" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepBelowFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepBelowChecked" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepBelowCheckedFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepAbove" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepAboveFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepAboveChecked" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepAboveCheckedFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsApplicationMenu" type = "IntList"/>
+    <entry name="ButtonOverrideColorsApplicationMenuFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMenu" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMenuFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+
   </group>
 
   <group name="Windeco">
