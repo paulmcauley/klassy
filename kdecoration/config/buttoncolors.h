@@ -9,6 +9,7 @@
 
 #include "breeze.h"
 #include "breezesettings.h"
+#include "colortools.h"
 #include "ui_buttoncolors.h"
 #include <KColorButton>
 #include <QDialog>
@@ -50,6 +51,7 @@ private Q_SLOTS:
     void setCloseIconNegativeBackgroundState();
     void resizeOverrideColorTable();
     void showActiveOverrideGroupBox(const bool on);
+    void resizeActiveOverrideGroupBox(const bool on);
     void copyCellDataToInactiveTable(const bool on);
     void setButtonBackgroundColorsIcons();
 
@@ -62,9 +64,10 @@ private:
 
     //* encodes the custom override colour settings for a row (button type) for storage in the config file
     // The output colorsList only stores set colours, and the output colourFlags has a complete index for all colours in the reloadKwinConfig
-    // colorsFlgs storage bits: Active Window colours: bits 0-15, Inactive Window colours bits 16-31
-    // active normal bits 0-3, active hover bits 4-7, active outline bits 8-11
-    // inactive normal bits 16-19, inactive hover bits 20-23, inactive outline bits 24-27
+    // colorsFlags storage bits: Active Window colours: bits 0-15, Inactive Window colours bits 16-31
+    // active icon bits 0-3, active background bits 4-7, active outline bits 8-11
+    // inactive icon bits 16-19, inactive background bits 20-23, inactive outline bits 24-27
+    // bit 0 etc. reserved for deactivated state colour
     void encodeColorOverridableButtonTypeRow(QTableWidget *table, int row, uint32_t &colorsFlags, QList<int> &colorsList);
 
     //*returns true if the row was loaded with a value
@@ -89,21 +92,18 @@ private:
 
     bool m_overrideColorsLoaded = false;
 
+    std::shared_ptr<DecorationColors> m_decorationColors;
+
     // strings for UI corresponding to enum ColorOverridableButtonTypes in breeze.h
     QStringList m_colorOverridableButtonTypesStrings{
         i18n("Close"),
-        i18n("Maximize"),
-        i18n("Restore"),
+        i18n("Maximize/Restore"),
         i18n("Minimize"),
-        i18n("Context Help"),
+        i18n("Help"),
         i18n("Shade"),
-        i18n("Unshade"),
-        i18n("Pin on all desktops"),
-        i18n("Unpin"),
+        i18n("All desktops"),
         i18n("Keep Below"),
-        i18n("Keep Below (checked)"),
         i18n("Keep Above"),
-        i18n("Keep Above (checked)"),
         i18n("Application Menu"),
         i18n("Menu (app icon)"),
     };

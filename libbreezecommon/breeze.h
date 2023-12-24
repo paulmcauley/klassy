@@ -9,7 +9,7 @@
  */
 
 #define KLASSY_DECORATION_DEBUG_MODE 1
-#define KLASSY_STYLE_DEBUG_MODE 0
+#define KLASSY_STYLE_DEBUG_MODE 1
 #define KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/klassy_debug.txt"
 
 #include "breezecommon_export.h"
@@ -66,17 +66,12 @@ static QStringList windecoExceptionKeys = {
 enum struct BREEZECOMMON_EXPORT ColorOverridableButtonTypes {
     Close,
     Maximize,
-    Restore,
     Minimize,
-    ContextHelp,
+    Help,
     Shade,
-    Unshade,
-    PinOnAllDesktops,
-    Unpin,
+    AllDesktops,
     KeepBelow,
-    KeepBelowChecked,
     KeepAbove,
-    KeepAboveChecked,
     ApplicationMenu,
     Menu,
     Count,
@@ -85,7 +80,7 @@ enum struct BREEZECOMMON_EXPORT ColorOverridableButtonTypes {
 enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
     IconNormal,
     IconHover,
-    IconPress,
+    IconPressed,
     BackgroundNormal,
     BackgroundHover,
     BackgroundPress,

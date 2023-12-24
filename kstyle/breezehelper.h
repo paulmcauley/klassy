@@ -11,6 +11,7 @@
 #include "breezeanimationdata.h"
 #include "breezemetrics.h"
 #include "breezesettings.h"
+#include "colortools.h"
 #include "config-breeze.h"
 
 #include <KConfigWatcher>
@@ -361,10 +362,6 @@ public:
 protected:
     //* return rounded path in a given rect, with only selected corners rounded, and for a given radius
     QPainterPath roundedPath(const QRectF &, Corners, qreal) const;
-
-private Q_SLOTS:
-    // Generates window decoration colours for when a system palette update
-    void generateDecorationColorsOnSystemPaletteUpdate();
 
 private:
     //* configuration

@@ -7,9 +7,10 @@
 #include "breezemdiwindowshadow.h"
 
 #include "breezeboxshadowrenderer.h"
+#include "breezehelper.h"
 #include "breezemetrics.h"
+#include "breezesettings.h"
 #include "breezeshadowhelper.h"
-#include "breezestyleconfigdata.h"
 
 #include <QMdiArea>
 #include <QMdiSubWindow>
@@ -20,9 +21,10 @@ namespace Breeze
 {
 
 //____________________________________________________________________
-MdiWindowShadow::MdiWindowShadow(QWidget *parent, const TileSet &shadowTiles)
+MdiWindowShadow::MdiWindowShadow(QWidget *parent, const TileSet &shadowTiles, ShadowHelper *shadowHelper)
     : QWidget(parent)
     , _shadowTiles(shadowTiles)
+    , _shadowHelper(shadowHelper)
 {
     setAttribute(Qt::WA_OpaquePaintEvent, false);
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
@@ -37,7 +39,7 @@ void MdiWindowShadow::updateGeometry()
     }
 
     // metrics
-    const CompositeShadowParams params = ShadowHelper::lookupShadowParams(StyleConfigData::shadowSize());
+    const CompositeShadowParams params = ShadowHelper::lookupShadowParams(_shadowHelper->helper().decorationConfig()->shadowSize());
     if (params.isNone()) {
         return;
     }
@@ -236,7 +238,7 @@ void MdiWindowShadowFactory::installShadow(QObject *object)
     }
 
     // create new shadow
-    auto windowShadow(new MdiWindowShadow(widget->parentWidget(), _shadowHelper->shadowTiles(widget)));
+    auto windowShadow(new MdiWindowShadow(widget->parentWidget(), _shadowHelper->shadowTiles(widget), _shadowHelper));
     windowShadow->setWidget(widget);
 }
 

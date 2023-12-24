@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -12,13 +12,25 @@
 namespace Breeze
 {
 
-std::shared_ptr<DecorationColors> g_decorationColors = nullptr;
-static std::unique_ptr<QTimer> g_systemPaletteSingleUpdateTimer = std::unique_ptr<QTimer>(new QTimer());
+// cached values needed for base window decoration colour generation
+std::unique_ptr<DecorationColorPalette> g_decorationPalette = nullptr;
+qreal g_translucentButtonBackgroundsOpacity = -1.0; // is -1 so gets updated on first iteration
 
-std::shared_ptr<DecorationColors>
-ColorTools::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings, const bool setGlobal)
+DecorationColors::DecorationColors(const QPalette &systemBasepalette,
+                                   const QSharedPointer<InternalSettings> decorationSettings,
+                                   const bool useCachedGlobalPalette,
+                                   const bool regenerate)
+    : m_useCachedGlobalPalette(useCachedGlobalPalette)
 {
-    std::shared_ptr<DecorationColors> decorationColors = std::make_shared<DecorationColors>();
+    if (!useCachedGlobalPalette || (useCachedGlobalPalette && (!g_decorationPalette || regenerate))) {
+        generateDecorationColors(systemBasepalette, decorationSettings);
+    }
+    m_decorationPalette = useCachedGlobalPalette ? &g_decorationPalette : &m_nonGlobalDecorationPalette;
+}
+
+void DecorationColors::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings)
+{
+    DecorationColorPalette *decorationColors = new DecorationColorPalette();
 
     KStatefulBrush buttonFocusStatefulBrush;
     KStatefulBrush buttonHoverStatefulBrush;
@@ -28,24 +40,24 @@ ColorTools::generateDecorationColors(const QPalette &palette, const QSharedPoint
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NegativeBackground );
     // colors.negativeBackground = buttonHoverStatefulBrush.brush( palette ).color();
-    decorationColors->negativeLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->negative);
-    decorationColors->negativeSaturated = getDifferentiatedSaturatedColor(decorationColors->negative);
+    decorationColors->negativeLessSaturated = ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->negative);
+    decorationColors->negativeSaturated = ColorTools::getDifferentiatedSaturatedColor(decorationColors->negative);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::NeutralText);
     decorationColors->neutral = buttonFocusStatefulBrush.brush(palette).color();
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::NeutralBackground );
     // colors.neutralLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
-    decorationColors->neutralLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->neutral);
-    decorationColors->neutralSaturated = getDifferentiatedSaturatedColor(decorationColors->neutral);
+    decorationColors->neutralLessSaturated = ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->neutral);
+    decorationColors->neutralSaturated = ColorTools::getDifferentiatedSaturatedColor(decorationColors->neutral);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::PositiveText);
     decorationColors->positive = buttonFocusStatefulBrush.brush(palette).color();
     // this was too pale
     // buttonHoverStatefulBrush = KStatefulBrush( KColorScheme::Button, KColorScheme::PositiveBackground );
     // colors.positiveLessSaturated = buttonHoverStatefulBrush.brush( palette ).color();
-    decorationColors->positiveLessSaturated = getDifferentiatedLessSaturatedColor(decorationColors->positive);
-    decorationColors->positiveSaturated = getDifferentiatedSaturatedColor(decorationColors->positive);
+    decorationColors->positiveLessSaturated = ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->positive);
+    decorationColors->positiveSaturated = ColorTools::getDifferentiatedSaturatedColor(decorationColors->positive);
 
     buttonFocusStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::FocusColor);
     decorationColors->buttonFocus = buttonFocusStatefulBrush.brush(palette).color();
@@ -54,48 +66,45 @@ ColorTools::generateDecorationColors(const QPalette &palette, const QSharedPoint
 
     // this is required as the accent colours feature sets these the same
     if (decorationColors->buttonFocus == decorationColors->buttonHover)
-        decorationColors->buttonHover = getDifferentiatedLessSaturatedColor(decorationColors->buttonFocus);
+        decorationColors->buttonHover = ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->buttonFocus);
 
     //"Blue Ocean" style reduced opacity outlined buttons
-    decorationColors->buttonReducedOpacityBackground = alphaMix(decorationColors->buttonFocus, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
+    decorationColors->buttonReducedOpacityBackground =
+        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
 
-    decorationColors->buttonReducedOpacityOutline = alphaMix(decorationColors->buttonFocus, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
+    decorationColors->buttonReducedOpacityOutline =
+        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
 
-    decorationColors->fullySaturatedNegative = getDifferentiatedSaturatedColor(decorationColors->negative, true);
+    decorationColors->fullySaturatedNegative = ColorTools::getDifferentiatedSaturatedColor(decorationColors->negative, true);
     decorationColors->negativeReducedOpacityBackground =
-        alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity());
+        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity());
 
     decorationColors->negativeReducedOpacityOutline =
-        alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity() * 1.4);
+        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.4), 1.0));
 
     decorationColors->negativeReducedOpacityLessSaturatedBackground =
-        alphaMix(getDifferentiatedLessSaturatedColor(decorationColors->negative), decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
+        ColorTools::alphaMix(ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->negative),
+                             qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
 
-    decorationColors->neutralReducedOpacityBackground = alphaMix(decorationColors->neutral, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
+    decorationColors->neutralReducedOpacityBackground =
+        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
 
-    decorationColors->neutralReducedOpacityOutline = alphaMix(decorationColors->neutral, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
+    decorationColors->neutralReducedOpacityOutline =
+        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
 
-    decorationColors->positiveReducedOpacityBackground = alphaMix(decorationColors->positive, decorationSettings->translucentButtonBackgroundsOpacity() * 0.8);
+    decorationColors->positiveReducedOpacityBackground =
+        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
 
-    decorationColors->positiveReducedOpacityOutline = alphaMix(decorationColors->positive, decorationSettings->translucentButtonBackgroundsOpacity() * 1.2);
+    decorationColors->positiveReducedOpacityOutline =
+        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
 
     decorationColors->highlight = palette.color(QPalette::Highlight);
-    decorationColors->highlightLessSaturated = getLessSaturatedColorForWindowHighlight(decorationColors->highlight, true);
+    decorationColors->highlightLessSaturated = ColorTools::getLessSaturatedColorForWindowHighlight(decorationColors->highlight, true);
 
-    if (setGlobal)
-        g_decorationColors = decorationColors;
-
-    return decorationColors;
-}
-
-void ColorTools::systemPaletteUpdated(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings)
-{
-    // the timer ensures that generateDecorationColors(palette) will only be called once if more than one updated signal arrives in a very short space of time
-    if (!g_systemPaletteSingleUpdateTimer->isActive()) {
-        g_systemPaletteSingleUpdateTimer->setSingleShot(true);
-        g_systemPaletteSingleUpdateTimer->start(10);
-        generateDecorationColors(palette, decorationSettings, true);
-    }
+    if (m_useCachedGlobalPalette)
+        g_decorationPalette = std::unique_ptr<DecorationColorPalette>(decorationColors);
+    else
+        m_nonGlobalDecorationPalette = std::unique_ptr<DecorationColorPalette>(decorationColors);
 }
 
 QColor ColorTools::getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate)

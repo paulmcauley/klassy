@@ -28,21 +28,16 @@ std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By
     switch (internalSettings->buttonIconStyle()) {
     case InternalSettings::EnumButtonIconStyle::StyleKlassy:
     default:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleKlassy18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+        return std::make_unique<RenderStyleKlassy18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft);
 
     case InternalSettings::EnumButtonIconStyle::StyleKite:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleKite18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+        return std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft);
     case InternalSettings::EnumButtonIconStyle::StyleOxygen:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleOxygen18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+        return std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft);
     case InternalSettings::EnumButtonIconStyle::StyleRedmond:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleRedmond18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+        return std::make_unique<RenderStyleRedmond18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft);
     case InternalSettings::EnumButtonIconStyle::StyleRedmond10:
-        return std::unique_ptr<RenderDecorationButtonIcon18By18>(
-            new RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft));
+        return std::make_unique<RenderStyleRedmond1018By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft);
     }
 }
 
