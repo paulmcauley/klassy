@@ -79,6 +79,10 @@ public:
 
     //*@name colors
     //@{
+    std::shared_ptr<DecorationColors> decorationColors()
+    {
+        return m_decorationColors;
+    }
     QColor titleBarColor(bool returnNonAnimatedColor = false) const;
     QColor titleBarColorWithAddedTransparency() const;
     QColor titleBarSeparatorColor() const;
@@ -204,7 +208,7 @@ private:
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-    void updateShadow(const bool force = false, const bool noCache = false, const bool isThinWindowOutlineOverride = false);
+    void updateShadow(const bool force = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
     QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
@@ -244,6 +248,9 @@ private:
 
     //* Whether the paint() method is active
     bool m_painting = false;
+
+    //* Object to return decoration palette colours
+    std::shared_ptr<DecorationColors> m_decorationColors;
 
     //* active state change animation
     QVariantAnimation *m_animation;

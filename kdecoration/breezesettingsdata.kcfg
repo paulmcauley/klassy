@@ -5,8 +5,8 @@
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
   <kcfgfile name="klassyrc"/>
 
-  <!-- common options -->
-  <group name="Common">
+
+  <group name="Windeco">
 
     <entry name="ShadowStrength" type = "Int">
        <default>255</default>
@@ -274,18 +274,13 @@
         <default>0</default>
     </entry>
 
-    <entry name="ButtonOverrideColorsRestore" type = "IntList"/>
-    <entry name="ButtonOverrideColorsRestoreFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
     <entry name="ButtonOverrideColorsMinimize" type = "IntList"/>
     <entry name="ButtonOverrideColorsMinimizeFlags" type = "UInt">
         <default>0</default>
     </entry>
 
-    <entry name="ButtonOverrideColorsContextHelp" type = "IntList"/>
-    <entry name="ButtonOverrideColorsContextHelpFlags" type = "UInt">
+    <entry name="ButtonOverrideColorsHelp" type = "IntList"/>
+    <entry name="ButtonOverrideColorsHelpFlags" type = "UInt">
         <default>0</default>
     </entry>
 
@@ -294,18 +289,8 @@
         <default>0</default>
     </entry>
 
-    <entry name="ButtonOverrideColorsUnshade" type = "IntList"/>
-    <entry name="ButtonOverrideColorsUnshadeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsPinOnAllDesktops" type = "IntList"/>
-    <entry name="ButtonOverrideColorsPinOnAllDesktopsFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsUnpin" type = "IntList"/>
-    <entry name="ButtonOverrideColorsUnpinFlags" type = "UInt">
+    <entry name="ButtonOverrideColorsAllDesktops" type = "IntList"/>
+    <entry name="ButtonOverrideColorsAllDesktopsFlags" type = "UInt">
         <default>0</default>
     </entry>
 
@@ -314,18 +299,8 @@
         <default>0</default>
     </entry>
 
-    <entry name="ButtonOverrideColorsKeepBelowChecked" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepBelowCheckedFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
     <entry name="ButtonOverrideColorsKeepAbove" type = "IntList"/>
     <entry name="ButtonOverrideColorsKeepAboveFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsKeepAboveChecked" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepAboveCheckedFlags" type = "UInt">
         <default>0</default>
     </entry>
 
@@ -338,11 +313,6 @@
     <entry name="ButtonOverrideColorsMenuFlags" type = "UInt">
         <default>0</default>
     </entry>
-
-
-  </group>
-
-  <group name="Windeco">
 
     <!-- border size -->
     <!--

@@ -599,6 +599,9 @@ void ConfigWidget::buttonColorsButtonClicked()
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
     if (!m_buttonColorsDialog->m_loaded)
         m_buttonColorsDialog->load();
+    if (m_buttonColorsDialog->m_ui->buttonColorActiveOverrideToggle->isChecked()) {
+        m_buttonColorsDialog->resizeActiveOverrideGroupBox(true);
+    }
     if (!m_buttonColorsDialog->exec()) {
         m_buttonColorsDialog->load();
     }

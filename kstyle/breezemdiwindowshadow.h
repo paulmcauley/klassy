@@ -30,7 +30,7 @@ class MdiWindowShadow : public QWidget
 
 public:
     //* constructor
-    explicit MdiWindowShadow(QWidget *, const TileSet &);
+    explicit MdiWindowShadow(QWidget *, const TileSet &, ShadowHelper *shadowHelper);
 
     //* update geometry
     void updateGeometry();
@@ -63,6 +63,9 @@ private:
 
     //* tileset used to draw shadow
     TileSet _shadowTiles;
+
+    //* shadow helper used to generate the shadows
+    QPointer<ShadowHelper> _shadowHelper;
 };
 
 //* shadow manager

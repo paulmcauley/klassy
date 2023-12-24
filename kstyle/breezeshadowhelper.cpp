@@ -11,7 +11,7 @@
 #include "breezehelper.h"
 #include "breezemetrics.h"
 #include "breezepropertynames.h"
-#include "breezestyleconfigdata.h"
+#include "breezesettings.h"
 
 #include <KWindowSystem>
 
@@ -50,15 +50,15 @@ namespace Breeze
 CompositeShadowParams ShadowHelper::lookupShadowParams(int shadowSizeEnum)
 {
     switch (shadowSizeEnum) {
-    case StyleConfigData::ShadowNone:
+    case InternalSettings::EnumShadowSize::ShadowNone:
         return s_shadowParams[0];
-    case StyleConfigData::ShadowSmall:
+    case InternalSettings::EnumShadowSize::ShadowSmall:
         return s_shadowParams[1];
-    case StyleConfigData::ShadowMedium:
+    case InternalSettings::EnumShadowSize::ShadowMedium:
         return s_shadowParams[2];
-    case StyleConfigData::ShadowLarge:
+    case InternalSettings::EnumShadowSize::ShadowLarge:
         return s_shadowParams[3];
-    case StyleConfigData::ShadowVeryLarge:
+    case InternalSettings::EnumShadowSize::ShadowVeryLarge:
         return s_shadowParams[4];
     default:
         // Fallback to the Large size.
@@ -179,7 +179,7 @@ bool ShadowHelper::eventFilter(QObject *object, QEvent *event)
 //_______________________________________________________
 TileSet ShadowHelper::shadowTiles(QWidget *widget)
 {
-    CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+    CompositeShadowParams params = lookupShadowParams(_helper.decorationConfig()->shadowSize());
 
     if (params.isNone()) {
         return TileSet();
@@ -196,8 +196,8 @@ TileSet ShadowHelper::shadowTiles(QWidget *widget)
         return c;
     };
 
-    const QColor color = StyleConfigData::shadowColor();
-    const qreal strength = static_cast<qreal>(StyleConfigData::shadowStrength()) / 255.0;
+    const QColor color = _helper.decorationConfig()->shadowColor();
+    const qreal strength = static_cast<qreal>(_helper.decorationConfig()->shadowStrength()) / 255.0;
 
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
@@ -404,7 +404,7 @@ void ShadowHelper::installShadows(QWidget *widget)
 //_______________________________________________________
 QMargins ShadowHelper::shadowMargins(QWidget *widget) const
 {
-    CompositeShadowParams params = lookupShadowParams(StyleConfigData::shadowSize());
+    CompositeShadowParams params = lookupShadowParams(_helper.decorationConfig()->shadowSize());
     if (params.isNone()) {
         return QMargins();
     }

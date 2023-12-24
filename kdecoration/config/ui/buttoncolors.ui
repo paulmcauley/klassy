@@ -469,7 +469,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Icon press</string>
+              <string>Icon pressed</string>
              </property>
             </column>
             <column>
@@ -484,7 +484,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Background press</string>
+              <string>Background pressed</string>
              </property>
             </column>
             <column>
@@ -499,7 +499,7 @@
             </column>
             <column>
              <property name="text">
-              <string>Outline press</string>
+              <string>Outline pressed</string>
              </property>
             </column>
            </widget>

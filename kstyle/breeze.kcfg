@@ -5,34 +5,6 @@
 
   <kcfgfile name="klassyrc"/>
 
-  <!-- common options -->
-  <group name="Common">
-
-    <!-- shadow -->
-    <entry name="ShadowStrength" type = "Int">
-       <default>255</default>
-       <min>25</min>
-       <max>255</max>
-    </entry>
-
-    <!-- shadow -->
-    <entry name="ShadowSize" type = "Enum">
-      <choices>
-          <choice name="ShadowNone"/>
-          <choice name="ShadowSmall"/>
-          <choice name="ShadowMedium"/>
-          <choice name="ShadowLarge"/>
-          <choice name="ShadowVeryLarge"/>
-      </choices>
-      <default>ShadowLarge</default>
-    </entry>
-
-    <entry name="ShadowColor" type = "Color">
-       <default>0, 0, 0</default>
-    </entry>
-
-  </group>
-
   <!-- widget style -->
   <group name="Style">
 

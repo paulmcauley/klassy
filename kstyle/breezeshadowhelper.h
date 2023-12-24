@@ -109,6 +109,11 @@ public:
     //* return device pixel ratio for the window containing the widget
     static qreal devicePixelRatio(QWidget *);
 
+    Helper &helper()
+    {
+        return _helper;
+    }
+
 protected Q_SLOTS:
 
     //* unregister widget

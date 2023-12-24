@@ -73,6 +73,8 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings() const
             // load window decoration preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
                 PresetsModel::loadPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+                internalSettings->setProperty("noCache", true); // this property is to indicate not to cache shadows or colours for an exception with a Preset
+                                                                // -- this is because the Preset exception can alter shadows and colours
             }
             return internalSettings;
         }

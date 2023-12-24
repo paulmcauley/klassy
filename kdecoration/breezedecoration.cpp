@@ -143,9 +143,6 @@ static qreal g_thinWindowOutlineThickness = 1;
 static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
-// cached values needed for base window decoration colour generation
-static qreal g_translucentButtonBackgroundsOpacity = 0.5;
-
 //________________________________________________________________
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args)
@@ -221,11 +218,11 @@ QColor Decoration::titleBarSeparatorColor() const
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor color(g_decorationColors->highlight);
+        QColor color(m_decorationColors->highlight());
         color.setAlpha(color.alpha() * m_opacity);
         return color;
     } else if (c->isActive())
-        return g_decorationColors->highlight;
+        return m_decorationColors->highlight();
     else
         return QColor();
 }
@@ -240,9 +237,9 @@ QColor Decoration::accentedFinalWindowOutlineColor(bool active, QColor customCol
 
     } else {
         if (active)
-            return ColorTools::alphaMix(g_decorationColors->highlight, m_internalSettings->windowOutlineAccentColorOpacityActive());
+            return ColorTools::alphaMix(m_decorationColors->highlight(), m_internalSettings->windowOutlineAccentColorOpacityActive());
         else
-            return ColorTools::alphaMix(g_decorationColors->highlightLessSaturated, m_internalSettings->windowOutlineAccentColorOpacityInactive());
+            return ColorTools::alphaMix(m_decorationColors->highlightLessSaturated(), m_internalSettings->windowOutlineAccentColorOpacityInactive());
     }
 }
 
@@ -266,13 +263,13 @@ QColor Decoration::fontMixedAccentFinalWindowOutlineColor(bool active, QColor cu
     } else { // not a custom color
         if (active) {
             return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground),
-                                                         g_decorationColors->buttonFocus,
+                                                         m_decorationColors->buttonFocus(),
                                                          0.75) // foreground active font mixed with accent
                                         ,
                                         m_internalSettings->windowOutlineAccentWithContrastOpacityActive());
         } else {
             return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground),
-                                                         g_decorationColors->buttonHover,
+                                                         m_decorationColors->buttonHover(),
                                                          0.75) // foreground inactive font mixed with accent
                                         ,
                                         m_internalSettings->windowOutlineAccentWithContrastOpacityInactive());
@@ -597,15 +594,33 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
     // generate standard colours to be used in the decoration
-    connect(c.data(),
-            &KDecoration2::DecoratedClient::paletteChanged,
-            this,
-            &Decoration::generateDecorationColorsOnSystemPaletteUpdate,
-            Qt::UniqueConnection); // connection goes here, rather than init as need the value of translucentButtonBackgroundsOpacity from m_internalSettings.
-                                   // Only want one connection per decoration, so use Qt::UniqueConnection
-    if (!g_decorationColors || (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity())) {
+    if (!m_decorationColors) {
+        // the noCache property is set when the internalSettings are from a preset exception
+        // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
+        // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
+        if (m_internalSettings->property("noCache").toBool()) {
+            m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, false);
+
+        } else { // cached case
+            if (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity()) {
+                g_translucentButtonBackgroundsOpacity = m_internalSettings->translucentButtonBackgroundsOpacity();
+                m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, true, true);
+            } else {
+                m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, true, false);
+            }
+        }
+
+        // connect so a change in system colors will update the decoration colors
+        connect(c.data(),
+                &KDecoration2::DecoratedClient::paletteChanged,
+                this,
+                &Decoration::generateDecorationColorsOnSystemPaletteUpdate); // connection goes here, rather than init as need the value of
+                                                                             // translucentButtonBackgroundsOpacity from m_internalSettings
+    } else if (m_internalSettings->property("noCache").toBool()) { // non-cached color update
+        m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the non-cached decoration colors
+    } else if (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity()) { // cached color update
         g_translucentButtonBackgroundsOpacity = m_internalSettings->translucentButtonBackgroundsOpacity();
-        ColorTools::generateDecorationColors(c->palette(), m_internalSettings, true);
+        m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the cached decoration colors
     }
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
@@ -671,7 +686,7 @@ void Decoration::generateDecorationColorsOnSystemPaletteUpdate()
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    ColorTools::systemPaletteUpdated(c->palette(), m_internalSettings);
+    m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the decoration colors
 }
 
 //________________________________________________________________
@@ -1767,7 +1782,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 }
 
 //________________________________________________________________
-void Decoration::updateShadow(const bool force, const bool noCache, const bool isThinWindowOutlineOverride)
+void Decoration::updateShadow(const bool force, bool noCache, const bool isThinWindowOutlineOverride)
 {
     auto s = settings();
     auto c = client().toStrongRef();
@@ -1779,6 +1794,13 @@ void Decoration::updateShadow(const bool force, const bool noCache, const bool i
         qWarning("Klassy: paint() occurring at same time as shadow creation for \"%s\" - abandoning setting shadow to prevent EGL_BAD_SURFACE.",
                  c->caption().toLatin1().data());
         return;
+    }
+
+    // the noCache property is set when the internalSettings are from a preset exception
+    // The preset exception may modify the shadow, so in this case we don't want to cache the exception shadow as it may corrupt the shadow cache for normal
+    // non-exception decoration windows
+    if (m_internalSettings->property("noCache").toBool()) {
+        noCache = true;
     }
 
     // Animated case, no cached shadow object
