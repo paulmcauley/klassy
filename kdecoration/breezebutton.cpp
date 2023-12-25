@@ -888,9 +888,12 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool &negative
             return buttonHoverColor;
         }
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()
-               && (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::Accent
-                   || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-                   || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights)) {
+               && !( // not when titlebar-text inversion occurs (for Breeze compatibility with circular pin icon)
+                   !d->m_buttonBehaviouralParameters.drawBackgroundAlways
+                   && ((d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+                        && !d->internalSettings()->translucentButtonBackgrounds())
+                       || (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+                           && !d->internalSettings()->translucentButtonBackgrounds())))) {
         if (analyseContrastWithForeground)
             foregroundContrastedColor = buttonFocusColor;
         return buttonFocusColor;
