@@ -153,23 +153,26 @@ public:
     }
 
     struct ButtonBehaviouralParameters {
-        bool drawBackgroundAlways;
+        bool drawBackgroundNormally;
         bool drawBackgroundOnHover;
-        bool drawBackgroundOnFocus;
+        bool drawBackgroundOnPress;
         // bool drawBackgroundDifferentColoredHover;
-        bool drawCloseBackgroundAlways;
+        bool drawCloseBackgroundNormally;
         bool drawCloseBackgroundOnHover;
-        bool drawCloseBackgroundOnFocus;
-        bool drawOutlineAlways;
+        bool drawCloseBackgroundOnPress;
+        bool drawOutlineNormally;
         bool drawOutlineOnHover;
-        bool drawOutlineOnFocus;
+        bool drawOutlineOnPress;
         // bool drawOutlineDifferentColoredHover;
-        bool drawCloseOutlineAlways;
+        bool drawCloseOutlineNormally;
         bool drawCloseOutlineOnHover;
-        bool drawCloseOutlineOnFocus;
-        bool drawIconAlways;
+        bool drawCloseOutlineOnPress;
+        bool drawIconNormally;
         bool drawIconOnHover;
-        bool drawIconOnFocus;
+        bool drawIconOnPress;
+        bool drawCloseIconNormally;
+        bool drawCloseIconOnHover;
+        bool drawCloseIconOnPress;
     } m_buttonBehaviouralParameters;
 
 public Q_SLOTS:
