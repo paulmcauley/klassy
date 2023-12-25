@@ -141,6 +141,9 @@ void TitleBarSpacing::updateChanged()
     if (!m_internalSettings)
         return;
 
+    if (m_loading)
+        return; // only check if the user has made a change to the UI, or user has pressed defaults
+
     // track modifications
     bool modified(false);
 
