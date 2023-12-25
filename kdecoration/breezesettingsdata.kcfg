@@ -314,6 +314,10 @@
         <default>0</default>
     </entry>
 
+    <entry name="ButtonOverrideColorsLockStates" type = "UInt">
+        <default>0</default>
+    </entry>
+
     <!-- border size -->
     <!--
       this one is used only for window specific settings, since the default is globally set by kwin
