@@ -273,14 +273,14 @@
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="1" column="2">
-              <widget class="QLabel" name="label_4">
+              <widget class="QLabel" name="opacitySliderLabel_2">
                <property name="text">
                 <string>Opaque</string>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="label_3">
+              <widget class="QLabel" name="opacitySliderLabel_1">
                <property name="text">
                 <string>Transparent</string>
                </property>
@@ -304,7 +304,7 @@
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
-                 <height>20</height>
+                 <height>0</height>
                 </size>
                </property>
               </spacer>
@@ -580,54 +580,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>translucentButtonBackgrounds</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>translucentButtonBackgroundsOpacitySlider</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>363</x>
-     <y>307</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>402</x>
-     <y>277</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>translucentButtonBackgrounds</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_3</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>351</x>
-     <y>290</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>409</x>
-     <y>305</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>translucentButtonBackgrounds</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>label_4</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>337</x>
-     <y>288</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>545</x>
-     <y>319</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>translucentButtonBackgroundsOpacitySlider</sender>
    <signal>valueChanged(int)</signal>
    <receiver>translucentButtonBackgroundsOpacity</receiver>
@@ -656,22 +608,6 @@
     <hint type="destinationlabel">
      <x>515</x>
      <y>279</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>translucentButtonBackgrounds</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>translucentButtonBackgroundsOpacity</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>259</x>
-     <y>294</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>569</x>
-     <y>286</y>
     </hint>
    </hints>
   </connection>

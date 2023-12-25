@@ -1813,6 +1813,8 @@ void Decoration::updateShadow(const bool force, bool noCache, const bool isThinW
     setShadowStrength(c->isActive() ? 1.0 : 0.5);
     setThinWindowOutlineColor();
 
+    // TODO: Potentially make the kdecoration configwidget more intelligent and send a dbus signal which is aware of whether to update the shadow or not, so
+    // there is less processing here
     if (force || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
         || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
         || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()

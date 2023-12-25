@@ -47,6 +47,7 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
+    void showHideTranslucencySettings();
     void setNegativeCloseBackgroundHoverPressState();
     void setCloseIconNegativeBackgroundState();
     void resizeOverrideColorTable();

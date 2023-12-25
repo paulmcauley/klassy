@@ -92,6 +92,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui->buttonBackgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(setNegativeCloseBackgroundHoverPressState()));
     connect(m_ui->buttonBackgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(setCloseIconNegativeBackgroundState()));
     connect(m_ui->translucentButtonBackgrounds, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->translucentButtonBackgrounds, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettings);
     connect(m_ui->negativeCloseBackgroundHoverPress, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
     connect(m_ui->lockButtonColorsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
     connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
@@ -134,6 +135,7 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
     m_ui->adjustBackgroundColorOnPoorContrast->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast());
     m_ui->translucentButtonBackgroundsOpacity->setValue(m_internalSettings->translucentButtonBackgroundsOpacity() * 100);
 
+    showHideTranslucencySettings();
     decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks();
 
     m_overrideColorsLoaded = false;
@@ -355,6 +357,9 @@ void ButtonColors::updateChanged()
     if (!m_internalSettings)
         return;
 
+    if (m_loading)
+        return; // only check if the user has made a change to the UI, or user has pressed defaults TODO:copy this to other classes
+
     // track modifications
     bool modified(false);
     if (m_ui->buttonIconColors->currentIndex() != m_internalSettings->buttonIconColors())
@@ -496,6 +501,21 @@ void ButtonColors::setCloseIconNegativeBackgroundState()
     } else {
         m_ui->closeIconNegativeBackground->setVisible(false);
         m_ui->closeIconNegativeBackgroundLabel->setVisible(false);
+    }
+}
+
+void ButtonColors::showHideTranslucencySettings()
+{
+    if (m_ui->translucentButtonBackgrounds->isChecked()) {
+        m_ui->translucentButtonBackgroundsOpacitySlider->setVisible(true);
+        m_ui->opacitySliderLabel_1->setVisible(true);
+        m_ui->opacitySliderLabel_2->setVisible(true);
+        m_ui->translucentButtonBackgroundsOpacity->setVisible(true);
+    } else {
+        m_ui->translucentButtonBackgroundsOpacitySlider->setVisible(false);
+        m_ui->opacitySliderLabel_1->setVisible(false);
+        m_ui->opacitySliderLabel_2->setVisible(false);
+        m_ui->translucentButtonBackgroundsOpacity->setVisible(false);
     }
 }
 
