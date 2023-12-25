@@ -31,8 +31,27 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     m_ui->activeOverrideGroupBox->setVisible(false);
     connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::toggled, this, &ButtonColors::showActiveOverrideGroupBox);
     connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::clicked, this, &ButtonColors::resizeActiveOverrideGroupBox);
+
+    int numColumns = m_overridableButtonColorStatesStrings.count();
+
+    // generate the horizontal header
+    // m_unlockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-unlocked-symbolic.svg"),QSize(16,16));
+    // m_lockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-locked-symbolic.svg"),QSize(16,16));
+    m_unlockedIcon = QIcon::fromTheme(QStringLiteral("unlock"));
+    m_lockedIcon = QIcon::fromTheme(QStringLiteral("lock"));
+    for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+        QTableWidgetItem *horizontalHeaderItem = new QTableWidgetItem();
+        horizontalHeaderItem->setText(m_overridableButtonColorStatesStrings[columnIndex]);
+        horizontalHeaderItem->setIcon(m_unlockedIcon);
+        horizontalHeaderItem->setToolTip(i18n("Lock to make all colours in this column the same"));
+        horizontalHeaderItem->setData(Qt::InitialSortOrderRole, columnIndex);
+        m_ui->overrideColorTableActive->setHorizontalHeaderItem(columnIndex, horizontalHeaderItem);
+    }
+
+    connect(m_ui->overrideColorTableActive->horizontalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::activeTableHorizontalHeaderSectionClicked);
+    connect(m_ui->overrideColorTableActive->horizontalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::updateChanged);
+
     // gnerate the overrideColorTableActive table UI
-    int numColumns = static_cast<int>(OverridableButtonColorStates::Count);
     // populate the checkboxes and KColorButtons
     for (int rowIndex = 0; rowIndex < m_colorOverridableButtonTypesStrings.count(); rowIndex++) {
         m_ui->overrideColorTableActive->insertRow(rowIndex);
@@ -44,6 +63,8 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
             checkBox->setProperty("column", columnIndex);
             hlayout->addWidget(checkBox);
             KColorButton *colorButton = new KColorButton();
+            colorButton->setProperty("row", rowIndex);
+            colorButton->setProperty("column", columnIndex);
             colorButton->setAlphaChannelEnabled(true);
             connect(colorButton, &KColorButton::changed, this, &ButtonColors::updateChanged);
             colorButton->setVisible(false);
@@ -55,7 +76,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
             connect(checkBox, &QAbstractButton::toggled, colorButton, &QWidget::setVisible);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::resizeOverrideColorTable);
-            connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::copyCellDataToInactiveTable);
+            connect(colorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells);
         }
     }
 
@@ -112,6 +133,8 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
     m_ui->blackWhiteIconOnPoorContrast->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast());
     m_ui->adjustBackgroundColorOnPoorContrast->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast());
     m_ui->translucentButtonBackgroundsOpacity->setValue(m_internalSettings->translucentButtonBackgroundsOpacity() * 100);
+
+    decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks();
 
     m_overrideColorsLoaded = false;
     bool overrideColorRowLoaded = false;
@@ -205,6 +228,8 @@ void ButtonColors::save(const bool reloadKwinConfig)
     m_internalSettings->setBlackWhiteIconOnPoorContrast(m_ui->blackWhiteIconOnPoorContrast->isChecked());
     m_internalSettings->setAdjustBackgroundColorOnPoorContrast(m_ui->adjustBackgroundColorOnPoorContrast->isChecked());
     m_internalSettings->setTranslucentButtonBackgroundsOpacity(m_ui->translucentButtonBackgroundsOpacity->value() / 100.0f);
+
+    m_internalSettings->setButtonOverrideColorsLockStates(encodeColorOverridableLockStates());
 
     QList<int> colorsList;
     uint32_t colorsFlags = 0;
@@ -348,7 +373,9 @@ void ButtonColors::updateChanged()
         modified = true;
     else if (m_ui->adjustBackgroundColorOnPoorContrast->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast())
         modified = true;
-    else if (m_ui->translucentButtonBackgroundsOpacity->value() != (100 * m_internalSettings->translucentButtonBackgroundsOpacity()))
+    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacity->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity())) < 0.001))
+        modified = true;
+    else if (encodeColorOverridableLockStates() != m_internalSettings->buttonOverrideColorsLockStates())
         modified = true;
 
     if (m_ui->buttonColorActiveOverrideToggle->isChecked()) {
@@ -498,14 +525,68 @@ void ButtonColors::resizeActiveOverrideGroupBox(const bool value)
     }
 }
 
-// given a checkBox sending a toggle signal to this slot, gets the table cell in which the checkBox was located and copies the same data to the equivalent
-// inactive window table cell
-void ButtonColors::copyCellDataToInactiveTable(const bool on)
+void ButtonColors::activeTableHorizontalHeaderSectionClicked(const int column)
 {
-    QCheckBox *checkBox = qobject_cast<QCheckBox *>(QObject::sender());
-    if (checkBox) {
-        int row = checkBox->property("row").toInt();
-        int column = checkBox->property("column").toInt();
+    QTableWidgetItem *item = m_ui->overrideColorTableActive->horizontalHeaderItem(column);
+    if (!item)
+        return;
+    // toggle checked state
+    if (item->checkState() == Qt::CheckState::Checked) {
+        setTableHorizontalHeaderSectionCheckedState(column, false);
+    } else {
+        setTableHorizontalHeaderSectionCheckedState(column, true);
+    }
+}
+
+void ButtonColors::setTableHorizontalHeaderSectionCheckedState(const int column, const bool checked)
+{
+    QTableWidgetItem *item = m_ui->overrideColorTableActive->horizontalHeaderItem(column);
+    if (!item)
+        return;
+    item->setCheckState(checked ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
+    item->setIcon(checked ? m_lockedIcon : m_unlockedIcon);
+}
+
+// given a checkBox sending a toggle signal to this slot, gets the table cell in which the checkBox was located and copies the same data to the equivalent
+// inactive window table cell and to the rest of the column if the column lock is set
+void ButtonColors::copyCellDataToOtherCells()
+{
+    if (m_loading || m_processingDefaults)
+        return; // only do this for user interactions
+    KColorButton *colorButton = qobject_cast<KColorButton *>(QObject::sender());
+    if (colorButton) {
+        bool rowOk, columnOk;
+        int row = colorButton->property("row").toInt(&rowOk);
+        int column = colorButton->property("column").toInt(&columnOk);
+
+        if (rowOk && columnOk) {
+            if (colorButton->parentWidget() && colorButton->parentWidget()->parentWidget() && colorButton->parentWidget()->parentWidget()->parentWidget()) {
+                QTableWidget *table = qobject_cast<QTableWidget *>(colorButton->parentWidget()->parentWidget()->parentWidget());
+                if (table) {
+                    QTableWidgetItem *item = table->horizontalHeaderItem(column);
+                    if (item) {
+                        if (item->checkState() == Qt::CheckState::Checked) { // if the lock icon is locked for the column
+                            for (int destinationRow = 0; destinationRow < m_colorOverridableButtonTypesStrings.count(); destinationRow++) {
+                                QCheckBox *destinationCheckBox = nullptr;
+                                KColorButton *destinationColorButton = nullptr;
+
+                                if (destinationRow != row) { // copy the values to all other colorBoxes in the column
+                                    if (checkBoxAndColorButtonAtTableCell(table, destinationRow, column, destinationCheckBox, destinationColorButton)) {
+                                        // disconnect(destinationColorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells);
+                                        // //disconnect the signals that call this function from the other cells to prevent this function being called many
+                                        // times
+                                        destinationColorButton->setColor(colorButton->color());
+                                        destinationCheckBox->setChecked(true);
+                                        // connect(destinationColorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells); //re-enable
+                                        // the connection
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -618,6 +699,65 @@ bool ButtonColors::decodeColorsFlagsAndLoadRow(QTableWidget *tableActive, int ro
                 } else {
                     overrideCheckBox->setChecked(false);
                     overrideColorButton->setColor(QColor());
+                }
+            }
+            columnIndex++;
+        }
+    }
+    return rowHasOverrideColorsLoaded;
+}
+
+uint32_t ButtonColors::encodeColorOverridableLockStates()
+{
+    uint32_t bitMask = 0x00000001;
+    uint32_t lockFlags = 0x00000000;
+    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
+    QTableWidget **table;
+
+    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+        if (validColorsFlagsBits & bitMask) {
+            if (validColorsFlagsBitsActive & bitMask) {
+                table = &m_ui->overrideColorTableActive;
+            } else {
+                return lockFlags;
+            }
+            QTableWidgetItem *item = (*table)->horizontalHeaderItem(columnIndex);
+            if (item) {
+                if (item->checkState() == Qt::CheckState::Checked) { // set the bit of the column by OR-ing the bitmask with the existing value
+                    lockFlags = lockFlags | bitMask;
+                } else { // clear the bit by AND-ing with the inverse of the bitmask
+                    lockFlags = lockFlags & (~bitMask);
+                }
+            }
+            columnIndex++;
+        }
+    }
+    return lockFlags;
+}
+
+bool ButtonColors::decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks()
+{
+    uint32_t bitMask = 0x00000001;
+    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
+    QTableWidget *tableActive = m_ui->overrideColorTableActive;
+    QTableWidget **table;
+    bool rowHasOverrideColorsLoaded = false;
+    uint32_t lockFlags = m_internalSettings->buttonOverrideColorsLockStates();
+    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+        if (validColorsFlagsBits & bitMask) {
+            if (validColorsFlagsBitsActive & bitMask) {
+                table = &tableActive;
+            } else {
+                return rowHasOverrideColorsLoaded;
+            }
+            QTableWidgetItem *item = (*table)->horizontalHeaderItem(columnIndex);
+            if (item) {
+                if (lockFlags & bitMask) { // if the current bit in lockFlags is 1
+                    setTableHorizontalHeaderSectionCheckedState(columnIndex, true);
+                } else {
+                    setTableHorizontalHeaderSectionCheckedState(columnIndex, false);
                 }
             }
             columnIndex++;

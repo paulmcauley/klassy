@@ -52,8 +52,10 @@ private Q_SLOTS:
     void resizeOverrideColorTable();
     void showActiveOverrideGroupBox(const bool on);
     void resizeActiveOverrideGroupBox(const bool on);
-    void copyCellDataToInactiveTable(const bool on);
+    void copyCellDataToOtherCells();
     void setButtonBackgroundColorsIcons();
+    void activeTableHorizontalHeaderSectionClicked(const int column);
+    void setTableHorizontalHeaderSectionCheckedState(const int column, const bool checked);
 
 Q_SIGNALS:
     void changed(bool);
@@ -73,6 +75,11 @@ private:
     //*returns true if the row was loaded with a value
     bool decodeColorsFlagsAndLoadRow(QTableWidget *table, int row, uint32_t colorsFlags, const QList<int> &colorsList);
 
+    //* encodes the lock-icon states on table horizontal header in the same manner as encodeColorOverridableButtonTypeRow
+    uint32_t encodeColorOverridableLockStates();
+
+    //* decodes the lock-icon states in m_internalSettings and loads them into the override tables' horizontal headers
+    bool decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks();
     void setChanged(bool value);
 
     Ui_ButtonColors *m_ui;
@@ -107,6 +114,23 @@ private:
         i18n("Application Menu"),
         i18n("Menu (app icon)"),
     };
+
+    // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
+    QStringList m_overridableButtonColorStatesStrings{
+        i18n("Icon normal"),
+        i18n("Icon hover"),
+        i18n("Icon pressed"),
+        i18n("Background normal"),
+        i18n("Background hover"),
+        i18n("Background pressed"),
+        i18n("Outline normal"),
+        i18n("Outline hover"),
+        i18n("Outline pressed"),
+        i18n("Menu (app icon)"),
+    };
+
+    QIcon m_unlockedIcon;
+    QIcon m_lockedIcon;
 };
 
 }
