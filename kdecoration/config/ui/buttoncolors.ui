@@ -142,7 +142,7 @@
              <item>
               <widget class="QLabel" name="closeIconNegativeBackgroundLabel">
                <property name="text">
-                <string>Close icon colour:</string>
+                <string>Close icon colour when negative background:</string>
                </property>
                <property name="buddy">
                 <cstring>closeIconNegativeBackground</cstring>
