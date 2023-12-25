@@ -360,7 +360,6 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor, const bo
     QColor normalForeground;
     QColor hoverForeground;
     QColor pressForeground;
-    QColor fontColorContrastBoosted;
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
@@ -378,16 +377,6 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor, const bo
         (type() == DecorationButtonType::Close) ? &d->m_buttonBehaviouralParameters.drawCloseIconOnHover : &d->m_buttonBehaviouralParameters.drawIconOnHover;
     bool *drawIconOnPress =
         (type() == DecorationButtonType::Close) ? &d->m_buttonBehaviouralParameters.drawCloseIconOnPress : &d->m_buttonBehaviouralParameters.drawIconOnPress;
-
-    if (backgroundContrastedColor.isValid() && d->internalSettings()->blackWhiteIconOnPoorContrast()) {
-        ColorTools::getHigherContrastForegroundColor(d->fontColor(), backgroundContrastedColor, 2.3, fontColorContrastBoosted);
-
-        // if(adjustedForContrastForeground) qDebug() << "adjustedForContrastForeground" << adjustedForContrastForeground << "for type" << int(type()) <<
-        // "original foreground colour was" << d->fontColor() << "background is" << backgroundContrastedColor <<  "now foreground is" <<
-        // fontColorContrastBoosted;
-    } else {
-        fontColorContrastBoosted = d->fontColor();
-    }
 
     // determine the button colour state
     if (isPressed() && *drawIconOnPress) {
@@ -432,27 +421,71 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor, const bo
                 pressForeground = Qt::GlobalColor::white;
 
             // get normalForeground
-            if ((d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-                 || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-                && !d->internalSettings()->translucentButtonBackgrounds()) {
-                if (*drawBackgroundNormally) {
-                    if (*drawIconNormally)
-                        normalForeground = d->titleBarColor();
+            if (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarText) {
+                if ((d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+                     || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText)
+                    && !d->internalSettings()->translucentButtonBackgrounds()) {
+                    if (*drawBackgroundNormally) {
+                        if (*drawIconNormally)
+                            normalForeground = d->titleBarColor();
+                    } else {
+                        if (*drawIconNormally)
+                            normalForeground = d->fontColor();
+                    }
                 } else {
                     if (*drawIconNormally)
                         normalForeground = d->fontColor();
                 }
-            } else {
+            } else if (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                       || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                       || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
                 if (*drawIconNormally)
-                    normalForeground = fontColorContrastBoosted;
+                    normalForeground = d->decorationColors()->negativeSaturated();
+                if (*drawIconOnHover)
+                    hoverForeground = d->decorationColors()->negativeSaturated();
+                if (*drawIconOnPress)
+                    pressForeground = d->decorationColors()->negativeSaturated();
+            } else {
+                defaultButton = true;
             }
         }
+    } else if (type() == DecorationButtonType::Close
+               && (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                   || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                   || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+        defaultButton = false;
+        if (*drawIconNormally)
+            normalForeground = d->decorationColors()->negativeSaturated();
+        if (*drawIconOnHover)
+            hoverForeground = d->decorationColors()->negativeSaturated();
+        if (*drawIconOnPress)
+            pressForeground = d->decorationColors()->negativeSaturated();
+    } else if (type() == DecorationButtonType::Maximize
+               && (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+        defaultButton = false;
+        if (*drawIconNormally)
+            normalForeground = d->decorationColors()->positiveSaturated();
+        if (*drawIconOnHover)
+            hoverForeground = d->decorationColors()->positiveSaturated();
+        if (*drawIconOnPress)
+            pressForeground = d->decorationColors()->positiveSaturated();
+    } else if (type() == DecorationButtonType::Minimize
+               && (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+        defaultButton = false;
+        if (*drawIconNormally)
+            normalForeground = d->decorationColors()->neutral();
+        if (*drawIconOnHover)
+            hoverForeground = d->decorationColors()->neutral();
+        if (*drawIconOnPress)
+            pressForeground = d->decorationColors()->neutral();
     }
 
     if (defaultButton) {
-        if ((d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-            && !d->internalSettings()->translucentButtonBackgrounds()) {
+        if ((d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText)
+            && !d->internalSettings()->translucentButtonBackgrounds()
+            && (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarText)) {
             if (*drawBackgroundNormally) {
                 if (*drawIconNormally)
                     normalForeground = d->titleBarColor();
@@ -469,13 +502,36 @@ QColor Button::foregroundColor(const QColor &backgroundContrastedColor, const bo
                     pressForeground = *drawBackgroundOnPress ? d->titleBarColor() : d->fontColor();
             }
         } else {
-            if (*drawIconNormally)
-                normalForeground = fontColorContrastBoosted;
-            if (*drawIconOnHover)
-                hoverForeground = fontColorContrastBoosted;
-            if (*drawIconOnPress)
-                pressForeground = fontColorContrastBoosted;
+            if (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarText) {
+                if (*drawIconNormally)
+                    normalForeground = d->fontColor();
+                if (*drawIconOnHover)
+                    hoverForeground = d->fontColor();
+                if (*drawIconOnPress)
+                    pressForeground = d->fontColor();
+            } else if (d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                       || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::Accent
+                       || d->internalSettings()->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+                if (*drawIconNormally)
+                    normalForeground = d->decorationColors()->highlight();
+                if (*drawIconOnHover)
+                    hoverForeground = d->decorationColors()->highlight();
+                if (*drawIconOnPress)
+                    pressForeground = d->decorationColors()->highlight();
+            }
         }
+    }
+
+    if (d->internalSettings()->blackWhiteIconOnPoorContrast() && backgroundContrastedColor.isValid()) {
+        if (normalForeground.isValid())
+            ColorTools::getHigherContrastForegroundColor(normalForeground, backgroundContrastedColor, 2.3, normalForeground);
+
+        if (hoverForeground.isValid())
+            ColorTools::getHigherContrastForegroundColor(hoverForeground, backgroundContrastedColor, 2.3, hoverForeground);
+
+        if (pressForeground.isValid())
+            ColorTools::getHigherContrastForegroundColor(pressForeground, backgroundContrastedColor, 2.3, pressForeground);
     }
 
     // return the appropriate palette colour for each state
@@ -514,14 +570,6 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool &negative
     QColor backgroundHoverColor;
     QColor backgroundPressColor;
     foregroundContrastedColor = QColor(); // for contrast heuristic between foreground and background of button when not translucent
-
-    // heuristic for contrast detection between background and foreground is only enabled for system accent colours from the system because system colour
-    // schemes can be imperfect. Not enabled for translucent because usually the translucencty alleviates any contrast problems
-    bool analyseContrastWithForeground =
-        (!d->internalSettings()->translucentButtonBackgrounds()
-         && (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::Accent
-             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights));
 
     const bool negativeCloseCategory( // whether the button background colour is in the general negative category as selected in the "Background & Outline
                                       // Colours" combobox
@@ -903,11 +951,11 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool &negative
         if (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::Accent
             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
             || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-            if (analyseContrastWithForeground)
+            if (d->internalSettings()->blackWhiteIconOnPoorContrast())
                 foregroundContrastedColor = backgroundPressColor;
             return backgroundPressColor;
         } else {
-            if (analyseContrastWithForeground)
+            if (d->internalSettings()->blackWhiteIconOnPoorContrast())
                 foregroundContrastedColor = backgroundHoverColor;
             return backgroundHoverColor;
         }
@@ -918,34 +966,34 @@ QColor Button::backgroundColor(QColor &foregroundContrastedColor, bool &negative
                         && !d->internalSettings()->translucentButtonBackgrounds())
                        || (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
                            && !d->internalSettings()->translucentButtonBackgrounds())))) {
-        if (analyseContrastWithForeground)
+        if (d->internalSettings()->blackWhiteIconOnPoorContrast())
             foregroundContrastedColor = backgroundPressColor;
         return backgroundPressColor;
     } else if (isPressed()) {
-        if (analyseContrastWithForeground)
+        if (d->internalSettings()->blackWhiteIconOnPoorContrast())
             foregroundContrastedColor = backgroundPressColor;
         negativeClosePalette = negativePressClosePalette;
         return backgroundPressColor;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (m_preAnimationBackgroundColor.isValid() && backgroundHoverColor.isValid()) {
-            if (analyseContrastWithForeground)
+            if (d->internalSettings()->blackWhiteIconOnPoorContrast())
                 foregroundContrastedColor = backgroundHoverColor;
             negativeClosePalette = negativeHoverClosePalette;
             return KColorUtils::mix(m_preAnimationBackgroundColor, backgroundHoverColor, m_opacity);
         } else if (backgroundHoverColor.isValid()) {
-            if (analyseContrastWithForeground)
+            if (d->internalSettings()->blackWhiteIconOnPoorContrast())
                 foregroundContrastedColor = backgroundHoverColor;
             negativeClosePalette = negativeHoverClosePalette;
             return ColorTools::alphaMix(backgroundHoverColor, m_opacity);
         } else
             return QColor();
     } else if (isHovered()) {
-        if (analyseContrastWithForeground)
+        if (d->internalSettings()->blackWhiteIconOnPoorContrast())
             foregroundContrastedColor = backgroundHoverColor;
         negativeClosePalette = negativeHoverClosePalette;
         return backgroundHoverColor;
     } else {
-        if (analyseContrastWithForeground)
+        if (d->internalSettings()->blackWhiteIconOnPoorContrast())
             foregroundContrastedColor = backgroundNormalColor;
         negativeClosePalette = negativeNormalClosePalette;
         return backgroundNormalColor;
