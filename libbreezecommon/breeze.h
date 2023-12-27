@@ -63,33 +63,6 @@ static QStringList windecoExceptionKeys = {
     "ExceptionPreset",
 };
 
-enum struct BREEZECOMMON_EXPORT ColorOverridableButtonTypes {
-    Close,
-    Maximize,
-    Minimize,
-    Help,
-    Shade,
-    AllDesktops,
-    KeepBelow,
-    KeepAbove,
-    ApplicationMenu,
-    Menu,
-    Count,
-};
-
-enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
-    IconNormal,
-    IconHover,
-    IconPressed,
-    BackgroundNormal,
-    BackgroundHover,
-    BackgroundPress,
-    OutlineNormal,
-    OutlineHover,
-    OutlinePress,
-    Count,
-};
-
 // KDECORATION-------------------------------------------------------------
 
 //* convenience typedefs
@@ -198,6 +171,7 @@ enum BREEZECOMMON_EXPORT ArrowOrientation {
     ArrowRight,
 };
 
+// TODO:move me to decorationbuttoncommon
 //* button type
 enum BREEZECOMMON_EXPORT ButtonType {
     ButtonClose,

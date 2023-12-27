@@ -2,12 +2,14 @@
 ### Qt/KDE
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigWidgets)
+find_package(KDecoration2 REQUIRED)
 
 ################# breezestyle target #################
 set(breezecommon_LIB_SRCS
     breeze.cpp
     breezeboxshadowrenderer.cpp
     colortools.cpp
+    decorationbuttoncommon.cpp
     decorationexceptionlist.cpp
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
@@ -33,6 +35,7 @@ target_link_libraries(klassycommon5
         Qt::Core
         Qt::Gui
         
+        KDecoration2::KDecoration
         KF5::GuiAddons
         KF5::ConfigCore
         KF5::ConfigGui

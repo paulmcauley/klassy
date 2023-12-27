@@ -12,6 +12,7 @@
 
 #include "breezesettings.h"
 #include "colortools.h"
+#include "decorationbuttoncommon.h"
 
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/Decoration>
@@ -83,12 +84,12 @@ public:
     {
         return m_decorationColors;
     }
-    QColor titleBarColor(bool returnNonAnimatedColor = false) const;
+    QColor titleBarColor(bool returnNonAnimatedColor = false, bool overrideActiveState = false, bool overridenIsActive = true) const;
     QColor titleBarColorWithAddedTransparency() const;
     QColor titleBarSeparatorColor() const;
     QColor accentedFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
     QColor fontMixedAccentFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
-    QColor fontColor(bool returnNonAnimatedColor = false) const;
+    QColor fontColor(bool returnNonAnimatedColor = false, bool overrideActiveState = false, bool overridenIsActive = true) const;
     QColor overriddenOutlineColorAnimateIn() const;
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
@@ -152,28 +153,13 @@ public:
         return m_rightButtons;
     }
 
-    struct ButtonBehaviouralParameters {
-        bool drawBackgroundNormally;
-        bool drawBackgroundOnHover;
-        bool drawBackgroundOnPress;
-        // bool drawBackgroundDifferentColoredHover;
-        bool drawCloseBackgroundNormally;
-        bool drawCloseBackgroundOnHover;
-        bool drawCloseBackgroundOnPress;
-        bool drawOutlineNormally;
-        bool drawOutlineOnHover;
-        bool drawOutlineOnPress;
-        // bool drawOutlineDifferentColoredHover;
-        bool drawCloseOutlineNormally;
-        bool drawCloseOutlineOnHover;
-        bool drawCloseOutlineOnPress;
-        bool drawIconNormally;
-        bool drawIconOnHover;
-        bool drawIconOnPress;
-        bool drawCloseIconNormally;
-        bool drawCloseIconOnHover;
-        bool drawCloseIconOnPress;
-    } m_buttonBehaviouralParameters;
+    DecorationButtonBehaviour &buttonBehaviour()
+    {
+        return m_buttonBehaviour;
+    }
+
+Q_SIGNALS:
+    void reconfigured();
 
 public Q_SLOTS:
     void init() override;
@@ -295,6 +281,7 @@ private:
 
     qreal m_systemScaleFactor = 1.0;
 
+    DecorationButtonBehaviour m_buttonBehaviour;
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     int m_smallButtonPaddedHeight = 20;
     int m_iconHeight = 18;
