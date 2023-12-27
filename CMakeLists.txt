@@ -37,10 +37,10 @@ endif()
 
 find_package(KF5KCMUtils ${KF5_MIN_VERSION} REQUIRED)
 
-if(WITH_DECORATIONS)
-    find_package(KDecoration2 REQUIRED)
-    add_subdirectory(kdecoration)
-endif()
+
+find_package(KDecoration2 REQUIRED)
+add_subdirectory(kdecoration)
+
 
 #add_subdirectory(colors)
 add_subdirectory(libbreezecommon)

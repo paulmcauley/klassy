@@ -6,6 +6,7 @@
 
 #include "buttoncolors.h"
 #include "breezeconfigwidget.h"
+#include "decorationbuttoncommon.h"
 #include "presetsmodel.h"
 #include <KColorUtils>
 #include <QCheckBox>
@@ -972,6 +973,9 @@ void ButtonColors::setButtonBackgroundColorsIcons() // need to adjust for inacti
     m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights, backgroundAccentTrafficLightsClose);
 
     // icon colors
+    QColor closeIconColor;
+    QColor othersIconColor;
+
     m_ui->buttonIconColors->setIconSize(QSize(24, 24));
     pixmap.fill(Qt::transparent);
     painter->setBrush(titlebarTextActive); // TODO:add inactive
@@ -1013,39 +1017,31 @@ void ButtonColors::setButtonBackgroundColorsIcons() // need to adjust for inacti
     QIcon iconAccentTrafficLights(pixmap);
     m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::AccentTrafficLights, iconAccentTrafficLights);
 
-    // closeIconNegativeBackground
-    QColor closeIconColor;
-    QColor othersIconColor;
+    // closeIconNegativeBackground - TODO:make this a slot and update when the above combo box is updated
     switch (m_internalSettings->buttonIconColors()) {
     case InternalSettings::EnumButtonIconColors::TitlebarText:
         closeIconColor = titlebarTextActive; // TODO:inactive
-        othersIconColor = titlebarTextActive;
         break;
     case InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose:
         closeIconColor = m_decorationColors->negativeSaturated();
-        othersIconColor = titlebarTextActive;
         break;
     case InternalSettings::EnumButtonIconColors::Accent:
         closeIconColor = m_decorationColors->highlight();
-        othersIconColor = m_decorationColors->highlight();
         break;
     case InternalSettings::EnumButtonIconColors::AccentNegativeClose:
         closeIconColor = m_decorationColors->negativeSaturated();
-        othersIconColor = m_decorationColors->highlight();
         break;
     case InternalSettings::EnumButtonIconColors::AccentTrafficLights:
         closeIconColor = m_decorationColors->negativeSaturated();
-        othersIconColor = m_decorationColors->highlight();
         break;
     }
-
     m_ui->closeIconNegativeBackground->setIconSize(QSize(16, 16));
 
     pixmap.fill(Qt::transparent);
-    painter->setBrush(othersIconColor);
+    painter->setBrush(closeIconColor);
     painter->drawRect(wholeRect);
-    QIcon closeIconNegativeBackgroundSame(pixmap);
-    m_ui->closeIconNegativeBackground->setItemIcon(InternalSettings::EnumCloseIconNegativeBackground::Same, closeIconNegativeBackgroundSame);
+    QIcon closeIconNegativeBackgroundAsSelected(pixmap);
+    m_ui->closeIconNegativeBackground->setItemIcon(InternalSettings::EnumCloseIconNegativeBackground::AsSelected, closeIconNegativeBackgroundAsSelected);
 
     pixmap.fill(Qt::transparent);
     painter->setBrush(Qt::GlobalColor::white);

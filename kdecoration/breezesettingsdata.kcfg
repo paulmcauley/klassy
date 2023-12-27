@@ -74,7 +74,7 @@
 
     <entry name="CloseIconNegativeBackground" type="Enum">
         <choices>
-            <choice name="Same" />
+            <choice name="AsSelected" />
             <choice name="White" />
             <choice name="WhiteWhenHoverPress" />
         </choices>

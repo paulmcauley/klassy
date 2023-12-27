@@ -158,8 +158,7 @@ private:
     //*@name colors
     //@{
     QColor backgroundColor(bool getNonAnimatedColor = false) const;
-    QColor backgroundColor(QColor &foregroundContrastedColor, bool &negativeCloseColor, bool getNonAnimatedColor = false) const;
-    QColor foregroundColor(const QColor &backgroundContrastedColor, const bool negativeBackgroundColor) const;
+    QColor foregroundColor() const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
 
@@ -223,10 +222,10 @@ private:
     //* active state change opacity
     qreal m_opacity = 0;
 
+    DecorationButtonPalette m_buttonPalette;
     bool m_renderSystemIcon;
     QString m_systemIconName;
     QString m_systemIconCheckedName;
-    bool m_lowContrastBetweenTitleBarAndBackground = false;
     bool m_isGtkCsdButton;
     qreal m_devicePixelRatio = 1.0;
     bool m_boldButtonIcons;
