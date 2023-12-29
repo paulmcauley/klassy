@@ -507,7 +507,7 @@ void Helper::renderFrame(QPainter *painter, const QRect &rect, const QColor &col
 {
     painter->setRenderHint(QPainter::Antialiasing);
 
-    QRectF frameRect(rect.adjusted(1, 1, -1, -1));
+    QRectF frameRect(rect);
     qreal radius(frameRadius(PenWidth::NoPen));
 
     // set pen
