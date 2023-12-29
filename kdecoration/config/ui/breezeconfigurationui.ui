@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
+    <width>732</width>
     <height>598</height>
    </rect>
   </property>
@@ -47,7 +47,7 @@
          </sizepolicy>
         </property>
         <attribute name="title">
-         <string>Buttons</string>
+         <string>&amp;Buttons</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_8">
          <property name="topMargin">
@@ -314,7 +314,7 @@
               <string notr="true"/>
              </property>
              <property name="text">
-              <string>Button Colours...</string>
+              <string>Button &amp;Colours...</string>
              </property>
              <property name="icon">
               <iconset theme="color-management">
@@ -544,7 +544,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_16">
                <property name="text">
-                <string>&amp;Bold icons: </string>
+                <string>Bol&amp;d icons: </string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1409,7 +1409,7 @@ Scrollbars and window close buttons will shift positions and will not touch scre
        </widget>
        <widget class="QWidget" name="tab_animations">
         <attribute name="title">
-         <string>&amp;Animations</string>
+         <string>Ani&amp;mations</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout_12">
          <item row="5" column="0">

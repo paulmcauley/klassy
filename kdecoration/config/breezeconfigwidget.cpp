@@ -68,54 +68,22 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     m_presetsButton = new QPushButton(i18n("&Presets..."));
     presetsButtonVLayout->addWidget(m_presetsButton);
     m_presetsButton->setMinimumWidth(125);
+    presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
+    m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
+    connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
+    this->setTabOrder(m_presetsButton, m_ui.tabWidget);
 
+    // hide the title if a kcmshell dialog
     if (this->window()) {
         window()->setMinimumWidth(775);
         m_kPageWidget = this->window()->findChild<KPageWidget *>();
-        bool presetsButtonInDialog = false;
         if (m_kPageWidget) {
-            if (presetsButtonInDialog) {
-                QGridLayout *gridLayout = m_kPageWidget->findChild<QGridLayout *>();
-                if (gridLayout) {
-                    gridLayout->setSpacing(0);
-                    gridLayout->setContentsMargins(0, 0, 0, 0);
-                    /*
-                    if (QCoreApplication::applicationName() == QStringLiteral("klassy-settings")){
-
-                        QLabel* logo = new QLabel();
-                        logo->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
-                        QPixmap logoPixmap(QStringLiteral(":/klassy_config_icons/Klassy_logo.svg"));
-                        logoPixmap.setDevicePixelRatio(qApp->devicePixelRatio());
-                        logoPixmap.scaled(200,0,Qt::AspectRatioMode::KeepAspectRatioByExpanding);
-                        logo->setPixmap(logoPixmap);
-
-                        QVBoxLayout *logoVLayout = new QVBoxLayout();
-                        logoVLayout->addWidget(logo);
-                        logoVLayout->setContentsMargins(0, 0, 0, 0);
-                        gridLayout->addLayout(logoVLayout,1,1,Qt::AlignCenter | Qt::AlignVCenter);
-
-                        m_ui.klassy_logo->setVisible(false);
-                    }*/
-
-                    // m_presetsButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-                    QSizePolicy spRetain = m_presetsButton->sizePolicy();
-                    spRetain.setRetainSizeWhenHidden(true);
-                    m_presetsButton->setSizePolicy(spRetain);
-
-                    presetsButtonVLayout->setContentsMargins(0, 0, 6, 0);
-                    gridLayout->addLayout(presetsButtonVLayout, 2, 1, 1, 1, Qt::AlignRight | Qt::AlignTop);
-                }
-            } else {
-                presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
-                m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
-            }
-
-            kPageWidgetChanged(m_kPageWidget->currentPage(), m_kPageWidget->currentPage());
+            KPageWidgetItem *currentPage = m_kPageWidget->currentPage();
+            if (currentPage)
+                kPageWidgetChanged(currentPage, currentPage); // this line usually is false but currentPage is valid on change
             connect(m_kPageWidget, &KPageWidget::currentPageChanged, this, &ConfigWidget::kPageWidgetChanged);
         }
     }
-
-    connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
 
     // hide the push buttons for default exceptions
     QList<QPushButton *> defaultPushButtons = m_ui.defaultExceptions->findChildren<QPushButton *>();
@@ -487,13 +455,6 @@ void ConfigWidget::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem 
 {
     if (current) {
         current->setHeaderVisible(false);
-        /*
-                if(current->name() == i18n("Klassy: Window Decoration")){ //TODO: set a property in each rather than relying on a translated string
-                    m_presetsButton->setVisible(true);
-
-                } else{
-                    m_presetsButton->setVisible(false);
-                }*/
     }
 }
 
