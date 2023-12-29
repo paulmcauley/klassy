@@ -43,7 +43,8 @@ StyleConfig::StyleConfig(QWidget *parent)
         KPageWidget *kPageWidget = this->window()->findChild<KPageWidget *>();
         if (kPageWidget) {
             KPageWidgetItem *currentPage = kPageWidget->currentPage();
-            kPageWidgetChanged(currentPage, currentPage);
+            if (currentPage)
+                kPageWidgetChanged(currentPage, currentPage); // this line usually is false but currentPage is valid on change
             connect(kPageWidget, &KPageWidget::currentPageChanged, this, &StyleConfig::kPageWidgetChanged);
         }
     }
