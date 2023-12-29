@@ -98,8 +98,24 @@ void ShadowStyle::defaults()
     m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
 
+    setChanged(!isDefaults());
+
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool ShadowStyle::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("ShadowStyle"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 void ShadowStyle::setChanged(bool value)

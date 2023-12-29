@@ -49,6 +49,7 @@ Q_SIGNALS:
 
 private:
     void setChanged(bool value);
+    bool isDefaults();
 
     Ui_ShadowStyle *m_ui;
 

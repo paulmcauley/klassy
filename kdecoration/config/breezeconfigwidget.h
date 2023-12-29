@@ -24,6 +24,7 @@
 #include "windowoutlinestyle.h"
 
 #include <KCModule>
+#include <KPageWidget>
 #include <KSharedConfig>
 
 #include <QSharedPointer>
@@ -83,6 +84,8 @@ protected Q_SLOTS:
     void presetsButtonClicked();
     void dialogChanged(bool changed);
 
+    void kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before);
+
 protected:
     //* set changed state
     void setChanged(bool);
@@ -118,6 +121,9 @@ private:
     WindowOutlineStyle *m_windowOutlineStyleDialog;
     LoadPreset *m_loadPresetDialog;
 
+    KPageWidget *m_kPageWidget;
+
+    bool isDefaults();
     QString presetGroupName(QString str);
     void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 

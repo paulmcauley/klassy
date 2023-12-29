@@ -134,8 +134,24 @@ void TitleBarOpacity::defaults()
     m_ui->blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
     m_ui->applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
 
+    setChanged(!isDefaults());
+
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool TitleBarOpacity::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("TitleBarOpacity"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 void TitleBarOpacity::setChanged(bool value)

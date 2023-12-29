@@ -118,8 +118,24 @@ void TitleBarSpacing::defaults()
     m_ui->titlebarLeftMargin->setValue(m_internalSettings->titlebarLeftMargin());
     m_ui->titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
 
+    setChanged(!isDefaults());
+
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool TitleBarSpacing::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("TitleBarSpacing"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 void TitleBarSpacing::setChanged(bool value)

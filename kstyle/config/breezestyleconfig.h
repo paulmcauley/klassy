@@ -8,7 +8,10 @@
 #ifndef breezestyleconfig_h
 #define breezestyleconfig_h
 
+#include "breeze.h"
 #include "ui_breezestyleconfig.h"
+
+#include <KPageWidget>
 
 namespace Breeze
 {
@@ -49,6 +52,14 @@ protected Q_SLOTS:
 
     //* update modified state when option is checked/unchecked
     void updateChanged();
+    void kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before);
+
+
+private:
+    bool isDefaults();
+
+    //* kconfiguration object
+    KSharedConfig::Ptr _configuration;
 };
 }
 #endif
