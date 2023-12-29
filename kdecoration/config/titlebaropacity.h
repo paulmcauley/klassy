@@ -50,6 +50,7 @@ Q_SIGNALS:
 
 private:
     void setChanged(bool value);
+    bool isDefaults();
 
     // system colour scheme alpha settings
     void getTitlebarOpacityFromColorScheme();

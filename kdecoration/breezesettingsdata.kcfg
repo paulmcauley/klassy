@@ -8,32 +8,11 @@
 
   <group name="Windeco">
 
-    <entry name="ShadowStrength" type = "Int">
-       <default>255</default>
-       <min>25</min>
-       <max>255</max>
-    </entry>
-
-    <!-- shadow -->
-    <entry name="ShadowSize" type = "Enum">
-      <choices>
-          <choice name="ShadowNone"/>
-          <choice name="ShadowSmall"/>
-          <choice name="ShadowMedium"/>
-          <choice name="ShadowLarge"/>
-          <choice name="ShadowVeryLarge"/>
-      </choices>
-      <default>ShadowLarge</default>
-    </entry>
-
-    <entry name="ShadowColor" type = "Color">
-       <default>0, 0, 0</default>
-    </entry>  
+    <!-- version stamp indicating the Klassy version which last auto-imported installed presets TODO: move this and all presets to a new klassypresets.rc file-->
+    <entry name="BundledWindecoPresetsImportedVersion" type = "String"/>
     
-    <entry name="DrawTitleBarSeparator" type = "Bool">
-        <default>false</default>
-    </entry>
-    
+    <!-- ______________________________BUTTONS______________________________ -->
+
     <!-- button icon style -->
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
@@ -46,7 +25,56 @@
       </choices>
       <default>StyleKlassy</default>
     </entry>
+
+    <!-- button size -->
+    <entry name="IconSize" type="Enum">
+      <choices>
+          <choice name="IconTiny" />
+          <choice name="IconVerySmall" />
+          <choice name="IconSmall" />
+          <choice name="IconSmallMedium" />
+          <choice name="IconMedium" />
+          <choice name="IconLargeMedium" />
+          <choice name="IconLarge" />
+          <choice name="IconVeryLarge" />
+          <choice name="IconGiant" />
+          <choice name="IconHumongous" />
+      </choices>
+      <default>IconLargeMedium</default>
+    </entry>
+
+    <!-- system icon size -->
+    <entry name="SystemIconSize" type="Enum">
+      <choices>
+          <choice name="SystemIcon8" />
+          <choice name="SystemIcon12" />
+          <choice name="SystemIcon14" />
+          <choice name="SystemIcon16" />
+          <choice name="SystemIcon18" />
+          <choice name="SystemIcon20" />
+          <choice name="SystemIcon22" />
+          <choice name="SystemIcon24" />
+          <choice name="SystemIcon32" />
+          <choice name="SystemIcon48" />
+      </choices>
+      <default>SystemIcon16</default>
+    </entry>
     
+    <!-- colourize icons from system icon theme -->
+    <entry name="ColorizeSystemIcons" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!-- bold button icons -->
+    <entry name="BoldButtonIcons" type="Enum">
+      <choices>
+          <choice name="BoldIconsBold" />
+          <choice name="BoldIconsFine" />
+          <choice name="BoldIconsHiDpiOnly" />
+      </choices>
+      <default>BoldIconsHiDpiOnly</default>
+    </entry>
+
     <!-- button background shape -->
     <entry name="ButtonShape" type="Enum">
       <choices>
@@ -59,7 +87,127 @@
       </choices>
       <default>ShapeIntegratedRoundedRectangle</default>
     </entry>
+
+    <!-- ______________________________TITLEBAR______________________________ -->
+
+    <!-- background gradient -->
+    <entry name="DrawBackgroundGradient" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="DrawTitleBarSeparator" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <!-- ______________________________WINDOW______________________________ -->
     
+    <entry name="CornerRadius" type = "Double">
+       <default>1</default>
+       <min>0</min>
+       <max>12</max>
+    </entry>
+    
+   <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="UseTitlebarColorForAllBorders" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="ColorizeThinWindowOutlineWithButton" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!-- ______________________________ANIMATIONS______________________________ -->
+    <entry name="AnimationsEnabled" type = "Bool">
+        <default>true</default>
+    </entry>
+    
+    <entry name="AnimationsSpeedRelativeSystem" type = "Int">
+        <default>0</default>
+        <min>-10</min>
+        <max>10</max>
+    </entry>
+
+  </group>
+
+  <group name="ButtonSizing">
+    <!-- Scale for small buttons -->
+    <entry name="ScaleBackgroundPercent" type = "Int">
+       <default>100</default>
+       <min>100</min>
+       <max>250</max>
+    </entry>
+
+    <!-- left button spacing for non-full-height buttons-->
+    <entry name="ButtonSpacingLeft" type = "Int">
+       <default>3</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <!-- right button spacing for non-full-height buttons-->
+    <entry name="ButtonSpacingRight" type = "Int">
+       <default>5</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <entry name="LockButtonSpacingLeftRight" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <!-- Full-height button width margin left -->
+    <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
+       <default>3</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <!-- Full-height button width margin right -->
+    <entry name="FullHeightButtonWidthMarginRight" type = "Int">
+       <default>8</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <entry name="LockFullHeightButtonWidthMargins" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <!-- left button spacing for full-height buttons-->
+    <entry name="FullHeightButtonSpacingLeft" type = "Int">
+       <default>1</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <!-- right button spacing for full-height buttons-->
+    <entry name="FullHeightButtonSpacingRight" type = "Int">
+       <default>1</default>
+       <min>0</min>
+       <max>50</max>
+    </entry>
+
+    <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!--Integrated Rounded Rectangle Bottom Padding -->
+    <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
+       <default>1.25</default>
+       <min>0</min>
+       <max>10</max>
+    </entry>
+
+  </group>
+
+  <group name="ButtonColors">
     <!-- button icon colors -->
     <entry name="ButtonIconColors" type="Enum">
         <choices>
@@ -112,7 +260,78 @@
     <entry name="LockButtonColorsInactive" type = "Bool">
         <default>true</default>
     </entry>
-    
+
+
+
+    <!-- translucent button backgrounds -->
+    <entry name="TranslucentButtonBackgrounds" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="TranslucentButtonBackgroundsOpacity" type ="Double">
+        <default>0.5</default>
+        <min>0</min>
+        <max>1</max>
+    </entry>
+
+    <!-- button override colours TODO: these could be paramaterised-->
+    <entry name="ButtonOverrideColorsClose" type = "IntList"/>
+    <entry name="ButtonOverrideColorsCloseFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMaximize" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMaximizeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMinimize" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMinimizeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsHelp" type = "IntList"/>
+    <entry name="ButtonOverrideColorsHelpFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsShade" type = "IntList"/>
+    <entry name="ButtonOverrideColorsShadeFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsAllDesktops" type = "IntList"/>
+    <entry name="ButtonOverrideColorsAllDesktopsFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepBelow" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepBelowFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsKeepAbove" type = "IntList"/>
+    <entry name="ButtonOverrideColorsKeepAboveFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsApplicationMenu" type = "IntList"/>
+    <entry name="ButtonOverrideColorsApplicationMenuFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsMenu" type = "IntList"/>
+    <entry name="ButtonOverrideColorsMenuFlags" type = "UInt">
+        <default>0</default>
+    </entry>
+
+    <entry name="ButtonOverrideColorsLockStates" type = "UInt">
+        <default>0</default>
+    </entry>
+  </group>
+
+  <group name="ButtonBehaviour">
+
     <entry name="AlwaysShow" type="Enum">
         <choices>
             <choice name="Icons" />
@@ -127,7 +346,7 @@
         </choices>
         <default>Icons</default>
     </entry>
-    
+
     <!-- used for AlwaysShowIcons-->
     <entry name="AlwaysShowIconHighlightUsing" type="Enum">
         <choices>
@@ -219,125 +438,100 @@
         </choices>
         <default>IconDifferentColoredBackground</default>
     </entry>
-    
+  </group>
+
+  <group name="TitleBarSpacing">
+    <entry name="TitlebarTopMargin" type = "Double">
+       <default>1.7</default>
+       <min>0</min>
+       <max>25</max>
+    </entry>
+
+    <entry name="TitlebarBottomMargin" type = "Double">
+       <default>1.7</default>
+       <min>0</min>
+       <max>25</max>
+    </entry>
+
+    <entry name="LockTitleBarTopBottomMargins" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="TitlebarLeftMargin" type = "Int">
+       <default>0</default>
+       <min>0</min>
+       <max>30</max>
+    </entry>
+
+    <entry name="TitlebarRightMargin" type = "Int">
+       <default>0</default>
+       <min>0</min>
+       <max>30</max>
+    </entry>
+
+    <entry name="LockTitleBarLeftRightMargins" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <!-- title alignment -->
+    <entry name="TitleAlignment" type="Enum">
+      <choices>
+          <choice name="AlignLeft" />
+          <choice name="AlignCenter" />
+          <choice name="AlignCenterFullWidth" />
+          <choice name="AlignRight" />
+      </choices>
+      <default>AlignCenterFullWidth</default>
+    </entry>
+
+    <!-- Title side padding -->
+    <entry name="TitleSidePadding" type = "Int">
+       <default>2</default>
+       <min>0</min>
+       <max>30</max>
+    </entry>
+
+    <!-- top bottom margins % for maximized windows -->
+    <entry name="PercentMaximizedTopBottomMargins" type = "Int">
+       <default>100</default>
+       <min>0</min>
+       <max>100</max>
+    </entry>
+
+  </group>
+
+  <group name="TitleBarOpacity">
     <!-- Titlebar opacity for active window -->
     <entry name="ActiveTitlebarOpacity" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
-    
+
     <!-- Titlebar opacity for inactive window -->
     <entry name="InactiveTitlebarOpacity" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
-    
+
+      <!-- opaque maximized titlebars -->
+    <entry name="OpaqueMaximizedTitlebars" type = "Bool">
+        <default>true</default>
+    </entry>
+
     <!-- blur transparent titlebars -->
     <entry name="BlurTransparentTitlebars" type = "Bool">
         <default>true</default>
     </entry>
-    
+
     <!-- Apply titlebar opacity settings to entire Header area -->
     <entry name="ApplyOpacityToHeader" type = "Bool">
         <default>true</default>
     </entry>
-    
-    <!-- translucent button backgrounds -->
-    <entry name="TranslucentButtonBackgrounds" type = "Bool">
-        <default>true</default>
-    </entry>
+  </group>
 
-    <entry name="TranslucentButtonBackgroundsOpacity" type ="Double">
-        <default>0.5</default>
-        <min>0</min>
-        <max>1</max>
-    </entry>
-    
-    <!-- colourize icons from system icon theme -->
-    <entry name="ColorizeSystemIcons" type = "Bool">
-        <default>true</default>
-    </entry>
-
-    <!-- version stamp indicating the Klassy version which last auto-imported installed presets -->
-    <entry name="BundledWindecoPresetsImportedVersion" type = "String"/>
-
-    <!-- button override colours -->
-    <entry name="ButtonOverrideColorsClose" type = "IntList"/>
-    <entry name="ButtonOverrideColorsCloseFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsMaximize" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMaximizeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsMinimize" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMinimizeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsHelp" type = "IntList"/>
-    <entry name="ButtonOverrideColorsHelpFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsShade" type = "IntList"/>
-    <entry name="ButtonOverrideColorsShadeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsAllDesktops" type = "IntList"/>
-    <entry name="ButtonOverrideColorsAllDesktopsFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsKeepBelow" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepBelowFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsKeepAbove" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepAboveFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsApplicationMenu" type = "IntList"/>
-    <entry name="ButtonOverrideColorsApplicationMenuFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsMenu" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMenuFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsLockStates" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <!-- border size -->
-    <!--
-      this one is used only for window specific settings, since the default is globally set by kwin
-      the enumeration must be kept in sync with kwin's global settings
-    -->
-    <entry name="BorderSize" type = "Enum">
-      <choices>
-          <choice name="None" />
-          <choice name="NoSides" />
-          <choice name="Tiny" />
-          <choice name="Normal" />
-          <choice name="Large" />
-          <choice name="VeryLarge" />
-          <choice name="Huge" />
-          <choice name="VeryHuge" />
-          <choice name="Oversized" />
-      </choices>
-      <default>None</default>
-    </entry>
-    
+  <group name="WindowOutlineStyle">
     <!-- Draw thin window outline -->
     <entry name="ThinWindowOutlineStyleActive" type = "Enum">
         <choices>
@@ -370,7 +564,7 @@
     <entry name="LockThinWindowOutlineStyleActiveInactive" type = "Bool">
         <default>true</default>
     </entry>
-    
+
     <entry name="ThinWindowOutlineCustomColorActive" type = "Color">
        <default>0, 0, 0</default>
     </entry>
@@ -382,302 +576,115 @@
     <entry name="ThinWindowOutlineCustomColorInactive" type = "Color">
        <default>0, 0, 0</default>
     </entry>
-    
+
     <entry name="ThinWindowOutlineThickness" type = "Double">
        <default>1.75</default>
        <min>1</min>
        <max>10</max>
     </entry>
-    
+
     <entry name="WindowOutlineShadowColorOpacity" type = "Double">
        <default>0.2</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineContrastOpacityActive" type = "Double">
        <default>0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineContrastOpacityInactive" type = "Double">
        <default>0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineAccentColorOpacityActive" type = "Double">
        <default>0.87</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineAccentColorOpacityInactive" type = "Double">
        <default>0.4</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineAccentWithContrastOpacityActive" type = "Double">
        <default>0.4</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineAccentWithContrastOpacityInactive" type = "Double">
        <default>0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineCustomColorOpacityActive" type = "Double">
        <default>0.87</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineCustomColorOpacityInactive" type = "Double">
        <default>0.3</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineCustomWithContrastOpacityActive" type = "Double">
        <default>0.4</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
+
     <entry name="WindowOutlineCustomWithContrastOpacityInactive" type = "Double">
        <default>0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
-    
-    <entry name="ColorizeThinWindowOutlineWithButton" type = "Bool">
-        <default>true</default>
-    </entry>
-    
-    <!-- title alignment -->
-    <entry name="TitleAlignment" type="Enum">
-      <choices>
-          <choice name="AlignLeft" />
-          <choice name="AlignCenter" />
-          <choice name="AlignCenterFullWidth" />
-          <choice name="AlignRight" />
-      </choices>
-      <default>AlignCenterFullWidth</default>
-    </entry>
-    
-    <!-- Title side padding -->
-    <entry name="TitleSidePadding" type = "Int">
-       <default>2</default>
-       <min>0</min>
-       <max>30</max>
+  </group>
+
+  <group name="ShadowStyle">
+    <entry name="ShadowStrength" type = "Int">
+    <default>255</default>
+    <min>25</min>
+    <max>255</max>
     </entry>
 
-    <!-- button size -->
-    <entry name="IconSize" type="Enum">
-      <choices>
-          <choice name="IconTiny" />
-          <choice name="IconVerySmall" />
-          <choice name="IconSmall" />
-          <choice name="IconSmallMedium" />
-          <choice name="IconMedium" />
-          <choice name="IconLargeMedium" />
-          <choice name="IconLarge" />
-          <choice name="IconVeryLarge" />
-          <choice name="IconGiant" />
-          <choice name="IconHumongous" />
-      </choices>
-      <default>IconLargeMedium</default>
-    </entry>
-    
-    <!-- system icon size -->
-    <entry name="SystemIconSize" type="Enum">
-      <choices>
-          <choice name="SystemIcon8" />
-          <choice name="SystemIcon12" />
-          <choice name="SystemIcon14" />
-          <choice name="SystemIcon16" />
-          <choice name="SystemIcon18" />
-          <choice name="SystemIcon20" />
-          <choice name="SystemIcon22" />
-          <choice name="SystemIcon24" />
-          <choice name="SystemIcon32" />
-          <choice name="SystemIcon48" />
-      </choices>
-      <default>SystemIcon16</default>
-    </entry>
-    
-    <!-- Scale for small buttons -->
-    <entry name="ScaleBackgroundPercent" type = "Int">
-       <default>100</default>
-       <min>100</min>
-       <max>250</max>
-    </entry>
-    
-    <!-- Full-height button width margin left -->
-    <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>3</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <!-- Full-height button width margin right -->
-    <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>8</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <entry name="LockFullHeightButtonWidthMargins" type = "Bool">
-        <default>false</default>
-    </entry>
-    
-    <!--Integrated Rounded Rectangle Bottom Padding -->
-    <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
-       <default>1.25</default>
-       <min>0</min>
-       <max>10</max>
-    </entry>
-    
-    <!-- left button spacing for non-full-height buttons-->
-    <entry name="ButtonSpacingLeft" type = "Int">
-       <default>3</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <!-- right button spacing for non-full-height buttons-->
-    <entry name="ButtonSpacingRight" type = "Int">
-       <default>5</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <entry name="LockButtonSpacingLeftRight" type = "Bool">
-        <default>false</default>
-    </entry>
-    
-    <!-- left button spacing for full-height buttons-->
-    <entry name="FullHeightButtonSpacingLeft" type = "Int">
-       <default>1</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <!-- right button spacing for full-height buttons-->
-    <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>1</default>
-       <min>0</min>
-       <max>50</max>
-    </entry>
-    
-    <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
-        <default>true</default>
-    </entry>    
-    
-    <entry name="TitlebarTopMargin" type = "Double">
-       <default>1.7</default>
-       <min>0</min>
-       <max>25</max>
-    </entry>
-    
-    <entry name="TitlebarBottomMargin" type = "Double">
-       <default>1.7</default>
-       <min>0</min>
-       <max>25</max>
-    </entry>
-    
-    <entry name="LockTitleBarTopBottomMargins" type = "Bool">
-        <default>true</default>
-    </entry>
-    
-    <!-- top bottom margins % for maximized windows -->
-    <entry name="PercentMaximizedTopBottomMargins" type = "Int">
-       <default>100</default>
-       <min>0</min>
-       <max>100</max>
-    </entry>
-    
-    <entry name="TitlebarLeftMargin" type = "Int">
-       <default>0</default>
-       <min>0</min>
-       <max>30</max>
-    </entry>
-    
-    <entry name="TitlebarRightMargin" type = "Int">
-       <default>0</default>
-       <min>0</min>
-       <max>30</max>
-    </entry>
-    
-    <entry name="LockTitleBarLeftRightMargins" type = "Bool">
-        <default>true</default>
-    </entry>
-    
-    <entry name="CornerRadius" type = "Double">
-       <default>1</default>
-       <min>0</min>
-       <max>12</max>
-    </entry>
-    
-   <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
-        <default>false</default>
-    </entry> 
-    
-    <!-- bold button icons -->
-    <entry name="BoldButtonIcons" type="Enum">
-      <choices>
-          <choice name="BoldIconsBold" />
-          <choice name="BoldIconsFine" />
-          <choice name="BoldIconsHiDpiOnly" />
-      </choices>
-      <default>BoldIconsHiDpiOnly</default>
-    </entry>
-    
-    <!-- maximized windows -->
-    <entry name="DrawBorderOnMaximizedWindows" type = "Bool">
-        <default>false</default>
-    </entry>
-    
-    <entry name="UseTitlebarColorForAllBorders" type = "Bool">
-        <default>true</default>
+    <entry name="ShadowSize" type = "Enum">
+    <choices>
+        <choice name="ShadowNone"/>
+        <choice name="ShadowSmall"/>
+        <choice name="ShadowMedium"/>
+        <choice name="ShadowLarge"/>
+        <choice name="ShadowVeryLarge"/>
+    </choices>
+    <default>ShadowLarge</default>
     </entry>
 
-    <!-- background gradient -->
-    <entry name="DrawBackgroundGradient" type = "Bool">
-        <default>false</default>
+    <entry name="ShadowColor" type = "Color">
+    <default>0, 0, 0</default>
     </entry>
+  </group>
 
-    <!-- animations -->
-    <entry name="AnimationsEnabled" type = "Bool">
-        <default>true</default>
-    </entry>
-    
-    <entry name="AnimationsSpeedRelativeSystem" type = "Int">
-        <default>0</default>
-        <min>-10</min>
-        <max>10</max>
-    </entry>
-    
-    <!-- opaque maximized titlebars -->
-    <entry name="OpaqueMaximizedTitlebars" type = "Bool">
-        <default>true</default>
-    </entry>
 
-    <!-- hide title bar (exception) -->
+    <group name="Exceptions">
+      <!-- hide title bar (exception) -->
     <entry name="HideTitleBar" type = "Bool">
        <default>false</default>
     </entry>
-    
+
     <!-- opaque title bar (exception) -->
     <entry name="OpaqueTitleBar" type = "Bool">
        <default>false</default>
     </entry>
-    
+
     <!-- Prevent titlebar opacity setting from affecting entire header (exception) -->
     <entry name="PreventApplyOpacityToHeader" type = "Bool">
        <default>false</default>
@@ -685,7 +692,7 @@
 
     <!-- window specific settings -->
     <entry name="ExceptionProgramNamePattern" type = "String"/>
-    
+
     <entry name="ExceptionWindowPropertyType" type="Enum">
       <choices>
           <choice name="ExceptionWindowClassName" />
@@ -705,10 +712,27 @@
       <default>false</default>
     </entry>
 
+    <!-- border size -->
+    <!--
+      this one is used only for window specific settings, since the default is globally set by kwin
+      the enumeration must be kept in sync with kwin's global settings
+    -->
+    <entry name="BorderSize" type = "Enum">
+      <choices>
+          <choice name="None" />
+          <choice name="NoSides" />
+          <choice name="Tiny" />
+          <choice name="Normal" />
+          <choice name="Large" />
+          <choice name="VeryLarge" />
+          <choice name="Huge" />
+          <choice name="VeryHuge" />
+          <choice name="Oversized" />
+      </choices>
+      <default>None</default>
+    </entry>
 
-    
     <entry name="ExceptionPreset" type = "String"/>
-
   </group>
 
 </kcfg>

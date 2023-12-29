@@ -123,8 +123,24 @@ void ButtonBehaviour::defaults()
     m_ui->alwaysShowBackgroundHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundHighlightUsing());
     m_ui->alwaysShowBackgroundOutlineHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowBackgroundOutlineHighlightUsing());
 
+    setChanged(!isDefaults());
+
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool ButtonBehaviour::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("ButtonBehaviour"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 void ButtonBehaviour::setChanged(bool value)

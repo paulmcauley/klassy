@@ -21,7 +21,6 @@ SettingsProvider::SettingsProvider()
     : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
 {
     m_defaultSettings = InternalSettingsPtr(new InternalSettings());
-    m_defaultSettings->setCurrentGroup(QStringLiteral("Windeco"));
 }
 
 //__________________________________________________________________

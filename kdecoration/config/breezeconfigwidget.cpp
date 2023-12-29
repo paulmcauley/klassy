@@ -20,6 +20,8 @@
 #include <QIcon>
 #include <QRegularExpression>
 #include <QStackedLayout>
+#include <QStackedWidget>
+#include <QWindow>
 
 void initKlassydecorationConfigQrc()
 {
@@ -46,20 +48,13 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 {
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
 
-    /* //disabling as defaults don't save properly in kcmshell
-    // launch klassy decoration config in in kcmshell5 instead of default systemsettings dialog
-    // This gives 2 benefits:
-    // 1. Adds an Apply button
-    // 2. Bypasses bug where reloading the kwin config in systemsettings prevents save from being called (though if(parentDialog) connect(parentDialog,
-    // &QDialog::accepted, this, &ConfigWidget::save); also fixes this)
-    if (QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell5 klassydecorationconfig &");
-        if (parentDialog)
-            parentDialog->close();
+    // this is a hack to get an Apply button
+    if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
+        system("kcmshell5 plasma/kcms/klassy/kcm_klassydecoration &");
+        parentDialog->close();
     }
-    */
-
     setButtons(KCModule::Default | KCModule::Apply);
+
     initKlassydecorationConfigQrc();
 
     // configuration
@@ -70,10 +65,55 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
     // add the "Presets..." button
     QVBoxLayout *presetsButtonVLayout = new QVBoxLayout();
-    presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
     m_presetsButton = new QPushButton(i18n("&Presets..."));
     presetsButtonVLayout->addWidget(m_presetsButton);
-    m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
+    m_presetsButton->setMinimumWidth(125);
+
+    if (this->window()) {
+        window()->setMinimumWidth(775);
+        m_kPageWidget = this->window()->findChild<KPageWidget *>();
+        bool presetsButtonInDialog = false;
+        if (m_kPageWidget) {
+            if (presetsButtonInDialog) {
+                QGridLayout *gridLayout = m_kPageWidget->findChild<QGridLayout *>();
+                if (gridLayout) {
+                    gridLayout->setSpacing(0);
+                    gridLayout->setContentsMargins(0, 0, 0, 0);
+                    /*
+                    if (QCoreApplication::applicationName() == QStringLiteral("klassy-settings")){
+
+                        QLabel* logo = new QLabel();
+                        logo->setSizePolicy(QSizePolicy::Preferred,QSizePolicy::Preferred);
+                        QPixmap logoPixmap(QStringLiteral(":/klassy_config_icons/Klassy_logo.svg"));
+                        logoPixmap.setDevicePixelRatio(qApp->devicePixelRatio());
+                        logoPixmap.scaled(200,0,Qt::AspectRatioMode::KeepAspectRatioByExpanding);
+                        logo->setPixmap(logoPixmap);
+
+                        QVBoxLayout *logoVLayout = new QVBoxLayout();
+                        logoVLayout->addWidget(logo);
+                        logoVLayout->setContentsMargins(0, 0, 0, 0);
+                        gridLayout->addLayout(logoVLayout,1,1,Qt::AlignCenter | Qt::AlignVCenter);
+
+                        m_ui.klassy_logo->setVisible(false);
+                    }*/
+
+                    // m_presetsButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+                    QSizePolicy spRetain = m_presetsButton->sizePolicy();
+                    spRetain.setRetainSizeWhenHidden(true);
+                    m_presetsButton->setSizePolicy(spRetain);
+
+                    presetsButtonVLayout->setContentsMargins(0, 0, 6, 0);
+                    gridLayout->addLayout(presetsButtonVLayout, 2, 1, 1, 1, Qt::AlignRight | Qt::AlignTop);
+                }
+            } else {
+                presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
+                m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
+            }
+
+            kPageWidgetChanged(m_kPageWidget->currentPage(), m_kPageWidget->currentPage());
+            connect(m_kPageWidget, &KPageWidget::currentPageChanged, this, &ConfigWidget::kPageWidgetChanged);
+        }
+    }
 
     connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
 
@@ -101,7 +141,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
-    if (parentDialog)
+    if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings"))
         connect(parentDialog, &QDialog::accepted, this, &ConfigWidget::save);
 
 #if KLASSY_GIT_MASTER
@@ -351,9 +391,28 @@ void ConfigWidget::defaults()
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
+    setChanged(!isDefaults());
 
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool ConfigWidget::isDefaults()
+{
+    bool isDefaults = true;
+
+    if (m_configuration->hasGroup(QStringLiteral("Windeco"))) {
+        KConfigGroup group = m_configuration->group(QStringLiteral("Windeco"));
+        QStringList keys = group.keyList();
+        for (QString &key : keys) {
+            if (key != QStringLiteral("BundledWindecoPresetsImportedVersion")) {
+                isDefaults = false;
+                break;
+            }
+        }
+    }
+
+    return isDefaults;
 }
 
 //_______________________________________________
@@ -422,6 +481,20 @@ void ConfigWidget::updateChanged()
 void ConfigWidget::setChanged(bool value)
 {
     Q_EMIT changed(value);
+}
+
+void ConfigWidget::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before)
+{
+    if (current) {
+        current->setHeaderVisible(false);
+        /*
+                if(current->name() == i18n("Klassy: Window Decoration")){ //TODO: set a property in each rather than relying on a translated string
+                    m_presetsButton->setVisible(true);
+
+                } else{
+                    m_presetsButton->setVisible(false);
+                }*/
+    }
 }
 
 // only enable animationsSpeedRelativeSystem and animationsSpeedLabelx when animationsEnabled is checked

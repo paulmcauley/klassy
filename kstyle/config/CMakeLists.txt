@@ -31,3 +31,6 @@ install(TARGETS klassy-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 ecm_install_icons(ICONS sc-apps-klassy-settings.svgz
     DESTINATION ${KDE_INSTALL_ICONDIR}
     THEME hicolor )
+
+# .desktop file
+install(FILES klassy-settings.desktop DESTINATION ${KDE_INSTALL_APPDIR})

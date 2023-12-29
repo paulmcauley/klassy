@@ -82,6 +82,7 @@ private:
     //* decodes the lock-icon states in m_internalSettings and loads them into the override tables' horizontal headers
     bool decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks();
     void setChanged(bool value);
+    bool isDefaults();
 
     Ui_ButtonColors *m_ui;
 

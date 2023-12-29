@@ -7,11 +7,11 @@
 #include "breezestyleconfig.h"
 
 #include "../config-breeze.h"
-#include "breeze.h"
 #include "breezestyleconfigdata.h"
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDialog>
 #include <QRegularExpression>
 
 extern "C" {
@@ -27,8 +27,26 @@ namespace Breeze
 //__________________________________________________________________
 StyleConfig::StyleConfig(QWidget *parent)
     : QWidget(parent)
+    , _configuration(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
 {
+    // this is a hack to get an Apply button
+    QDialog *parentDialog = qobject_cast<QDialog *>(parent);
+    if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
+        system("kcmshell5 klassystyleconfig &");
+        parentDialog->close();
+    }
+
     setupUi(this);
+
+    // hide the title if a kcmshell dialog
+    if (this->window()) {
+        KPageWidget *kPageWidget = this->window()->findChild<KPageWidget *>();
+        if (kPageWidget) {
+            KPageWidgetItem *currentPage = kPageWidget->currentPage();
+            kPageWidgetChanged(currentPage, currentPage);
+            connect(kPageWidget, &KPageWidget::currentPageChanged, this, &StyleConfig::kPageWidgetChanged);
+        }
+    }
 
 #if KLASSY_GIT_MASTER
     // set the long version string if from the git master
@@ -82,6 +100,7 @@ void StyleConfig::save()
     StyleConfigData::setMenuOpacity(_menuOpacity->value());
 
     StyleConfigData::self()->save();
+    _configuration->sync();
 
     // emit dbus signal
     QDBusMessage message(
@@ -94,6 +113,22 @@ void StyleConfig::defaults()
 {
     StyleConfigData::self()->setDefaults();
     load();
+
+    emit changed(!isDefaults());
+}
+
+bool StyleConfig::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("Style"));
+    if (_configuration->hasGroup(groupName)) {
+        KConfigGroup group = _configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 //__________________________________________________________________
@@ -160,5 +195,12 @@ void StyleConfig::load()
     _scrollBarSubLineButtons->setCurrentIndex(StyleConfigData::scrollBarSubLineButtons());
     _windowDragMode->setCurrentIndex(StyleConfigData::windowDragMode());
     _menuOpacity->setValue(StyleConfigData::menuOpacity());
+}
+
+void StyleConfig::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before)
+{
+    if (current) {
+        current->setHeaderVisible(false);
+    }
 }
 }

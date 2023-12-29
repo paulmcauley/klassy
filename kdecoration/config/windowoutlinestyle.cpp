@@ -194,8 +194,24 @@ void WindowOutlineStyle::defaults()
     m_ui->lockThinWindowOutlineCustomColorInactive->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
     m_ui->lockThinWindowOutlineCustomColorInactive_2->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
 
+    setChanged(!isDefaults());
+
     m_processingDefaults = false;
     m_defaultsPressed = true;
+}
+
+bool WindowOutlineStyle::isDefaults()
+{
+    bool isDefaults = true;
+
+    QString groupName(QStringLiteral("WindowOutlineStyle"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
+    }
+
+    return isDefaults;
 }
 
 void WindowOutlineStyle::setChanged(bool value)
