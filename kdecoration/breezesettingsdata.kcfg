@@ -220,9 +220,10 @@
         <default>TitlebarText</default>
     </entry>
 
-    <entry name="CloseIconNegativeBackground" type="Enum">
+    <entry name="CloseButtonIconColor" type="Enum">
         <choices>
             <choice name="AsSelected" />
+            <choice name="NegativeWhenHoverPress" />
             <choice name="White" />
             <choice name="WhiteWhenHoverPress" />
         </choices>

@@ -107,6 +107,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, this);
 
+    // reload ButtonColors when ButtonBehaviour is changed as the dispayed colours in the ButtonColors UI depend upon ButttonBehaviour
+    connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::load);
+
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
     if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings"))
@@ -453,6 +456,7 @@ void ConfigWidget::setChanged(bool value)
 
 void ConfigWidget::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before)
 {
+    Q_UNUSED(before)
     if (current) {
         current->setHeaderVisible(false);
     }
@@ -634,8 +638,6 @@ void ConfigWidget::buttonColorsButtonClicked()
 {
     m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
-    if (!m_buttonColorsDialog->m_loaded)
-        m_buttonColorsDialog->load();
     if (m_buttonColorsDialog->m_ui->buttonColorActiveOverrideToggle->isChecked()) {
         m_buttonColorsDialog->resizeActiveOverrideGroupBox(true);
     }
@@ -649,7 +651,7 @@ void ConfigWidget::buttonBehaviourButtonClicked()
     m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
     if (!m_buttonBehaviourDialog->m_loaded)
         m_buttonBehaviourDialog->load();
-    if (!m_buttonBehaviourDialog->exec()) {
+    if (m_buttonBehaviourDialog->exec()) {
         m_buttonBehaviourDialog->load();
     }
 }
