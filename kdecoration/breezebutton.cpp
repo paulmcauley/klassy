@@ -155,13 +155,6 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     m_foregroundColor = this->foregroundColor();
     m_outlineColor = this->outlineColor();
 
-    // cache colours for future animations
-    if (m_animation->state() != QAbstractAnimation::Running && !isHovered()) {
-        m_preAnimationForegroundColor = m_foregroundColor;
-        m_preAnimationBackgroundColor = m_backgroundColor;
-        m_preAnimationOutlineColor = m_outlineColor;
-    }
-
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
         m_smallButtonPaddedSize = geometry().size().toSize();
         int iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
@@ -373,8 +366,12 @@ QColor Button::foregroundColor() const
             return m_buttonPalette.foregroundPress;
         }
     } else if (m_animation->state() == QAbstractAnimation::Running) {
-        return m_preAnimationForegroundColor.isValid() ? KColorUtils::mix(m_preAnimationForegroundColor, m_buttonPalette.foregroundHover, m_opacity)
-                                                       : ColorTools::alphaMix(m_buttonPalette.foregroundHover, m_opacity);
+        if (m_buttonPalette.foregroundNormal.isValid() && m_buttonPalette.foregroundHover.isValid()) {
+            return KColorUtils::mix(m_buttonPalette.foregroundNormal, m_buttonPalette.foregroundHover, m_opacity);
+        } else if (m_buttonPalette.foregroundHover.isValid()) {
+            return ColorTools::alphaMix(m_buttonPalette.foregroundHover, m_opacity);
+        } else
+            return QColor();
     } else if (isHovered()) {
         return m_buttonPalette.foregroundHover;
     } else {
@@ -404,8 +401,8 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
                && isChecked()) {
         return m_buttonPalette.backgroundPress;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_preAnimationBackgroundColor.isValid() && m_buttonPalette.backgroundHover.isValid()) {
-            return KColorUtils::mix(m_preAnimationBackgroundColor, m_buttonPalette.backgroundHover, m_opacity);
+        if (m_buttonPalette.backgroundNormal.isValid() && m_buttonPalette.backgroundHover.isValid()) {
+            return KColorUtils::mix(m_buttonPalette.backgroundNormal, m_buttonPalette.backgroundHover, m_opacity);
         } else if (m_buttonPalette.backgroundHover.isValid()) {
             return ColorTools::alphaMix(m_buttonPalette.backgroundHover, m_opacity);
         } else
@@ -434,8 +431,8 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()) {
         return m_buttonPalette.outlinePress;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_preAnimationOutlineColor.isValid() && m_buttonPalette.outlineHover.isValid()) {
-            return KColorUtils::mix(m_preAnimationOutlineColor, m_buttonPalette.outlineHover, m_opacity);
+        if (m_buttonPalette.outlineNormal.isValid() && m_buttonPalette.outlineHover.isValid()) {
+            return KColorUtils::mix(m_buttonPalette.outlineNormal, m_buttonPalette.outlineHover, m_opacity);
         } else if (m_buttonPalette.outlineHover.isValid()) {
             return ColorTools::alphaMix(m_buttonPalette.outlineHover, m_opacity);
         } else
