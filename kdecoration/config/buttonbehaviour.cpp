@@ -96,6 +96,7 @@ void ButtonBehaviour::save(const bool reloadKwinConfig)
 
     m_internalSettings->save();
     setChanged(false);
+    Q_EMIT saved();
 
     if (reloadKwinConfig) {
         ConfigWidget::kwinReloadConfig();

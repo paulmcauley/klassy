@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>854</width>
-    <height>638</height>
+    <height>649</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,13 +117,6 @@
          </item>
          <item row="1" column="1">
           <layout class="QFormLayout" name="formLayout_2">
-           <item row="2" column="0" colspan="2">
-            <widget class="QCheckBox" name="blackWhiteIconOnPoorContrast">
-             <property name="text">
-              <string>Black/white icon when poor contrast detected</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="1">
             <layout class="QHBoxLayout" name="horizontalLayout_4">
              <item>
@@ -140,17 +133,17 @@
               </spacer>
              </item>
              <item>
-              <widget class="QLabel" name="closeIconNegativeBackgroundLabel">
+              <widget class="QLabel" name="closeButtonIconColorLabel">
                <property name="text">
-                <string>Close icon colour when negative background:</string>
+                <string>Close icon colour :</string>
                </property>
                <property name="buddy">
-                <cstring>closeIconNegativeBackground</cstring>
+                <cstring>closeButtonIconColor</cstring>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="closeIconNegativeBackground">
+              <widget class="QComboBox" name="closeButtonIconColor">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -158,26 +151,18 @@
                 </sizepolicy>
                </property>
                <property name="sizeAdjustPolicy">
-                <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                <enum>QComboBox::AdjustToContents</enum>
                </property>
-               <item>
-                <property name="text">
-                 <string>As selected above</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>White</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>White when hovered/pressed </string>
-                </property>
-               </item>
               </widget>
              </item>
             </layout>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="blackWhiteIconOnPoorContrast">
+             <property name="text">
+              <string>Black/white icon when poor contrast detected</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </item>
@@ -406,6 +391,9 @@
            <property name="checkable">
             <bool>true</bool>
            </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -532,7 +520,7 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>lockButtonColorsActive</tabstop>
   <tabstop>buttonIconColors</tabstop>
-  <tabstop>closeIconNegativeBackground</tabstop>
+  <tabstop>closeButtonIconColor</tabstop>
   <tabstop>blackWhiteIconOnPoorContrast</tabstop>
   <tabstop>buttonBackgroundColors</tabstop>
   <tabstop>translucentButtonBackgrounds</tabstop>
@@ -586,12 +574,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>505</x>
-     <y>289</y>
+     <x>611</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>579</x>
-     <y>298</y>
+     <x>688</x>
+     <y>331</y>
     </hint>
    </hints>
   </connection>
@@ -602,12 +590,12 @@
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>602</x>
-     <y>284</y>
+     <x>688</x>
+     <y>331</y>
     </hint>
     <hint type="destinationlabel">
-     <x>515</x>
-     <y>279</y>
+     <x>611</x>
+     <y>313</y>
     </hint>
    </hints>
   </connection>

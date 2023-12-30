@@ -45,6 +45,7 @@ private Q_SLOTS:
     void setApplyButtonState(const bool on);
 
 Q_SIGNALS:
+    void saved();
     void changed(bool);
 
 private:

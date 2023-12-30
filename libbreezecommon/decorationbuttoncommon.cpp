@@ -1086,7 +1086,7 @@ void DecorationButtonPalette::generateButtonForegroundPalette()
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
-    bool closeForegroundNormalOnNegativeBackgroundIsDefault = false;
+    bool closeForegroundIsDefault = false;
 
     bool *drawBackgroundNormally =
         (_buttonType == DecorationButtonType::Close) ? &_buttonBehaviour->drawCloseBackgroundNormally : &_buttonBehaviour->drawBackgroundNormally;
@@ -1099,22 +1099,52 @@ void DecorationButtonPalette::generateButtonForegroundPalette()
     bool *drawIconOnHover = (_buttonType == DecorationButtonType::Close) ? &_buttonBehaviour->drawCloseIconOnHover : &_buttonBehaviour->drawIconOnHover;
     bool *drawIconOnPress = (_buttonType == DecorationButtonType::Close) ? &_buttonBehaviour->drawCloseIconOnPress : &_buttonBehaviour->drawIconOnPress;
 
-    if (_buttonType == DecorationButtonType::Close && (negativeNormalCloseBackground || negativeHoverCloseBackground || negativePressCloseBackground)
-        && _decorationSettings->closeIconNegativeBackground() != InternalSettings::EnumCloseIconNegativeBackground::AsSelected) {
+    bool negativeCloseBackground = (negativeNormalCloseBackground || negativeHoverCloseBackground || negativePressCloseBackground);
+
+    bool negativeWhenHoverPress = _decorationSettings->closeButtonIconColor() == InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress
+        && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+            || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+            || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights);
+
+    if (_decorationSettings->closeButtonIconColor() != InternalSettings::EnumCloseButtonIconColor::AsSelected
+        && ((_buttonType == DecorationButtonType::Close && negativeCloseBackground)
+            || (negativeWhenHoverPress
+                && (_buttonType == DecorationButtonType::Close
+                    || (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights
+                        && (_buttonType == DecorationButtonType::Maximize || _buttonType == DecorationButtonType::Minimize)))))) {
         defaultButton = false;
 
-        if (_decorationSettings->closeIconNegativeBackground() == InternalSettings::EnumCloseIconNegativeBackground::White) {
+        if (_decorationSettings->closeButtonIconColor() == InternalSettings::EnumCloseButtonIconColor::White) {
             if (*drawIconNormally)
                 foregroundNormal = Qt::GlobalColor::white;
             if (*drawIconOnHover)
                 foregroundHover = Qt::GlobalColor::white;
             if (*drawIconOnPress)
                 foregroundPress = Qt::GlobalColor::white;
-        } else { // White on hovered pressed
-            if (*drawIconOnHover)
-                foregroundHover = Qt::GlobalColor::white;
-            if (*drawIconOnPress)
-                foregroundPress = Qt::GlobalColor::white;
+        } else {
+            if (_decorationSettings->closeButtonIconColor() == InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress) {
+                if (*drawIconOnHover)
+                    foregroundHover = Qt::GlobalColor::white;
+                if (*drawIconOnPress)
+                    foregroundPress = Qt::GlobalColor::white;
+            } else if (negativeWhenHoverPress) {
+                if (_buttonType == DecorationButtonType::Close) {
+                    if (*drawIconOnHover)
+                        foregroundHover = _decorationColors->negativeSaturated();
+                    if (*drawIconOnPress)
+                        foregroundPress = _decorationColors->negativeSaturated();
+                } else if (_buttonType == DecorationButtonType::Maximize) {
+                    if (*drawIconOnHover)
+                        foregroundHover = _decorationColors->positiveSaturated();
+                    if (*drawIconOnPress)
+                        foregroundPress = _decorationColors->positiveSaturated();
+                } else if (_buttonType == DecorationButtonType::Minimize) {
+                    if (*drawIconOnHover)
+                        foregroundHover = _decorationColors->neutral();
+                    if (*drawIconOnPress)
+                        foregroundPress = _decorationColors->neutral();
+                }
+            }
 
             // get foregroundNormal
             if (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarText) {
@@ -1132,49 +1162,52 @@ void DecorationButtonPalette::generateButtonForegroundPalette()
                     if (*drawIconNormally)
                         foregroundNormal = baseForeground;
                 }
-            } else if (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-                       || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-                       || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+            } else if (!negativeWhenHoverPress
+                       && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                           || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                           || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
                 if (*drawIconNormally)
                     foregroundNormal = _decorationColors->negativeSaturated();
-            } else { // Normal icon colour is accent colour - treat as default button
-                closeForegroundNormalOnNegativeBackgroundIsDefault = true;
+            } else { // Normal icon colour is selected default colour - treat as default button
+                closeForegroundIsDefault = true;
             }
         }
     }
 
-    if (_buttonType == DecorationButtonType::Close
-        && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-            || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-            || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
-        defaultButton = false;
-        if (*drawIconNormally && !foregroundNormal.isValid())
-            foregroundNormal = _decorationColors->negativeSaturated();
-        if (*drawIconOnHover && !foregroundHover.isValid())
-            foregroundHover = _decorationColors->negativeSaturated();
-        if (*drawIconOnPress && !foregroundPress.isValid())
-            foregroundPress = _decorationColors->negativeSaturated();
-    } else if (_buttonType == DecorationButtonType::Maximize
-               && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
-        defaultButton = false;
-        if (*drawIconNormally)
-            foregroundNormal = _decorationColors->positiveSaturated();
-        if (*drawIconOnHover)
-            foregroundHover = _decorationColors->positiveSaturated();
-        if (*drawIconOnPress)
-            foregroundPress = _decorationColors->positiveSaturated();
-    } else if (_buttonType == DecorationButtonType::Minimize
-               && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
-        defaultButton = false;
-        if (*drawIconNormally)
-            foregroundNormal = _decorationColors->neutral();
-        if (*drawIconOnHover)
-            foregroundHover = _decorationColors->neutral();
-        if (*drawIconOnPress)
-            foregroundPress = _decorationColors->neutral();
+    if (!negativeWhenHoverPress) {
+        if (_buttonType == DecorationButtonType::Close
+            && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+                || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                || _decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+            defaultButton = false;
+            if (*drawIconNormally && !foregroundNormal.isValid())
+                foregroundNormal = _decorationColors->negativeSaturated();
+            if (*drawIconOnHover && !foregroundHover.isValid())
+                foregroundHover = _decorationColors->negativeSaturated();
+            if (*drawIconOnPress && !foregroundPress.isValid())
+                foregroundPress = _decorationColors->negativeSaturated();
+        } else if (_buttonType == DecorationButtonType::Maximize
+                   && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+            defaultButton = false;
+            if (*drawIconNormally && !foregroundNormal.isValid())
+                foregroundNormal = _decorationColors->positiveSaturated();
+            if (*drawIconOnHover && !foregroundHover.isValid())
+                foregroundHover = _decorationColors->positiveSaturated();
+            if (*drawIconOnPress && !foregroundPress.isValid())
+                foregroundPress = _decorationColors->positiveSaturated();
+        } else if (_buttonType == DecorationButtonType::Minimize
+                   && (_decorationSettings->buttonIconColors() == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
+            defaultButton = false;
+            if (*drawIconNormally && !foregroundNormal.isValid())
+                foregroundNormal = _decorationColors->neutral();
+            if (*drawIconOnHover && !foregroundHover.isValid())
+                foregroundHover = _decorationColors->neutral();
+            if (*drawIconOnPress && !foregroundPress.isValid())
+                foregroundPress = _decorationColors->neutral();
+        }
     }
 
-    if (defaultButton || closeForegroundNormalOnNegativeBackgroundIsDefault) {
+    if (defaultButton || closeForegroundIsDefault) {
         if ((_decorationSettings->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
              || _decorationSettings->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText)
             && !_decorationSettings->translucentButtonBackgrounds()

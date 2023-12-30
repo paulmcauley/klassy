@@ -48,13 +48,13 @@ private Q_SLOTS:
     }
     void setApplyButtonState(const bool on);
     void showHideTranslucencySettings();
+    void refreshCloseButtonIconColorState();
     void setNegativeCloseBackgroundHoverPressState();
-    void setCloseIconNegativeBackgroundState();
     void resizeOverrideColorTable();
     void showActiveOverrideGroupBox(const bool on);
     void resizeActiveOverrideGroupBox(const bool on);
     void copyCellDataToOtherCells();
-    void setButtonBackgroundColorsIcons();
+    void loadButtonBackgroundColorsIcons();
     void activeTableHorizontalHeaderSectionClicked(const int column);
     void setTableHorizontalHeaderSectionCheckedState(const int column, const bool checked);
 
@@ -62,6 +62,13 @@ Q_SIGNALS:
     void changed(bool);
 
 private:
+    //* decodes closeButtonIconColor from the UI for as InternalSettings::EnumCloseButtonIconColor index for saving, taking into account the
+    int convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex);
+    //* loads the current close button icon colour from m_internalSettings to UI
+    void loadCloseButtonIconColor();
+    //* given a settings index returns a UI index for the current m_closeButtonIconColorState
+    int convertCloseButtonIconColorSettingsToUiIndex(const int settingsIndex);
+
     //* outputs pointers to the CheckBox and ColorButton at a given table cell. Returns true if they are valid
     bool checkBoxAndColorButtonAtTableCell(QTableWidget *table, const int row, const int column, QCheckBox *&outputCheckBox, KColorButton *&outputColorButton);
 
@@ -133,6 +140,10 @@ private:
 
     QIcon m_unlockedIcon;
     QIcon m_lockedIcon;
+
+    enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, Count };
+
+    uint32_t m_closeButtonIconColorState;
 };
 
 }
