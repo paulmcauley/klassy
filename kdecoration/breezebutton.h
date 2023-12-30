@@ -189,11 +189,6 @@ private:
     QColor m_foregroundColor;
     QColor m_outlineColor;
 
-    //* these are the cached non-animated colours used for animations
-    QColor m_preAnimationForegroundColor;
-    QColor m_preAnimationBackgroundColor;
-    QColor m_preAnimationOutlineColor;
-
     Flag m_flag = FlagNone;
 
     bool m_leftmostLeftVisible = false;
