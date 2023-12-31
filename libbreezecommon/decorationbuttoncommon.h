@@ -15,30 +15,16 @@
 namespace Breeze
 {
 
-enum struct BREEZECOMMON_EXPORT ColorOverridableButtonTypes {
-    Close,
-    Maximize,
-    Minimize,
-    Help,
-    Shade,
-    AllDesktops,
-    KeepBelow,
-    KeepAbove,
-    ApplicationMenu,
-    Menu,
-    Count,
-};
-
 enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
-    IconNormal,
-    IconHover,
     IconPress,
-    BackgroundNormal,
-    BackgroundHover,
+    IconHover,
+    IconNormal,
     BackgroundPress,
-    OutlineNormal,
-    OutlineHover,
+    BackgroundHover,
+    BackgroundNormal,
     OutlinePress,
+    OutlineHover,
+    OutlineNormal,
     Count,
 };
 

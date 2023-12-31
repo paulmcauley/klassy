@@ -22,6 +22,8 @@
 namespace Breeze
 {
 
+using KDecoration2::DecorationButtonType;
+
 ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_ButtonColors)
@@ -36,39 +38,40 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::toggled, this, &ButtonColors::showActiveOverrideGroupBox);
     connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::clicked, this, &ButtonColors::resizeActiveOverrideGroupBox);
 
-    int numColumns = m_overridableButtonColorStatesStrings.count();
+    int numRows = m_overridableButtonColorStatesStrings.count();
 
-    // generate the horizontal header
+    // generate the vertical header
     m_unlockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-unlocked-symbolic.svg"), QSize(16, 16));
     m_lockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-locked-symbolic.svg"), QSize(16, 16));
     // m_unlockedIcon = QIcon::fromTheme(QStringLiteral("unlock"));
     // m_lockedIcon = QIcon::fromTheme(QStringLiteral("lock"));
-    for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
-        QTableWidgetItem *horizontalHeaderItem = new QTableWidgetItem();
-        horizontalHeaderItem->setText(m_overridableButtonColorStatesStrings[columnIndex]);
-        horizontalHeaderItem->setIcon(m_unlockedIcon);
-        horizontalHeaderItem->setToolTip(i18n("Lock to make all colours in this column the same"));
-        horizontalHeaderItem->setData(Qt::InitialSortOrderRole, columnIndex);
-        m_ui->overrideColorTableActive->setHorizontalHeaderItem(columnIndex, horizontalHeaderItem);
+    for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+        QTableWidgetItem *verticalHeaderItem = new QTableWidgetItem();
+        verticalHeaderItem->setText(m_overridableButtonColorStatesStrings[rowIndex]);
+        verticalHeaderItem->setIcon(m_unlockedIcon);
+        verticalHeaderItem->setToolTip(i18n("Lock to make all colours in this row the same"));
+        verticalHeaderItem->setData(Qt::InitialSortOrderRole, rowIndex);
+        m_ui->overrideColorTableActive->insertRow(rowIndex);
+        m_ui->overrideColorTableActive->setVerticalHeaderItem(rowIndex, verticalHeaderItem);
     }
 
-    connect(m_ui->overrideColorTableActive->horizontalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::activeTableHorizontalHeaderSectionClicked);
-    connect(m_ui->overrideColorTableActive->horizontalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::updateChanged);
+    connect(m_ui->overrideColorTableActive->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::activeTableVerticalHeaderSectionClicked);
+    connect(m_ui->overrideColorTableActive->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::updateChanged);
 
     // gnerate the overrideColorTableActive table UI
     // populate the checkboxes and KColorButtons
-    for (int rowIndex = 0; rowIndex < m_colorOverridableButtonTypesStrings.count(); rowIndex++) {
-        m_ui->overrideColorTableActive->insertRow(rowIndex);
-        for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+    for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
+        m_ui->overrideColorTableActive->insertColumn(columnIndex);
+        for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
             QHBoxLayout *hlayout = new QHBoxLayout();
             hlayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Ignored));
             QCheckBox *checkBox = new QCheckBox();
-            checkBox->setProperty("row", rowIndex);
             checkBox->setProperty("column", columnIndex);
+            checkBox->setProperty("row", rowIndex);
             hlayout->addWidget(checkBox);
             KColorButton *colorButton = new KColorButton();
-            colorButton->setProperty("row", rowIndex);
             colorButton->setProperty("column", columnIndex);
+            colorButton->setProperty("row", rowIndex);
             colorButton->setAlphaChannelEnabled(true);
             connect(colorButton, &KColorButton::changed, this, &ButtonColors::updateChanged);
             colorButton->setVisible(false);
@@ -84,10 +87,22 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
         }
     }
 
-    // populate the vertical header
-    m_ui->overrideColorTableActive->setVerticalHeaderLabels(m_colorOverridableButtonTypesStrings);
-    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    // populate the horizontal header
+    QStringList orderedHorizontalHeaderLabels;
+    for (auto buttonType : m_allCustomizableButtonsOrder) { // get the horizontal header labels in the correct user-set order
+        orderedHorizontalHeaderLabels.append(m_colorOverridableButtonTypesStrings.value(buttonType));
+    }
+    m_ui->overrideColorTableActive->setHorizontalHeaderLabels(orderedHorizontalHeaderLabels);
+    m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    // set the header widths to the same as the largest section
+    int largestSection = 0;
+    for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
+        int sectionSize = m_ui->overrideColorTableActive->horizontalHeader()->sectionSize(columnIndex);
+        if (sectionSize > largestSection)
+            largestSection = sectionSize;
+    }
+    m_ui->overrideColorTableActive->horizontalHeader()->setMinimumSectionSize(largestSection);
 
     // track ui changes
     connect(m_ui->buttonIconColors,
@@ -145,70 +160,70 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
     refreshCloseButtonIconColorState();
     loadCloseButtonIconColor(); // refreshCloseButtonIconColorState must occur before loading closeButtonIconColor
     showHideTranslucencySettings();
-    decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks();
+    decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
 
     m_overrideColorsLoaded = false;
-    bool overrideColorRowLoaded = false;
+    bool overrideColorColumnLoaded = false;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Close),
-                                                         m_internalSettings->buttonOverrideColorsCloseFlags(),
-                                                         m_internalSettings->buttonOverrideColorsClose());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
+                                                               m_internalSettings->buttonOverrideColorsCloseFlags(),
+                                                               m_internalSettings->buttonOverrideColorsClose());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Maximize),
-                                                         m_internalSettings->buttonOverrideColorsMaximizeFlags(),
-                                                         m_internalSettings->buttonOverrideColorsMaximize());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
+                                                               m_internalSettings->buttonOverrideColorsMaximizeFlags(),
+                                                               m_internalSettings->buttonOverrideColorsMaximize());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Minimize),
-                                                         m_internalSettings->buttonOverrideColorsMinimizeFlags(),
-                                                         m_internalSettings->buttonOverrideColorsMinimize());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
+                                                               m_internalSettings->buttonOverrideColorsMinimizeFlags(),
+                                                               m_internalSettings->buttonOverrideColorsMinimize());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Help),
-                                                         m_internalSettings->buttonOverrideColorsHelpFlags(),
-                                                         m_internalSettings->buttonOverrideColorsHelp());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
+                                                               m_internalSettings->buttonOverrideColorsHelpFlags(),
+                                                               m_internalSettings->buttonOverrideColorsHelp());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Shade),
-                                                         m_internalSettings->buttonOverrideColorsShadeFlags(),
-                                                         m_internalSettings->buttonOverrideColorsShade());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
+                                                               m_internalSettings->buttonOverrideColorsShadeFlags(),
+                                                               m_internalSettings->buttonOverrideColorsShade());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::AllDesktops),
-                                                         m_internalSettings->buttonOverrideColorsAllDesktopsFlags(),
-                                                         m_internalSettings->buttonOverrideColorsAllDesktops());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
+                                                               m_internalSettings->buttonOverrideColorsAllDesktopsFlags(),
+                                                               m_internalSettings->buttonOverrideColorsAllDesktops());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::KeepBelow),
-                                                         m_internalSettings->buttonOverrideColorsKeepBelowFlags(),
-                                                         m_internalSettings->buttonOverrideColorsKeepBelow());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
+                                                               m_internalSettings->buttonOverrideColorsKeepBelowFlags(),
+                                                               m_internalSettings->buttonOverrideColorsKeepBelow());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::KeepAbove),
-                                                         m_internalSettings->buttonOverrideColorsKeepAboveFlags(),
-                                                         m_internalSettings->buttonOverrideColorsKeepAbove());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
+                                                               m_internalSettings->buttonOverrideColorsKeepAboveFlags(),
+                                                               m_internalSettings->buttonOverrideColorsKeepAbove());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::ApplicationMenu),
-                                                         m_internalSettings->buttonOverrideColorsApplicationMenuFlags(),
-                                                         m_internalSettings->buttonOverrideColorsApplicationMenu());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
+                                                               m_internalSettings->buttonOverrideColorsApplicationMenuFlags(),
+                                                               m_internalSettings->buttonOverrideColorsApplicationMenu());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
-    overrideColorRowLoaded = decodeColorsFlagsAndLoadRow(m_ui->overrideColorTableActive,
-                                                         static_cast<int>(ColorOverridableButtonTypes::Menu),
-                                                         m_internalSettings->buttonOverrideColorsMenuFlags(),
-                                                         m_internalSettings->buttonOverrideColorsMenu());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorRowLoaded;
+    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
+                                                               m_internalSettings->buttonOverrideColorsMenuFlags(),
+                                                               m_internalSettings->buttonOverrideColorsMenu());
+    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
 
     m_ui->buttonColorActiveOverrideToggle->setChecked(m_overrideColorsLoaded);
 
@@ -249,76 +264,100 @@ void ButtonColors::save(const bool reloadKwinConfig)
         m_internalSettings->setButtonOverrideColorsLockStates(0);
 
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Close), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsCloseFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsClose(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Maximize), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsMaximizeFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsMaximize(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Minimize), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsMinimizeFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsMinimize(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Help), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsHelpFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsHelp(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Shade), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsShadeFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsShade(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                            static_cast<int>(ColorOverridableButtonTypes::AllDesktops),
-                                            colorsFlags,
-                                            colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsAllDesktopsFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsAllDesktops(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::KeepBelow), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsKeepBelowFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsKeepBelow(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::KeepAbove), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsKeepAboveFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsKeepAbove(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                            static_cast<int>(ColorOverridableButtonTypes::ApplicationMenu),
-                                            colorsFlags,
-                                            colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsApplicationMenuFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsApplicationMenu(colorsList);
 
     colorsList = QList<int>();
     colorsFlags = 0;
     if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Menu), colorsFlags, colorsList);
+        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
+                                               colorsFlags,
+                                               colorsList);
     m_internalSettings->setButtonOverrideColorsMenuFlags(colorsFlags);
     m_internalSettings->setButtonOverrideColorsMenu(colorsList);
 
@@ -421,79 +460,91 @@ void ButtonColors::updateChanged()
         uint32_t colorsFlags;
         QList<int> colorsList;
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Close), colorsFlags, colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsCloseFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsClose());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::Maximize),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMaximizeFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMaximize());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::Minimize),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMinimizeFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMinimize());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Help), colorsFlags, colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsHelpFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsHelp());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Shade), colorsFlags, colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsShadeFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsShade());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::AllDesktops),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsAllDesktopsFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsAllDesktops());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::KeepBelow),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsKeepBelowFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsKeepBelow());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::KeepAbove),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsKeepAboveFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsKeepAbove());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive,
-                                                static_cast<int>(ColorOverridableButtonTypes::ApplicationMenu),
-                                                colorsFlags,
-                                                colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsApplicationMenuFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsApplicationMenu());
         }
 
         if (!modified) {
-            encodeColorOverridableButtonTypeRow(m_ui->overrideColorTableActive, static_cast<int>(ColorOverridableButtonTypes::Menu), colorsFlags, colorsList);
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
+                                                   colorsFlags,
+                                                   colorsList);
             modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMenuFlags());
             modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMenu());
         }
@@ -723,8 +774,8 @@ void ButtonColors::showHideTranslucencySettings()
 
 void ButtonColors::resizeOverrideColorTable()
 {
-    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 }
 
 void ButtonColors::showActiveOverrideGroupBox(const bool value)
@@ -747,22 +798,22 @@ void ButtonColors::resizeActiveOverrideGroupBox(const bool value)
     }
 }
 
-void ButtonColors::activeTableHorizontalHeaderSectionClicked(const int column)
+void ButtonColors::activeTableVerticalHeaderSectionClicked(const int row)
 {
-    QTableWidgetItem *item = m_ui->overrideColorTableActive->horizontalHeaderItem(column);
+    QTableWidgetItem *item = m_ui->overrideColorTableActive->verticalHeaderItem(row);
     if (!item)
         return;
     // toggle checked state
     if (item->checkState() == Qt::CheckState::Checked) {
-        setTableHorizontalHeaderSectionCheckedState(column, false);
+        setTableVerticalHeaderSectionCheckedState(row, false);
     } else {
-        setTableHorizontalHeaderSectionCheckedState(column, true);
+        setTableVerticalHeaderSectionCheckedState(row, true);
     }
 }
 
-void ButtonColors::setTableHorizontalHeaderSectionCheckedState(const int column, const bool checked)
+void ButtonColors::setTableVerticalHeaderSectionCheckedState(const int row, const bool checked)
 {
-    QTableWidgetItem *item = m_ui->overrideColorTableActive->horizontalHeaderItem(column);
+    QTableWidgetItem *item = m_ui->overrideColorTableActive->verticalHeaderItem(row);
     if (!item)
         return;
     item->setCheckState(checked ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
@@ -770,30 +821,30 @@ void ButtonColors::setTableHorizontalHeaderSectionCheckedState(const int column,
 }
 
 // given a checkBox sending a toggle signal to this slot, gets the table cell in which the checkBox was located and copies the same data to the equivalent
-// inactive window table cell and to the rest of the column if the column lock is set
+// inactive window table cell and to the rest of the row if the row lock is set
 void ButtonColors::copyCellDataToOtherCells()
 {
     if (m_loading || m_processingDefaults)
         return; // only do this for user interactions
     KColorButton *colorButton = qobject_cast<KColorButton *>(QObject::sender());
     if (colorButton) {
-        bool rowOk, columnOk;
-        int row = colorButton->property("row").toInt(&rowOk);
+        bool columnOk, rowOk;
         int column = colorButton->property("column").toInt(&columnOk);
+        int row = colorButton->property("row").toInt(&rowOk);
 
-        if (rowOk && columnOk) {
+        if (columnOk && rowOk) {
             if (colorButton->parentWidget() && colorButton->parentWidget()->parentWidget() && colorButton->parentWidget()->parentWidget()->parentWidget()) {
                 QTableWidget *table = qobject_cast<QTableWidget *>(colorButton->parentWidget()->parentWidget()->parentWidget());
                 if (table) {
-                    QTableWidgetItem *item = table->horizontalHeaderItem(column);
+                    QTableWidgetItem *item = table->verticalHeaderItem(row);
                     if (item) {
-                        if (item->checkState() == Qt::CheckState::Checked) { // if the lock icon is locked for the column
-                            for (int destinationRow = 0; destinationRow < m_colorOverridableButtonTypesStrings.count(); destinationRow++) {
+                        if (item->checkState() == Qt::CheckState::Checked) { // if the lock icon is locked for the row
+                            for (int destinationColumn = 0; destinationColumn < m_colorOverridableButtonTypesStrings.count(); destinationColumn++) {
                                 QCheckBox *destinationCheckBox = nullptr;
                                 KColorButton *destinationColorButton = nullptr;
 
-                                if (destinationRow != row) { // copy the values to all other colorBoxes in the column
-                                    if (checkBoxAndColorButtonAtTableCell(table, destinationRow, column, destinationCheckBox, destinationColorButton)) {
+                                if (destinationColumn != column) { // copy the values to all other colorBoxes in the row
+                                    if (checkBoxAndColorButtonAtTableCell(table, destinationColumn, row, destinationCheckBox, destinationColorButton)) {
                                         // disconnect(destinationColorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells);
                                         // //disconnect the signals that call this function from the other cells to prevent this function being called many
                                         // times
@@ -813,8 +864,8 @@ void ButtonColors::copyCellDataToOtherCells()
 }
 
 bool ButtonColors::checkBoxAndColorButtonAtTableCell(QTableWidget *table,
-                                                     const int row,
                                                      const int column,
+                                                     const int row,
                                                      QCheckBox *&outputCheckBox,
                                                      KColorButton *&outputColorButton)
 {
@@ -858,17 +909,17 @@ bool ButtonColors::checkBoxAndColorButtonAtTableCell(QTableWidget *table,
 // colorsFlags storage bits: Active Window colours: bits 0-15, Inactive Window colours bits 16-31
 // active icon bits 0-3, active background bits 4-7, active outline bits 8-11
 // inactive icon bits 16-19, inactive background bits 20-23, inactive outline bits 24-27
-// bit 0 etc. reserved for deactivated state colour
-void ButtonColors::encodeColorOverridableButtonTypeRow(QTableWidget *tableActive, int row, uint32_t &colorsFlags, QList<int> &colorsList)
+// bit 3 etc. reserved for deactivated state colour
+void ButtonColors::encodeColorOverridableButtonTypeColumn(QTableWidget *tableActive, int column, uint32_t &colorsFlags, QList<int> &colorsList)
 {
     uint32_t bitMask = 0x00000001;
     colorsFlags = 0x00000000;
-    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBits = 0x07770777;
     uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
     QTableWidget **table;
 
     colorsList.clear();
-    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             QCheckBox *overrideCheckBox = nullptr;
             KColorButton *overrideColorButton = nullptr;
@@ -877,39 +928,39 @@ void ButtonColors::encodeColorOverridableButtonTypeRow(QTableWidget *tableActive
             } else {
                 return;
             }
-            if (checkBoxAndColorButtonAtTableCell(*table, row, columnIndex, overrideCheckBox, overrideColorButton)) {
-                if (overrideCheckBox->isChecked()) { // set the bit of the column by OR-ing the bitmask with the existing value
+            if (checkBoxAndColorButtonAtTableCell(*table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
+                if (overrideCheckBox->isChecked()) { // set the bit of the row by OR-ing the bitmask with the existing value
                     colorsFlags = colorsFlags | bitMask;
                     colorsList.append(static_cast<int>(overrideColorButton->color().rgba())); // convert the colour to an int and store on the intList
                 } else { // clear the bit by AND-ing with the inverse of the bitmask
                     colorsFlags = colorsFlags & (~bitMask);
                 }
             }
-            columnIndex++;
+            rowIndex++;
         }
     }
 }
 
-bool ButtonColors::decodeColorsFlagsAndLoadRow(QTableWidget *tableActive, int row, uint32_t colorsFlags, const QList<int> &colorsList)
+bool ButtonColors::decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive, int column, uint32_t colorsFlags, const QList<int> &colorsList)
 {
     uint32_t bitMask = 0x00000001;
-    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBits = 0x07770777;
     uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
     QTableWidget **table;
     int colorsListIndex = 0;
-    bool rowHasOverrideColorsLoaded = false;
-    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    bool columnHasOverrideColorsLoaded = false;
+    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             QCheckBox *overrideCheckBox = nullptr;
             KColorButton *overrideColorButton = nullptr;
             if (validColorsFlagsBitsActive & bitMask) {
                 table = &tableActive;
             } else {
-                return rowHasOverrideColorsLoaded;
+                return columnHasOverrideColorsLoaded;
             }
-            if (checkBoxAndColorButtonAtTableCell(*table, row, columnIndex, overrideCheckBox, overrideColorButton)) {
+            if (checkBoxAndColorButtonAtTableCell(*table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
                 if (colorsFlags & bitMask) { // if the current bit in colorsFlags is 1
-                    rowHasOverrideColorsLoaded = true;
+                    columnHasOverrideColorsLoaded = true;
                     overrideCheckBox->setChecked(true);
                     if (colorsList.count() && colorsListIndex < colorsList.count()) { // this if is to prevent against an unlikely corruption situation when
                                                                                       // colorsSet and colorsist are out of sync
@@ -923,69 +974,69 @@ bool ButtonColors::decodeColorsFlagsAndLoadRow(QTableWidget *tableActive, int ro
                     overrideColorButton->setColor(QColor());
                 }
             }
-            columnIndex++;
+            rowIndex++;
         }
     }
-    return rowHasOverrideColorsLoaded;
+    return columnHasOverrideColorsLoaded;
 }
 
 uint32_t ButtonColors::encodeColorOverridableLockStates()
 {
     uint32_t bitMask = 0x00000001;
     uint32_t lockFlags = 0x00000000;
-    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBits = 0x07770777;
     uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
     QTableWidget **table;
 
-    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             if (validColorsFlagsBitsActive & bitMask) {
                 table = &m_ui->overrideColorTableActive;
             } else {
                 return lockFlags;
             }
-            QTableWidgetItem *item = (*table)->horizontalHeaderItem(columnIndex);
+            QTableWidgetItem *item = (*table)->verticalHeaderItem(rowIndex);
             if (item) {
-                if (item->checkState() == Qt::CheckState::Checked) { // set the bit of the column by OR-ing the bitmask with the existing value
+                if (item->checkState() == Qt::CheckState::Checked) { // set the bit of the row by OR-ing the bitmask with the existing value
                     lockFlags = lockFlags | bitMask;
                 } else { // clear the bit by AND-ing with the inverse of the bitmask
                     lockFlags = lockFlags & (~bitMask);
                 }
             }
-            columnIndex++;
+            rowIndex++;
         }
     }
     return lockFlags;
 }
 
-bool ButtonColors::decodeColorOverridableLockStatesAndLoadHorizontalHeaderLocks()
+bool ButtonColors::decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks()
 {
     uint32_t bitMask = 0x00000001;
-    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBits = 0x07770777;
     uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
     QTableWidget *tableActive = m_ui->overrideColorTableActive;
     QTableWidget **table;
-    bool rowHasOverrideColorsLoaded = false;
+    bool columnHasOverrideColorsLoaded = false;
     uint32_t lockFlags = m_internalSettings->buttonOverrideColorsLockStates();
-    for (uint32_t i = 0, columnIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             if (validColorsFlagsBitsActive & bitMask) {
                 table = &tableActive;
             } else {
-                return rowHasOverrideColorsLoaded;
+                return columnHasOverrideColorsLoaded;
             }
-            QTableWidgetItem *item = (*table)->horizontalHeaderItem(columnIndex);
+            QTableWidgetItem *item = (*table)->verticalHeaderItem(rowIndex);
             if (item) {
                 if (lockFlags & bitMask) { // if the current bit in lockFlags is 1
-                    setTableHorizontalHeaderSectionCheckedState(columnIndex, true);
+                    setTableVerticalHeaderSectionCheckedState(rowIndex, true);
                 } else {
-                    setTableHorizontalHeaderSectionCheckedState(columnIndex, false);
+                    setTableVerticalHeaderSectionCheckedState(rowIndex, false);
                 }
             }
-            columnIndex++;
+            rowIndex++;
         }
     }
-    return rowHasOverrideColorsLoaded;
+    return columnHasOverrideColorsLoaded;
 }
 
 void ButtonColors::loadButtonBackgroundColorsIcons() // need to adjust for inactive as well
@@ -1476,11 +1527,11 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
 
     QString visibleButtons = buttonsOnLeft + buttonsOnRight;
 
-    m_buttonsOrder.clear();
+    m_visibleButtonsOrder.clear();
     for (QChar *it = visibleButtons.begin(); it != visibleButtons.end(); it++) {
         auto key = buttonNames.key(*it, KDecoration2::DecorationButtonType::Custom);
         if (key != KDecoration2::DecorationButtonType::Custom)
-            m_buttonsOrder.append(key);
+            m_visibleButtonsOrder.append(key);
     }
 
     m_hiddenButtons.clear();
@@ -1493,13 +1544,13 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
 
     // Place a custom button type in the average position of these "other" button types
     QList<int> otherButtonIndexes{
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Menu),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ApplicationMenu),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::OnAllDesktops),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ContextHelp),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepAbove),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepBelow),
-        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Shade),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::Menu),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::ApplicationMenu),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::OnAllDesktops),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::ContextHelp),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepAbove),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepBelow),
+        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::Shade),
     };
 
     // remove the -1s (index not found)
@@ -1536,7 +1587,7 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     }
 
     // find rightEdgePrioritybuttons
-    for (int i = m_buttonsOrder.count() - 1; i >= m_buttonsOrder.count() - 3; i--) {
+    for (int i = m_visibleButtonsOrder.count() - 1; i >= m_visibleButtonsOrder.count() - 3; i--) {
         if (buttonsOnRight.lastIndexOf(QChar('X')) == i) { // lastIndexOf in-case a weirdo adds more than one button of the same type
             rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Close);
         } else if (buttonsOnRight.lastIndexOf(QChar('A')) == i) {
@@ -1549,13 +1600,16 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     // if custom is at an edge, make sure priority (min/max/close) button has a priority over custom button for the edge
     if (indexOfCustom >= 0 && indexOfCustom <= (leftEdgePriorityButtons.count() - 1)
         && leftEdgePriorityButtons.count()) { // if custom is to go at start but a leftEdgePriority button is there
-        indexOfCustom = m_buttonsOrder.indexOf(leftEdgePriorityButtons.value(leftEdgePriorityButtons.count() - 1)) + 1;
-    } else if (indexOfCustom <= (m_buttonsOrder.count() - 1) && indexOfCustom >= (m_buttonsOrder.count() - rightEdgePriorityButtons.count())
+        indexOfCustom = m_visibleButtonsOrder.indexOf(leftEdgePriorityButtons.value(leftEdgePriorityButtons.count() - 1)) + 1;
+    } else if (indexOfCustom <= (m_visibleButtonsOrder.count() - 1) && indexOfCustom >= (m_visibleButtonsOrder.count() - rightEdgePriorityButtons.count())
                && rightEdgePriorityButtons.count()) { // if custom is to go at end but a right EdgePriority button is there
-        indexOfCustom = m_buttonsOrder.indexOf(rightEdgePriorityButtons.value(0));
+        indexOfCustom = m_visibleButtonsOrder.indexOf(rightEdgePriorityButtons.value(0));
     }
 
-    m_buttonsOrder.insert(indexOfCustom, KDecoration2::DecorationButtonType::Custom);
+    m_allCustomizableButtonsOrder = m_visibleButtonsOrder + m_hiddenButtons;
+
+    m_visibleButtonsOrder.insert(indexOfCustom,
+                                 KDecoration2::DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
 }
 
 QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<DecorationButtonPalette *> inputlist)
@@ -1563,9 +1617,9 @@ QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<
     QList<DecorationButtonPalette *> outputlist;
 
     QMutableListIterator<DecorationButtonPalette *> j(inputlist);
-    for (int i = 0; i < m_buttonsOrder.count(); i++) {
+    for (int i = 0; i < m_visibleButtonsOrder.count(); i++) {
         for (int j = inputlist.count() - 1; j >= 0; j--) { // iterate loop in reverse order as want to delete elements
-            if (m_buttonsOrder[i] == (inputlist[j])->buttonType()) {
+            if (m_visibleButtonsOrder[i] == (inputlist[j])->buttonType()) {
                 outputlist.append(inputlist[j]);
                 inputlist.removeAt(j);
             }

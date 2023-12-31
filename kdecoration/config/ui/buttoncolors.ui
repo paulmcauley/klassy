@@ -445,51 +445,6 @@
             <attribute name="verticalHeaderCascadingSectionResizes">
              <bool>true</bool>
             </attribute>
-            <column>
-             <property name="text">
-              <string>Icon normal</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Icon hover</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Icon pressed</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Background normal</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Background hover</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Background pressed</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Outline normal</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Outline hover</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Outline pressed</string>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>
