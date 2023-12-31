@@ -71,6 +71,8 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
 
     // read kwin window border setting and write to the preset
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
+    if (!kwinConfig)
+        return;
     if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
         KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
         QString borderSize;
@@ -161,9 +163,11 @@ bool PresetsModel::presetHasKwinBorderSizeKey(KConfig *config, const QString &pr
 void PresetsModel::writeBorderSizeToKwinConfig(const QString &borderSize)
 {
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
-    KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
-    kdecoration2Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
-    kwinConfig->sync();
+    if (kwinConfig) {
+        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+        kdecoration2Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
+        kwinConfig->sync();
+    }
 }
 
 void PresetsModel::deletePreset(KConfig *config, const QString &presetName)
@@ -232,6 +236,9 @@ void PresetsModel::exportPreset(KConfig *config, const QString &presetName, cons
     KSharedConfig::Ptr outputPresetConfig = KSharedConfig::openConfig(fileName);
     QString groupName = presetGroupName(presetName);
 
+    if (!outputPresetConfig)
+        return;
+
     if (groupName.isEmpty() || !config->hasGroup(groupName))
         return;
 
@@ -261,6 +268,9 @@ PresetsErrorFlag
 PresetsModel::importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion, bool markAsBundled)
 {
     KSharedConfig::Ptr importPresetConfig = KSharedConfig::openConfig(fileName);
+
+    if (!importPresetConfig)
+        return PresetsErrorFlag::InvalidGlobalGroup;
 
     // perform validation first
     if (!(importPresetConfig->hasGroup("Klassy Window Decoration Preset File")))
