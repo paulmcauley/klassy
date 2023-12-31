@@ -645,7 +645,7 @@ bool DecorationButtonPalette::decodeButtonOverrideColors()
         return false;
 
     uint32_t bitMask = 0x00000001;
-    uint32_t validColorsFlagsBits = 0x0EEE0EEE;
+    uint32_t validColorsFlagsBits = 0x07770777;
     uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
     QMap<OverridableButtonColorStates, QColor> *output;
     int colorsListIndex = 0;
