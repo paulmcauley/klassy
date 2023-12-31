@@ -156,7 +156,7 @@ QColor transparentize(const QColor &color, qreal amount)
 //____________________________________________________________________
 QColor Helper::frameOutlineColor(const QPalette &palette, bool mouseOver, bool hasFocus, qreal opacity, AnimationMode mode) const
 {
-    QColor outline(KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), 0.25));
+    QColor outline(KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), Metrics::Bias_Default));
 
     // focus takes precedence over hover
     if (mode == AnimationFocus) {
@@ -355,7 +355,7 @@ QColor Helper::checkBoxIndicatorColor(const QPalette &palette, bool mouseOver, b
 //______________________________________________________________________________
 QColor Helper::separatorColor(const QPalette &palette) const
 {
-    return KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), 0.25);
+    return KColorUtils::mix(palette.color(QPalette::Window), palette.color(QPalette::WindowText), Metrics::Bias_Default);
 }
 
 //______________________________________________________________________________
@@ -676,10 +676,11 @@ void Helper::renderButtonFrame(QPainter *painter,
             bgBrush = alphaColor(highlightColor, highlightBackgroundAlpha);
         } else if (checked) {
             bgBrush = hasNeutralHighlight ? alphaColor(neutralText(palette), highlightBackgroundAlpha) : alphaColor(palette.buttonText().color(), 0.125);
-            penBrush = hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            penBrush =
+                hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), Metrics::Bias_Default);
         } else if (isActiveWindow && defaultButton) {
             bgBrush = alphaColor(highlightColor, 0.125);
-            penBrush = KColorUtils::mix(highlightColor, KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.333), 0.5);
+            penBrush = KColorUtils::mix(highlightColor, KColorUtils::mix(palette.button().color(), palette.buttonText().color(), Metrics::Bias_Default), 0.5);
         } else {
             bgBrush = alphaColor(highlightColor, 0);
             penBrush = hasNeutralHighlight ? neutralText(palette) : bgBrush;
@@ -690,13 +691,15 @@ void Helper::renderButtonFrame(QPainter *painter,
         } else if (checked) {
             bgBrush = hasNeutralHighlight ? KColorUtils::mix(palette.button().color(), neutralText(palette), 0.333)
                                           : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.125);
-            penBrush = hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            penBrush =
+                hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), Metrics::Bias_Default);
         } else if (isActiveWindow && defaultButton) {
             bgBrush = KColorUtils::mix(palette.button().color(), highlightColor, 0.2);
-            penBrush = KColorUtils::mix(highlightColor, KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.333), 0.5);
+            penBrush = KColorUtils::mix(highlightColor, KColorUtils::mix(palette.button().color(), palette.buttonText().color(), Metrics::Bias_Default), 0.5);
         } else {
             bgBrush = palette.button().color();
-            penBrush = hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), 0.3);
+            penBrush =
+                hasNeutralHighlight ? neutralText(palette) : KColorUtils::mix(palette.button().color(), palette.buttonText().color(), Metrics::Bias_Default);
         }
     }
 
@@ -864,7 +867,7 @@ void Helper::renderCheckBoxBackground(QPainter *painter,
     } else if (state == CheckOn || state == CheckPartial) {
         penBrush = palette.highlight().color();
     } else {
-        penBrush = transparentize(palette.text().color(), highlightBackgroundAlpha);
+        penBrush = transparentize(palette.text().color(), Metrics::Bias_Default);
     }
     painter->setPen(QPen(penBrush, PenWidth::Frame));
 
@@ -1024,7 +1027,7 @@ void Helper::renderRadioButtonBackground(QPainter *painter,
     } else if (state == RadioOn) {
         penBrush = palette.highlight().color();
     } else {
-        penBrush = transparentize(palette.text().color(), highlightBackgroundAlpha);
+        penBrush = transparentize(palette.text().color(), Metrics::Bias_Default);
     }
     painter->setPen(QPen(penBrush, PenWidth::Frame));
 
@@ -1395,7 +1398,7 @@ void Helper::renderTabBarTab(QPainter *painter,
         } else {
             bgBrush = frameBackgroundColor(palette);
         }
-        QColor penBrush = KColorUtils::mix(bgBrush, palette.color(QPalette::WindowText), 0.25);
+        QColor penBrush = KColorUtils::mix(bgBrush, palette.color(QPalette::WindowText), Metrics::Bias_Default);
         painter->setBrush(bgBrush);
         painter->setPen(QPen(penBrush, PenWidth::Frame));
         QRectF highlightRect = frameRect;
