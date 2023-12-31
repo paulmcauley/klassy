@@ -10,8 +10,11 @@
 #include "breeze.h"
 #include "breezesettings.h"
 #include "colortools.h"
+#include "decorationbuttoncommon.h"
 #include "ui_buttoncolors.h"
 #include <KColorButton>
+#include <KDecoration2/DecorationButton>
+#include <KDecoration2/DecorationSettings>
 #include <QDialog>
 
 namespace Breeze
@@ -62,6 +65,9 @@ Q_SIGNALS:
     void changed(bool);
 
 private:
+    void getButtonsOrderFromKwinConfig();
+    QList<Breeze::DecorationButtonPalette *> sortButtonsAsPerKwinConfig(QList<Breeze::DecorationButtonPalette *> inputlist);
+
     //* decodes closeButtonIconColor from the UI for as InternalSettings::EnumCloseButtonIconColor index for saving, taking into account the
     int convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex);
     //* loads the current close button icon colour from m_internalSettings to UI
@@ -144,6 +150,7 @@ private:
     enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, Count };
 
     uint32_t m_closeButtonIconColorState;
+    QList<KDecoration2::DecorationButtonType> m_buttonsOrder;
 };
 
 }

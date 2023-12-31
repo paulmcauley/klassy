@@ -82,11 +82,17 @@ class BREEZECOMMON_EXPORT DecorationButtonPalette
 {
 public:
     DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType);
+
     void reconfigure(InternalSettingsPtr decorationSettings,
                      DecorationButtonBehaviour *buttonBehaviour,
                      DecorationColors *decorationColors,
                      QColor baseForeground,
                      QColor baseBackground);
+
+    KDecoration2::DecorationButtonType buttonType()
+    {
+        return _buttonType;
+    }
 
     QColor foregroundNormal;
     QColor foregroundHover;
