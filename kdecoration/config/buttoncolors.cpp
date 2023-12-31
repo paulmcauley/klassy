@@ -1435,26 +1435,28 @@ void ButtonColors::loadButtonBackgroundColorsIcons() // need to adjust for inact
 
 void ButtonColors::getButtonsOrderFromKwinConfig()
 {
-    QHash<KDecoration2::DecorationButtonType, QChar> buttonNames;
-    // list from https://invent.kde.org/plasma/kwin/-/blob/master/src/decorations/settings.cpp
+    QMap<KDecoration2::DecorationButtonType, QChar> buttonNames;
+    // list modified from https://invent.kde.org/plasma/kwin/-/blob/master/src/decorations/settings.cpp
     buttonNames[KDecoration2::DecorationButtonType::Menu] = QChar('M');
     buttonNames[KDecoration2::DecorationButtonType::ApplicationMenu] = QChar('N');
     buttonNames[KDecoration2::DecorationButtonType::OnAllDesktops] = QChar('S');
+    buttonNames[KDecoration2::DecorationButtonType::KeepAbove] = QChar('F');
+    buttonNames[KDecoration2::DecorationButtonType::KeepBelow] = QChar('B');
+    buttonNames[KDecoration2::DecorationButtonType::Shade] = QChar('L');
     buttonNames[KDecoration2::DecorationButtonType::ContextHelp] = QChar('H');
     buttonNames[KDecoration2::DecorationButtonType::Minimize] = QChar('I');
     buttonNames[KDecoration2::DecorationButtonType::Maximize] = QChar('A');
     buttonNames[KDecoration2::DecorationButtonType::Close] = QChar('X');
-    buttonNames[KDecoration2::DecorationButtonType::KeepAbove] = QChar('F');
-    buttonNames[KDecoration2::DecorationButtonType::KeepBelow] = QChar('B');
-    buttonNames[KDecoration2::DecorationButtonType::Shade] = QChar('L');
+
+    QString buttonsOnLeft;
+    QString buttonsOnRight;
 
     // very hacky way to do this -- better would be to find a way to get the settings from <KDecoration2/DecorationSettings>
     //  read kwin button border setting
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
     if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
         KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
-        QString buttonsOnLeft;
-        QString buttonsOnRight;
+
         if (!kdecoration2Group.hasKey(QStringLiteral("ButtonsOnLeft"))) {
             buttonsOnLeft = QStringLiteral("MS");
         } else {
@@ -1467,50 +1469,93 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
             buttonsOnRight = kdecoration2Group.readEntry(QStringLiteral("ButtonsOnRight"));
         }
 
-        QString buttons = buttonsOnLeft + buttonsOnRight;
+    } else {
+        buttonsOnLeft = QStringLiteral("MS");
+        buttonsOnRight = QStringLiteral("HIAX");
+    }
 
-        for (QChar *it = buttons.begin(); it != buttons.end(); it++) {
-            auto key = buttonNames.key(*it, KDecoration2::DecorationButtonType::Custom);
+    QString visibleButtons = buttonsOnLeft + buttonsOnRight;
+
+    m_buttonsOrder.clear();
+    for (QChar *it = visibleButtons.begin(); it != visibleButtons.end(); it++) {
+        auto key = buttonNames.key(*it, KDecoration2::DecorationButtonType::Custom);
+        if (key != KDecoration2::DecorationButtonType::Custom)
             m_buttonsOrder.append(key);
-        }
+    }
 
-        // Place a custom button type in the average position of these "other" button types
-        QList<int> otherButtonIndexes{
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Menu),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ApplicationMenu),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::OnAllDesktops),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ContextHelp),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepAbove),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepBelow),
-            m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Shade),
-        };
-
-        // remove the -1s (index not found)
-        QMutableListIterator<int> i(otherButtonIndexes);
-        while (i.hasNext()) {
-            if (i.next() == -1)
-                i.remove();
-        }
-
-        int sum = 0;
-        for (int i = 0; i < otherButtonIndexes.count(); i++) {
-            sum += otherButtonIndexes[i];
-        }
-
-        if (sum) {
-            int indexOfCustom = sum / otherButtonIndexes.count();
-
-            // make sure custom is at opposite side to close
-            if (indexOfCustom == 0 && m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Close) == 0) {
-                indexOfCustom = otherButtonIndexes.count();
-            } else if (indexOfCustom == (otherButtonIndexes.count() - 1)
-                       && m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Close) == (otherButtonIndexes.count() - 1)) {
-                indexOfCustom = 0;
-            }
-
-            m_buttonsOrder.insert(indexOfCustom, KDecoration2::DecorationButtonType::Custom);
+    m_hiddenButtons.clear();
+    // add hidden buttons to m_hiddenButtons
+    for (auto it = buttonNames.begin(); it != buttonNames.end(); it++) {
+        if (!visibleButtons.contains(*it)) {
+            m_hiddenButtons.append(buttonNames.key(*it));
         }
     }
+
+    // Place a custom button type in the average position of these "other" button types
+    QList<int> otherButtonIndexes{
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Menu),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ApplicationMenu),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::OnAllDesktops),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::ContextHelp),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepAbove),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepBelow),
+        m_buttonsOrder.indexOf(KDecoration2::DecorationButtonType::Shade),
+    };
+
+    // remove the -1s (index not found)
+    QMutableListIterator<int> i(otherButtonIndexes);
+    while (i.hasNext()) {
+        if (i.next() == -1)
+            i.remove();
+    }
+
+    int indexOfCustom;
+    if (otherButtonIndexes.count()) {
+        int sum = 0;
+        for (int i = 0; i < otherButtonIndexes.count(); i++) {
+            sum += otherButtonIndexes[i] + 1;
+        }
+        indexOfCustom = (sum / otherButtonIndexes.count()) - 1; // indexOfCustom is now at the median index position of otherButtonIndexes
+    } else {
+        indexOfCustom = 0;
+    }
+
+    // Want to give Close/Maximize/Minimize buttons priority over the custom button to be at either the left or right edges
+    QMap<int, KDecoration2::DecorationButtonType> leftEdgePriorityButtons; // a list of Close/Maximize/Minimize if at left edge
+    QMap<int, KDecoration2::DecorationButtonType> rightEdgePriorityButtons; // a list of Close/Maximize/Minimize if at right edge
+
+    // find leftEdgePriorityButtons
+    for (int i = 0; i < 3; i++) {
+        if (buttonsOnLeft.indexOf(QChar('X')) == i) {
+            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Close);
+        } else if (buttonsOnLeft.indexOf(QChar('A')) == i) {
+            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Maximize);
+        } else if (buttonsOnLeft.indexOf(QChar('I')) == i) {
+            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Minimize);
+        }
+    }
+
+    // find rightEdgePrioritybuttons
+    for (int i = m_buttonsOrder.count() - 1; i >= m_buttonsOrder.count() - 3; i--) {
+        if (buttonsOnRight.lastIndexOf(QChar('X')) == i) { // lastIndexOf in-case a weirdo adds more than one button of the same type
+            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Close);
+        } else if (buttonsOnRight.lastIndexOf(QChar('A')) == i) {
+            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Maximize);
+        } else if (buttonsOnRight.lastIndexOf(QChar('I')) == i) {
+            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Minimize);
+        }
+    }
+
+    // if custom is at an edge, make sure priority (min/max/close) button has a priority over custom button for the edge
+    if (indexOfCustom >= 0 && indexOfCustom <= (leftEdgePriorityButtons.count() - 1)
+        && leftEdgePriorityButtons.count()) { // if custom is to go at start but a leftEdgePriority button is there
+        indexOfCustom = m_buttonsOrder.indexOf(leftEdgePriorityButtons.value(leftEdgePriorityButtons.count() - 1)) + 1;
+    } else if (indexOfCustom <= (m_buttonsOrder.count() - 1) && indexOfCustom >= (m_buttonsOrder.count() - rightEdgePriorityButtons.count())
+               && rightEdgePriorityButtons.count()) { // if custom is to go at end but a right EdgePriority button is there
+        indexOfCustom = m_buttonsOrder.indexOf(rightEdgePriorityButtons.value(0));
+    }
+
+    m_buttonsOrder.insert(indexOfCustom, KDecoration2::DecorationButtonType::Custom);
 }
 
 QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<DecorationButtonPalette *> inputlist)

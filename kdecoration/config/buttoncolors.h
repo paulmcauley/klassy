@@ -150,7 +150,10 @@ private:
     enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, Count };
 
     uint32_t m_closeButtonIconColorState;
-    QList<KDecoration2::DecorationButtonType> m_buttonsOrder;
+    QList<KDecoration2::DecorationButtonType>
+        m_buttonsOrder; // ordered visible buttons (visible + an added Custom button used in the icon display of the colour palette for "other" buttons)
+    QList<KDecoration2::DecorationButtonType>
+        m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
 };
 
 }
