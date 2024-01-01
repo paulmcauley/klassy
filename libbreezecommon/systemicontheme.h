@@ -1,5 +1,5 @@
-#ifndef BREEZE_STYLESYSTEMICONTHEME_H
-#define BREEZE_STYLESYSTEMICONTHEME_H
+#ifndef BREEZE_SYSTEMICONTHEME_H
+#define BREEZE_SYSTEMICONTHEME_H
 
 /*
  * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
@@ -8,12 +8,14 @@
  */
 #include "breezecommon_export.h"
 #include "breezesettings.h"
+#include <KDecoration2/DecorationButton>
+#include <KDecoration2/DecorationSettings>
 #include <QPainter>
 
 namespace Breeze
 {
 
-class BREEZECOMMON_EXPORT RenderStyleSystemIconTheme
+class BREEZECOMMON_EXPORT SystemIconTheme
 {
 public:
     /**
@@ -25,11 +27,11 @@ public:
      * @param internalSettings Window Decoration internal settings pointer
      * @param devicePixelRatio devicePixelRatio of paint device - set separately here as the value from the device does not work on X11
      */
-    RenderStyleSystemIconTheme(QPainter *painter,
-                               const qreal iconWidth,
-                               const QString &iconName,
-                               const QSharedPointer<InternalSettings> internalSettings,
-                               const qreal devicePixelRatio)
+    SystemIconTheme(QPainter *painter,
+                    const qreal iconWidth,
+                    const QString &iconName,
+                    const QSharedPointer<InternalSettings> internalSettings,
+                    const qreal devicePixelRatio)
         : m_painter(painter)
         , m_iconWidth(iconWidth)
         , m_systemIconFromTheme(iconName)
@@ -37,11 +39,14 @@ public:
         , m_devicePixelRatio(devicePixelRatio){};
 
     void renderIcon();
+
+    //* When "Use system icon theme" is selected for the icons then not all icons are available as a window-*-symbolic icon
+    //* ouputs systemIconName and systemIconCheckedName
+    static void systemIconNames(KDecoration2::DecorationButtonType type, QString &systemIconName, QString &systemIconCheckedName);
     static QString isSystemIconNameAvailable(const QString &preferredIconName, const QString &backupIconName);
 
 private:
     void paintIconFromSystemTheme(QString iconName);
-    void convertAlphaToColorOnTransparent(QImage &image, const QColor &tintColor);
 
     QPainter *m_painter;
     const qreal m_iconWidth;

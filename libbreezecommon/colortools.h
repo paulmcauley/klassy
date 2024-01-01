@@ -215,6 +215,10 @@ public:
      * @return the output QColor with modified alpha
      */
     static QColor alphaMix(const QColor &inputColor, const qreal &alphaMixFactor);
+
+    static void convertAlphaToColor(QImage &image, const QColor tintColor);
+
+    static void convertAlphaToColor(QIcon &icon, QSize iconSize, const QColor tintColor);
 };
 }
 

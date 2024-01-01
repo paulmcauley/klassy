@@ -18,7 +18,7 @@ set(breezecommon_LIB_SRCS
     styleoxygen.cpp
     styleredmond.cpp
     styleredmond10.cpp
-    stylesystemicontheme.cpp
+    systemicontheme.cpp
     setqdebug_logging.h
 )
 

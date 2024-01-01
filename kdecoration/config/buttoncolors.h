@@ -57,9 +57,11 @@ private Q_SLOTS:
     void showActiveOverrideGroupBox(const bool on);
     void resizeActiveOverrideGroupBox(const bool on);
     void copyCellDataToOtherCells();
-    void loadButtonBackgroundColorsIcons();
+    void loadButtonPaletteColorsIcons();
     void activeTableVerticalHeaderSectionClicked(const int row);
     void setTableVerticalHeaderSectionCheckedState(const int row, const bool checked);
+    void updateLockIcons();
+    void loadHorizontalHeaderIcons();
 
 Q_SIGNALS:
     void changed(bool);
@@ -94,6 +96,9 @@ private:
 
     //* decodes the lock-icon states in m_internalSettings and loads them into the override tables' vertical headers
     bool decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
+
+    void setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section);
+
     void setChanged(bool value);
     bool isDefaults();
 
@@ -101,6 +106,7 @@ private:
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+    QObject *m_parent;
 
     //* changed state
     bool m_changed;
@@ -127,7 +133,7 @@ private:
         {KDecoration2::DecorationButtonType::KeepBelow, i18n("Keep Below")},
         {KDecoration2::DecorationButtonType::KeepAbove, i18n("Keep Above")},
         {KDecoration2::DecorationButtonType::ApplicationMenu, i18n("Application Menu")},
-        {KDecoration2::DecorationButtonType::Menu, i18n("Menu (app icon)")},
+        {KDecoration2::DecorationButtonType::Menu, i18n("Menu")},
     };
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
@@ -142,9 +148,6 @@ private:
         i18n("Outline hover"),
         i18n("Outline normal"),
     };
-
-    QIcon m_unlockedIcon;
-    QIcon m_lockedIcon;
 
     enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, Count };
 

@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
     app.setApplicationName(QStringLiteral("klassy-settings"));
     app.setWindowIcon(QIcon::fromTheme(QStringLiteral("klassy-settings")));
 
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     KCMultiDialog dialog;
     dialog.setWindowTitle(i18n("Klassy Settings"));
     dialog.setMinimumWidth(800);

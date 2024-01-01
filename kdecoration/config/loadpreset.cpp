@@ -87,9 +87,7 @@ void LoadPreset::addButtonClicked()
         }
     }
 
-    ConfigWidget *configWidget = qobject_cast<ConfigWidget *>(m_parent);
-    if (configWidget)
-        configWidget->saveMain(m_addDialog->m_ui->presetName->text());
+    static_cast<ConfigWidget *>(m_parent)->saveMain(m_addDialog->m_ui->presetName->text());
     initPresetsList();
 }
 

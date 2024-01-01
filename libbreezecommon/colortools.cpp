@@ -6,6 +6,7 @@
 #include "colortools.h"
 
 #include <KColorUtils>
+#include <QIcon>
 
 namespace Breeze
 {
@@ -183,5 +184,39 @@ QColor ColorTools::alphaMix(const QColor &inputColor, const qreal &alphaMixFacto
     QColor outputColor(inputColor);
     outputColor.setAlphaF(outputColor.alphaF() * alphaMixFactor);
     return outputColor;
+}
+
+void ColorTools::convertAlphaToColor(QImage &image, const QColor tintColor)
+{
+    if (image.isNull())
+        return;
+    image.convertTo(QImage::Format_ARGB32);
+
+    QColor outputColor(tintColor);
+    int alpha;
+
+    for (int y = 0; y < image.height(); ++y) {
+        QRgb *line = reinterpret_cast<QRgb *>(image.scanLine(y));
+        for (int x = 0; x < image.width(); ++x) {
+            // line[x] is a pixel
+            alpha = qAlpha(line[x]);
+            if (alpha > 0) {
+                outputColor.setAlphaF((qreal(alpha) / 255) * tintColor.alphaF());
+                line[x] = outputColor.rgba();
+            }
+        }
+    }
+}
+
+void ColorTools::convertAlphaToColor(QIcon &icon, QSize iconSize, const QColor tintColor)
+{
+    QImage iconImage(icon.pixmap(iconSize).toImage());
+    convertAlphaToColor(iconImage, tintColor);
+    QPixmap pixmap(iconSize * iconImage.devicePixelRatioF());
+    pixmap.setDevicePixelRatio(iconImage.devicePixelRatioF());
+    pixmap.fill(Qt::transparent);
+    std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
+    painter->drawImage(QPoint(0, 0), iconImage);
+    icon = QIcon(pixmap);
 }
 }
