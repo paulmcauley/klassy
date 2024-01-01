@@ -15,7 +15,7 @@
 #include "breezedecorationsettingsprovider.h"
 #include "breezestyleconfigdata.h"
 #include "renderdecorationbuttonicon.h"
-#include "stylesystemicontheme.h"
+#include "systemicontheme.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -1535,18 +1535,16 @@ void Helper::renderDecorationButton(QPainter *painter,
     if (decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (buttonType) {
         case ButtonClose:
-            systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
+            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
             break;
         case ButtonMaximize:
-            systemIconName =
-                RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
+            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
             break;
         case ButtonMinimize:
-            systemIconName =
-                RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
+            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
             break;
         case ButtonRestore:
-            systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
+            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
             break;
         default:
             break;
@@ -1554,7 +1552,7 @@ void Helper::renderDecorationButton(QPainter *painter,
     }
     if (!systemIconName.isEmpty()) {
         painter->setWindow(rect);
-        RenderStyleSystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
+        SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
         iconRenderer.renderIcon();
     } else {
         std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);

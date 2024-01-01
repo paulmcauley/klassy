@@ -8,7 +8,7 @@
 #include "breezebutton.h"
 #include "colortools.h"
 #include "renderdecorationbuttonicon.h"
-#include "stylesystemicontheme.h"
+#include "systemicontheme.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -273,7 +273,7 @@ void Button::drawIcon(QPainter *painter) const
         if (m_renderSystemIcon) {
             QString systemIconName;
             systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
-            RenderStyleSystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
+            SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
             iconRenderer.renderIcon();
         } else {
             std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer =
@@ -284,58 +284,7 @@ void Button::drawIcon(QPainter *painter) const
                                                           m_devicePixelRatio,
                                                           deviceOffsetTitleBarTopLeftToIconTopLeft);
 
-            switch (type()) {
-            case DecorationButtonType::Close:
-                iconRenderer->renderCloseIcon();
-                break;
-
-            case DecorationButtonType::Maximize:
-                if (isChecked()) {
-                    iconRenderer->renderRestoreIcon();
-                } else {
-                    iconRenderer->renderMaximizeIcon();
-                }
-                break;
-
-            case DecorationButtonType::Minimize:
-                iconRenderer->renderMinimizeIcon();
-                break;
-
-            case DecorationButtonType::OnAllDesktops:
-                if (isChecked()) {
-                    iconRenderer->renderPinnedOnAllDesktopsIcon();
-                } else {
-                    iconRenderer->renderPinOnAllDesktopsIcon();
-                }
-                break;
-
-            case DecorationButtonType::Shade:
-                if (isChecked()) {
-                    iconRenderer->renderUnShadeIcon();
-                } else {
-                    iconRenderer->renderShadeIcon();
-                }
-                break;
-
-            case DecorationButtonType::KeepBelow:
-                iconRenderer->renderKeepBehindIcon();
-                break;
-
-            case DecorationButtonType::KeepAbove:
-                iconRenderer->renderKeepInFrontIcon();
-                break;
-
-            case DecorationButtonType::ApplicationMenu:
-                iconRenderer->renderApplicationMenuIcon();
-                break;
-
-            case DecorationButtonType::ContextHelp:
-                iconRenderer->renderContextHelpIcon();
-                break;
-
-            default:
-                break;
-            }
+            iconRenderer->renderIcon(type(), isChecked());
         }
     }
 }
@@ -462,8 +411,10 @@ void Button::reconfigure()
                                 d->titleBarColor(true, true, true) // active colours only for now
     );
 
-    // which system icons to render
-    configureSystemIcons();
+    // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
+    if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        SystemIconTheme::systemIconNames(type(), m_systemIconName, m_systemIconCheckedName);
+    }
 }
 
 //__________________________________________________________________
@@ -783,76 +734,6 @@ void Button::setShouldDrawBoldButtonIcons()
         case InternalSettings::EnumBoldButtonIcons::BoldIconsFine:
             break;
         }
-    }
-}
-
-// When "Use system icon theme" is selected for the icons then not all icons are available as a window-*-symbolic icon
-// sets m_systemIconName and m_systemIconCheckedName
-void Button::configureSystemIcons()
-{
-    m_systemIconName.clear();
-    m_systemIconCheckedName.clear();
-
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
-        return;
-    if (d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
-        return;
-
-    switch (type()) {
-    case DecorationButtonType::Close:
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    case DecorationButtonType::Maximize:
-        m_systemIconCheckedName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
-        break;
-
-    case DecorationButtonType::Minimize:
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    case DecorationButtonType::OnAllDesktops:
-        m_systemIconCheckedName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-unpin-symbolic"), QStringLiteral("window-unpin"));
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-pin-symbolic"), QStringLiteral("window-pin"));
-        break;
-
-    case DecorationButtonType::Shade:
-        m_systemIconCheckedName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-unshade-symbolic"), QStringLiteral("window-unshade"));
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-shade-symbolic"), QStringLiteral("window-shade"));
-        break;
-
-    case DecorationButtonType::KeepBelow:
-        m_systemIconName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-keep-below-symbolic"), QStringLiteral("window-keep-below"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    case DecorationButtonType::KeepAbove:
-        m_systemIconName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-keep-above-symbolic"), QStringLiteral("window-keep-above"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    case DecorationButtonType::ApplicationMenu:
-        m_systemIconName =
-            RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("application-menu-symbolic"), QStringLiteral("application-menu"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    case DecorationButtonType::ContextHelp:
-        m_systemIconName = RenderStyleSystemIconTheme::isSystemIconNameAvailable(QStringLiteral("help-contextual-symbolic"), QStringLiteral("help-contextual"));
-        m_systemIconCheckedName = m_systemIconName;
-        break;
-
-    default:
-        break;
     }
 }
 

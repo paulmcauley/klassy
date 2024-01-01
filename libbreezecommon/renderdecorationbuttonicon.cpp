@@ -10,13 +10,14 @@
 #include "styleoxygen.h"
 #include "styleredmond.h"
 #include "styleredmond10.h"
-#include "stylesystemicontheme.h"
+#include "systemicontheme.h"
 #include <QGraphicsItem>
 #include <algorithm>
 #include <cmath>
 
 namespace Breeze
 {
+using KDecoration2::DecorationButtonType;
 
 std::unique_ptr<RenderDecorationButtonIcon18By18> RenderDecorationButtonIcon18By18::factory(const QSharedPointer<Breeze::InternalSettings> internalSettings,
                                                                                             QPainter *painter,
@@ -70,6 +71,62 @@ void RenderDecorationButtonIcon18By18::initPainter()
     m_painter->setBrush(Qt::NoBrush);
 
     m_totalScalingFactor = m_painter->deviceTransform().m22();
+}
+
+void RenderDecorationButtonIcon18By18::renderIcon(KDecoration2::DecorationButtonType type, bool checked)
+{
+    switch (type) {
+    case DecorationButtonType::Close:
+        renderCloseIcon();
+        break;
+
+    case DecorationButtonType::Maximize:
+        if (checked) {
+            renderRestoreIcon();
+        } else {
+            renderMaximizeIcon();
+        }
+        break;
+
+    case DecorationButtonType::Minimize:
+        renderMinimizeIcon();
+        break;
+
+    case DecorationButtonType::OnAllDesktops:
+        if (checked) {
+            renderPinnedOnAllDesktopsIcon();
+        } else {
+            renderPinOnAllDesktopsIcon();
+        }
+        break;
+
+    case DecorationButtonType::Shade:
+        if (checked) {
+            renderUnShadeIcon();
+        } else {
+            renderShadeIcon();
+        }
+        break;
+
+    case DecorationButtonType::KeepBelow:
+        renderKeepBehindIcon();
+        break;
+
+    case DecorationButtonType::KeepAbove:
+        renderKeepInFrontIcon();
+        break;
+
+    case DecorationButtonType::ApplicationMenu:
+        renderApplicationMenuIcon();
+        break;
+
+    case DecorationButtonType::ContextHelp:
+        renderContextHelpIcon();
+        break;
+
+    default:
+        break;
+    }
 }
 
 /* base methods here are KDE's default Breeze/Oxygen style -- override with other styles */

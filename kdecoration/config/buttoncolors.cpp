@@ -7,6 +7,8 @@
 #include "buttoncolors.h"
 #include "breezeconfigwidget.h"
 #include "presetsmodel.h"
+#include "renderdecorationbuttonicon.h"
+#include "systemicontheme.h"
 #include <KColorUtils>
 #include <KDecoration2/DecorationSettings>
 #include <QCheckBox>
@@ -28,6 +30,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_ButtonColors)
     , m_configuration(config)
+    , m_parent(parent)
 {
     m_ui->setupUi(this);
 
@@ -41,14 +44,9 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
     int numRows = m_overridableButtonColorStatesStrings.count();
 
     // generate the vertical header
-    m_unlockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-unlocked-symbolic.svg"), QSize(16, 16));
-    m_lockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-locked-symbolic.svg"), QSize(16, 16));
-    // m_unlockedIcon = QIcon::fromTheme(QStringLiteral("unlock"));
-    // m_lockedIcon = QIcon::fromTheme(QStringLiteral("lock"));
     for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
         QTableWidgetItem *verticalHeaderItem = new QTableWidgetItem();
         verticalHeaderItem->setText(m_overridableButtonColorStatesStrings[rowIndex]);
-        verticalHeaderItem->setIcon(m_unlockedIcon);
         verticalHeaderItem->setToolTip(i18n("Lock to make all colours in this row the same"));
         verticalHeaderItem->setData(Qt::InitialSortOrderRole, rowIndex);
         m_ui->overrideColorTableActive->insertRow(rowIndex);
@@ -89,20 +87,12 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
 
     // populate the horizontal header
     QStringList orderedHorizontalHeaderLabels;
-    for (auto buttonType : m_allCustomizableButtonsOrder) { // get the horizontal header labels in the correct user-set order
-        orderedHorizontalHeaderLabels.append(m_colorOverridableButtonTypesStrings.value(buttonType));
+    for (auto i = 0; i < m_allCustomizableButtonsOrder.count(); i++) { // get the horizontal header labels in the correct user-set order
+        orderedHorizontalHeaderLabels.append(m_colorOverridableButtonTypesStrings.value(m_allCustomizableButtonsOrder[i]));
     }
     m_ui->overrideColorTableActive->setHorizontalHeaderLabels(orderedHorizontalHeaderLabels);
     m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
     m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-    // set the header widths to the same as the largest section
-    int largestSection = 0;
-    for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
-        int sectionSize = m_ui->overrideColorTableActive->horizontalHeader()->sectionSize(columnIndex);
-        if (sectionSize > largestSection)
-            largestSection = sectionSize;
-    }
-    m_ui->overrideColorTableActive->horizontalHeader()->setMinimumSectionSize(largestSection);
 
     // track ui changes
     connect(m_ui->buttonIconColors,
@@ -161,6 +151,16 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
     loadCloseButtonIconColor(); // refreshCloseButtonIconColorState must occur before loading closeButtonIconColor
     showHideTranslucencySettings();
     decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
+
+    loadHorizontalHeaderIcons();
+    // set the header widths to the same as the largest section
+    int largestSection = 0;
+    for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
+        int sectionSize = m_ui->overrideColorTableActive->horizontalHeader()->sectionSize(columnIndex);
+        if (sectionSize > largestSection)
+            largestSection = sectionSize;
+    }
+    m_ui->overrideColorTableActive->horizontalHeader()->setMinimumSectionSize(largestSection);
 
     m_overrideColorsLoaded = false;
     bool overrideColorColumnLoaded = false;
@@ -228,7 +228,7 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
     m_ui->buttonColorActiveOverrideToggle->setChecked(m_overrideColorsLoaded);
 
     // add icons
-    loadButtonBackgroundColorsIcons();
+    loadButtonPaletteColorsIcons();
 
     if (!assignUiValuesOnly) {
         setChanged(false);
@@ -419,7 +419,7 @@ void ButtonColors::accept()
 void ButtonColors::updateChanged()
 {
     // update the displayed colours any time the UI settings change
-    loadButtonBackgroundColorsIcons();
+    loadButtonPaletteColorsIcons();
 
     // check configuration
     if (!m_internalSettings)
@@ -817,7 +817,8 @@ void ButtonColors::setTableVerticalHeaderSectionCheckedState(const int row, cons
     if (!item)
         return;
     item->setCheckState(checked ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
-    item->setIcon(checked ? m_lockedIcon : m_unlockedIcon);
+    item->setIcon(checked ? static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Locked)
+                          : static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
 }
 
 // given a checkBox sending a toggle signal to this slot, gets the table cell in which the checkBox was located and copies the same data to the equivalent
@@ -1039,7 +1040,7 @@ bool ButtonColors::decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks()
     return columnHasOverrideColorsLoaded;
 }
 
-void ButtonColors::loadButtonBackgroundColorsIcons() // need to adjust for inactive as well
+void ButtonColors::loadButtonPaletteColorsIcons() // need to adjust for inactive as well
 {
     InternalSettingsPtr temporaryColorSettings =
         InternalSettingsPtr(new InternalSettings); // temporary settings that reflect the UI, only to instantly update the colours displayed in the UI
@@ -1616,7 +1617,6 @@ QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<
 {
     QList<DecorationButtonPalette *> outputlist;
 
-    QMutableListIterator<DecorationButtonPalette *> j(inputlist);
     for (int i = 0; i < m_visibleButtonsOrder.count(); i++) {
         for (int j = inputlist.count() - 1; j >= 0; j--) { // iterate loop in reverse order as want to delete elements
             if (m_visibleButtonsOrder[i] == (inputlist[j])->buttonType()) {
@@ -1628,6 +1628,78 @@ QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<
     return outputlist;
 }
 
+void ButtonColors::loadHorizontalHeaderIcons()
+{
+    for (auto i = 0; i < m_allCustomizableButtonsOrder.count(); i++) { // set the horizontal header icons
+        setHorizontalHeaderSectionIcon(m_allCustomizableButtonsOrder[i], m_ui->overrideColorTableActive, i);
+    }
+}
+
+void ButtonColors::updateLockIcons()
+{
+    m_ui->lockButtonColorsActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+
+    int numRows = m_overridableButtonColorStatesStrings.count();
+    for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+        auto verticalHeaderItem = m_ui->overrideColorTableActive->verticalHeaderItem(rowIndex);
+        if (verticalHeaderItem->checkState() == Qt::CheckState::Checked) {
+            verticalHeaderItem->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Locked));
+        } else {
+            verticalHeaderItem->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
+        }
+    }
+}
+
+void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section)
+{
+    QIcon icon;
+
+    if (type == DecorationButtonType::Menu) {
+        icon = windowIcon();
+    } else {
+        bool renderSystemIcon = false;
+        QString iconName;
+        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+            QString iconNameChecked;
+            SystemIconTheme::systemIconNames(type, iconName, iconNameChecked);
+            if (!iconName.isEmpty()) {
+                renderSystemIcon = true;
+            }
+        }
+
+        qreal dpr = devicePixelRatioF();
+        QPixmap pixmap(16.0 * dpr, 16.0 * dpr);
+        pixmap.setDevicePixelRatio(dpr);
+        pixmap.fill(Qt::transparent);
+        std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
+        painter->setPen(QApplication::palette().windowText().color());
+        painter->setRenderHints(QPainter::RenderHint::Antialiasing);
+
+        if (renderSystemIcon) {
+            SystemIconTheme systemIconRenderer(painter.get(), 16, iconName, m_internalSettings, dpr);
+            systemIconRenderer.renderIcon();
+        } else {
+            painter->setViewport(0, 0, 16, 16);
+            painter->setWindow(1, 1, 16, 16);
+
+            QPen pen = painter->pen();
+            pen.setWidthF(PenWidth::Symbol * dpr);
+            pen.setCosmetic(true);
+            painter->setPen(pen);
+            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer(
+                RenderDecorationButtonIcon18By18::factory(m_internalSettings, painter.get(), true, true, dpr));
+            iconRenderer->renderIcon(type, false);
+        }
+
+        icon = QIcon(pixmap);
+    }
+
+    QTableWidgetItem *item = table->horizontalHeaderItem(section);
+    if (!item)
+        return;
+    item->setIcon(icon);
+}
+
 bool ButtonColors::event(QEvent *ev)
 {
     if (ev->type() == QEvent::ApplicationPaletteChange) {
@@ -1636,10 +1708,15 @@ bool ButtonColors::event(QEvent *ev)
 
         if (!m_loaded)
             load();
-        else
-            loadButtonBackgroundColorsIcons();
+        else {
+            loadButtonPaletteColorsIcons();
+            loadHorizontalHeaderIcons();
+        }
         return QWidget::event(ev);
     }
+
+    // TODO:detect icon change
+
     // Make sure the rest of events are handled
     return QWidget::event(ev);
 }

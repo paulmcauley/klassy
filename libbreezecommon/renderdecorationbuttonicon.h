@@ -10,6 +10,8 @@
 #include "breezecommon_export.h"
 #include "breezesettings.h"
 
+#include <KDecoration2/DecorationButton>
+#include <KDecoration2/DecorationSettings>
 #include <QGraphicsScene>
 #include <QPainter>
 #include <QPainterPath>
@@ -48,6 +50,7 @@ public:
 
     virtual ~RenderDecorationButtonIcon18By18();
 
+    void renderIcon(KDecoration2::DecorationButtonType type, bool checked);
     virtual void renderCloseIcon();
     virtual void renderMaximizeIcon();
     virtual void renderRestoreIcon();

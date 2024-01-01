@@ -95,6 +95,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
         defaultPushButton->hide();
     }
 
+    m_unlockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-unlocked-symbolic.svg"), QSize(16, 16));
+    m_lockedIcon.addFile(QStringLiteral(":/klassy_config_icons/object-locked-symbolic.svg"), QSize(16, 16));
     // add corner icon
     m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
 
@@ -107,8 +109,11 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, this);
 
-    // reload ButtonColors when ButtonBehaviour is changed as the dispayed colours in the ButtonColors UI depend upon ButttonBehaviour
-    connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::load);
+    // the dispayed colours in the ButtonColors UI depend upon ButtonBehaviour
+    connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::loadButtonPaletteColorsIcons);
+
+    // update the horizontal header icons in-case the icon style has changed
+    connect(this, &ConfigWidget::saved, m_buttonColorsDialog, &ButtonColors::load);
 
     // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
     // systemsettings only)
@@ -170,6 +175,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // track exception changes
     connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
     connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
+
+    QApplication::instance()->installEventFilter(this); // to monitor palette changes in the app (can't get them from this)
 }
 
 ConfigWidget::~ConfigWidget()
@@ -209,6 +216,7 @@ void ConfigWidget::loadMain(QString loadPresetName)
         m_shadowStyleDialog->loadMain(loadPresetName);
         m_windowOutlineStyleDialog->loadMain(loadPresetName);
     }
+    updateLockIcons();
 
     // assign to ui
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
@@ -310,6 +318,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
 
     if (saveAsPresetName.isEmpty()) {
         setChanged(false);
+        Q_EMIT saved();
 
         // needed to tell kwin to reload when running from external kcmshell
         kwinReloadConfig();
@@ -755,5 +764,26 @@ void ConfigWidget::kstyleReloadConfig()
     // needed for klassy application style to reload shadows
     QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
     QDBusConnection::sessionBus().send(message);
+}
+
+void ConfigWidget::updateLockIcons()
+{
+    ColorTools::convertAlphaToColor(m_unlockedIcon, QSize(16, 16), QApplication::palette().windowText().color());
+    ColorTools::convertAlphaToColor(m_lockedIcon, QSize(16, 16), QApplication::palette().windowText().color());
+    m_lockIcon.addPixmap(m_unlockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::Off);
+    m_lockIcon.addPixmap(m_lockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::On);
+
+    m_buttonColorsDialog->updateLockIcons();
+}
+
+bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
+{
+    if (ev->type() == QEvent::ApplicationPaletteChange) {
+        // overwrite handling of palette change
+        updateLockIcons();
+        return QObject::eventFilter(obj, ev);
+    }
+    // Make sure the rest of events are handled
+    return QObject::eventFilter(obj, ev);
 }
 }

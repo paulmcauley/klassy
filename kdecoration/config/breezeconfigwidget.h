@@ -39,6 +39,12 @@ void cleanupKlassydecorationConfigQrc();
 namespace Breeze
 {
 
+enum struct LockIconState {
+    Unlocked,
+    Locked,
+    Bistate,
+};
+
 //_____________________________________________
 class ConfigWidget : public KCModule
 {
@@ -62,8 +68,24 @@ public:
     void save() override;
     void saveMain(QString saveAsPresetName = QString());
 
+    QIcon lockIcon(LockIconState state)
+    {
+        switch (state) {
+        case LockIconState::Unlocked:
+            return m_unlockedIcon;
+        case LockIconState::Locked:
+            return m_lockedIcon;
+        case LockIconState::Bistate:
+        default:
+            return m_lockIcon;
+        }
+    }
+
     static void kwinReloadConfig();
     static void kstyleReloadConfig();
+
+Q_SIGNALS:
+    void saved();
 
 protected Q_SLOTS:
 
@@ -89,6 +111,7 @@ protected Q_SLOTS:
 protected:
     //* set changed state
     void setChanged(bool);
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     //* ui
@@ -123,11 +146,16 @@ private:
 
     KPageWidget *m_kPageWidget;
 
+    QIcon m_unlockedIcon;
+    QIcon m_lockedIcon;
+    QIcon m_lockIcon; // bistate with both unlocked and locked
+
     bool isDefaults();
     QString presetGroupName(QString str);
     void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
     void importBundledPresets();
+    void updateLockIcons();
 };
 }
 
