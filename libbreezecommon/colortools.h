@@ -2,7 +2,7 @@
 #define BREEZE_COLORTOOLS_H
 
 /*
- * SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -17,7 +17,7 @@
 namespace Breeze
 {
 
-struct BREEZECOMMON_EXPORT DecorationColorPalette {
+struct BREEZECOMMON_EXPORT DecorationPaletteGroup {
     QColor buttonFocus;
     QColor buttonHover;
     QColor buttonReducedOpacityBackground;
@@ -43,10 +43,10 @@ struct BREEZECOMMON_EXPORT DecorationColorPalette {
     QColor positiveReducedOpacityOutline;
 };
 
-extern std::unique_ptr<DecorationColorPalette> BREEZECOMMON_EXPORT g_decorationPalette;
-extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacity;
+extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacityActive;
+extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacityInactive;
 
-class BREEZECOMMON_EXPORT DecorationColors : public QObject
+class BREEZECOMMON_EXPORT DecorationPalette : public QObject
 {
     Q_OBJECT
 
@@ -63,104 +63,20 @@ public:
      * @param regenerate Used when useCachedGlobalPalette is true. If set true the colours are regenerated in the constructor, else an existing cached value is
      * used if available
      */
-    DecorationColors(const QPalette &systemBasepalette,
-                     const QSharedPointer<InternalSettings> decorationSettings,
-                     const bool useCachedGlobalPalette,
-                     const bool regenerate = true);
-    virtual ~DecorationColors() = default;
+    DecorationPalette(const QPalette &systemBasepalette,
+                      const QSharedPointer<InternalSettings> decorationSettings,
+                      const bool useCachedPalette,
+                      const bool regenerate = true);
+    virtual ~DecorationPalette() = default;
 
-    //* color return methods return either the global or local colour, depending on whether useCachedGlobalPalette was set in the constructor
-    QColor &buttonFocus()
+    //* color return methods return either the static or local colour, depending on whether useCachedPalette was set in the constructor
+    DecorationPaletteGroup *active() const
     {
-        return (*m_decorationPalette)->buttonFocus;
+        return (m_decorationPaletteActive->get());
     }
-    QColor &buttonHover()
+    DecorationPaletteGroup *inactive() const
     {
-        return (*m_decorationPalette)->buttonHover;
-    }
-    QColor &buttonReducedOpacityBackground()
-    {
-        return (*m_decorationPalette)->buttonReducedOpacityBackground;
-    }
-    QColor &buttonReducedOpacityOutline()
-    {
-        return (*m_decorationPalette)->buttonReducedOpacityOutline;
-    }
-    QColor &highlight()
-    {
-        return (*m_decorationPalette)->highlight;
-    }
-    QColor &highlightLessSaturated()
-    {
-        return (*m_decorationPalette)->highlightLessSaturated;
-    }
-    QColor &negative()
-    {
-        return (*m_decorationPalette)->negative;
-    }
-    QColor &negativeLessSaturated()
-    {
-        return (*m_decorationPalette)->negativeLessSaturated;
-    }
-    QColor &negativeSaturated()
-    {
-        return (*m_decorationPalette)->negativeSaturated;
-    }
-    QColor &negativeReducedOpacityBackground()
-    {
-        return (*m_decorationPalette)->negativeReducedOpacityBackground;
-    }
-    QColor &negativeReducedOpacityOutline()
-    {
-        return (*m_decorationPalette)->negativeReducedOpacityOutline;
-    }
-    QColor &negativeReducedOpacityLessSaturatedBackground()
-    {
-        return (*m_decorationPalette)->negativeReducedOpacityLessSaturatedBackground;
-    }
-    QColor &fullySaturatedNegative()
-    {
-        return (*m_decorationPalette)->fullySaturatedNegative;
-    }
-    QColor &neutral()
-    {
-        return (*m_decorationPalette)->neutral;
-    }
-    QColor &neutralLessSaturated()
-    {
-        return (*m_decorationPalette)->neutralLessSaturated;
-    }
-    QColor &neutralSaturated()
-    {
-        return (*m_decorationPalette)->neutralSaturated;
-    }
-    QColor &neutralReducedOpacityBackground()
-    {
-        return (*m_decorationPalette)->neutralReducedOpacityBackground;
-    }
-    QColor &neutralReducedOpacityOutline()
-    {
-        return (*m_decorationPalette)->neutralReducedOpacityOutline;
-    }
-    QColor &positive()
-    {
-        return (*m_decorationPalette)->positive;
-    }
-    QColor &positiveLessSaturated()
-    {
-        return (*m_decorationPalette)->positiveLessSaturated;
-    }
-    QColor &positiveSaturated()
-    {
-        return (*m_decorationPalette)->positiveSaturated;
-    }
-    QColor &positiveReducedOpacityBackground()
-    {
-        return (*m_decorationPalette)->positiveReducedOpacityBackground;
-    }
-    QColor &positiveReducedOpacityOutline()
-    {
-        return (*m_decorationPalette)->positiveReducedOpacityOutline;
+        return (m_decorationPaletteInactive->get());
     }
 
 public Q_SLOTS:
@@ -171,10 +87,16 @@ public Q_SLOTS:
     void generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings);
 
 private:
-    const bool m_useCachedGlobalPalette;
-    std::unique_ptr<DecorationColorPalette> *m_decorationPalette; // pointer to whether to return the global palette data or class member data
-    // nonGlobalPalette only used when m_useCachedGlobalPalette is false
-    std::unique_ptr<DecorationColorPalette> m_nonGlobalDecorationPalette;
+    void generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings, const bool active);
+    const bool m_useCachedPalette;
+    std::unique_ptr<DecorationPaletteGroup> *m_decorationPaletteActive; // pointer to whether to return the global palette data or class member data
+    std::unique_ptr<DecorationPaletteGroup> *m_decorationPaletteInactive;
+
+    // non-cached palette group only used when m_useCachedPalette is false
+    std::unique_ptr<DecorationPaletteGroup> m_nonCachedDecorationPaletteActive;
+    std::unique_ptr<DecorationPaletteGroup> m_nonCachedDecorationPaletteInactive;
+    static std::unique_ptr<DecorationPaletteGroup> s_CachedDecorationPaletteActive;
+    static std::unique_ptr<DecorationPaletteGroup> s_CachedDecorationPaletteInactive;
 };
 
 /**

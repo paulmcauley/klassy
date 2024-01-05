@@ -209,7 +209,18 @@
 
   <group name="ButtonColors">
     <!-- button icon colors -->
-    <entry name="ButtonIconColors" type="Enum">
+
+    <entry name="LockButtonColorsActiveInactive" type = "Bool">
+        <default>true</default>
+    </entry>
+
+    <entry name="ButtonIconColors$(ButtonIconColorsActive)" type="Enum">
+        <parameter name="ButtonIconColorsActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <choices>
             <choice name="TitlebarText" />
             <choice name="TitlebarTextNegativeClose" />
@@ -220,7 +231,14 @@
         <default>TitlebarText</default>
     </entry>
 
-    <entry name="CloseButtonIconColor" type="Enum">
+
+    <entry name="CloseButtonIconColor$(CloseButtonIconColorActive)" type="Enum">
+        <parameter name="CloseButtonIconColorActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <choices>
             <choice name="AsSelected" />
             <choice name="NegativeWhenHoverPress" />
@@ -230,12 +248,23 @@
         <default>WhiteWhenHoverPress</default>
     </entry>
 
-    <entry name="BlackWhiteIconOnPoorContrast" type = "Bool">
+    <entry name="BlackWhiteIconOnPoorContrast$(BlackWhiteIconOnPoorContrastActive)" type = "Bool">
+        <parameter name="BlackWhiteIconOnPoorContrastActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <default>true</default>
     </entry>
 
-    <!-- button background colors -->
-    <entry name="ButtonBackgroundColors" type="Enum">
+    <entry name="ButtonBackgroundColors$(ButtonBackgroundColorsActive)" type="Enum">
+        <parameter name="ButtonBackgroundColorsActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <choices>
             <choice name="TitlebarText" />
             <choice name="TitlebarTextNegativeClose" />
@@ -246,83 +275,79 @@
         <default>AccentNegativeClose</default>
     </entry>
 
-    <entry name="NegativeCloseBackgroundHoverPress" type = "Bool">
+    <entry name="NegativeCloseBackgroundHoverPress$(NegativeCloseBackgroundHoverPressActive)" type = "Bool">
+        <parameter name="NegativeCloseBackgroundHoverPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <default>false</default>
     </entry>
 
-    <entry name="AdjustBackgroundColorOnPoorContrast" type = "Bool">
+    <entry name="AdjustBackgroundColorOnPoorContrast$(AdjustBackgroundColorOnPoorContrastActive)" type = "Bool">
+        <parameter name="AdjustBackgroundColorOnPoorContrastActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <default>true</default>
     </entry>
 
-    <entry name="LockButtonColorsActive" type = "Bool">
+    <entry name="TranslucentButtonBackgrounds$(TranslucentButtonBackgroundsActive)" type = "Bool">
+        <parameter name="TranslucentButtonBackgroundsActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <default>true</default>
     </entry>
 
-    <entry name="LockButtonColorsInactive" type = "Bool">
-        <default>true</default>
-    </entry>
-
-
-
-    <!-- translucent button backgrounds -->
-    <entry name="TranslucentButtonBackgrounds" type = "Bool">
-        <default>true</default>
-    </entry>
-
-    <entry name="TranslucentButtonBackgroundsOpacity" type ="Double">
+    <entry name="TranslucentButtonBackgroundsOpacity$(TranslucentButtonBackgroundsOpacityActive)" type ="Double">
+        <parameter name="TranslucentButtonBackgroundsOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <default>0.5</default>
         <min>0</min>
         <max>1</max>
     </entry>
 
-    <!-- button override colours TODO: these could be paramaterised-->
-    <entry name="ButtonOverrideColorsClose" type = "IntList"/>
-    <entry name="ButtonOverrideColorsCloseFlags" type = "UInt">
-        <default>0</default>
+    <entry name="ButtonOverrideColors$(ButtonOverrideColorsButtonType)" type = "IntList">
+        <parameter name="ButtonOverrideColorsButtonType" type="Enum">
+            <values>
+                <value>Menu</value>
+                <value>ApplicationMenu</value>
+                <value>OnAllDesktops</value>
+                <value>Minimize</value>
+                <value>Maximize</value>
+                <value>Close</value>
+                <value>ContextHelp</value>
+                <value>Shade</value>
+                <value>KeepBelow</value>
+                <value>KeepAbove</value>
+            </values>
+        </parameter>
     </entry>
-
-    <entry name="ButtonOverrideColorsMaximize" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMaximizeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsMinimize" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMinimizeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsHelp" type = "IntList"/>
-    <entry name="ButtonOverrideColorsHelpFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsShade" type = "IntList"/>
-    <entry name="ButtonOverrideColorsShadeFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsAllDesktops" type = "IntList"/>
-    <entry name="ButtonOverrideColorsAllDesktopsFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsKeepBelow" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepBelowFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsKeepAbove" type = "IntList"/>
-    <entry name="ButtonOverrideColorsKeepAboveFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsApplicationMenu" type = "IntList"/>
-    <entry name="ButtonOverrideColorsApplicationMenuFlags" type = "UInt">
-        <default>0</default>
-    </entry>
-
-    <entry name="ButtonOverrideColorsMenu" type = "IntList"/>
-    <entry name="ButtonOverrideColorsMenuFlags" type = "UInt">
+    <entry name="ButtonOverrideColorsFlags$(ButtonOverrideColorsFlagsButtonType)" type = "UInt">
+        <parameter name="ButtonOverrideColorsFlagsButtonType" type="Enum">
+            <values>
+                <value>Menu</value>
+                <value>ApplicationMenu</value>
+                <value>OnAllDesktops</value>
+                <value>Minimize</value>
+                <value>Maximize</value>
+                <value>Close</value>
+                <value>ContextHelp</value>
+                <value>Shade</value>
+                <value>KeepBelow</value>
+                <value>KeepAbove</value>
+            </values>
+        </parameter>
         <default>0</default>
     </entry>
 

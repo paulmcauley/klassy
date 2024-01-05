@@ -4,6 +4,7 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -80,9 +81,9 @@ public:
 
     //*@name colors
     //@{
-    std::shared_ptr<DecorationColors> decorationColors()
+    std::shared_ptr<DecorationPalette> decorationPalette()
     {
-        return m_decorationColors;
+        return m_decorationPalette;
     }
     QColor titleBarColor(bool returnNonAnimatedColor = false, bool overrideActiveState = false, bool overridenIsActive = true) const;
     QColor titleBarColorWithAddedTransparency() const;
@@ -239,7 +240,7 @@ private:
     bool m_painting = false;
 
     //* Object to return decoration palette colours
-    std::shared_ptr<DecorationColors> m_decorationColors;
+    std::shared_ptr<DecorationPalette> m_decorationPalette;
 
     //* active state change animation
     QVariantAnimation *m_animation;

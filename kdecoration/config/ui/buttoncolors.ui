@@ -51,12 +51,12 @@
             <string>&amp;Icon colours:</string>
            </property>
            <property name="buddy">
-            <cstring>buttonIconColors</cstring>
+            <cstring>buttonIconColorsActive</cstring>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QComboBox" name="buttonIconColors">
+          <widget class="QComboBox" name="buttonIconColorsActive">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -120,17 +120,14 @@
               </spacer>
              </item>
              <item>
-              <widget class="QLabel" name="closeButtonIconColorLabel">
+              <widget class="QLabel" name="closeButtonIconColorLabelActive">
                <property name="text">
                 <string>Close icon colour :</string>
-               </property>
-               <property name="buddy">
-                <cstring>closeButtonIconColor</cstring>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QComboBox" name="closeButtonIconColor">
+              <widget class="QComboBox" name="closeButtonIconColorActive">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -145,7 +142,7 @@
             </layout>
            </item>
            <item row="2" column="0" colspan="2">
-            <widget class="QCheckBox" name="blackWhiteIconOnPoorContrast">
+            <widget class="QCheckBox" name="blackWhiteIconOnPoorContrastActive">
              <property name="text">
               <string>Black/white icon when poor contrast detected</string>
              </property>
@@ -194,12 +191,12 @@
             <number>2</number>
            </property>
            <property name="buddy">
-            <cstring>buttonBackgroundColors</cstring>
+            <cstring>buttonBackgroundColorsActive</cstring>
            </property>
           </widget>
          </item>
          <item row="3" column="1">
-          <widget class="QComboBox" name="buttonBackgroundColors">
+          <widget class="QComboBox" name="buttonBackgroundColorsActive">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -236,7 +233,7 @@
          <item row="5" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QCheckBox" name="translucentButtonBackgrounds">
+            <widget class="QCheckBox" name="translucentButtonBackgroundsActive">
              <property name="text">
               <string>Translucent colours</string>
              </property>
@@ -245,21 +242,21 @@
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
              <item row="1" column="2">
-              <widget class="QLabel" name="opacitySliderLabel_2">
+              <widget class="QLabel" name="opacitySliderLabel_2_Active">
                <property name="text">
                 <string>Opaque</string>
                </property>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="opacitySliderLabel_1">
+              <widget class="QLabel" name="opacitySliderLabel_1_Active">
                <property name="text">
                 <string>Transparent</string>
                </property>
               </widget>
              </item>
              <item row="0" column="0" colspan="3">
-              <widget class="QSlider" name="translucentButtonBackgroundsOpacitySlider">
+              <widget class="QSlider" name="translucentButtonBackgroundsOpacitySliderActive">
                <property name="maximum">
                 <number>100</number>
                </property>
@@ -284,7 +281,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QSpinBox" name="translucentButtonBackgroundsOpacity">
+            <widget class="QSpinBox" name="translucentButtonBackgroundsOpacityActive">
              <property name="suffix">
               <string>%</string>
              </property>
@@ -296,14 +293,14 @@
           </layout>
          </item>
          <item row="6" column="1">
-          <widget class="QCheckBox" name="negativeCloseBackgroundHoverPress">
+          <widget class="QCheckBox" name="negativeCloseBackgroundHoverPressActive">
            <property name="text">
             <string>Negative close on hover/press only</string>
            </property>
           </widget>
          </item>
          <item row="7" column="1">
-          <widget class="QCheckBox" name="adjustBackgroundColorOnPoorContrast">
+          <widget class="QCheckBox" name="adjustBackgroundColorOnPoorContrastActive">
            <property name="text">
             <string>Adjust colour when poor contrast detected</string>
            </property>
@@ -312,9 +309,9 @@
         </layout>
        </item>
        <item row="3" column="0">
-        <widget class="QCheckBox" name="buttonColorActiveOverrideToggle">
+        <widget class="QCheckBox" name="buttonColorOverrideToggleActive">
          <property name="text">
-          <string>Override with custom colours</string>
+          <string>Override individual colours</string>
          </property>
         </widget>
        </item>
@@ -483,6 +480,455 @@
       <attribute name="title">
        <string>Inactive window</string>
       </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="4" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QGroupBox" name="inactiveOverrideGroupBox">
+           <property name="title">
+            <string>Override button colours</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <property name="spacing">
+             <number>12</number>
+            </property>
+            <property name="leftMargin">
+             <number>12</number>
+            </property>
+            <property name="topMargin">
+             <number>12</number>
+            </property>
+            <property name="rightMargin">
+             <number>12</number>
+            </property>
+            <property name="bottomMargin">
+             <number>12</number>
+            </property>
+            <item>
+             <widget class="QTableWidget" name="overrideColorTableInactive">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
+              <property name="wordWrap">
+               <bool>false</bool>
+              </property>
+              <property name="cornerButtonEnabled">
+               <bool>false</bool>
+              </property>
+              <attribute name="horizontalHeaderVisible">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="horizontalHeaderCascadingSectionResizes">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderCascadingSectionResizes">
+               <bool>true</bool>
+              </attribute>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="1">
+        <spacer name="horizontalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::MinimumExpanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <layout class="QFormLayout" name="formLayout_3">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>&amp;Icon colours:</string>
+           </property>
+           <property name="buddy">
+            <cstring>buttonIconColorsInactive</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="buttonIconColorsInactive">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="sizeAdjustPolicy">
+            <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+           </property>
+           <item>
+            <property name="text">
+             <string>Titlebar text colour</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Titlebar text colour with negative close icon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour with negative close icon</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour with traffic lights</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <layout class="QFormLayout" name="formLayout_4">
+           <item row="0" column="1">
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <spacer name="closeIconNegativeBackgroundSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="closeButtonIconColorLabelInactive">
+               <property name="text">
+                <string>Close icon colour :</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="closeButtonIconColorInactive">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="sizeAdjustPolicy">
+                <enum>QComboBox::AdjustToContents</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QCheckBox" name="blackWhiteIconOnPoorContrastInactive">
+             <property name="text">
+              <string>Black/white icon when poor contrast detected</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="2" column="1">
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="1">
+          <widget class="QComboBox" name="buttonBackgroundColorsInactive">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>Titlebar text colour</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Titlebar text colour with negative close button</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour with negative close button</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Accent colour with traffic lights</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item row="5" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <item>
+            <widget class="QCheckBox" name="translucentButtonBackgroundsInactive">
+             <property name="text">
+              <string>Translucent colours</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="1" column="2">
+              <widget class="QLabel" name="opacitySliderLabel_2_Inactive">
+               <property name="text">
+                <string>Opaque</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="opacitySliderLabel_1_Inactive">
+               <property name="text">
+                <string>Transparent</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="3">
+              <widget class="QSlider" name="translucentButtonBackgroundsOpacitySliderInactive">
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="translucentButtonBackgroundsOpacityInactive">
+             <property name="suffix">
+              <string>%</string>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="6" column="1">
+          <widget class="QCheckBox" name="negativeCloseBackgroundHoverPressInactive">
+           <property name="text">
+            <string>Negative close on hover/press only</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="1">
+          <widget class="QCheckBox" name="adjustBackgroundColorOnPoorContrastInactive">
+           <property name="text">
+            <string>Adjust colour when poor contrast detected</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_23">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>&amp;Background &amp;&amp; outline colours: </string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <property name="buddy">
+            <cstring>buttonBackgroundColorsInactive</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>100</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="buttonColorOverrideToggleInactive">
+         <property name="text">
+          <string>Override individual colours</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Lock active:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="lockButtonColorsInactive">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Lock to make the same changes to Active and Inactive button colours</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="5" column="0">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>5</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -501,17 +947,29 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>lockButtonColorsActive</tabstop>
-  <tabstop>buttonIconColors</tabstop>
-  <tabstop>closeButtonIconColor</tabstop>
-  <tabstop>blackWhiteIconOnPoorContrast</tabstop>
-  <tabstop>buttonBackgroundColors</tabstop>
-  <tabstop>translucentButtonBackgrounds</tabstop>
-  <tabstop>translucentButtonBackgroundsOpacitySlider</tabstop>
-  <tabstop>translucentButtonBackgroundsOpacity</tabstop>
-  <tabstop>negativeCloseBackgroundHoverPress</tabstop>
-  <tabstop>adjustBackgroundColorOnPoorContrast</tabstop>
-  <tabstop>buttonColorActiveOverrideToggle</tabstop>
+  <tabstop>buttonIconColorsActive</tabstop>
+  <tabstop>closeButtonIconColorActive</tabstop>
+  <tabstop>blackWhiteIconOnPoorContrastActive</tabstop>
+  <tabstop>buttonBackgroundColorsActive</tabstop>
+  <tabstop>translucentButtonBackgroundsActive</tabstop>
+  <tabstop>translucentButtonBackgroundsOpacitySliderActive</tabstop>
+  <tabstop>translucentButtonBackgroundsOpacityActive</tabstop>
+  <tabstop>negativeCloseBackgroundHoverPressActive</tabstop>
+  <tabstop>adjustBackgroundColorOnPoorContrastActive</tabstop>
+  <tabstop>buttonColorOverrideToggleActive</tabstop>
   <tabstop>overrideColorTableActive</tabstop>
+  <tabstop>lockButtonColorsInactive</tabstop>
+  <tabstop>buttonIconColorsInactive</tabstop>
+  <tabstop>closeButtonIconColorInactive</tabstop>
+  <tabstop>blackWhiteIconOnPoorContrastInactive</tabstop>
+  <tabstop>buttonBackgroundColorsInactive</tabstop>
+  <tabstop>translucentButtonBackgroundsInactive</tabstop>
+  <tabstop>translucentButtonBackgroundsOpacitySliderInactive</tabstop>
+  <tabstop>translucentButtonBackgroundsOpacityInactive</tabstop>
+  <tabstop>negativeCloseBackgroundHoverPressInactive</tabstop>
+  <tabstop>adjustBackgroundColorOnPoorContrastInactive</tabstop>
+  <tabstop>buttonColorOverrideToggleInactive</tabstop>
+  <tabstop>overrideColorTableInactive</tabstop>
  </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>
@@ -550,34 +1008,98 @@
    </hints>
   </connection>
   <connection>
-   <sender>translucentButtonBackgroundsOpacitySlider</sender>
+   <sender>translucentButtonBackgroundsOpacitySliderActive</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>translucentButtonBackgroundsOpacity</receiver>
+   <receiver>translucentButtonBackgroundsOpacityActive</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>611</x>
-     <y>313</y>
+     <x>545</x>
+     <y>295</y>
     </hint>
     <hint type="destinationlabel">
-     <x>688</x>
-     <y>331</y>
+     <x>622</x>
+     <y>313</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>translucentButtonBackgroundsOpacity</sender>
+   <sender>translucentButtonBackgroundsOpacityActive</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>translucentButtonBackgroundsOpacitySlider</receiver>
+   <receiver>translucentButtonBackgroundsOpacitySliderActive</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>688</x>
-     <y>331</y>
+     <x>622</x>
+     <y>313</y>
     </hint>
     <hint type="destinationlabel">
-     <x>611</x>
-     <y>313</y>
+     <x>545</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>translucentButtonBackgroundsOpacitySliderInactive</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>translucentButtonBackgroundsOpacityInactive</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>469</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>589</x>
+     <y>293</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>translucentButtonBackgroundsOpacityInactive</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>translucentButtonBackgroundsOpacitySliderInactive</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>606</x>
+     <y>287</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>452</x>
+     <y>287</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lockButtonColorsActive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lockButtonColorsInactive</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>813</x>
+     <y>62</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>813</x>
+     <y>62</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lockButtonColorsInactive</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lockButtonColorsActive</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>813</x>
+     <y>62</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>813</x>
+     <y>62</y>
     </hint>
    </hints>
   </connection>
