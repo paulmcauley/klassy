@@ -1072,13 +1072,13 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
     if (buttonOverrideColorsPresent) {
         auto &buttonOverrideColors = active ? _buttonOverrideColorsActive : _buttonOverrideColorsInactive;
 
-        if (_buttonOverrideColorsActive.value(OverridableButtonColorStates::BackgroundNormal).isValid() && drawBackgroundNormally) {
+        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundNormal).isValid() && drawBackgroundNormally) {
             backgroundNormal = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundNormal);
         }
-        if (_buttonOverrideColorsActive.value(OverridableButtonColorStates::BackgroundHover).isValid() && drawBackgroundOnHover) {
+        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundHover).isValid() && drawBackgroundOnHover) {
             backgroundHover = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundHover);
         }
-        if (_buttonOverrideColorsActive.value(OverridableButtonColorStates::BackgroundPress).isValid() && drawBackgroundOnPress) {
+        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundPress).isValid() && drawBackgroundOnPress) {
             backgroundPress = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundPress);
         }
     }
