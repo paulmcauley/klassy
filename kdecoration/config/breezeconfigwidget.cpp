@@ -3,7 +3,7 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-// SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
+// SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
@@ -647,8 +647,9 @@ void ConfigWidget::buttonColorsButtonClicked()
 {
     m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
-    if (m_buttonColorsDialog->m_ui->buttonColorActiveOverrideToggle->isChecked()) {
-        m_buttonColorsDialog->resizeActiveOverrideGroupBox(true);
+    if (m_buttonColorsDialog->m_ui->buttonColorOverrideToggleActive->isChecked()
+        || m_buttonColorsDialog->m_ui->buttonColorOverrideToggleInactive->isChecked()) {
+        m_buttonColorsDialog->resizeDialog();
     }
     if (!m_buttonColorsDialog->exec()) {
         m_buttonColorsDialog->load();

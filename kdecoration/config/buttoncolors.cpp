@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -38,9 +38,155 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
 
     this->resize(755, 400);
     m_ui->activeOverrideGroupBox->setVisible(false);
-    connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::toggled, this, &ButtonColors::showActiveOverrideGroupBox);
-    connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::clicked, this, &ButtonColors::resizeActiveOverrideGroupBox);
+    m_ui->inactiveOverrideGroupBox->setVisible(false);
+    connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::toggled, this, &ButtonColors::showActiveOverrideGroupBox);
+    connect(m_ui->buttonColorOverrideToggleInactive, &QAbstractButton::toggled, this, &ButtonColors::showInactiveOverrideGroupBox);
+    connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::clicked, this, &ButtonColors::resizeDialog);
+    connect(m_ui->buttonColorOverrideToggleInactive, &QAbstractButton::clicked, this, &ButtonColors::resizeDialog);
 
+    generateTableCells(m_ui->overrideColorTableActive);
+    generateTableCells(m_ui->overrideColorTableInactive);
+
+    // populate the horizontal header
+    QStringList orderedHorizontalHeaderLabels;
+    for (auto i = 0; i < m_allCustomizableButtonsOrder.count(); i++) { // get the horizontal header labels in the correct user-set order
+        orderedHorizontalHeaderLabels.append(m_colorOverridableButtonTypesStrings.value(m_allCustomizableButtonsOrder[i]));
+    }
+    m_ui->overrideColorTableActive->setHorizontalHeaderLabels(orderedHorizontalHeaderLabels);
+    m_ui->overrideColorTableInactive->setHorizontalHeaderLabels(orderedHorizontalHeaderLabels);
+    m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    m_ui->overrideColorTableInactive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    m_ui->overrideColorTableInactive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+
+    connect(m_ui->tabWidget, SIGNAL(currentChanged(int)), SLOT(loadButtonPaletteColorsIcons()));
+
+    // lockButtonColorsActive and lockButtonColorsInactive are set to mirror each other in the UI file
+    connect(m_ui->lockButtonColorsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->lockButtonColorsInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+
+    auto setIndexOfOtherIfLocked = [this](QComboBox *other, const int i) {
+        if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
+            return; // only do this for user interactions where the active/inactive lock is checked
+        other->setCurrentIndex(i);
+    };
+
+    // track ui changes
+    connect(m_ui->buttonIconColorsActive,
+            SIGNAL(currentIndexChanged(int)),
+            SLOT(refreshCloseButtonIconColorStateActive())); // important that refreshCloseButtonIconColorState is before updateChanged
+    connect(m_ui->buttonIconColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->buttonIconColorsActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->buttonIconColorsInactive, i);
+    });
+
+    connect(m_ui->buttonIconColorsInactive,
+            SIGNAL(currentIndexChanged(int)),
+            SLOT(refreshCloseButtonIconColorStateInactive())); // important that refreshCloseButtonIconColorState is before updateChanged
+    connect(m_ui->buttonIconColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->buttonIconColorsInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->buttonIconColorsActive, i);
+    });
+
+    connect(m_ui->buttonBackgroundColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(setNegativeCloseBackgroundHoverPressStateActive()));
+    connect(m_ui->buttonBackgroundColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(refreshCloseButtonIconColorStateActive()));
+    connect(m_ui->buttonBackgroundColorsActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsInactive, i);
+    });
+    connect(m_ui->buttonBackgroundColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+
+    connect(m_ui->buttonBackgroundColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(setNegativeCloseBackgroundHoverPressStateInactive()));
+    connect(m_ui->buttonBackgroundColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(refreshCloseButtonIconColorStateInactive()));
+    connect(m_ui->buttonBackgroundColorsInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsActive, i);
+    });
+    connect(m_ui->buttonBackgroundColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+
+    connect(m_ui->closeButtonIconColorActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->closeButtonIconColorActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->closeButtonIconColorInactive, i);
+    });
+
+    connect(m_ui->closeButtonIconColorInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->closeButtonIconColorInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->closeButtonIconColorActive, i);
+    });
+
+    auto setOtherCheckedIfLocked = [this](QAbstractButton *other, const bool v) {
+        if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
+            return; // only do this for user interactions where the active/inactive lock is checked
+        other->setChecked(v);
+    };
+
+    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettingsActive);
+    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->translucentButtonBackgroundsInactive, v);
+    });
+
+    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettingsInactive);
+    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->translucentButtonBackgroundsActive, v);
+    });
+
+    connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressInactive, v);
+    });
+
+    connect(m_ui->negativeCloseBackgroundHoverPressInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->negativeCloseBackgroundHoverPressInactive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressActive, v);
+    });
+
+    connect(m_ui->blackWhiteIconOnPoorContrastActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->blackWhiteIconOnPoorContrastActive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->blackWhiteIconOnPoorContrastInactive, v);
+    });
+
+    connect(m_ui->blackWhiteIconOnPoorContrastInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->blackWhiteIconOnPoorContrastInactive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->blackWhiteIconOnPoorContrastActive, v);
+    });
+
+    connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastInactive, v);
+    });
+
+    connect(m_ui->adjustBackgroundColorOnPoorContrastInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->adjustBackgroundColorOnPoorContrastInactive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastActive, v);
+    });
+
+    auto setOtherValueIfLocked = [this](QSpinBox *other, const int v) {
+        if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
+            return; // only do this for user interactions where the active/inactive lock is checked
+        other->setValue(v);
+    };
+
+    connect(m_ui->translucentButtonBackgroundsOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->translucentButtonBackgroundsOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->translucentButtonBackgroundsOpacityInactive, v);
+    });
+
+    connect(m_ui->translucentButtonBackgroundsOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(m_ui->translucentButtonBackgroundsOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->translucentButtonBackgroundsOpacityActive, v);
+    });
+
+    connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+    connect(m_ui->buttonColorOverrideToggleInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
+
+    connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonColors::defaults);
+    connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonColors::load);
+    connect(m_ui->buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &ButtonColors::saveAndReloadKWinConfig);
+    setApplyButtonState(false);
+}
+
+void ButtonColors::generateTableCells(QTableWidget *table)
+{
     int numRows = m_overridableButtonColorStatesStrings.count();
 
     // generate the vertical header
@@ -49,17 +195,17 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
         verticalHeaderItem->setText(m_overridableButtonColorStatesStrings[rowIndex]);
         verticalHeaderItem->setToolTip(i18n("Lock to make all colours in this row the same"));
         verticalHeaderItem->setData(Qt::InitialSortOrderRole, rowIndex);
-        m_ui->overrideColorTableActive->insertRow(rowIndex);
-        m_ui->overrideColorTableActive->setVerticalHeaderItem(rowIndex, verticalHeaderItem);
+        table->insertRow(rowIndex);
+        table->setVerticalHeaderItem(rowIndex, verticalHeaderItem);
     }
 
-    connect(m_ui->overrideColorTableActive->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::activeTableVerticalHeaderSectionClicked);
-    connect(m_ui->overrideColorTableActive->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::updateChanged);
+    connect(table->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::tableVerticalHeaderSectionClicked);
+    connect(table->verticalHeader(), &QHeaderView::sectionClicked, this, &ButtonColors::updateChanged);
 
-    // gnerate the overrideColorTableActive table UI
+    // gnerate the overrideColorTable UI
     // populate the checkboxes and KColorButtons
     for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
-        m_ui->overrideColorTableActive->insertColumn(columnIndex);
+        table->insertColumn(columnIndex);
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
             QHBoxLayout *hlayout = new QHBoxLayout();
             hlayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Ignored));
@@ -77,45 +223,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
             hlayout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Ignored));
             QWidget *w = new QWidget();
             w->setLayout(hlayout);
-            m_ui->overrideColorTableActive->setCellWidget(rowIndex, columnIndex, w);
+            table->setCellWidget(rowIndex, columnIndex, w);
             connect(checkBox, &QAbstractButton::toggled, colorButton, &QWidget::setVisible);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::resizeOverrideColorTable);
-            connect(colorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells);
+            connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::copyCellCheckedStatusToOtherTable);
+            connect(colorButton, &KColorButton::changed, this, &ButtonColors::copyCellColorDataToOtherCells);
         }
     }
-
-    // populate the horizontal header
-    QStringList orderedHorizontalHeaderLabels;
-    for (auto i = 0; i < m_allCustomizableButtonsOrder.count(); i++) { // get the horizontal header labels in the correct user-set order
-        orderedHorizontalHeaderLabels.append(m_colorOverridableButtonTypesStrings.value(m_allCustomizableButtonsOrder[i]));
-    }
-    m_ui->overrideColorTableActive->setHorizontalHeaderLabels(orderedHorizontalHeaderLabels);
-    m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
-
-    // track ui changes
-    connect(m_ui->buttonIconColors,
-            SIGNAL(currentIndexChanged(int)),
-            SLOT(refreshCloseButtonIconColorState())); // important that refreshCloseButtonIconColorState is before updateChangeds
-    connect(m_ui->buttonIconColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->closeButtonIconColor, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->buttonBackgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(setNegativeCloseBackgroundHoverPressState()));
-    connect(m_ui->buttonBackgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(refreshCloseButtonIconColorState()));
-    connect(m_ui->buttonBackgroundColors, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->translucentButtonBackgrounds, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->translucentButtonBackgrounds, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettings);
-    connect(m_ui->negativeCloseBackgroundHoverPress, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->lockButtonColorsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->buttonColorActiveOverrideToggle, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->blackWhiteIconOnPoorContrast, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->adjustBackgroundColorOnPoorContrast, &QAbstractButton::toggled, this, &ButtonColors::updateChanged);
-    connect(m_ui->translucentButtonBackgroundsOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-
-    connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonColors::defaults);
-    connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonColors::load);
-    connect(m_ui->buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &ButtonColors::saveAndReloadKWinConfig);
-    setApplyButtonState(false);
 }
 
 ButtonColors::~ButtonColors()
@@ -137,19 +252,31 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
         }
     }
 
-    m_ui->buttonIconColors->setCurrentIndex(m_internalSettings->buttonIconColors());
-    m_ui->buttonBackgroundColors->setCurrentIndex(m_internalSettings->buttonBackgroundColors());
-    m_ui->translucentButtonBackgrounds->setChecked(m_internalSettings->translucentButtonBackgrounds());
-    m_ui->negativeCloseBackgroundHoverPress->setChecked(m_internalSettings->negativeCloseBackgroundHoverPress());
-    m_ui->lockButtonColorsActive->setChecked(m_internalSettings->lockButtonColorsActive());
-    m_ui->blackWhiteIconOnPoorContrast->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast());
-    m_ui->adjustBackgroundColorOnPoorContrast->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast());
-    m_ui->translucentButtonBackgroundsOpacity->setValue(m_internalSettings->translucentButtonBackgroundsOpacity() * 100);
+    m_ui->buttonIconColorsActive->setCurrentIndex(m_internalSettings->buttonIconColors(true));
+    m_ui->buttonIconColorsInactive->setCurrentIndex(m_internalSettings->buttonIconColors(false));
+    m_ui->buttonBackgroundColorsActive->setCurrentIndex(m_internalSettings->buttonBackgroundColors(true));
+    m_ui->buttonBackgroundColorsInactive->setCurrentIndex(m_internalSettings->buttonBackgroundColors(false));
+    m_ui->translucentButtonBackgroundsActive->setChecked(m_internalSettings->translucentButtonBackgrounds(true));
+    m_ui->translucentButtonBackgroundsInactive->setChecked(m_internalSettings->translucentButtonBackgrounds(false));
+    m_ui->negativeCloseBackgroundHoverPressActive->setChecked(m_internalSettings->negativeCloseBackgroundHoverPress(true));
+    m_ui->negativeCloseBackgroundHoverPressInactive->setChecked(m_internalSettings->negativeCloseBackgroundHoverPress(false));
+    m_ui->lockButtonColorsActive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
+    m_ui->lockButtonColorsInactive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
+    m_ui->blackWhiteIconOnPoorContrastActive->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast(true));
+    m_ui->blackWhiteIconOnPoorContrastInactive->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast(false));
+    m_ui->adjustBackgroundColorOnPoorContrastActive->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast(true));
+    m_ui->adjustBackgroundColorOnPoorContrastInactive->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast(false));
+    m_ui->translucentButtonBackgroundsOpacityActive->setValue(m_internalSettings->translucentButtonBackgroundsOpacity(true) * 100);
+    m_ui->translucentButtonBackgroundsOpacityInactive->setValue(m_internalSettings->translucentButtonBackgroundsOpacity(false) * 100);
 
-    setNegativeCloseBackgroundHoverPressState();
-    refreshCloseButtonIconColorState();
-    loadCloseButtonIconColor(); // refreshCloseButtonIconColorState must occur before loading closeButtonIconColor
-    showHideTranslucencySettings();
+    setNegativeCloseBackgroundHoverPressStateActive();
+    setNegativeCloseBackgroundHoverPressStateInactive();
+    refreshCloseButtonIconColorStateActive();
+    refreshCloseButtonIconColorStateInactive();
+    loadCloseButtonIconColor(true); // refreshCloseButtonIconColorState must occur before loading closeButtonIconColor
+    loadCloseButtonIconColor(false);
+    showHideTranslucencySettings(true);
+    showHideTranslucencySettings(false);
     decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
 
     loadHorizontalHeaderIcons();
@@ -161,73 +288,26 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
             largestSection = sectionSize;
     }
     m_ui->overrideColorTableActive->horizontalHeader()->setMinimumSectionSize(largestSection);
+    m_ui->overrideColorTableInactive->horizontalHeader()->setMinimumSectionSize(largestSection);
 
-    m_overrideColorsLoaded = false;
-    bool overrideColorColumnLoaded = false;
+    // load the override table cell data
+    m_overrideColorsLoaded = {false, false};
+    ColumnsLoaded overrideColorColumnLoaded = {false, false};
 
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
-                                                               m_internalSettings->buttonOverrideColorsCloseFlags(),
-                                                               m_internalSettings->buttonOverrideColorsClose());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
+    for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsButtonType::COUNT; i++) {
+        overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
+                                                                   m_ui->overrideColorTableInactive,
+                                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)),
+                                                                   m_internalSettings->buttonOverrideColorsFlags(i),
+                                                                   m_internalSettings->buttonOverrideColors(i));
+        m_overrideColorsLoaded.active = m_overrideColorsLoaded.active || overrideColorColumnLoaded.active;
+        m_overrideColorsLoaded.inactive = m_overrideColorsLoaded.inactive || overrideColorColumnLoaded.inactive;
+    }
 
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
-                                                               m_internalSettings->buttonOverrideColorsMaximizeFlags(),
-                                                               m_internalSettings->buttonOverrideColorsMaximize());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
+    m_ui->buttonColorOverrideToggleActive->setChecked(m_overrideColorsLoaded.active);
+    m_ui->buttonColorOverrideToggleInactive->setChecked(m_overrideColorsLoaded.inactive);
 
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
-                                                               m_internalSettings->buttonOverrideColorsMinimizeFlags(),
-                                                               m_internalSettings->buttonOverrideColorsMinimize());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
-                                                               m_internalSettings->buttonOverrideColorsHelpFlags(),
-                                                               m_internalSettings->buttonOverrideColorsHelp());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
-                                                               m_internalSettings->buttonOverrideColorsShadeFlags(),
-                                                               m_internalSettings->buttonOverrideColorsShade());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
-                                                               m_internalSettings->buttonOverrideColorsAllDesktopsFlags(),
-                                                               m_internalSettings->buttonOverrideColorsAllDesktops());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
-                                                               m_internalSettings->buttonOverrideColorsKeepBelowFlags(),
-                                                               m_internalSettings->buttonOverrideColorsKeepBelow());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
-                                                               m_internalSettings->buttonOverrideColorsKeepAboveFlags(),
-                                                               m_internalSettings->buttonOverrideColorsKeepAbove());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
-                                                               m_internalSettings->buttonOverrideColorsApplicationMenuFlags(),
-                                                               m_internalSettings->buttonOverrideColorsApplicationMenu());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    overrideColorColumnLoaded = decodeColorsFlagsAndLoadColumn(m_ui->overrideColorTableActive,
-                                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
-                                                               m_internalSettings->buttonOverrideColorsMenuFlags(),
-                                                               m_internalSettings->buttonOverrideColorsMenu());
-    m_overrideColorsLoaded = m_overrideColorsLoaded || overrideColorColumnLoaded;
-
-    m_ui->buttonColorActiveOverrideToggle->setChecked(m_overrideColorsLoaded);
-
-    // add icons
+    // add palette preview icons
     loadButtonPaletteColorsIcons();
 
     if (!assignUiValuesOnly) {
@@ -245,121 +325,47 @@ void ButtonColors::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
-    m_internalSettings->setButtonIconColors(m_ui->buttonIconColors->currentIndex());
-    m_internalSettings->setCloseButtonIconColor(convertCloseButtonIconColorUiToSettingsIndex(m_ui->closeButtonIconColor->currentIndex()));
-    m_internalSettings->setButtonBackgroundColors(m_ui->buttonBackgroundColors->currentIndex());
-    m_internalSettings->setTranslucentButtonBackgrounds(m_ui->translucentButtonBackgrounds->isChecked());
-    m_internalSettings->setNegativeCloseBackgroundHoverPress(m_ui->negativeCloseBackgroundHoverPress->isChecked());
-    m_internalSettings->setLockButtonColorsActive(m_ui->lockButtonColorsActive->isChecked());
-    m_internalSettings->setBlackWhiteIconOnPoorContrast(m_ui->blackWhiteIconOnPoorContrast->isChecked());
-    m_internalSettings->setAdjustBackgroundColorOnPoorContrast(m_ui->adjustBackgroundColorOnPoorContrast->isChecked());
-    m_internalSettings->setTranslucentButtonBackgroundsOpacity(m_ui->translucentButtonBackgroundsOpacity->value() / 100.0f);
+    m_internalSettings->setButtonIconColors(true, m_ui->buttonIconColorsActive->currentIndex());
+    m_internalSettings->setButtonIconColors(false, m_ui->buttonIconColorsInactive->currentIndex());
+    m_internalSettings->setCloseButtonIconColor(true, convertCloseButtonIconColorUiToSettingsIndex(true, m_ui->closeButtonIconColorActive->currentIndex()));
+    m_internalSettings->setCloseButtonIconColor(false, convertCloseButtonIconColorUiToSettingsIndex(false, m_ui->closeButtonIconColorInactive->currentIndex()));
+    m_internalSettings->setButtonBackgroundColors(true, m_ui->buttonBackgroundColorsActive->currentIndex());
+    m_internalSettings->setButtonBackgroundColors(false, m_ui->buttonBackgroundColorsInactive->currentIndex());
+    m_internalSettings->setTranslucentButtonBackgrounds(true, m_ui->translucentButtonBackgroundsActive->isChecked());
+    m_internalSettings->setTranslucentButtonBackgrounds(false, m_ui->translucentButtonBackgroundsInactive->isChecked());
+    m_internalSettings->setNegativeCloseBackgroundHoverPress(true, m_ui->negativeCloseBackgroundHoverPressActive->isChecked());
+    m_internalSettings->setNegativeCloseBackgroundHoverPress(false, m_ui->negativeCloseBackgroundHoverPressInactive->isChecked());
+    m_internalSettings->setLockButtonColorsActiveInactive(m_ui->lockButtonColorsActive->isChecked());
+    m_internalSettings->setBlackWhiteIconOnPoorContrast(true, m_ui->blackWhiteIconOnPoorContrastActive->isChecked());
+    m_internalSettings->setBlackWhiteIconOnPoorContrast(false, m_ui->blackWhiteIconOnPoorContrastInactive->isChecked());
+    m_internalSettings->setAdjustBackgroundColorOnPoorContrast(true, m_ui->adjustBackgroundColorOnPoorContrastActive->isChecked());
+    m_internalSettings->setAdjustBackgroundColorOnPoorContrast(false, m_ui->adjustBackgroundColorOnPoorContrastInactive->isChecked());
+    m_internalSettings->setTranslucentButtonBackgroundsOpacity(true, m_ui->translucentButtonBackgroundsOpacityActive->value() / 100.0f);
+    m_internalSettings->setTranslucentButtonBackgroundsOpacity(false, m_ui->translucentButtonBackgroundsOpacityInactive->value() / 100.0f);
 
-    QList<int> colorsList;
-    uint32_t colorsFlags = 0;
-
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
+    if (m_ui->buttonColorOverrideToggleActive->isChecked() || m_ui->buttonColorOverrideToggleInactive->isChecked())
         m_internalSettings->setButtonOverrideColorsLockStates(encodeColorOverridableLockStates());
     else
         m_internalSettings->setButtonOverrideColorsLockStates(0);
 
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsCloseFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsClose(colorsList);
+    // save the override table cell data
+    for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsButtonType::COUNT; i++) {
+        QList<int> colorsList;
+        uint32_t colorsFlags = 0;
 
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsMaximizeFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsMaximize(colorsList);
+        bool resetActive = !m_ui->buttonColorOverrideToggleActive->isChecked();
+        bool resetInactive = !m_ui->buttonColorOverrideToggleInactive->isChecked();
 
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
         encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
+                                               m_ui->overrideColorTableInactive,
+                                               m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)),
                                                colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsMinimizeFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsMinimize(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsHelpFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsHelp(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsShadeFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsShade(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsAllDesktopsFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsAllDesktops(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsKeepBelowFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsKeepBelow(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsKeepAboveFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsKeepAbove(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsApplicationMenuFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsApplicationMenu(colorsList);
-
-    colorsList = QList<int>();
-    colorsFlags = 0;
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked())
-        encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                               m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
-                                               colorsFlags,
-                                               colorsList);
-    m_internalSettings->setButtonOverrideColorsMenuFlags(colorsFlags);
-    m_internalSettings->setButtonOverrideColorsMenu(colorsList);
+                                               colorsList,
+                                               resetActive,
+                                               resetInactive);
+        m_internalSettings->setButtonOverrideColorsFlags(i, colorsFlags);
+        m_internalSettings->setButtonOverrideColors(i, colorsList);
+    }
 
     m_internalSettings->save();
 
@@ -430,127 +436,73 @@ void ButtonColors::updateChanged()
 
     // track modifications
     bool modified(false);
-    if (m_ui->buttonIconColors->currentIndex() != m_internalSettings->buttonIconColors())
+    if (m_ui->buttonIconColorsActive->currentIndex() != m_internalSettings->buttonIconColors(true))
         modified = true;
-    else if (convertCloseButtonIconColorUiToSettingsIndex(m_ui->closeButtonIconColor->currentIndex()) != m_internalSettings->closeButtonIconColor())
+    else if (m_ui->buttonIconColorsInactive->currentIndex() != m_internalSettings->buttonIconColors(false))
         modified = true;
-    else if (m_ui->buttonBackgroundColors->currentIndex() != m_internalSettings->buttonBackgroundColors())
+    else if (convertCloseButtonIconColorUiToSettingsIndex(true, m_ui->closeButtonIconColorActive->currentIndex())
+             != m_internalSettings->closeButtonIconColor(true))
         modified = true;
-    else if (m_ui->translucentButtonBackgrounds->isChecked() != m_internalSettings->translucentButtonBackgrounds())
+    else if (convertCloseButtonIconColorUiToSettingsIndex(false, m_ui->closeButtonIconColorInactive->currentIndex())
+             != m_internalSettings->closeButtonIconColor(false))
         modified = true;
-    else if (m_ui->negativeCloseBackgroundHoverPress->isChecked() != m_internalSettings->negativeCloseBackgroundHoverPress())
+    else if (m_ui->buttonBackgroundColorsActive->currentIndex() != m_internalSettings->buttonBackgroundColors(true))
         modified = true;
-    else if (m_ui->lockButtonColorsActive->isChecked() != m_internalSettings->lockButtonColorsActive())
+    else if (m_ui->buttonBackgroundColorsInactive->currentIndex() != m_internalSettings->buttonBackgroundColors(false))
         modified = true;
-    else if (m_ui->blackWhiteIconOnPoorContrast->isChecked() != m_internalSettings->blackWhiteIconOnPoorContrast())
+    else if (m_ui->translucentButtonBackgroundsActive->isChecked() != m_internalSettings->translucentButtonBackgrounds(true))
         modified = true;
-    else if (m_ui->adjustBackgroundColorOnPoorContrast->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast())
+    else if (m_ui->translucentButtonBackgroundsInactive->isChecked() != m_internalSettings->translucentButtonBackgrounds(false))
         modified = true;
-    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacity->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity())) < 0.001))
+    else if (m_ui->negativeCloseBackgroundHoverPressActive->isChecked() != m_internalSettings->negativeCloseBackgroundHoverPress(true))
+        modified = true;
+    else if (m_ui->negativeCloseBackgroundHoverPressInactive->isChecked() != m_internalSettings->negativeCloseBackgroundHoverPress(false))
+        modified = true;
+    else if (m_ui->lockButtonColorsActive->isChecked() != m_internalSettings->lockButtonColorsActiveInactive())
+        modified = true;
+    else if (m_ui->blackWhiteIconOnPoorContrastActive->isChecked() != m_internalSettings->blackWhiteIconOnPoorContrast(true))
+        modified = true;
+    else if (m_ui->blackWhiteIconOnPoorContrastInactive->isChecked() != m_internalSettings->blackWhiteIconOnPoorContrast(false))
+        modified = true;
+    else if (m_ui->adjustBackgroundColorOnPoorContrastActive->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast(true))
+        modified = true;
+    else if (m_ui->adjustBackgroundColorOnPoorContrastInactive->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast(false))
+        modified = true;
+    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacityActive->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity(true))) < 0.001))
+        modified = true;
+    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacityInactive->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity(false)))
+               < 0.001))
         modified = true;
     else if (encodeColorOverridableLockStates() != m_internalSettings->buttonOverrideColorsLockStates())
         modified = true;
 
-    if (m_ui->buttonColorActiveOverrideToggle->isChecked()) {
-        if (!modified) {
-            if (encodeColorOverridableLockStates() != m_internalSettings->buttonOverrideColorsLockStates())
-                modified = true;
-        }
-
-        uint32_t colorsFlags;
-        QList<int> colorsList;
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Close),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsCloseFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsClose());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Maximize),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMaximizeFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMaximize());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Minimize),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMinimizeFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMinimize());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsHelpFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsHelp());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Shade),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsShadeFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsShade());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsAllDesktopsFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsAllDesktops());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsKeepBelowFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsKeepBelow());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsKeepAboveFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsKeepAbove());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsApplicationMenuFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsApplicationMenu());
-        }
-
-        if (!modified) {
-            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
-                                                   m_allCustomizableButtonsOrder.indexOf(DecorationButtonType::Menu),
-                                                   colorsFlags,
-                                                   colorsList);
-            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsMenuFlags());
-            modified = modified || (colorsList != m_internalSettings->buttonOverrideColorsMenu());
-        }
-    } else {
-        if (!modified && m_overrideColorsLoaded && !m_ui->buttonColorActiveOverrideToggle->isChecked())
+    if (!modified) {
+        if (encodeColorOverridableLockStates() != m_internalSettings->buttonOverrideColorsLockStates())
             modified = true;
+    }
+
+    uint32_t colorsFlags;
+    QList<int> colorsList;
+
+    if (!modified) {
+        bool resetActive = !m_ui->buttonColorOverrideToggleActive->isChecked();
+        bool resetInactive = !m_ui->buttonColorOverrideToggleInactive->isChecked();
+        for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsButtonType::COUNT; i++) {
+            encodeColorOverridableButtonTypeColumn(m_ui->overrideColorTableActive,
+                                                   m_ui->overrideColorTableInactive,
+                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)),
+                                                   colorsFlags,
+                                                   colorsList,
+                                                   resetActive,
+                                                   resetInactive);
+            modified = modified || (colorsFlags != m_internalSettings->buttonOverrideColorsFlags(i));
+            modified = modified || (colorsList != m_internalSettings->buttonOverrideColors(i));
+        }
+
+    } else if (!modified && m_overrideColorsLoaded.active && !m_ui->buttonColorOverrideToggleActive->isChecked()) {
+        modified = true;
+    } else if (!modified && m_overrideColorsLoaded.inactive && !m_ui->buttonColorOverrideToggleInactive->isChecked()) {
+        modified = true;
     }
 
     setChanged(modified);
@@ -561,7 +513,7 @@ void ButtonColors::setApplyButtonState(const bool on)
     m_ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(on);
 }
 
-void ButtonColors::refreshCloseButtonIconColorState()
+void ButtonColors::refreshCloseButtonIconColorState(bool active)
 {
     // As selected
     // Negative when hovered/pressed
@@ -577,38 +529,47 @@ void ButtonColors::refreshCloseButtonIconColorState()
 
     */
 
+    QComboBox *buttonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
+    QComboBox *buttonIconColors = active ? m_ui->buttonIconColorsActive : m_ui->buttonIconColorsInactive;
+    QComboBox *closeButtonIconColor = active ? m_ui->closeButtonIconColorActive : m_ui->closeButtonIconColorInactive;
+    QLabel *closeButtonIconColorLabel = active ? m_ui->closeButtonIconColorLabelActive : m_ui->closeButtonIconColorLabelInactive;
+
     uint32_t closeButtonIconColorState = static_cast<uint32_t>(CloseButtonIconColorState::AsSelected);
     bool visible = false;
     QString negativeWhenHoveredPressedString;
     QString whiteString;
     QString WhiteWhenHoveredPressedString;
 
-    bool negativeCloseBackground = m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-        || m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
-        || m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights;
+    bool negativeCloseBackground = buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights;
+
+    if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        closeButtonIconColorLabel->setText(i18n("Traffic lights icon colours:"));
+    } else {
+        closeButtonIconColorLabel->setText(i18n("Close icon colour:"));
+    }
 
     if (negativeCloseBackground) {
         visible = true;
         closeButtonIconColorState = closeButtonIconColorState | static_cast<uint32_t>(CloseButtonIconColorState::White)
             | static_cast<uint32_t>(CloseButtonIconColorState::WhiteWhenHoveredPressed);
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
-            m_ui->closeButtonIconColorLabel->setText(i18n("Traffic lights icon colours:"));
+        if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             whiteString = i18n("White close");
             WhiteWhenHoveredPressedString = i18n("White close when hovered/pressed");
         } else {
-            m_ui->closeButtonIconColorLabel->setText(i18n("Close icon colour:"));
             whiteString = i18n("White");
             WhiteWhenHoveredPressedString = i18n("White when hovered/pressed");
         }
     }
 
-    if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-        || m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-        || m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+    if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+        || buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+        || buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
         visible = true;
         closeButtonIconColorState = closeButtonIconColorState | static_cast<uint32_t>(CloseButtonIconColorState::NegativeWhenHoveredPressed);
 
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             negativeWhenHoveredPressedString = i18n("Traffic lights when hovered/pressed");
         } else {
             negativeWhenHoveredPressedString = i18n("Negative when hovered/pressed");
@@ -616,7 +577,7 @@ void ButtonColors::refreshCloseButtonIconColorState()
     }
 
     QString closeIconAsSelectedString;
-    switch (m_ui->buttonIconColors->currentIndex()) {
+    switch (buttonIconColors->currentIndex()) {
     case InternalSettings::EnumButtonIconColors::TitlebarText:
         closeIconAsSelectedString = i18n("Titlebar text");
         break;
@@ -635,39 +596,43 @@ void ButtonColors::refreshCloseButtonIconColorState()
     }
 
     // remove all items from the closeButtonIconColor combobox
-    int count = m_ui->closeButtonIconColor->count();
+    int count = closeButtonIconColor->count();
     for (int i = 0; i < count; i++) {
-        m_ui->closeButtonIconColor->removeItem(0);
+        closeButtonIconColor->removeItem(0);
     }
 
     // add each item, depending on the state
     if (static_cast<uint32_t>(CloseButtonIconColorState::AsSelected) & closeButtonIconColorState) {
-        m_ui->closeButtonIconColor->addItem(closeIconAsSelectedString);
+        closeButtonIconColor->addItem(closeIconAsSelectedString);
     }
 
     if (static_cast<uint32_t>(CloseButtonIconColorState::NegativeWhenHoveredPressed) & closeButtonIconColorState) {
-        m_ui->closeButtonIconColor->addItem(negativeWhenHoveredPressedString);
+        closeButtonIconColor->addItem(negativeWhenHoveredPressedString);
     }
 
     if (static_cast<uint32_t>(CloseButtonIconColorState::White) & closeButtonIconColorState) {
-        m_ui->closeButtonIconColor->addItem(whiteString);
+        closeButtonIconColor->addItem(whiteString);
     }
 
     if (static_cast<uint32_t>(CloseButtonIconColorState::WhiteWhenHoveredPressed) & closeButtonIconColorState) {
-        m_ui->closeButtonIconColor->addItem(WhiteWhenHoveredPressedString);
+        closeButtonIconColor->addItem(WhiteWhenHoveredPressedString);
     }
 
     if (visible) {
-        m_ui->closeButtonIconColor->setVisible(true);
-        m_ui->closeButtonIconColorLabel->setVisible(true);
+        closeButtonIconColor->setVisible(true);
+        closeButtonIconColorLabel->setVisible(true);
     } else {
-        m_ui->closeButtonIconColor->setVisible(false);
-        m_ui->closeButtonIconColorLabel->setVisible(false);
+        closeButtonIconColor->setVisible(false);
+        closeButtonIconColorLabel->setVisible(false);
     }
-    m_closeButtonIconColorState = closeButtonIconColorState;
+    if (active) {
+        m_closeButtonIconColorStateActive = closeButtonIconColorState;
+    } else {
+        m_closeButtonIconColorStateInactive = closeButtonIconColorState;
+    }
 }
 
-int ButtonColors::convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex)
+int ButtonColors::convertCloseButtonIconColorUiToSettingsIndex(bool active, const int uiIndex)
 {
     /*
     enum struct CloseButtonIconColorState{
@@ -679,7 +644,7 @@ int ButtonColors::convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex
 
 */
 
-    uint32_t state = m_closeButtonIconColorState;
+    uint32_t state = active ? m_closeButtonIconColorStateActive : m_closeButtonIconColorStateInactive;
     uint32_t selectedStateBit = 1;
     int uiItemCount = 0;
     int numConfigItems = 4;
@@ -695,7 +660,7 @@ int ButtonColors::convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex
     return -1;
 }
 
-int ButtonColors::convertCloseButtonIconColorSettingsToUiIndex(const int settingsIndex)
+int ButtonColors::convertCloseButtonIconColorSettingsToUiIndex(bool active, const int settingsIndex)
 {
     /*
     enum struct CloseButtonIconColorState{
@@ -706,7 +671,7 @@ int ButtonColors::convertCloseButtonIconColorSettingsToUiIndex(const int setting
     }
 
 */
-    uint32_t state = m_closeButtonIconColorState;
+    uint32_t state = active ? m_closeButtonIconColorStateActive : m_closeButtonIconColorStateInactive;
     uint32_t selectedStateBit = 1;
     int uiItemCount = 0;
     int numConfigItems = 4;
@@ -722,16 +687,20 @@ int ButtonColors::convertCloseButtonIconColorSettingsToUiIndex(const int setting
     return -1;
 }
 
-void ButtonColors::loadCloseButtonIconColor()
+void ButtonColors::loadCloseButtonIconColor(bool active)
 {
-    int uiIndex = convertCloseButtonIconColorSettingsToUiIndex(m_internalSettings->closeButtonIconColor());
+    QComboBox *closeButtonIconColor = active ? m_ui->closeButtonIconColorActive : m_ui->closeButtonIconColorInactive;
+    int uiIndex = convertCloseButtonIconColorSettingsToUiIndex(active, m_internalSettings->closeButtonIconColor(active));
     if (uiIndex < 0)
         uiIndex = 0;
-    m_ui->closeButtonIconColor->setCurrentIndex(uiIndex);
+    closeButtonIconColor->setCurrentIndex(uiIndex);
 }
 
-void ButtonColors::setNegativeCloseBackgroundHoverPressState()
+void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
 {
+    QComboBox *buttonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
+    QCheckBox *negativeCloseBackgroundHoverPress = active ? m_ui->negativeCloseBackgroundHoverPressActive : m_ui->negativeCloseBackgroundHoverPressInactive;
+
     bool drawCloseBackgroundNormally = m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::Backgrounds
         || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::BackgroundsAndOutlines
         || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsAndBackgrounds
@@ -745,37 +714,55 @@ void ButtonColors::setNegativeCloseBackgroundHoverPressState()
         || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsBackgroundsAndOutlines;
 
     if (drawCloseBackgroundNormally
-        && (m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-            || m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)) {
-        m_ui->negativeCloseBackgroundHoverPress->setText(i18n("Negative close on hover/press only"));
-        m_ui->negativeCloseBackgroundHoverPress->setVisible(true);
-    } else if (drawBackgroundNormally && m_ui->buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-        m_ui->negativeCloseBackgroundHoverPress->setText(i18n("Traffic lights on hover/press only"));
-        m_ui->negativeCloseBackgroundHoverPress->setVisible(true);
+        && (buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+            || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)) {
+        negativeCloseBackgroundHoverPress->setText(i18n("Negative close on hover/press only"));
+        negativeCloseBackgroundHoverPress->setVisible(true);
+    } else if (drawBackgroundNormally && buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        negativeCloseBackgroundHoverPress->setText(i18n("Traffic lights on hover/press only"));
+        negativeCloseBackgroundHoverPress->setVisible(true);
     } else {
-        m_ui->negativeCloseBackgroundHoverPress->setVisible(false);
+        negativeCloseBackgroundHoverPress->setVisible(false);
     }
 }
 
-void ButtonColors::showHideTranslucencySettings()
+void ButtonColors::showHideTranslucencySettings(bool active)
 {
-    if (m_ui->translucentButtonBackgrounds->isChecked()) {
-        m_ui->translucentButtonBackgroundsOpacitySlider->setVisible(true);
-        m_ui->opacitySliderLabel_1->setVisible(true);
-        m_ui->opacitySliderLabel_2->setVisible(true);
-        m_ui->translucentButtonBackgroundsOpacity->setVisible(true);
+    QCheckBox *translucentButtonBackgrounds = active ? m_ui->translucentButtonBackgroundsActive : m_ui->translucentButtonBackgroundsInactive;
+    QSlider *translucentButtonBackgroundsOpacitySlider =
+        active ? m_ui->translucentButtonBackgroundsOpacitySliderActive : m_ui->translucentButtonBackgroundsOpacitySliderInactive;
+    QLabel *opacitySliderLabel_1 = active ? m_ui->opacitySliderLabel_1_Active : m_ui->opacitySliderLabel_1_Inactive;
+    QLabel *opacitySliderLabel_2 = active ? m_ui->opacitySliderLabel_2_Active : m_ui->opacitySliderLabel_2_Inactive;
+    QSpinBox *translucentButtonBackgroundsOpacity =
+        active ? m_ui->translucentButtonBackgroundsOpacityActive : m_ui->translucentButtonBackgroundsOpacityInactive;
+
+    if (translucentButtonBackgrounds->isChecked()) {
+        translucentButtonBackgroundsOpacitySlider->setVisible(true);
+        opacitySliderLabel_1->setVisible(true);
+        opacitySliderLabel_2->setVisible(true);
+        translucentButtonBackgroundsOpacity->setVisible(true);
     } else {
-        m_ui->translucentButtonBackgroundsOpacitySlider->setVisible(false);
-        m_ui->opacitySliderLabel_1->setVisible(false);
-        m_ui->opacitySliderLabel_2->setVisible(false);
-        m_ui->translucentButtonBackgroundsOpacity->setVisible(false);
+        translucentButtonBackgroundsOpacitySlider->setVisible(false);
+        opacitySliderLabel_1->setVisible(false);
+        opacitySliderLabel_2->setVisible(false);
+        translucentButtonBackgroundsOpacity->setVisible(false);
     }
 }
 
 void ButtonColors::resizeOverrideColorTable()
 {
-    m_ui->overrideColorTableActive->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-    m_ui->overrideColorTableActive->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    QCheckBox *checkBox = qobject_cast<QCheckBox *>(QObject::sender());
+    QTableWidget *table = nullptr;
+    if (checkBox) {
+        if (checkBox->parentWidget() && checkBox->parentWidget()->parentWidget() && checkBox->parentWidget()->parentWidget()->parentWidget()) {
+            table = qobject_cast<QTableWidget *>(checkBox->parentWidget()->parentWidget()->parentWidget());
+        }
+    }
+
+    if (table) {
+        table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+        table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    }
 }
 
 void ButtonColors::showActiveOverrideGroupBox(const bool value)
@@ -787,9 +774,18 @@ void ButtonColors::showActiveOverrideGroupBox(const bool value)
     }
 }
 
-void ButtonColors::resizeActiveOverrideGroupBox(const bool value)
+void ButtonColors::showInactiveOverrideGroupBox(const bool value)
 {
     if (!value) {
+        m_ui->inactiveOverrideGroupBox->setVisible(value);
+    } else {
+        m_ui->inactiveOverrideGroupBox->setVisible(value);
+    }
+}
+
+void ButtonColors::resizeDialog()
+{
+    if (!(m_ui->buttonColorOverrideToggleActive->isChecked() || m_ui->buttonColorOverrideToggleInactive->isChecked())) {
         this->setMaximumSize(755, 400);
         this->showNormal();
     } else {
@@ -798,22 +794,29 @@ void ButtonColors::resizeActiveOverrideGroupBox(const bool value)
     }
 }
 
-void ButtonColors::activeTableVerticalHeaderSectionClicked(const int row)
+void ButtonColors::tableVerticalHeaderSectionClicked(const int row)
 {
-    QTableWidgetItem *item = m_ui->overrideColorTableActive->verticalHeaderItem(row);
-    if (!item)
+    QHeaderView *headerview = qobject_cast<QHeaderView *>(QObject::sender());
+    qDebug() << "sender: " << QObject::sender();
+    if (!headerview)
         return;
-    // toggle checked state
-    if (item->checkState() == Qt::CheckState::Checked) {
-        setTableVerticalHeaderSectionCheckedState(row, false);
-    } else {
-        setTableVerticalHeaderSectionCheckedState(row, true);
+
+    QTableWidget *table = qobject_cast<QTableWidget *>(headerview->parentWidget());
+    if (table) {
+        QTableWidgetItem *item = table->verticalHeaderItem(row);
+        if (item) {
+            if (item->checkState() == Qt::CheckState::Checked) {
+                setTableVerticalHeaderSectionCheckedState(table, row, false);
+            } else {
+                setTableVerticalHeaderSectionCheckedState(table, row, true);
+            }
+        }
     }
 }
 
-void ButtonColors::setTableVerticalHeaderSectionCheckedState(const int row, const bool checked)
+void ButtonColors::setTableVerticalHeaderSectionCheckedState(QTableWidget *table, const int row, const bool checked)
 {
-    QTableWidgetItem *item = m_ui->overrideColorTableActive->verticalHeaderItem(row);
+    QTableWidgetItem *item = table->verticalHeaderItem(row);
     if (!item)
         return;
     item->setCheckState(checked ? Qt::CheckState::Checked : Qt::CheckState::Unchecked);
@@ -821,9 +824,48 @@ void ButtonColors::setTableVerticalHeaderSectionCheckedState(const int row, cons
                           : static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
 }
 
-// given a checkBox sending a toggle signal to this slot, gets the table cell in which the checkBox was located and copies the same data to the equivalent
-// inactive window table cell and to the rest of the row if the row lock is set
-void ButtonColors::copyCellDataToOtherCells()
+void ButtonColors::copyCellCheckedStatusToOtherTable()
+{
+    if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
+        return; // only do this for user interactions where the active/inactive lock is checked
+    QCheckBox *checkBox = qobject_cast<QCheckBox *>(QObject::sender());
+    if (checkBox) {
+        bool columnOk, rowOk;
+        int column = checkBox->property("column").toInt(&columnOk);
+        int row = checkBox->property("row").toInt(&rowOk);
+
+        if (columnOk && rowOk) {
+            if (checkBox->parentWidget() && checkBox->parentWidget()->parentWidget() && checkBox->parentWidget()->parentWidget()->parentWidget()) {
+                QTableWidget *table = qobject_cast<QTableWidget *>(checkBox->parentWidget()->parentWidget()->parentWidget());
+                if (table) {
+                    QTableWidget *otherTable;
+                    QCheckBox *otherOverrideToggle;
+                    if (table == m_ui->overrideColorTableActive) {
+                        otherTable = m_ui->overrideColorTableInactive;
+                        otherOverrideToggle = m_ui->buttonColorOverrideToggleInactive;
+                    } else if (table == m_ui->overrideColorTableInactive) {
+                        otherTable = m_ui->overrideColorTableActive;
+                        otherOverrideToggle = m_ui->buttonColorOverrideToggleActive;
+                    } else
+                        return;
+
+                    QCheckBox *destinationCheckBox = nullptr;
+                    KColorButton *destinationColorButton = nullptr;
+
+                    if (checkBoxAndColorButtonAtTableCell(otherTable, column, row, destinationCheckBox, destinationColorButton)) {
+                        destinationCheckBox->setChecked(checkBox->isChecked());
+                        if (checkBox->isChecked())
+                            otherOverrideToggle->setChecked(true);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// given a colorButton sending a changed signal to this slot, gets the table cell in which the colorButton was located and copies the same data to the
+// equivalent inactive window table cell and to the rest of the row if the row lock is set
+void ButtonColors::copyCellColorDataToOtherCells()
 {
     if (m_loading || m_processingDefaults)
         return; // only do this for user interactions
@@ -837,6 +879,26 @@ void ButtonColors::copyCellDataToOtherCells()
             if (colorButton->parentWidget() && colorButton->parentWidget()->parentWidget() && colorButton->parentWidget()->parentWidget()->parentWidget()) {
                 QTableWidget *table = qobject_cast<QTableWidget *>(colorButton->parentWidget()->parentWidget()->parentWidget());
                 if (table) {
+                    QTableWidget *otherTable;
+                    QPushButton *activeInactiveLock;
+                    if (table == m_ui->overrideColorTableActive) {
+                        activeInactiveLock = m_ui->lockButtonColorsActive;
+                        otherTable = m_ui->overrideColorTableInactive;
+                    } else if (table == m_ui->overrideColorTableInactive) {
+                        activeInactiveLock = m_ui->lockButtonColorsInactive;
+                        otherTable = m_ui->overrideColorTableActive;
+                    } else
+                        return;
+
+                    if (activeInactiveLock->isChecked()) {
+                        QCheckBox *destinationCheckBox = nullptr;
+                        KColorButton *destinationColorButton = nullptr;
+
+                        if (checkBoxAndColorButtonAtTableCell(otherTable, column, row, destinationCheckBox, destinationColorButton)) {
+                            destinationColorButton->setColor(colorButton->color());
+                        }
+                    }
+
                     QTableWidgetItem *item = table->verticalHeaderItem(row);
                     if (item) {
                         if (item->checkState() == Qt::CheckState::Checked) { // if the lock icon is locked for the row
@@ -846,13 +908,8 @@ void ButtonColors::copyCellDataToOtherCells()
 
                                 if (destinationColumn != column) { // copy the values to all other colorBoxes in the row
                                     if (checkBoxAndColorButtonAtTableCell(table, destinationColumn, row, destinationCheckBox, destinationColorButton)) {
-                                        // disconnect(destinationColorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells);
-                                        // //disconnect the signals that call this function from the other cells to prevent this function being called many
-                                        // times
                                         destinationColorButton->setColor(colorButton->color());
                                         destinationCheckBox->setChecked(true);
-                                        // connect(destinationColorButton, &KColorButton::changed, this, &ButtonColors::copyCellDataToOtherCells); //re-enable
-                                        // the connection
                                     }
                                 }
                             }
@@ -911,26 +968,36 @@ bool ButtonColors::checkBoxAndColorButtonAtTableCell(QTableWidget *table,
 // active icon bits 0-3, active background bits 4-7, active outline bits 8-11
 // inactive icon bits 16-19, inactive background bits 20-23, inactive outline bits 24-27
 // bit 3 etc. reserved for deactivated state colour
-void ButtonColors::encodeColorOverridableButtonTypeColumn(QTableWidget *tableActive, int column, uint32_t &colorsFlags, QList<int> &colorsList)
+void ButtonColors::encodeColorOverridableButtonTypeColumn(QTableWidget *tableActive,
+                                                          QTableWidget *tableInactive,
+                                                          int column,
+                                                          uint32_t &colorsFlags,
+                                                          QList<int> &colorsList,
+                                                          bool resetActive,
+                                                          bool resetInactive)
 {
     uint32_t bitMask = 0x00000001;
     colorsFlags = 0x00000000;
     uint32_t validColorsFlagsBits = 0x07770777;
-    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
-    QTableWidget **table;
+    QTableWidget *table;
+    bool reset;
 
     colorsList.clear();
-    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < 32; i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             QCheckBox *overrideCheckBox = nullptr;
             KColorButton *overrideColorButton = nullptr;
-            if (validColorsFlagsBitsActive & bitMask) {
-                table = &tableActive;
+            if (i < 16) {
+                table = tableActive;
+                reset = resetActive;
             } else {
-                return;
+                if (i == 16)
+                    rowIndex = 0; // reset the rows to 0 for referencing the inactive colours
+                table = tableInactive;
+                reset = resetInactive;
             }
-            if (checkBoxAndColorButtonAtTableCell(*table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
-                if (overrideCheckBox->isChecked()) { // set the bit of the row by OR-ing the bitmask with the existing value
+            if (checkBoxAndColorButtonAtTableCell(table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
+                if (overrideCheckBox->isChecked() && !reset) { // set the bit of the row by OR-ing the bitmask with the existing value
                     colorsFlags = colorsFlags | bitMask;
                     colorsList.append(static_cast<int>(overrideColorButton->color().rgba())); // convert the colour to an int and store on the intList
                 } else { // clear the bit by AND-ing with the inverse of the bitmask
@@ -942,26 +1009,37 @@ void ButtonColors::encodeColorOverridableButtonTypeColumn(QTableWidget *tableAct
     }
 }
 
-bool ButtonColors::decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive, int column, uint32_t colorsFlags, const QList<int> &colorsList)
+ColumnsLoaded ButtonColors::decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive,
+                                                           QTableWidget *tableInactive,
+                                                           int column,
+                                                           uint32_t colorsFlags,
+                                                           const QList<int> &colorsList)
 {
     uint32_t bitMask = 0x00000001;
     uint32_t validColorsFlagsBits = 0x07770777;
-    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
-    QTableWidget **table;
+    QTableWidget *table;
     int colorsListIndex = 0;
-    bool columnHasOverrideColorsLoaded = false;
-    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    ColumnsLoaded columnsLoaded;
+    columnsLoaded.active = false;
+    columnsLoaded.inactive = false;
+    for (uint32_t i = 0, rowIndex = 0; i < 32; i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
             QCheckBox *overrideCheckBox = nullptr;
             KColorButton *overrideColorButton = nullptr;
-            if (validColorsFlagsBitsActive & bitMask) {
-                table = &tableActive;
+            if (i < 16) {
+                table = tableActive;
             } else {
-                return columnHasOverrideColorsLoaded;
+                if (i == 16)
+                    rowIndex = 0; // reset the rows to 0 for referencing the inactive colours
+                table = tableInactive;
             }
-            if (checkBoxAndColorButtonAtTableCell(*table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
+            if (checkBoxAndColorButtonAtTableCell(table, column, rowIndex, overrideCheckBox, overrideColorButton)) {
                 if (colorsFlags & bitMask) { // if the current bit in colorsFlags is 1
-                    columnHasOverrideColorsLoaded = true;
+                    if (table == tableActive) {
+                        columnsLoaded.active = true;
+                    } else {
+                        columnsLoaded.inactive = true;
+                    }
                     overrideCheckBox->setChecked(true);
                     if (colorsList.count() && colorsListIndex < colorsList.count()) { // this if is to prevent against an unlikely corruption situation when
                                                                                       // colorsSet and colorsist are out of sync
@@ -978,7 +1056,7 @@ bool ButtonColors::decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive, int
             rowIndex++;
         }
     }
-    return columnHasOverrideColorsLoaded;
+    return columnsLoaded;
 }
 
 uint32_t ButtonColors::encodeColorOverridableLockStates()
@@ -986,17 +1064,18 @@ uint32_t ButtonColors::encodeColorOverridableLockStates()
     uint32_t bitMask = 0x00000001;
     uint32_t lockFlags = 0x00000000;
     uint32_t validColorsFlagsBits = 0x07770777;
-    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
-    QTableWidget **table;
+    QTableWidget *table;
 
-    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < 32; i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
-            if (validColorsFlagsBitsActive & bitMask) {
-                table = &m_ui->overrideColorTableActive;
+            if (i < 16) {
+                table = m_ui->overrideColorTableActive;
             } else {
-                return lockFlags;
+                if (i == 16)
+                    rowIndex = 0; // reset the rows to 0 for referencing the inactive colours
+                table = m_ui->overrideColorTableInactive;
             }
-            QTableWidgetItem *item = (*table)->verticalHeaderItem(rowIndex);
+            QTableWidgetItem *item = table->verticalHeaderItem(rowIndex);
             if (item) {
                 if (item->checkState() == Qt::CheckState::Checked) { // set the bit of the row by OR-ing the bitmask with the existing value
                     lockFlags = lockFlags | bitMask;
@@ -1014,24 +1093,25 @@ bool ButtonColors::decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks()
 {
     uint32_t bitMask = 0x00000001;
     uint32_t validColorsFlagsBits = 0x07770777;
-    uint32_t validColorsFlagsBitsActive = 0x0000FFFF;
-    QTableWidget *tableActive = m_ui->overrideColorTableActive;
-    QTableWidget **table;
+
+    QTableWidget *table;
     bool columnHasOverrideColorsLoaded = false;
     uint32_t lockFlags = m_internalSettings->buttonOverrideColorsLockStates();
-    for (uint32_t i = 0, rowIndex = 0; i < (sizeof(validColorsFlagsBits) * CHAR_BIT); i++, bitMask = bitMask << 1) {
+    for (uint32_t i = 0, rowIndex = 0; i < 32; i++, bitMask = bitMask << 1) {
         if (validColorsFlagsBits & bitMask) {
-            if (validColorsFlagsBitsActive & bitMask) {
-                table = &tableActive;
+            if (i < 16) {
+                table = m_ui->overrideColorTableActive;
             } else {
-                return columnHasOverrideColorsLoaded;
+                if (i == 16)
+                    rowIndex = 0; // reset the rows to 0 for referencing the inactive colours
+                table = m_ui->overrideColorTableInactive;
             }
-            QTableWidgetItem *item = (*table)->verticalHeaderItem(rowIndex);
+            QTableWidgetItem *item = table->verticalHeaderItem(rowIndex);
             if (item) {
                 if (lockFlags & bitMask) { // if the current bit in lockFlags is 1
-                    setTableVerticalHeaderSectionCheckedState(rowIndex, true);
+                    setTableVerticalHeaderSectionCheckedState(table, rowIndex, true);
                 } else {
-                    setTableVerticalHeaderSectionCheckedState(rowIndex, false);
+                    setTableVerticalHeaderSectionCheckedState(table, rowIndex, false);
                 }
             }
             rowIndex++;
@@ -1040,27 +1120,42 @@ bool ButtonColors::decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks()
     return columnHasOverrideColorsLoaded;
 }
 
-void ButtonColors::loadButtonPaletteColorsIcons() // need to adjust for inactive as well
+void ButtonColors::loadButtonPaletteColorsIcons()
 {
+    if (m_ui->tabWidget->currentIndex() == 0)
+        loadButtonPaletteColorsIconsMain(true);
+    else if (m_ui->tabWidget->currentIndex() == 1)
+        loadButtonPaletteColorsIconsMain(false);
+}
+
+void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
+{
+    auto uiButtonIconColors = active ? m_ui->buttonIconColorsActive : m_ui->buttonIconColorsInactive;
+    auto uiCloseButtonIconColor = active ? m_ui->closeButtonIconColorActive : m_ui->closeButtonIconColorInactive;
+    auto uiButtonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
+    auto uiTranslucentButtonBackgrounds = active ? m_ui->translucentButtonBackgroundsActive : m_ui->translucentButtonBackgroundsInactive;
+    auto uiNegativeCloseBackgroundHoverPress = active ? m_ui->negativeCloseBackgroundHoverPressActive : m_ui->negativeCloseBackgroundHoverPressInactive;
+    auto uiSetBlackWhiteIconOnPoorContrast = active ? m_ui->blackWhiteIconOnPoorContrastActive : m_ui->blackWhiteIconOnPoorContrastInactive;
+    auto uiSetAdjustBackgroundColorOnPoorContrast =
+        active ? m_ui->adjustBackgroundColorOnPoorContrastActive : m_ui->adjustBackgroundColorOnPoorContrastInactive;
+    auto uiSetTranclucentButtonBackgroundsOpacity =
+        active ? m_ui->translucentButtonBackgroundsOpacityActive : m_ui->translucentButtonBackgroundsOpacityInactive;
+
     InternalSettingsPtr temporaryColorSettings =
         InternalSettingsPtr(new InternalSettings); // temporary settings that reflect the UI, only to instantly update the colours displayed in the UI
     temporaryColorSettings->load();
-    // temporaryColorSettings->setButtonIconColors(m_ui->buttonIconColors->currentIndex());
-    temporaryColorSettings->setCloseButtonIconColor(convertCloseButtonIconColorUiToSettingsIndex(m_ui->closeButtonIconColor->currentIndex()));
-    // temporaryColorSettings->setButtonBackgroundColors(m_ui->buttonBackgroundColors->currentIndex());
-    temporaryColorSettings->setTranslucentButtonBackgrounds(m_ui->translucentButtonBackgrounds->isChecked());
-    temporaryColorSettings->setNegativeCloseBackgroundHoverPress(m_ui->negativeCloseBackgroundHoverPress->isChecked());
-    temporaryColorSettings->setLockButtonColorsActive(m_ui->lockButtonColorsActive->isChecked());
-    temporaryColorSettings->setBlackWhiteIconOnPoorContrast(m_ui->blackWhiteIconOnPoorContrast->isChecked());
-    temporaryColorSettings->setAdjustBackgroundColorOnPoorContrast(m_ui->adjustBackgroundColorOnPoorContrast->isChecked());
-    temporaryColorSettings->setTranslucentButtonBackgroundsOpacity(m_ui->translucentButtonBackgroundsOpacity->value() / 100.0f);
 
-    if (!m_decorationColors)
-        m_decorationColors = std::make_shared<DecorationColors>(QApplication::palette(),
-                                                                temporaryColorSettings,
-                                                                false,
-                                                                true); // get decoration colors and cache globally - may need to move this up to
-                                                                       // breezeconfigwidget.cpp later if want colours in other areas of the UI
+    // temporaryColorSettings->setButtonIconColors(m_ui->buttonIconColors->currentIndex());
+    temporaryColorSettings->setCloseButtonIconColor(active, convertCloseButtonIconColorUiToSettingsIndex(active, uiCloseButtonIconColor->currentIndex()));
+    // temporaryColorSettings->setButtonBackgroundColors(m_ui->buttonBackgroundColors->currentIndex());
+    temporaryColorSettings->setTranslucentButtonBackgrounds(active, uiTranslucentButtonBackgrounds->isChecked());
+    temporaryColorSettings->setNegativeCloseBackgroundHoverPress(active, uiNegativeCloseBackgroundHoverPress->isChecked());
+    // temporaryColorSettings->setLockButtonColorsActive(m_ui->lockButtonColorsActive->isChecked());
+    temporaryColorSettings->setBlackWhiteIconOnPoorContrast(active, uiSetBlackWhiteIconOnPoorContrast->isChecked());
+    temporaryColorSettings->setAdjustBackgroundColorOnPoorContrast(active, uiSetAdjustBackgroundColorOnPoorContrast->isChecked());
+    temporaryColorSettings->setTranslucentButtonBackgroundsOpacity(active, uiSetTranclucentButtonBackgroundsOpacity->value() / 100.0f);
+
+    DecorationPalette decorationPalette(QApplication::palette(), temporaryColorSettings, false, true);
 
     QColor titlebarTextActive;
     QColor titlebarTextInactive;
@@ -1091,6 +1186,9 @@ void ButtonColors::loadButtonPaletteColorsIcons() // need to adjust for inactive
 
     DecorationButtonBehaviour buttonBehaviour;
     buttonBehaviour.reconfigure(temporaryColorSettings);
+    auto getGroup = [](DecorationButtonPalette *palette, bool active) {
+        return active ? palette->active() : palette->inactive();
+    };
     DecorationButtonPalette closeButtonPalette(KDecoration2::DecorationButtonType::Close);
     DecorationButtonPalette maximizeButtonPalette(KDecoration2::DecorationButtonType::Maximize);
     DecorationButtonPalette minimizeButtonPalette(KDecoration2::DecorationButtonType::Minimize);
@@ -1143,345 +1241,550 @@ void ButtonColors::loadButtonPaletteColorsIcons() // need to adjust for inactive
     fourByThree[3][2] = QRectF(QPointF(size * 3 / 4, size * 2 / 3), QPointF(size, size));
 
     QPixmap pixmap(size, size);
-    // pixmap.setDevicePixelRatio(this->window()->devicePixelRatioF());
     std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
     painter->setPen(Qt::NoPen);
 
     // background colors
-    temporaryColorSettings->setButtonBackgroundColors(InternalSettings::EnumButtonBackgroundColors::TitlebarText);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarText);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
-    m_ui->buttonBackgroundColors->setIconSize(QSize(size, size));
+    uiButtonBackgroundColors->setIconSize(QSize(size, size));
     pixmap.fill(Qt::transparent);
-    painter->setBrush(otherButtonPalette.backgroundPress.isValid() ? otherButtonPalette.backgroundPress : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundPress.isValid() ? getGroup(&otherButtonPalette, active)->backgroundPress
+                                                                                       : Qt::transparent);
     painter->drawRect(oneByThree00);
-    painter->setBrush(otherButtonPalette.backgroundHover.isValid() ? otherButtonPalette.backgroundHover : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundHover.isValid() ? getGroup(&otherButtonPalette, active)->backgroundHover
+                                                                                       : Qt::transparent);
     painter->drawRect(oneByThree01);
-    painter->setBrush(otherButtonPalette.backgroundNormal.isValid() ? otherButtonPalette.backgroundNormal : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundNormal.isValid() ? getGroup(&otherButtonPalette, active)->backgroundNormal
+                                                                                        : Qt::transparent);
     painter->drawRect(oneByThree02);
     QIcon titlebarText(pixmap);
-    m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarText, titlebarText);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarText, titlebarText);
 
-    temporaryColorSettings->setButtonBackgroundColors(InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->backgroundPress.isValid() ? otherCloseButtonList[i]->backgroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->backgroundHover.isValid() ? otherCloseButtonList[i]->backgroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->backgroundNormal.isValid() ? otherCloseButtonList[i]->backgroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon backgroundTitlebarTextNegativeClose(pixmap);
-    m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose, backgroundTitlebarTextNegativeClose);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose, backgroundTitlebarTextNegativeClose);
 
-    temporaryColorSettings->setButtonBackgroundColors(InternalSettings::EnumButtonBackgroundColors::Accent);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
-    otherButtonPalette.reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::Accent);
+    otherButtonPalette.reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
 
     pixmap.fill(Qt::transparent);
-    painter->setBrush(otherButtonPalette.backgroundPress.isValid() ? otherButtonPalette.backgroundPress : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundPress.isValid() ? getGroup(&otherButtonPalette, active)->backgroundPress
+                                                                                       : Qt::transparent);
     painter->drawRect(oneByThree00);
-    painter->setBrush(otherButtonPalette.backgroundHover.isValid() ? otherButtonPalette.backgroundHover : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundHover.isValid() ? getGroup(&otherButtonPalette, active)->backgroundHover
+                                                                                       : Qt::transparent);
     painter->drawRect(oneByThree01);
-    painter->setBrush(otherButtonPalette.backgroundNormal.isValid() ? otherButtonPalette.backgroundNormal : Qt::transparent);
+    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundNormal.isValid() ? getGroup(&otherButtonPalette, active)->backgroundNormal
+                                                                                        : Qt::transparent);
     painter->drawRect(oneByThree02);
     QIcon backgroundAccent(pixmap);
-    m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::Accent, backgroundAccent);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::Accent, backgroundAccent);
 
-    temporaryColorSettings->setButtonBackgroundColors(InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->backgroundPress.isValid() ? otherCloseButtonList[i]->backgroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->backgroundHover.isValid() ? otherCloseButtonList[i]->backgroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->backgroundNormal.isValid() ? otherCloseButtonList[i]->backgroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon backgroundAccentNegativeClose(pixmap);
-    m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose, backgroundAccentNegativeClose);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose, backgroundAccentNegativeClose);
 
-    temporaryColorSettings->setButtonBackgroundColors(InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
 
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     }
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 4; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherTrafficLightsButtonList[i]->backgroundPress.isValid() ? otherTrafficLightsButtonList[i]->backgroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][0]);
-            painter->setBrush(otherTrafficLightsButtonList[i]->backgroundHover.isValid() ? otherTrafficLightsButtonList[i]->backgroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundHover.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundHover
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][1]);
-            painter->setBrush(otherTrafficLightsButtonList[i]->backgroundNormal.isValid() ? otherTrafficLightsButtonList[i]->backgroundNormal
-                                                                                          : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][2]);
         }
     }
     QIcon backgroundAccentTrafficLightsClose(pixmap);
-    m_ui->buttonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights, backgroundAccentTrafficLightsClose);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights, backgroundAccentTrafficLightsClose);
 
     // icon colors ---------------------------------------------------------------------------------
-    m_ui->buttonIconColors->setIconSize(QSize(24, 24));
-    temporaryColorSettings->setButtonBackgroundColors(m_ui->buttonBackgroundColors->currentIndex());
+    uiButtonIconColors->setIconSize(QSize(24, 24));
+    temporaryColorSettings->setButtonBackgroundColors(active, uiButtonBackgroundColors->currentIndex());
 
-    temporaryColorSettings->setButtonIconColors(InternalSettings::EnumButtonIconColors::TitlebarText);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarText);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->foregroundPress.isValid() ? otherCloseButtonList[i]->foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundHover.isValid() ? otherCloseButtonList[i]->foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundNormal.isValid() ? otherCloseButtonList[i]->foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon iconTitlebarText(pixmap);
-    m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarText, iconTitlebarText);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarText, iconTitlebarText);
 
-    temporaryColorSettings->setButtonIconColors(InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->foregroundPress.isValid() ? otherCloseButtonList[i]->foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundHover.isValid() ? otherCloseButtonList[i]->foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundNormal.isValid() ? otherCloseButtonList[i]->foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon iconTitlebarTextNegativeClose(pixmap);
-    m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose, iconTitlebarTextNegativeClose);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose, iconTitlebarTextNegativeClose);
 
-    temporaryColorSettings->setButtonIconColors(InternalSettings::EnumButtonIconColors::Accent);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->foregroundPress.isValid() ? otherCloseButtonList[i]->foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundHover.isValid() ? otherCloseButtonList[i]->foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundNormal.isValid() ? otherCloseButtonList[i]->foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon iconAccent(pixmap);
-    m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::Accent, iconAccent);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::Accent, iconAccent);
 
-    temporaryColorSettings->setButtonIconColors(InternalSettings::EnumButtonIconColors::AccentNegativeClose);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     };
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherCloseButtonList[i]->foregroundPress.isValid() ? otherCloseButtonList[i]->foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundHover.isValid() ? otherCloseButtonList[i]->foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(otherCloseButtonList[i]->foregroundNormal.isValid() ? otherCloseButtonList[i]->foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
     QIcon iconAccentNegativeClose(pixmap);
-    m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::AccentNegativeClose, iconAccentNegativeClose);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::AccentNegativeClose, iconAccentNegativeClose);
 
-    temporaryColorSettings->setButtonIconColors(InternalSettings::EnumButtonIconColors::AccentTrafficLights);
-    m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentTrafficLights);
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
-        buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+        buttonPalette->reconfigure(temporaryColorSettings,
+                                   &buttonBehaviour,
+                                   &decorationPalette,
+                                   titlebarTextActive,
+                                   titlebarBackgroundActive,
+                                   titlebarTextInactive,
+                                   titlebarBackgroundInactive,
+                                   true,
+                                   active);
     }
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 4; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(otherTrafficLightsButtonList[i]->foregroundPress.isValid() ? otherTrafficLightsButtonList[i]->foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][0]);
-            painter->setBrush(otherTrafficLightsButtonList[i]->foregroundHover.isValid() ? otherTrafficLightsButtonList[i]->foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundHover.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundHover
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][1]);
-            painter->setBrush(otherTrafficLightsButtonList[i]->foregroundNormal.isValid() ? otherTrafficLightsButtonList[i]->foregroundNormal
-                                                                                          : Qt::transparent);
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(fourByThree[i][2]);
         }
     }
     QIcon iconAccentTrafficLights(pixmap);
-    m_ui->buttonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::AccentTrafficLights, iconAccentTrafficLights);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::AccentTrafficLights, iconAccentTrafficLights);
 
     // closeButtonIconColor icons ----------------------------------------------------
 
-    m_ui->closeButtonIconColor->setIconSize(QSize(16, 16));
-    temporaryColorSettings->setButtonIconColors(m_ui->buttonIconColors->currentIndex());
+    uiCloseButtonIconColor->setIconSize(QSize(16, 16));
+    temporaryColorSettings->setButtonIconColors(active, uiButtonIconColors->currentIndex());
 
-    int uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(InternalSettings::EnumCloseButtonIconColor::AsSelected);
+    int uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(active, InternalSettings::EnumCloseButtonIconColor::AsSelected);
     if (uiItemIndex >= 0) {
-        temporaryColorSettings->setCloseButtonIconColor(InternalSettings::EnumCloseButtonIconColor::AsSelected);
-        m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::AsSelected);
+        if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+                buttonPalette->reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundPress.isValid() ? trafficLightsButtonList[i]->foregroundPress : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundHover.isValid() ? trafficLightsButtonList[i]->foregroundHover : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundNormal.isValid() ? trafficLightsButtonList[i]->foregroundNormal : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
             }
         } else {
-            closeButtonPalette.reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+            closeButtonPalette.reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(closeButtonPalette.foregroundPress.isValid() ? closeButtonPalette.foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree00);
-            painter->setBrush(closeButtonPalette.foregroundHover.isValid() ? closeButtonPalette.foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(closeButtonPalette.foregroundNormal.isValid() ? closeButtonPalette.foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
-        m_ui->closeButtonIconColor->setItemIcon(uiItemIndex, icon);
+        uiCloseButtonIconColor->setItemIcon(uiItemIndex, icon);
     }
 
-    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress);
+    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(active, InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress);
     if (uiItemIndex >= 0) {
-        temporaryColorSettings->setCloseButtonIconColor(InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress);
-        m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress);
+        if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+                buttonPalette->reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundPress.isValid() ? trafficLightsButtonList[i]->foregroundPress : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundHover.isValid() ? trafficLightsButtonList[i]->foregroundHover : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundNormal.isValid() ? trafficLightsButtonList[i]->foregroundNormal : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
             }
         } else {
-            closeButtonPalette.reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+            closeButtonPalette.reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(closeButtonPalette.foregroundPress.isValid() ? closeButtonPalette.foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree00);
-            painter->setBrush(closeButtonPalette.foregroundHover.isValid() ? closeButtonPalette.foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(closeButtonPalette.foregroundNormal.isValid() ? closeButtonPalette.foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
-        m_ui->closeButtonIconColor->setItemIcon(uiItemIndex, icon);
+        uiCloseButtonIconColor->setItemIcon(uiItemIndex, icon);
     }
 
-    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(InternalSettings::EnumCloseButtonIconColor::White);
+    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(active, InternalSettings::EnumCloseButtonIconColor::White);
     if (uiItemIndex >= 0) {
-        temporaryColorSettings->setCloseButtonIconColor(InternalSettings::EnumCloseButtonIconColor::White);
-        m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::White);
+        if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+                buttonPalette->reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundPress.isValid() ? trafficLightsButtonList[i]->foregroundPress : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundHover.isValid() ? trafficLightsButtonList[i]->foregroundHover : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundNormal.isValid() ? trafficLightsButtonList[i]->foregroundNormal : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
             }
         } else {
-            closeButtonPalette.reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+            closeButtonPalette.reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(closeButtonPalette.foregroundPress.isValid() ? closeButtonPalette.foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree00);
-            painter->setBrush(closeButtonPalette.foregroundHover.isValid() ? closeButtonPalette.foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(closeButtonPalette.foregroundNormal.isValid() ? closeButtonPalette.foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
-        m_ui->closeButtonIconColor->setItemIcon(uiItemIndex, icon);
+        uiCloseButtonIconColor->setItemIcon(uiItemIndex, icon);
     }
 
-    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress);
+    uiItemIndex = convertCloseButtonIconColorSettingsToUiIndex(active, InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress);
     if (uiItemIndex >= 0) {
-        temporaryColorSettings->setCloseButtonIconColor(InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress);
-        m_decorationColors->generateDecorationColors(QApplication::palette(), temporaryColorSettings);
+        temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress);
 
-        if (m_ui->buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
+        if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+                buttonPalette->reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundPress.isValid() ? trafficLightsButtonList[i]->foregroundPress : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundHover.isValid() ? trafficLightsButtonList[i]->foregroundHover : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(trafficLightsButtonList[i]->foregroundNormal.isValid() ? trafficLightsButtonList[i]->foregroundNormal : Qt::transparent);
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                                          : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
             }
         } else {
-            closeButtonPalette.reconfigure(temporaryColorSettings, &buttonBehaviour, m_decorationColors.get(), titlebarTextActive, titlebarBackgroundActive);
+            closeButtonPalette.reconfigure(temporaryColorSettings,
+                                           &buttonBehaviour,
+                                           &decorationPalette,
+                                           titlebarTextActive,
+                                           titlebarBackgroundActive,
+                                           titlebarTextInactive,
+                                           titlebarBackgroundInactive,
+                                           true,
+                                           active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(closeButtonPalette.foregroundPress.isValid() ? closeButtonPalette.foregroundPress : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree00);
-            painter->setBrush(closeButtonPalette.foregroundHover.isValid() ? closeButtonPalette.foregroundHover : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(closeButtonPalette.foregroundNormal.isValid() ? closeButtonPalette.foregroundNormal : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
-        m_ui->closeButtonIconColor->setItemIcon(uiItemIndex, icon);
+        uiCloseButtonIconColor->setItemIcon(uiItemIndex, icon);
     }
 }
 
@@ -1632,20 +1935,28 @@ void ButtonColors::loadHorizontalHeaderIcons()
 {
     for (auto i = 0; i < m_allCustomizableButtonsOrder.count(); i++) { // set the horizontal header icons
         setHorizontalHeaderSectionIcon(m_allCustomizableButtonsOrder[i], m_ui->overrideColorTableActive, i);
+        setHorizontalHeaderSectionIcon(m_allCustomizableButtonsOrder[i], m_ui->overrideColorTableInactive, i);
     }
 }
 
 void ButtonColors::updateLockIcons()
 {
     m_ui->lockButtonColorsActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockButtonColorsInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
 
     int numRows = m_overridableButtonColorStatesStrings.count();
     for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
-        auto verticalHeaderItem = m_ui->overrideColorTableActive->verticalHeaderItem(rowIndex);
-        if (verticalHeaderItem->checkState() == Qt::CheckState::Checked) {
-            verticalHeaderItem->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Locked));
+        auto verticalHeaderItemActive = m_ui->overrideColorTableActive->verticalHeaderItem(rowIndex);
+        auto verticalHeaderItemInactive = m_ui->overrideColorTableInactive->verticalHeaderItem(rowIndex);
+        if (verticalHeaderItemActive->checkState() == Qt::CheckState::Checked) {
+            verticalHeaderItemActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Locked));
         } else {
-            verticalHeaderItem->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
+            verticalHeaderItemActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
+        }
+        if (verticalHeaderItemInactive->checkState() == Qt::CheckState::Checked) {
+            verticalHeaderItemInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Locked));
+        } else {
+            verticalHeaderItemInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Unlocked));
         }
     }
 }
@@ -1704,8 +2015,6 @@ bool ButtonColors::event(QEvent *ev)
 {
     if (ev->type() == QEvent::ApplicationPaletteChange) {
         // overwrite handling of palette change
-        m_decorationColors->generateDecorationColors(QApplication::palette(), m_internalSettings);
-
         if (!m_loaded)
             load();
         else {

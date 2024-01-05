@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
- * SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -220,11 +220,11 @@ QColor Decoration::titleBarSeparatorColor() const
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor color(m_decorationColors->highlight());
+        QColor color(m_decorationPalette->active()->highlight);
         color.setAlpha(color.alpha() * m_opacity);
         return color;
     } else if (c->isActive())
-        return m_decorationColors->highlight();
+        return m_decorationPalette->active()->highlight;
     else
         return QColor();
 }
@@ -239,9 +239,9 @@ QColor Decoration::accentedFinalWindowOutlineColor(bool active, QColor customCol
 
     } else {
         if (active)
-            return ColorTools::alphaMix(m_decorationColors->highlight(), m_internalSettings->windowOutlineAccentColorOpacityActive());
+            return ColorTools::alphaMix(m_decorationPalette->active()->highlight, m_internalSettings->windowOutlineAccentColorOpacityActive());
         else
-            return ColorTools::alphaMix(m_decorationColors->highlightLessSaturated(), m_internalSettings->windowOutlineAccentColorOpacityInactive());
+            return ColorTools::alphaMix(m_decorationPalette->inactive()->highlightLessSaturated, m_internalSettings->windowOutlineAccentColorOpacityInactive());
     }
 }
 
@@ -265,13 +265,13 @@ QColor Decoration::fontMixedAccentFinalWindowOutlineColor(bool active, QColor cu
     } else { // not a custom color
         if (active) {
             return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground),
-                                                         m_decorationColors->buttonFocus(),
+                                                         m_decorationPalette->active()->buttonFocus,
                                                          0.75) // foreground active font mixed with accent
                                         ,
                                         m_internalSettings->windowOutlineAccentWithContrastOpacityActive());
         } else {
             return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground),
-                                                         m_decorationColors->buttonHover(),
+                                                         m_decorationPalette->active()->buttonHover,
                                                          0.75) // foreground inactive font mixed with accent
                                         ,
                                         m_internalSettings->windowOutlineAccentWithContrastOpacityInactive());
@@ -596,19 +596,21 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
     // generate standard colours to be used in the decoration
-    if (!m_decorationColors) {
+    if (!m_decorationPalette) {
         // the noCache property is set when the internalSettings are from a preset exception
         // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
         // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
         if (m_internalSettings->property("noCache").toBool()) {
-            m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, false);
+            m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, false);
 
         } else { // cached case
-            if (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity()) {
-                g_translucentButtonBackgroundsOpacity = m_internalSettings->translucentButtonBackgroundsOpacity();
-                m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, true, true);
+            if (g_translucentButtonBackgroundsOpacityActive != m_internalSettings->translucentButtonBackgroundsOpacity(true)
+                || g_translucentButtonBackgroundsOpacityInactive != m_internalSettings->translucentButtonBackgroundsOpacity(false)) {
+                g_translucentButtonBackgroundsOpacityActive = m_internalSettings->translucentButtonBackgroundsOpacity(true);
+                g_translucentButtonBackgroundsOpacityInactive = m_internalSettings->translucentButtonBackgroundsOpacity(false);
+                m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, true, true);
             } else {
-                m_decorationColors = std::make_shared<DecorationColors>(c->palette(), m_internalSettings, true, false);
+                m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, true, false);
             }
         }
 
@@ -619,10 +621,12 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
                 &Decoration::generateDecorationColorsOnSystemPaletteUpdate); // connection goes here, rather than init as need the value of
                                                                              // translucentButtonBackgroundsOpacity from m_internalSettings
     } else if (m_internalSettings->property("noCache").toBool()) { // non-cached color update
-        m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the non-cached decoration colors
-    } else if (g_translucentButtonBackgroundsOpacity != m_internalSettings->translucentButtonBackgroundsOpacity()) { // cached color update
-        g_translucentButtonBackgroundsOpacity = m_internalSettings->translucentButtonBackgroundsOpacity();
-        m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the cached decoration colors
+        m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the non-cached decoration colors
+    } else if (g_translucentButtonBackgroundsOpacityActive != m_internalSettings->translucentButtonBackgroundsOpacity(true)
+               || g_translucentButtonBackgroundsOpacityInactive != m_internalSettings->translucentButtonBackgroundsOpacity(false)) { // cached color update
+        g_translucentButtonBackgroundsOpacityActive = m_internalSettings->translucentButtonBackgroundsOpacity(true);
+        g_translucentButtonBackgroundsOpacityInactive = m_internalSettings->translucentButtonBackgroundsOpacity(false);
+        m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the cached decoration colors
     }
 
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
@@ -690,7 +694,7 @@ void Decoration::generateDecorationColorsOnSystemPaletteUpdate()
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    m_decorationColors->generateDecorationColors(c->palette(), m_internalSettings); // update the decoration colors
+    m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the decoration colors
     reconfigure();
 }
 

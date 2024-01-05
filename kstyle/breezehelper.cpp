@@ -1515,7 +1515,8 @@ void Helper::renderDecorationButton(QPainter *painter,
         } else {
             painter->setBrush(Qt::NoBrush);
             if (buttonType != ButtonClose
-                && !decorationConfig()->translucentButtonBackgrounds()) { // don't want to ruin the nice white colour in the close button
+                && !decorationConfig()->translucentButtonBackgrounds(
+                    false)) { // TODO: inactive only, don't want to ruin the nice white colour in the close button
                 QColor higherContrastForegroundColor;
                 ColorTools::getHigherContrastForegroundColor(foregroundColor, backgroundColor, 2.7, higherContrastForegroundColor);
                 pen.setColor(higherContrastForegroundColor);

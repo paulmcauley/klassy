@@ -1,7 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -297,34 +297,39 @@ QColor Button::foregroundColor() const
     if (!d)
         return QColor();
 
+    auto c = d->client().toStrongRef();
+    Q_ASSERT(c);
+    const bool active = c->isActive();
+    DecorationButtonPaletteGroup *group = active ? m_buttonPalette.active() : m_buttonPalette.inactive();
+
     bool nonTranslucentTitlebarTextPinnedInversion =
-        (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-         || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-        && !d->internalSettings()->translucentButtonBackgrounds()
+        (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+         || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
+        && !d->internalSettings()->translucentButtonBackgrounds(active)
         && !d->buttonBehaviour().drawBackgroundNormally; // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return m_buttonPalette.foregroundPress;
+        return group->foregroundPress;
     } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                 || (type() == DecorationButtonType::OnAllDesktops && !nonTranslucentTitlebarTextPinnedInversion))
                && isChecked()) {
         if (nonTranslucentTitlebarTextPinnedInversion) {
-            return m_buttonPalette.foregroundHover;
+            return group->foregroundHover;
         } else {
-            return m_buttonPalette.foregroundPress;
+            return group->foregroundPress;
         }
     } else if (m_animation->state() == QAbstractAnimation::Running) {
-        if (m_buttonPalette.foregroundNormal.isValid() && m_buttonPalette.foregroundHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette.foregroundNormal, m_buttonPalette.foregroundHover, m_opacity);
-        } else if (m_buttonPalette.foregroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette.foregroundHover, m_opacity);
+        if (group->foregroundNormal.isValid() && group->foregroundHover.isValid()) {
+            return KColorUtils::mix(group->foregroundNormal, group->foregroundHover, m_opacity);
+        } else if (group->foregroundHover.isValid()) {
+            return ColorTools::alphaMix(group->foregroundHover, m_opacity);
         } else
             return QColor();
     } else if (isHovered()) {
-        return m_buttonPalette.foregroundHover;
+        return group->foregroundHover;
     } else {
-        return m_buttonPalette.foregroundNormal;
+        return group->foregroundNormal;
     }
 }
 
@@ -336,30 +341,35 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
         return QColor();
     }
 
+    auto c = d->client().toStrongRef();
+    Q_ASSERT(c);
+    const bool active = c->isActive();
+    DecorationButtonPaletteGroup *group = active ? m_buttonPalette.active() : m_buttonPalette.inactive();
+
     bool nonTranslucentTitlebarTextPinnedInversion =
-        (d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-         || d->internalSettings()->buttonBackgroundColors() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-        && !d->internalSettings()->translucentButtonBackgrounds()
+        (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+         || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
+        && !d->internalSettings()->translucentButtonBackgrounds(active)
         && !d->buttonBehaviour().drawBackgroundNormally; // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return m_buttonPalette.backgroundPress;
+        return group->backgroundPress;
     } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                 || (type() == DecorationButtonType::OnAllDesktops && !nonTranslucentTitlebarTextPinnedInversion))
                && isChecked()) {
-        return m_buttonPalette.backgroundPress;
+        return group->backgroundPress;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_buttonPalette.backgroundNormal.isValid() && m_buttonPalette.backgroundHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette.backgroundNormal, m_buttonPalette.backgroundHover, m_opacity);
-        } else if (m_buttonPalette.backgroundHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette.backgroundHover, m_opacity);
+        if (group->backgroundNormal.isValid() && group->backgroundHover.isValid()) {
+            return KColorUtils::mix(group->backgroundNormal, group->backgroundHover, m_opacity);
+        } else if (group->backgroundHover.isValid()) {
+            return ColorTools::alphaMix(group->backgroundHover, m_opacity);
         } else
             return QColor();
     } else if (isHovered()) {
-        return m_buttonPalette.backgroundHover;
+        return group->backgroundHover;
     } else {
-        return m_buttonPalette.backgroundNormal;
+        return group->backgroundNormal;
     }
 }
 
@@ -370,26 +380,30 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     if (!d)
         return QColor();
 
+    auto c = d->client().toStrongRef();
+    Q_ASSERT(c);
+    const bool active = c->isActive();
+    DecorationButtonPaletteGroup *group = active ? m_buttonPalette.active() : m_buttonPalette.inactive();
+
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return m_buttonPalette.outlinePress;
-        ;
+        return group->outlinePress;
     } else if ((isChecked()
                 && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade))) {
-        return m_buttonPalette.outlinePress;
+        return group->outlinePress;
     } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()) {
-        return m_buttonPalette.outlinePress;
+        return group->outlinePress;
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
-        if (m_buttonPalette.outlineNormal.isValid() && m_buttonPalette.outlineHover.isValid()) {
-            return KColorUtils::mix(m_buttonPalette.outlineNormal, m_buttonPalette.outlineHover, m_opacity);
-        } else if (m_buttonPalette.outlineHover.isValid()) {
-            return ColorTools::alphaMix(m_buttonPalette.outlineHover, m_opacity);
+        if (group->outlineNormal.isValid() && group->outlineHover.isValid()) {
+            return KColorUtils::mix(group->outlineNormal, group->outlineHover, m_opacity);
+        } else if (group->outlineHover.isValid()) {
+            return ColorTools::alphaMix(group->outlineHover, m_opacity);
         } else
             return QColor();
     } else if (isHovered()) {
-        return m_buttonPalette.outlineHover;
+        return group->outlineHover;
     } else {
-        return m_buttonPalette.outlineNormal;
+        return group->outlineNormal;
     }
 }
 
@@ -406,10 +420,11 @@ void Button::reconfigure()
     // button colours
     m_buttonPalette.reconfigure(d->internalSettings(),
                                 &d->buttonBehaviour(),
-                                d->decorationColors().get(),
-                                d->fontColor(true, true, true), // active colours only for now
-                                d->titleBarColor(true, true, true) // active colours only for now
-    );
+                                d->decorationPalette().get(),
+                                d->fontColor(true, true, true),
+                                d->titleBarColor(true, true, true),
+                                d->fontColor(true, true, false),
+                                d->titleBarColor(true, true, false));
 
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
     if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {

@@ -2,7 +2,7 @@
 #define BREEZE_DECORATIONBUTTONCOMMON_H
 
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -25,7 +25,7 @@ enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
     OutlinePress,
     OutlineHover,
     OutlineNormal,
-    Count,
+    COUNT,
 };
 
 /**
@@ -61,6 +61,26 @@ private:
     InternalSettingsPtr _decorationSettings;
 };
 
+struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
+    QColor foregroundPress;
+    QColor foregroundHover;
+    QColor foregroundNormal;
+
+    QColor backgroundPress;
+    bool negativePressCloseBackground;
+    QColor backgroundHover;
+    bool negativeHoverCloseBackground;
+    QColor backgroundNormal;
+    bool negativeNormalCloseBackground;
+
+    QColor outlinePress;
+    QColor outlineHover;
+    QColor outlineNormal;
+
+    QColor text;
+    QColor base;
+};
+
 /**
  *  @brief Class to generate the colour palette used in a decoration button
  */
@@ -71,48 +91,46 @@ public:
 
     void reconfigure(InternalSettingsPtr decorationSettings,
                      DecorationButtonBehaviour *buttonBehaviour,
-                     DecorationColors *decorationColors,
-                     QColor baseForeground,
-                     QColor baseBackground);
+                     DecorationPalette *decorationPalette,
+                     QColor textActive,
+                     QColor baseActive,
+                     QColor textInactive,
+                     QColor baseInactive,
+                     const bool reconfigureOneGroupOnly = false,
+                     const bool oneGrouproupActiveState = true);
+    DecorationButtonPaletteGroup *active() const
+    {
+        return _active.get();
+    }
+    DecorationButtonPaletteGroup *inactive() const
+    {
+        return _inactive.get();
+    }
 
     KDecoration2::DecorationButtonType buttonType()
     {
         return _buttonType;
     }
 
-    QColor foregroundNormal;
-    QColor foregroundHover;
-    QColor foregroundPress;
-
-    QColor backgroundNormal;
-    bool negativeNormalCloseBackground;
-    QColor backgroundHover;
-    bool negativeHoverCloseBackground;
-    QColor backgroundPress;
-    bool negativePressCloseBackground;
-
-    QColor outlineNormal;
-    QColor outlineHover;
-    QColor outlinePress;
-
-    QColor baseForeground;
-    QColor baseBackground;
-
 private:
-    bool decodeButtonOverrideColors();
-    void generateButtonBackgroundPalette();
-    void generateButtonForegroundPalette();
-    void generateButtonOutlinePalette();
+    void decodeButtonOverrideColors();
+    void generateButtonBackgroundPalette(const bool active);
+    void generateButtonForegroundPalette(const bool active);
+    void generateButtonOutlinePalette(const bool active);
 
     InternalSettingsPtr _decorationSettings;
     KDecoration2::DecorationButtonType _buttonType;
     DecorationButtonBehaviour *_buttonBehaviour;
-    DecorationColors *_decorationColors;
+    DecorationPalette *_decorationPalette;
 
-    bool _buttonOverrideColorsPresent{false};
+    bool _buttonOverrideColorsPresentActive{false};
+    bool _buttonOverrideColorsPresentInactive{false};
 
     QMap<OverridableButtonColorStates, QColor> _buttonOverrideColorsActive;
     QMap<OverridableButtonColorStates, QColor> _buttonOverrideColorsInactive;
+
+    std::unique_ptr<DecorationButtonPaletteGroup> _active;
+    std::unique_ptr<DecorationButtonPaletteGroup> _inactive;
 };
 
 }

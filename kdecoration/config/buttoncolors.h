@@ -20,6 +20,11 @@
 namespace Breeze
 {
 
+struct ColumnsLoaded {
+    bool active;
+    bool inactive;
+};
+
 class ButtonColors : public QDialog
 {
     Q_OBJECT
@@ -50,16 +55,39 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
-    void showHideTranslucencySettings();
-    void refreshCloseButtonIconColorState();
-    void setNegativeCloseBackgroundHoverPressState();
+    void showHideTranslucencySettingsActive()
+    {
+        showHideTranslucencySettings(true);
+    }
+    void showHideTranslucencySettingsInactive()
+    {
+        showHideTranslucencySettings(false);
+    }
+    void refreshCloseButtonIconColorStateActive()
+    {
+        refreshCloseButtonIconColorState(true);
+    }
+    void refreshCloseButtonIconColorStateInactive()
+    {
+        refreshCloseButtonIconColorState(false);
+    }
+    void setNegativeCloseBackgroundHoverPressStateActive()
+    {
+        setNegativeCloseBackgroundHoverPressState(true);
+    }
+    void setNegativeCloseBackgroundHoverPressStateInactive()
+    {
+        setNegativeCloseBackgroundHoverPressState(false);
+    }
     void resizeOverrideColorTable();
     void showActiveOverrideGroupBox(const bool on);
-    void resizeActiveOverrideGroupBox(const bool on);
-    void copyCellDataToOtherCells();
+    void showInactiveOverrideGroupBox(const bool on);
+    void resizeDialog();
+    void copyCellCheckedStatusToOtherTable();
+    void copyCellColorDataToOtherCells();
     void loadButtonPaletteColorsIcons();
-    void activeTableVerticalHeaderSectionClicked(const int row);
-    void setTableVerticalHeaderSectionCheckedState(const int row, const bool checked);
+    void tableVerticalHeaderSectionClicked(const int row);
+    void setTableVerticalHeaderSectionCheckedState(QTableWidget *table, const int row, const bool checked);
     void updateLockIcons();
     void loadHorizontalHeaderIcons();
 
@@ -70,12 +98,20 @@ private:
     void getButtonsOrderFromKwinConfig();
     QList<Breeze::DecorationButtonPalette *> sortButtonsAsPerKwinConfig(QList<Breeze::DecorationButtonPalette *> inputlist);
 
+    void generateTableCells(QTableWidget *table);
+
+    void refreshCloseButtonIconColorState(bool active);
+
+    void setNegativeCloseBackgroundHoverPressState(bool active);
+
+    void showHideTranslucencySettings(bool active);
+
     //* decodes closeButtonIconColor from the UI for as InternalSettings::EnumCloseButtonIconColor index for saving, taking into account the
-    int convertCloseButtonIconColorUiToSettingsIndex(const int uiIndex);
+    int convertCloseButtonIconColorUiToSettingsIndex(bool active, const int uiIndex);
     //* loads the current close button icon colour from m_internalSettings to UI
-    void loadCloseButtonIconColor();
+    void loadCloseButtonIconColor(bool active);
     //* given a settings index returns a UI index for the current m_closeButtonIconColorState
-    int convertCloseButtonIconColorSettingsToUiIndex(const int settingsIndex);
+    int convertCloseButtonIconColorSettingsToUiIndex(bool active, const int settingsIndex);
 
     //* outputs pointers to the CheckBox and ColorButton at a given table cell. Returns true if they are valid
     bool checkBoxAndColorButtonAtTableCell(QTableWidget *table, const int column, const int row, QCheckBox *&outputCheckBox, KColorButton *&outputColorButton);
@@ -86,10 +122,17 @@ private:
     // active icon bits 0-3, active background bits 4-7, active outline bits 8-11
     // inactive icon bits 16-19, inactive background bits 20-23, inactive outline bits 24-27
     // bit 3 etc. reserved for deactivated state colour
-    void encodeColorOverridableButtonTypeColumn(QTableWidget *table, int column, uint32_t &colorsFlags, QList<int> &colorsList);
+    void encodeColorOverridableButtonTypeColumn(QTableWidget *tableActive,
+                                                QTableWidget *tableInactive,
+                                                int column,
+                                                uint32_t &colorsFlags,
+                                                QList<int> &colorsList,
+                                                bool resetActive = false,
+                                                bool resetInactive = false);
 
-    //*returns true if the column was loaded with a value
-    bool decodeColorsFlagsAndLoadColumn(QTableWidget *table, int column, uint32_t colorsFlags, const QList<int> &colorsList);
+    //*returns if the column was loaded with a value in the active and inactive tables respectively
+    ColumnsLoaded
+    decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive, QTableWidget *tableInactive, int column, uint32_t colorsFlags, const QList<int> &colorsList);
 
     //* encodes the lock-icon states on table vertical header in the same manner as encodeColorOverridableButtonTypeColumn
     uint32_t encodeColorOverridableLockStates();
@@ -98,6 +141,8 @@ private:
     bool decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
 
     void setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section);
+
+    void loadButtonPaletteColorsIconsMain(bool active);
 
     void setChanged(bool value);
     bool isDefaults();
@@ -118,9 +163,7 @@ private:
     bool m_loaded = false;
     bool m_processingDefaults = false;
 
-    bool m_overrideColorsLoaded = false;
-
-    std::shared_ptr<DecorationColors> m_decorationColors;
+    ColumnsLoaded m_overrideColorsLoaded = {false, false};
 
     // strings for UI corresponding to enum ColorOverridableButtonTypes in breeze.h
     QHash<KDecoration2::DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
@@ -149,9 +192,10 @@ private:
         i18n("Outline normal"),
     };
 
-    enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, Count };
+    enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, COUNT };
 
-    uint32_t m_closeButtonIconColorState;
+    uint32_t m_closeButtonIconColorStateActive;
+    uint32_t m_closeButtonIconColorStateInactive;
     QList<KDecoration2::DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
                                                                      // of the colour palette for "other" buttons)
     QList<KDecoration2::DecorationButtonType>

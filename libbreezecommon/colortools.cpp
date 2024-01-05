@@ -11,25 +11,33 @@
 namespace Breeze
 {
 
-// cached values needed for base window decoration colour generation
-std::unique_ptr<DecorationColorPalette> g_decorationPalette = nullptr;
-qreal g_translucentButtonBackgroundsOpacity = -1.0; // is -1 so gets updated on first iteration
+std::unique_ptr<DecorationPaletteGroup> DecorationPalette::s_CachedDecorationPaletteActive = nullptr;
+std::unique_ptr<DecorationPaletteGroup> DecorationPalette::s_CachedDecorationPaletteInactive = nullptr;
+qreal g_translucentButtonBackgroundsOpacityActive = -1.0; // is -1 so gets updated on first iteration
+qreal g_translucentButtonBackgroundsOpacityInactive = -1.0; // is -1 so gets updated on first iteration
 
-DecorationColors::DecorationColors(const QPalette &systemBasepalette,
-                                   const QSharedPointer<InternalSettings> decorationSettings,
-                                   const bool useCachedGlobalPalette,
-                                   const bool regenerate)
-    : m_useCachedGlobalPalette(useCachedGlobalPalette)
+DecorationPalette::DecorationPalette(const QPalette &systemBasepalette,
+                                     const QSharedPointer<Breeze::InternalSettings> decorationSettings,
+                                     const bool useCachedPalette,
+                                     const bool regenerate)
+    : m_useCachedPalette(useCachedPalette)
 {
-    if (!useCachedGlobalPalette || (useCachedGlobalPalette && (!g_decorationPalette || regenerate))) {
+    if (!useCachedPalette || (useCachedPalette && (!s_CachedDecorationPaletteActive || !s_CachedDecorationPaletteInactive || regenerate))) {
         generateDecorationColors(systemBasepalette, decorationSettings);
     }
-    m_decorationPalette = useCachedGlobalPalette ? &g_decorationPalette : &m_nonGlobalDecorationPalette;
+    m_decorationPaletteActive = useCachedPalette ? &s_CachedDecorationPaletteActive : &m_nonCachedDecorationPaletteActive;
+    m_decorationPaletteInactive = useCachedPalette ? &s_CachedDecorationPaletteInactive : &m_nonCachedDecorationPaletteInactive;
 }
 
-void DecorationColors::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings)
+void DecorationPalette::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings)
 {
-    DecorationColorPalette *decorationColors = new DecorationColorPalette();
+    generateDecorationColors(palette, decorationSettings, true);
+    generateDecorationColors(palette, decorationSettings, false);
+}
+
+void DecorationPalette::generateDecorationColors(const QPalette &palette, const QSharedPointer<InternalSettings> decorationSettings, const bool active)
+{
+    DecorationPaletteGroup *decorationColors = new DecorationPaletteGroup();
 
     KStatefulBrush buttonFocusStatefulBrush;
     KStatefulBrush buttonHoverStatefulBrush;
@@ -69,41 +77,50 @@ void DecorationColors::generateDecorationColors(const QPalette &palette, const Q
 
     //"Blue Ocean" style reduced opacity outlined buttons
     decorationColors->buttonReducedOpacityBackground =
-        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
+        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
 
     decorationColors->buttonReducedOpacityOutline =
-        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
+        ColorTools::alphaMix(decorationColors->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
 
     decorationColors->fullySaturatedNegative = ColorTools::getDifferentiatedSaturatedColor(decorationColors->negative, true);
     decorationColors->negativeReducedOpacityBackground =
-        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity());
+        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity(active));
 
     decorationColors->negativeReducedOpacityOutline =
-        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.4), 1.0));
+        ColorTools::alphaMix(decorationColors->fullySaturatedNegative, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.4), 1.0));
 
     decorationColors->negativeReducedOpacityLessSaturatedBackground =
         ColorTools::alphaMix(ColorTools::getDifferentiatedLessSaturatedColor(decorationColors->negative),
-                             qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
+                             qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
 
     decorationColors->neutralReducedOpacityBackground =
-        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
+        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
 
     decorationColors->neutralReducedOpacityOutline =
-        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
+        ColorTools::alphaMix(decorationColors->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
 
     decorationColors->positiveReducedOpacityBackground =
-        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 0.8), 1.0));
+        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
 
     decorationColors->positiveReducedOpacityOutline =
-        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity() * 1.2), 1.0));
+        ColorTools::alphaMix(decorationColors->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
 
     decorationColors->highlight = palette.color(QPalette::Highlight);
     decorationColors->highlightLessSaturated = ColorTools::getLessSaturatedColorForWindowHighlight(decorationColors->highlight, true);
 
-    if (m_useCachedGlobalPalette)
-        g_decorationPalette = std::unique_ptr<DecorationColorPalette>(decorationColors);
-    else
-        m_nonGlobalDecorationPalette = std::unique_ptr<DecorationColorPalette>(decorationColors);
+    if (m_useCachedPalette) {
+        if (active) {
+            s_CachedDecorationPaletteActive = std::unique_ptr<DecorationPaletteGroup>(decorationColors);
+        } else {
+            s_CachedDecorationPaletteInactive = std::unique_ptr<DecorationPaletteGroup>(decorationColors);
+        }
+    } else {
+        if (active) {
+            m_nonCachedDecorationPaletteActive = std::unique_ptr<DecorationPaletteGroup>(decorationColors);
+        } else {
+            m_nonCachedDecorationPaletteInactive = std::unique_ptr<DecorationPaletteGroup>(decorationColors);
+        }
+    }
 }
 
 QColor ColorTools::getDifferentiatedSaturatedColor(const QColor &inputColor, bool noMandatoryDifferentiate)
