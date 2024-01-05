@@ -159,6 +159,16 @@ public:
         return m_buttonBehaviour;
     }
 
+    QVariantAnimation *activeStateChangeAnimation()
+    {
+        return m_animation;
+    }
+
+    qreal activeStateChangeAnimationOpacity()
+    {
+        return m_opacity;
+    }
+
 Q_SIGNALS:
     void reconfigured();
 
@@ -244,14 +254,16 @@ private:
 
     //* active state change animation
     QVariantAnimation *m_animation;
+    //* shadow animation
     QVariantAnimation *m_shadowAnimation;
+    //*window outline animation when "Colourize with highlighted button'a colour ticked"
     QVariantAnimation *m_overrideOutlineFromButtonAnimation;
 
-    //* active state change opacity
+    //* active state change animation opacity
     qreal m_opacity = 0;
-    //* shadow change opacity
+    //* shadow change animation opacity
     qreal m_shadowOpacity = 0;
-    //* overridden thin window outline change opacity
+    //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
 
     //* tilebar main state opacity
