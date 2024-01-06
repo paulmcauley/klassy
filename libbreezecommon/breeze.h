@@ -8,8 +8,8 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#define KLASSY_DECORATION_DEBUG_MODE 1
-#define KLASSY_STYLE_DEBUG_MODE 1
+#define KLASSY_DECORATION_DEBUG_MODE 0
+#define KLASSY_STYLE_DEBUG_MODE 0
 #define KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME "/Desktop/klassy_debug.txt"
 
 #include "breezecommon_export.h"
@@ -170,16 +170,6 @@ enum BREEZECOMMON_EXPORT ArrowOrientation {
     ArrowLeft,
     ArrowRight,
 };
-
-// TODO:move me to decorationbuttoncommon
-//* button type
-enum BREEZECOMMON_EXPORT ButtonType {
-    ButtonClose,
-    ButtonMaximize,
-    ButtonMinimize,
-    ButtonRestore,
-};
-
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::AnimationModes)

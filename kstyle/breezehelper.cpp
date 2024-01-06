@@ -1458,10 +1458,9 @@ void Helper::renderArrow(QPainter *painter, const QRect &rect, const QColor &col
 //______________________________________________________________________________
 void Helper::renderDecorationButton(QPainter *painter,
                                     const QRect &rect,
+                                    KDecoration2::DecorationButtonType buttonType,
+                                    const bool buttonChecked,
                                     const QColor &foregroundColor,
-                                    ButtonType buttonType,
-                                    bool inverted,
-                                    bool paintBackground,
                                     const QColor &backgroundColor,
                                     const QColor &outlineColor) const
 {
@@ -1475,19 +1474,17 @@ void Helper::renderDecorationButton(QPainter *painter,
     pen.setCapStyle(Qt::RoundCap);
     pen.setJoinStyle(Qt::RoundJoin);
 
-    if (inverted)
-        paintBackground = true;
-    if (paintBackground) {
+    if (backgroundColor.isValid() || outlineColor.isValid()) {
         // render circle or square background
         if (outlineColor.isValid())
             painter->setPen(outlineColor);
         else
             painter->setPen(Qt::NoPen);
 
-        if (inverted)
-            painter->setBrush(foregroundColor);
-        else
+        if (backgroundColor.isValid())
             painter->setBrush(backgroundColor);
+        else
+            painter->setBrush(Qt::NoBrush);
 
         if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
             || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
@@ -1506,7 +1503,10 @@ void Helper::renderDecorationButton(QPainter *painter,
             else
                 painter->drawEllipse(QRectF(0, 0, 18, 18));
         }
+    }
 
+    if (foregroundColor.isValid()) {
+        /* TODO:possibly reimplement this
         if (inverted) {
             // take out the inner part
             painter->setCompositionMode(QPainter::CompositionMode_DestinationOut);
@@ -1514,64 +1514,28 @@ void Helper::renderDecorationButton(QPainter *painter,
             pen.setColor(Qt::black);
         } else {
             painter->setBrush(Qt::NoBrush);
-            if (buttonType != ButtonClose
-                && !decorationConfig()->translucentButtonBackgrounds(
-                    false)) { // TODO: inactive only, don't want to ruin the nice white colour in the close button
-                QColor higherContrastForegroundColor;
-                ColorTools::getHigherContrastForegroundColor(foregroundColor, backgroundColor, 2.7, higherContrastForegroundColor);
-                pen.setColor(higherContrastForegroundColor);
-            } else
-                pen.setColor(foregroundColor);
-        }
-
-    } else {
+            pen.setColor(foregroundColor);
+        }*/
         painter->setBrush(Qt::NoBrush);
         pen.setColor(foregroundColor);
-    }
+        pen.setWidthF(PenWidth::Symbol * qMax(1.0, 18.0 / rect.width()));
+        painter->setPen(pen);
 
-    pen.setWidthF(PenWidth::Symbol * qMax(1.0, 18.0 / rect.width()));
-    painter->setPen(pen);
+        QString systemIconNameUnchecked;
+        QString systemIconNameChecked;
+        QString &systemIconName = buttonChecked ? systemIconNameChecked : systemIconNameUnchecked;
 
-    QString systemIconName;
-    if (decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-        switch (buttonType) {
-        case ButtonClose:
-            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-close-symbolic"), QStringLiteral("window-close"));
-            break;
-        case ButtonMaximize:
-            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-maximize-symbolic"), QStringLiteral("window-maximize"));
-            break;
-        case ButtonMinimize:
-            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-minimize-symbolic"), QStringLiteral("window-minimize"));
-            break;
-        case ButtonRestore:
-            systemIconName = SystemIconTheme::isSystemIconNameAvailable(QStringLiteral("window-restore-symbolic"), QStringLiteral("window-restore"));
-            break;
-        default:
-            break;
+        if (_decorationConfig->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+            SystemIconTheme::systemIconNames(buttonType, systemIconNameUnchecked, systemIconNameChecked);
         }
-    }
-    if (!systemIconName.isEmpty()) {
-        painter->setWindow(rect);
-        SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
-        iconRenderer.renderIcon();
-    } else {
-        std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
-        switch (buttonType) {
-        case ButtonClose:
-            iconRenderer->renderCloseIcon();
-            break;
-        case ButtonMaximize:
-            iconRenderer->renderMaximizeIcon();
-            break;
-        case ButtonMinimize:
-            iconRenderer->renderMinimizeIcon();
-            break;
-        case ButtonRestore:
-            iconRenderer->renderRestoreIcon();
-            break;
-        default:
-            break;
+
+        if (!systemIconName.isEmpty()) {
+            painter->setWindow(rect);
+            SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
+            iconRenderer.renderIcon();
+        } else {
+            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
+            iconRenderer->renderIcon(buttonType, buttonChecked);
         }
     }
 
