@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=4.4.2.breeze5.27.5.git
+version=4.4.3.breeze5.27.5.git
 
 [Windeco Preset Klassy tallscreen]
 ActiveTitlebarOpacity=100
@@ -62,7 +62,6 @@ TitlebarBottomMargin=1.7
 TitlebarLeftMargin=0
 TitlebarRightMargin=0
 TitlebarTopMargin=1.7
-TranslucentButtonBackgrounds=true
 UseTitlebarColorForAllBorders=true
 WindowOutlineAccentColorOpacityActive=0.87
 WindowOutlineAccentColorOpacityInactive=0.4
