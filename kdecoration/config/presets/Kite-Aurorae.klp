@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=4.4.2.breeze5.27.5.git
+version=4.4.3.breeze5.27.5.git
 
 [Windeco Preset Kite-Aurorae]
 ActiveTitlebarOpacity=100
@@ -17,7 +17,7 @@ AnimationsEnabled=true
 AnimationsSpeedRelativeSystem=0
 ApplyOpacityToHeader=true
 BlurTransparentTitlebars=true
-BoldButtonIcons=BoldIconsHiDpiOnly
+BoldButtonIcons=BoldIconsBold
 ButtonIconStyle=StyleKite
 ButtonShape=ShapeSmallCircle
 ButtonSpacingLeft=3
@@ -53,8 +53,8 @@ ShadowStrength=255
 SystemIconSize=SystemIcon16
 ThinWindowOutlineCustomColorActive=0,0,0
 ThinWindowOutlineCustomColorInactive=0,0,0
-ThinWindowOutlineStyleActive=WindowOutlineAccentWithContrast
-ThinWindowOutlineStyleInactive=WindowOutlineAccentWithContrast
+ThinWindowOutlineStyleActive=WindowOutlineContrast
+ThinWindowOutlineStyleInactive=WindowOutlineContrast
 ThinWindowOutlineThickness=1.75
 TitleAlignment=AlignCenterFullWidth
 TitleSidePadding=2
@@ -62,7 +62,6 @@ TitlebarBottomMargin=1.7
 TitlebarLeftMargin=3
 TitlebarRightMargin=3
 TitlebarTopMargin=1.7
-TranslucentButtonBackgrounds=true
 UseTitlebarColorForAllBorders=true
 WindowOutlineAccentColorOpacityActive=0.87
 WindowOutlineAccentColorOpacityInactive=0.4

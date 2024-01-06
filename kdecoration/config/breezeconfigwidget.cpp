@@ -647,10 +647,7 @@ void ConfigWidget::buttonColorsButtonClicked()
 {
     m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
-    if (m_buttonColorsDialog->m_ui->buttonColorOverrideToggleActive->isChecked()
-        || m_buttonColorsDialog->m_ui->buttonColorOverrideToggleInactive->isChecked()) {
-        m_buttonColorsDialog->resizeDialog();
-    }
+    m_buttonColorsDialog->resizeDialog();
     if (!m_buttonColorsDialog->exec()) {
         m_buttonColorsDialog->load();
     }
