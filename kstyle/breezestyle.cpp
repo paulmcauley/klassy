@@ -1566,7 +1566,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         QWidget *widget = static_cast<QWidget *>(object);
 
         if (auto dialogButtonBox = qobject_cast<QDialogButtonBox *>(object)) {
-            if (widget->parentWidget() && widget->parentWidget()->inherits("KPageView")) {
+            if (widget->property(PropertyNames::forceFrame).toBool() || (widget->parentWidget() && widget->parentWidget()->inherits("KPageView"))) {
                 // QDialogButtonBox has no paintEvent
                 return eventFilterDialogButtonBox(dialogButtonBox, event);
             }
