@@ -122,6 +122,9 @@ private:
     //* kconfiguration object
     KSharedConfig::Ptr m_configuration;
 
+    //* presets kconfiguration object
+    KSharedConfig::Ptr m_presetsConfiguration;
+
     //* internal exception
     InternalSettingsPtr m_internalSettings;
 

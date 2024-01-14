@@ -3,13 +3,10 @@
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
       http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
-  <kcfgfile name="klassyrc"/>
+  <kcfgfile name="klassy/klassyrc"/>
 
 
   <group name="Windeco">
-
-    <!-- version stamp indicating the Klassy version which last auto-imported installed presets TODO: move this and all presets to a new klassypresets.rc file-->
-    <entry name="BundledWindecoPresetsImportedVersion" type = "String"/>
     
     <!-- ______________________________BUTTONS______________________________ -->
 

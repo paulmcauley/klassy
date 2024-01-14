@@ -3,6 +3,7 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
@@ -15,9 +16,10 @@ namespace Breeze
 {
 
 //___________________________________________
-ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent)
+ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_configuration(config)
+    , m_presetsConfiguration(presetsConfig)
 {
     m_ui.setupUi(this);
 
@@ -41,7 +43,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent)
     connect(m_ui.buttonBox->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &QWidget::close);
 
     // populate exceptionPresetComboBox with presets
-    QStringList presets = PresetsModel::readPresetsList(m_configuration.data());
+    QStringList presets = PresetsModel::readPresetsList(m_presetsConfiguration.data());
     if (presets.count()) {
         presets.sort(Qt::CaseInsensitive);
         for (const QString &preset : presets) {
@@ -83,7 +85,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     if (m_exception->exceptionPreset().isEmpty()) {
         m_ui.exceptionPresetCheckBox->setChecked(false);
     } else {
-        if (PresetsModel::isPresetPresent(m_configuration.data(), m_exception->exceptionPreset())) {
+        if (PresetsModel::isPresetPresent(m_presetsConfiguration.data(), m_exception->exceptionPreset())) {
             m_ui.exceptionPresetCheckBox->setChecked(true);
             m_ui.exceptionPresetComboBox->setCurrentText(m_exception->exceptionPreset());
         } else

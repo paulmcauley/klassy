@@ -15,10 +15,11 @@
 namespace Breeze
 {
 
-TitleBarOpacity::TitleBarOpacity(KSharedConfig::Ptr config, QWidget *parent)
+TitleBarOpacity::TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_TitleBarOpacity)
     , m_configuration(config)
+    , m_presetsConfiguration(presetsConfig)
 {
     m_ui->setupUi(this);
 
@@ -60,7 +61,7 @@ void TitleBarOpacity::loadMain(const QString loadPreset)
     if (loadPreset.isEmpty()) { // normal cases
         m_internalSettings->load();
     } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
     }
 
     // if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it

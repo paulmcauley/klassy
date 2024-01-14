@@ -29,7 +29,7 @@ public:
     static SettingsProvider *self();
 
     //* internal settings for given decoration
-    InternalSettingsPtr internalSettings(Decoration *) const;
+    InternalSettingsPtr internalSettings(Decoration *);
 
 public Q_SLOTS:
 
@@ -48,6 +48,9 @@ private:
 
     //* config object
     KSharedConfigPtr m_config;
+
+    //* presets config object
+    KSharedConfigPtr m_presetsConfig;
 
     //* singleton
     static SettingsProvider *s_self;

@@ -28,7 +28,7 @@ class ExceptionDialog : public QDialog
 
 public:
     //* constructor
-    explicit ExceptionDialog(KSharedConfig::Ptr config, QWidget *parent);
+    explicit ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent);
 
     //* destructor
     virtual ~ExceptionDialog()
@@ -83,6 +83,9 @@ private:
 
     //* kconfiguration object
     KSharedConfig::Ptr m_configuration;
+
+    //* presets kconfiguration object
+    KSharedConfig::Ptr m_presetsConfiguration;
 
     //* detection dialog
     DetectDialog *m_detectDialog = nullptr;

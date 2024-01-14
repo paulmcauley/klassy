@@ -2,7 +2,7 @@
 #define BUTTONBEHAVIOUR_H
 
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -22,7 +22,7 @@ class ButtonBehaviour : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ButtonBehaviour(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    explicit ButtonBehaviour(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~ButtonBehaviour();
 
     void loadMain(const QString loadPreset = QString());
@@ -56,6 +56,7 @@ private:
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+    KSharedConfig::Ptr m_presetsConfiguration;
 
     //* changed state
     bool m_changed;

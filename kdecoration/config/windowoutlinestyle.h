@@ -22,7 +22,7 @@ class WindowOutlineStyle : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit WindowOutlineStyle(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    explicit WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~WindowOutlineStyle();
 
     void loadMain(const QString loadPreset = QString());
@@ -59,6 +59,7 @@ private:
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+    KSharedConfig::Ptr m_presetsConfiguration;
 
     //* changed state
     bool m_changed;

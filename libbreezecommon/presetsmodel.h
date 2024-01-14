@@ -2,7 +2,7 @@
 #define BREEZE_PRESETSMODEL_H
 
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -48,6 +48,7 @@ public:
     importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion = false, bool markAsBundled = false);
     static bool isKeyValid(const QString &key);
     static bool isEnumValueValid(const QString &key, const QString &property);
+    static void importBundledPresets(KConfig *config);
 };
 
 }

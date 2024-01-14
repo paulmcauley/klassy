@@ -16,11 +16,11 @@
 
 namespace Breeze
 {
-LoadPreset::LoadPreset(KSharedConfig::Ptr config, QWidget *parent)
+LoadPreset::LoadPreset(KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_LoadPreset)
     , m_addDialog(new AddPreset)
-    , m_configuration(config)
+    , m_presetsConfiguration(presetsConfig)
     , m_parent(parent)
 {
     m_ui->setupUi(this);
@@ -46,7 +46,7 @@ void LoadPreset::initPresetsList()
     m_ui->removeButton->setEnabled(false);
     m_ui->exportButton->setEnabled(false);
     m_ui->presetsList->clear();
-    QStringList presets(PresetsModel::readPresetsList(m_configuration.data()));
+    QStringList presets(PresetsModel::readPresetsList(m_presetsConfiguration.data()));
     foreach (const QString presetName, presets) {
         m_ui->presetsList->addItem(presetName);
     }
@@ -125,8 +125,8 @@ void LoadPreset::removeButtonClicked()
         return;
     }
 
-    PresetsModel::deletePreset(m_configuration.data(), m_ui->presetsList->selectedItems().first()->text());
-    m_configuration->sync();
+    PresetsModel::deletePreset(m_presetsConfiguration.data(), m_ui->presetsList->selectedItems().first()->text());
+    m_presetsConfiguration->sync();
     initPresetsList();
 }
 
@@ -138,7 +138,7 @@ void LoadPreset::importButtonClicked()
         QString error;
 
         // if a preset already exists with the same name
-        if (PresetsModel::isPresetFromFilePresent(m_configuration.data(), fileName, presetName)) {
+        if (PresetsModel::isPresetFromFilePresent(m_presetsConfiguration.data(), fileName, presetName)) {
             // confirmation dialog
             QMessageBox messageBox(QMessageBox::Question,
                                    i18n("Question - Klassy Settings"),
@@ -152,7 +152,7 @@ void LoadPreset::importButtonClicked()
             presetName = QString();
         }
 
-        PresetsErrorFlag importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, false);
+        PresetsErrorFlag importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), fileName, presetName, error, false);
 
         if (importErrors == PresetsErrorFlag::InvalidGlobalGroup) {
             QMessageBox msgBox;
@@ -177,7 +177,7 @@ void LoadPreset::importButtonClicked()
             // reset and try again
             presetName = QString();
             error = QString();
-            importErrors = PresetsModel::importPreset(m_configuration.data(), fileName, presetName, error, true);
+            importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), fileName, presetName, error, true);
         }
 
         if (importErrors == PresetsErrorFlag::InvalidGroup) {
@@ -194,7 +194,7 @@ void LoadPreset::importButtonClicked()
             continue;
         }
 
-        m_configuration->sync();
+        m_presetsConfiguration->sync();
         initPresetsList();
     }
 }
@@ -214,6 +214,6 @@ void LoadPreset::exportButtonClicked()
     if (dir.exists(fileName))
         dir.remove(fileName);
 
-    PresetsModel::exportPreset(m_configuration.data(), m_ui->presetsList->selectedItems().first()->text(), fileName);
+    PresetsModel::exportPreset(m_presetsConfiguration.data(), m_ui->presetsList->selectedItems().first()->text(), fileName);
 }
 }

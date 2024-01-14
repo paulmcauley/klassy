@@ -27,7 +27,7 @@ namespace Breeze
 //__________________________________________________________________
 StyleConfig::StyleConfig(QWidget *parent)
     : QWidget(parent)
-    , _configuration(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
+    , _configuration(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
 {
     // this is a hack to get an Apply button
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);

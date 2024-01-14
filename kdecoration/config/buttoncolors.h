@@ -32,7 +32,7 @@ class ButtonColors : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ButtonColors(KSharedConfig::Ptr config, QWidget *parent = nullptr);
+    explicit ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~ButtonColors();
 
     void loadMain(const QString loadPreset = QString(), const bool assignUiValuesOnly = false);
@@ -151,6 +151,7 @@ private:
 
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
+    KSharedConfig::Ptr m_presetsConfiguration;
     QObject *m_parent;
 
     //* changed state
