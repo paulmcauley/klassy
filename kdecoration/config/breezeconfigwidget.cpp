@@ -16,7 +16,6 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
-#include <QDir>
 #include <QIcon>
 #include <QRegularExpression>
 #include <QStackedLayout>
@@ -43,7 +42,8 @@ namespace Breeze
 //_________________________________________________________
 ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     : KCModule(parent, args)
-    , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
+    , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
+    , m_presetsConfiguration(KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc")))
     , m_changed(false)
 {
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
@@ -60,8 +60,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // configuration
     m_ui.setupUi(this);
 
-    m_ui.defaultExceptions->setKConfig(m_configuration);
-    m_ui.exceptions->setKConfig(m_configuration);
+    m_ui.defaultExceptions->setKConfig(m_configuration, m_presetsConfiguration);
+    m_ui.exceptions->setKConfig(m_configuration, m_presetsConfiguration);
 
     // add the "Presets..." button
     QVBoxLayout *presetsButtonVLayout = new QVBoxLayout();
@@ -100,14 +100,14 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // add corner icon
     m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
 
-    m_loadPresetDialog = new LoadPreset(m_configuration, this);
-    m_buttonSizingDialog = new ButtonSizing(m_configuration, this);
-    m_buttonColorsDialog = new ButtonColors(m_configuration, this);
-    m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, this);
-    m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, this);
-    m_titleBarOpacityDialog = new TitleBarOpacity(m_configuration, this);
-    m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, this);
-    m_shadowStyleDialog = new ShadowStyle(m_configuration, this);
+    m_loadPresetDialog = new LoadPreset(m_presetsConfiguration, this);
+    m_buttonSizingDialog = new ButtonSizing(m_configuration, m_presetsConfiguration, this);
+    m_buttonColorsDialog = new ButtonColors(m_configuration, m_presetsConfiguration, this);
+    m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, m_presetsConfiguration, this);
+    m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, m_presetsConfiguration, this);
+    m_titleBarOpacityDialog = new TitleBarOpacity(m_configuration, m_presetsConfiguration, this);
+    m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, m_presetsConfiguration, this);
+    m_shadowStyleDialog = new ShadowStyle(m_configuration, m_presetsConfiguration, this);
 
     // the dispayed colours in the ButtonColors UI depend upon ButtonBehaviour
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::loadButtonPaletteColorsIcons);
@@ -205,9 +205,9 @@ void ConfigWidget::loadMain(QString loadPresetName)
         m_titleBarOpacityDialog->load();
         m_shadowStyleDialog->load();
         m_windowOutlineStyleDialog->load();
-        importBundledPresets();
+        PresetsModel::importBundledPresets(m_presetsConfiguration.data());
     } else {
-        PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPresetName, true);
+        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPresetName, true);
         m_buttonSizingDialog->loadMain(loadPresetName);
         m_buttonColorsDialog->loadMain(loadPresetName);
         m_buttonBehaviourDialog->loadMain(loadPresetName);
@@ -305,24 +305,24 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
         InternalSettingsList exceptions(m_ui.exceptions->exceptions());
         InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
         DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
-    } else { // set the preset
-        // delete the preset if one of that name already exists
-        PresetsModel::deletePreset(m_configuration.data(), saveAsPresetName);
+        // sync configuration for exceptions
+        m_configuration->sync();
 
-        // write the new internalSettings value as a new preset
-        PresetsModel::writePreset(m_internalSettings.data(), m_configuration.data(), saveAsPresetName);
-    }
-
-    // sync configuration
-    m_configuration->sync();
-
-    if (saveAsPresetName.isEmpty()) {
         setChanged(false);
         Q_EMIT saved();
 
         // needed to tell kwin to reload when running from external kcmshell
         kwinReloadConfig();
         kstyleReloadConfig();
+
+    } else { // set the preset
+        // delete the preset if one of that name already exists
+        PresetsModel::deletePreset(m_presetsConfiguration.data(), saveAsPresetName);
+
+        // write the new internalSettings value as a new preset
+        PresetsModel::writePreset(m_internalSettings.data(), m_presetsConfiguration.data(), saveAsPresetName);
+        // sync configuration for presets
+        m_presetsConfiguration->sync();
     }
 }
 
@@ -381,15 +381,11 @@ bool ConfigWidget::isDefaults()
 {
     bool isDefaults = true;
 
-    if (m_configuration->hasGroup(QStringLiteral("Windeco"))) {
-        KConfigGroup group = m_configuration->group(QStringLiteral("Windeco"));
-        QStringList keys = group.keyList();
-        for (QString &key : keys) {
-            if (key != QStringLiteral("BundledWindecoPresetsImportedVersion")) {
-                isDefaults = false;
-                break;
-            }
-        }
+    QString groupName(QStringLiteral("Windeco"));
+    if (m_configuration->hasGroup(groupName)) {
+        KConfigGroup group = m_configuration->group(groupName);
+        if (group.keyList().count())
+            isDefaults = false;
     }
 
     return isDefaults;
@@ -708,46 +704,6 @@ void ConfigWidget::presetsButtonClicked()
     m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
     m_loadPresetDialog->exec();
-}
-
-// copies bundled presets in /usr/lib64/qt5/plugins/plasma/kcms/klassy/presets into ~/.config/klassyrc once per release
-void ConfigWidget::importBundledPresets()
-{
-    if (m_internalSettings->bundledWindecoPresetsImportedVersion() == klassyLongVersion()) {
-        return;
-    }
-
-    // qDebug() << "librarypaths: " << QCoreApplication::libraryPaths(); //librarypaths:  ("/usr/lib64/qt5/plugins", "/usr/bin")
-
-    // delete bundled presets from a previous release first
-    // if the user modified the preset it will not contain the BundledPreset flag and hence won't be deleted
-    PresetsModel::deleteBundledPresets(m_configuration.data());
-
-    for (QString libraryPath : QCoreApplication::libraryPaths()) {
-        libraryPath += "/plasma/kcms/klassy/presets";
-        QDir presetsDir(libraryPath);
-        if (presetsDir.exists()) {
-            QStringList filters;
-            filters << "*.klp";
-            presetsDir.setNameFilters(filters);
-            QStringList presetFiles = presetsDir.entryList();
-
-            for (QString presetFile : presetFiles) {
-                presetFile = libraryPath + "/" + presetFile; // set absolute full path
-                QString presetName;
-                QString error;
-
-                PresetsErrorFlag importErrors = PresetsModel::importPreset(m_configuration.data(), presetFile, presetName, error, false, true);
-                if (importErrors != PresetsErrorFlag::None) {
-                    continue;
-                }
-            }
-        }
-    }
-
-    m_internalSettings->setBundledWindecoPresetsImportedVersion(klassyLongVersion());
-    m_internalSettings->save();
-    m_configuration->sync();
 }
 
 void ConfigWidget::kwinReloadConfig()

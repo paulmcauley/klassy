@@ -26,10 +26,11 @@ namespace Breeze
 
 using KDecoration2::DecorationButtonType;
 
-ButtonColors::ButtonColors(KSharedConfig::Ptr config, QWidget *parent)
+ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_ButtonColors)
     , m_configuration(config)
+    , m_presetsConfiguration(presetsConfig)
     , m_parent(parent)
 {
     m_ui->setupUi(this);
@@ -248,7 +249,7 @@ void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesO
         if (loadPreset.isEmpty()) { // normal cases
             m_internalSettings->load();
         } else { // loading preset
-            PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+            PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
         }
     }
 

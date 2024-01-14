@@ -1,7 +1,7 @@
 #ifndef breezedecorationsettingsprovider_h
 #define breezedecorationsettingsprovider_h
 /*
- * SPDX-FileCopyrightText: 2022-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -34,7 +34,7 @@ public:
     static DecorationSettingsProvider *self();
 
     //* decoration internal settings for qApp
-    InternalSettingsPtr internalSettings() const;
+    InternalSettingsPtr internalSettings();
 
 public Q_SLOTS:
 
@@ -53,6 +53,9 @@ private:
 
     //* config object
     KSharedConfigPtr m_config;
+
+    //* presets config object
+    KSharedConfigPtr m_presetsConfig;
 
     //* singleton
     static DecorationSettingsProvider *s_self;

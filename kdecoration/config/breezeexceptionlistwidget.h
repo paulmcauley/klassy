@@ -5,6 +5,7 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+// SPDX-FileCopyrightText: 2024 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
@@ -32,9 +33,10 @@ public:
     //* get exceptions
     InternalSettingsList exceptions();
 
-    void setKConfig(KSharedConfig::Ptr config)
+    void setKConfig(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig)
     {
         m_configuration = config;
+        m_presetsConfiguration = presetsConfig;
     }
 
     //* true if changed
@@ -100,6 +102,7 @@ protected:
 
 private:
     KSharedConfig::Ptr m_configuration;
+    KSharedConfig::Ptr m_presetsConfiguration;
 
     //* model
     ExceptionModel m_model;

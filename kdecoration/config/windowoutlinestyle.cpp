@@ -15,10 +15,11 @@
 namespace Breeze
 {
 
-WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, QWidget *parent)
+WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_WindowOutlineStyle)
     , m_configuration(config)
+    , m_presetsConfiguration(presetsConfig)
 {
     m_ui->setupUi(this);
 
@@ -70,7 +71,7 @@ void WindowOutlineStyle::loadMain(const QString loadPreset)
     if (loadPreset.isEmpty()) { // normal cases
         m_internalSettings->load();
     } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_configuration.data(), loadPreset);
+        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
     }
 
     m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());

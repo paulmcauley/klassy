@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2022-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -18,7 +19,8 @@ SettingsProvider *SettingsProvider::s_self = nullptr;
 
 //__________________________________________________________________
 SettingsProvider::SettingsProvider()
-    : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
+    : m_config(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
+    , m_presetsConfig(KSharedConfigPtr())
 {
     m_defaultSettings = InternalSettingsPtr(new InternalSettings());
 }
@@ -52,7 +54,7 @@ void SettingsProvider::reconfigure()
 }
 
 //__________________________________________________________________
-InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) const
+InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
 {
     // get the client
     auto client = decoration->client().toStrongRef();
@@ -92,14 +94,22 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) c
         if (rx.match(windowPropertyValue).hasMatch()) {
             // load preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
+                if (!m_presetsConfig) {
+                    KSharedConfigPtr presetsConfig = KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc"));
+                    m_presetsConfig.swap(presetsConfig);
+                }
+                if (!m_presetsConfig) {
+                    return internalSettings;
+                }
+
                 // load the preset values into internalSettings if a preset is set as an exception
-                PresetsModel::loadPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+                PresetsModel::loadPreset(internalSettings.data(), m_presetsConfig.data(), internalSettings->exceptionPreset());
 
                 // if a border size exception is not set then replace it with the KwinBorderSize value from the preset
                 if ((!internalSettings->exceptionBorder())) {
-                    if (PresetsModel::presetHasKwinBorderSizeKey(m_config.data(), internalSettings->exceptionPreset())) {
+                    if (PresetsModel::presetHasKwinBorderSizeKey(m_presetsConfig.data(), internalSettings->exceptionPreset())) {
                         PresetsModel::copyKwinBorderSizeFromPresetToExceptionBorderSize(internalSettings.data(),
-                                                                                        m_config.data(),
+                                                                                        m_presetsConfig.data(),
                                                                                         internalSettings->exceptionPreset());
                         internalSettings->setExceptionBorder(true);
                     }

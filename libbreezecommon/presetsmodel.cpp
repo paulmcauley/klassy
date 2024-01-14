@@ -1,11 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
 
 #include "presetsmodel.h"
 #include <KConfigGroup>
+#include <QDir>
 #include <QRegularExpression>
 
 namespace Breeze
@@ -27,7 +28,6 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, c
         keyInBlacklist = false;
 
         QStringList blacklistKeys = windecoExceptionKeys;
-        blacklistKeys << "BundledWindecoPresetsImportedVersion";
 
         // do not write a key in blacklist
         for (const QString &blacklistKey : blacklistKeys) {
@@ -100,7 +100,6 @@ void PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *config, co
         keyInBlacklist = false;
 
         QStringList blacklistKeys = windecoExceptionKeys;
-        blacklistKeys << "BundledWindecoPresetsImportedVersion";
 
         // do not read a key in windecoExceptionKeys
         for (const QString &blacklistKey : blacklistKeys) {
@@ -335,5 +334,52 @@ bool PresetsModel::isKeyValid(const QString &key)
         return true; // additional valid key containing KWin border size setting from kwinrc
 
     return false;
+}
+
+// copies bundled presets in /usr/lib64/qt5/plugins/plasma/kcms/klassy/presets into ~/.config/klassy/klassyrc once per release
+void PresetsModel::importBundledPresets(KConfig *config)
+{
+    // don't copy if BundledWindecoPresetsImportedVersion has been set for the current release version
+    if (config->hasGroup("Global")) {
+        KConfigGroup globalGroup = config->group("Global");
+        if (globalGroup.hasKey("BundledWindecoPresetsImportedVersion")) {
+            if (globalGroup.readEntry("BundledWindecoPresetsImportedVersion") == klassyLongVersion()) {
+                return;
+            }
+        }
+        return;
+    }
+
+    // qDebug() << "librarypaths: " << QCoreApplication::libraryPaths(); //librarypaths:  ("/usr/lib64/qt5/plugins", "/usr/bin")
+
+    // delete bundled presets from a previous release first
+    // if the user modified the preset it will not contain the BundledPreset flag and hence won't be deleted
+    PresetsModel::deleteBundledPresets(config);
+
+    for (QString libraryPath : QCoreApplication::libraryPaths()) {
+        libraryPath += "/plasma/kcms/klassy/presets";
+        QDir presetsDir(libraryPath);
+        if (presetsDir.exists()) {
+            QStringList filters;
+            filters << "*.klp";
+            presetsDir.setNameFilters(filters);
+            QStringList presetFiles = presetsDir.entryList();
+
+            for (QString presetFile : presetFiles) {
+                presetFile = libraryPath + "/" + presetFile; // set absolute full path
+                QString presetName;
+                QString error;
+
+                PresetsErrorFlag importErrors = PresetsModel::importPreset(config, presetFile, presetName, error, false, true);
+                if (importErrors != PresetsErrorFlag::None) {
+                    continue;
+                }
+            }
+        }
+    }
+
+    KConfigGroup globalGroup = config->group("Global");
+    globalGroup.writeEntry("BundledWindecoPresetsImportedVersion", klassyLongVersion());
+    config->sync();
 }
 }

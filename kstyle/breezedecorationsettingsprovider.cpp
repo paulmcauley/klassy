@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2022-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -21,7 +21,8 @@ DecorationSettingsProvider *DecorationSettingsProvider::s_self = nullptr;
 
 //__________________________________________________________________
 DecorationSettingsProvider::DecorationSettingsProvider()
-    : m_config(KSharedConfig::openConfig(QStringLiteral("klassyrc")))
+    : m_config(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
+    , m_presetsConfig(KSharedConfigPtr())
 {
     m_defaultSettings = InternalSettingsPtr(new InternalSettings());
 }
@@ -55,7 +56,7 @@ void DecorationSettingsProvider::reconfigure()
 }
 
 //__________________________________________________________________
-InternalSettingsPtr DecorationSettingsProvider::internalSettings() const
+InternalSettingsPtr DecorationSettingsProvider::internalSettings()
 {
     for (const auto &internalSettings : m_exceptions) {
         // discard disabled exceptions
@@ -71,7 +72,15 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings() const
         if (rx.match(qAppName()).hasMatch()) {
             // load window decoration preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
-                PresetsModel::loadPreset(internalSettings.data(), m_config.data(), internalSettings->exceptionPreset());
+                if (!m_presetsConfig) {
+                    KSharedConfigPtr presetsConfig = KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc"));
+                    m_presetsConfig.swap(presetsConfig);
+                }
+                if (!m_presetsConfig) {
+                    return internalSettings;
+                }
+
+                PresetsModel::loadPreset(internalSettings.data(), m_presetsConfig.data(), internalSettings->exceptionPreset());
                 internalSettings->setProperty("noCache", true); // this property is to indicate not to cache shadows or colours for an exception with a Preset
                                                                 // -- this is because the Preset exception can alter shadows and colours
             }
