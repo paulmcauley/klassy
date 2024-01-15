@@ -220,19 +220,19 @@ void Button::drawIcon(QPainter *painter) const
 
     // get the device offset of the paddedIcon from the top-left of the titlebar as a reference-point for pixel-snapping algorithms
     //(ideally, the device offset from the top-left of the screen would be better for fractional scaling, but it is not available in the API)
-    QPointF deviceOffsetTitleBarTopLeftToIconTopLeft;
+    QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
     QPointF topLeftPaddedButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
 
-    // get top-left geometry relative to the titlebar top-left as is the best reference position available that is most likely to be a whole pixel
+    // get top-left geometry relative to the decoration top-left as is is what kwin snaps to a whole pixel since Plasma 5.27
     //(on button hover sometimes the painter gives geometry relative to the button rather than to titlebar, so this is also why this is necessary)
-    QPointF titleBarTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(d->titleBar()).topLeft());
-    deviceOffsetTitleBarTopLeftToIconTopLeft = topLeftPaddedButtonDeviceGeometry - titleBarTopLeftDeviceGeometry;
+    QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(d->rect()).topLeft());
+    deviceOffsetDecorationTopLeftToIconTopLeft = topLeftPaddedButtonDeviceGeometry - decorationTopLeftDeviceGeometry;
 
     painter->translate(geometry().topLeft());
 
     // translate from icon offset -- translates to the edge of smallButtonPaddedWidth
     painter->translate(m_iconOffset);
-    deviceOffsetTitleBarTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
+    deviceOffsetDecorationTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
 
     const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
     qreal iconWidth(m_iconSize.width());
@@ -242,7 +242,7 @@ void Button::drawIcon(QPainter *painter) const
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
     qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
     painter->translate(iconTranslationOffset, iconTranslationOffset);
-    deviceOffsetTitleBarTopLeftToIconTopLeft += (QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF());
+    deviceOffsetDecorationTopLeftToIconTopLeft += (QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF());
 
     qreal scaleFactor = 1;
     if (!m_renderSystemIcon) {
@@ -282,7 +282,7 @@ void Button::drawIcon(QPainter *painter) const
                                                           false,
                                                           m_boldButtonIcons,
                                                           m_devicePixelRatio,
-                                                          deviceOffsetTitleBarTopLeftToIconTopLeft);
+                                                          deviceOffsetDecorationTopLeftToIconTopLeft);
 
             iconRenderer->renderIcon(type(), isChecked());
         }
