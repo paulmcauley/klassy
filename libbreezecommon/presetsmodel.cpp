@@ -347,7 +347,6 @@ void PresetsModel::importBundledPresets(KConfig *config)
                 return;
             }
         }
-        return;
     }
 
     // qDebug() << "librarypaths: " << QCoreApplication::libraryPaths(); //librarypaths:  ("/usr/lib64/qt5/plugins", "/usr/bin")
