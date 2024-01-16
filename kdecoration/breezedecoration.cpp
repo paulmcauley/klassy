@@ -375,7 +375,7 @@ void Decoration::init()
     connect(m_overrideOutlineFromButtonAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_overrideOutlineAnimationProgress = value.toReal();
         if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running)
-            updateShadow(true, true, true);
+            updateShadow(false, true, true);
     });
 
     // use DBus connection to update on breeze configuration change
@@ -436,7 +436,7 @@ void Decoration::init()
     connect(c.data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(c.data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
-    connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::forceUpdateShadow);
+    connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateShadowOnShadedChange);
     connect(c.data(), &KDecoration2::DecoratedClient::captionChanged, this, [this]() {
         // update the caption area
         update(titleBar());
@@ -530,7 +530,7 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
             m_overrideOutlineFromButtonAnimation->start();
 
     } else {
-        updateShadow(true, true, true);
+        updateShadow(false, true, true);
     }
 }
 
@@ -1271,7 +1271,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 }
 
 //________________________________________________________________
-void Decoration::updateShadow(const bool force, bool noCache, const bool isThinWindowOutlineOverride)
+void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const bool isThinWindowOutlineOverride)
 {
     auto s = settings();
     auto c = client().toStrongRef();
@@ -1286,9 +1286,10 @@ void Decoration::updateShadow(const bool force, bool noCache, const bool isThinW
     }
 
     // the noCache property is set when the internalSettings are from a preset exception
-    // The preset exception may modify the shadow, so in this case we don't want to cache the exception shadow as it may corrupt the shadow cache for normal
-    // non-exception decoration windows
-    if (m_internalSettings->property("noCache").toBool()) {
+    // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
+    // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
+    // use the shadow cache when shaded
+    if (m_internalSettings->property("noCache").toBool() || c->isShaded()) {
         noCache = true;
     }
 
@@ -1304,29 +1305,31 @@ void Decoration::updateShadow(const bool force, bool noCache, const bool isThinW
 
     // TODO: Potentially make the kdecoration configwidget more intelligent and send a dbus signal which is aware of whether to update the shadow or not, so
     // there is less processing here
-    if (force || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
-        || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
-        || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()
-        || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
-        || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyleActive()
-        || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyleInactive()
-        || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
-        || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness()) {
-        if (!noCache) {
-            g_sShadow.clear();
-            g_sShadowInactive.clear();
-            g_shadowSizeEnum = m_internalSettings->shadowSize();
-            g_shadowStrength = m_internalSettings->shadowStrength();
-            g_shadowColor = m_internalSettings->shadowColor();
-            g_cornerRadius = m_scaledCornerRadius;
-            g_systemScaleFactor = m_systemScaleFactor;
-            g_hasNoBorders = hasNoBorders();
-            g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
-            g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyleActive();
-            g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyleInactive();
-            c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
-            g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
-        }
+    // check if cached settings have changed, if so replace them with new settings values and regenerate the shadow cache
+    if (!noCache
+        && (
+
+            forceUpdateCache || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
+            || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
+            || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()
+            || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
+            || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyleActive()
+            || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyleInactive()
+            || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
+            || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness())) {
+        g_sShadow.clear();
+        g_sShadowInactive.clear();
+        g_shadowSizeEnum = m_internalSettings->shadowSize();
+        g_shadowStrength = m_internalSettings->shadowStrength();
+        g_shadowColor = m_internalSettings->shadowColor();
+        g_cornerRadius = m_scaledCornerRadius;
+        g_systemScaleFactor = m_systemScaleFactor;
+        g_hasNoBorders = hasNoBorders();
+        g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
+        g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyleActive();
+        g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyleInactive();
+        c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
+        g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
     }
 
     QSharedPointer<KDecoration2::DecorationShadow> nonCachedShadow;
@@ -1360,10 +1363,11 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
                  || (!c->isActive()
                      && m_internalSettings->thinWindowOutlineStyleInactive() == InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineNone))));
 
-    const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
     if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isThinWindowOutlineOverride) {
         return nullptr;
     }
+
+    const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
 
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
