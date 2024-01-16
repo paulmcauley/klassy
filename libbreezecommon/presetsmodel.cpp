@@ -164,6 +164,10 @@ void PresetsModel::writeBorderSizeToKwinConfig(const QString &borderSize)
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
     if (kwinConfig) {
         KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+
+        // this is when "Theme's Default" is selected for the border size - if this is true then kwin will ignore the "BorderSize" key
+        kdecoration2Group.writeEntry(QStringLiteral("BorderSizeAuto"), QStringLiteral("false"));
+
         kdecoration2Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
         kwinConfig->sync();
     }
