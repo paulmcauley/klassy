@@ -26,25 +26,26 @@ void RenderStyleRedmond1018By18::renderRestoreIcon()
 
 void RenderStyleRedmond1018By18::renderMinimizeIcon()
 {
+    QPen pen = m_painter->pen();
     bool isOddPenWidth = true;
 
     if (!m_fromKstyle) {
         int roundedBoldPenWidth;
         if (m_boldButtonIcons) {
             // thicker pen in titlebar
-            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
+            isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, m_squareMaximizeBoldPenWidthFactor);
         } else
-            isOddPenWidth = roundedPenWidthIsOdd(m_pen.widthF(), roundedBoldPenWidth, 1);
-        m_pen.setWidthF(roundedBoldPenWidth);
+            isOddPenWidth = roundedPenWidthIsOdd(pen.widthF(), roundedBoldPenWidth, 1);
+        pen.setWidthF(roundedBoldPenWidth);
     }
 
     // make excessively thick pen widths translucent to balance with other buttons
     qreal opacity = straightLineOpacity();
-    QColor penColor = m_pen.color();
+    QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
-    m_pen.setColor(penColor);
+    pen.setColor(penColor);
 
-    m_painter->setPen(m_pen);
+    m_painter->setPen(pen);
 
     // horizontal line
     if (isOddPenWidth) {

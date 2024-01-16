@@ -1991,15 +1991,16 @@ void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButton
             SystemIconTheme systemIconRenderer(painter.get(), 16, iconName, m_internalSettings, dpr);
             systemIconRenderer.renderIcon();
         } else {
+            auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), true, true, dpr));
+
+            int centringOffset = (localRenderingWidth - 16) / 2;
             painter->setViewport(0, 0, 16, 16);
-            painter->setWindow(1, 1, 16, 16);
+            painter->setWindow(centringOffset, centringOffset, 16, 16);
 
             QPen pen = painter->pen();
             pen.setWidthF(PenWidth::Symbol * dpr);
             pen.setCosmetic(true);
             painter->setPen(pen);
-            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer(
-                RenderDecorationButtonIcon18By18::factory(m_internalSettings, painter.get(), true, true, dpr));
             iconRenderer->renderIcon(type, false);
         }
 

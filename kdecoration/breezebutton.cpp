@@ -239,53 +239,52 @@ void Button::drawIcon(QPainter *painter) const
     if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
+    if (!m_foregroundColor.isValid())
+        return;
+
+    // render the actual icon
+
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
     qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;
     painter->translate(iconTranslationOffset, iconTranslationOffset);
     deviceOffsetDecorationTopLeftToIconTopLeft += (QPointF(iconTranslationOffset, iconTranslationOffset) * painter->device()->devicePixelRatioF());
 
-    qreal scaleFactor = 1;
-    if (!m_renderSystemIcon) {
-        scaleFactor = iconWidth / 18;
+    // setup painter
+    QPen pen(m_foregroundColor);
+
+    // this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
+    // pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonPaddedWidth ) );
+
+    // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons.
+    if (m_isGtkCsdButton) {
+        pen.setWidthF(PenWidth::Symbol);
+    } else {
+        pen.setWidthF(m_standardScaledPenWidth);
+        pen.setCosmetic(true);
+    }
+    painter->setPen(pen);
+
+    if (m_renderSystemIcon) {
+        QString systemIconName;
+        systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
+        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
+        iconRenderer.renderIcon();
+    } else {
+        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(d->internalSettings(),
+                                                                                       painter,
+                                                                                       false,
+                                                                                       m_boldButtonIcons,
+                                                                                       m_devicePixelRatio,
+                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft);
+
+        qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
-        scale painter so that all further rendering is preformed inside QRect( 0, 0, 18, 18 )
+        scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
+        localRenderingWidth is typically 18 or 16
         */
         painter->scale(scaleFactor, scaleFactor);
-    }
 
-    // render mark
-    if (m_foregroundColor.isValid()) {
-        // setup painter
-        QPen pen(m_foregroundColor);
-
-        // this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
-        // pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonPaddedWidth ) );
-
-        // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons.
-        if (m_isGtkCsdButton) {
-            pen.setWidthF(PenWidth::Symbol);
-        } else {
-            pen.setWidthF(m_standardScaledPenWidth);
-            pen.setCosmetic(true);
-        }
-        painter->setPen(pen);
-
-        if (m_renderSystemIcon) {
-            QString systemIconName;
-            systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
-            SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
-            iconRenderer.renderIcon();
-        } else {
-            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer =
-                RenderDecorationButtonIcon18By18::factory(d->internalSettings(),
-                                                          painter,
-                                                          false,
-                                                          m_boldButtonIcons,
-                                                          m_devicePixelRatio,
-                                                          deviceOffsetDecorationTopLeftToIconTopLeft);
-
-            iconRenderer->renderIcon(type(), isChecked());
-        }
+        iconRenderer->renderIcon(type(), isChecked());
     }
 }
 
