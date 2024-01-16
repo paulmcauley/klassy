@@ -20,9 +20,11 @@ void RenderStyleKite18By18::renderMaximizeIcon()
 
 void RenderStyleKite18By18::renderRestoreIcon()
 {
+    QPen pen = m_painter->pen();
+
     if (m_fromKstyle) { // slightly smaller diamond
-        m_pen.setJoinStyle(Qt::RoundJoin);
-        m_painter->setPen(m_pen);
+        pen.setJoinStyle(Qt::RoundJoin);
+        m_painter->setPen(pen);
 
         // diamond / floating kite
         m_painter->drawConvexPolygon(QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)});
@@ -30,10 +32,10 @@ void RenderStyleKite18By18::renderRestoreIcon()
     } else {
         // thicker pen in titlebar
         if (m_boldButtonIcons) {
-            m_pen.setWidthF(m_pen.widthF() * 1.75);
+            pen.setWidthF(pen.widthF() * 1.75);
         }
-        m_pen.setJoinStyle(Qt::RoundJoin);
-        m_painter->setPen(m_pen);
+        pen.setJoinStyle(Qt::RoundJoin);
+        m_painter->setPen(pen);
 
         // diamond / floating kite
         m_painter->drawConvexPolygon(QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)});

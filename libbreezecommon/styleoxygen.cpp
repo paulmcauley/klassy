@@ -10,9 +10,11 @@ namespace Breeze
 {
 void RenderStyleOxygen18By18::renderCloseIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.75);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.75);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderCloseIcon();
@@ -20,9 +22,11 @@ void RenderStyleOxygen18By18::renderCloseIcon()
 
 void RenderStyleOxygen18By18::renderMaximizeIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.75);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.75);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderMaximizeIcon();
@@ -30,9 +34,11 @@ void RenderStyleOxygen18By18::renderMaximizeIcon()
 
 void RenderStyleOxygen18By18::renderRestoreIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.75);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.75);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderRestoreIcon();
@@ -40,9 +46,11 @@ void RenderStyleOxygen18By18::renderRestoreIcon()
 
 void RenderStyleOxygen18By18::renderMinimizeIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.75);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.75);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderMinimizeIcon();
@@ -50,9 +58,11 @@ void RenderStyleOxygen18By18::renderMinimizeIcon()
 
 void RenderStyleOxygen18By18::renderKeepBehindIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.4);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.4);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderKeepBehindIcon();
@@ -60,9 +70,11 @@ void RenderStyleOxygen18By18::renderKeepBehindIcon()
 
 void RenderStyleOxygen18By18::renderKeepInFrontIcon()
 {
+    QPen pen = m_painter->pen();
+
     if ((!m_fromKstyle) && m_boldButtonIcons) {
-        m_pen.setWidthF(m_pen.widthF() * 1.4);
-        m_painter->setPen(m_pen);
+        pen.setWidthF(pen.widthF() * 1.4);
+        m_painter->setPen(pen);
     }
 
     RenderDecorationButtonIcon18By18::renderKeepInFrontIcon();

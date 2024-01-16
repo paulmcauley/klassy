@@ -2,7 +2,7 @@
 #define BREEZE_RENDERDECORATIONBUTTONICON_H
 
 /*
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -12,7 +12,6 @@
 
 #include <KDecoration2/DecorationButton>
 #include <KDecoration2/DecorationSettings>
-#include <QGraphicsScene>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
@@ -22,11 +21,9 @@ namespace Breeze
 
 /**
  * @brief Base Class to render decoration button icons in style set by EnumButtonIconStyle.
- *        Rendering is to be performed on a QPainter object with an 18x18 reference window.
- *        Co-ordinates relative to top-left.
  *        To be used as common code base across both kdecoration and kstyle.
  */
-class BREEZECOMMON_EXPORT RenderDecorationButtonIcon18By18
+class BREEZECOMMON_EXPORT RenderDecorationButtonIcon
 {
 public:
     /**
@@ -38,31 +35,30 @@ public:
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
      * @param deviceOffsetFromZeroReference The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
-     * @return std::unique_ptr< Breeze::RenderDecorationButtonIcon18By18, std::default_delete< Breeze::RenderDecorationButtonIcon18By18 > > Pointer to a new
-     * sub-style object.
+     * @return static std::pair<std::unique_ptr<RenderDecorationButtonIcon>,int> Pointer to a new sub-style object, icon rendering width
      */
-    static std::unique_ptr<RenderDecorationButtonIcon18By18> factory(const QSharedPointer<InternalSettings> internalSettings,
-                                                                     QPainter *painter,
-                                                                     const bool fromKstyle = false,
-                                                                     const bool boldButtonIcons = false,
-                                                                     const qreal devicePixelRatio = 1,
-                                                                     const QPointF &deviceOffsetFromZeroReference = QPointF(0, 0));
+    static std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> factory(const QSharedPointer<InternalSettings> internalSettings,
+                                                                               QPainter *painter,
+                                                                               const bool fromKstyle = false,
+                                                                               const bool boldButtonIcons = false,
+                                                                               const qreal devicePixelRatio = 1,
+                                                                               const QPointF &deviceOffsetFromZeroReference = QPointF(0, 0));
 
-    virtual ~RenderDecorationButtonIcon18By18();
+    virtual ~RenderDecorationButtonIcon();
 
     void renderIcon(KDecoration2::DecorationButtonType type, bool checked);
-    virtual void renderCloseIcon();
-    virtual void renderMaximizeIcon();
-    virtual void renderRestoreIcon();
-    virtual void renderMinimizeIcon();
-    virtual void renderPinnedOnAllDesktopsIcon();
-    virtual void renderPinOnAllDesktopsIcon();
-    virtual void renderShadeIcon();
-    virtual void renderUnShadeIcon();
-    virtual void renderKeepBehindIcon();
-    virtual void renderKeepInFrontIcon();
-    virtual void renderApplicationMenuIcon();
-    virtual void renderContextHelpIcon();
+    virtual void renderCloseIcon() = 0;
+    virtual void renderMaximizeIcon() = 0;
+    virtual void renderRestoreIcon() = 0;
+    virtual void renderMinimizeIcon() = 0;
+    virtual void renderPinnedOnAllDesktopsIcon() = 0;
+    virtual void renderPinOnAllDesktopsIcon() = 0;
+    virtual void renderShadeIcon() = 0;
+    virtual void renderUnShadeIcon() = 0;
+    virtual void renderKeepBehindIcon() = 0;
+    virtual void renderKeepInFrontIcon() = 0;
+    virtual void renderApplicationMenuIcon() = 0;
+    virtual void renderContextHelpIcon() = 0;
 
 protected:
     /**
@@ -76,40 +72,17 @@ protected:
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
      * @param deviceOffsetFromZeroReference The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
      */
-    RenderDecorationButtonIcon18By18(QPainter *painter,
-                                     const bool fromKstyle,
-                                     const bool boldButtonIcons,
-                                     const qreal devicePixelRatio,
-                                     const QPointF &deviceOffsetFromZeroReference);
+    RenderDecorationButtonIcon(QPainter *painter,
+                               const bool fromKstyle,
+                               const bool boldButtonIcons,
+                               const qreal devicePixelRatio,
+                               const QPointF &deviceOffsetFromZeroReference);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
      * No brush is normal for Breeze's simple outline style.
      */
     virtual void initPainter();
-
-    void renderCloseIconAtSquareMaximizeSize();
-    qreal renderSquareMaximizeIcon(bool returnSizeOnly = false);
-
-    void renderOverlappingWindowsIcon();
-    /**
-     * @param isOddPenWidth Whether the pen width, after rounding, is an odd or even number of pixels
-     * @param shiftOffset How much to separate the two squares to prevent blurriness
-     * @param overlappingWindowsGroup A pointer to output pointing to a group item representing the overlapping windows
-     * @param foregroundSquareItem A pointer to output pointing to an item representing the foreground squares
-     * @param backgroundSquareItem A pointer to output pointing to an item representing the background square path
-     * @return Returns an 18x18 std::unique_ptr<QGraphicsScene> of the overlapping windows icon
-     */
-    std::unique_ptr<QGraphicsScene> calculateOverlappingWindowsScene(const bool isOddPenWidth,
-                                                                     const qreal shiftOffset,
-                                                                     QGraphicsItemGroup *&overlappingWindowsGroup,
-                                                                     QGraphicsRectItem *&foregroundSquareItem,
-                                                                     QGraphicsPathItem *&backgroundSquareItem);
-
-    void renderTinySquareMinimizeIcon();
-    void renderKeepBehindIconAsFromBreezeIcons();
-    void renderKeepInFrontIconAsFromBreezeIcons();
-    void renderRounderAndBolderContextHelpIcon();
 
     /**
      *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
@@ -122,12 +95,12 @@ protected:
     bool roundedPenWidthIsOdd(const qreal &penWidth, int &outputRoundedPenWidth, const qreal boldingFactor);
 
     /**
-     * @brief Converts between actual device pixels and the number of pixels in this 18x18 reference grid (accounting for all possible scaling)
+     * @brief Converts between actual device pixels and the number of pixels in the local reference grid (accounting for all possible scaling)
      *
      * @param devicePixels The input number of actual pixels on the screen
      * @return The equivalent number of pixels in this 18x18 reference grid
      */
-    qreal convertDevicePixelsTo18By18(const qreal devicePixels);
+    qreal convertDevicePixelsToLocal(const qreal devicePixels);
 
     /**
      * @brief Translates painter so antialiased painting co-ordinates will be painted in the same position if aliased
@@ -155,26 +128,35 @@ protected:
     enum class SnapPixel { ToHalf, ToWhole };
 
     /**
-     * @brief Given a logical 18x18 point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted equivalent 18x18
-     * logical value
+     * @brief Given a local point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted equivalent local point
+     * @param pointLocal input point in local coordinates to snap
      * @param SnapX Whether to snap the X co-ordinate to a half or whole pixel
      * @param SnapY Whether to snap the Y co-ordinate to a half or whole pixel
      * @param roundAtThresholdX Whether to round up or down the X co-ordinate if it is at the threshold
      * @param roundAtThresholdY Whether to round up or down the Y co-ordinate if it is at the threshold
-     * @return snapped equivalent in 18x18 logical coordinates
+     * @return pixel-snapped equivalent in local logical coordinates
      */
-    QPointF snapToNearestPixel(QPointF point18By18,
+    QPointF snapToNearestPixel(QPointF pointLocal,
                                const SnapPixel snapX,
                                const SnapPixel snapY,
                                const ThresholdRound roundAtThresholdX = ThresholdRound::Up,
                                const ThresholdRound roundAtThresholdY = ThresholdRound::Up);
+    /**
+     * @brief Overrloaded function. Given a local point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted
+     * equivalent local point This overloaded version automatically determines whether to snap to a half (if input is 0.5), or otherwise whole, pixel.
+     *        m_isOddPenWidth should be set before calling this function
+     * @param pointLocal input point in local coordinates to snap
+     * @return pixel-snapped equivalent in local logical coordinates
+     *
+     */
+    QPointF snapToNearestPixel(const QPointF pointLocal);
 
     /**
-     * @brief given a pen, returns it in 18By18 co-ordinates, accounting for whether the pen is cosmetic or not
+     * @brief given a pen, returns it in local co-ordinates, accounting for whether the pen is cosmetic or not
      * @param pen the input pen
-     * @return the pen width in 18By18 coordinates
+     * @return the pen width in local coordinates
      */
-    qreal penWidthTo18By18(const QPen &pen);
+    qreal penWidthToLocal(const QPen &pen);
 
     /**
      * @brief Sometimes the diagonals of a close button look fainter than a straight line, so reduce the opacity of the straight lines to compensate
@@ -183,7 +165,7 @@ protected:
     qreal straightLineOpacity();
 
     QPainter *m_painter;
-    QPen m_pen;
+    bool m_isOddPenWidth = true;
     bool m_fromKstyle;
     bool m_boldButtonIcons;
     qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11

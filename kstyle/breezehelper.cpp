@@ -1518,8 +1518,6 @@ void Helper::renderDecorationButton(QPainter *painter,
         }*/
         painter->setBrush(Qt::NoBrush);
         pen.setColor(foregroundColor);
-        pen.setWidthF(PenWidth::Symbol * qMax(1.0, 18.0 / rect.width()));
-        painter->setPen(pen);
 
         QString systemIconNameUnchecked;
         QString systemIconNameChecked;
@@ -1529,12 +1527,17 @@ void Helper::renderDecorationButton(QPainter *painter,
             SystemIconTheme::systemIconNames(buttonType, systemIconNameUnchecked, systemIconNameChecked);
         }
 
+        painter->setPen(pen);
+
         if (!systemIconName.isEmpty()) {
             painter->setWindow(rect);
             SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
             iconRenderer.renderIcon();
         } else {
-            std::unique_ptr<RenderDecorationButtonIcon18By18> iconRenderer = RenderDecorationButtonIcon18By18::factory(decorationConfig(), painter, true);
+            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true);
+            pen = painter->pen();
+            pen.setWidthF(PenWidth::Symbol * qMax(1.0, qreal(localRenderingWidth) / rect.width()));
+            painter->setPen(pen);
             iconRenderer->renderIcon(buttonType, buttonChecked);
         }
     }

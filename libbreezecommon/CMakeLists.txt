@@ -13,6 +13,7 @@ set(breezecommon_LIB_SRCS
     decorationexceptionlist.cpp
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
+    renderdecorationbuttonicon18by18.cpp
     styleklassy.cpp
     stylekite.cpp
     styleoxygen.cpp

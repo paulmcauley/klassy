@@ -7,7 +7,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "renderdecorationbuttonicon.h"
+#include "renderdecorationbuttonicon18by18.h"
 
 #include <QGraphicsScene>
 #include <QPainter>
