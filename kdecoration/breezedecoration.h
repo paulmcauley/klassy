@@ -192,10 +192,9 @@ private Q_SLOTS:
     void updateButtonsGeometryDelayed();
     void updateTitleBar();
     void updateAnimationState();
-
-    void forceUpdateShadow()
+    void updateShadowOnShadedChange()
     {
-        updateShadow(true);
+        updateShadow();
     }
     void onTabletModeChanged(bool mode);
 
@@ -208,7 +207,7 @@ private:
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-    void updateShadow(const bool force = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
+    void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
     QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
