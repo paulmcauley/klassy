@@ -52,13 +52,10 @@ RenderDecorationButtonIcon::RenderDecorationButtonIcon(QPainter *painter,
     , m_devicePixelRatio(devicePixelRatio)
     , m_deviceOffsetFromZeroReference(deviceOffsetFromZeroReference)
 {
-    m_painter->save();
-    initPainter();
 }
 
 RenderDecorationButtonIcon::~RenderDecorationButtonIcon()
 {
-    m_painter->restore();
 }
 
 void RenderDecorationButtonIcon::initPainter()
@@ -75,6 +72,9 @@ void RenderDecorationButtonIcon::initPainter()
 
 void RenderDecorationButtonIcon::renderIcon(KDecoration2::DecorationButtonType type, bool checked)
 {
+    m_painter->save();
+    initPainter();
+
     switch (type) {
     case DecorationButtonType::Close:
         renderCloseIcon();
@@ -127,6 +127,8 @@ void RenderDecorationButtonIcon::renderIcon(KDecoration2::DecorationButtonType t
     default:
         break;
     }
+
+    m_painter->restore();
 }
 
 bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const qreal &m_penWidth, int &outputRoundedPenWidth, const qreal boldingFactor)
