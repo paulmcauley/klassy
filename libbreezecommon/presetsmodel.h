@@ -43,9 +43,9 @@ public:
     static QStringList readPresetsList(KConfig *config);
     static bool isPresetPresent(KConfig *config, const QString &presetName);
     static bool isPresetFromFilePresent(KConfig *config, const QString &presetFileName, QString &presetName);
-    static void exportPreset(KConfig *config, const QString &presetName, const QString &fileName);
+    static void exportPreset(KConfig *config, const QString &presetName, const QString &filePath);
     static PresetsErrorFlag
-    importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion = false, bool markAsBundled = false);
+    importPreset(KConfig *config, const QString &filePath, QString &presetName, QString &error, bool forceInvalidVersion = false, bool markAsBundled = false);
     static bool isKeyValid(const QString &key);
     static bool isEnumValueValid(const QString &key, const QString &property);
     static void importBundledPresets(KConfig *config);

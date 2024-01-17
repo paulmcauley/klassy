@@ -231,12 +231,12 @@ bool PresetsModel::isPresetFromFilePresent(KConfig *config, const QString &prese
     return isPresetPresent(config, presetName);
 }
 
-void PresetsModel::exportPreset(KConfig *config, const QString &presetName, const QString &fileName)
+void PresetsModel::exportPreset(KConfig *config, const QString &presetName, const QString &filePath)
 {
-    if (presetName.isEmpty() || fileName.isEmpty())
+    if (presetName.isEmpty() || filePath.isEmpty())
         return;
 
-    KSharedConfig::Ptr outputPresetConfig = KSharedConfig::openConfig(fileName);
+    KSharedConfig::Ptr outputPresetConfig = KSharedConfig::openConfig(filePath);
     QString groupName = presetGroupName(presetName);
 
     if (!outputPresetConfig)
@@ -268,9 +268,9 @@ void PresetsModel::exportPreset(KConfig *config, const QString &presetName, cons
 }
 
 PresetsErrorFlag
-PresetsModel::importPreset(KConfig *config, const QString &fileName, QString &presetName, QString &error, bool forceInvalidVersion, bool markAsBundled)
+PresetsModel::importPreset(KConfig *config, const QString &filePath, QString &presetName, QString &error, bool forceInvalidVersion, bool markAsBundled)
 {
-    KSharedConfig::Ptr importPresetConfig = KSharedConfig::openConfig(fileName);
+    KSharedConfig::Ptr importPresetConfig = KSharedConfig::openConfig(filePath);
 
     if (!importPresetConfig)
         return PresetsErrorFlag::InvalidGlobalGroup;
@@ -364,7 +364,7 @@ void PresetsModel::importBundledPresets(KConfig *config)
         QDir presetsDir(libraryPath);
         if (presetsDir.exists()) {
             QStringList filters;
-            filters << "*.klp";
+            filters << "*.klpw";
             presetsDir.setNameFilters(filters);
             QStringList presetFiles = presetsDir.entryList();
 
