@@ -234,6 +234,16 @@ void Button::drawIcon(QPainter *painter) const
     painter->translate(m_iconOffset);
     deviceOffsetDecorationTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
 
+    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
+
+    if (m_isGtkCsdButton) {
+        if (smallButtonPaddedWidth > 20) { // outlines appear thin so scale them proportionally
+            m_standardScaledNonCosmeticPenWidth = PenWidth::Symbol * smallButtonPaddedWidth / 20;
+        } else {
+            m_standardScaledNonCosmeticPenWidth = PenWidth::Symbol * qMax((qreal)1.0, 20 / smallButtonPaddedWidth);
+        }
+    }
+
     if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
@@ -241,7 +251,6 @@ void Button::drawIcon(QPainter *painter) const
         return;
 
     // render the actual icon
-    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
     qreal iconWidth(m_iconSize.width());
 
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
@@ -252,14 +261,11 @@ void Button::drawIcon(QPainter *painter) const
     // setup painter
     QPen pen(m_foregroundColor);
 
-    // this method commented out is for original non-cosmetic pen painting method (gives blurry icons at larger sizes )
-    // pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/smallButtonPaddedWidth ) );
-
     // cannot use a scaled cosmetic pen if GTK CSD as kde-gtk-config generates svg icons.
     if (m_isGtkCsdButton) {
-        pen.setWidthF(PenWidth::Symbol);
+        pen.setWidthF(PenWidth::Symbol * qMax((qreal)1.0, 18 / iconWidth));
     } else {
-        pen.setWidthF(m_standardScaledPenWidth);
+        pen.setWidthF(m_standardScaledCosmeticPenWidth);
         pen.setCosmetic(true);
     }
     painter->setPen(pen);
@@ -280,7 +286,8 @@ void Button::drawIcon(QPainter *painter) const
         qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
-        localRenderingWidth is typically 18 or 16
+        TODO: localRenderingWidth currently assumed to be 18. If add 16x16 rendering support most likely need an additional translate to centre the icon with an
+        additional deviceOffsetDecorationTopLeftToIconTopLeft adjustment
         */
         painter->scale(scaleFactor, scaleFactor);
 
@@ -716,7 +723,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     if (m_outlineColor.isValid() && !drawOutlineUsingPath) {
         QPen pen(m_outlineColor);
-        pen.setWidthF(m_standardScaledPenWidth);
+        pen.setWidthF(m_standardScaledCosmeticPenWidth);
         pen.setCosmetic(true);
         painter->setPen(pen);
     }
@@ -753,7 +760,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     qreal geometryEnlargeOffset = 0;
     qreal backgroundSize = m_backgroundVisibleSize.width();
 
-    qreal penWidth = PenWidth::Symbol;
+    qreal penWidth = m_isGtkCsdButton ? m_standardScaledNonCosmeticPenWidth : PenWidth::Symbol;
     if (KWindowSystem::isPlatformX11()) {
         penWidth *= m_devicePixelRatio;
     }
@@ -764,7 +771,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
             pen.setWidthF(penWidth);
             pen.setCosmetic(false);
         } else { // standard case
-            pen.setWidthF(m_standardScaledPenWidth); // this is a scaled pen width for use with drawing cosmetic pen outlines
+            pen.setWidthF(m_standardScaledCosmeticPenWidth); // this is a scaled pen width for use with drawing cosmetic pen outlines
             pen.setCosmetic(true);
         }
         painter->setPen(pen);
@@ -826,8 +833,8 @@ void Button::setDevicePixelRatio(QPainter *painter)
 
 void Button::setStandardScaledPenWidth()
 {
-    m_standardScaledPenWidth = PenWidth::Symbol;
-    m_standardScaledPenWidth *= m_devicePixelRatio; // this is assuming you are going to use setCosmetic(true) for pen sizes
+    m_standardScaledCosmeticPenWidth = PenWidth::Symbol;
+    m_standardScaledCosmeticPenWidth *= m_devicePixelRatio; // this is assuming you are going to use setCosmetic(true) for pen sizes
 }
 
 void Button::setShouldDrawBoldButtonIcons()
