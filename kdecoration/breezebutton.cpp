@@ -234,8 +234,6 @@ void Button::drawIcon(QPainter *painter) const
     painter->translate(m_iconOffset);
     deviceOffsetDecorationTopLeftToIconTopLeft += (m_iconOffset * painter->device()->devicePixelRatioF());
 
-    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
-    qreal iconWidth(m_iconSize.width());
     if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
@@ -243,6 +241,8 @@ void Button::drawIcon(QPainter *painter) const
         return;
 
     // render the actual icon
+    const qreal smallButtonPaddedWidth(m_smallButtonPaddedSize.width());
+    qreal iconWidth(m_iconSize.width());
 
     // translate to draw icon in the centre of smallButtonPaddedWidth (smallButtonPaddedWidth has additional padding)
     qreal iconTranslationOffset = (smallButtonPaddedWidth - iconWidth) / 2;

@@ -16,7 +16,15 @@ namespace Breeze
 
 class BREEZECOMMON_EXPORT RenderDecorationButtonIcon18By18 : public RenderDecorationButtonIcon
 {
-public:
+protected:
+    RenderDecorationButtonIcon18By18(QPainter *painter,
+                                     const bool fromKstyle,
+                                     const bool boldButtonIcons,
+                                     const qreal devicePixelRatio,
+                                     const QPointF &deviceOffsetFromZeroReference);
+
+    virtual ~RenderDecorationButtonIcon18By18() = default;
+
     virtual void renderCloseIcon() override;
     virtual void renderMaximizeIcon() override;
     virtual void renderRestoreIcon() override;
@@ -29,15 +37,6 @@ public:
     virtual void renderKeepInFrontIcon() override;
     virtual void renderApplicationMenuIcon() override;
     virtual void renderContextHelpIcon() override;
-
-protected:
-    RenderDecorationButtonIcon18By18(QPainter *painter,
-                                     const bool fromKstyle,
-                                     const bool boldButtonIcons,
-                                     const qreal devicePixelRatio,
-                                     const QPointF &deviceOffsetFromZeroReference);
-
-    virtual ~RenderDecorationButtonIcon18By18() = default;
 
     void renderCloseIconAtSquareMaximizeSize();
     qreal renderSquareMaximizeIcon(bool returnSizeOnly = false);

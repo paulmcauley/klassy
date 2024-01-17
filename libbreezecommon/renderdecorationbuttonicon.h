@@ -47,18 +47,6 @@ public:
     virtual ~RenderDecorationButtonIcon();
 
     void renderIcon(KDecoration2::DecorationButtonType type, bool checked);
-    virtual void renderCloseIcon() = 0;
-    virtual void renderMaximizeIcon() = 0;
-    virtual void renderRestoreIcon() = 0;
-    virtual void renderMinimizeIcon() = 0;
-    virtual void renderPinnedOnAllDesktopsIcon() = 0;
-    virtual void renderPinOnAllDesktopsIcon() = 0;
-    virtual void renderShadeIcon() = 0;
-    virtual void renderUnShadeIcon() = 0;
-    virtual void renderKeepBehindIcon() = 0;
-    virtual void renderKeepInFrontIcon() = 0;
-    virtual void renderApplicationMenuIcon() = 0;
-    virtual void renderContextHelpIcon() = 0;
 
 protected:
     /**
@@ -83,6 +71,19 @@ protected:
      * No brush is normal for Breeze's simple outline style.
      */
     virtual void initPainter();
+
+    virtual void renderCloseIcon() = 0;
+    virtual void renderMaximizeIcon() = 0;
+    virtual void renderRestoreIcon() = 0;
+    virtual void renderMinimizeIcon() = 0;
+    virtual void renderPinnedOnAllDesktopsIcon() = 0;
+    virtual void renderPinOnAllDesktopsIcon() = 0;
+    virtual void renderShadeIcon() = 0;
+    virtual void renderUnShadeIcon() = 0;
+    virtual void renderKeepBehindIcon() = 0;
+    virtual void renderKeepInFrontIcon() = 0;
+    virtual void renderApplicationMenuIcon() = 0;
+    virtual void renderContextHelpIcon() = 0;
 
     /**
      *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
