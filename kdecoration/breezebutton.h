@@ -224,7 +224,8 @@ private:
     bool m_isGtkCsdButton;
     qreal m_devicePixelRatio = 1.0;
     bool m_boldButtonIcons;
-    qreal m_standardScaledPenWidth = 1.0;
+    qreal m_standardScaledCosmeticPenWidth = 1.0;
+    mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;
 };
 
 } // namespace
