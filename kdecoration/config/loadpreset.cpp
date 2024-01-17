@@ -132,13 +132,13 @@ void LoadPreset::removeButtonClicked()
 
 void LoadPreset::importButtonClicked()
 {
-    QStringList files = QFileDialog::getOpenFileNames(this, i18n("Select Klassy Preset to Import"), "", i18n("Klassy Preset (*.klp)"));
-    for (QString fileName : files) {
+    QStringList files = QFileDialog::getOpenFileNames(this, i18n("Select Klassy Preset to Import"), "", i18n("Klassy Preset (*.klpw)"));
+    for (QString filePath : files) {
         QString presetName;
         QString error;
 
         // if a preset already exists with the same name
-        if (PresetsModel::isPresetFromFilePresent(m_presetsConfiguration.data(), fileName, presetName)) {
+        if (PresetsModel::isPresetFromFilePresent(m_presetsConfiguration.data(), filePath, presetName)) {
             // confirmation dialog
             QMessageBox messageBox(QMessageBox::Question,
                                    i18n("Question - Klassy Settings"),
@@ -152,11 +152,11 @@ void LoadPreset::importButtonClicked()
             presetName = QString();
         }
 
-        PresetsErrorFlag importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), fileName, presetName, error, false);
+        PresetsErrorFlag importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), filePath, presetName, error, false);
 
         if (importErrors == PresetsErrorFlag::InvalidGlobalGroup) {
             QMessageBox msgBox;
-            msgBox.setText(i18n("Invalid Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.setText(i18n("Invalid Klassy Preset file at \"") + filePath + i18n("\"."));
             msgBox.exec();
             continue;
         }
@@ -165,7 +165,7 @@ void LoadPreset::importButtonClicked()
             // confirmation dialog
             QMessageBox messageBox(QMessageBox::Question,
                                    i18n("Question - Klassy Settings"),
-                                   i18n("The file to import at \"") + fileName
+                                   i18n("The file to import at \"") + filePath
                                        + i18n("\" was created for a different version of Klassy.\n Try to import anyway?"),
                                    QMessageBox::Yes | QMessageBox::Cancel);
             messageBox.button(QMessageBox::Yes)->setText(i18n("Continue Import"));
@@ -177,19 +177,19 @@ void LoadPreset::importButtonClicked()
             // reset and try again
             presetName = QString();
             error = QString();
-            importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), fileName, presetName, error, true);
+            importErrors = PresetsModel::importPreset(m_presetsConfiguration.data(), filePath, presetName, error, true);
         }
 
         if (importErrors == PresetsErrorFlag::InvalidGroup) {
             QMessageBox msgBox;
-            msgBox.setText(i18n("No preset group found in Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.setText(i18n("No preset group found in Klassy Preset file at \"") + filePath + i18n("\"."));
             msgBox.exec();
             continue;
         }
 
         if (importErrors == PresetsErrorFlag::InvalidKey) {
             QMessageBox msgBox;
-            msgBox.setText(i18n("Invalid key \"") + error + i18n("\" in Klassy Preset file at \"") + fileName + i18n("\"."));
+            msgBox.setText(i18n("Invalid key \"") + error + i18n("\" in Klassy Preset file at \"") + filePath + i18n("\"."));
             msgBox.exec();
             continue;
         }
@@ -204,16 +204,20 @@ void LoadPreset::exportButtonClicked()
     if (!m_ui->presetsList->selectedItems().count())
         return;
 
-    QString fileName = QFileDialog::getSaveFileName(this,
+    QString fileBaseName = m_ui->presetsList->selectedItems().first()->text();
+    fileBaseName = fileBaseName.simplified(); //replace whitespace with spaces
+    fileBaseName.replace(" ", "_"); //replace spaces with underscores
+
+    QString filePath = QFileDialog::getSaveFileName(this,
                                                     i18n("Export Klassy Preset to File"),
-                                                    "~/" + m_ui->presetsList->selectedItems().first()->text() + ".klp",
-                                                    i18n("Klassy Preset (*.klp)"));
-    if (fileName.isEmpty())
+                                                    "~/" + fileBaseName + ".klpw",
+                                                    i18n("Klassy Preset (*.klpw)"));
+    if (filePath.isEmpty())
         return;
     QDir dir;
-    if (dir.exists(fileName))
-        dir.remove(fileName);
+    if (dir.exists(filePath))
+        dir.remove(filePath);
 
-    PresetsModel::exportPreset(m_presetsConfiguration.data(), m_ui->presetsList->selectedItems().first()->text(), fileName);
+    PresetsModel::exportPreset(m_presetsConfiguration.data(), m_ui->presetsList->selectedItems().first()->text(), filePath);
 }
 }

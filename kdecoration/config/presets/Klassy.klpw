@@ -1,8 +1,8 @@
 [Klassy Window Decoration Preset File]
-version=4.4.4.breeze5.27.5.git
+version=4.4.5.breeze5.27.5.git
 
-[Windeco Preset Glassy Klassy]
-ActiveTitlebarOpacity=50
+[Windeco Preset Klassy]
+ActiveTitlebarOpacity=100
 AlwaysShow=Icons
 AlwaysShowBackgroundHighlightUsing=IconOutlineDifferentColoredBackground
 AlwaysShowBackgroundOutlineHighlightUsing=IconDifferentColoredBackground
@@ -33,9 +33,9 @@ FullHeightButtonSpacingRight=1
 FullHeightButtonWidthMarginLeft=3
 FullHeightButtonWidthMarginRight=8
 IconSize=IconLargeMedium
-InactiveTitlebarOpacity=30
+InactiveTitlebarOpacity=100
 IntegratedRoundedRectangleBottomPadding=1.25
-KwinBorderSize=Normal
+KwinBorderSize=None
 LockButtonSpacingLeftRight=false
 LockFullHeightButtonSpacingLeftRight=true
 LockFullHeightButtonWidthMargins=false

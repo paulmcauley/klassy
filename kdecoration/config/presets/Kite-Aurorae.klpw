@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
-version=4.4.4.breeze5.27.5.git
+version=4.4.5.breeze5.27.5.git
 
-[Windeco Preset Classik-Aurorae]
+[Windeco Preset Kite-Aurorae]
 ActiveTitlebarOpacity=100
 AlwaysShow=Icons
 AlwaysShowBackgroundHighlightUsing=IconOutlineDifferentColoredBackground
@@ -18,7 +18,7 @@ AnimationsSpeedRelativeSystem=0
 ApplyOpacityToHeader=true
 BlurTransparentTitlebars=true
 BoldButtonIcons=BoldIconsBold
-ButtonIconStyle=StyleKlassy
+ButtonIconStyle=StyleKite
 ButtonShape=ShapeSmallCircle
 ButtonSpacingLeft=3
 ButtonSpacingRight=6
