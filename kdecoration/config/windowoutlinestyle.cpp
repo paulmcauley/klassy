@@ -62,17 +62,13 @@ WindowOutlineStyle::~WindowOutlineStyle()
     delete m_ui;
 }
 
-void WindowOutlineStyle::loadMain(const QString loadPreset)
+void WindowOutlineStyle::load()
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPreset.isEmpty()) { // normal cases
-        m_internalSettings->load();
-    } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-    }
+    m_internalSettings->load();
 
     m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyleActive());

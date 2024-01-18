@@ -51,18 +51,14 @@ TitleBarOpacity::~TitleBarOpacity()
     delete m_ui;
 }
 
-void TitleBarOpacity::loadMain(const QString loadPreset)
+void TitleBarOpacity::load()
 {
     m_loading = true;
     getTitlebarOpacityFromColorScheme();
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPreset.isEmpty()) { // normal cases
-        m_internalSettings->load();
-    } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-    }
+    m_internalSettings->load();
 
     // if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it
     if (m_translucentActiveSchemeColor) {

@@ -45,17 +45,13 @@ ButtonBehaviour::~ButtonBehaviour()
     delete m_ui;
 }
 
-void ButtonBehaviour::loadMain(const QString loadPreset)
+void ButtonBehaviour::load()
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPreset.isEmpty()) { // normal cases
-        m_internalSettings->load();
-    } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-    }
+    m_internalSettings->load();
 
     m_ui->alwaysShow->setCurrentIndex(m_internalSettings->alwaysShow());
     m_ui->alwaysShowIconHighlightUsing->setCurrentIndex(m_internalSettings->alwaysShowIconHighlightUsing());

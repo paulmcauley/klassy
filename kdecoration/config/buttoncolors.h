@@ -35,7 +35,7 @@ public:
     explicit ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~ButtonColors();
 
-    void loadMain(const QString loadPreset = QString(), const bool assignUiValuesOnly = false);
+    void loadMain(const bool assignUiValuesOnly = false);
     void save(const bool reloadKwinConfig = true);
     void defaults();
 

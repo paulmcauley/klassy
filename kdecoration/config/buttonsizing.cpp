@@ -51,17 +51,13 @@ ButtonSizing::~ButtonSizing()
 {
 }
 
-void ButtonSizing::loadMain(const QString loadPreset)
+void ButtonSizing::load()
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPreset.isEmpty()) { // normal cases
-        m_internalSettings->load();
-    } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-    }
+    m_internalSettings->load();
 
     m_ui.scaleBackgroundPercent->setValue(m_internalSettings->scaleBackgroundPercent());
     m_ui.fullHeightButtonWidthMarginLeft->setValue(m_internalSettings->fullHeightButtonWidthMarginLeft());

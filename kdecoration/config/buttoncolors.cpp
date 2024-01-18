@@ -239,18 +239,14 @@ ButtonColors::~ButtonColors()
     delete m_ui;
 }
 
-void ButtonColors::loadMain(const QString loadPreset, const bool assignUiValuesOnly)
+void ButtonColors::loadMain(const bool assignUiValuesOnly)
 {
     if (!assignUiValuesOnly) {
         m_loading = true;
 
         // create internal settings and load from rc files
         m_internalSettings = InternalSettingsPtr(new InternalSettings());
-        if (loadPreset.isEmpty()) { // normal cases
-            m_internalSettings->load();
-        } else { // loading preset
-            PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-        }
+        m_internalSettings->load();
     }
 
     m_ui->buttonIconColorsActive->setCurrentIndex(m_internalSettings->buttonIconColors(true));
@@ -389,7 +385,7 @@ void ButtonColors::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
-    loadMain(QString(), true);
+    loadMain(true);
     setChanged(!isDefaults());
 
     m_processingDefaults = false;

@@ -30,10 +30,7 @@ public:
     void defaults();
 
 public Q_SLOTS:
-    void load()
-    {
-        loadMain();
-    }
+    void load();
 
 private Q_SLOTS:
     void accept() override;
