@@ -12,14 +12,16 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QTimer>
 #include <memory>
 
 namespace Breeze
 {
-LoadPreset::LoadPreset(KSharedConfig::Ptr presetsConfig, QWidget *parent)
+LoadPreset::LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
     : QDialog(parent)
     , m_ui(new Ui_LoadPreset)
     , m_addDialog(new AddPreset)
+    , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
     , m_parent(parent)
 {
@@ -102,10 +104,19 @@ void LoadPreset::presetsListActivated()
 
 void LoadPreset::loadButtonClicked()
 {
+    InternalSettingsPtr internalSettings = InternalSettingsPtr(new InternalSettings());
+
     if (m_ui->presetsList->selectedItems().count()) {
-        ConfigWidget *configWidget = qobject_cast<ConfigWidget *>(m_parent);
-        if (configWidget)
-            configWidget->loadMain(m_ui->presetsList->selectedItems().first()->text());
+        PresetsModel::loadPresetAndSave(internalSettings.data(),
+                                        m_configuration.data(),
+                                        m_presetsConfiguration.data(),
+                                        m_ui->presetsList->selectedItems().first()->text(),
+                                        true);
+
+        ConfigWidget *configWidget = static_cast<ConfigWidget *>(m_parent);
+        configWidget->load();
+        configWidget->kwinReloadConfig();
+        QTimer::singleShot(1000, configWidget, &ConfigWidget::kwinReloadConfig);
     }
 }
 
@@ -205,13 +216,10 @@ void LoadPreset::exportButtonClicked()
         return;
 
     QString fileBaseName = m_ui->presetsList->selectedItems().first()->text();
-    fileBaseName = fileBaseName.simplified(); //replace whitespace with spaces
-    fileBaseName.replace(" ", "_"); //replace spaces with underscores
+    fileBaseName = fileBaseName.simplified(); // replace whitespace with spaces
+    fileBaseName.replace(" ", "_"); // replace spaces with underscores
 
-    QString filePath = QFileDialog::getSaveFileName(this,
-                                                    i18n("Export Klassy Preset to File"),
-                                                    "~/" + fileBaseName + ".klpw",
-                                                    i18n("Klassy Preset (*.klpw)"));
+    QString filePath = QFileDialog::getSaveFileName(this, i18n("Export Klassy Preset to File"), "~/" + fileBaseName + ".klpw", i18n("Klassy Preset (*.klpw)"));
     if (filePath.isEmpty())
         return;
     QDir dir;

@@ -62,7 +62,6 @@ public:
 
     //* load configuration
     void load() override;
-    void loadMain(QString loadPresetName = QString());
 
     //* save configuration
     void save() override;

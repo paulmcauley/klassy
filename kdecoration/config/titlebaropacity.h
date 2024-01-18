@@ -25,15 +25,11 @@ public:
     explicit TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~TitleBarOpacity();
 
-    void loadMain(const QString loadPreset = QString());
     void save(const bool reloadKwinConfig = true);
     void defaults();
 
 public Q_SLOTS:
-    void load()
-    {
-        loadMain();
-    }
+    void load();
 
 private Q_SLOTS:
     void accept() override;

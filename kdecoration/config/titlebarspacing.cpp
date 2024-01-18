@@ -50,17 +50,13 @@ TitleBarSpacing::~TitleBarSpacing()
     delete m_ui;
 }
 
-void TitleBarSpacing::loadMain(const QString loadPreset)
+void TitleBarSpacing::load()
 {
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPreset.isEmpty()) { // normal cases
-        m_internalSettings->load();
-    } else { // loading preset
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPreset);
-    }
+    m_internalSettings->load();
 
     m_ui->titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui->titleSidePadding->setValue(m_internalSettings->titleSidePadding());

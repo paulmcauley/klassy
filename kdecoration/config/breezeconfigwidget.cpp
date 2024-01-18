@@ -100,7 +100,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // add corner icon
     m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
 
-    m_loadPresetDialog = new LoadPreset(m_presetsConfiguration, this);
+    m_loadPresetDialog = new LoadPreset(m_configuration, m_presetsConfiguration, this);
     m_buttonSizingDialog = new ButtonSizing(m_configuration, m_presetsConfiguration, this);
     m_buttonColorsDialog = new ButtonColors(m_configuration, m_presetsConfiguration, this);
     m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, m_presetsConfiguration, this);
@@ -187,35 +187,19 @@ ConfigWidget::~ConfigWidget()
 //_________________________________________________________
 void ConfigWidget::load()
 {
-    loadMain();
-}
-
-void ConfigWidget::loadMain(QString loadPresetName)
-{
     m_loading = true;
 
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    if (loadPresetName.isEmpty()) { // normal case
-        m_internalSettings->load();
-        m_buttonSizingDialog->load();
-        m_buttonColorsDialog->load();
-        m_buttonBehaviourDialog->load();
-        m_titleBarSpacingDialog->load();
-        m_titleBarOpacityDialog->load();
-        m_shadowStyleDialog->load();
-        m_windowOutlineStyleDialog->load();
-        PresetsModel::importBundledPresets(m_presetsConfiguration.data());
-    } else {
-        PresetsModel::loadPreset(m_internalSettings.data(), m_presetsConfiguration.data(), loadPresetName, true);
-        m_buttonSizingDialog->loadMain(loadPresetName);
-        m_buttonColorsDialog->loadMain(loadPresetName);
-        m_buttonBehaviourDialog->loadMain(loadPresetName);
-        m_titleBarSpacingDialog->loadMain(loadPresetName);
-        m_titleBarOpacityDialog->loadMain(loadPresetName);
-        m_shadowStyleDialog->loadMain(loadPresetName);
-        m_windowOutlineStyleDialog->loadMain(loadPresetName);
-    }
+    m_internalSettings->load();
+    m_buttonSizingDialog->load();
+    m_buttonColorsDialog->load();
+    m_buttonBehaviourDialog->load();
+    m_titleBarSpacingDialog->load();
+    m_titleBarOpacityDialog->load();
+    m_windowOutlineStyleDialog->load();
+    m_shadowStyleDialog->load();
+    PresetsModel::importBundledPresets(m_presetsConfiguration.data());
     updateLockIcons();
 
     // assign to ui
@@ -252,12 +236,6 @@ void ConfigWidget::loadMain(QString loadPresetName)
     m_ui.exceptions->setExceptions(exceptions.get());
     setChanged(false);
     m_loading = false;
-    if (!loadPresetName.isEmpty()) {
-        save();
-        // TODO:investigate if can reset to pre-Preset condition with setChanged(false);
-        // if Load is clicked twice the corruption when changing border sizes clears, therefore tell kwin to reconfigure again after 1 second
-        QTimer::singleShot(1000, this, &ConfigWidget::kwinReloadConfig);
-    }
 }
 
 //_________________________________________________________

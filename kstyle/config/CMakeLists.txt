@@ -20,10 +20,14 @@ target_link_libraries(klassystyleconfig Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(klassystyleconfig KF5::CoreAddons KF5::ConfigCore KF5::ConfigWidgets KF5::I18n)
 kcmutils_generate_desktop_file(klassystyleconfig)
 
+include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
+include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
+
 set(breeze_settings_SOURCES main.cpp)
 add_executable(klassy-settings ${breeze_settings_SOURCES} )
-target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets )
+target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(klassy-settings KF5::I18n KF5::KCMUtils KF5::CoreAddons)
+target_link_libraries(klassy-settings klassycommon5)
 
 install(TARGETS klassy-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
