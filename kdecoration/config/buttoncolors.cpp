@@ -419,6 +419,12 @@ void ButtonColors::accept()
     QDialog::accept();
 }
 
+void ButtonColors::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void ButtonColors::updateChanged()
 {
     // update the displayed colours any time the UI settings change

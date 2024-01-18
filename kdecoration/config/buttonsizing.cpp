@@ -194,6 +194,12 @@ void ButtonSizing::accept()
     QDialog::accept();
 }
 
+void ButtonSizing::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void ButtonSizing::setApplyButtonState(const bool on)
 {
     m_ui.buttonBox->button(QDialogButtonBox::Apply)->setEnabled(on);

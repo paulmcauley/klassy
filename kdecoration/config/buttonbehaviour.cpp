@@ -154,6 +154,12 @@ void ButtonBehaviour::accept()
     QDialog::accept();
 }
 
+void ButtonBehaviour::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void ButtonBehaviour::updateChanged()
 {
     // check configuration

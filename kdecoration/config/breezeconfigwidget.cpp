@@ -520,9 +520,7 @@ void ConfigWidget::integratedRoundedRectangleSizingButtonClicked()
 
     if (!m_buttonSizingDialog->m_loaded)
         m_buttonSizingDialog->load();
-    if (!m_buttonSizingDialog->exec()) {
-        m_buttonSizingDialog->load();
-    }
+    m_buttonSizingDialog->show();
 }
 
 void ConfigWidget::fullHeightRectangleSizingButtonClicked()
@@ -564,11 +562,7 @@ void ConfigWidget::fullHeightRectangleSizingButtonClicked()
     m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
     m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-    if (!m_buttonSizingDialog->m_loaded)
-        m_buttonSizingDialog->load();
-    if (!m_buttonSizingDialog->exec()) {
-        m_buttonSizingDialog->load();
-    }
+    m_buttonSizingDialog->show();
 }
 
 void ConfigWidget::buttonSizingButtonClicked()
@@ -610,11 +604,7 @@ void ConfigWidget::buttonSizingButtonClicked()
     m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    if (!m_buttonSizingDialog->m_loaded)
-        m_buttonSizingDialog->load();
-    if (!m_buttonSizingDialog->exec()) {
-        m_buttonSizingDialog->load();
-    }
+    m_buttonSizingDialog->show();
 }
 
 void ConfigWidget::buttonColorsButtonClicked()
@@ -622,66 +612,44 @@ void ConfigWidget::buttonColorsButtonClicked()
     m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
     m_buttonColorsDialog->resizeDialog();
-    if (!m_buttonColorsDialog->exec()) {
-        m_buttonColorsDialog->load();
-    }
+    m_buttonColorsDialog->show();
 }
 
 void ConfigWidget::buttonBehaviourButtonClicked()
 {
     m_buttonBehaviourDialog->setWindowTitle(i18n("Button Behaviour - Klassy Settings"));
-    if (!m_buttonBehaviourDialog->m_loaded)
-        m_buttonBehaviourDialog->load();
-    if (m_buttonBehaviourDialog->exec()) {
-        m_buttonBehaviourDialog->load();
-    }
+    m_buttonBehaviourDialog->show();
 }
 
 void ConfigWidget::titleBarSpacingButtonClicked()
 {
     m_titleBarSpacingDialog->setWindowTitle(i18n("Titlebar Spacing - Klassy Settings"));
-    if (!m_titleBarSpacingDialog->m_loaded)
-        m_titleBarSpacingDialog->load();
-    if (!m_titleBarSpacingDialog->exec()) {
-        m_titleBarSpacingDialog->load();
-    }
+    m_titleBarSpacingDialog->show();
 }
 
 void ConfigWidget::titleBarOpacityButtonClicked()
 {
     m_titleBarOpacityDialog->setWindowTitle(i18n("Titlebar Opacity - Klassy Settings"));
-    if (!m_titleBarOpacityDialog->m_loaded)
-        m_titleBarOpacityDialog->load();
-    if (!m_titleBarOpacityDialog->exec()) {
-        m_titleBarOpacityDialog->load();
-    }
+    m_titleBarOpacityDialog->show();
 }
 
 void ConfigWidget::shadowStyleButtonClicked()
 {
     m_shadowStyleDialog->setWindowTitle(i18n("Shadow Style - Klassy Settings"));
-    if (!m_shadowStyleDialog->m_loaded)
-        m_shadowStyleDialog->load();
-    if (!m_shadowStyleDialog->exec()) {
-        m_shadowStyleDialog->load();
-    }
+    m_shadowStyleDialog->show();
 }
 
 void ConfigWidget::windowOutlineStyleButtonClicked()
 {
     m_windowOutlineStyleDialog->setWindowTitle(i18n("Window Outline Style - Klassy Settings"));
-    if (!m_windowOutlineStyleDialog->m_loaded)
-        m_windowOutlineStyleDialog->load();
-    if (!m_windowOutlineStyleDialog->exec()) {
-        m_windowOutlineStyleDialog->load();
-    }
+    m_windowOutlineStyleDialog->show();
 }
 
 void ConfigWidget::presetsButtonClicked()
 {
     m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
-    m_loadPresetDialog->exec();
+    m_loadPresetDialog->show();
 }
 
 void ConfigWidget::kwinReloadConfig()
