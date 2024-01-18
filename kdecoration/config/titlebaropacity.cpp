@@ -164,6 +164,12 @@ void TitleBarOpacity::accept()
     QDialog::accept();
 }
 
+void TitleBarOpacity::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void TitleBarOpacity::updateChanged()
 {
     // check configuration

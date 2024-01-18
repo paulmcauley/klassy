@@ -224,6 +224,12 @@ void WindowOutlineStyle::accept()
     QDialog::accept();
 }
 
+void WindowOutlineStyle::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void WindowOutlineStyle::updateChanged()
 {
     // check configuration

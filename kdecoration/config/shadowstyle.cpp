@@ -128,6 +128,12 @@ void ShadowStyle::accept()
     QDialog::accept();
 }
 
+void ShadowStyle::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void ShadowStyle::updateChanged()
 {
     // check configuration

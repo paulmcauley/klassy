@@ -148,6 +148,12 @@ void TitleBarSpacing::accept()
     QDialog::accept();
 }
 
+void TitleBarSpacing::reject()
+{
+    load();
+    QDialog::reject();
+}
+
 void TitleBarSpacing::updateChanged()
 {
     // check configuration

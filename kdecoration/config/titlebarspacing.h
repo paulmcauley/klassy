@@ -34,6 +34,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void accept() override;
+    void reject() override;
     void updateChanged();
     void saveAndReloadKWinConfig()
     {
