@@ -12,8 +12,6 @@
 #include <KColorUtils>
 #include <KDecoration2/DecorationSettings>
 #include <QCheckBox>
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QHBoxLayout>
 #include <QMutableListIterator>
 #include <QPushButton>
@@ -704,24 +702,13 @@ void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
     QComboBox *buttonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
     QCheckBox *negativeCloseBackgroundHoverPress = active ? m_ui->negativeCloseBackgroundHoverPressActive : m_ui->negativeCloseBackgroundHoverPressInactive;
 
-    bool drawCloseBackgroundNormally = m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::Backgrounds
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::BackgroundsAndOutlines
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsAndBackgrounds
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsAndCloseButtonBackground
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsBackgroundsAndOutlines
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsOutlinesAndCloseButtonBackground;
-
-    bool drawBackgroundNormally = m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::Backgrounds
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::BackgroundsAndOutlines
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsAndBackgrounds
-        || m_internalSettings->alwaysShow() == InternalSettings::EnumAlwaysShow::IconsBackgroundsAndOutlines;
-
-    if (drawCloseBackgroundNormally
+    if (m_internalSettings->showCloseBackgroundNormally(active)
         && (buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
             || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)) {
         negativeCloseBackgroundHoverPress->setText(i18n("Negative close on hover/press only"));
         negativeCloseBackgroundHoverPress->setVisible(true);
-    } else if (drawBackgroundNormally && buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+    } else if (m_internalSettings->showBackgroundNormally(active)
+               && buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
         negativeCloseBackgroundHoverPress->setText(i18n("Traffic lights on hover/press only"));
         negativeCloseBackgroundHoverPress->setVisible(true);
     } else {
@@ -1187,8 +1174,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         }
     }
 
-    DecorationButtonBehaviour buttonBehaviour;
-    buttonBehaviour.reconfigure(temporaryColorSettings);
     auto getGroup = [](DecorationButtonPalette *palette, bool active) {
         return active ? palette->active() : palette->inactive();
     };
@@ -1251,7 +1236,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarText);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1278,7 +1262,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1308,7 +1291,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::Accent);
     otherButtonPalette.reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1333,7 +1315,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1365,7 +1346,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1402,7 +1382,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarText);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1433,7 +1412,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1464,7 +1442,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1495,7 +1472,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1526,7 +1502,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentTrafficLights);
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
         buttonPalette->reconfigure(temporaryColorSettings,
-                                   &buttonBehaviour,
                                    &decorationPalette,
                                    titlebarTextActive,
                                    titlebarBackgroundActive,
@@ -1567,7 +1542,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
                 buttonPalette->reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1595,7 +1569,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             }
         } else {
             closeButtonPalette.reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1624,7 +1597,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
                 buttonPalette->reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1652,7 +1624,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             }
         } else {
             closeButtonPalette.reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1681,7 +1652,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
                 buttonPalette->reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1709,7 +1679,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             }
         } else {
             closeButtonPalette.reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1739,7 +1708,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
                 buttonPalette->reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,
@@ -1767,7 +1735,6 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             }
         } else {
             closeButtonPalette.reconfigure(temporaryColorSettings,
-                                           &buttonBehaviour,
                                            &decorationPalette,
                                            titlebarTextActive,
                                            titlebarBackgroundActive,

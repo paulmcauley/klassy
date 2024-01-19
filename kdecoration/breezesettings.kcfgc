@@ -6,5 +6,5 @@ NameSpace=Breeze
 Singleton=false
 Mutators=true
 GlobalEnums=false
-Notifiers=AlwaysShow
+#Notifiers=AlwaysShow
 UseEnumTypes=false

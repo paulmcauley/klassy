@@ -674,6 +674,7 @@ void ConfigWidget::updateLockIcons()
     m_lockIcon.addPixmap(m_lockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::On);
 
     m_buttonColorsDialog->updateLockIcons();
+    m_buttonBehaviourDialog->updateLockIcons();
 }
 
 bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)

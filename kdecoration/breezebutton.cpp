@@ -348,7 +348,7 @@ QColor Button::foregroundColor() const
         (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
          || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
         && !d->internalSettings()->translucentButtonBackgrounds(active)
-        && !d->buttonBehaviour().drawBackgroundNormally; // inversion occuring for compatibility with breeze's circular pin on all desktops icon
+        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
@@ -428,7 +428,7 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
         (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
          || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
         && !d->internalSettings()->translucentButtonBackgrounds(active)
-        && !d->buttonBehaviour().drawBackgroundNormally; // inversion occuring for compatibility with breeze's circular pin on all desktops icon
+        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
@@ -530,7 +530,6 @@ void Button::reconfigure()
 
     // button colours
     m_buttonPalette.reconfigure(d->internalSettings(),
-                                &d->buttonBehaviour(),
                                 d->decorationPalette().get(),
                                 d->fontColor(true, true, true),
                                 d->titleBarColor(true, true, true),

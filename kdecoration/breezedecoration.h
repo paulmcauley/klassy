@@ -154,11 +154,6 @@ public:
         return m_rightButtons;
     }
 
-    DecorationButtonBehaviour &buttonBehaviour()
-    {
-        return m_buttonBehaviour;
-    }
-
     QVariantAnimation *activeStateChangeAnimation()
     {
         return m_animation;
@@ -293,7 +288,6 @@ private:
 
     qreal m_systemScaleFactor = 1.0;
 
-    DecorationButtonBehaviour m_buttonBehaviour;
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     int m_smallButtonPaddedHeight = 20;
     int m_iconHeight = 18;

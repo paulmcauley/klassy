@@ -1,18 +1,8 @@
 [Klassy Window Decoration Preset File]
-version=4.4.5.breeze5.27.5.git
+version=4.4.6.breeze5.27.5.git
 
 [Windeco Preset Classik-Aurorae]
 ActiveTitlebarOpacity=100
-AlwaysShow=Icons
-AlwaysShowBackgroundHighlightUsing=IconOutlineDifferentColoredBackground
-AlwaysShowBackgroundOutlineHighlightUsing=IconDifferentColoredBackground
-AlwaysShowIconBackgroundHighlightUsing=DifferentColoredBackgroundOutline
-AlwaysShowIconBackgroundOutlineHighlightUsing=DifferentColoredBackground
-AlwaysShowIconCloseButtonBackgroundHighlightUsing=BackgroundAndOutline
-AlwaysShowIconCloseButtonOutlineHighlightUsing=BackgroundAndOutline
-AlwaysShowIconHighlightUsing=Background
-AlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing=Background
-AlwaysShowIconOutlineHighlightUsing=Background
 AnimationsEnabled=true
 AnimationsSpeedRelativeSystem=0
 ApplyOpacityToHeader=true
