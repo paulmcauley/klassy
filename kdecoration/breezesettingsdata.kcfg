@@ -355,112 +355,260 @@
 
   <group name="ButtonBehaviour">
 
-    <entry name="AlwaysShow" type="Enum">
-        <choices>
-            <choice name="Icons" />
-            <choice name="IconsAndCloseButtonBackground" />
-            <choice name="IconsAndCloseButtonOutline" />
-            <choice name="IconsOutlines" />
-            <choice name="IconsOutlinesAndCloseButtonBackground" />
-            <choice name="IconsAndBackgrounds" />
-            <choice name="IconsBackgroundsAndOutlines" />
-            <choice name="Backgrounds" />
-            <choice name="BackgroundsAndOutlines" />
-        </choices>
-        <default>Icons</default>
+    <entry name="ShowIconOnPress$(ShowIconOnPressActive)" type = "Bool">
+        <parameter name="ShowIconOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIcons-->
-    <entry name="AlwaysShowIconHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Background" />
-            <choice name="BackgroundAndOutline" />
-            <choice name="Outline" />
-        </choices>
-        <default>BackgroundAndOutline</default>
+    <entry name="ShowBackgroundOnPress$(ShowBackgroundOnPressActive)" type = "Bool">
+        <parameter name="ShowBackgroundOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsAndCloseButtonBackground -->
-    <entry name="AlwaysShowIconCloseButtonBackgroundHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Background" />
-            <choice name="BackgroundAndOutline" />
-            <choice name="Outline" />
-        </choices>
-        <default>BackgroundAndOutline</default>
+    <entry name="ShowOutlineOnPress$(ShowOutlineOnPressActive)" type = "Bool">
+        <parameter name="ShowOutlineOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsAndCloseButtonOutline -->
-    <entry name="AlwaysShowIconCloseButtonOutlineHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Background" />
-            <choice name="BackgroundAndOutline" />
-            <choice name="Outline" />
-        </choices>
-        <default>BackgroundAndOutline</default>
+    <entry name="ShowIconOnHover$(ShowIconOnHoverActive)" type = "Bool">
+        <parameter name="ShowIconOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsOutlines -->
-    <entry name="AlwaysShowIconOutlineHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Background" />
-            <!-- <choice name="DifferentColoredOutline" />
-            <choice name="BackgroundDifferentColoredOutline" /> -->
-        </choices>
-        <default>Background</default>
+    <entry name="ShowBackgroundOnHover$(ShowBackgroundOnHoverActive)" type = "Bool">
+        <parameter name="ShowBackgroundOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsOutlinesAndCloseButtonBackground-->
-    <entry name="AlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Background" />
-            <!-- <choice name="DifferentColoredOutline" />
-            <choice name="BackgroundDifferentColoredOutline" /> -->
-        </choices>
-        <default>Background</default>
+    <entry name="ShowOutlineOnHover$(ShowOutlineOnHoverActive)" type = "Bool">
+        <parameter name="ShowOutlineOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsAndBackgrounds-->
-    <entry name="AlwaysShowIconBackgroundHighlightUsing" type="Enum">
-        <choices>
-            <!-- <choice name="Outline" /> -->
-            <choice name="DifferentColoredBackground" />
-            <choice name="DifferentColoredBackgroundOutline" />
-        </choices>
-        <default>DifferentColoredBackgroundOutline</default>
+    <entry name="ShowIconNormally$(ShowIconNormallyActive)" type = "Bool">
+        <parameter name="ShowIconNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
     </entry>
 
-    <!-- used for AlwaysShowIconsBackgroundsAndOutlines-->
-    <entry name="AlwaysShowIconBackgroundOutlineHighlightUsing" type="Enum">
-        <choices>
-            <choice name="DifferentColoredBackground" />
-            <!-- <choice name="DifferentColoredOutline" /> -->
-            <!-- <choice name="DifferentColoredBackgroundDifferentColoredOutline" /> -->
-        </choices>
-        <default>DifferentColoredBackground</default>
+    <entry name="ShowBackgroundNormally$(ShowBackgroundNormallyActive)" type = "Bool">
+        <parameter name="ShowBackgroundNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
     </entry>
 
-    <!-- used for AlwaysShowBackgrounds -->
-    <entry name="AlwaysShowBackgroundHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Icon" />
-            <!-- <choice name="IconOutline" /> -->
-            <choice name="IconDifferentColoredBackground" />
-            <choice name="IconOutlineDifferentColoredBackground" />
-        </choices>
-        <default>IconOutlineDifferentColoredBackground</default>
+    <entry name="ShowOutlineNormally$(ShowOutlineNormallyActive)" type = "Bool">
+        <parameter name="ShowOutlineNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
     </entry>
 
-    <!-- used for AlwaysShowBackgroundsAndOutlines-->
-    <entry name="AlwaysShowBackgroundOutlineHighlightUsing" type="Enum">
-        <choices>
-            <choice name="Icon" />
-            <choice name="IconDifferentColoredBackground" />
-            <!-- <choice name="IconDifferentColoredOutline" />
-            <choice name="IconDifferentColoredBackgroundDifferentColoredOutline" /> -->
-        </choices>
-        <default>IconDifferentColoredBackground</default>
+    <entry name="VaryColorIcon$(VaryColorIconActive)" type = "Bool">
+        <parameter name="VaryColorIconActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
     </entry>
+
+    <entry name="VaryColorBackground$(VaryColorBackgroundActive)" type = "Bool">
+        <parameter name="VaryColorBackgroundActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="VaryColorOutline$(VaryColorOutlineActive)" type = "Bool">
+        <parameter name="VaryColorOutlineActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
+    <entry name="ShowCloseIconOnPress$(ShowCloseIconOnPressActive)" type = "Bool">
+        <parameter name="ShowCloseIconOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseBackgroundOnPress$(ShowCloseBackgroundOnPressActive)" type = "Bool">
+        <parameter name="ShowCloseBackgroundOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseOutlineOnPress$(ShowCloseOutlineOnPressActive)" type = "Bool">
+        <parameter name="ShowCloseOutlineOnPressActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseIconOnHover$(ShowCloseIconOnHoverActive)" type = "Bool">
+        <parameter name="ShowCloseIconOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseBackgroundOnHover$(ShowCloseBackgroundOnHoverActive)" type = "Bool">
+        <parameter name="ShowCloseBackgroundOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseOutlineOnHover$(ShowCloseOutlineOnHoverActive)" type = "Bool">
+        <parameter name="ShowCloseOutlineOnHoverActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseIconNormally$(ShowCloseIconNormallyActive)" type = "Bool">
+        <parameter name="ShowCloseIconNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="ShowCloseBackgroundNormally$(ShowCloseBackgroundNormallyActive)" type = "Bool">
+        <parameter name="ShowCloseBackgroundNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
+    <entry name="ShowCloseOutlineNormally$(ShowCloseOutlineNormallyActive)" type = "Bool">
+        <parameter name="ShowCloseOutlineNormallyActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
+    <entry name="VaryColorCloseIcon$(VaryColorCloseIconActive)" type = "Bool">
+        <parameter name="VaryColorCloseIconActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
+    <entry name="VaryColorCloseBackground$(VaryColorCloseBackgroundActive)" type = "Bool">
+        <parameter name="VaryColorCloseBackgroundActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="VaryColorCloseOutline$(VaryColorCloseOutlineActive)" type = "Bool">
+        <parameter name="VaryColorCloseOutlineActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
+    <entry name="LockCloseButtonBehaviour$(LockCloseButtonBehaviourActive)" type = "Bool">
+        <parameter name="LockCloseButtonBehaviourActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>true</default>
+    </entry>
+
+    <entry name="lockButtonBehaviourActiveInactive" type = "Bool">
+        <default>true</default>
+    </entry>
+
   </group>
 
   <group name="TitleBarSpacing">

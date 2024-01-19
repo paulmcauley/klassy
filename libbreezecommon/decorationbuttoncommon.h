@@ -28,39 +28,6 @@ enum struct BREEZECOMMON_EXPORT OverridableButtonColorStates {
     COUNT,
 };
 
-/**
- *  @brief Class to generate the desired behaviour of a decoration button
- */
-class BREEZECOMMON_EXPORT DecorationButtonBehaviour
-{
-public:
-    DecorationButtonBehaviour();
-    void reconfigure(InternalSettingsPtr decorationSettings);
-    bool drawBackgroundNormally;
-    bool drawBackgroundOnHover;
-    bool drawBackgroundOnPress;
-    // bool drawBackgroundDifferentColoredHover;
-    bool drawCloseBackgroundNormally;
-    bool drawCloseBackgroundOnHover;
-    bool drawCloseBackgroundOnPress;
-    bool drawOutlineNormally;
-    bool drawOutlineOnHover;
-    bool drawOutlineOnPress;
-    // bool drawOutlineDifferentColoredHover;
-    bool drawCloseOutlineNormally;
-    bool drawCloseOutlineOnHover;
-    bool drawCloseOutlineOnPress;
-    bool drawIconNormally;
-    bool drawIconOnHover;
-    bool drawIconOnPress;
-    bool drawCloseIconNormally;
-    bool drawCloseIconOnHover;
-    bool drawCloseIconOnPress;
-
-private:
-    InternalSettingsPtr _decorationSettings;
-};
-
 struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
     QColor foregroundPress;
     QColor foregroundHover;
@@ -90,7 +57,6 @@ public:
     DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType);
 
     void reconfigure(InternalSettingsPtr decorationSettings,
-                     DecorationButtonBehaviour *buttonBehaviour,
                      DecorationPalette *decorationPalette,
                      QColor textActive,
                      QColor baseActive,
@@ -120,7 +86,6 @@ private:
 
     InternalSettingsPtr _decorationSettings;
     KDecoration2::DecorationButtonType _buttonType;
-    DecorationButtonBehaviour *_buttonBehaviour;
     DecorationPalette *_decorationPalette;
 
     bool _buttonOverrideColorsPresentActive{false};

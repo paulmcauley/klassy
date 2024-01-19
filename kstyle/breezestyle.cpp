@@ -7812,11 +7812,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     const QColor selectedBase(_helper->titleBarColor(true)); // selected is used for MDI active titlebars only
     const QColor selectedText(_helper->titleBarTextColor(true));
 
-    DecorationButtonBehaviour decorationButtonBehaviour;
-    decorationButtonBehaviour.reconfigure(_helper->decorationConfig());
     DecorationButtonPalette decorationButtonPalette(buttonType);
-    decorationButtonPalette
-        .reconfigure(_helper->decorationConfig(), &decorationButtonBehaviour, decorationPalette.get(), selectedText, selectedBase, text, base);
+    decorationButtonPalette.reconfigure(_helper->decorationConfig(), decorationPalette.get(), selectedText, selectedBase, text, base);
 
     // convenience class to map color to icon mode
     struct IconData {

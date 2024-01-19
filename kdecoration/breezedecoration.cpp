@@ -638,8 +638,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
 
-    m_buttonBehaviour.reconfigure(m_internalSettings);
-
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)

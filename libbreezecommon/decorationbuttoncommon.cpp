@@ -11,561 +11,6 @@ namespace Breeze
 
 using KDecoration2::DecorationButtonType;
 
-DecorationButtonBehaviour::DecorationButtonBehaviour()
-{
-}
-
-void DecorationButtonBehaviour::reconfigure(InternalSettingsPtr decorationSettings)
-{
-    _decorationSettings = decorationSettings;
-
-    drawBackgroundNormally = false;
-    drawBackgroundOnHover = false;
-    drawBackgroundOnPress = false;
-    drawCloseBackgroundNormally = false;
-    drawCloseBackgroundOnHover = false;
-    drawCloseBackgroundOnPress = false;
-    drawOutlineNormally = false;
-    drawOutlineOnHover = false;
-    drawOutlineOnPress = false;
-    drawCloseOutlineNormally = false;
-    drawCloseOutlineOnHover = false;
-    drawCloseOutlineOnPress = false;
-    drawIconNormally = false;
-    drawIconOnHover = false;
-    drawIconOnPress = false;
-    drawCloseIconNormally = false;
-    drawCloseIconOnHover = false;
-    drawCloseIconOnPress = false;
-
-    switch (_decorationSettings->alwaysShow()) {
-    case InternalSettings::EnumAlwaysShow::Icons:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = false;
-            drawCloseOutlineOnPress = false;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = false;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = false;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsAndCloseButtonBackground:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconCloseButtonBackgroundHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = false;
-            drawCloseOutlineOnPress = false;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = false;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsAndCloseButtonOutline:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconCloseButtonOutlineHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Background:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::BackgroundAndOutline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        case InternalSettings::EnumAlwaysShowIconHighlightUsing::Outline:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = false;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsOutlines:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconOutlineHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::Background:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = false;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = true;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-            /*case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::DifferentColoredOutline:
-                drawBackgroundNormally = false;
-                drawBackgroundOnHover = false;
-                drawBackgroundOnPress = false;
-                drawCloseBackgroundNormally = false;
-                drawCloseBackgroundOnHover = false;
-                drawCloseBackgroundOnPress = false;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;
-            case InternalSettings::EnumAlwaysShowIconOutlineHighlightUsing::BackgroundDifferentColoredOutline:
-                drawBackgroundNormally = false;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawCloseBackgroundNormally = false;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;*/
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsOutlinesAndCloseButtonBackground:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconOutlineCloseButtonBackgroundHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconOutlineCloseButtonBackgroundHighlightUsing::Background:
-            drawBackgroundNormally = false;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = true;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-            /*case InternalSettings::EnumNormallyShowIconOutlineCloseButtonBackgroundHighlightUsing::DifferentColoredOutline:
-                drawBackgroundNormally = false;
-                drawBackgroundOnHover = false;
-                drawBackgroundOnPress = false;
-                drawCloseBackgroundNormally = true;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;
-            case InternalSettings::EnumNormallyShowIconOutlineCloseButtonBackgroundHighlightUsing::BackgroundDifferentColoredOutline:
-                drawBackgroundNormally = false;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawCloseBackgroundNormally = true;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;*/
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsAndBackgrounds:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconBackgroundHighlightUsing()) {
-        /*case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::Outline:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;*/
-        case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::DifferentColoredBackground:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = false;
-            drawCloseOutlineOnPress = false;
-            break;
-        case InternalSettings::EnumAlwaysShowIconBackgroundHighlightUsing::DifferentColoredBackgroundOutline:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::IconsBackgroundsAndOutlines:
-        drawIconNormally = true;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = true;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowIconBackgroundOutlineHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredBackground:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = true;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-            /*case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredOutline:
-                drawBackgroundNormally = true;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawCloseBackgroundNormally = true;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;*/
-            /*case InternalSettings::EnumAlwaysShowIconBackgroundOutlineHighlightUsing::DifferentColoredBackgroundDifferentColoredOutline:
-                drawBackgroundNormally = true;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawBackgroundDifferentColoredHover = true;
-                drawCloseBackgroundNormally = true;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;*/
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::Backgrounds:
-        drawIconNormally = false;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = false;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowBackgroundHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::Icon:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = false;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            // drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = false;
-            drawCloseOutlineOnPress = false;
-            break;
-        /*case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconOutline:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            //drawBackgroundDifferentColoredHover = false;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            //drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;*/
-        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconDifferentColoredBackground:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = false;
-            drawOutlineOnPress = false;
-            // drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = false;
-            drawCloseOutlineOnPress = false;
-            break;
-        case InternalSettings::EnumAlwaysShowBackgroundHighlightUsing::IconOutlineDifferentColoredBackground:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            drawOutlineNormally = false;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            // drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = false;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        }
-        break;
-    case InternalSettings::EnumAlwaysShow::BackgroundsAndOutlines:
-        drawIconNormally = false;
-        drawIconOnHover = true;
-        drawIconOnPress = true;
-        drawCloseIconNormally = false;
-        drawCloseIconOnHover = true;
-        drawCloseIconOnPress = true;
-        switch (_decorationSettings->alwaysShowBackgroundOutlineHighlightUsing()) {
-        case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::Icon:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = false;
-            drawOutlineNormally = true;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            // drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-        case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredBackground:
-            drawBackgroundNormally = true;
-            drawBackgroundOnHover = true;
-            drawBackgroundOnPress = true;
-            // drawBackgroundDifferentColoredHover = true;
-            drawCloseBackgroundNormally = true;
-            drawCloseBackgroundOnHover = true;
-            drawCloseBackgroundOnPress = true;
-
-            drawOutlineNormally = true;
-            drawOutlineOnHover = true;
-            drawOutlineOnPress = true;
-            // drawOutlineDifferentColoredHover = false;
-            drawCloseOutlineNormally = true;
-            drawCloseOutlineOnHover = true;
-            drawCloseOutlineOnPress = true;
-            break;
-            /*case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredOutline:
-                drawBackgroundNormally = true;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawCloseBackgroundNormally = true;
-                drawBackgroundDifferentColoredHover = false;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;
-            case InternalSettings::EnumAlwaysShowBackgroundOutlineHighlightUsing::IconDifferentColoredBackgroundDifferentColoredOutline:
-                drawBackgroundNormally = true;
-                drawBackgroundOnHover = true;
-                drawBackgroundOnPress = true;
-                drawBackgroundDifferentColoredHover = true;
-                drawCloseBackgroundNormally = true;
-                drawCloseBackgroundOnHover = true;
-                drawCloseBackgroundOnPress = true;
-                drawOutlineNormally = true;
-                drawOutlineOnHover = true;
-                drawOutlineOnPress = true;
-                drawOutlineDifferentColoredHover = true;
-                drawCloseOutlineNormally = true;
-                drawCloseOutlineOnHover = true;
-                drawCloseOutlineOnPress = true;
-                break;*/
-        }
-        break;
-    }
-}
-
 DecorationButtonPalette::DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType)
     : _buttonType(buttonType)
 {
@@ -574,7 +19,6 @@ DecorationButtonPalette::DecorationButtonPalette(KDecoration2::DecorationButtonT
 }
 
 void DecorationButtonPalette::reconfigure(InternalSettingsPtr decorationSettings,
-                                          DecorationButtonBehaviour *buttonBehaviour,
                                           DecorationPalette *decorationPalette,
                                           QColor textActive,
                                           QColor baseActive,
@@ -584,7 +28,6 @@ void DecorationButtonPalette::reconfigure(InternalSettingsPtr decorationSettings
                                           const bool oneGrouproupActiveState)
 {
     _decorationSettings = decorationSettings;
-    _buttonBehaviour = buttonBehaviour;
     _decorationPalette = decorationPalette;
 
     decodeButtonOverrideColors();
@@ -715,12 +158,12 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
-    const bool &drawBackgroundNormally =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundNormally : _buttonBehaviour->drawBackgroundNormally;
-    const bool &drawBackgroundOnHover =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundOnHover : _buttonBehaviour->drawBackgroundOnHover;
-    const bool &drawBackgroundOnPress =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundOnPress : _buttonBehaviour->drawBackgroundOnPress;
+    const bool &drawBackgroundNormally = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundNormally(active)
+                                                                                      : _decorationSettings->showBackgroundNormally(active);
+    const bool &drawBackgroundOnHover = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnHover(active)
+                                                                                     : _decorationSettings->showBackgroundOnHover(active);
+    const bool &drawBackgroundOnPress = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnPress(active)
+                                                                                     : _decorationSettings->showBackgroundOnPress(active);
 
     // set normal, hover and press colours
     if (buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::Accent
@@ -980,7 +423,7 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
         } else { // titlebar text color, not translucent
             if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
                 defaultButton = false;
-                if (_buttonBehaviour->drawBackgroundNormally) {
+                if (_decorationSettings->showBackgroundNormally(active)) {
                     if (!negativeCloseBackgroundHoverPress) {
                         if (drawBackgroundNormally) {
                             negativeNormalCloseBackground = true;
@@ -1005,7 +448,7 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
                             backgroundPress = decorationColors->negativeLessSaturated;
                         }
                     }
-                } else if (_buttonBehaviour->drawCloseBackgroundNormally) {
+                } else if (_decorationSettings->showCloseBackgroundNormally(active)) {
                     if (!negativeCloseBackgroundHoverPress) {
                         if (drawBackgroundNormally) {
                             negativeNormalCloseBackground = true;
@@ -1044,14 +487,14 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
             }
 
             if (defaultButton) {
-                if (_buttonBehaviour->drawBackgroundNormally) {
+                if (_decorationSettings->showBackgroundNormally(active)) {
                     if (drawBackgroundNormally)
                         backgroundNormal = KColorUtils::mix(base, text, 0.3);
                     if (drawBackgroundOnHover)
                         backgroundHover = KColorUtils::mix(base, text, 0.6);
                     if (drawBackgroundOnPress)
                         backgroundPress = text;
-                } else if (_buttonBehaviour->drawCloseBackgroundNormally && _buttonType == DecorationButtonType::Close) {
+                } else if (_decorationSettings->showCloseBackgroundNormally(active) && _buttonType == DecorationButtonType::Close) {
                     if (drawBackgroundNormally)
                         backgroundNormal = text;
                     if (drawBackgroundOnHover)
@@ -1122,16 +565,20 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
     bool closeForegroundIsDefault = false;
 
-    const bool &drawBackgroundNormally =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundNormally : _buttonBehaviour->drawBackgroundNormally;
-    const bool &drawBackgroundOnHover =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundOnHover : _buttonBehaviour->drawBackgroundOnHover;
-    const bool &drawBackgroundOnPress =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseBackgroundOnPress : _buttonBehaviour->drawBackgroundOnPress;
+    const bool &drawBackgroundNormally = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundNormally(active)
+                                                                                      : _decorationSettings->showBackgroundNormally(active);
+    const bool &drawBackgroundOnHover = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnHover(active)
+                                                                                     : _decorationSettings->showBackgroundOnHover(active);
+    const bool &drawBackgroundOnPress = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnPress(active)
+                                                                                     : _decorationSettings->showBackgroundOnPress(active);
+    ;
 
-    const bool &drawIconNormally = (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseIconNormally : _buttonBehaviour->drawIconNormally;
-    const bool &drawIconOnHover = (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseIconOnHover : _buttonBehaviour->drawIconOnHover;
-    const bool &drawIconOnPress = (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseIconOnPress : _buttonBehaviour->drawIconOnPress;
+    const bool &drawIconNormally =
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconNormally(active) : _decorationSettings->showIconNormally(active);
+    const bool &drawIconOnHover =
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconOnHover(active) : _decorationSettings->showIconOnHover(active);
+    const bool &drawIconOnPress =
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconOnPress(active) : _decorationSettings->showIconOnPress(active);
 
     const bool negativeCloseBackground = (group->negativeNormalCloseBackground || group->negativeHoverCloseBackground || group->negativePressCloseBackground);
 
@@ -1335,11 +782,11 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
     const bool &drawOutlineNormally =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseOutlineNormally : _buttonBehaviour->drawOutlineNormally;
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineNormally(active) : _decorationSettings->showOutlineNormally(active);
     const bool &drawOutlineOnHover =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseOutlineOnHover : _buttonBehaviour->drawOutlineOnHover;
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineOnHover(active) : _decorationSettings->showOutlineOnHover(active);
     const bool &drawOutlineOnPress =
-        (_buttonType == DecorationButtonType::Close) ? _buttonBehaviour->drawCloseOutlineOnPress : _buttonBehaviour->drawOutlineOnPress;
+        (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineOnPress(active) : _decorationSettings->showOutlineOnPress(active);
 
     // set normal, hover and press colours
     if (buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::Accent
