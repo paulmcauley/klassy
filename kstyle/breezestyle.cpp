@@ -83,6 +83,24 @@ using TabletModeWatcher = Kirigami::TabletModeWatcher;
 namespace BreezePrivate
 {
 
+class PainterStateSaver
+{
+public:
+    PainterStateSaver(QPainter *painter)
+        : m_painter(painter)
+    {
+        m_painter->save();
+    }
+
+    ~PainterStateSaver()
+    {
+        m_painter->restore();
+    }
+
+private:
+    QPainter *const m_painter;
+};
+
 // needed to keep track of tabbars when being dragged
 class TabBarData : public QObject
 {
@@ -2893,11 +2911,18 @@ QRect Style::groupBoxSubControlRect(const QStyleOptionComplex *option, SubContro
         const bool emptyText(groupBoxOption->text.isEmpty());
         const bool checkable(groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox);
 
+        QFont font = widget ? widget->font() : qApp->font("QGroupBox");
+        if (groupBoxOption->features == QStyleOptionFrame::Flat && !(groupBoxOption->subControls & SC_GroupBoxCheckBox)
+            && font.isCopyOf(qApp->font("QGroupBox"))) {
+            font.setPointSize(font.pointSize() + 1);
+            font.setBold(true);
+        }
+        const QFontMetrics fontMetrics(font);
+
         // calculate title height
         int titleHeight(0);
         int titleWidth(0);
         if (!emptyText) {
-            const QFontMetrics fontMetrics = option->fontMetrics;
             titleHeight = qMax(titleHeight, fontMetrics.height());
             titleWidth += fontMetrics.size(_mnemonics->textFlags(), groupBoxOption->text).width();
         }
@@ -7223,16 +7248,87 @@ bool Style::drawSplitterControl(const QStyleOption *option, QPainter *painter, [
     painter->drawRect(option->rect);
     return true;
 }
+
 //______________________________________________________________
 bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {
-    // base class method
-    ParentStyleClass::drawComplexControl(CC_GroupBox, option, painter, widget);
-
     // cast option and check
     const auto groupBoxOption = qstyleoption_cast<const QStyleOptionGroupBox *>(option);
     if (!groupBoxOption) {
         return true;
+    }
+
+    // Text for label
+    QFont font = qApp->font();
+    if (groupBoxOption->features == QStyleOptionFrame::Flat && !(groupBoxOption->subControls & SC_GroupBoxCheckBox)) {
+        font.setPointSize(font.pointSize() + 1);
+        font.setBold(true);
+    }
+    QFontMetrics fontMetrics(font);
+
+    // Copied from QCommonStyle but change the font of the title
+    // Draw frame
+    QRect textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
+    QRect checkBoxRect = subControlRect(CC_GroupBox, option, SC_GroupBoxCheckBox, widget);
+    if (groupBoxOption->subControls & QStyle::SC_GroupBoxFrame) {
+        QStyleOptionFrame frame;
+        frame.QStyleOption::operator=(*groupBoxOption);
+        frame.features = groupBoxOption->features;
+        frame.lineWidth = groupBoxOption->lineWidth;
+        frame.midLineWidth = groupBoxOption->midLineWidth;
+        frame.rect = subControlRect(CC_GroupBox, option, SC_GroupBoxFrame, widget);
+        BreezePrivate::PainterStateSaver pss(painter);
+        QRegion region(groupBoxOption->rect);
+        if (!groupBoxOption->text.isEmpty()) {
+            bool ltr = groupBoxOption->direction == Qt::LeftToRight;
+            QRect finalRect;
+            if (groupBoxOption->subControls & QStyle::SC_GroupBoxCheckBox) {
+                finalRect = checkBoxRect.united(textRect);
+                finalRect.adjust(ltr ? -Metrics::GroupBox_TitleMarginWidth : 0, 0, ltr ? 0 : Metrics::GroupBox_TitleMarginWidth, 0);
+            } else {
+                finalRect = textRect;
+            }
+            region -= finalRect;
+        }
+        painter->setClipRegion(region);
+        drawPrimitive(PE_FrameGroupBox, &frame, painter, widget);
+    }
+
+    // Draw title
+    if ((groupBoxOption->subControls & QStyle::SC_GroupBoxLabel) && !groupBoxOption->text.isEmpty()) {
+        BreezePrivate::PainterStateSaver painterStateSaver(painter);
+
+        painter->setFont(font);
+
+        QColor textColor = groupBoxOption->textColor;
+        if (textColor.isValid())
+            painter->setPen(textColor);
+        int alignment = int(groupBoxOption->textAlignment);
+        if (!styleHint(QStyle::SH_UnderlineShortcut, option, widget))
+            alignment |= Qt::TextHideMnemonic;
+
+        drawItemText(painter,
+                     textRect,
+                     Qt::TextShowMnemonic | Qt::AlignHCenter | alignment,
+                     groupBoxOption->palette,
+                     groupBoxOption->state & State_Enabled,
+                     groupBoxOption->text,
+                     textColor.isValid() ? QPalette::NoRole : QPalette::WindowText);
+
+        if (groupBoxOption->state & State_HasFocus) {
+            QStyleOptionFocusRect fropt;
+            fropt.QStyleOption::operator=(*groupBoxOption);
+            fropt.rect = textRect;
+            drawPrimitive(PE_FrameFocusRect, &fropt, painter, widget);
+        }
+    }
+
+    // Draw checkbox
+    if (groupBoxOption->subControls & SC_GroupBoxCheckBox) {
+        QStyleOptionButton box;
+        box.QStyleOption::operator=(*groupBoxOption);
+        box.rect = checkBoxRect;
+        drawPrimitive(PE_IndicatorCheckBox, &box, painter, widget);
     }
 
     // do nothing if either label is not selected or groupbox is empty
@@ -7260,8 +7356,7 @@ bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPaint
     const qreal opacity(_animations->widgetStateEngine().opacity(widget, AnimationFocus));
 
     // get relevant rect
-    auto textRect = subControlRect(CC_GroupBox, option, SC_GroupBoxLabel, widget);
-    textRect = option->fontMetrics.boundingRect(textRect, textFlags, groupBoxOption->text);
+    textRect = fontMetrics.boundingRect(textRect, textFlags, groupBoxOption->text);
 
     // focus color
     QColor focusColor;
