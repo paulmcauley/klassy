@@ -128,6 +128,7 @@ public:
     //@{
 
     bool eventFilter(QObject *, QEvent *) override;
+    bool eventFilterPageViewHeader(QWidget *, QEvent *);
     bool eventFilterScrollArea(QWidget *, QEvent *);
     bool eventFilterComboBoxContainer(QWidget *, QEvent *);
     bool eventFilterMainWindow(QMainWindow *mw, QEvent *event);
