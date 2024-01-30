@@ -6,10 +6,10 @@
 
 #include "titlebaropacity.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
+#include "decorationcolors.h"
 #include "presetsmodel.h"
 #include <KColorScheme>
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QPushButton>
 
 namespace Breeze
@@ -24,11 +24,12 @@ TitleBarOpacity::TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     m_ui->setupUi(this);
 
     // track ui changes
-    connect(m_ui->activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->opaqueMaximizedTitlebars, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged);
-    connect(m_ui->blurTransparentTitlebars, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged);
-    connect(m_ui->applyOpacityToHeader, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged);
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui->activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->opaqueMaximizedTitlebars, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->blurTransparentTitlebars, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->applyOpacityToHeader, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // connect dual controls with same values
     connect(m_ui->activeTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui->activeTitlebarOpacity_2, SLOT(setValue(int)));
@@ -51,29 +52,36 @@ TitleBarOpacity::~TitleBarOpacity()
     delete m_ui;
 }
 
-void TitleBarOpacity::load()
+void TitleBarOpacity::loadMain(const bool assignUiValuesOnly)
 {
-    m_loading = true;
+    if (!assignUiValuesOnly) {
+        m_loading = true;
+        // create internal settings and load from rc files
+        m_internalSettings = InternalSettingsPtr(new InternalSettings());
+        m_internalSettings->load();
+    }
+
     getTitlebarOpacityFromColorScheme();
-
-    // create internal settings and load from rc files
-    m_internalSettings = InternalSettingsPtr(new InternalSettings());
-    m_internalSettings->load();
-
     // if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it
     if (m_translucentActiveSchemeColor) {
         m_ui->activeTitlebarOpacity->setValue(m_activeSchemeColorAlpha * 100);
         m_ui->activeTitlebarOpacity->setEnabled(false);
         m_ui->activeTitlebarOpacity_2->setEnabled(false);
-    } else
+    } else {
         m_ui->activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
+        m_ui->activeTitlebarOpacity->setEnabled(true);
+        m_ui->activeTitlebarOpacity_2->setEnabled(true);
+    }
     m_ui->activeTitlebarOpacity_2->setValue(m_ui->activeTitlebarOpacity->value());
     if (m_translucentInactiveSchemeColor) {
         m_ui->inactiveTitlebarOpacity->setValue(m_inactiveSchemeColorAlpha * 100);
         m_ui->inactiveTitlebarOpacity->setEnabled(false);
         m_ui->inactiveTitlebarOpacity_2->setEnabled(false);
-    } else
+    } else {
         m_ui->inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
+        m_ui->inactiveTitlebarOpacity->setEnabled(true);
+        m_ui->inactiveTitlebarOpacity_2->setEnabled(true);
+    }
     m_ui->inactiveTitlebarOpacity_2->setValue(m_ui->inactiveTitlebarOpacity->value());
     setEnabledTransparentTitlebarOptions();
 
@@ -81,11 +89,12 @@ void TitleBarOpacity::load()
     m_ui->blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
     m_ui->applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
 
-    // TODO:add all lock variants
-    setChanged(false);
+    if (!assignUiValuesOnly) {
+        setChanged(false);
 
-    m_loading = false;
-    m_loaded = true;
+        m_loading = false;
+        m_loaded = true;
+    }
 }
 
 void TitleBarOpacity::save(const bool reloadKwinConfig)
@@ -108,8 +117,9 @@ void TitleBarOpacity::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig) {
-        ConfigWidget::kwinReloadConfig();
-        ConfigWidget::kstyleReloadConfig();
+        DBusMessages::updateDecorationColorCache();
+        DBusMessages::kwinReloadConfig();
+        DBusMessages::kstyleReloadDecorationConfig();
     }
 }
 
@@ -121,15 +131,7 @@ void TitleBarOpacity::defaults()
     m_internalSettings->setDefaults();
 
     // assign to ui
-    m_ui->activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
-    m_ui->activeTitlebarOpacity_2->setValue(m_ui->activeTitlebarOpacity->value());
-    m_ui->inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
-    m_ui->inactiveTitlebarOpacity_2->setValue(m_ui->inactiveTitlebarOpacity->value());
-    setEnabledTransparentTitlebarOptions();
-
-    m_ui->opaqueMaximizedTitlebars->setChecked(m_internalSettings->opaqueMaximizedTitlebars());
-    m_ui->blurTransparentTitlebars->setChecked(m_internalSettings->blurTransparentTitlebars());
-    m_ui->applyOpacityToHeader->setChecked(m_internalSettings->applyOpacityToHeader());
+    loadMain(true);
 
     setChanged(!isDefaults());
 
@@ -219,31 +221,31 @@ void TitleBarOpacity::getTitlebarOpacityFromColorScheme()
 {
     KSharedConfig::Ptr config = KSharedConfig::openConfig();
 
-    bool colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(config, KColorScheme::Header);
+    QColor activeTitlebarColor;
+    QColor inactiveTitlebarColor;
+    QColor activeTitleBarTextColor;
+    QColor inactiveTitleBarTextColor;
 
-    // get the alpha values from the system colour scheme
-    if (colorSchemeHasHeaderColor) {
-        KColorScheme activeHeader = KColorScheme(QPalette::Active, KColorScheme::Header, config);
-        m_translucentActiveSchemeColor = !activeHeader.background().isOpaque();
-        m_activeSchemeColorAlpha = activeHeader.background().color().alphaF();
+    DecorationColors::readSystemTitleBarColors(config, activeTitlebarColor, inactiveTitlebarColor, activeTitleBarTextColor, inactiveTitleBarTextColor);
 
-        KColorScheme inactiveHeader = KColorScheme(QPalette::Inactive, KColorScheme::Header, config);
-        m_translucentInactiveSchemeColor = !inactiveHeader.background().isOpaque();
-        m_inactiveSchemeColorAlpha = inactiveHeader.background().color().alphaF();
-    } else {
-        KConfigGroup wmConfig(config, QStringLiteral("WM"));
-        if (wmConfig.exists()) {
-            QColor activeTitlebarColor;
-            QColor inactiveTitlebarColor;
-            activeTitlebarColor = wmConfig.readEntry("activeBackground", QColorConstants::Black);
-            inactiveTitlebarColor = wmConfig.readEntry("inactiveBackground", QColorConstants::Black);
+    Q_UNUSED(activeTitleBarTextColor);
+    Q_UNUSED(inactiveTitleBarTextColor);
 
-            m_translucentActiveSchemeColor = (activeTitlebarColor.alpha() != 255);
-            m_translucentInactiveSchemeColor = (inactiveTitlebarColor.alpha() != 255);
-            m_activeSchemeColorAlpha = activeTitlebarColor.alphaF();
-            m_inactiveSchemeColorAlpha = inactiveTitlebarColor.alphaF();
-        }
-    }
+    m_translucentActiveSchemeColor = (activeTitlebarColor.alpha() != 255);
+    m_translucentInactiveSchemeColor = (inactiveTitlebarColor.alpha() != 255);
+    m_activeSchemeColorAlpha = activeTitlebarColor.alphaF();
+    m_inactiveSchemeColorAlpha = inactiveTitlebarColor.alphaF();
 }
 
+bool TitleBarOpacity::event(QEvent *ev)
+{
+    if (ev->type() == QEvent::ApplicationPaletteChange) {
+        // overwrite handling of palette change
+        load();
+        return QWidget::event(ev);
+    }
+
+    // Make sure the rest of events are handled
+    return QWidget::event(ev);
+}
 }

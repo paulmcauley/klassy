@@ -6,6 +6,7 @@
 
 #include "buttonbehaviour.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
 #include <QPushButton>
 
@@ -177,40 +178,40 @@ ButtonBehaviour::ButtonBehaviour(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     // track ui changes
     auto i = m_tableCheckBoxesActive.begin();
     while (i != m_tableCheckBoxesActive.end()) {
-        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
-        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromNormalToCloseActive);
-        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive);
+        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromNormalToCloseActive, Qt::ConnectionType::DirectConnection);
+        connect(i.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive, Qt::ConnectionType::DirectConnection);
         ++i;
     }
 
     auto j = m_tableCloseCheckBoxesActive.begin();
     while (j != m_tableCloseCheckBoxesActive.end()) {
-        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
-        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromCloseToNormalActive);
-        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive);
+        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromCloseToNormalActive, Qt::ConnectionType::DirectConnection);
+        connect(j.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive, Qt::ConnectionType::DirectConnection);
         ++j;
     }
 
     auto k = m_tableCheckBoxesInactive.begin();
     while (k != m_tableCheckBoxesInactive.end()) {
-        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
-        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromNormalToCloseInactive);
-        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive);
+        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromNormalToCloseInactive, Qt::ConnectionType::DirectConnection);
+        connect(k.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive, Qt::ConnectionType::DirectConnection);
         ++k;
     }
 
     auto l = m_tableCloseCheckBoxesInactive.begin();
     while (l != m_tableCloseCheckBoxesInactive.end()) {
-        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
-        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromCloseToNormalInactive);
-        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive);
+        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromCloseToNormalInactive, Qt::ConnectionType::DirectConnection);
+        connect(l.value(), &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive, Qt::ConnectionType::DirectConnection);
         ++l;
     }
 
     connect(m_ui->lockButtonBehaviourActive, &QAbstractButton::toggled, m_ui->lockButtonBehaviourInactive, &QAbstractButton::setChecked);
     connect(m_ui->lockButtonBehaviourInactive, &QAbstractButton::toggled, m_ui->lockButtonBehaviourActive, &QAbstractButton::setChecked);
-    connect(m_ui->lockButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
-    connect(m_ui->lockCloseButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged);
+    connect(m_ui->lockButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->lockCloseButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->lockCloseButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive);
     connect(m_ui->lockCloseButtonBehaviourInactive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive);
 
@@ -368,8 +369,9 @@ void ButtonBehaviour::save(const bool reloadKwinConfig)
     Q_EMIT saved();
 
     if (reloadKwinConfig) {
-        ConfigWidget::kwinReloadConfig();
-        ConfigWidget::kstyleReloadConfig();
+        DBusMessages::updateDecorationColorCache();
+        DBusMessages::kwinReloadConfig();
+        DBusMessages::kstyleReloadDecorationConfig();
     }
 }
 

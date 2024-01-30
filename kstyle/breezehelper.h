@@ -13,7 +13,7 @@
 #include "breezesettings.h"
 #include "colortools.h"
 #include "config-breeze.h"
-#include "decorationbuttoncommon.h"
+#include "decorationcolors.h"
 
 #include <KConfigWatcher>
 #include <KSharedConfig>
@@ -53,6 +53,10 @@ public:
 
     //*@name color utilities
     //@{
+    void setGenerateDecorationColorsOnDecorationColorSettingsUpdateFlag(QByteArray *uuid)
+    {
+        _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = *uuid;
+    }
 
     //* add alpha channel multiplier to color
     QColor alphaColor(QColor color, qreal alpha) const;
@@ -102,13 +106,18 @@ public:
     //* titlebar color
     const QColor &titleBarColor(bool active) const
     {
-        return active ? _activeTitleBarColor : _inactiveTitleBarColor;
+        return active ? _decorationColors->active()->titleBarBase : _decorationColors->inactive()->titleBarBase;
     }
 
     //* titlebar text color
     const QColor &titleBarTextColor(bool active) const
     {
-        return active ? _activeTitleBarTextColor : _inactiveTitleBarTextColor;
+        return active ? _decorationColors->active()->titleBarText : _decorationColors->inactive()->titleBarText;
+    }
+
+    DecorationColors *decorationColors() const
+    {
+        return _decorationColors.get();
     }
 
     //* frame outline color, using animations
@@ -385,11 +394,10 @@ private:
 
     //*@name windeco colors
     //@{
-    QColor _activeTitleBarColor;
-    QColor _activeTitleBarTextColor;
-    QColor _inactiveTitleBarColor;
-    QColor _inactiveTitleBarTextColor;
+    mutable std::unique_ptr<DecorationColors> _decorationColors;
     //@}
+    QByteArray _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
+    mutable bool _presetExceptionDecorationColors = false;
 
     mutable bool _cachedAutoValid = false;
 

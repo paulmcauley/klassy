@@ -92,6 +92,9 @@ private:
 
     //* changed state
     bool m_changed = false;
+
+    //* if is in the process of loading
+    bool m_loading = false;
 };
 }
 

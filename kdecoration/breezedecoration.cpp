@@ -26,7 +26,6 @@
 #include <KColorUtils>
 #include <KConfigGroup>
 #include <KPluginFactory>
-#include <KSharedConfig>
 #include <KWindowSystem>
 
 #include <QDBusConnection>
@@ -123,6 +122,8 @@ inline CompositeShadowParams lookupShadowParams(int size)
 namespace Breeze
 {
 
+KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();
+
 using KDecoration2::ColorGroup;
 using KDecoration2::ColorRole;
 
@@ -154,7 +155,9 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
 #if KLASSY_DECORATION_DEBUG_MODE
     setDebugOutput(KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
 #endif
-
+    if (!s_kdeGlobalConfig) {
+        s_kdeGlobalConfig = KSharedConfig::openConfig();
+    }
     g_sDecoCount++;
 }
 
@@ -179,15 +182,15 @@ void Decoration::setOpacity(qreal value)
 }
 
 //________________________________________________________________
-QColor Decoration::titleBarColor(bool returnNonAnimatedColor, bool overrideActiveState, bool overridenIsActive) const
+QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
     if (hideTitleBar() && !m_internalSettings->useTitlebarColorForAllBorders())
         return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
 
-    QColor activeTitleBarColor = c->color(ColorGroup::Active, ColorRole::TitleBar);
-    QColor inactiveTitlebarColor = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
+    QColor activeTitleBarColor = m_decorationColors->active()->titleBarBase;
+    QColor inactiveTitlebarColor = m_decorationColors->inactive()->titleBarBase;
     if (m_internalSettings->opaqueTitleBar() || (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())) {
         activeTitleBarColor.setAlpha(255);
         inactiveTitlebarColor.setAlpha(255);
@@ -197,19 +200,8 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor, bool overrideActiv
     if (!m_toolsAreaWillBeDrawn && (m_animation->state() == QAbstractAnimation::Running) && !returnNonAnimatedColor) {
         return KColorUtils::mix(inactiveTitlebarColor, activeTitleBarColor, m_opacity);
     } else {
-        bool active = overrideActiveState ? overridenIsActive : c->isActive();
-        return active ? activeTitleBarColor : inactiveTitlebarColor;
+        return c->isActive() ? activeTitleBarColor : inactiveTitlebarColor;
     }
-}
-
-QColor Decoration::titleBarColorWithAddedTransparency() const
-{
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-
-    QColor color(titleBarColor());
-    color.setAlphaF(color.alphaF() * (c->isActive() ? m_addedTitleBarOpacityActive : m_addedTitleBarOpacityInactive));
-    return color;
 }
 
 //________________________________________________________________
@@ -220,63 +212,13 @@ QColor Decoration::titleBarSeparatorColor() const
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
-        QColor color(m_decorationPalette->active()->highlight);
+        QColor color(m_decorationColors->active()->highlight);
         color.setAlpha(color.alpha() * m_opacity);
         return color;
     } else if (c->isActive())
-        return m_decorationPalette->active()->highlight;
+        return m_decorationColors->active()->highlight;
     else
         return QColor();
-}
-
-QColor Decoration::accentedFinalWindowOutlineColor(bool active, QColor customColor) const
-{
-    if (customColor.isValid()) {
-        if (active)
-            return ColorTools::alphaMix(customColor, m_internalSettings->windowOutlineCustomColorOpacityActive());
-        else
-            return ColorTools::alphaMix(customColor, m_internalSettings->windowOutlineCustomColorOpacityInactive());
-
-    } else {
-        if (active)
-            return ColorTools::alphaMix(m_decorationPalette->active()->highlight, m_internalSettings->windowOutlineAccentColorOpacityActive());
-        else
-            return ColorTools::alphaMix(m_decorationPalette->inactive()->highlightLessSaturated, m_internalSettings->windowOutlineAccentColorOpacityInactive());
-    }
-}
-
-QColor Decoration::fontMixedAccentFinalWindowOutlineColor(bool active, QColor customColor) const
-{
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-
-    if (customColor.isValid()) {
-        if (active) {
-            return ColorTools::alphaMix(
-                KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground), customColor, 0.75) // foreground active font mixed with custom
-                ,
-                m_internalSettings->windowOutlineCustomWithContrastOpacityActive());
-        } else {
-            return ColorTools::alphaMix(
-                KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground), customColor, 0.75) // foreground inactive font mixed with custom
-                ,
-                m_internalSettings->windowOutlineCustomWithContrastOpacityInactive());
-        }
-    } else { // not a custom color
-        if (active) {
-            return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Active, ColorRole::Foreground),
-                                                         m_decorationPalette->active()->buttonFocus,
-                                                         0.75) // foreground active font mixed with accent
-                                        ,
-                                        m_internalSettings->windowOutlineAccentWithContrastOpacityActive());
-        } else {
-            return ColorTools::alphaMix(KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground),
-                                                         m_decorationPalette->active()->buttonHover,
-                                                         0.75) // foreground inactive font mixed with accent
-                                        ,
-                                        m_internalSettings->windowOutlineAccentWithContrastOpacityInactive());
-        }
-    }
 }
 
 QColor Decoration::overriddenOutlineColorAnimateIn() const
@@ -328,16 +270,15 @@ QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationCol
 }
 
 //________________________________________________________________
-QColor Decoration::fontColor(bool returnNonAnimatedColor, bool overrideActiveState, bool overridenIsActive) const
+QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
     if (m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
-        return KColorUtils::mix(c->color(ColorGroup::Inactive, ColorRole::Foreground), c->color(ColorGroup::Active, ColorRole::Foreground), m_opacity);
+        return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText);
     } else {
-        bool active = overrideActiveState ? overridenIsActive : c->isActive();
-        return c->color(active ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground);
+        return c->isActive() ? m_decorationColors->active()->titleBarText : m_decorationColors->inactive()->titleBarText;
     }
 }
 
@@ -378,8 +319,9 @@ void Decoration::init()
             updateShadow(false, true, true);
     });
 
-    // use DBus connection to update on breeze configuration change
+    // use DBus connection to update on Klassy configuration change
     auto dbus = QDBusConnection::sessionBus();
+
     dbus.connect(QString(),
                  QStringLiteral("/KGlobalSettings"),
                  QStringLiteral("org.kde.KGlobalSettings"),
@@ -422,13 +364,24 @@ void Decoration::init()
     connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
     connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
+    // color cache update
+    // The slot will only update if the UUID has changed, hence preventing unnecessary multiple colour cache updates
+    connect(&g_decorationColorCacheUpdateNotifier,
+            &DecorationColorCacheUpdateNotifier::decorationSettingsUpdate,
+            this,
+            &Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate);
+    connect(&g_decorationColorCacheUpdateNotifier,
+            &DecorationColorCacheUpdateNotifier::systemSettingsUpdate,
+            this,
+            &Decoration::generateDecorationColorsOnSystemColorSettingsUpdate);
+    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
+
     // buttons
     connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
-    connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure);
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
@@ -448,7 +401,6 @@ void Decoration::init()
     connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
     connect(c.data(), &KDecoration2::DecoratedClient::sizeChanged, this, &Decoration::updateBlur);
 
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setAddedTitleBarOpacity);
     connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
     connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateOpaque);
 
@@ -592,47 +544,18 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
+    SettingsProvider::self()->reconfigure();
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
-    // generate standard colours to be used in the decoration
-    if (!m_decorationPalette) {
-        // the noCache property is set when the internalSettings are from a preset exception
-        // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
-        // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
-        if (m_internalSettings->property("noCache").toBool()) {
-            m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, false);
+    QPalette clientPalette = c->palette();
+    updateDecorationColors(clientPalette);
 
-        } else { // cached case
-            if (g_translucentButtonBackgroundsOpacityActive != m_internalSettings->translucentButtonBackgroundsOpacity(true)
-                || g_translucentButtonBackgroundsOpacityInactive != m_internalSettings->translucentButtonBackgroundsOpacity(false)) {
-                g_translucentButtonBackgroundsOpacityActive = m_internalSettings->translucentButtonBackgroundsOpacity(true);
-                g_translucentButtonBackgroundsOpacityInactive = m_internalSettings->translucentButtonBackgroundsOpacity(false);
-                m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, true, true);
-            } else {
-                m_decorationPalette = std::make_shared<DecorationPalette>(c->palette(), m_internalSettings, true, false);
-            }
-        }
-
-        // connect so a change in system colors will update the decoration colors
-        connect(c.data(),
-                &KDecoration2::DecoratedClient::paletteChanged,
-                this,
-                &Decoration::generateDecorationColorsOnSystemPaletteUpdate); // connection goes here, rather than init as need the value of
-                                                                             // translucentButtonBackgroundsOpacity from m_internalSettings
-    } else if (m_internalSettings->property("noCache").toBool()) { // non-cached color update
-        m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the non-cached decoration colors
-    } else if (g_translucentButtonBackgroundsOpacityActive != m_internalSettings->translucentButtonBackgroundsOpacity(true)
-               || g_translucentButtonBackgroundsOpacityInactive != m_internalSettings->translucentButtonBackgroundsOpacity(false)) { // cached color update
-        g_translucentButtonBackgroundsOpacityActive = m_internalSettings->translucentButtonBackgroundsOpacity(true);
-        g_translucentButtonBackgroundsOpacityInactive = m_internalSettings->translucentButtonBackgroundsOpacity(false);
-        m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the cached decoration colors
+    s_kdeGlobalConfig->reparseConfiguration();
+    if (KWindowSystem::isPlatformX11()) {
+        // loads system ScaleFactor from ~/.config/kdeglobals
+        const KConfigGroup cgKScreen(s_kdeGlobalConfig, QStringLiteral("KScreen"));
+        m_systemScaleFactorX11 = cgKScreen.readEntry("ScaleFactor", 1.0f);
     }
-
-    KSharedConfig::Ptr config = KSharedConfig::openConfig();
-
-    // loads system ScaleFactor from ~/.config/kdeglobals
-    const KConfigGroup cgKScreen(config, QStringLiteral("KScreen"));
-    m_systemScaleFactor = cgKScreen.readEntry("ScaleFactor", 1.0f);
 
     setScaledCornerRadius();
     setScaledTitleBarTopBottomMargins();
@@ -647,9 +570,9 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
 
     calculateButtonHeights();
 
-    const KConfigGroup cg(config, QStringLiteral("KDE"));
+    const KConfigGroup cg(s_kdeGlobalConfig, QStringLiteral("KDE"));
 
-    m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(config, KColorScheme::Header);
+    m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(s_kdeGlobalConfig, KColorScheme::Header);
 
     // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration2::BorderSize::None || settings()->borderSize() ==
     // KDecoration2::BorderSize::NoSides ) );
@@ -671,8 +594,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
         m_overrideOutlineFromButtonAnimation->setDuration(0);
     }
 
-    setAddedTitleBarOpacity();
-
     // borders
     recalculateBorders();
 
@@ -686,12 +607,100 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     Q_EMIT reconfigured();
 }
 
-void Decoration::generateDecorationColorsOnSystemPaletteUpdate()
+void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArray uuid)
+{
+    QPalette systemPalette = KColorScheme::createApplicationPalette(s_kdeGlobalConfig);
+    bool clientSpecificPalette = false;
+    if (clientPalette != systemPalette) { // Some applications can set a Window Colour Scheme, meaning the client palette and system palette differ
+        clientSpecificPalette = true;
+    }
+
+    // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
+    // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
+    bool noCache = m_internalSettings->property("presetException").toBool() || clientSpecificPalette;
+
+    if (noCache) {
+        if (!m_decorationColors || m_decorationColors->isCachedPalette()) {
+            m_decorationColors = std::make_unique<DecorationColors>(false);
+        }
+    } else {
+        if (!m_decorationColors || !m_decorationColors->isCachedPalette()) {
+            m_decorationColors = std::make_unique<DecorationColors>(true);
+        }
+    }
+
+    QPalette palette = clientSpecificPalette ? clientPalette : systemPalette;
+    bool generateColors = false;
+
+    if (!m_decorationColors->areColorsGenerated()) {
+        generateColors = true;
+    } else {
+        if (!uuid.isEmpty()
+            && (noCache
+                || (!noCache && uuid != m_decorationColors->settingsUpdateUuid()))) { // case from generateDecorationColorsOnDecorationSettingsPaletteUpdate()
+            generateColors = true;
+        }
+
+        // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration2::DecoratedClient to read QString
+        // m_colorScheme instead
+        if (!generateColors && palette != *m_decorationColors->basePalette()) {
+            generateColors = true;
+        }
+    }
+
+    if (generateColors) {
+        auto c = client().toStrongRef();
+        Q_ASSERT(c);
+
+        QColor activeTitleBarBase = c->color(ColorGroup::Active, ColorRole::TitleBar);
+        QColor inactiveTitlebarBase = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
+        QColor activeTitleBarText = c->color(ColorGroup::Active, ColorRole::Foreground);
+        QColor inactiveTitleBarText = c->color(ColorGroup::Inactive, ColorRole::Foreground);
+
+        m_decorationColors->generateDecorationAndButtonColors(palette,
+                                                              m_internalSettings,
+                                                              activeTitleBarText,
+                                                              activeTitleBarBase,
+                                                              inactiveTitleBarText,
+                                                              inactiveTitlebarBase,
+                                                              uuid); // update the decoration colors
+    }
+}
+
+void Decoration::generateDecorationColorsOnClientPaletteUpdate(const QPalette &clientPalette)
+{
+    SettingsProvider::self()->reconfigure();
+    m_internalSettings = SettingsProvider::self()->internalSettings(this);
+    s_kdeGlobalConfig->reparseConfiguration();
+
+    updateDecorationColors(clientPalette);
+    reconfigure();
+}
+
+void Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid)
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
+    QPalette clientPalette = c->palette();
 
-    m_decorationPalette->generateDecorationColors(c->palette(), m_internalSettings); // update the decoration colors
+    SettingsProvider::self()->reconfigure();
+    m_internalSettings = SettingsProvider::self()->internalSettings(this);
+    s_kdeGlobalConfig->reparseConfiguration();
+
+    updateDecorationColors(clientPalette, uuid);
+}
+
+void Decoration::generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray uuid)
+{
+    auto c = client().toStrongRef();
+    Q_ASSERT(c);
+    QPalette clientPalette = c->palette();
+
+    SettingsProvider::self()->reconfigure();
+    m_internalSettings = SettingsProvider::self()->internalSettings(this);
+    s_kdeGlobalConfig->reparseConfiguration();
+
+    updateDecorationColors(clientPalette, uuid);
     reconfigure();
 }
 
@@ -961,7 +970,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 
         QColor windowBorderColor;
         if (m_internalSettings->useTitlebarColorForAllBorders()) {
-            windowBorderColor = titleBarColorWithAddedTransparency();
+            windowBorderColor = titleBarColor();
         } else
             windowBorderColor = c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame);
 
@@ -1047,7 +1056,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     painter->save();
     painter->setPen(Qt::NoPen);
 
-    QColor titleBarColor(titleBarColorWithAddedTransparency());
+    QColor titleBarColor(this->titleBarColor());
 
     // render a linear gradient on title area
     if (c->isActive() && m_internalSettings->drawBackgroundGradient()) {
@@ -1283,22 +1292,20 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         return;
     }
 
-    // the noCache property is set when the internalSettings are from a preset exception
     // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
     // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
     // use the shadow cache when shaded
-    if (m_internalSettings->property("noCache").toBool() || c->isShaded()) {
+    if (m_internalSettings->property("presetException").toBool() || c->isShaded()) {
         noCache = true;
     }
 
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
-        setShadowStrength(0.5 + m_shadowOpacity * 0.5);
+        QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
         setThinWindowOutlineColor();
-        setShadow(createShadowObject(isThinWindowOutlineOverride));
+        setShadow(createShadowObject(shadowColor, isThinWindowOutlineOverride));
         return;
     }
-    setShadowStrength(c->isActive() ? 1.0 : 0.5);
     setThinWindowOutlineColor();
 
     // TODO: Potentially make the kdecoration configwidget more intelligent and send a dbus signal which is aware of whether to update the shadow or not, so
@@ -1309,10 +1316,10 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 
             forceUpdateCache || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
             || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
-            || !(qAbs(g_systemScaleFactor - m_systemScaleFactor) < 0.001) || g_hasNoBorders != hasNoBorders()
+            || !(qAbs(g_systemScaleFactor - m_systemScaleFactorX11) < 0.001) || g_hasNoBorders != hasNoBorders()
             || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
-            || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyleActive()
-            || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyleInactive()
+            || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyle(true)
+            || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyle(false)
             || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
             || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness())) {
         g_sShadow.clear();
@@ -1321,11 +1328,11 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_shadowStrength = m_internalSettings->shadowStrength();
         g_shadowColor = m_internalSettings->shadowColor();
         g_cornerRadius = m_scaledCornerRadius;
-        g_systemScaleFactor = m_systemScaleFactor;
+        g_systemScaleFactor = m_systemScaleFactorX11;
         g_hasNoBorders = hasNoBorders();
         g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
-        g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyleActive();
-        g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyleInactive();
+        g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyle(true);
+        g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyle(false);
         c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
         g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
     }
@@ -1339,27 +1346,26 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         shadow = (c->isActive()) ? &g_sShadow : &g_sShadowInactive;
 
     if (!(*shadow)) { // only recreate the shadow if necessary
-
-        *shadow = createShadowObject(isThinWindowOutlineOverride);
+        QColor shadowColor = c->isActive() ? m_decorationColors->active()->shadow : m_decorationColors->inactive()->shadow;
+        *shadow = createShadowObject(shadowColor, isThinWindowOutlineOverride);
     }
 
     setShadow(*shadow);
 }
 
 //________________________________________________________________
-QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(const bool isThinWindowOutlineOverride)
+QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride)
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
     // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
     bool windowOutlineNone =
-        ((m_internalSettings->thinWindowOutlineStyleActive() == InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineNone
-          && m_internalSettings->thinWindowOutlineStyleInactive() == InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineNone)
+        ((m_internalSettings->thinWindowOutlineStyle(true) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone
+          && m_internalSettings->thinWindowOutlineStyle(false) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone)
          || (m_animation->state() != QAbstractAnimation::Running
-             && ((c->isActive() && m_internalSettings->thinWindowOutlineStyleActive() == InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineNone)
-                 || (!c->isActive()
-                     && m_internalSettings->thinWindowOutlineStyleInactive() == InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineNone))));
+             && ((c->isActive() && m_internalSettings->thinWindowOutlineStyle(true) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone)
+                 || (!c->isActive() && m_internalSettings->thinWindowOutlineStyle(false) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone))));
 
     if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isThinWindowOutlineOverride) {
         return nullptr;
@@ -1374,12 +1380,8 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
 
     shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
     shadowRenderer.setBoxSize(boxSize);
-    shadowRenderer.addShadow(params.shadow1.offset,
-                             params.shadow1.radius,
-                             ColorTools::alphaMix(m_internalSettings->shadowColor(), params.shadow1.opacity * m_shadowStrength));
-    shadowRenderer.addShadow(params.shadow2.offset,
-                             params.shadow2.radius,
-                             ColorTools::alphaMix(m_internalSettings->shadowColor(), params.shadow2.opacity * m_shadowStrength));
+    shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius, ColorTools::alphaMix(shadowColor, params.shadow1.opacity));
+    shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius, ColorTools::alphaMix(shadowColor, params.shadow2.opacity));
 
     QImage shadowTexture = shadowRenderer.render();
 
@@ -1431,8 +1433,8 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(co
             // We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On
             // X11 this does not happen but we can use the system-set scaling value directly.
             if (KWindowSystem::isPlatformX11()) {
-                outlinePenWidth *= m_systemScaleFactor;
-                outlineOverlap *= m_systemScaleFactor;
+                outlinePenWidth *= m_systemScaleFactorX11;
+                outlineOverlap *= m_systemScaleFactorX11;
             }
 
             qreal outlineAdjustment = outlinePenWidth / 2 - outlineOverlap;
@@ -1495,11 +1497,6 @@ void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &
     }
 }
 
-void Decoration::setShadowStrength(const float strengthScale)
-{
-    m_shadowStrength = m_internalSettings->shadowStrength() / 255.0 * strengthScale;
-}
-
 void Decoration::setThinWindowOutlineColor()
 {
     auto c = client().toStrongRef();
@@ -1509,58 +1506,9 @@ void Decoration::setThinWindowOutlineColor()
         m_thinWindowOutline = overriddenOutlineColorAnimateIn();
     } else { // normal case, not an override
 
-        QColor thinWindowOutlineActiveFinal;
-        QColor thinWindowOutlineInactiveFinal;
-
-        // get active final window outline colour
-        if (!(!c->isActive() && (m_animation->state() != QAbstractAnimation::Running))) { // don't need the active final outline colour if unanimated inactive
-            switch (m_internalSettings->thinWindowOutlineStyleActive()) {
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineContrast:
-                thinWindowOutlineActiveFinal = ColorTools::alphaMix(fontColor(true), m_internalSettings->windowOutlineContrastOpacityActive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineAccentColor:
-                thinWindowOutlineActiveFinal = accentedFinalWindowOutlineColor(true);
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineAccentWithContrast:
-                thinWindowOutlineActiveFinal = fontMixedAccentFinalWindowOutlineColor(true);
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineCustomColor:
-                thinWindowOutlineActiveFinal = accentedFinalWindowOutlineColor(true, m_internalSettings->thinWindowOutlineCustomColorActive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineCustomWithContrast:
-                thinWindowOutlineActiveFinal = fontMixedAccentFinalWindowOutlineColor(true, m_internalSettings->thinWindowOutlineCustomColorActive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleActive::WindowOutlineShadowColor:
-                thinWindowOutlineActiveFinal =
-                    ColorTools::alphaMix(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * m_shadowStrength);
-                break;
-            }
-        }
-
-        // get inactive final window outline colour
-        if (!(c->isActive() && (m_animation->state() != QAbstractAnimation::Running))) { // don't need the inactive final outline colour if unanimated active
-            switch (m_internalSettings->thinWindowOutlineStyleInactive()) {
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineContrast:
-                thinWindowOutlineInactiveFinal = ColorTools::alphaMix(fontColor(true), m_internalSettings->windowOutlineContrastOpacityInactive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineAccentColor:
-                thinWindowOutlineInactiveFinal = accentedFinalWindowOutlineColor(false);
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineAccentWithContrast:
-                thinWindowOutlineInactiveFinal = fontMixedAccentFinalWindowOutlineColor(false);
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineCustomColor:
-                thinWindowOutlineInactiveFinal = accentedFinalWindowOutlineColor(false, m_internalSettings->thinWindowOutlineCustomColorInactive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineCustomWithContrast:
-                thinWindowOutlineInactiveFinal = fontMixedAccentFinalWindowOutlineColor(false, m_internalSettings->thinWindowOutlineCustomColorInactive());
-                break;
-            case InternalSettings::EnumThinWindowOutlineStyleInactive::WindowOutlineShadowColor:
-                thinWindowOutlineInactiveFinal =
-                    ColorTools::alphaMix(m_internalSettings->shadowColor(), m_internalSettings->windowOutlineShadowColorOpacity() * m_shadowStrength);
-                break;
-            }
-        }
+        QColor thinWindowOutlineActiveFinal = m_decorationColors->active()->windowOutline;
+        QColor thinWindowOutlineInactiveFinal = m_decorationColors->inactive()->windowOutline;
+        ;
 
         // get blended colour if animated
         if (m_animation->state() == QAbstractAnimation::Running) {
@@ -1656,25 +1604,6 @@ void Decoration::setScaledTitleBarSideMargins()
     }
 }
 
-void Decoration::setAddedTitleBarOpacity()
-{
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-
-    m_addedTitleBarOpacityActive = 1;
-    m_addedTitleBarOpacityInactive = 1;
-
-    if (!(m_internalSettings->opaqueTitleBar() || (c->isMaximized() && m_internalSettings->opaqueMaximizedTitlebars()))) {
-        // only add additional translucency if the system colour does not already have translucency
-        QColor systemActiveTitleBarColor = c->color(ColorGroup::Active, ColorRole::TitleBar);
-        QColor systemInactiveTitlebarColor = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
-        if (systemActiveTitleBarColor.alpha() == 255)
-            m_addedTitleBarOpacityActive = qreal(m_internalSettings->activeTitlebarOpacity()) / 100;
-        if (systemInactiveTitlebarColor.alpha() == 255)
-            m_addedTitleBarOpacityInactive = qreal(m_internalSettings->inactiveTitlebarOpacity()) / 100;
-    }
-}
-
 void Decoration::setScaledCornerRadius()
 {
     m_scaledCornerRadius = m_internalSettings->cornerRadius() * settings()->smallSpacing();
@@ -1712,13 +1641,7 @@ void Decoration::updateBlur()
 
 bool Decoration::isOpaqueTitleBar()
 {
-    // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-    int titleBarOpacityToAdd = c->isActive() ? m_internalSettings->activeTitlebarOpacity() : m_internalSettings->inactiveTitlebarOpacity();
-
-    return (m_internalSettings->opaqueTitleBar() // exception override
-            || (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized()) || (titleBarOpacityToAdd == 100 && titleBarColor(true).alpha() == 255));
+    return (titleBarColor(true).alpha() == 255);
 }
 
 int Decoration::titleBarSeparatorHeight() const
@@ -1730,7 +1653,7 @@ int Decoration::titleBarSeparatorHeight() const
     if (m_internalSettings->drawTitleBarSeparator() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
         qreal height = 1;
         if (KWindowSystem::isPlatformX11())
-            height = m_systemScaleFactor;
+            height = m_systemScaleFactorX11;
         return qRound(height);
     } else
         return 0;
@@ -1743,7 +1666,7 @@ qreal Decoration::devicePixelRatio(QPainter *painter) const
 
     // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
     if (KWindowSystem::isPlatformX11())
-        dpr = systemScaleFactor();
+        dpr = systemScaleFactorX11();
     return dpr;
 }
 

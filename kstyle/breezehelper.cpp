@@ -64,24 +64,6 @@ Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
 #if KLASSY_STYLE_DEBUG_MODE
     setDebugOutput(KLASSY_QDEBUG_OUTPUT_PATH_RELATIVE_HOME);
 #endif
-
-    if (qApp) {
-        connect(qApp, &QApplication::paletteChanged, this, [=]() {
-            if (!qApp->property("KDE_COLOR_SCHEME_PATH").isValid()) {
-                return;
-            }
-            const auto path = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
-            if (!path.isEmpty()) {
-                KConfig config(path, KConfig::SimpleConfig);
-                KConfigGroup group(config.group("WM"));
-                const QPalette palette(QApplication::palette());
-                _activeTitleBarColor = group.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
-                _activeTitleBarTextColor = group.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
-                _inactiveTitleBarColor = group.readEntry("inactiveBackground", palette.color(QPalette::Disabled, QPalette::Highlight));
-                _inactiveTitleBarTextColor = group.readEntry("inactiveForeground", palette.color(QPalette::Disabled, QPalette::HighlightedText));
-            }
-        });
-    }
 }
 
 //____________________________________________________________________
@@ -106,26 +88,74 @@ void Helper::loadConfig()
     _viewNegativeTextBrush = KStatefulBrush(KColorScheme::View, KColorScheme::NegativeText);
     _viewNeutralTextBrush = KStatefulBrush(KColorScheme::View, KColorScheme::NeutralText);
 
-    const QPalette palette(QApplication::palette());
     _config->reparseConfiguration();
     _kwinConfig->reparseConfiguration();
     _cachedAutoValid = false;
     DecorationSettingsProvider::self()->reconfigure();
     _decorationConfig = DecorationSettingsProvider::self()->internalSettings();
 
-    KConfigGroup globalGroup(_config->group("WM"));
-    _activeTitleBarColor = globalGroup.readEntry("activeBackground", palette.color(QPalette::Active, QPalette::Highlight));
-    _activeTitleBarTextColor = globalGroup.readEntry("activeForeground", palette.color(QPalette::Active, QPalette::HighlightedText));
-    _inactiveTitleBarColor = globalGroup.readEntry("inactiveBackground", palette.color(QPalette::Disabled, QPalette::Highlight));
-    _inactiveTitleBarTextColor = globalGroup.readEntry("inactiveForeground", palette.color(QPalette::Disabled, QPalette::HighlightedText));
+    const QString colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+    // bool isApplicationSpecificColorScheme = (!colorSchemePath.isEmpty() && colorSchemePath != QStringLiteral("kdeglobals"));
 
-    if (const QString colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString(); !colorSchemePath.isEmpty()) {
-        KConfig config(colorSchemePath, KConfig::SimpleConfig);
-        KConfigGroup appGroup(config.group("WM"));
-        _activeTitleBarColor = appGroup.readEntry("activeBackground", _activeTitleBarColor);
-        _activeTitleBarTextColor = appGroup.readEntry("activeForeground", _activeTitleBarTextColor);
-        _inactiveTitleBarColor = appGroup.readEntry("inactiveBackground", _inactiveTitleBarColor);
-        _inactiveTitleBarTextColor = appGroup.readEntry("inactiveForeground", _inactiveTitleBarTextColor);
+    // bool noCache = _decorationConfig->property("presetException").toBool() || isApplicationSpecificColorScheme;
+    bool noCache = true; // cannot easily cache between applications. TODO: reimplement with shared memory and re-enable
+
+    if (noCache) {
+        if (!_decorationColors || _decorationColors->isCachedPalette()) {
+            _decorationColors = std::make_unique<DecorationColors>(false, true);
+        }
+    } else {
+        if (!_decorationColors || !_decorationColors->isCachedPalette()) {
+            _decorationColors = std::make_unique<DecorationColors>(true, true);
+        }
+    }
+
+    bool generateColors = false;
+    QPalette palette(QApplication::palette());
+
+    if (!_decorationColors->areColorsGenerated()) {
+        generateColors = true;
+    } else {
+        if (!_generateDecorationColorsOnDecorationColorSettingsUpdateUuid.isEmpty()
+            && (noCache
+                || (!noCache
+                    && _generateDecorationColorsOnDecorationColorSettingsUpdateUuid
+                        != _decorationColors->settingsUpdateUuid()))) { // case from generateDecorationColorsOnDecorationSettingsPaletteUpdate()
+            _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
+            generateColors = true;
+        }
+        // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration2::DecoratedClient to read QString
+        // m_colorScheme instead and update to compare m_colorScheme and system titlebar colours
+        if (!generateColors && palette != *_decorationColors->basePalette()) {
+            generateColors = true;
+        }
+    }
+
+    if (generateColors) {
+        QColor systemActiveTitleBarColor, systemActiveTitleBarTextColor, systemInactiveTitleBarColor, systemInactiveTitleBarTextColor;
+
+        DecorationColors::readSystemTitleBarColors(_config,
+                                                   systemActiveTitleBarColor,
+                                                   systemInactiveTitleBarColor,
+                                                   systemActiveTitleBarTextColor,
+                                                   systemInactiveTitleBarTextColor,
+                                                   colorSchemePath);
+
+        palette.setCurrentColorGroup(QPalette::Active);
+        const QColor base(palette.color(QPalette::Window));
+        const QColor text(KColorUtils::mix(base, palette.color(QPalette::WindowText), 0.7));
+        const QColor mdiActiveTitleBarBase(systemActiveTitleBarColor); // used for MDI active titlebars only
+        const QColor mdiActiveTitleBarText(systemActiveTitleBarTextColor);
+        Q_UNUSED(systemInactiveTitleBarColor);
+        Q_UNUSED(systemInactiveTitleBarTextColor);
+
+        _decorationColors->generateDecorationColors(palette,
+                                                    _decorationConfig,
+                                                    mdiActiveTitleBarText,
+                                                    mdiActiveTitleBarBase,
+                                                    text,
+                                                    base,
+                                                    _generateDecorationColorsOnDecorationColorSettingsUpdateUuid);
     }
 }
 
@@ -1722,6 +1752,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
         return false;
     }
 
+    /*
     static bool isAuto = false;
     static QString borderSize;
     if (!_cachedAutoValid) {
@@ -1750,9 +1781,9 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
             return false;
         }
     }
-    /*if (borderSize != "None" && borderSize != "NoSides") {
+    if (borderSize != "None" && borderSize != "NoSides") {
         return false;
-    }*/ //edited out for klassy as we can set the borders to titlebar colour to avoid any such visual glitches
+    }*/ //commented out for klassy as we can set the borders to titlebar colour to avoid any such visual glitches
     return true;
 }
 }

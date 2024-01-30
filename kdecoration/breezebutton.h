@@ -9,6 +9,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 #include "breezedecoration.h"
+#include "decorationbuttoncolors.h"
 #include <KDecoration2/DecorationButton>
 
 #include <QHash>
@@ -217,7 +218,7 @@ private:
     //* active state change opacity
     qreal m_opacity = 0;
 
-    DecorationButtonPalette m_buttonPalette;
+    DecorationButtonPalette *m_buttonPalette;
     bool m_renderSystemIcon;
     QString m_systemIconName;
     QString m_systemIconCheckedName;

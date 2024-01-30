@@ -107,11 +107,6 @@
           <property name="text">
            <string/>
           </property>
-          <property name="icon">
-           <iconset resource="klassydecoration_config.qrc">
-            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
-          </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
@@ -265,11 +260,6 @@ Left-hand buttons:</string>
           </property>
           <property name="text">
            <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="klassydecoration_config.qrc">
-            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -456,11 +446,6 @@ Right-hand buttons:</string>
           </property>
           <property name="text">
            <string/>
-          </property>
-          <property name="icon">
-           <iconset resource="klassydecoration_config.qrc">
-            <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-            <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
           </property>
           <property name="checkable">
            <bool>true</bool>

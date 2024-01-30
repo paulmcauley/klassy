@@ -154,6 +154,9 @@ protected Q_SLOTS:
     //* standard icons
     QIcon standardIconImplementation(StandardPixmap, const QStyleOption *, const QWidget *) const;
 
+    //* set flag to regenerate cache of decorationColors and update configuration
+    void generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid);
+
 protected:
     //* standard icons
     QIcon standardIcon(StandardPixmap pixmap, const QStyleOption *option = nullptr, const QWidget *widget = nullptr) const override

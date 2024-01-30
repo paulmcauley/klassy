@@ -10,12 +10,11 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breeze.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QIcon>
 #include <QTimer>
 
@@ -30,7 +29,6 @@ struct CommandLineProcessResult {
     Status statusCode = Status::NoCommand;
 };
 CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser &parser);
-void kwinReloadConfig();
 
 //__________________________________________
 int main(int argc, char *argv[])
@@ -140,11 +138,13 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
         InternalSettingsPtr internalSettings = InternalSettingsPtr(new InternalSettings());
         internalSettings->load();
         PresetsModel::loadPresetAndSave(internalSettings.data(), config.data(), presetsConfig.data(), parser.value(loadWindecoPresetOption), true);
-        kwinReloadConfig();
+        DBusMessages::updateDecorationColorCache();
+        DBusMessages::kwinReloadConfig();
 
         output << i18n("Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" loaded.") << Qt::endl;
-        // if kwin is reloaded twice the corruption when changing border sizes clears, therefore tell kwin to reconfigure again after 1 second
-        QTimer::singleShot(1000, &kwinReloadConfig);
+        // if Decoration::reconfigure is reloaded twice the corruption when changing border sizes clears, therefore tell Decoration to reconfigure again after 1
+        // second
+        QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
     }
 
     if (commandSet) {
@@ -152,11 +152,4 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
     } else {
         return {CommandLineProcessResult::Status::NoCommand};
     }
-}
-
-void kwinReloadConfig()
-{
-    // needed to tell kwin to reload when running from external kcmshell
-    QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-    QDBusConnection::sessionBus().send(message);
 }

@@ -1,7 +1,7 @@
 /* SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2016 The Qt Company Ltd.
  * SPDX-FileCopyrightText: 2021 Noah Davis <noahadvs@gmail.com>
- * SPDX-FileCopyrightText: 2021-2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
@@ -20,7 +20,7 @@
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
 #include "colortools.h"
-#include "decorationbuttoncommon.h"
+#include "decorationcolors.h"
 
 #include <KColorUtils>
 #include <KIconLoader>
@@ -262,7 +262,8 @@ Style::Style()
 
     dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
 
-    connect(qApp, &QApplication::paletteChanged, this, &Style::configurationChanged);
+    connect(qApp, &QApplication::paletteChanged, this, &Style::loadConfiguration);
+
     // call the slot directly; this initial call will set up things that also
     // need to be reset when the system palette changes
     loadConfiguration();
@@ -7346,16 +7347,17 @@ bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPaint
     const State &flags(option->state);
     const bool enabled(flags & State_Enabled);
     const bool active(enabled && (titleBarOption->titleBarState & Qt::WindowActive));
+    QColor titleBarColor = _helper->titleBarColor(active);
+    titleBarColor.setAlpha(255); // PAM: set titlebar opaque for now
 
     if (titleBarOption->subControls & SC_TitleBarLabel) {
         // render background
         painter->setClipRect(rect);
         const auto outline(active ? QColor() : _helper->frameOutlineColor(palette, false, false));
-        const auto background(_helper->titleBarColor(active));
+        const auto background(titleBarColor);
         _helper->renderTabWidgetFrame(painter, rect.adjusted(-1, -1, 1, 3), background, outline, CornersTop);
 
-        const bool useSeparator(active && _helper->titleBarColor(active) != palette.color(QPalette::Window)
-                                && !(titleBarOption->titleBarState & Qt::WindowMinimized));
+        const bool useSeparator(active && titleBarColor != palette.color(QPalette::Window) && !(titleBarOption->titleBarState & Qt::WindowMinimized));
 
         if (useSeparator) {
             painter->setRenderHint(QPainter::Antialiasing, false);
@@ -7767,53 +7769,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         return QIcon();
     }
 
-    bool changedPalette = false;
-
-    // store palette
-    // due to Qt, it is not always safe to assume that either option, nor widget are defined
-    static QPalette palette;
-    if (option) {
-        if (palette != option->palette)
-            changedPalette = true;
-        palette = option->palette;
-    } else if (widget) {
-        if (palette != widget->palette())
-            changedPalette = true;
-        palette = widget->palette();
-    } else {
-        if (palette != QApplication::palette())
-            changedPalette = true;
-        palette = QApplication::palette();
-    }
-
-    static std::unique_ptr<DecorationPalette> decorationPalette; // static so decorationColors are cached between icons
-    if (!decorationPalette) {
-        if (changedPalette || (g_translucentButtonBackgroundsOpacityActive != _helper->decorationConfig()->translucentButtonBackgroundsOpacity(true))
-            || (g_translucentButtonBackgroundsOpacityInactive != _helper->decorationConfig()->translucentButtonBackgroundsOpacity(false))) {
-            g_translucentButtonBackgroundsOpacityActive = _helper->decorationConfig()->translucentButtonBackgroundsOpacity(true);
-            g_translucentButtonBackgroundsOpacityInactive = _helper->decorationConfig()->translucentButtonBackgroundsOpacity(false);
-            decorationPalette = std::make_unique<DecorationPalette>(palette, _helper->decorationConfig(), true, true); // regenerate cached deecoration colours
-        } else {
-            decorationPalette =
-                std::make_unique<DecorationPalette>(palette, _helper->decorationConfig(), true, false); // use existing cached decoraiton colours if available
-        }
-    } else {
-        if (changedPalette || (g_translucentButtonBackgroundsOpacityActive != _helper->decorationConfig()->translucentButtonBackgroundsOpacity(true))
-            || (g_translucentButtonBackgroundsOpacityInactive != _helper->decorationConfig()->translucentButtonBackgroundsOpacity(false))) {
-            g_translucentButtonBackgroundsOpacityActive = _helper->decorationConfig()->translucentButtonBackgroundsOpacity(true);
-            g_translucentButtonBackgroundsOpacityInactive = _helper->decorationConfig()->translucentButtonBackgroundsOpacity(false);
-            decorationPalette->generateDecorationColors(palette, _helper->decorationConfig()); // regenerate
-        }
-    }
-
-    palette.setCurrentColorGroup(QPalette::Active);
-    const QColor base(palette.color(QPalette::Window));
-    const QColor text(KColorUtils::mix(base, palette.color(QPalette::WindowText), 0.7));
-    const QColor selectedBase(_helper->titleBarColor(true)); // selected is used for MDI active titlebars only
-    const QColor selectedText(_helper->titleBarTextColor(true));
-
     DecorationButtonPalette decorationButtonPalette(buttonType);
-    decorationButtonPalette.reconfigure(_helper->decorationConfig(), decorationPalette.get(), selectedText, selectedBase, text, base);
+    decorationButtonPalette.generate(_helper->decorationConfig(), _helper->decorationColors());
 
     // convenience class to map color to icon mode
     struct IconData {
@@ -7908,6 +7865,11 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     }
 
     return icon;
+}
+
+void Style::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid)
+{
+    _helper->setGenerateDecorationColorsOnDecorationColorSettingsUpdateFlag(&uuid);
 }
 
 //____________________________________________________________________

@@ -10,7 +10,7 @@
 #include "breeze.h"
 #include "breezesettings.h"
 #include "colortools.h"
-#include "decorationbuttoncommon.h"
+#include "decorationcolors.h"
 #include "ui_buttoncolors.h"
 #include <KColorButton>
 #include <KDecoration2/DecorationButton>
@@ -101,6 +101,9 @@ private:
 
     void generateTableCells(QTableWidget *table);
 
+    void setSystemTitlebarColors();
+    void setOverrideComboBoxColorIcons(const bool active, DecorationColors &decorationColors);
+
     void refreshCloseButtonIconColorState(bool active);
 
     void setNegativeCloseBackgroundHoverPressState(bool active);
@@ -114,32 +117,19 @@ private:
     //* given a settings index returns a UI index for the current m_closeButtonIconColorState
     int convertCloseButtonIconColorSettingsToUiIndex(bool active, const int settingsIndex);
 
-    //* outputs pointers to the CheckBox and ColorButton at a given table cell. Returns true if they are valid
-    bool checkBoxAndColorButtonAtTableCell(QTableWidget *table, const int column, const int row, QCheckBox *&outputCheckBox, KColorButton *&outputColorButton);
+    //* outputs pointers to the CheckBox, ComboBox, ColorButton and SpinBox at a given table cell. Returns true if they are valid
+    bool checkBoxComboBoxColorButtonSpinBoxAtTableCell(const bool active,
+                                                       const int column,
+                                                       const int row,
+                                                       QCheckBox *&outputCheckBox,
+                                                       QComboBox *&outputComboBox,
+                                                       KColorButton *&outputColorButton,
+                                                       QSpinBox *&outputSpinBox);
 
-    //* encodes the custom override colour settings for a column (button type) for storage in the config file
-    // The output colorsList only stores set colours, and the output colourFlags has a complete index for all colours in the reloadKwinConfig
-    // colorsFlags storage bits: Active Window colours: bits 0-15, Inactive Window colours bits 16-31
-    // active icon bits 0-3, active background bits 4-7, active outline bits 8-11
-    // inactive icon bits 16-19, inactive background bits 20-23, inactive outline bits 24-27
-    // bit 3 etc. reserved for deactivated state colour
-    void encodeColorOverridableButtonTypeColumn(QTableWidget *tableActive,
-                                                QTableWidget *tableInactive,
-                                                int column,
-                                                uint32_t &colorsFlags,
-                                                QList<int> &colorsList,
-                                                bool resetActive = false,
-                                                bool resetInactive = false);
-
-    //*returns if the column was loaded with a value in the active and inactive tables respectively
-    ColumnsLoaded
-    decodeColorsFlagsAndLoadColumn(QTableWidget *tableActive, QTableWidget *tableInactive, int column, uint32_t colorsFlags, const QList<int> &colorsList);
-
-    //* encodes the lock-icon states on table vertical header in the same manner as encodeColorOverridableButtonTypeColumn
-    uint32_t encodeColorOverridableLockStates();
-
-    //* decodes the lock-icon states in m_internalSettings and loads them into the override tables' vertical headers
-    bool decodeColorOverridableLockStatesAndLoadVerticalHeaderLocks();
+    QByteArray encodeColorOverrideTableColumn(const int column, const bool active, const bool reset);
+    bool decodeOverrideColorsAndLoadTableColumn(const QByteArray overrideColorColumnJson, const int column, const bool active);
+    QByteArray encodeColorOverrideLockStates(const bool active);
+    void decodeAndLoadColorOverrideLockStates(const bool active);
 
     void setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section);
 
@@ -167,8 +157,8 @@ private:
 
     ColumnsLoaded m_overrideColorsLoaded = {false, false};
 
-    // strings for UI corresponding to enum ColorOverridableButtonTypes in breeze.h
-    QHash<KDecoration2::DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
+    // strings for UI corresponding to overridableButtonTypes
+    const QHash<KDecoration2::DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
         {KDecoration2::DecorationButtonType::Close, i18n("Close")},
         {KDecoration2::DecorationButtonType::Maximize, i18n("Maximize/Restore")},
         {KDecoration2::DecorationButtonType::Minimize, i18n("Minimize")},
@@ -182,7 +172,7 @@ private:
     };
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
-    QStringList m_overridableButtonColorStatesStrings{
+    const QStringList m_overridableButtonColorStatesStrings{
         i18n("Icon pressed"),
         i18n("Icon hover"),
         i18n("Icon normal"),
@@ -194,6 +184,35 @@ private:
         i18n("Outline normal"),
     };
 
+    const QStringList m_overrideComboBoxItems = {i18n("Custom"),
+                                                 i18n("Titlebar text, auto"),
+                                                 i18n("Titlebar text, active"),
+                                                 i18n("Titlebar text, inactive"),
+                                                 i18n("Titlebar background, auto"),
+                                                 i18n("Titlebar background, active"),
+                                                 i18n("Titlebar background, inactive"),
+                                                 i18n("Accent (button hover)"),
+                                                 i18n("Accent (button focus)"),
+                                                 i18n("Accent (highlight)"),
+                                                 i18n("Accent (highlight, less saturated)"),
+                                                 i18n("Negative text"),
+                                                 i18n("Negative, less saturated"),
+                                                 i18n("Negative, saturated"),
+                                                 i18n("Negative, fully saturated"),
+                                                 i18n("Neutral text"),
+                                                 i18n("Neutral, less saturated"),
+                                                 i18n("Neutral, saturated"),
+                                                 i18n("Positive text"),
+                                                 i18n("Positive, less saturated"),
+                                                 i18n("Positive, saturated"),
+                                                 i18n("White"),
+                                                 i18n("Window outline, auto"),
+                                                 i18n("Window outline, active"),
+                                                 i18n("Window outline, inactive"),
+                                                 i18n("Window shadow, auto"),
+                                                 i18n("Window shadow, active"),
+                                                 i18n("Window shadow, inactive")};
+
     enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, COUNT };
 
     uint32_t m_closeButtonIconColorStateActive;
@@ -204,6 +223,10 @@ private:
         m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
     QList<KDecoration2::DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
                                                                              // including the dummy custom button added in m_visibleButtonsOrder
+    QColor m_systemTitlebarTextActive;
+    QColor m_systemTitlebarTextInactive;
+    QColor m_systemTitlebarBackgroundActive;
+    QColor m_systemTitlebarBackgroundInactive;
 };
 
 }

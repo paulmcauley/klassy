@@ -3,8 +3,12 @@
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
-#include "decorationbuttoncommon.h"
+#include "decorationbuttoncolors.h"
+#include "colortools.h"
 #include <KColorUtils>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 namespace Breeze
 {
@@ -13,112 +17,216 @@ using KDecoration2::DecorationButtonType;
 
 DecorationButtonPalette::DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType)
     : _buttonType(buttonType)
+    , _active(std::make_shared<DecorationButtonPaletteGroup>())
+    , _inactive(std::make_shared<DecorationButtonPaletteGroup>())
+
 {
-    _active = std::make_unique<DecorationButtonPaletteGroup>();
-    _inactive = std::make_unique<DecorationButtonPaletteGroup>();
 }
 
-void DecorationButtonPalette::reconfigure(InternalSettingsPtr decorationSettings,
-                                          DecorationPalette *decorationPalette,
-                                          QColor textActive,
-                                          QColor baseActive,
-                                          QColor textInactive,
-                                          QColor baseInactive,
-                                          const bool reconfigureOneGroupOnly,
-                                          const bool oneGrouproupActiveState)
+void DecorationButtonPalette::generate(InternalSettingsPtr decorationSettings,
+                                       DecorationColors *decorationColors,
+                                       const bool generateOneGroupOnly,
+                                       const bool oneGroupActiveState)
 {
     _decorationSettings = decorationSettings;
-    _decorationPalette = decorationPalette;
+    _decorationColors = decorationColors;
 
-    decodeButtonOverrideColors();
-    if (!(reconfigureOneGroupOnly && !oneGrouproupActiveState)) { // active
-        this->_active->text = textActive;
-        this->_active->base = baseActive;
+    if (!(generateOneGroupOnly && !oneGroupActiveState)) { // active
+        decodeButtonOverrideColors(true);
         generateButtonBackgroundPalette(true);
         generateButtonForegroundPalette(true);
         generateButtonOutlinePalette(true);
     }
 
-    if (!(reconfigureOneGroupOnly && oneGrouproupActiveState)) { // inactive
-        this->_inactive->text = textInactive;
-        this->_inactive->base = baseInactive;
+    if (!(generateOneGroupOnly && oneGroupActiveState)) { // inactive
+        decodeButtonOverrideColors(false);
         generateButtonBackgroundPalette(false);
         generateButtonForegroundPalette(false);
         generateButtonOutlinePalette(false);
     }
 }
 
-void DecorationButtonPalette::decodeButtonOverrideColors()
+void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
 {
-    _buttonOverrideColorsActive.clear();
-    _buttonOverrideColorsInactive.clear();
-    _buttonOverrideColorsPresentActive = false;
-    _buttonOverrideColorsPresentInactive = false;
+    QMap<OverridableButtonColorState, QColor> &buttonOverrideColors = active ? _buttonOverrideColorsActive : _buttonOverrideColorsInactive;
+    bool &buttonOverrideColorsPresent = active ? _buttonOverrideColorsPresentActive : _buttonOverrideColorsPresentInactive;
 
-    uint32_t buttonOverrideColorsFlags = 0;
-    QList<int> buttonOverrideColorsList;
+    buttonOverrideColors.clear();
+    buttonOverrideColorsPresent = false;
 
-    bool overrideColorFlagsValid = false;
-    for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsFlagsButtonType::COUNT; i++) {
+    bool overrideButtonTypeValid = false;
+    for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
         if (static_cast<int>(_buttonType) == i) {
-            overrideColorFlagsValid = true;
+            overrideButtonTypeValid = true;
             break;
         }
     }
-    if (!overrideColorFlagsValid)
+    if (!overrideButtonTypeValid) {
         return;
-    buttonOverrideColorsFlags = _decorationSettings->buttonOverrideColorsFlags(static_cast<int>(_buttonType));
-    if (!buttonOverrideColorsFlags)
-        return;
+    }
 
-    bool overrideColorValid = false;
-    for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsButtonType::COUNT; i++) {
-        if (static_cast<int>(_buttonType) == i) {
-            overrideColorValid = true;
+    QByteArray overrideColorsSetting = active ? _decorationSettings->buttonOverrideColorsActive(static_cast<int>(_buttonType)).toUtf8()
+                                              : _decorationSettings->buttonOverrideColorsInactive(static_cast<int>(_buttonType)).toUtf8();
+    if (overrideColorsSetting.isEmpty()) {
+        return;
+    }
+
+    QJsonDocument document = QJsonDocument::fromJson(overrideColorsSetting);
+
+    QJsonObject buttonStatesObject = document.object();
+    bool overrideColorLoaded = false;
+
+    for (auto i = buttonStatesObject.begin(); i < buttonStatesObject.end(); i++) {
+        QJsonArray colorArray = i->toArray();
+        QColor color;
+        double colorOpacity;
+        int overridableButtonColorStatesIndex;
+        int overrideColorItemsIndex;
+        switch (colorArray.count()) {
+        case 0:
+        default:
+            break;
+        case 1:
+            overridableButtonColorStatesIndex = overridableButtonColorStatesJsonStrings.indexOf(i.key());
+            if (overridableButtonColorStatesIndex < 0)
+                break;
+
+            overrideColorItemsIndex = overrideColorItems.indexOf(colorArray[0].toString());
+            if (overrideColorItemsIndex == 0)
+                break;
+
+            color = overrideColorItemsIndexToColor(_decorationColors, overrideColorItemsIndex, active);
+            if (!color.isValid())
+                break;
+
+            buttonOverrideColors.insert(static_cast<OverridableButtonColorState>(overridableButtonColorStatesIndex), color);
+            overrideColorLoaded = true;
+            break;
+        case 2:
+            overridableButtonColorStatesIndex = overridableButtonColorStatesJsonStrings.indexOf(i.key());
+            if (overridableButtonColorStatesIndex < 0)
+                break;
+
+            overrideColorItemsIndex = overrideColorItems.indexOf(colorArray[0].toString());
+            if (overrideColorItemsIndex == 0)
+                break;
+
+            color = overrideColorItemsIndexToColor(_decorationColors, overrideColorItemsIndex, active);
+            if (!color.isValid())
+                break;
+
+            colorOpacity = colorArray[1].toDouble(-1.0);
+            if (colorOpacity >= 0 && colorOpacity <= 1.0) {
+                color.setAlphaF(colorOpacity);
+            } else {
+                break;
+            }
+
+            buttonOverrideColors.insert(static_cast<OverridableButtonColorState>(overridableButtonColorStatesIndex), color);
+            overrideColorLoaded = true;
+            break;
+        case 3:
+            overridableButtonColorStatesIndex = overridableButtonColorStatesJsonStrings.indexOf(i.key());
+            if (overridableButtonColorStatesIndex < 0)
+                break;
+
+            color.setRed(colorArray[0].toInt());
+            color.setGreen(colorArray[1].toInt());
+            color.setBlue(colorArray[2].toInt());
+            if (!color.isValid())
+                break;
+
+            buttonOverrideColors.insert(static_cast<OverridableButtonColorState>(overridableButtonColorStatesIndex), color);
+            overrideColorLoaded = true;
+            break;
+        case 4:
+            overridableButtonColorStatesIndex = overridableButtonColorStatesJsonStrings.indexOf(i.key());
+            if (overridableButtonColorStatesIndex < 0)
+                break;
+
+            color.setRed(colorArray[1].toInt());
+            color.setGreen(colorArray[2].toInt());
+            color.setBlue(colorArray[3].toInt());
+            if (!color.isValid())
+                break;
+
+            colorOpacity = colorArray[0].toDouble(-1.0);
+            if (colorOpacity >= 0 && colorOpacity <= 1.0) {
+                color.setAlphaF(colorOpacity);
+            } else {
+                break;
+            }
+
+            buttonOverrideColors.insert(static_cast<OverridableButtonColorState>(overridableButtonColorStatesIndex), color);
+            overrideColorLoaded = true;
             break;
         }
     }
-    if (!overrideColorValid)
-        return;
-    buttonOverrideColorsList = _decorationSettings->buttonOverrideColors(static_cast<int>(_buttonType));
-    if (buttonOverrideColorsList.isEmpty())
-        return;
 
-    uint32_t bitMask = 0x00000001;
-    uint32_t validColorsFlagsBits = 0x07770777;
-    QMap<OverridableButtonColorStates, QColor> *output;
-    int colorsListIndex = 0;
-    int stateIndex = 0;
-    for (uint32_t i = 0; i < 32; i++, bitMask = bitMask << 1) {
-        if (validColorsFlagsBits & bitMask) {
-            if (i < 16) {
-                output = &_buttonOverrideColorsActive;
-            } else {
-                if (i == 16)
-                    stateIndex = 0; // reset the outputIndex to 0 for referencing the inactive colours
-                output = &_buttonOverrideColorsInactive;
-            }
+    buttonOverrideColorsPresent = overrideColorLoaded;
+}
 
-            if (buttonOverrideColorsFlags & bitMask) { // if the current bit in colorsFlags is 1
-                if (output == &_buttonOverrideColorsActive) {
-                    _buttonOverrideColorsPresentActive = true;
-                } else {
-                    _buttonOverrideColorsPresentInactive = true;
-                }
-                if (buttonOverrideColorsList.count()
-                    && colorsListIndex < buttonOverrideColorsList.count()) { // this if is to prevent against an unlikely corruption situation when
-                    // colorsSet and colorsist are out of sync
-                    QRgb color = QRgb(static_cast<QRgb>(buttonOverrideColorsList[colorsListIndex++]));
-                    QColor qcolor(color);
-                    qcolor.setAlpha(qAlpha(color));
-                    output->insert(static_cast<OverridableButtonColorStates>(stateIndex), qcolor);
-                }
-            } else {
-                output->insert(static_cast<OverridableButtonColorStates>(stateIndex), QColor());
-            }
-
-            stateIndex++;
-        }
+QColor DecorationButtonPalette::overrideColorItemsIndexToColor(const DecorationColors *decorationColors, const int overrideColorItemsIndex, const bool active)
+{
+    switch (overrideColorItemsIndex) {
+    default:
+        return QColor();
+    case 0:
+        return Qt::transparent;
+    case 1:
+        return active ? decorationColors->active()->titleBarText : decorationColors->inactive()->titleBarText;
+    case 2:
+        return decorationColors->active()->titleBarText;
+    case 3:
+        return decorationColors->inactive()->titleBarText;
+    case 4:
+        return active ? decorationColors->active()->titleBarBase : decorationColors->inactive()->titleBarBase;
+    case 5:
+        return decorationColors->active()->titleBarBase;
+    case 6:
+        return decorationColors->inactive()->titleBarBase;
+    case 7:
+        return decorationColors->active()->buttonHover;
+    case 8:
+        return decorationColors->active()->buttonFocus;
+    case 9:
+        return decorationColors->active()->highlight;
+    case 10:
+        return decorationColors->active()->highlightLessSaturated;
+    case 11:
+        return decorationColors->active()->negative;
+    case 12:
+        return decorationColors->active()->negativeLessSaturated;
+    case 13:
+        return decorationColors->active()->negativeSaturated;
+    case 14:
+        return decorationColors->active()->fullySaturatedNegative;
+    case 15:
+        return decorationColors->active()->neutral;
+    case 16:
+        return decorationColors->active()->neutralLessSaturated;
+    case 17:
+        return decorationColors->active()->neutralSaturated;
+    case 18:
+        return decorationColors->active()->positive;
+    case 19:
+        return decorationColors->active()->positiveLessSaturated;
+    case 20:
+        return decorationColors->active()->positiveSaturated;
+    case 21:
+        return Qt::white;
+    case 22:
+        return active ? decorationColors->active()->windowOutline : decorationColors->inactive()->windowOutline;
+    case 23:
+        return decorationColors->active()->windowOutline;
+    case 24:
+        return decorationColors->inactive()->windowOutline;
+    case 25:
+        return active ? decorationColors->active()->shadow : decorationColors->inactive()->shadow;
+    case 26:
+        return decorationColors->active()->shadow;
+    case 27:
+        return decorationColors->inactive()->shadow;
     }
 }
 
@@ -128,9 +236,9 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
     QColor &backgroundNormal = group->backgroundNormal;
     QColor &backgroundHover = group->backgroundHover;
     QColor &backgroundPress = group->backgroundPress;
-    QColor &text = group->text;
-    QColor &base = group->base;
-    DecorationPaletteGroup *decorationColors = active ? _decorationPalette->active() : _decorationPalette->inactive();
+    DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
+    QColor &text = decorationColors->titleBarText;
+    QColor &base = decorationColors->titleBarBase;
 
     bool &negativeNormalCloseBackground = group->negativeNormalCloseBackground;
     bool &negativeHoverCloseBackground = group->negativeHoverCloseBackground;
@@ -515,14 +623,14 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
     if (buttonOverrideColorsPresent) {
         auto &buttonOverrideColors = active ? _buttonOverrideColorsActive : _buttonOverrideColorsInactive;
 
-        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundNormal).isValid() && drawBackgroundNormally) {
-            backgroundNormal = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundNormal);
+        if (buttonOverrideColors.value(OverridableButtonColorState::BackgroundNormal).isValid() && drawBackgroundNormally) {
+            backgroundNormal = buttonOverrideColors.value(OverridableButtonColorState::BackgroundNormal);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundHover).isValid() && drawBackgroundOnHover) {
-            backgroundHover = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundHover);
+        if (buttonOverrideColors.value(OverridableButtonColorState::BackgroundHover).isValid() && drawBackgroundOnHover) {
+            backgroundHover = buttonOverrideColors.value(OverridableButtonColorState::BackgroundHover);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::BackgroundPress).isValid() && drawBackgroundOnPress) {
-            backgroundPress = buttonOverrideColors.value(OverridableButtonColorStates::BackgroundPress);
+        if (buttonOverrideColors.value(OverridableButtonColorState::BackgroundPress).isValid() && drawBackgroundOnPress) {
+            backgroundPress = buttonOverrideColors.value(OverridableButtonColorState::BackgroundPress);
         }
     }
 
@@ -547,9 +655,9 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     QColor &foregroundNormal = group->foregroundNormal;
     QColor &foregroundHover = group->foregroundHover;
     QColor &foregroundPress = group->foregroundPress;
-    QColor &text = group->text;
-    QColor &base = group->base;
-    DecorationPaletteGroup *decorationColors = active ? _decorationPalette->active() : _decorationPalette->inactive();
+    DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
+    QColor &text = decorationColors->titleBarText;
+    QColor &base = decorationColors->titleBarBase;
 
     foregroundNormal = QColor();
     foregroundHover = QColor();
@@ -732,14 +840,14 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     const bool buttonOverrideColorsPresent = active ? _buttonOverrideColorsPresentActive : _buttonOverrideColorsPresentInactive;
     if (buttonOverrideColorsPresent) {
         auto &buttonOverrideColors = active ? _buttonOverrideColorsActive : _buttonOverrideColorsInactive;
-        if (buttonOverrideColors.value(OverridableButtonColorStates::IconNormal).isValid() && drawIconNormally) {
-            foregroundNormal = buttonOverrideColors.value(OverridableButtonColorStates::IconNormal);
+        if (buttonOverrideColors.value(OverridableButtonColorState::IconNormal).isValid() && drawIconNormally) {
+            foregroundNormal = buttonOverrideColors.value(OverridableButtonColorState::IconNormal);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::IconHover).isValid() && drawIconOnHover) {
-            foregroundHover = buttonOverrideColors.value(OverridableButtonColorStates::IconHover);
+        if (buttonOverrideColors.value(OverridableButtonColorState::IconHover).isValid() && drawIconOnHover) {
+            foregroundHover = buttonOverrideColors.value(OverridableButtonColorState::IconHover);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::IconPress).isValid() && drawIconOnPress) {
-            foregroundPress = buttonOverrideColors.value(OverridableButtonColorStates::IconPress);
+        if (buttonOverrideColors.value(OverridableButtonColorState::IconPress).isValid() && drawIconOnPress) {
+            foregroundPress = buttonOverrideColors.value(OverridableButtonColorState::IconPress);
         }
     }
 
@@ -761,9 +869,9 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     QColor &outlineNormal = group->outlineNormal;
     QColor &outlineHover = group->outlineHover;
     QColor &outlinePress = group->outlinePress;
-    QColor &text = group->text;
-    QColor &base = group->base;
-    DecorationPaletteGroup *decorationColors = active ? _decorationPalette->active() : _decorationPalette->inactive();
+    DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
+    QColor &text = decorationColors->titleBarText;
+    QColor &base = decorationColors->titleBarBase;
 
     const int buttonBackgroundColors = _decorationSettings->buttonBackgroundColors(active);
     const bool translucentBackgrounds = _decorationSettings->translucentButtonBackgrounds(active);
@@ -1047,14 +1155,14 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     const bool buttonOverrideColorsPresent = active ? _buttonOverrideColorsPresentActive : _buttonOverrideColorsPresentInactive;
     if (buttonOverrideColorsPresent) {
         auto &buttonOverrideColors = active ? _buttonOverrideColorsActive : _buttonOverrideColorsInactive;
-        if (buttonOverrideColors.value(OverridableButtonColorStates::OutlineNormal).isValid() && drawOutlineNormally) {
-            outlineNormal = buttonOverrideColors.value(OverridableButtonColorStates::OutlineNormal);
+        if (buttonOverrideColors.value(OverridableButtonColorState::OutlineNormal).isValid() && drawOutlineNormally) {
+            outlineNormal = buttonOverrideColors.value(OverridableButtonColorState::OutlineNormal);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::OutlineHover).isValid() && drawOutlineOnHover) {
-            outlineHover = buttonOverrideColors.value(OverridableButtonColorStates::OutlineHover);
+        if (buttonOverrideColors.value(OverridableButtonColorState::OutlineHover).isValid() && drawOutlineOnHover) {
+            outlineHover = buttonOverrideColors.value(OverridableButtonColorState::OutlineHover);
         }
-        if (buttonOverrideColors.value(OverridableButtonColorStates::OutlinePress).isValid() && drawOutlineOnPress) {
-            outlinePress = buttonOverrideColors.value(OverridableButtonColorStates::OutlinePress);
+        if (buttonOverrideColors.value(OverridableButtonColorState::OutlinePress).isValid() && drawOutlineOnPress) {
+            outlinePress = buttonOverrideColors.value(OverridableButtonColorState::OutlinePress);
         }
     }
 

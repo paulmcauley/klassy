@@ -13,11 +13,12 @@
 
 #include "breezesettings.h"
 #include "colortools.h"
-#include "decorationbuttoncommon.h"
+#include "decorationcolors.h"
 
 #include <KDecoration2/DecoratedClient>
 #include <KDecoration2/Decoration>
 #include <KDecoration2/DecorationSettings>
+#include <KSharedConfig>
 
 #include <QPainterPath>
 #include <QPalette>
@@ -81,16 +82,13 @@ public:
 
     //*@name colors
     //@{
-    std::shared_ptr<DecorationPalette> decorationPalette()
+    DecorationColors *decorationColors()
     {
-        return m_decorationPalette;
+        return m_decorationColors.get();
     }
-    QColor titleBarColor(bool returnNonAnimatedColor = false, bool overrideActiveState = false, bool overridenIsActive = true) const;
-    QColor titleBarColorWithAddedTransparency() const;
+    QColor titleBarColor(bool returnNonAnimatedColor = false) const;
     QColor titleBarSeparatorColor() const;
-    QColor accentedFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
-    QColor fontMixedAccentFinalWindowOutlineColor(bool active, QColor customColor = QColor()) const;
-    QColor fontColor(bool returnNonAnimatedColor = false, bool overrideActiveState = false, bool overridenIsActive = true) const;
+    QColor fontColor(bool returnNonAnimatedColor = false) const;
     QColor overriddenOutlineColorAnimateIn() const;
     QColor overriddenOutlineColorAnimateOut(const QColor &destinationColor);
     //@}
@@ -119,9 +117,9 @@ public:
     {
         return m_windowPath;
     }
-    qreal systemScaleFactor() const
+    qreal systemScaleFactorX11() const
     {
-        return m_systemScaleFactor;
+        return m_systemScaleFactorX11;
     }
     ButtonBackgroundType buttonBackgroundType()
     {
@@ -179,7 +177,9 @@ private Q_SLOTS:
     {
         reconfigureMain(true);
     }
-    void generateDecorationColorsOnSystemPaletteUpdate();
+    void generateDecorationColorsOnClientPaletteUpdate(const QPalette &clientPalette);
+    void generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid);
+    void generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray uuid);
     void recalculateBorders();
     void updateOpaque();
     void updateBlur();
@@ -198,12 +198,12 @@ private:
     QPair<QRect, Qt::Alignment> captionRect() const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
-    void setButtonBehaviouralParameters();
+    void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
     void createButtons();
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
     void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
-    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(const bool isThinWindowOutlineOverride = false);
+    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
     //*@name border size
@@ -216,7 +216,6 @@ private:
 
     void setScaledTitleBarTopBottomMargins();
     void setScaledTitleBarSideMargins();
-    void setAddedTitleBarOpacity();
     bool isOpaqueTitleBar();
     int titleBarSeparatorHeight() const;
     qreal devicePixelRatio(QPainter *painter) const;
@@ -227,15 +226,13 @@ private:
     //* override thin window outline colour from button colour animation update
     void updateOverrideOutlineFromButtonAnimationState();
 
-    //* sets m_shadowStrength
-    void setShadowStrength(const float strengthScale);
-
     //* calculates and sets m_thinWindowOutline
     void setThinWindowOutlineColor();
 
     //* returns a path of a rounded rectangle, where only the top corners are rounded
     QPainterPath constructRoundedTopRectangle(const QRectF &rect, const qreal &cornerRadius);
 
+    static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
     KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
@@ -244,7 +241,7 @@ private:
     bool m_painting = false;
 
     //* Object to return decoration palette colours
-    std::shared_ptr<DecorationPalette> m_decorationPalette;
+    std::unique_ptr<DecorationColors> m_decorationColors;
 
     //* active state change animation
     QVariantAnimation *m_animation;
@@ -259,10 +256,6 @@ private:
     qreal m_shadowOpacity = 0;
     //* overridden thin window outline change animation progress
     qreal m_overrideOutlineAnimationProgress = 0;
-
-    //* tilebar main state opacity
-    qreal m_addedTitleBarOpacityActive = 1;
-    qreal m_addedTitleBarOpacityInactive = 1;
 
     //* frame corner radius, scaled according to smallspacing
     qreal m_scaledCornerRadius = 3.0;
@@ -286,7 +279,7 @@ private:
     //* Exact window path, with clipped rounded corners
     std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
 
-    qreal m_systemScaleFactor = 1.0;
+    qreal m_systemScaleFactorX11 = 1.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     int m_smallButtonPaddedHeight = 20;
@@ -295,9 +288,6 @@ private:
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;
-
-    //*shadowStrength, qreal between 0 and 1 (cf internalSettings value between 0 and 255)
-    qreal m_shadowStrength = 1.0;
 
     //*the actual thin window outline colour to output
     QColor m_thinWindowOutline = QColor();
