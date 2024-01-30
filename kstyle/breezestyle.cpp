@@ -3580,11 +3580,20 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
      * First calculate the intrinsic size of the item.
      * this must be kept consistent with what's in drawMenuItemControl
      */
-    QSize size(contentsSize);
     switch (menuItemOption->menuItemType) {
     case QStyleOptionMenuItem::Normal:
     case QStyleOptionMenuItem::DefaultItem:
     case QStyleOptionMenuItem::SubMenu: {
+        QString text = menuItemOption->text;
+        qsizetype acceleratorSeparatorPos = text.indexOf(QLatin1Char('\t'));
+        const bool hasAccelerator = acceleratorSeparatorPos >= 0;
+        if (hasAccelerator) {
+            text = text.left(acceleratorSeparatorPos);
+        }
+
+        QFontMetrics fm(menuItemOption->font);
+        QSize size = fm.boundingRect({}, Qt::TextHideMnemonic, text).size();
+
         int iconWidth = 0;
         if (showIconsInMenuItems()) {
             iconWidth = isQtQuickControl(option, widget) ? qMax(pixelMetric(PM_SmallIconSize, option, widget), menuItemOption->maxIconWidth)
@@ -3611,7 +3620,6 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
          * sizeFromContents() for each menu item in the menu to be shown
          * ( see QMenuPrivate::calcActionRects() )
          */
-        const bool hasAccelerator(menuItemOption->text.indexOf(QLatin1Char('\t')) >= 0);
         if (hasAccelerator) {
             size.rwidth() += Metrics::MenuItem_AcceleratorSpace;
         }
