@@ -46,6 +46,7 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
+    void updateLockIcons();
 
 Q_SIGNALS:
     void changed(bool);
@@ -59,6 +60,8 @@ private:
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
     KSharedConfig::Ptr m_presetsConfiguration;
+    QObject *m_parent;
+
     //* changed state
     bool m_changed;
 

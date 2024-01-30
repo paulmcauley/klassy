@@ -56,16 +56,17 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties);
 
     // connections
-    connect(m_ui.exceptionWindowPropertyType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.preventApplyOpacityToHeader, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.exceptionPresetCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged);
-    connect(m_ui.exceptionPresetComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui.exceptionWindowPropertyType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.preventApplyOpacityToHeader, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionPresetCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionPresetComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui.opaqueTitleBar, &QAbstractButton::toggled, this, &ExceptionDialog::onOpaqueTitleBarToggled);
 }
@@ -73,6 +74,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
 // loads saved exception options
 void ExceptionDialog::setException(InternalSettingsPtr exception)
 {
+    m_loading = true;
     // store exception internally
     m_exception = exception;
 
@@ -99,6 +101,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_ui.borderSizeCheckBox->setChecked(m_exception->exceptionBorder());
 
     setChanged(false);
+    m_loading = false;
 }
 
 //___________________________________________
@@ -126,6 +129,9 @@ void ExceptionDialog::save()
 //___________________________________________
 void ExceptionDialog::updateChanged()
 {
+    if (m_loading)
+        return; // only check if the user has made a change to the UI, or user has pressed defaults
+
     bool modified(false);
     if (m_exception->exceptionWindowPropertyType() != m_ui.exceptionWindowPropertyType->currentIndex())
         modified = true;

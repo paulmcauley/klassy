@@ -9,7 +9,8 @@ set(breezecommon_LIB_SRCS
     breeze.cpp
     breezeboxshadowrenderer.cpp
     colortools.cpp
-    decorationbuttoncommon.cpp
+    decorationbuttoncolors.cpp
+    decorationcolors.cpp
     decorationexceptionlist.cpp
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
@@ -20,6 +21,7 @@ set(breezecommon_LIB_SRCS
     styleredmond.cpp
     styleredmond10.cpp
     systemicontheme.cpp
+    dbusmessages.h
     setqdebug_logging.h
 )
 
@@ -35,6 +37,7 @@ target_link_libraries(klassycommon5
     PUBLIC
         Qt::Core
         Qt::Gui
+        Qt::DBus
         
         KDecoration2::KDecoration
         KF5::GuiAddons

@@ -2,7 +2,7 @@
 #define WINDOWOUTLINESTYLE_H
 
 /*
- * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -26,10 +26,14 @@ public:
     ~WindowOutlineStyle();
 
     void save(const bool reloadKwinConfig = true);
+    void loadMain(const bool assignUiValuesOnly = false);
     void defaults();
 
 public Q_SLOTS:
-    void load();
+    void load()
+    {
+        loadMain();
+    }
 
 private Q_SLOTS:
     void accept() override;
@@ -44,6 +48,7 @@ private Q_SLOTS:
     void thinWindowOutlineStyleInactiveChanged();
     void thinWindowOutlineCustomColorActiveChanged();
     void thinWindowOutlineCustomColorInactiveChanged();
+    void updateLockIcons();
 
 Q_SIGNALS:
     void changed(bool);
@@ -57,6 +62,7 @@ private:
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
     KSharedConfig::Ptr m_presetsConfiguration;
+    QObject *m_parent;
 
     //* changed state
     bool m_changed;

@@ -9,13 +9,12 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
 
 #include <KLocalizedString>
 
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QIcon>
 #include <QRegularExpression>
 #include <QStackedLayout>
@@ -148,33 +147,34 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     updateBackgroundShapeStackedWidgetVisible();
 
     // track ui changes
-    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()));
-    connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()));
-    connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.useTitlebarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.roundBottomCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
-    connect(m_ui.colorizeSystemIcons, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
+    connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.useTitlebarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.roundBottomCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.colorizeSystemIcons, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // only enable animationsSpeed when animationsEnabled is checked
     connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::setEnabledAnimationsSpeed);
 
     // track animations changes
-    connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
+    connect(m_ui.animationsEnabled, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.animationsSpeedRelativeSystem, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
 
-    connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged);
+    connect(m_ui.colorizeThinWindowOutlineWithButton, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // track exception changes
-    connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
-    connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
+    connect(m_ui.defaultExceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     QApplication::instance()->installEventFilter(this); // to monitor palette changes in the app (can't get them from this)
 }
@@ -283,15 +283,26 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
         InternalSettingsList exceptions(m_ui.exceptions->exceptions());
         InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
         DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
+
         // sync configuration for exceptions
         m_configuration->sync();
 
         setChanged(false);
         Q_EMIT saved();
 
+        bool updateColorCachePresetPresent = false;
+        for (auto &exception : (exceptions + defaultExceptions)) {
+            if ((!exception->exceptionPreset().isEmpty() && PresetsModel::isPresetPresent(m_presetsConfiguration.data(), exception->exceptionPreset()))
+                || exception->opaqueTitleBar()) {
+                updateColorCachePresetPresent = true;
+                break;
+            }
+        }
+        if (updateColorCachePresetPresent)
+            DBusMessages::updateDecorationColorCache();
         // needed to tell kwin to reload when running from external kcmshell
-        kwinReloadConfig();
-        kstyleReloadConfig();
+        DBusMessages::kwinReloadConfig();
+        DBusMessages::kstyleReloadDecorationConfig();
 
     } else { // set the preset
         // delete the preset if one of that name already exists
@@ -652,20 +663,6 @@ void ConfigWidget::presetsButtonClicked()
     m_loadPresetDialog->show();
 }
 
-void ConfigWidget::kwinReloadConfig()
-{
-    // needed to tell kwin to reload when running from external kcmshell
-    QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
-    QDBusConnection::sessionBus().send(message);
-}
-
-void ConfigWidget::kstyleReloadConfig()
-{
-    // needed for klassy application style to reload shadows
-    QDBusMessage message(QDBusMessage::createSignal("/KlassyDecoration", "org.kde.Klassy.Style", "reparseConfiguration"));
-    QDBusConnection::sessionBus().send(message);
-}
-
 void ConfigWidget::updateLockIcons()
 {
     ColorTools::convertAlphaToColor(m_unlockedIcon, QSize(16, 16), QApplication::palette().windowText().color());
@@ -673,8 +670,11 @@ void ConfigWidget::updateLockIcons()
     m_lockIcon.addPixmap(m_unlockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::Off);
     m_lockIcon.addPixmap(m_lockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::On);
 
+    m_buttonSizingDialog->updateLockIcons();
     m_buttonColorsDialog->updateLockIcons();
     m_buttonBehaviourDialog->updateLockIcons();
+    m_titleBarSpacingDialog->updateLockIcons();
+    m_windowOutlineStyleDialog->updateLockIcons();
 }
 
 bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)

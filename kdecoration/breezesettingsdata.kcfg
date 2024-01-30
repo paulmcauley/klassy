@@ -314,8 +314,8 @@
         <max>1</max>
     </entry>
 
-    <entry name="ButtonOverrideColors$(ButtonOverrideColorsButtonType)" type = "IntList">
-        <parameter name="ButtonOverrideColorsButtonType" type="Enum">
+    <entry name="ButtonOverrideColorsActive$(ButtonOverrideColorsActiveButtonType)" type = "String">
+        <parameter name="ButtonOverrideColorsActiveButtonType" type="Enum">
             <values>
                 <value>Menu</value>
                 <value>ApplicationMenu</value>
@@ -329,29 +329,36 @@
                 <value>KeepAbove</value>
             </values>
         </parameter>
-    </entry>
-    <entry name="ButtonOverrideColorsFlags$(ButtonOverrideColorsFlagsButtonType)" type = "UInt">
-        <parameter name="ButtonOverrideColorsFlagsButtonType" type="Enum">
-            <values>
-                <value>Menu</value>
-                <value>ApplicationMenu</value>
-                <value>OnAllDesktops</value>
-                <value>Minimize</value>
-                <value>Maximize</value>
-                <value>Close</value>
-                <value>ContextHelp</value>
-                <value>Shade</value>
-                <value>KeepBelow</value>
-                <value>KeepAbove</value>
-            </values>
-        </parameter>
-        <default>0</default>
     </entry>
 
-    <entry name="ButtonOverrideColorsLockStates" type = "UInt">
-        <default>0</default>
+    <entry name="ButtonOverrideColorsInactive$(ButtonOverrideColorsInactiveButtonType)" type = "String">
+        <parameter name="ButtonOverrideColorsInactiveButtonType" type="Enum">
+            <values>
+                <value>Menu</value>
+                <value>ApplicationMenu</value>
+                <value>OnAllDesktops</value>
+                <value>Minimize</value>
+                <value>Maximize</value>
+                <value>Close</value>
+                <value>ContextHelp</value>
+                <value>Shade</value>
+                <value>KeepBelow</value>
+                <value>KeepAbove</value>
+            </values>
+        </parameter>
     </entry>
+
+    <entry name="ButtonOverrideColorsLockStates$(ButtonOverrideColorsLockStatesActive)" type = "String">
+        <parameter name="ButtonOverrideColorsLockStatesActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+    </entry>
+
   </group>
+
 
   <group name="ButtonBehaviour">
 
@@ -704,7 +711,13 @@
 
   <group name="WindowOutlineStyle">
     <!-- Draw thin window outline -->
-    <entry name="ThinWindowOutlineStyleActive" type = "Enum">
+    <entry name="ThinWindowOutlineStyle$(ThinWindowOutlineStyleActive)" type = "Enum">
+        <parameter name="ThinWindowOutlineStyleActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
         <choices>
             <choice name="WindowOutlineNone" />
             <choice name="WindowOutlineShadowColor" />
@@ -717,35 +730,23 @@
         <default>WindowOutlineAccentWithContrast</default>
     </entry>
 
-
-
-    <entry name="ThinWindowOutlineStyleInactive" type = "Enum">
-        <choices>
-            <choice name="WindowOutlineNone" />
-            <choice name="WindowOutlineShadowColor" />
-            <choice name="WindowOutlineContrast" />
-            <choice name="WindowOutlineAccentColor" />
-            <choice name="WindowOutlineAccentWithContrast" />
-            <choice name="WindowOutlineCustomColor" />
-            <choice name="WindowOutlineCustomWithContrast" />
-        </choices>
-        <default>WindowOutlineAccentWithContrast</default>
-    </entry>
 
     <entry name="LockThinWindowOutlineStyleActiveInactive" type = "Bool">
         <default>true</default>
     </entry>
 
-    <entry name="ThinWindowOutlineCustomColorActive" type = "Color">
+    <entry name="ThinWindowOutlineCustomColor$(ThinWindowOutlineCustomColorActive)" type = "Color">
+        <parameter name="ThinWindowOutlineCustomColorActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
        <default>0, 0, 0</default>
     </entry>
 
     <entry name="LockThinWindowOutlineCustomColorActiveInactive" type = "Bool">
         <default>true</default>
-    </entry>
-
-    <entry name="ThinWindowOutlineCustomColorInactive" type = "Color">
-       <default>0, 0, 0</default>
     </entry>
 
     <entry name="ThinWindowOutlineThickness" type = "Double">
@@ -760,65 +761,70 @@
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineContrastOpacityActive" type = "Double">
+    <entry name="WindowOutlineContrastOpacity$(WindowOutlineContrastOpacityActive)" type = "Double">
+       <parameter name="WindowOutlineContrastOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
        <default>0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineContrastOpacityInactive" type = "Double">
-       <default>0.25</default>
+    <entry name="WindowOutlineAccentColorOpacity$(WindowOutlineAccentColorOpacityActive)" type = "Double">
+       <parameter name="WindowOutlineAccentColorOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+       <default param ="Active">0.87</default>
+       <default param ="Inactive">0.5</default>
        <min>0</min>
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineAccentColorOpacityActive" type = "Double">
-       <default>0.87</default>
+    <entry name="WindowOutlineAccentWithContrastOpacity$(WindowOutlineAccentWithContrastOpacityActive)" type = "Double">
+       <parameter name="WindowOutlineAccentWithContrastOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+       <default param ="Active">0.5</default>
+       <default param ="Inactive">0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineAccentColorOpacityInactive" type = "Double">
-       <default>0.4</default>
+    <entry name="WindowOutlineCustomColorOpacity$(WindowOutlineCustomColorOpacityActive)" type = "Double">
+       <parameter name="WindowOutlineCustomColorOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+       <default param ="Active">0.87</default>
+       <default param ="Inactive">0.5</default>
        <min>0</min>
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineAccentWithContrastOpacityActive" type = "Double">
-       <default>0.4</default>
+    <entry name="WindowOutlineCustomWithContrastOpacity$(WindowOutlineCustomWithContrastOpacityActive)" type = "Double">
+       <parameter name="WindowOutlineCustomWithContrastOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+       <default param ="Active">0.4</default>
+       <default param ="Inactive">0.25</default>
        <min>0</min>
        <max>1</max>
     </entry>
 
-    <entry name="WindowOutlineAccentWithContrastOpacityInactive" type = "Double">
-       <default>0.25</default>
-       <min>0</min>
-       <max>1</max>
-    </entry>
-
-    <entry name="WindowOutlineCustomColorOpacityActive" type = "Double">
-       <default>0.87</default>
-       <min>0</min>
-       <max>1</max>
-    </entry>
-
-    <entry name="WindowOutlineCustomColorOpacityInactive" type = "Double">
-       <default>0.3</default>
-       <min>0</min>
-       <max>1</max>
-    </entry>
-
-    <entry name="WindowOutlineCustomWithContrastOpacityActive" type = "Double">
-       <default>0.4</default>
-       <min>0</min>
-       <max>1</max>
-    </entry>
-
-    <entry name="WindowOutlineCustomWithContrastOpacityInactive" type = "Double">
-       <default>0.25</default>
-       <min>0</min>
-       <max>1</max>
-    </entry>
   </group>
 
   <group name="ShadowStyle">

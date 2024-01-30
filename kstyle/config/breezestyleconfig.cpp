@@ -8,9 +8,8 @@
 
 #include "../config-breeze.h"
 #include "breezestyleconfigdata.h"
+#include "dbusmessages.h"
 
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QDialog>
 #include <QRegularExpression>
 
@@ -104,9 +103,7 @@ void StyleConfig::save()
     _configuration->sync();
 
     // emit dbus signal
-    QDBusMessage message(
-        QDBusMessage::createSignal(QStringLiteral("/KlassyStyle"), QStringLiteral("org.kde.Klassy.Style"), QStringLiteral("reparseConfiguration")));
-    QDBusConnection::sessionBus().send(message);
+    DBusMessages::kstyleReloadConfig();
 }
 
 //__________________________________________________________________
@@ -144,6 +141,8 @@ void StyleConfig::reset()
 //__________________________________________________________________
 void StyleConfig::updateChanged()
 {
+    // TODO:don't process this if loading (as in window decoration config)
+
     bool modified(false);
 
     // check if any value was modified

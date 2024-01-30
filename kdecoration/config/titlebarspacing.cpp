@@ -6,9 +6,8 @@
 
 #include "titlebarspacing.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QPushButton>
 
 namespace Breeze
@@ -19,25 +18,27 @@ TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     , m_ui(new Ui_TitleBarSpacing)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
+    , m_parent(parent)
 {
     m_ui->setupUi(this);
 
     // track ui changes
-    connect(m_ui->titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui->percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->lockTitleBarTopBottomMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged);
-    connect(m_ui->lockTitleBarLeftRightMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged);
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui->titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->lockTitleBarTopBottomMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->lockTitleBarLeftRightMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // connect dual controls with same values
-    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(titlebarTopMarginChanged()));
-    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()));
-    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()));
-    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()));
+    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(titlebarTopMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &TitleBarSpacing::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &TitleBarSpacing::load);
@@ -96,7 +97,7 @@ void TitleBarSpacing::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig)
-        ConfigWidget::kwinReloadConfig();
+        DBusMessages::kwinReloadConfig();
 }
 
 void TitleBarSpacing::defaults()
@@ -217,4 +218,11 @@ void TitleBarSpacing::titlebarRightMarginChanged()
         m_ui->titlebarLeftMargin->setValue(m_ui->titlebarRightMargin->value());
 }
 
+void TitleBarSpacing::updateLockIcons()
+{
+    m_ui->lockTitleBarLeftRightMargins->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockTitleBarLeftRightMargins_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockTitleBarTopBottomMargins->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockTitleBarTopBottomMargins_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+}
 }

@@ -6,9 +6,8 @@
 
 #include "buttonsizing.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
-#include <QDBusConnection>
-#include <QDBusMessage>
 
 namespace Breeze
 {
@@ -17,29 +16,37 @@ ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     : QDialog(parent)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
+    , m_parent(parent)
 {
     m_ui.setupUi(this);
 
     // track ui changes
-    connect(m_ui.scaleBackgroundPercent, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui.integratedRoundedRectangleBottomPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()));
-    connect(m_ui.lockFullHeightButtonWidthMargins, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
-    connect(m_ui.lockButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
-    connect(m_ui.lockFullHeightButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged);
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui.scaleBackgroundPercent, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.integratedRoundedRectangleBottomPadding, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.lockFullHeightButtonWidthMargins, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.lockButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.lockFullHeightButtonSpacingLeftRight, &QAbstractButton::toggled, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // connect dual controls with same values
-    connect(m_ui.fullHeightButtonWidthMarginLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginLeftChanged()));
-    connect(m_ui.fullHeightButtonWidthMarginRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonWidthMarginRightChanged()));
-    connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(buttonSpacingLeftChanged()));
-    connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(buttonSpacingRightChanged()));
-    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingLeftChanged()));
-    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingRightChanged()));
+    connect(m_ui.fullHeightButtonWidthMarginLeft,
+            SIGNAL(valueChanged(int)),
+            SLOT(fullHeightButtonWidthMarginLeftChanged()),
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonWidthMarginRight,
+            SIGNAL(valueChanged(int)),
+            SLOT(fullHeightButtonWidthMarginRightChanged()),
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(buttonSpacingLeftChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonSpacingRight, SIGNAL(valueChanged(int)), SLOT(buttonSpacingRightChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingLeftChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingRightChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonSizing::defaults);
     connect(m_ui.buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonSizing::load);
@@ -100,7 +107,7 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig)
-        ConfigWidget::kwinReloadConfig();
+        DBusMessages::kwinReloadConfig();
 }
 
 void ButtonSizing::defaults()
@@ -239,5 +246,12 @@ void ButtonSizing::fullHeightButtonSpacingRightChanged()
 {
     if (m_ui.lockFullHeightButtonSpacingLeftRight->isChecked() && !m_processingDefaults && !m_loading)
         m_ui.fullHeightButtonSpacingLeft->setValue(m_ui.fullHeightButtonSpacingRight->value());
+}
+
+void ButtonSizing::updateLockIcons()
+{
+    m_ui.lockFullHeightButtonWidthMargins->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui.lockButtonSpacingLeftRight->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui.lockFullHeightButtonSpacingLeftRight->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
 }
 }

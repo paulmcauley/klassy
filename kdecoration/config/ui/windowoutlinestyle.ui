@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>580</width>
-    <height>510</height>
+    <height>556</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -92,11 +92,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="klassydecoration_config.qrc">
-          <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-          <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>
@@ -1362,11 +1357,6 @@
         </property>
         <property name="text">
          <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="klassydecoration_config.qrc">
-          <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-          <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

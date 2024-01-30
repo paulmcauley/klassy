@@ -6,9 +6,8 @@
 
 #include "shadowstyle.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
-#include <QDBusConnection>
-#include <QDBusMessage>
 #include <QPushButton>
 
 namespace Breeze
@@ -23,9 +22,10 @@ ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsCo
     m_ui->setupUi(this);
 
     // track shadows changes
-    connect(m_ui->shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
-    connect(m_ui->shadowColor, &KColorButton::changed, this, &ShadowStyle::updateChanged);
+    // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
+    connect(m_ui->shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->shadowColor, &KColorButton::changed, this, &ShadowStyle::updateChanged, Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ShadowStyle::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ShadowStyle::load);
@@ -78,8 +78,9 @@ void ShadowStyle::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig) {
-        ConfigWidget::kwinReloadConfig();
-        ConfigWidget::kstyleReloadConfig();
+        DBusMessages::updateDecorationColorCache();
+        DBusMessages::kwinReloadConfig();
+        DBusMessages::kstyleReloadDecorationConfig();
     }
 }
 

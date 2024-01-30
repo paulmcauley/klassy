@@ -7,6 +7,7 @@
 #include "loadpreset.h"
 #include "addpreset.h"
 #include "breezeconfigwidget.h"
+#include "dbusmessages.h"
 #include "presetsmodel.h"
 #include <QDir>
 #include <QFileDialog>
@@ -115,8 +116,9 @@ void LoadPreset::loadButtonClicked()
 
         ConfigWidget *configWidget = static_cast<ConfigWidget *>(m_parent);
         configWidget->load();
-        configWidget->kwinReloadConfig();
-        QTimer::singleShot(1000, configWidget, &ConfigWidget::kwinReloadConfig);
+        DBusMessages::updateDecorationColorCache();
+        DBusMessages::kwinReloadConfig();
+        QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
     }
 }
 

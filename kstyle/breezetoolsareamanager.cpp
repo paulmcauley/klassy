@@ -22,7 +22,11 @@ ToolsAreaManager::ToolsAreaManager(Helper *helper, QObject *parent)
 {
     if (qApp && qApp->property(colorProperty).isValid()) {
         auto path = qApp->property(colorProperty).toString();
-        _config = KSharedConfig::openConfig(path);
+        if (path.isEmpty() || path == QStringLiteral("kdeglobals")) {
+            _config = KSharedConfig::openConfig();
+        } else {
+            _config = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
+        }
     } else {
         _config = KSharedConfig::openConfig();
     }
@@ -68,16 +72,10 @@ void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 
 void ToolsAreaManager::registerApplication(QApplication *application)
 {
+    configUpdated();
     _listener = new AppListener(this);
     _listener->manager = this;
-    if (application->property(colorProperty).isValid()) {
-        auto path = application->property(colorProperty).toString();
-        _config = KSharedConfig::openConfig(path);
-        _watcher = KConfigWatcher::create(_config);
-        connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated);
-    }
     application->installEventFilter(_listener);
-    configUpdated();
 }
 
 QRect ToolsAreaManager::toolsAreaRect(const QMainWindow *window)
@@ -135,17 +133,58 @@ void ToolsAreaManager::tryUnregisterToolBar(QPointer<QMainWindow> window, QPoint
 
 void ToolsAreaManager::configUpdated()
 {
+    if (qApp && qApp->property(colorProperty).isValid()) {
+        auto path = qApp->property(colorProperty).toString();
+        if (path.isEmpty() || path == QStringLiteral("kdeglobals")) {
+            _config = KSharedConfig::openConfig();
+        } else {
+            _config = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
+        }
+    } else {
+        _config = KSharedConfig::openConfig();
+    }
+    _watcher = KConfigWatcher::create(_config);
+    connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated, Qt::ConnectionType::UniqueConnection);
+
     _colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
 
-    auto translucent = false;
-    auto active = KColorScheme(QPalette::Active, KColorScheme::Header, _config);
-    auto inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
-    auto disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
+    bool translucent = false;
 
-    if (_colorSchemeHasHeaderColor && _helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
-        if (!active.background().isOpaque() || !inactive.background().isOpaque() || !disabled.background().isOpaque()
-            || _helper->decorationConfig()->activeTitlebarOpacity() < 100 || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100)
-            translucent = true;
+    _palette = KColorScheme::createApplicationPalette(_config);
+
+    if (_colorSchemeHasHeaderColor) {
+        KColorScheme active = KColorScheme(QPalette::Active, KColorScheme::Header, _config);
+        KColorScheme inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
+        KColorScheme disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
+
+        if (_helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
+            if (!active.background().isOpaque() || !inactive.background().isOpaque() || !disabled.background().isOpaque()
+                || _helper->decorationConfig()->activeTitlebarOpacity() < 100 || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100)
+                translucent = true;
+        }
+
+        _palette.setBrush(QPalette::Active, QPalette::Window, active.background());
+        _palette.setBrush(QPalette::Active, QPalette::WindowText, active.foreground());
+        _palette.setBrush(QPalette::Disabled, QPalette::Window, disabled.background());
+        _palette.setBrush(QPalette::Disabled, QPalette::WindowText, disabled.foreground());
+        _palette.setBrush(QPalette::Inactive, QPalette::Window, inactive.background());
+        _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
+
+        if (_helper->decorationConfig()->applyOpacityToHeader()) {
+            // override active with opacity from decoration if needed
+            if (active.background().isOpaque() && _helper->decorationConfig()->activeTitlebarOpacity() < 100) {
+                QColor activeReplacedAlpha = active.background().color();
+                activeReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->activeTitlebarOpacity()) / 100);
+                _palette.setColor(QPalette::Active, QPalette::Window, activeReplacedAlpha);
+            }
+
+            // override inactive with opacity from decoration if needed
+            if (inactive.background().isOpaque() && _helper->decorationConfig()->inactiveTitlebarOpacity() < 100) {
+                QColor inactiveReplacedAlpha = inactive.background().color();
+                inactiveReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->inactiveTitlebarOpacity()) / 100);
+                _palette.setColor(QPalette::Inactive, QPalette::Window, inactiveReplacedAlpha);
+            }
+        }
     }
 
     if (translucent != _translucent) {
@@ -154,33 +193,7 @@ void ToolsAreaManager::configUpdated()
         else
             becomeOpaque();
     }
-
     _translucent = translucent;
-
-    _palette = KColorScheme::createApplicationPalette(_config);
-
-    _palette.setBrush(QPalette::Active, QPalette::Window, active.background());
-    _palette.setBrush(QPalette::Active, QPalette::WindowText, active.foreground());
-    _palette.setBrush(QPalette::Disabled, QPalette::Window, disabled.background());
-    _palette.setBrush(QPalette::Disabled, QPalette::WindowText, disabled.foreground());
-    _palette.setBrush(QPalette::Inactive, QPalette::Window, inactive.background());
-    _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
-
-    if (_helper->decorationConfig()->applyOpacityToHeader()) {
-        // override active with opacity from decoration if needed
-        if (active.background().isOpaque() && _helper->decorationConfig()->activeTitlebarOpacity() < 100) {
-            QColor activeReplacedAlpha = active.background().color();
-            activeReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->activeTitlebarOpacity()) / 100);
-            _palette.setColor(QPalette::Active, QPalette::Window, activeReplacedAlpha);
-        }
-
-        // override inactive with opacity from decoration if needed
-        if (inactive.background().isOpaque() && _helper->decorationConfig()->inactiveTitlebarOpacity() < 100) {
-            QColor inactiveReplacedAlpha = inactive.background().color();
-            inactiveReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->inactiveTitlebarOpacity()) / 100);
-            _palette.setColor(QPalette::Inactive, QPalette::Window, inactiveReplacedAlpha);
-        }
-    }
 
     for (auto window : _windows) {
         for (auto toolbar : window) {
@@ -220,14 +233,6 @@ bool AppListener::eventFilter(QObject *watched, QEvent *event)
         }
         auto ev = static_cast<QDynamicPropertyChangeEvent *>(event);
         if (ev->propertyName() == colorProperty) {
-            if (qApp && qApp->property(colorProperty).isValid()) {
-                auto path = qApp->property(colorProperty).toString();
-                manager->_config = KSharedConfig::openConfig(path);
-            } else {
-                manager->_config = KSharedConfig::openConfig();
-            }
-            manager->_watcher = KConfigWatcher::create(manager->_config);
-            connect(manager->_watcher.data(), &KConfigWatcher::configChanged, manager, &ToolsAreaManager::configUpdated);
             manager->configUpdated();
         }
     }

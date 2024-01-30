@@ -107,11 +107,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset resource="klassydecoration_config.qrc">
-              <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-              <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
-            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -218,11 +213,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset resource="klassydecoration_config.qrc">
-              <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-              <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
-            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -278,11 +268,6 @@ right margin:</string>
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="klassydecoration_config.qrc">
-              <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-              <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -536,11 +521,6 @@ padding:</string>
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="klassydecoration_config.qrc">
-              <normaloff>:/klassy_config_icons/object-unlocked-symbolic.svg</normaloff>
-              <normalon>:/klassy_config_icons/object-locked-symbolic.svg</normalon>:/klassy_config_icons/object-unlocked-symbolic.svg</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>

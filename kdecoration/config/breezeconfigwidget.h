@@ -80,9 +80,6 @@ public:
         }
     }
 
-    static void kwinReloadConfig();
-    static void kstyleReloadConfig();
-
 Q_SIGNALS:
     void saved();
 
