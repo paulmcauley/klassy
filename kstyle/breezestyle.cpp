@@ -5730,7 +5730,7 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
         auto contentsRect = rect.adjusted(Metrics::MenuItem_MarginWidth, 0, -Metrics::MenuItem_MarginWidth, 0);
         QColor separatorColor;
         if (StyleConfigData::menuOpacity() < 100) {
-            separatorColor = _helper->alphaColor(palette.color(QPalette::WindowText), 0.25);
+            separatorColor = _helper->alphaColor(palette.color(QPalette::WindowText), Metrics::Bias_Default);
         } else {
             separatorColor = _helper->separatorColor(palette);
         }
@@ -6586,7 +6586,7 @@ bool Style::drawHeaderSectionControl(const QStyleOption *option, QPainter *paint
 
     // outline
     painter->setBrush(Qt::NoBrush);
-    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), 0.1));
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), Metrics::Bias_Default));
 
     if (isCorner) {
         if (reverseLayout) {
@@ -6607,7 +6607,7 @@ bool Style::drawHeaderSectionControl(const QStyleOption *option, QPainter *paint
     }
 
     // separators
-    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
+    painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), Metrics::Bias_Default));
 
     // If the separator would be next to a "HeaderEmptyArea", skip it and let that draw
     // the separator instead. This means that those separators are only visible when necessary.
@@ -7584,7 +7584,7 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
         const auto grooveColor(_helper->alphaColor(palette.color(QPalette::WindowText), 0.2));
 
         if (!enabled) {
-            _helper->renderSliderGroove(painter, grooveRect, grooveColor);
+            _helper->renderSliderGroove(painter, grooveRect, grooveColor, palette.color(QPalette::Window));
         } else {
             const bool upsideDown(sliderOption->upsideDown);
 
@@ -7603,16 +7603,21 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
                     std::swap(leftRect, rightRect);
                 }
 
-                _helper->renderSliderGroove(painter, leftRect, upsideDown ? grooveColor : highlight);
-                _helper->renderSliderGroove(painter, rightRect, upsideDown ? highlight : grooveColor);
+                // Background
+                _helper->renderSliderGroove(painter, leftRect.united(rightRect), grooveColor, palette.color(QPalette::Window));
+                // Fill
+                _helper->renderSliderGroove(painter, upsideDown ? rightRect : leftRect, highlight, palette.color(QPalette::Window));
+
             } else {
                 auto topRect(grooveRect);
-                topRect.setBottom(handleRect.bottom() - Metrics::Slider_ControlThickness / 2);
-                _helper->renderSliderGroove(painter, topRect, upsideDown ? grooveColor : highlight);
-
                 auto bottomRect(grooveRect);
+                topRect.setBottom(handleRect.bottom() - Metrics::Slider_ControlThickness / 2);
                 bottomRect.setTop(handleRect.top() + Metrics::Slider_ControlThickness / 2);
-                _helper->renderSliderGroove(painter, bottomRect, upsideDown ? highlight : grooveColor);
+
+                // Background
+                _helper->renderSliderGroove(painter, topRect.united(bottomRect), grooveColor, palette.color(QPalette::Window));
+                // Fill
+                _helper->renderSliderGroove(painter, upsideDown ? bottomRect : topRect, highlight, palette.color(QPalette::Window));
             }
         }
     }

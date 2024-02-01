@@ -277,7 +277,7 @@ public:
                            qreal hoverAnimation = AnimationData::OpacityInvalid) const;
 
     //* slider groove
-    void renderSliderGroove(QPainter *, const QRectF &, const QColor &) const;
+    void renderSliderGroove(QPainter *, const QRectF &, const QColor &fg, const QColor &bg) const;
 
     //* reimplementation of protected method
     void initSliderStyleOption(const QSlider *, QStyleOptionSlider *) const;
