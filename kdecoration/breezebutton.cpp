@@ -64,7 +64,6 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
 
     // connections
     connect(c.data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
-    ;
     connect(decoration, &Decoration::reconfigured, this, &Button::reconfigure);
     connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
     connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
@@ -219,8 +218,6 @@ void Button::drawIcon(QPainter *painter) const
             paintFullHeightButtonBackground(painter);
     }
 
-    // get the device offset of the paddedIcon from the top-left of the titlebar as a reference-point for pixel-snapping algorithms
-    //(ideally, the device offset from the top-left of the screen would be better for fractional scaling, but it is not available in the API)
     QPointF deviceOffsetDecorationTopLeftToIconTopLeft;
     QPointF topLeftPaddedButtonDeviceGeometry = painter->deviceTransform().map(geometry().topLeft());
 
@@ -557,6 +554,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
 
     QColor color = QColor();
     if (on) {
+        m_buttonPalette = d->decorationColors()->buttonPalette(type()); // this is here in-case caching type on m_buttonPalette changes
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
             color = this->backgroundColor(true); // use a background colour if outline colour not valid
