@@ -4250,28 +4250,28 @@ bool Style::drawFrameTabBarBasePrimitive(const QStyleOption *option, QPainter *p
     // setup painter
     painter->setBrush(Qt::NoBrush);
     painter->setRenderHint(QPainter::Antialiasing, false);
-    painter->setPen(QPen(outline, 1));
+    painter->setPen(QPen(outline, PenWidth::Frame));
 
     // render
     switch (tabOption->shape) {
     case QTabBar::RoundedNorth:
     case QTabBar::TriangularNorth:
-        painter->drawLine(rect.bottomLeft() - QPoint(1, 0), rect.bottomRight() + QPoint(1, 0));
+        painter->drawLine(rect.bottomLeft() - QPointF(1, 0), rect.bottomRight() + QPointF(1, 0));
         break;
 
     case QTabBar::RoundedSouth:
     case QTabBar::TriangularSouth:
-        painter->drawLine(rect.topLeft() - QPoint(1, 0), rect.topRight() + QPoint(1, 0));
+        painter->drawLine(rect.topLeft() - QPointF(1, 0), rect.topRight() + QPointF(1, 0));
         break;
 
     case QTabBar::RoundedWest:
     case QTabBar::TriangularWest:
-        painter->drawLine(rect.topRight() - QPoint(0, 1), rect.bottomRight() + QPoint(1, 0));
+        painter->drawLine(rect.topRight() - QPointF(0, 1), rect.bottomRight() + QPointF(1, 0));
         break;
 
     case QTabBar::RoundedEast:
     case QTabBar::TriangularEast:
-        painter->drawLine(rect.topLeft() - QPoint(0, 1), rect.bottomLeft() + QPoint(1, 0));
+        painter->drawLine(rect.topLeft() - QPointF(0, 1), rect.bottomLeft() + QPointF(1, 0));
         break;
 
     default:
