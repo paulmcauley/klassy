@@ -382,7 +382,7 @@ QColor Helper::alphaColor(QColor color, qreal alpha) const
 }
 
 //______________________________________________________________________________
-void Helper::renderDebugFrame(QPainter *painter, const QRect &rect) const
+void Helper::renderDebugFrame(QPainter *painter, const QRectF &rect) const
 {
     painter->save();
     painter->setRenderHints(QPainter::Antialiasing);
@@ -393,7 +393,7 @@ void Helper::renderDebugFrame(QPainter *painter, const QRect &rect) const
 }
 
 //______________________________________________________________________________
-void Helper::renderFocusRect(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, Sides sides) const
+void Helper::renderFocusRect(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline, Sides sides) const
 {
     if (!color.isValid()) {
         return;
@@ -435,7 +435,7 @@ void Helper::renderFocusRect(QPainter *painter, const QRect &rect, const QColor 
 }
 
 //______________________________________________________________________________
-void Helper::renderFocusLine(QPainter *painter, const QRect &rect, const QColor &color) const
+void Helper::renderFocusLine(QPainter *painter, const QRectF &rect, const QColor &color) const
 {
     if (!color.isValid()) {
         return;
@@ -452,7 +452,7 @@ void Helper::renderFocusLine(QPainter *painter, const QRect &rect, const QColor 
 }
 
 //______________________________________________________________________________
-void Helper::renderFrameWithSides(QPainter *painter, const QRect &rect, const QColor &color, Qt::Edges edges, const QColor &outline) const
+void Helper::renderFrameWithSides(QPainter *painter, const QRectF &rect, const QColor &color, Qt::Edges edges, const QColor &outline) const
 {
     painter->save();
 
@@ -503,7 +503,7 @@ void Helper::renderFrameWithSides(QPainter *painter, const QRect &rect, const QC
 }
 
 //______________________________________________________________________________
-void Helper::renderFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline) const
+void Helper::renderFrame(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline) const
 {
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -532,7 +532,7 @@ void Helper::renderFrame(QPainter *painter, const QRect &rect, const QColor &col
 }
 
 //______________________________________________________________________________
-void Helper::renderSidePanelFrame(QPainter *painter, const QRect &rect, const QColor &outline, Side side) const
+void Helper::renderSidePanelFrame(QPainter *painter, const QRectF &rect, const QColor &outline, Side side) const
 {
     // check color
     if (!outline.isValid()) {
@@ -574,7 +574,8 @@ void Helper::renderSidePanelFrame(QPainter *painter, const QRect &rect, const QC
 }
 
 //______________________________________________________________________________
-void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, bool roundCorners, Qt::Edges seamlessEdges) const
+void Helper::renderMenuFrame(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline, bool roundCorners, Qt::Edges seamlessEdges)
+    const
 {
     painter->save();
 
@@ -617,7 +618,7 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
 
     } else {
         painter->setRenderHint(QPainter::Antialiasing, false);
-        QRect frameRect(rect);
+        QRectF frameRect(rect);
 
         frameRect.adjust( //
             seamlessEdges.testFlag(Qt::LeftEdge) ? 1 : 0,
@@ -641,7 +642,7 @@ void Helper::renderMenuFrame(QPainter *painter, const QRect &rect, const QColor 
 
 //______________________________________________________________________________
 void Helper::renderButtonFrame(QPainter *painter,
-                               const QRect &rect,
+                               const QRectF &rect,
                                const QPalette &palette,
                                const QHash<QByteArray, bool> &stateProperties,
                                qreal bgAnimation,
@@ -745,7 +746,7 @@ void Helper::renderButtonFrame(QPainter *painter,
 }
 
 //______________________________________________________________________________
-void Helper::renderToolBoxFrame(QPainter *painter, const QRect &rect, int tabWidth, const QColor &outline) const
+void Helper::renderToolBoxFrame(QPainter *painter, const QRectF &rect, int tabWidth, const QColor &outline) const
 {
     if (!outline.isValid()) {
         return;
@@ -757,7 +758,7 @@ void Helper::renderToolBoxFrame(QPainter *painter, const QRect &rect, int tabWid
 
     // if rect - tabwidth is even, need to increase tabWidth by 1 unit
     // for anti aliasing
-    if (!((rect.width() - tabWidth) % 2)) {
+    if (!((rect.toRect().width() - tabWidth) % 2)) {
         ++tabWidth;
     }
 
@@ -786,7 +787,7 @@ void Helper::renderToolBoxFrame(QPainter *painter, const QRect &rect, int tabWid
 }
 
 //______________________________________________________________________________
-void Helper::renderTabWidgetFrame(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, Corners corners) const
+void Helper::renderTabWidgetFrame(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline, Corners corners) const
 {
     painter->setRenderHint(QPainter::Antialiasing);
 
@@ -816,7 +817,7 @@ void Helper::renderTabWidgetFrame(QPainter *painter, const QRect &rect, const QC
 }
 
 //______________________________________________________________________________
-void Helper::renderSelection(QPainter *painter, const QRect &rect, const QColor &color) const
+void Helper::renderSelection(QPainter *painter, const QRectF &rect, const QColor &color) const
 {
     painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(Qt::NoPen);
@@ -825,7 +826,7 @@ void Helper::renderSelection(QPainter *painter, const QRect &rect, const QColor 
 }
 
 //______________________________________________________________________________
-void Helper::renderSeparator(QPainter *painter, const QRect &rect, const QColor &color, bool vertical) const
+void Helper::renderSeparator(QPainter *painter, const QRectF &rect, const QColor &color, bool vertical) const
 {
     painter->setRenderHint(QPainter::Antialiasing, false);
     painter->setBrush(Qt::NoBrush);
@@ -843,7 +844,7 @@ void Helper::renderSeparator(QPainter *painter, const QRect &rect, const QColor 
 
 //______________________________________________________________________________
 void Helper::renderCheckBoxBackground(QPainter *painter,
-                                      const QRect &rect,
+                                      const QRectF &rect,
                                       const QPalette &palette,
                                       CheckBoxState state,
                                       bool neutalHighlight,
@@ -897,7 +898,7 @@ void Helper::renderCheckBoxBackground(QPainter *painter,
 
 //______________________________________________________________________________
 void Helper::renderCheckBox(QPainter *painter,
-                            const QRect &rect,
+                            const QRectF &rect,
                             const QPalette &palette,
                             bool mouseOver,
                             CheckBoxState state,
@@ -984,13 +985,13 @@ void Helper::renderCheckBox(QPainter *painter,
             painter->drawPath(path);
             break;
         case CheckPartial:
-            if (animation >= 3 / 3) {
+            if (animation >= 3.0 / 3.0) {
                 painter->drawRect(rightDot);
             }
-            if (animation >= 2 / 3) {
+            if (animation >= 2.0 / 3.0) {
                 painter->drawRect(centerDot);
             }
-            if (animation >= 1 / 3) {
+            if (animation >= 1.0 / 3.0) {
                 painter->drawRect(leftDot);
             }
             break;
@@ -1003,7 +1004,7 @@ void Helper::renderCheckBox(QPainter *painter,
 
 //______________________________________________________________________________
 void Helper::renderRadioButtonBackground(QPainter *painter,
-                                         const QRect &rect,
+                                         const QRectF &rect,
                                          const QPalette &palette,
                                          RadioButtonState state,
                                          bool neutalHighlight,
@@ -1052,7 +1053,7 @@ void Helper::renderRadioButtonBackground(QPainter *painter,
 
 //______________________________________________________________________________
 void Helper::renderRadioButton(QPainter *painter,
-                               const QRect &rect,
+                               const QRectF &rect,
                                const QPalette &palette,
                                bool mouseOver,
                                RadioButtonState state,
@@ -1109,7 +1110,7 @@ void Helper::renderRadioButton(QPainter *painter,
 }
 
 //______________________________________________________________________________
-void Helper::renderSliderGroove(QPainter *painter, const QRect &rect, const QColor &color) const
+void Helper::renderSliderGroove(QPainter *painter, const QRectF &rect, const QColor &color) const
 {
     // setup painter
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -1129,7 +1130,7 @@ void Helper::renderSliderGroove(QPainter *painter, const QRect &rect, const QCol
 }
 
 //______________________________________________________________________________
-void Helper::renderDialGroove(QPainter *painter, const QRect &rect, const QColor &fg, const QColor &bg, qreal first, qreal last) const
+void Helper::renderDialGroove(QPainter *painter, const QRectF &rect, const QColor &fg, const QColor &bg, qreal first, qreal last) const
 {
     // setup painter
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -1185,7 +1186,7 @@ void Helper::initSliderStyleOption(const QSlider *slider, QStyleOptionSlider *op
 }
 
 //______________________________________________________________________________
-QRectF Helper::pathForSliderHandleFocusFrame(QPainterPath &focusFramePath, const QRect &rect, int hmargin, int vmargin) const
+QRectF Helper::pathForSliderHandleFocusFrame(QPainterPath &focusFramePath, const QRectF &rect, int hmargin, int vmargin) const
 {
     // Mimics path and adjustments of renderSliderHandle
     QRectF frameRect(rect);
@@ -1199,7 +1200,7 @@ QRectF Helper::pathForSliderHandleFocusFrame(QPainterPath &focusFramePath, const
 }
 
 //______________________________________________________________________________
-void Helper::renderSliderHandle(QPainter *painter, const QRect &rect, const QColor &color, const QColor &outline, const QColor &shadow, bool sunken) const
+void Helper::renderSliderHandle(QPainter *painter, const QRectF &rect, const QColor &color, const QColor &outline, const QColor &shadow, bool sunken) const
 {
     // setup painter
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -1234,7 +1235,7 @@ void Helper::renderSliderHandle(QPainter *painter, const QRect &rect, const QCol
 }
 
 //______________________________________________________________________________
-void Helper::renderProgressBarGroove(QPainter *painter, const QRect &rect, const QColor &fg, const QColor &bg) const
+void Helper::renderProgressBarGroove(QPainter *painter, const QRectF &rect, const QColor &fg, const QColor &bg) const
 {
     // setup painter
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -1253,7 +1254,7 @@ void Helper::renderProgressBarGroove(QPainter *painter, const QRect &rect, const
 
 //______________________________________________________________________________
 void Helper::renderProgressBarBusyContents(QPainter *painter,
-                                           const QRect &rect,
+                                           const QRectF &rect,
                                            const QColor &first,
                                            const QColor &second,
                                            bool horizontal,
@@ -1318,7 +1319,7 @@ void Helper::renderScrollBarHandle(QPainter *painter, const QRectF &rect, const 
     painter->drawRoundedRect(strokedRect(baseRect), radius, radius);
 }
 
-void Helper::renderScrollBarGroove(QPainter *painter, const QRect &rect, const QColor &color) const
+void Helper::renderScrollBarGroove(QPainter *painter, const QRectF &rect, const QColor &color) const
 {
     // check for negative size, possible with squeezed controls
     if (!rect.isValid()) {
@@ -1344,7 +1345,7 @@ void Helper::renderScrollBarGroove(QPainter *painter, const QRect &rect, const Q
 }
 
 //______________________________________________________________________________
-void Helper::renderScrollBarBorder(QPainter *painter, const QRect &rect, const QColor &color) const
+void Helper::renderScrollBarBorder(QPainter *painter, const QRectF &rect, const QColor &color) const
 {
     // content
     if (color.isValid()) {
@@ -1356,7 +1357,7 @@ void Helper::renderScrollBarBorder(QPainter *painter, const QRect &rect, const Q
 
 //______________________________________________________________________________
 void Helper::renderTabBarTab(QPainter *painter,
-                             const QRect &rect,
+                             const QRectF &rect,
                              const QPalette &palette,
                              const QHash<QByteArray, bool> &stateProperties,
                              Corners corners,
@@ -1380,19 +1381,12 @@ void Helper::renderTabBarTab(QPainter *painter,
     QColor bgBrush;
 
     if (selected) {
-        if (north) {
-            // overlap bottom border
-            frameRect.adjust(0, 0, 0, 1);
-        } else if (south) {
-            // overlap top border
-            frameRect.adjust(0, -1, 0, 0);
-        } else if (west) {
-            // overlap right border
-            frameRect.adjust(0, 0, 1, 0);
-        } else if (east) {
-            // overlap left border
-            frameRect.adjust(-1, 0, 0, 0);
-        }
+        // overlap border
+        // This covers just enough of the border, so that both the border and it's
+        // antialiasing effect is covered. On 100% scale it does nothing
+        const qreal overlap = devicePixelRatio(painter) * devicePixelRatio(painter);
+        frameRect.adjust(east ? -overlap : 0, south ? -overlap : 0, west ? overlap : 0, north ? overlap : 0);
+
         if (documentMode && !isQtQuickControl && !hasAlteredBackground) {
             bgBrush = palette.color(QPalette::Window);
         } else {
@@ -1419,19 +1413,12 @@ void Helper::renderTabBarTab(QPainter *painter,
         painter->setPen(Qt::NoPen);
         painter->drawPath(highlightPath);
     } else {
-        if (north) {
-            // don't overlap bottom border
-            frameRect.adjust(0, 0, 0, -1);
-        } else if (south) {
-            // don't overlap top border
-            frameRect.adjust(0, 1, 0, 0);
-        } else if (west) {
-            // don't overlap right border
-            frameRect.adjust(0, 0, -1, 0);
-        } else if (east) {
-            // don't overlap left border
-            frameRect.adjust(1, 0, 0, 0);
-        }
+        // don't overlap border
+        // Since we dont set the rectangle as strokedRect here, modify only one side of it
+        // the same amount strokedRect method would, to make it snap next to the border
+        const qreal overlap = 0.5 * PenWidth::Frame;
+        frameRect.adjust(east ? overlap : 0, south ? overlap : 0, west ? -overlap : 0, north ? -overlap : 0);
+
         const auto windowColor = palette.color(QPalette::Window);
         bgBrush = windowColor.darker(120);
         const auto hover = alphaColor(hoverColor(palette), 0.2);
@@ -1448,9 +1435,9 @@ void Helper::renderTabBarTab(QPainter *painter,
 }
 
 //______________________________________________________________________________
-void Helper::renderArrow(QPainter *painter, const QRect &rect, const QColor &color, ArrowOrientation orientation) const
+void Helper::renderArrow(QPainter *painter, const QRectF &rect, const QColor &color, ArrowOrientation orientation) const
 {
-    int size = std::min({rect.width(), rect.height(), Metrics::ArrowSize});
+    int size = std::min({rect.toRect().width(), rect.toRect().height(), Metrics::ArrowSize});
     // No point in trying to draw if it's too small
     if (size <= 0) {
         return;
@@ -1519,7 +1506,7 @@ void Helper::renderArrow(QPainter *painter, const QRect &rect, const QColor &col
 
 //______________________________________________________________________________
 void Helper::renderDecorationButton(QPainter *painter,
-                                    const QRect &rect,
+                                    const QRectF &rect,
                                     DecorationButtonType buttonType,
                                     const bool buttonChecked,
                                     const QColor &foregroundColor,
@@ -1529,7 +1516,7 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     const QPalette &palette) const
 {
     painter->save();
-    painter->setViewport(rect);
+    painter->setViewport(rect.toRect());
     painter->setWindow(0, 0, 18, 18);
     painter->setRenderHints(QPainter::Antialiasing);
 
@@ -1600,7 +1587,7 @@ void Helper::renderDecorationButton(QPainter *painter,
         painter->setPen(pen);
 
         if (!systemIconName.isEmpty()) {
-            painter->setWindow(rect);
+            painter->setWindow(rect.toRect());
             SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), palette);
             iconRenderer.renderIcon();
         } else {
@@ -1845,5 +1832,10 @@ Qt::Edges Helper::menuSeamlessEdges(const QWidget *widget)
         return edges;
     }
     return Qt::Edges();
+}
+
+qreal Helper::devicePixelRatio(QPainter *painter) const
+{
+    return painter->device() ? painter->device()->devicePixelRatioF() : qApp->devicePixelRatio();
 }
 }
