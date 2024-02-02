@@ -1414,7 +1414,7 @@ void Helper::renderTabBarTab(QPainter *painter,
         // don't overlap border
         // Since we dont set the rectangle as strokedRect here, modify only one side of it
         // the same amount strokedRect method would, to make it snap next to the border
-        const qreal overlap = 0.5 * PenWidth::Frame;
+        const qreal overlap = PenWidth::Frame;
         frameRect.adjust(east ? overlap : 0, south ? overlap : 0, west ? -overlap : 0, north ? -overlap : 0);
 
         const auto windowColor = palette.color(QPalette::Window);
