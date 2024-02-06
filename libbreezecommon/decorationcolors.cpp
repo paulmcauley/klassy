@@ -157,40 +157,11 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     buttonHoverStatefulBrush = KStatefulBrush(KColorScheme::Button, KColorScheme::HoverColor);
     (*decorationPaletteGroup)->buttonHover = buttonHoverStatefulBrush.brush(QPalette::ColorGroup::Active).color();
 
-    // this is required as the accent colours feature sets these the same
+    // this is required as the KDE accent colours feature sets these the same
     if ((*decorationPaletteGroup)->buttonFocus == (*decorationPaletteGroup)->buttonHover)
         (*decorationPaletteGroup)->buttonHover = ColorTools::getDifferentiatedLessSaturatedColor((*decorationPaletteGroup)->buttonFocus);
 
-    //"Blue Ocean" style reduced opacity outlined buttons
-    (*decorationPaletteGroup)->buttonReducedOpacityBackground =
-        ColorTools::alphaMix((*decorationPaletteGroup)->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
-
-    (*decorationPaletteGroup)->buttonReducedOpacityOutline =
-        ColorTools::alphaMix((*decorationPaletteGroup)->buttonFocus, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
-
     (*decorationPaletteGroup)->fullySaturatedNegative = ColorTools::getDifferentiatedSaturatedColor((*decorationPaletteGroup)->negative, true);
-    (*decorationPaletteGroup)->negativeReducedOpacityBackground =
-        ColorTools::alphaMix((*decorationPaletteGroup)->fullySaturatedNegative, decorationSettings->translucentButtonBackgroundsOpacity(active));
-
-    (*decorationPaletteGroup)->negativeReducedOpacityOutline =
-        ColorTools::alphaMix((*decorationPaletteGroup)->fullySaturatedNegative,
-                             qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.4), 1.0));
-
-    (*decorationPaletteGroup)->negativeReducedOpacityLessSaturatedBackground =
-        ColorTools::alphaMix(ColorTools::getDifferentiatedLessSaturatedColor((*decorationPaletteGroup)->negative),
-                             qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
-
-    (*decorationPaletteGroup)->neutralReducedOpacityBackground =
-        ColorTools::alphaMix((*decorationPaletteGroup)->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
-
-    (*decorationPaletteGroup)->neutralReducedOpacityOutline =
-        ColorTools::alphaMix((*decorationPaletteGroup)->neutral, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
-
-    (*decorationPaletteGroup)->positiveReducedOpacityBackground =
-        ColorTools::alphaMix((*decorationPaletteGroup)->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 0.8), 1.0));
-
-    (*decorationPaletteGroup)->positiveReducedOpacityOutline =
-        ColorTools::alphaMix((*decorationPaletteGroup)->positive, qMin((decorationSettings->translucentButtonBackgroundsOpacity(active) * 1.2), 1.0));
 
     (*decorationPaletteGroup)->highlight = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Highlight);
     (*decorationPaletteGroup)->highlightLessSaturated = ColorTools::getLessSaturatedColorForWindowHighlight((*decorationPaletteGroup)->highlight, true);
@@ -204,7 +175,7 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     switch (decorationSettings->thinWindowOutlineStyle(active)) {
     case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrast:
         (*decorationPaletteGroup)->windowOutline =
-            ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, decorationSettings->windowOutlineContrastOpacity(active));
+            ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, decorationSettings->windowOutlineContrastOpacity(active) / 100.0f);
         break;
     case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor:
         (*decorationPaletteGroup)->windowOutline = accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active);
@@ -224,7 +195,7 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
         break;
     case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineShadowColor:
         (*decorationPaletteGroup)->windowOutline =
-            ColorTools::alphaMix((*decorationPaletteGroup)->shadow, decorationSettings->windowOutlineShadowColorOpacity());
+            ColorTools::alphaMix((*decorationPaletteGroup)->shadow, decorationSettings->windowOutlineShadowColorOpacity() / 100.0f);
         break;
     }
 }
@@ -235,10 +206,10 @@ QColor DecorationColors::accentedWindowOutlineColor(DecorationPaletteGroup *deco
                                                     QColor customColor) const
 {
     if (customColor.isValid()) {
-        return ColorTools::alphaMix(customColor, decorationSettings->windowOutlineCustomColorOpacity(active));
+        return ColorTools::alphaMix(customColor, decorationSettings->windowOutlineCustomColorOpacity(active) / 100.0f);
 
     } else {
-        return ColorTools::alphaMix(decorationPaletteGroup->highlight, decorationSettings->windowOutlineAccentColorOpacity(active));
+        return ColorTools::alphaMix(decorationPaletteGroup->buttonFocus, decorationSettings->windowOutlineAccentColorOpacity(active) / 100.0f);
     }
 }
 
@@ -250,13 +221,13 @@ QColor DecorationColors::fontMixedAccentWindowOutlineColor(DecorationPaletteGrou
     if (customColor.isValid()) {
         return ColorTools::alphaMix(KColorUtils::mix(decorationPaletteGroup->titleBarText, customColor, 0.75) // titlebar font mixed with custom
                                     ,
-                                    decorationSettings->windowOutlineCustomWithContrastOpacity(active));
+                                    decorationSettings->windowOutlineCustomWithContrastOpacity(active) / 100.0f);
     } else { // not a custom color
         return ColorTools::alphaMix(KColorUtils::mix(decorationPaletteGroup->titleBarText,
                                                      decorationPaletteGroup->buttonFocus,
                                                      0.75) // foreground active font mixed with accent
                                     ,
-                                    decorationSettings->windowOutlineAccentWithContrastOpacity(active));
+                                    decorationSettings->windowOutlineAccentWithContrastOpacity(active) / 100.0f);
     }
 }
 

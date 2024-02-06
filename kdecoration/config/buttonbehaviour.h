@@ -11,6 +11,7 @@
 #include "breezesettings.h"
 #include "ui_buttonbehaviour.h"
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDialog>
 
 namespace Breeze
@@ -52,6 +53,12 @@ private Q_SLOTS:
     void copyCheckedStatusFromCloseToNormalInactive();
     void copyCheckedStatusFromActiveToInactive();
     void copyCheckedStatusFromInactiveToActive();
+    void copyComboStatusFromNormalToCloseActive();
+    void copyComboStatusFromNormalToCloseInactive();
+    void copyComboStatusFromCloseToNormalActive();
+    void copyComboStatusFromCloseToNormalInactive();
+    void copyComboStatusFromActiveToInactive();
+    void copyComboStatusFromInactiveToActive();
 
 Q_SIGNALS:
     void saved();
@@ -82,15 +89,12 @@ private:
         showIconOnPress,
         showIconOnHover,
         showIconNormally,
-        varyColorIcon,
         showBackgroundOnPress,
         showBackgroundOnHover,
         showBackgroundNormally,
-        varyColorBackground,
         showOutlineOnPress,
         showOutlineOnHover,
         showOutlineNormally,
-        varyColorOutline,
         COUNT
     };
 
@@ -98,21 +102,27 @@ private:
         showCloseIconOnPress,
         showCloseIconOnHover,
         showCloseIconNormally,
-        varyColorCloseIcon,
         showCloseBackgroundOnPress,
         showCloseBackgroundOnHover,
         showCloseBackgroundNormally,
-        varyColorCloseBackground,
         showCloseOutlineOnPress,
         showCloseOutlineOnHover,
         showCloseOutlineNormally,
-        varyColorCloseOutline,
         COUNT
     };
+
+    enum class TableVaryColorComboBox { varyColorIcon, varyColorBackground, varyColorOutline, COUNT };
+
+    enum class TableCloseVaryColorComboBox { varyColorCloseIcon, varyColorCloseBackground, varyColorCloseOutline, COUNT };
+
     QMap<TableCheckBox, QCheckBox *> m_tableCheckBoxesActive;
     QMap<TableCloseCheckBox, QCheckBox *> m_tableCloseCheckBoxesActive;
     QMap<TableCheckBox, QCheckBox *> m_tableCheckBoxesInactive;
     QMap<TableCloseCheckBox, QCheckBox *> m_tableCloseCheckBoxesInactive;
+    QMap<TableVaryColorComboBox, QComboBox *> m_tableComboBoxesActive;
+    QMap<TableCloseVaryColorComboBox, QComboBox *> m_tableCloseComboBoxesActive;
+    QMap<TableVaryColorComboBox, QComboBox *> m_tableComboBoxesInactive;
+    QMap<TableCloseVaryColorComboBox, QComboBox *> m_tableCloseComboBoxesInactive;
 };
 
 }

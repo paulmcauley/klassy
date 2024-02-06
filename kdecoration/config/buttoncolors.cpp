@@ -160,18 +160,6 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         other->setChecked(v);
     };
 
-    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettingsActive);
-    connect(m_ui->translucentButtonBackgroundsActive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->translucentButtonBackgroundsInactive, v);
-    });
-
-    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, this, &ButtonColors::showHideTranslucencySettingsInactive);
-    connect(m_ui->translucentButtonBackgroundsInactive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->translucentButtonBackgroundsActive, v);
-    });
-
     connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, [=](const bool v) {
         setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressInactive, v);
@@ -186,14 +174,37 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressActive, v);
     });
 
-    connect(m_ui->blackWhiteIconOnPoorContrastActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->blackWhiteIconOnPoorContrastActive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->blackWhiteIconOnPoorContrastInactive, v);
+    connect(m_ui->useHoverAccentActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->useHoverAccentActive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->useHoverAccentInactive, v);
     });
 
-    connect(m_ui->blackWhiteIconOnPoorContrastInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->blackWhiteIconOnPoorContrastInactive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->blackWhiteIconOnPoorContrastActive, v);
+    connect(m_ui->useHoverAccentInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->useHoverAccentInactive, &QAbstractButton::toggled, [=](const bool v) {
+        setOtherCheckedIfLocked(m_ui->useHoverAccentActive, v);
+    });
+
+    connect(m_ui->onPoorIconContrastActive,
+            qOverload<int>(&QComboBox::currentIndexChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->onPoorIconContrastActive, qOverload<int>(&QComboBox::currentIndexChanged), this, &ButtonColors::setPoorIconContrastThresholdVisibleActive);
+    connect(m_ui->onPoorIconContrastActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->onPoorIconContrastInactive, i);
+    });
+
+    connect(m_ui->onPoorIconContrastInactive,
+            qOverload<int>(&QComboBox::currentIndexChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->onPoorIconContrastInactive,
+            qOverload<int>(&QComboBox::currentIndexChanged),
+            this,
+            &ButtonColors::setPoorIconContrastThresholdVisibleInactive);
+    connect(m_ui->onPoorIconContrastInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
+        setIndexOfOtherIfLocked(m_ui->onPoorIconContrastActive, i);
     });
 
     connect(m_ui->adjustBackgroundColorOnPoorContrastActive,
@@ -201,6 +212,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
+    connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, this, &ButtonColors::setPoorBackgroundContrastThresholdVisibleActive);
     connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, [=](const bool v) {
         setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastInactive, v);
     });
@@ -210,6 +222,10 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
+    connect(m_ui->adjustBackgroundColorOnPoorContrastInactive,
+            &QAbstractButton::toggled,
+            this,
+            &ButtonColors::setPoorBackgroundContrastThresholdVisibleInactive);
     connect(m_ui->adjustBackgroundColorOnPoorContrastInactive, &QAbstractButton::toggled, [=](const bool v) {
         setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastActive, v);
     });
@@ -220,14 +236,66 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         other->setValue(v);
     };
 
-    connect(m_ui->translucentButtonBackgroundsOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->translucentButtonBackgroundsOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->translucentButtonBackgroundsOpacityInactive, v);
+    auto setOtherDoubleValueIfLocked = [this](QDoubleSpinBox *other, const double v) {
+        if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
+            return; // only do this for user interactions where the active/inactive lock is checked
+        other->setValue(v);
+    };
+
+    connect(m_ui->buttonIconOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonIconOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->buttonIconOpacityInactive, v);
     });
 
-    connect(m_ui->translucentButtonBackgroundsOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->translucentButtonBackgroundsOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->translucentButtonBackgroundsOpacityActive, v);
+    connect(m_ui->buttonIconOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonIconOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->buttonIconOpacityActive, v);
+    });
+
+    connect(m_ui->buttonBackgroundOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonBackgroundOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->buttonBackgroundOpacityInactive, v);
+    });
+
+    connect(m_ui->buttonBackgroundOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->buttonBackgroundOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
+        setOtherValueIfLocked(m_ui->buttonBackgroundOpacityActive, v);
+    });
+
+    connect(m_ui->poorIconContrastThresholdActive,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->poorIconContrastThresholdActive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
+        setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdInactive, v);
+    });
+
+    connect(m_ui->poorIconContrastThresholdInactive,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->poorIconContrastThresholdInactive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
+        setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdActive, v);
+    });
+
+    connect(m_ui->poorBackgroundContrastThresholdActive,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->poorBackgroundContrastThresholdActive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
+        setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdInactive, v);
+    });
+
+    connect(m_ui->poorBackgroundContrastThresholdInactive,
+            qOverload<double>(&QDoubleSpinBox::valueChanged),
+            this,
+            &ButtonColors::updateChanged,
+            Qt::ConnectionType::DirectConnection);
+    connect(m_ui->poorBackgroundContrastThresholdInactive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
+        setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdActive, v);
     });
 
     connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -370,18 +438,24 @@ void ButtonColors::loadMain(const bool assignUiValuesOnly)
     m_ui->buttonIconColorsInactive->setCurrentIndex(m_internalSettings->buttonIconColors(false));
     m_ui->buttonBackgroundColorsActive->setCurrentIndex(m_internalSettings->buttonBackgroundColors(true));
     m_ui->buttonBackgroundColorsInactive->setCurrentIndex(m_internalSettings->buttonBackgroundColors(false));
-    m_ui->translucentButtonBackgroundsActive->setChecked(m_internalSettings->translucentButtonBackgrounds(true));
-    m_ui->translucentButtonBackgroundsInactive->setChecked(m_internalSettings->translucentButtonBackgrounds(false));
     m_ui->negativeCloseBackgroundHoverPressActive->setChecked(m_internalSettings->negativeCloseBackgroundHoverPress(true));
     m_ui->negativeCloseBackgroundHoverPressInactive->setChecked(m_internalSettings->negativeCloseBackgroundHoverPress(false));
+    m_ui->useHoverAccentActive->setChecked(m_internalSettings->useHoverAccent(true));
+    m_ui->useHoverAccentInactive->setChecked(m_internalSettings->useHoverAccent(false));
     m_ui->lockButtonColorsActive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
     m_ui->lockButtonColorsInactive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
-    m_ui->blackWhiteIconOnPoorContrastActive->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast(true));
-    m_ui->blackWhiteIconOnPoorContrastInactive->setChecked(m_internalSettings->blackWhiteIconOnPoorContrast(false));
+    m_ui->onPoorIconContrastActive->setCurrentIndex(m_internalSettings->onPoorIconContrast(true));
+    m_ui->onPoorIconContrastInactive->setCurrentIndex(m_internalSettings->onPoorIconContrast(false));
+    m_ui->poorIconContrastThresholdActive->setValue(m_internalSettings->poorIconContrastThreshold(true));
+    m_ui->poorIconContrastThresholdInactive->setValue(m_internalSettings->poorIconContrastThreshold(false));
     m_ui->adjustBackgroundColorOnPoorContrastActive->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast(true));
     m_ui->adjustBackgroundColorOnPoorContrastInactive->setChecked(m_internalSettings->adjustBackgroundColorOnPoorContrast(false));
-    m_ui->translucentButtonBackgroundsOpacityActive->setValue(m_internalSettings->translucentButtonBackgroundsOpacity(true) * 100);
-    m_ui->translucentButtonBackgroundsOpacityInactive->setValue(m_internalSettings->translucentButtonBackgroundsOpacity(false) * 100);
+    m_ui->poorBackgroundContrastThresholdActive->setValue(m_internalSettings->poorBackgroundContrastThreshold(true));
+    m_ui->poorBackgroundContrastThresholdInactive->setValue(m_internalSettings->poorBackgroundContrastThreshold(false));
+    m_ui->buttonIconOpacityActive->setValue(m_internalSettings->buttonIconOpacity(true));
+    m_ui->buttonIconOpacityInactive->setValue(m_internalSettings->buttonIconOpacity(false));
+    m_ui->buttonBackgroundOpacityActive->setValue(m_internalSettings->buttonBackgroundOpacity(true));
+    m_ui->buttonBackgroundOpacityInactive->setValue(m_internalSettings->buttonBackgroundOpacity(false));
 
     setNegativeCloseBackgroundHoverPressStateActive();
     setNegativeCloseBackgroundHoverPressStateInactive();
@@ -389,8 +463,10 @@ void ButtonColors::loadMain(const bool assignUiValuesOnly)
     refreshCloseButtonIconColorStateInactive();
     loadCloseButtonIconColor(true); // refreshCloseButtonIconColorState must occur before loading closeButtonIconColor
     loadCloseButtonIconColor(false);
-    showHideTranslucencySettings(true);
-    showHideTranslucencySettings(false);
+    setPoorIconContrastThresholdVisibleActive();
+    setPoorIconContrastThresholdVisibleInactive();
+    setPoorBackgroundContrastThresholdVisibleActive();
+    setPoorBackgroundContrastThresholdVisibleInactive();
 
     decodeAndLoadColorOverrideLockStates(true);
     decodeAndLoadColorOverrideLockStates(false);
@@ -440,17 +516,23 @@ void ButtonColors::save(const bool reloadKwinConfig)
     m_internalSettings->setCloseButtonIconColor(false, convertCloseButtonIconColorUiToSettingsIndex(false, m_ui->closeButtonIconColorInactive->currentIndex()));
     m_internalSettings->setButtonBackgroundColors(true, m_ui->buttonBackgroundColorsActive->currentIndex());
     m_internalSettings->setButtonBackgroundColors(false, m_ui->buttonBackgroundColorsInactive->currentIndex());
-    m_internalSettings->setTranslucentButtonBackgrounds(true, m_ui->translucentButtonBackgroundsActive->isChecked());
-    m_internalSettings->setTranslucentButtonBackgrounds(false, m_ui->translucentButtonBackgroundsInactive->isChecked());
     m_internalSettings->setNegativeCloseBackgroundHoverPress(true, m_ui->negativeCloseBackgroundHoverPressActive->isChecked());
     m_internalSettings->setNegativeCloseBackgroundHoverPress(false, m_ui->negativeCloseBackgroundHoverPressInactive->isChecked());
+    m_internalSettings->setUseHoverAccent(true, m_ui->useHoverAccentActive->isChecked());
+    m_internalSettings->setUseHoverAccent(false, m_ui->useHoverAccentInactive->isChecked());
     m_internalSettings->setLockButtonColorsActiveInactive(m_ui->lockButtonColorsActive->isChecked());
-    m_internalSettings->setBlackWhiteIconOnPoorContrast(true, m_ui->blackWhiteIconOnPoorContrastActive->isChecked());
-    m_internalSettings->setBlackWhiteIconOnPoorContrast(false, m_ui->blackWhiteIconOnPoorContrastInactive->isChecked());
+    m_internalSettings->setOnPoorIconContrast(true, m_ui->onPoorIconContrastActive->currentIndex());
+    m_internalSettings->setOnPoorIconContrast(false, m_ui->onPoorIconContrastInactive->currentIndex());
+    m_internalSettings->setPoorIconContrastThreshold(true, m_ui->poorIconContrastThresholdActive->value());
+    m_internalSettings->setPoorIconContrastThreshold(false, m_ui->poorIconContrastThresholdInactive->value());
     m_internalSettings->setAdjustBackgroundColorOnPoorContrast(true, m_ui->adjustBackgroundColorOnPoorContrastActive->isChecked());
     m_internalSettings->setAdjustBackgroundColorOnPoorContrast(false, m_ui->adjustBackgroundColorOnPoorContrastInactive->isChecked());
-    m_internalSettings->setTranslucentButtonBackgroundsOpacity(true, m_ui->translucentButtonBackgroundsOpacityActive->value() / 100.0f);
-    m_internalSettings->setTranslucentButtonBackgroundsOpacity(false, m_ui->translucentButtonBackgroundsOpacityInactive->value() / 100.0f);
+    m_internalSettings->setPoorBackgroundContrastThreshold(true, m_ui->poorBackgroundContrastThresholdActive->value());
+    m_internalSettings->setPoorBackgroundContrastThreshold(false, m_ui->poorBackgroundContrastThresholdInactive->value());
+    m_internalSettings->setButtonIconOpacity(true, m_ui->buttonIconOpacityActive->value());
+    m_internalSettings->setButtonIconOpacity(false, m_ui->buttonIconOpacityInactive->value());
+    m_internalSettings->setButtonBackgroundOpacity(true, m_ui->buttonBackgroundOpacityActive->value());
+    m_internalSettings->setButtonBackgroundOpacity(false, m_ui->buttonBackgroundOpacityInactive->value());
 
     m_internalSettings->setButtonOverrideColorsLockStates(true, encodeColorOverrideLockStates(true));
     m_internalSettings->setButtonOverrideColorsLockStates(false, encodeColorOverrideLockStates(false));
@@ -557,28 +639,39 @@ void ButtonColors::updateChanged()
         modified = true;
     else if (m_ui->buttonBackgroundColorsInactive->currentIndex() != m_internalSettings->buttonBackgroundColors(false))
         modified = true;
-    else if (m_ui->translucentButtonBackgroundsActive->isChecked() != m_internalSettings->translucentButtonBackgrounds(true))
-        modified = true;
-    else if (m_ui->translucentButtonBackgroundsInactive->isChecked() != m_internalSettings->translucentButtonBackgrounds(false))
-        modified = true;
     else if (m_ui->negativeCloseBackgroundHoverPressActive->isChecked() != m_internalSettings->negativeCloseBackgroundHoverPress(true))
         modified = true;
     else if (m_ui->negativeCloseBackgroundHoverPressInactive->isChecked() != m_internalSettings->negativeCloseBackgroundHoverPress(false))
         modified = true;
+    else if (m_ui->useHoverAccentActive->isChecked() != m_internalSettings->useHoverAccent(true))
+        modified = true;
+    else if (m_ui->useHoverAccentInactive->isChecked() != m_internalSettings->useHoverAccent(false))
+        modified = true;
     else if (m_ui->lockButtonColorsActive->isChecked() != m_internalSettings->lockButtonColorsActiveInactive())
         modified = true;
-    else if (m_ui->blackWhiteIconOnPoorContrastActive->isChecked() != m_internalSettings->blackWhiteIconOnPoorContrast(true))
+    else if (m_ui->onPoorIconContrastActive->currentIndex() != m_internalSettings->onPoorIconContrast(true))
         modified = true;
-    else if (m_ui->blackWhiteIconOnPoorContrastInactive->isChecked() != m_internalSettings->blackWhiteIconOnPoorContrast(false))
+    else if (m_ui->onPoorIconContrastActive->currentIndex() != m_internalSettings->onPoorIconContrast(false))
+        modified = true;
+    else if (m_ui->poorIconContrastThresholdActive->value() != m_internalSettings->poorIconContrastThreshold(true))
+        modified = true;
+    else if (m_ui->poorIconContrastThresholdInactive->value() != m_internalSettings->poorIconContrastThreshold(false))
         modified = true;
     else if (m_ui->adjustBackgroundColorOnPoorContrastActive->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast(true))
         modified = true;
     else if (m_ui->adjustBackgroundColorOnPoorContrastInactive->isChecked() != m_internalSettings->adjustBackgroundColorOnPoorContrast(false))
         modified = true;
-    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacityActive->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity(true))) < 0.001))
+    else if (m_ui->poorBackgroundContrastThresholdActive->value() != m_internalSettings->poorBackgroundContrastThreshold(true))
         modified = true;
-    else if (!(qAbs(m_ui->translucentButtonBackgroundsOpacityInactive->value() - (100 * m_internalSettings->translucentButtonBackgroundsOpacity(false)))
-               < 0.001))
+    else if (m_ui->poorBackgroundContrastThresholdInactive->value() != m_internalSettings->poorBackgroundContrastThreshold(false))
+        modified = true;
+    else if (m_ui->buttonIconOpacityActive->value() != m_internalSettings->buttonIconOpacity(true))
+        modified = true;
+    else if (m_ui->buttonIconOpacityInactive->value() != m_internalSettings->buttonIconOpacity(false))
+        modified = true;
+    else if (m_ui->buttonBackgroundOpacityActive->value() != m_internalSettings->buttonBackgroundOpacity(true))
+        modified = true;
+    else if (m_ui->buttonBackgroundOpacityInactive->value() != m_internalSettings->buttonBackgroundOpacity(false))
         modified = true;
     else if (encodeColorOverrideLockStates(true) != m_internalSettings->buttonOverrideColorsLockStates(true))
         modified = true;
@@ -848,6 +941,7 @@ void ButtonColors::loadCloseButtonIconColor(bool active)
     closeButtonIconColor->setCurrentIndex(uiIndex);
 }
 
+// on buttonBackgroundColors change
 void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
 {
     QComboBox *buttonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
@@ -865,28 +959,45 @@ void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
     } else {
         negativeCloseBackgroundHoverPress->setVisible(false);
     }
+
+    QCheckBox *useHoverAccentActive = active ? m_ui->useHoverAccentActive : m_ui->useHoverAccentInactive;
+    // also set useHoverAccent as also depends on buttonBackgroundColors change
+    if (m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::Accent
+        || m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+        || m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        useHoverAccentActive->setVisible(true);
+    } else {
+        useHoverAccentActive->setVisible(false);
+    }
 }
 
-void ButtonColors::showHideTranslucencySettings(bool active)
+void ButtonColors::setPoorBackgroundContrastThresholdVisible(bool active)
 {
-    QCheckBox *translucentButtonBackgrounds = active ? m_ui->translucentButtonBackgroundsActive : m_ui->translucentButtonBackgroundsInactive;
-    QSlider *translucentButtonBackgroundsOpacitySlider =
-        active ? m_ui->translucentButtonBackgroundsOpacitySliderActive : m_ui->translucentButtonBackgroundsOpacitySliderInactive;
-    QLabel *opacitySliderLabel_1 = active ? m_ui->opacitySliderLabel_1_Active : m_ui->opacitySliderLabel_1_Inactive;
-    QLabel *opacitySliderLabel_2 = active ? m_ui->opacitySliderLabel_2_Active : m_ui->opacitySliderLabel_2_Inactive;
-    QSpinBox *translucentButtonBackgroundsOpacity =
-        active ? m_ui->translucentButtonBackgroundsOpacityActive : m_ui->translucentButtonBackgroundsOpacityInactive;
-
-    if (translucentButtonBackgrounds->isChecked()) {
-        translucentButtonBackgroundsOpacitySlider->setVisible(true);
-        opacitySliderLabel_1->setVisible(true);
-        opacitySliderLabel_2->setVisible(true);
-        translucentButtonBackgroundsOpacity->setVisible(true);
+    QCheckBox *adjustBackgroundColorOnPoorContrast =
+        active ? m_ui->adjustBackgroundColorOnPoorContrastActive : m_ui->adjustBackgroundColorOnPoorContrastInactive;
+    QDoubleSpinBox *poorBackgroundContrastThreshold = active ? m_ui->poorBackgroundContrastThresholdActive : m_ui->poorBackgroundContrastThresholdInactive;
+    QLabel *poorBackgroundContrastThreshold_label =
+        active ? m_ui->poorBackgroundContrastThresholdActive_label : m_ui->poorBackgroundContrastThresholdInactive_label;
+    if (adjustBackgroundColorOnPoorContrast->isChecked()) {
+        poorBackgroundContrastThreshold->setVisible(true);
+        poorBackgroundContrastThreshold_label->setVisible(true);
     } else {
-        translucentButtonBackgroundsOpacitySlider->setVisible(false);
-        opacitySliderLabel_1->setVisible(false);
-        opacitySliderLabel_2->setVisible(false);
-        translucentButtonBackgroundsOpacity->setVisible(false);
+        poorBackgroundContrastThreshold->setVisible(false);
+        poorBackgroundContrastThreshold_label->setVisible(false);
+    }
+}
+
+void ButtonColors::setPoorIconContrastThresholdVisible(bool active)
+{
+    QComboBox *onPoorIconContrast = active ? m_ui->onPoorIconContrastActive : m_ui->onPoorIconContrastInactive;
+    QDoubleSpinBox *poorIconContrastThreshold = active ? m_ui->poorIconContrastThresholdActive : m_ui->poorIconContrastThresholdInactive;
+    QLabel *poorIconContrastThreshold_label = active ? m_ui->poorIconContrastThresholdActive_label : m_ui->poorIconContrastThresholdInactive_label;
+    if (onPoorIconContrast->currentIndex() != 0) {
+        poorIconContrastThreshold->setVisible(true);
+        poorIconContrastThreshold_label->setVisible(true);
+    } else {
+        poorIconContrastThreshold->setVisible(false);
+        poorIconContrastThreshold_label->setVisible(false);
     }
 }
 
@@ -927,7 +1038,7 @@ void ButtonColors::showInactiveOverrideGroupBox(const bool value)
 void ButtonColors::resizeDialog()
 {
     if (!(m_ui->buttonColorOverrideToggleActive->isChecked() || m_ui->buttonColorOverrideToggleInactive->isChecked())) {
-        this->setMaximumSize(755, 400);
+        this->setMaximumSize(900, 450);
         this->showNormal();
     } else {
         this->setMaximumSize(16777215, 16777215);
@@ -1173,7 +1284,7 @@ QByteArray ButtonColors::encodeColorOverrideTableColumn(const int column, const 
                 if (colorItem == QStringLiteral("Custom")) {
                     if (overrideColorButton->color().isValid()) {
                         if (overrideSpinBox->value() != 100) {
-                            colorArray.append(static_cast<qreal>(overrideSpinBox->value()) / 100.0);
+                            colorArray.append(overrideSpinBox->value());
                         }
                         colorArray.append(overrideColorButton->color().red());
                         colorArray.append(overrideColorButton->color().green());
@@ -1182,7 +1293,7 @@ QByteArray ButtonColors::encodeColorOverrideTableColumn(const int column, const 
                 } else {
                     colorArray.append(colorItem);
                     if (overrideSpinBox->value() != 100) {
-                        colorArray.append(static_cast<qreal>(overrideSpinBox->value()) / 100.0);
+                        colorArray.append(overrideSpinBox->value());
                     }
                 }
 
@@ -1236,7 +1347,7 @@ bool ButtonColors::decodeOverrideColorsAndLoadTableColumn(const QByteArray overr
                 overrideCheckBox->setChecked(true);
                 overrideComboBox->setCurrentIndex(overrideColorItems.indexOf(colorArray[0].toString()));
                 overrideColorButton->setColor(QColor());
-                overrideSpinBox->setValue(colorArray[1].toDouble() * 100);
+                overrideSpinBox->setValue(colorArray[1].toInt());
                 overrideColorLoaded = true;
                 break;
             case 3:
@@ -1257,7 +1368,7 @@ bool ButtonColors::decodeOverrideColorsAndLoadTableColumn(const QByteArray overr
                 color.setGreen(colorArray[2].toInt());
                 color.setBlue(colorArray[3].toInt());
                 overrideColorButton->setColor(color);
-                overrideSpinBox->setValue(colorArray[0].toDouble() * 100);
+                overrideSpinBox->setValue(colorArray[0].toInt());
                 overrideColorLoaded = true;
                 break;
             }
@@ -1323,13 +1434,13 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     auto uiButtonIconColors = active ? m_ui->buttonIconColorsActive : m_ui->buttonIconColorsInactive;
     auto uiCloseButtonIconColor = active ? m_ui->closeButtonIconColorActive : m_ui->closeButtonIconColorInactive;
     auto uiButtonBackgroundColors = active ? m_ui->buttonBackgroundColorsActive : m_ui->buttonBackgroundColorsInactive;
-    auto uiTranslucentButtonBackgrounds = active ? m_ui->translucentButtonBackgroundsActive : m_ui->translucentButtonBackgroundsInactive;
     auto uiNegativeCloseBackgroundHoverPress = active ? m_ui->negativeCloseBackgroundHoverPressActive : m_ui->negativeCloseBackgroundHoverPressInactive;
-    auto uiSetBlackWhiteIconOnPoorContrast = active ? m_ui->blackWhiteIconOnPoorContrastActive : m_ui->blackWhiteIconOnPoorContrastInactive;
+    auto uiSetOnPoorIconContrast = active ? m_ui->onPoorIconContrastActive : m_ui->onPoorIconContrastInactive;
     auto uiSetAdjustBackgroundColorOnPoorContrast =
         active ? m_ui->adjustBackgroundColorOnPoorContrastActive : m_ui->adjustBackgroundColorOnPoorContrastInactive;
-    auto uiSetTranclucentButtonBackgroundsOpacity =
-        active ? m_ui->translucentButtonBackgroundsOpacityActive : m_ui->translucentButtonBackgroundsOpacityInactive;
+    auto uiSetButtonIconOpacity = active ? m_ui->buttonIconOpacityActive : m_ui->buttonIconOpacityInactive;
+    auto uiSetButtonBackgroundOpacity = active ? m_ui->buttonBackgroundOpacityActive : m_ui->buttonBackgroundOpacityInactive;
+    auto uiUseHoverAccentActive = active ? m_ui->useHoverAccentActive : m_ui->useHoverAccentInactive;
 
     InternalSettingsPtr temporaryColorSettings =
         InternalSettingsPtr(new InternalSettings); // temporary settings that reflect the UI, only to instantly update the colours displayed in the UI
@@ -1338,12 +1449,13 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     // temporaryColorSettings->setButtonIconColors(m_ui->buttonIconColors->currentIndex());
     temporaryColorSettings->setCloseButtonIconColor(active, convertCloseButtonIconColorUiToSettingsIndex(active, uiCloseButtonIconColor->currentIndex()));
     // temporaryColorSettings->setButtonBackgroundColors(m_ui->buttonBackgroundColors->currentIndex());
-    temporaryColorSettings->setTranslucentButtonBackgrounds(active, uiTranslucentButtonBackgrounds->isChecked());
     temporaryColorSettings->setNegativeCloseBackgroundHoverPress(active, uiNegativeCloseBackgroundHoverPress->isChecked());
     // temporaryColorSettings->setLockButtonColorsActive(m_ui->lockButtonColorsActive->isChecked());
-    temporaryColorSettings->setBlackWhiteIconOnPoorContrast(active, uiSetBlackWhiteIconOnPoorContrast->isChecked());
+    temporaryColorSettings->setOnPoorIconContrast(active, uiSetOnPoorIconContrast->currentIndex());
     temporaryColorSettings->setAdjustBackgroundColorOnPoorContrast(active, uiSetAdjustBackgroundColorOnPoorContrast->isChecked());
-    temporaryColorSettings->setTranslucentButtonBackgroundsOpacity(active, uiSetTranclucentButtonBackgroundsOpacity->value() / 100.0f);
+    temporaryColorSettings->setButtonIconOpacity(active, uiSetButtonIconOpacity->value());
+    temporaryColorSettings->setButtonBackgroundOpacity(active, uiSetButtonBackgroundOpacity->value());
+    temporaryColorSettings->setUseHoverAccent(active, uiUseHoverAccentActive->isChecked());
 
     DecorationColors decorationPalette(false);
     decorationPalette.generateDecorationColors(QApplication::palette(),
@@ -1422,15 +1534,21 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     uiButtonBackgroundColors->setIconSize(QSize(size, size));
     pixmap.fill(Qt::transparent);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundPress.isValid() ? getGroup(&otherButtonPalette, active)->backgroundPress
-                                                                                       : Qt::transparent);
-    painter->drawRect(oneByThree00);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundHover.isValid() ? getGroup(&otherButtonPalette, active)->backgroundHover
-                                                                                       : Qt::transparent);
-    painter->drawRect(oneByThree01);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundNormal.isValid() ? getGroup(&otherButtonPalette, active)->backgroundNormal
-                                                                                        : Qt::transparent);
-    painter->drawRect(oneByThree02);
+    for (int i = 0; i < 2; i++) {
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
+            painter->drawRect(twoByThree[i][0]);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
+                                                                                                   : Qt::transparent);
+            painter->drawRect(twoByThree[i][1]);
+
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
+            painter->drawRect(twoByThree[i][2]);
+        }
+    }
     QIcon titlebarText(pixmap);
     uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarText, titlebarText);
 
@@ -1441,16 +1559,17 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
-                                  : Qt::transparent);
+
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1458,18 +1577,26 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose, backgroundTitlebarTextNegativeClose);
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::Accent);
-    otherButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
+    for (auto &buttonPalette : otherCloseButtonList) {
+        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+    };
 
     pixmap.fill(Qt::transparent);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundPress.isValid() ? getGroup(&otherButtonPalette, active)->backgroundPress
-                                                                                       : Qt::transparent);
-    painter->drawRect(oneByThree00);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundHover.isValid() ? getGroup(&otherButtonPalette, active)->backgroundHover
-                                                                                       : Qt::transparent);
-    painter->drawRect(oneByThree01);
-    painter->setBrush(getGroup(&otherButtonPalette, active)->backgroundNormal.isValid() ? getGroup(&otherButtonPalette, active)->backgroundNormal
-                                                                                        : Qt::transparent);
-    painter->drawRect(oneByThree02);
+    for (int i = 0; i < 2; i++) {
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
+            painter->drawRect(twoByThree[i][0]);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
+                                                                                                   : Qt::transparent);
+            painter->drawRect(twoByThree[i][1]);
+
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
+            painter->drawRect(twoByThree[i][2]);
+        }
+    }
     QIcon backgroundAccent(pixmap);
     uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::Accent, backgroundAccent);
 
@@ -1480,16 +1607,17 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->backgroundNormal
-                                  : Qt::transparent);
+
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->backgroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->backgroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1505,16 +1633,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 4; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress.isValid()
-                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][0]);
             painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundHover.isValid()
                                   ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundHover
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][1]);
-            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal.isValid()
-                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundNormal
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->backgroundPress
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][2]);
         }
@@ -1533,16 +1661,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
-                                  : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1556,16 +1684,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
-                                  : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1579,16 +1707,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
-                                  : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1602,16 +1730,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 2; i++) {
-        if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
-                                                                                                   : Qt::transparent);
+        if (i < otherCloseButtonList.count()) {
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
+                                  : Qt::transparent);
             painter->drawRect(twoByThree[i][0]);
             painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundHover.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundHover
                                                                                                    : Qt::transparent);
             painter->drawRect(twoByThree[i][1]);
-            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundNormal.isValid()
-                                  ? getGroup(otherCloseButtonList[i], active)->foregroundNormal
-                                  : Qt::transparent);
+            painter->setBrush(getGroup(otherCloseButtonList[i], active)->foregroundPress.isValid() ? getGroup(otherCloseButtonList[i], active)->foregroundPress
+                                                                                                   : Qt::transparent);
             painter->drawRect(twoByThree[i][2]);
         }
     }
@@ -1626,16 +1754,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     pixmap.fill(Qt::transparent);
     for (int i = 0; i < 4; i++) {
         if (i < otherTrafficLightsButtonList.count()) {
-            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress.isValid()
-                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][0]);
             painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundHover.isValid()
                                   ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundHover
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][1]);
-            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal.isValid()
-                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundNormal
+            painter->setBrush(getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                  ? getGroup(otherTrafficLightsButtonList[i], active)->foregroundPress
                                   : Qt::transparent);
             painter->drawRect(fourByThree[i][2]);
         }
@@ -1658,16 +1786,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
                     painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
                                           ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
@@ -1675,14 +1803,14 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         } else {
             closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
-                                                                                               : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree00);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
-                                                                                                : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
@@ -1699,16 +1827,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
                     painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
                                           ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
@@ -1716,14 +1844,14 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         } else {
             closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
-                                                                                               : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree00);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
-                                                                                                : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
@@ -1740,16 +1868,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
                     painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
                                           ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
@@ -1757,14 +1885,14 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         } else {
             closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
-                                                                                               : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree00);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
-                                                                                                : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
@@ -1782,16 +1910,16 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
                 if (i < trafficLightsButtonList.count()) {
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][0]);
                     painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundHover.isValid()
                                           ? getGroup(trafficLightsButtonList[i], active)->foregroundHover
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][1]);
-                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundNormal.isValid()
-                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundNormal
+                    painter->setBrush(getGroup(trafficLightsButtonList[i], active)->foregroundPress.isValid()
+                                          ? getGroup(trafficLightsButtonList[i], active)->foregroundPress
                                           : Qt::transparent);
                     painter->drawRect(threeByThree[i][2]);
                 }
@@ -1799,14 +1927,14 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         } else {
             closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
             pixmap.fill(Qt::transparent);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
-                                                                                               : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
+                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree00);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundHover.isValid() ? getGroup(&closeButtonPalette, active)->foregroundHover
                                                                                                : Qt::transparent);
             painter->drawRect(oneByThree01);
-            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
-                                                                                                : Qt::transparent);
+            painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundPress.isValid() ? getGroup(&closeButtonPalette, active)->foregroundPress
+                                                                                               : Qt::transparent);
             painter->drawRect(oneByThree02);
         }
         QIcon icon(pixmap);
@@ -2035,6 +2163,7 @@ bool ButtonColors::event(QEvent *ev)
         if (!m_loaded)
             load();
         else {
+            setSystemTitlebarColors();
             loadButtonPaletteColorsIcons();
             loadHorizontalHeaderIcons();
 

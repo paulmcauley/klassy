@@ -56,14 +56,7 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
-    void showHideTranslucencySettingsActive()
-    {
-        showHideTranslucencySettings(true);
-    }
-    void showHideTranslucencySettingsInactive()
-    {
-        showHideTranslucencySettings(false);
-    }
+
     void refreshCloseButtonIconColorStateActive()
     {
         refreshCloseButtonIconColorState(true);
@@ -72,6 +65,7 @@ private Q_SLOTS:
     {
         refreshCloseButtonIconColorState(false);
     }
+
     void setNegativeCloseBackgroundHoverPressStateActive()
     {
         setNegativeCloseBackgroundHoverPressState(true);
@@ -80,6 +74,25 @@ private Q_SLOTS:
     {
         setNegativeCloseBackgroundHoverPressState(false);
     }
+
+    void setPoorBackgroundContrastThresholdVisibleActive()
+    {
+        setPoorBackgroundContrastThresholdVisible(true);
+    }
+    void setPoorBackgroundContrastThresholdVisibleInactive()
+    {
+        setPoorBackgroundContrastThresholdVisible(false);
+    }
+
+    void setPoorIconContrastThresholdVisibleActive()
+    {
+        setPoorIconContrastThresholdVisible(true);
+    }
+    void setPoorIconContrastThresholdVisibleInactive()
+    {
+        setPoorIconContrastThresholdVisible(false);
+    }
+
     void resizeOverrideColorTable();
     void showActiveOverrideGroupBox(const bool on);
     void showInactiveOverrideGroupBox(const bool on);
@@ -107,6 +120,9 @@ private:
     void refreshCloseButtonIconColorState(bool active);
 
     void setNegativeCloseBackgroundHoverPressState(bool active);
+
+    void setPoorBackgroundContrastThresholdVisible(bool active);
+    void setPoorIconContrastThresholdVisible(bool active);
 
     void showHideTranslucencySettings(bool active);
 
@@ -173,15 +189,15 @@ private:
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
     const QStringList m_overridableButtonColorStatesStrings{
-        i18n("Icon pressed"),
-        i18n("Icon hover"),
         i18n("Icon normal"),
-        i18n("Background pressed"),
-        i18n("Background hover"),
+        i18n("Icon hover"),
+        i18n("Icon pressed"),
         i18n("Background normal"),
-        i18n("Outline pressed"),
-        i18n("Outline hover"),
+        i18n("Background hover"),
+        i18n("Background pressed"),
         i18n("Outline normal"),
+        i18n("Outline hover"),
+        i18n("Outline pressed"),
     };
 
     const QStringList m_overrideComboBoxItems = {i18n("Custom"),

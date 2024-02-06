@@ -245,14 +245,31 @@
         <default>WhiteWhenHoverPress</default>
     </entry>
 
-    <entry name="BlackWhiteIconOnPoorContrast$(BlackWhiteIconOnPoorContrastActive)" type = "Bool">
-        <parameter name="BlackWhiteIconOnPoorContrastActive" type="Enum">
+    <entry name="OnPoorIconContrast$(OnPoorIconContrastActive)" type = "Enum">
+        <parameter name="OnPoorIconContrastActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>true</default>
+        <choices>
+            <choice name="Nothing" />
+            <choice name="BlackWhite" />
+            <choice name="TitleBarBackground" />
+        </choices>
+        <default>TitleBarBackground</default>
+    </entry>
+
+    <entry name="PoorIconContrastThreshold$(PoorIconContrastThresholdActive)" type = "Double">
+        <parameter name="PoorIconContrastThresholdActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <min>1.0</min>
+        <max>21.0</max>
+        <default>2.3</default>
     </entry>
 
     <entry name="ButtonBackgroundColors$(ButtonBackgroundColorsActive)" type="Enum">
@@ -282,6 +299,16 @@
         <default>false</default>
     </entry>
 
+    <entry name="UseHoverAccent$(UseHoverAccentActive)" type = "Bool">
+        <parameter name="UseHoverAccentActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>false</default>
+    </entry>
+
     <entry name="AdjustBackgroundColorOnPoorContrast$(AdjustBackgroundColorOnPoorContrastActive)" type = "Bool">
         <parameter name="AdjustBackgroundColorOnPoorContrastActive" type="Enum">
             <values>
@@ -292,26 +319,40 @@
         <default>true</default>
     </entry>
 
-    <entry name="TranslucentButtonBackgrounds$(TranslucentButtonBackgroundsActive)" type = "Bool">
-        <parameter name="TranslucentButtonBackgroundsActive" type="Enum">
+    <entry name="PoorBackgroundContrastThreshold$(PoorBackgroundContrastThresholdActive)" type = "Double">
+        <parameter name="PoorBackgroundContrastThresholdActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>true</default>
+        <min>1.0</min>
+        <max>21.0</max>
+        <default>1.1</default>
     </entry>
 
-    <entry name="TranslucentButtonBackgroundsOpacity$(TranslucentButtonBackgroundsOpacityActive)" type ="Double">
-        <parameter name="TranslucentButtonBackgroundsOpacityActive" type="Enum">
+    <entry name="ButtonIconOpacity$(ButtonIconOpacityActive)" type ="Int">
+        <parameter name="ButtonIconOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>0.5</default>
+        <default>100</default>
         <min>0</min>
-        <max>1</max>
+        <max>100</max>
+    </entry>
+
+    <entry name="ButtonBackgroundOpacity$(ButtonBackgroundOpacityActive)" type ="Int">
+        <parameter name="ButtonBackgroundOpacityActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <default>50</default>
+        <min>0</min>
+        <max>100</max>
     </entry>
 
     <entry name="ButtonOverrideColorsActive$(ButtonOverrideColorsActiveButtonType)" type = "String">
@@ -452,34 +493,93 @@
         <default>false</default>
     </entry>
 
-    <entry name="VaryColorIcon$(VaryColorIconActive)" type = "Bool">
+    <entry name="VaryColorIcon$(VaryColorIconActive)" type = "Enum">
         <parameter name="VaryColorIconActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>false</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+      </choices>
+        <default>No</default>
     </entry>
 
-    <entry name="VaryColorBackground$(VaryColorBackgroundActive)" type = "Bool">
+    <entry name="VaryColorBackground$(VaryColorBackgroundActive)" type = "Enum">
         <parameter name="VaryColorBackgroundActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>true</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+      </choices>
+        <default>Opaque</default>
     </entry>
 
-    <entry name="VaryColorOutline$(VaryColorOutlineActive)" type = "Bool">
+    <entry name="VaryColorOutline$(VaryColorOutlineActive)" type = "Enum">
         <parameter name="VaryColorOutlineActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>false</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+        </choices>
+        <default>Opaque</default>
+    </entry>
+
+    <entry name="ButtonStateChecked$(ButtonStateCheckedActive)" type = "Enum">
+        <parameter name="ButtonStateCheckedActive" type="Enum">
+            <values>
+                <value>Inactive</value>
+                <value>Active</value>
+            </values>
+        </parameter>
+        <choices>
+            <choice name="Hover" />
+            <choice name="Press" />
+        </choices>
+        <default>Press</default>
     </entry>
 
     <entry name="ShowCloseIconOnPress$(ShowCloseIconOnPressActive)" type = "Bool">
@@ -572,34 +672,79 @@
         <default>false</default>
     </entry>
 
-    <entry name="VaryColorCloseIcon$(VaryColorCloseIconActive)" type = "Bool">
+    <entry name="VaryColorCloseIcon$(VaryColorCloseIconActive)" type = "Enum">
         <parameter name="VaryColorCloseIconActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>false</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+        </choices>
+        <default>No</default>
     </entry>
 
-    <entry name="VaryColorCloseBackground$(VaryColorCloseBackgroundActive)" type = "Bool">
+    <entry name="VaryColorCloseBackground$(VaryColorCloseBackgroundActive)" type = "Enum">
         <parameter name="VaryColorCloseBackgroundActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>true</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+        </choices>
+        <default>Transparent</default>
     </entry>
 
-    <entry name="VaryColorCloseOutline$(VaryColorCloseOutlineActive)" type = "Bool">
+    <entry name="VaryColorCloseOutline$(VaryColorCloseOutlineActive)" type = "Enum">
         <parameter name="VaryColorCloseOutlineActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-        <default>false</default>
+        <choices>
+          <choice name="No" />
+          <choice name="Opaque" />
+          <choice name="MostOpaqueHover" />
+          <choice name="Transparent" />
+          <choice name="MostTransparentHover" />
+          <choice name="Light" />
+          <choice name="LightestHover" />
+          <choice name="Dark" />
+          <choice name="DarkestHover" />
+          <choice name="MoreTitleBar" />
+          <choice name="MostTitleBarHover" />
+          <choice name="LessTitleBar" />
+          <choice name="LeastTitleBarHover" />
+        </choices>
+        <default>Transparent</default>
     </entry>
 
     <entry name="LockCloseButtonBehaviour$(LockCloseButtonBehaviourActive)" type = "Bool">
@@ -755,74 +900,74 @@
        <max>10</max>
     </entry>
 
-    <entry name="WindowOutlineShadowColorOpacity" type = "Double">
-       <default>0.2</default>
+    <entry name="WindowOutlineShadowColorOpacity" type = "Int">
+       <default>20</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
-    <entry name="WindowOutlineContrastOpacity$(WindowOutlineContrastOpacityActive)" type = "Double">
+    <entry name="WindowOutlineContrastOpacity$(WindowOutlineContrastOpacityActive)" type = "Int">
        <parameter name="WindowOutlineContrastOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-       <default>0.25</default>
+       <default>25</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
-    <entry name="WindowOutlineAccentColorOpacity$(WindowOutlineAccentColorOpacityActive)" type = "Double">
+    <entry name="WindowOutlineAccentColorOpacity$(WindowOutlineAccentColorOpacityActive)" type = "Int">
        <parameter name="WindowOutlineAccentColorOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">0.87</default>
-       <default param ="Inactive">0.5</default>
+       <default param ="Active">87</default>
+       <default param ="Inactive">50</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
-    <entry name="WindowOutlineAccentWithContrastOpacity$(WindowOutlineAccentWithContrastOpacityActive)" type = "Double">
+    <entry name="WindowOutlineAccentWithContrastOpacity$(WindowOutlineAccentWithContrastOpacityActive)" type = "Int">
        <parameter name="WindowOutlineAccentWithContrastOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">0.5</default>
-       <default param ="Inactive">0.25</default>
+       <default param ="Active">50</default>
+       <default param ="Inactive">25</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
-    <entry name="WindowOutlineCustomColorOpacity$(WindowOutlineCustomColorOpacityActive)" type = "Double">
+    <entry name="WindowOutlineCustomColorOpacity$(WindowOutlineCustomColorOpacityActive)" type = "Int">
        <parameter name="WindowOutlineCustomColorOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">0.87</default>
-       <default param ="Inactive">0.5</default>
+       <default param ="Active">87</default>
+       <default param ="Inactive">50</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
-    <entry name="WindowOutlineCustomWithContrastOpacity$(WindowOutlineCustomWithContrastOpacityActive)" type = "Double">
+    <entry name="WindowOutlineCustomWithContrastOpacity$(WindowOutlineCustomWithContrastOpacityActive)" type = "Int">
        <parameter name="WindowOutlineCustomWithContrastOpacityActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">0.4</default>
-       <default param ="Inactive">0.25</default>
+       <default param ="Active">40</default>
+       <default param ="Inactive">25</default>
        <min>0</min>
-       <max>1</max>
+       <max>100</max>
     </entry>
 
   </group>

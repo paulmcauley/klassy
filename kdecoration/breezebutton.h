@@ -185,6 +185,9 @@ private:
      */
     void paintSmallSizedButtonBackground(QPainter *painter) const;
 
+    //* Whether to invert the pinned-on-all-desktops icon like in Breeze
+    bool titlebarTextPinnedInversion() const;
+
     //* these are the actual colors to be outputted (including for animations)
     QColor m_backgroundColor;
     QColor m_foregroundColor;
@@ -227,6 +230,7 @@ private:
     bool m_boldButtonIcons;
     qreal m_standardScaledCosmeticPenWidth = 1.0;
     mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;
+    bool m_titlebarTextPinnedInversion = false;
 };
 
 } // namespace
