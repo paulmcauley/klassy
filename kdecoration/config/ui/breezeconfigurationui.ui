@@ -1184,9 +1184,7 @@
             <item row="1" column="0">
              <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
               <property name="toolTip">
-               <string>This setting will allow you to resize from window edges touching screen edges.
-
-Scrollbars and window close buttons will shift positions and will not touch screen edges.</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This setting will allow you to resize from window edges touching screen edges.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
                <string>Draw border on maximized and tiled windows</string>
