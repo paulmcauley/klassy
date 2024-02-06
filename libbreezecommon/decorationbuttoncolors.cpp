@@ -267,19 +267,19 @@ void DecorationButtonPalette::generateBistateColors(ButtonComponent component,
     default:
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::No):
         bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
-        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = baseColor;
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::Opaque):
         bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
         bistate2 = ColorTools::alphaMix(baseColor, 1.2);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostOpaqueHover):
-        bistate1 = ColorTools::alphaMix(baseColor, 1.2);
-        bistate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 1.2);
+        bistate2 = ColorTools::alphaMix(baseColor, 0.8);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::Transparent):
-        bistate1 = ColorTools::alphaMix(baseColor, 1.2);
-        bistate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 1.2);
+        bistate2 = ColorTools::alphaMix(baseColor, 0.8);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTransparentHover):
         bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
@@ -367,8 +367,8 @@ void DecorationButtonPalette::generateTristateColors(ButtonComponent component,
         tristate3 = ColorTools::alphaMix(baseColor, 1.8);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostOpaqueHover):
-        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
-        tristate2 = ColorTools::alphaMix(baseColor, 1.8);
+        tristate1 = baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 1.8);
         tristate3 = ColorTools::alphaMix(baseColor, 0.6);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::Transparent):
@@ -377,8 +377,8 @@ void DecorationButtonPalette::generateTristateColors(ButtonComponent component,
         tristate3 = ColorTools::alphaMix(baseColor, 0.6);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTransparentHover):
-        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
-        tristate2 = ColorTools::alphaMix(baseColor, 0.6);
+        tristate1 = baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.6);
         tristate3 = ColorTools::alphaMix(baseColor, 1.8);
         break;
     case static_cast<int>(InternalSettings::EnumVaryColorBackground::Light):
