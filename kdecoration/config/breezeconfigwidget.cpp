@@ -374,7 +374,35 @@ bool ConfigWidget::isDefaults()
     if (m_configuration->hasGroup(groupName)) {
         KConfigGroup group = m_configuration->group(groupName);
         if (group.keyList().count())
-            isDefaults = false;
+            return false;
+    }
+
+    if (!m_buttonSizingDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_buttonColorsDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_buttonBehaviourDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_titleBarSpacingDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_titleBarOpacityDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_windowOutlineStyleDialog->isDefaults()) {
+        return false;
+    }
+
+    if (!m_shadowStyleDialog->isDefaults()) {
+        return false;
     }
 
     return isDefaults;

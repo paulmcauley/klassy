@@ -33,27 +33,18 @@ struct BREEZECOMMON_EXPORT DecorationPaletteGroup {
     QColor shadow;
     QColor buttonFocus;
     QColor buttonHover;
-    QColor buttonReducedOpacityBackground;
-    QColor buttonReducedOpacityOutline;
     QColor highlight;
     QColor highlightLessSaturated;
     QColor negative;
     QColor negativeLessSaturated;
     QColor negativeSaturated;
-    QColor negativeReducedOpacityBackground;
-    QColor negativeReducedOpacityOutline;
-    QColor negativeReducedOpacityLessSaturatedBackground;
     QColor fullySaturatedNegative;
     QColor neutral;
     QColor neutralLessSaturated;
     QColor neutralSaturated;
-    QColor neutralReducedOpacityBackground;
-    QColor neutralReducedOpacityOutline;
     QColor positive;
     QColor positiveLessSaturated;
     QColor positiveSaturated;
-    QColor positiveReducedOpacityBackground;
-    QColor positiveReducedOpacityOutline;
 };
 
 extern qreal BREEZECOMMON_EXPORT g_translucentButtonBackgroundsOpacityActive;

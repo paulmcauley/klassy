@@ -42,28 +42,30 @@ const QList<KDecoration2::DecorationButtonType> coloredAppStyleDecorationButtonT
 };
 
 enum struct BREEZECOMMON_EXPORT OverridableButtonColorState {
-    IconPress,
-    IconHover,
     IconNormal,
-    BackgroundPress,
-    BackgroundHover,
+    IconHover,
+    IconPress,
     BackgroundNormal,
-    OutlinePress,
-    OutlineHover,
+    BackgroundHover,
+    BackgroundPress,
     OutlineNormal,
+    OutlineHover,
+    OutlinePress,
     COUNT,
 };
 
+enum struct BREEZECOMMON_EXPORT ButtonComponent { Icon, Background, Outline, COUNT };
+
 const QStringList overridableButtonColorStatesJsonStrings{
-    QStringLiteral("IconPress"),
-    QStringLiteral("IconHover"),
     QStringLiteral("IconNormal"),
-    QStringLiteral("BackgroundPress"),
-    QStringLiteral("BackgroundHover"),
+    QStringLiteral("IconHover"),
+    QStringLiteral("IconPress"),
     QStringLiteral("BackgroundNormal"),
-    QStringLiteral("OutlinePress"),
-    QStringLiteral("OutlineHover"),
+    QStringLiteral("BackgroundHover"),
+    QStringLiteral("BackgroundPress"),
     QStringLiteral("OutlineNormal"),
+    QStringLiteral("OutlineHover"),
+    QStringLiteral("OutlinePress"),
 };
 
 const QStringList overrideColorItems{
@@ -103,11 +105,8 @@ struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
     QColor foregroundNormal;
 
     QColor backgroundPress;
-    bool negativePressCloseBackground;
     QColor backgroundHover;
-    bool negativeHoverCloseBackground;
     QColor backgroundNormal;
-    bool negativeNormalCloseBackground;
 
     QColor outlinePress;
     QColor outlineHover;
@@ -121,9 +120,6 @@ class BREEZECOMMON_EXPORT DecorationButtonPalette
 {
 public:
     DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType);
-
-    // DecorationButtonPalette(const DecorationButtonPalette &other);
-    // DecorationButtonPalette& operator=(const DecorationButtonPalette& other);
 
     void generate(InternalSettingsPtr decorationSettings,
                   DecorationColors *decorationColors,
@@ -147,6 +143,19 @@ public:
 
 private:
     void decodeButtonOverrideColors(const bool active);
+    void generateBistateColors(ButtonComponent component,
+                               const bool active,
+                               QColor baseColor,
+                               QColor &bistate1,
+                               QColor &bistate2,
+                               QColor accentHoverBase = QColor());
+    void generateTristateColors(ButtonComponent component,
+                                const bool active,
+                                QColor baseColor,
+                                QColor &tristate1,
+                                QColor &tristate2,
+                                QColor &tristate3,
+                                QColor accentHoverBase = QColor());
     void generateButtonBackgroundPalette(const bool active);
     void generateButtonForegroundPalette(const bool active);
     void generateButtonOutlinePalette(const bool active);

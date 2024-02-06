@@ -145,6 +145,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     Q_ASSERT(c);
 
     m_buttonPalette = d->decorationColors()->buttonPalette(type()); // this is in paint() in-case caching type on m_buttonPalette changes
+    m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
 
     setDevicePixelRatio(painter);
     setShouldDrawBoldButtonIcons();
@@ -342,19 +343,13 @@ QColor Button::foregroundColor() const
         }
     }
 
-    bool nonTranslucentTitlebarTextPinnedInversion =
-        (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-         || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-        && !d->internalSettings()->translucentButtonBackgrounds(active)
-        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
-
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return foregroundPress;
-    } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
-                || (type() == DecorationButtonType::OnAllDesktops && !nonTranslucentTitlebarTextPinnedInversion))
-               && isChecked()) {
-        if (nonTranslucentTitlebarTextPinnedInversion) {
+    } else if (isChecked()
+               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
+                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return foregroundHover;
         } else {
             return foregroundPress;
@@ -422,19 +417,17 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
         }
     }
 
-    bool nonTranslucentTitlebarTextPinnedInversion =
-        (d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-         || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-        && !d->internalSettings()->translucentButtonBackgrounds(active)
-        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
-
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return backgroundPress;
-    } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
-                || (type() == DecorationButtonType::OnAllDesktops && !nonTranslucentTitlebarTextPinnedInversion))
-               && isChecked()) {
-        return backgroundPress;
+    } else if (isChecked()
+               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
+                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
+            return backgroundHover;
+        } else {
+            return backgroundPress;
+        }
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
         if (backgroundNormal.isValid() && backgroundHover.isValid()) {
             return KColorUtils::mix(backgroundNormal, backgroundHover, m_opacity);
@@ -497,11 +490,14 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
         return outlinePress;
-    } else if ((isChecked()
-                && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade))) {
-        return outlinePress;
-    } else if (type() == DecorationButtonType::OnAllDesktops && isChecked()) {
-        return outlinePress;
+    } else if (isChecked()
+               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
+                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
+            return outlineHover;
+        } else {
+            return outlinePress;
+        }
     } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
         if (outlineNormal.isValid() && outlineHover.isValid()) {
             return KColorUtils::mix(outlineNormal, outlineHover, m_opacity);
@@ -514,6 +510,33 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else {
         return outlineNormal;
     }
+}
+
+bool Button::titlebarTextPinnedInversion() const
+{
+    auto d = qobject_cast<Decoration *>(decoration());
+    if (!d)
+        return false;
+    auto c = d->client().toStrongRef();
+    Q_ASSERT(c);
+    bool active = c->isActive();
+
+    return type() == DecorationButtonType::OnAllDesktops
+        && d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme
+        && (d->internalSettings()->buttonBackgroundOpacity(active) == 100 && d->internalSettings()->buttonIconOpacity(active) == 100
+            && (((d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+                  || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
+                 && (d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarText
+                     || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose))
+                || ((d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::Accent
+                     || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+                     || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights)
+                    && (d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::Accent
+                        || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                        || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentTrafficLights)))
+
+                )
+        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 }
 
 //________________________________________________________________
@@ -555,6 +578,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
     QColor color = QColor();
     if (on) {
         m_buttonPalette = d->decorationColors()->buttonPalette(type()); // this is here in-case caching type on m_buttonPalette changes
+        m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
             color = this->backgroundColor(true); // use a background colour if outline colour not valid

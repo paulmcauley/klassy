@@ -79,7 +79,7 @@ void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
     for (auto i = buttonStatesObject.begin(); i < buttonStatesObject.end(); i++) {
         QJsonArray colorArray = i->toArray();
         QColor color;
-        double colorOpacity;
+        int colorOpacity;
         int overridableButtonColorStatesIndex;
         int overrideColorItemsIndex;
         switch (colorArray.count()) {
@@ -115,9 +115,9 @@ void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
             if (!color.isValid())
                 break;
 
-            colorOpacity = colorArray[1].toDouble(-1.0);
-            if (colorOpacity >= 0 && colorOpacity <= 1.0) {
-                color.setAlphaF(colorOpacity);
+            colorOpacity = colorArray[1].toInt(-1);
+            if (colorOpacity >= 0 && colorOpacity <= 100) {
+                color.setAlphaF(colorOpacity / 100.0f);
             } else {
                 break;
             }
@@ -150,9 +150,9 @@ void DecorationButtonPalette::decodeButtonOverrideColors(const bool active)
             if (!color.isValid())
                 break;
 
-            colorOpacity = colorArray[0].toDouble(-1.0);
-            if (colorOpacity >= 0 && colorOpacity <= 1.0) {
-                color.setAlphaF(colorOpacity);
+            colorOpacity = colorArray[0].toInt(-1);
+            if (colorOpacity >= 0 && colorOpacity <= 100) {
+                color.setAlphaF(colorOpacity / 100.0f);
             } else {
                 break;
             }
@@ -230,6 +230,200 @@ QColor DecorationButtonPalette::overrideColorItemsIndexToColor(const DecorationC
     }
 }
 
+void DecorationButtonPalette::generateBistateColors(ButtonComponent component,
+                                                    const bool active,
+                                                    QColor baseColor,
+                                                    QColor &bistate1,
+                                                    QColor &bistate2,
+                                                    QColor accentHoverBase)
+{
+    DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
+    bool isClose = _buttonType == DecorationButtonType::Close;
+
+    qreal baseOpacity;
+    int varyColor;
+    switch (component) {
+    default:
+    case ButtonComponent::Background:
+        baseOpacity = _decorationSettings->buttonBackgroundOpacity(active) / 100.0f;
+        varyColor = isClose ? _decorationSettings->varyColorCloseBackground(active) : _decorationSettings->varyColorBackground(active);
+        break;
+    case ButtonComponent::Icon:
+        baseOpacity = _decorationSettings->buttonIconOpacity(active) / 100.0f;
+        varyColor = isClose ? _decorationSettings->varyColorCloseIcon(active) : _decorationSettings->varyColorIcon(active);
+        break;
+    case ButtonComponent::Outline:
+        baseOpacity = qMin(_decorationSettings->buttonBackgroundOpacity(active) / 100.0f * 1.5, 1.0);
+        varyColor = isClose ? _decorationSettings->varyColorCloseOutline(active) : _decorationSettings->varyColorOutline(active);
+        break;
+    }
+
+    baseColor.setAlphaF(baseOpacity);
+    if (accentHoverBase.isValid()) {
+        accentHoverBase.setAlphaF(baseOpacity);
+    }
+
+    switch (varyColor) {
+    default:
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::No):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Opaque):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        bistate2 = ColorTools::alphaMix(baseColor, 1.2);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostOpaqueHover):
+        bistate1 = ColorTools::alphaMix(baseColor, 1.2);
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Transparent):
+        bistate1 = ColorTools::alphaMix(baseColor, 1.2);
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTransparentHover):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : ColorTools::alphaMix(baseColor, 0.8);
+        bistate2 = ColorTools::alphaMix(baseColor, 1.2);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Light):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase.lighter() : baseColor.lighter();
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LightestHover):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase.lighter() : baseColor.lighter();
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Dark):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase.darker() : baseColor.darker();
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::DarkestHover):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase.darker() : baseColor.darker();
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MoreTitleBar):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTitleBarHover):
+        bistate1 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LessTitleBar):
+        bistate1 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        bistate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LeastTitleBarHover):
+        bistate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        bistate2 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        break;
+    }
+}
+
+void DecorationButtonPalette::generateTristateColors(ButtonComponent component,
+                                                     const bool active,
+                                                     QColor baseColor,
+                                                     QColor &tristate1,
+                                                     QColor &tristate2,
+                                                     QColor &tristate3,
+                                                     QColor accentHoverBase)
+{
+    DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
+    bool isClose = _buttonType == DecorationButtonType::Close;
+
+    qreal baseOpacity;
+    int varyColor;
+    switch (component) {
+    default:
+    case ButtonComponent::Background:
+        baseOpacity = _decorationSettings->buttonBackgroundOpacity(active) / 100.0f;
+        varyColor = isClose ? _decorationSettings->varyColorCloseBackground(active) : _decorationSettings->varyColorBackground(active);
+        break;
+    case ButtonComponent::Icon:
+        baseOpacity = _decorationSettings->buttonIconOpacity(active) / 100.0f;
+        varyColor = isClose ? _decorationSettings->varyColorCloseIcon(active) : _decorationSettings->varyColorIcon(active);
+        break;
+    case ButtonComponent::Outline:
+        baseOpacity = qMin(_decorationSettings->buttonBackgroundOpacity(active) / 100.0f * 1.5, 1.0);
+        varyColor = isClose ? _decorationSettings->varyColorCloseOutline(active) : _decorationSettings->varyColorOutline(active);
+        break;
+    }
+
+    baseColor.setAlphaF(baseOpacity);
+    if (accentHoverBase.isValid()) {
+        accentHoverBase.setAlphaF(baseOpacity);
+    }
+
+    switch (varyColor) {
+    default:
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::No):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Opaque):
+        tristate1 = ColorTools::alphaMix(baseColor, 0.6);
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate3 = ColorTools::alphaMix(baseColor, 1.8);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostOpaqueHover):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = ColorTools::alphaMix(baseColor, 1.8);
+        tristate3 = ColorTools::alphaMix(baseColor, 0.6);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Transparent):
+        tristate1 = ColorTools::alphaMix(baseColor, 1.8);
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate3 = ColorTools::alphaMix(baseColor, 0.6);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTransparentHover):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = ColorTools::alphaMix(baseColor, 0.6);
+        tristate3 = ColorTools::alphaMix(baseColor, 1.8);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Light):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase.lighter(125) : baseColor.lighter(125);
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase.lighter() : baseColor.lighter();
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LightestHover):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase.lighter() : baseColor.lighter();
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase.lighter(125) : baseColor.lighter(125);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::Dark):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase.darker(100) : baseColor.darker(100);
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase.darker() : baseColor.darker();
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::DarkestHover):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase.darker() : baseColor.darker();
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase.darker(100) : baseColor.darker(100);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MoreTitleBar):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.6);
+        tristate3 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::MostTitleBarHover):
+        tristate1 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate2 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        tristate3 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.6);
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LessTitleBar):
+        tristate1 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        tristate2 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.6);
+        tristate3 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        break;
+    case static_cast<int>(InternalSettings::EnumVaryColorBackground::LeastTitleBarHover):
+        tristate1 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.3);
+        tristate2 = accentHoverBase.isValid() ? accentHoverBase : baseColor;
+        tristate3 = KColorUtils::mix(decorationColors->titleBarBase, accentHoverBase.isValid() ? accentHoverBase : baseColor, 0.6);
+        break;
+    }
+}
+
 void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 {
     DecorationButtonPaletteGroup *group = active ? this->_active.get() : this->_inactive.get();
@@ -237,16 +431,10 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
     QColor &backgroundHover = group->backgroundHover;
     QColor &backgroundPress = group->backgroundPress;
     DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
-    QColor &text = decorationColors->titleBarText;
-    QColor &base = decorationColors->titleBarBase;
-
-    bool &negativeNormalCloseBackground = group->negativeNormalCloseBackground;
-    bool &negativeHoverCloseBackground = group->negativeHoverCloseBackground;
-    bool &negativePressCloseBackground = group->negativePressCloseBackground;
+    QColor &titleBarText = decorationColors->titleBarText;
+    QColor &titleBarBase = decorationColors->titleBarBase;
 
     const int buttonBackgroundColors = _decorationSettings->buttonBackgroundColors(active);
-    const bool translucentBackgrounds = _decorationSettings->translucentButtonBackgrounds(active);
-    const qreal translucentButtonBackgroundsOpacity = _decorationSettings->translucentButtonBackgroundsOpacity(active);
     const bool negativeCloseBackgroundHoverPress = _decorationSettings->negativeCloseBackgroundHoverPress(active);
     const bool adjustBackgroundColorOnPoorContrast = _decorationSettings->adjustBackgroundColorOnPoorContrast(active);
 
@@ -260,10 +448,6 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
         || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
         || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
 
-    negativeNormalCloseBackground = false;
-    negativeHoverCloseBackground = false;
-    negativePressCloseBackground = false;
-
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
     const bool &drawBackgroundNormally = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundNormally(active)
@@ -273,349 +457,109 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
     const bool &drawBackgroundOnPress = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnPress(active)
                                                                                      : _decorationSettings->showBackgroundOnPress(active);
 
+    QColor defaultButtonColor;
+    QColor accentHoverBase;
+    switch (buttonBackgroundColors) {
+    default:
+    case InternalSettings::EnumButtonBackgroundColors::Accent:
+    case InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose:
+    case InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights:
+        defaultButtonColor = decorationColors->buttonFocus;
+        if (_decorationSettings->useHoverAccent(active)) {
+            accentHoverBase = decorationColors->buttonHover;
+        }
+        break;
+    case InternalSettings::EnumButtonBackgroundColors::TitlebarText:
+    case InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose:
+        defaultButtonColor = decorationColors->titleBarText;
+        break;
+    }
+
+    bool setDefaultBackgroundNormallyOnly = false;
+
     // set normal, hover and press colours
-    if (buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::Accent
-        || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-        || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-        if (translucentBackgrounds) {
-            if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        negativeNormalCloseBackground = true;
-                        backgroundNormal = decorationColors->negativeReducedOpacityBackground;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeReducedOpacityOutline;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->fullySaturatedNegative;
-                        }
-                    } else {
-                        backgroundNormal = decorationColors->buttonReducedOpacityBackground;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeReducedOpacityOutline;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->fullySaturatedNegative;
-                        }
-                    }
-                } else {
-                    if (drawBackgroundOnHover) {
-                        negativeHoverCloseBackground = true;
-                        backgroundHover = decorationColors->negativeReducedOpacityBackground;
-                    }
-                    if (drawBackgroundOnPress) {
-                        negativePressCloseBackground = true;
-                        backgroundPress = decorationColors->negativeReducedOpacityOutline;
-                    }
-                }
-            } else if (_buttonType == DecorationButtonType::Minimize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        backgroundNormal = decorationColors->neutralReducedOpacityBackground;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->neutralReducedOpacityOutline;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->neutral;
-                    } else {
-                        backgroundNormal = decorationColors->buttonReducedOpacityBackground;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->neutralReducedOpacityOutline;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->neutral;
-                    }
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->neutralReducedOpacityBackground;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->neutralReducedOpacityOutline;
-                }
-            } else if (_buttonType == DecorationButtonType::Maximize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        backgroundNormal = decorationColors->positiveReducedOpacityBackground;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->positiveReducedOpacityOutline;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->positive;
-                    } else {
-                        backgroundNormal = decorationColors->buttonReducedOpacityBackground;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->positiveReducedOpacityOutline;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->positive;
-                    }
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->positiveReducedOpacityBackground;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->positiveReducedOpacityOutline;
-                }
+    if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
+        defaultButton = false;
+        if (drawBackgroundNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultBackgroundNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Background, active, decorationColors->fullySaturatedNegative, tristate1, tristate2, tristate3);
+            backgroundNormal = tristate1;
+            if (drawBackgroundOnHover) {
+                backgroundHover = tristate2;
             }
-
-            if (defaultButton) {
-                if (drawBackgroundNormally) {
-                    backgroundNormal = decorationColors->buttonReducedOpacityBackground;
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->buttonReducedOpacityOutline;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->buttonFocus;
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->buttonReducedOpacityBackground;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->buttonReducedOpacityOutline;
-                }
+            if (drawBackgroundOnPress) {
+                backgroundPress = tristate3;
             }
-        } else { // accent but not translucent
-            if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        negativeNormalCloseBackground = true;
-                        backgroundNormal = decorationColors->negative;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    } else {
-                        backgroundNormal = drawBackgroundNormally ? KColorUtils::mix(base, decorationColors->buttonHover, 0.8) : decorationColors->buttonHover;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    }
-                } else {
-                    if (drawBackgroundOnHover) {
-                        negativeHoverCloseBackground = true;
-                        backgroundHover = decorationColors->negative;
-                    }
-                    if (drawBackgroundOnPress) {
-                        negativePressCloseBackground = true;
-                        backgroundPress = decorationColors->negativeSaturated;
-                    }
-                }
-            } else if (_buttonType == DecorationButtonType::Minimize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        backgroundNormal = decorationColors->neutralLessSaturated;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->neutral;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->neutralSaturated;
-                    } else {
-                        backgroundNormal = KColorUtils::mix(base, decorationColors->buttonHover, 0.8);
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->neutral;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->neutralSaturated;
-                    }
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->neutralLessSaturated;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->neutral;
-                }
-            } else if (_buttonType == DecorationButtonType::Maximize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        backgroundNormal = decorationColors->positiveLessSaturated;
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->positive;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->positiveSaturated;
-                    } else {
-                        backgroundNormal = KColorUtils::mix(base, decorationColors->buttonHover, 0.8);
-                        if (drawBackgroundOnHover)
-                            backgroundHover = decorationColors->positive;
-                        if (drawBackgroundOnPress)
-                            backgroundPress = decorationColors->positiveSaturated;
-                    }
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->positiveLessSaturated;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->positive;
-                }
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Background, active, decorationColors->fullySaturatedNegative, bistate1, bistate2);
+            if (drawBackgroundOnHover) {
+                backgroundHover = bistate1;
             }
-
-            if (defaultButton) {
-                if (drawBackgroundNormally) {
-                    backgroundNormal = KColorUtils::mix(base, decorationColors->buttonHover, 0.8);
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->buttonHover;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->buttonFocus;
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = decorationColors->buttonHover;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = decorationColors->buttonFocus;
-                }
+            if (drawBackgroundOnPress) {
+                backgroundPress = bistate2;
             }
         }
+    } else if (_buttonType == DecorationButtonType::Minimize && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        defaultButton = false;
+        if (drawBackgroundNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultBackgroundNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Background, active, decorationColors->neutral, tristate1, tristate2, tristate3);
+            backgroundNormal = tristate1;
+            if (drawBackgroundOnHover)
+                backgroundHover = tristate2;
+            if (drawBackgroundOnPress)
+                backgroundPress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Background, active, decorationColors->neutral, bistate1, bistate2);
+            if (drawBackgroundOnHover)
+                backgroundHover = bistate1;
+            if (drawBackgroundOnPress)
+                backgroundPress = bistate2;
+        }
+    } else if (_buttonType == DecorationButtonType::Maximize && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        defaultButton = false;
+        if (drawBackgroundNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultBackgroundNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Background, active, decorationColors->positiveSaturated, tristate1, tristate2, tristate3);
+            backgroundNormal = tristate1;
+            if (drawBackgroundOnHover)
+                backgroundHover = tristate2;
+            if (drawBackgroundOnPress)
+                backgroundPress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Background, active, decorationColors->positiveSaturated, bistate1, bistate2);
+            if (drawBackgroundOnHover)
+                backgroundHover = bistate1;
+            if (drawBackgroundOnPress)
+                backgroundPress = bistate2;
+        }
+    }
 
-    } else {
-        if (translucentBackgrounds) { // titlebar text color, translucent
-            if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
-                defaultButton = false;
-                if (drawBackgroundNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        negativeNormalCloseBackground = true;
-                        backgroundNormal = decorationColors->negativeReducedOpacityBackground;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeReducedOpacityOutline;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeReducedOpacityLessSaturatedBackground;
-                        }
-                    } else {
-                        backgroundNormal = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.3, 1.0));
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeReducedOpacityOutline;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeReducedOpacityBackground;
-                        }
-                    }
-                } else {
-                    if (drawBackgroundOnHover) {
-                        negativeHoverCloseBackground = true;
-                        backgroundHover = decorationColors->negativeReducedOpacityBackground;
-                    }
-                    if (drawBackgroundOnPress) {
-                        negativePressCloseBackground = true;
-                        backgroundPress = decorationColors->negativeReducedOpacityOutline;
-                    }
-                }
-            }
-
-            if (defaultButton) {
-                if (drawBackgroundNormally) {
-                    backgroundNormal = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.3, 1.0));
-                    if (drawBackgroundOnHover)
-                        backgroundHover = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                    if (drawBackgroundOnPress)
-                        backgroundPress = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.7, 1.0));
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.3, 1.0));
-                    if (drawBackgroundOnPress)
-                        backgroundPress = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                }
-            }
-        } else { // titlebar text color, not translucent
-            if (_buttonType == DecorationButtonType::Close && negativeCloseCategory) {
-                defaultButton = false;
-                if (_decorationSettings->showBackgroundNormally(active)) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        if (drawBackgroundNormally) {
-                            negativeNormalCloseBackground = true;
-                            backgroundNormal = decorationColors->negative;
-                        }
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    } else {
-                        backgroundNormal = KColorUtils::mix(base, text, 0.3);
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    }
-                } else if (_decorationSettings->showCloseBackgroundNormally(active)) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        if (drawBackgroundNormally) {
-                            negativeNormalCloseBackground = true;
-                            backgroundNormal = decorationColors->negative;
-                        }
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    } else {
-                        if (drawBackgroundNormally)
-                            backgroundNormal = text;
-                        if (drawBackgroundOnHover) {
-                            negativeHoverCloseBackground = true;
-                            backgroundHover = decorationColors->negativeSaturated;
-                        }
-                        if (drawBackgroundOnPress) {
-                            negativePressCloseBackground = true;
-                            backgroundPress = decorationColors->negativeLessSaturated;
-                        }
-                    }
-                } else {
-                    if (drawBackgroundOnHover) {
-                        negativeHoverCloseBackground = true;
-                        backgroundHover = decorationColors->negative;
-                    }
-                    if (drawBackgroundOnPress) {
-                        negativePressCloseBackground = true;
-                        backgroundPress = decorationColors->negativeSaturated;
-                    }
-                }
-            }
-
-            if (defaultButton) {
-                if (_decorationSettings->showBackgroundNormally(active)) {
-                    if (drawBackgroundNormally)
-                        backgroundNormal = KColorUtils::mix(base, text, 0.3);
-                    if (drawBackgroundOnHover)
-                        backgroundHover = KColorUtils::mix(base, text, 0.6);
-                    if (drawBackgroundOnPress)
-                        backgroundPress = text;
-                } else if (_decorationSettings->showCloseBackgroundNormally(active) && _buttonType == DecorationButtonType::Close) {
-                    if (drawBackgroundNormally)
-                        backgroundNormal = text;
-                    if (drawBackgroundOnHover)
-                        backgroundHover = KColorUtils::mix(base, text, 0.6);
-                    if (drawBackgroundOnPress)
-                        backgroundPress = KColorUtils::mix(base, text, 0.3);
-                } else {
-                    if (drawBackgroundOnHover)
-                        backgroundHover = text;
-                    if (drawBackgroundOnPress)
-                        backgroundPress = KColorUtils::mix(base, text, 0.3);
-                }
-            }
+    if (defaultButton || setDefaultBackgroundNormallyOnly) {
+        if (drawBackgroundNormally) {
+            QColor tristate1, tristate2, tristate3;
+            generateTristateColors(ButtonComponent::Background, active, defaultButtonColor, tristate1, tristate2, tristate3, accentHoverBase);
+            backgroundNormal = tristate1;
+            if (drawBackgroundOnHover && !setDefaultBackgroundNormallyOnly)
+                backgroundHover = tristate2;
+            if (drawBackgroundOnPress && !setDefaultBackgroundNormallyOnly)
+                backgroundPress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Background, active, defaultButtonColor, bistate1, bistate2, accentHoverBase);
+            if (drawBackgroundOnHover && !setDefaultBackgroundNormallyOnly)
+                backgroundHover = bistate1;
+            if (drawBackgroundOnPress && !setDefaultBackgroundNormallyOnly)
+                backgroundPress = bistate2;
         }
     }
 
@@ -636,15 +580,18 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 
     // low contrast correction between background and titlebar
     if (adjustBackgroundColorOnPoorContrast) {
-        if (backgroundNormal.isValid() && KColorUtils::contrastRatio(backgroundNormal, base) < 1.3) {
-            backgroundNormal = KColorUtils::mix(backgroundNormal, text, 0.3);
+        if (backgroundNormal.isValid()
+            && KColorUtils::contrastRatio(backgroundNormal, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+            backgroundNormal = KColorUtils::mix(backgroundNormal, titleBarText, 0.3);
         }
 
-        if (backgroundHover.isValid() && KColorUtils::contrastRatio(backgroundHover, base) < 1.3) {
-            backgroundHover = KColorUtils::mix(backgroundHover, text, 0.3);
+        if (backgroundHover.isValid()
+            && KColorUtils::contrastRatio(backgroundHover, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+            backgroundHover = KColorUtils::mix(backgroundHover, titleBarText, 0.3);
         }
-        if (backgroundPress.isValid() && KColorUtils::contrastRatio(backgroundPress, base) < 1.3) {
-            backgroundPress = KColorUtils::mix(backgroundPress, text, 0.3);
+        if (backgroundPress.isValid()
+            && KColorUtils::contrastRatio(backgroundPress, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+            backgroundPress = KColorUtils::mix(backgroundPress, titleBarText, 0.3);
         }
     }
 }
@@ -656,30 +603,16 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     QColor &foregroundHover = group->foregroundHover;
     QColor &foregroundPress = group->foregroundPress;
     DecorationPaletteGroup *decorationColors = active ? _decorationColors->active() : _decorationColors->inactive();
-    QColor &text = decorationColors->titleBarText;
-    QColor &base = decorationColors->titleBarBase;
 
     foregroundNormal = QColor();
     foregroundHover = QColor();
     foregroundPress = QColor();
 
-    const int buttonBackgroundColors = _decorationSettings->buttonBackgroundColors(active);
-    const bool translucentBackgrounds = _decorationSettings->translucentButtonBackgrounds(active);
     const int buttonIconColors = _decorationSettings->buttonIconColors(active);
     const int closeButtonIconColor = _decorationSettings->closeButtonIconColor(active);
-    const bool blackWhiteIconOnPoorContrast = _decorationSettings->blackWhiteIconOnPoorContrast(active);
 
     bool defaultButton =
         true; // flag indicates the button has standard colours for the behaviour and selected colour (i.e. is not a close/max/min with special colours)
-    bool closeForegroundIsDefault = false;
-
-    const bool &drawBackgroundNormally = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundNormally(active)
-                                                                                      : _decorationSettings->showBackgroundNormally(active);
-    const bool &drawBackgroundOnHover = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnHover(active)
-                                                                                     : _decorationSettings->showBackgroundOnHover(active);
-    const bool &drawBackgroundOnPress = (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseBackgroundOnPress(active)
-                                                                                     : _decorationSettings->showBackgroundOnPress(active);
-    ;
 
     const bool &drawIconNormally =
         (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconNormally(active) : _decorationSettings->showIconNormally(active);
@@ -688,7 +621,10 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     const bool &drawIconOnPress =
         (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseIconOnPress(active) : _decorationSettings->showIconOnPress(active);
 
-    const bool negativeCloseBackground = (group->negativeNormalCloseBackground || group->negativeHoverCloseBackground || group->negativePressCloseBackground);
+    const bool negativeCloseBackground =
+        (_decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+         || _decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights
+         || _decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
 
     const bool negativeWhenHoverPress = closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress
         && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
@@ -701,64 +637,55 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
                 && (_buttonType == DecorationButtonType::Close
                     || (buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights
                         && (_buttonType == DecorationButtonType::Maximize || _buttonType == DecorationButtonType::Minimize)))))) {
-        defaultButton = false;
-
         if (closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::White) {
-            if (drawIconNormally)
-                foregroundNormal = Qt::GlobalColor::white;
-            if (drawIconOnHover)
-                foregroundHover = Qt::GlobalColor::white;
-            if (drawIconOnPress)
-                foregroundPress = Qt::GlobalColor::white;
-        } else {
-            if (closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress) {
+            if (drawIconNormally) {
+                QColor tristate1, tristate2, tristate3;
+                generateTristateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, tristate1, tristate2, tristate3);
+                foregroundNormal = tristate1;
+                if (drawIconOnHover)
+                    foregroundHover = tristate2;
+                if (drawIconOnPress)
+                    foregroundPress = tristate3;
+            } else {
+                QColor bistate1, bistate2;
+                generateBistateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, bistate1, bistate2);
                 if (drawIconOnHover)
                     foregroundHover = Qt::GlobalColor::white;
                 if (drawIconOnPress)
                     foregroundPress = Qt::GlobalColor::white;
-            } else if (negativeWhenHoverPress) {
-                if (_buttonType == DecorationButtonType::Close) {
-                    if (drawIconOnHover)
-                        foregroundHover = decorationColors->negativeSaturated;
-                    if (drawIconOnPress)
-                        foregroundPress = decorationColors->negativeSaturated;
-                } else if (_buttonType == DecorationButtonType::Maximize) {
-                    if (drawIconOnHover)
-                        foregroundHover = decorationColors->positiveSaturated;
-                    if (drawIconOnPress)
-                        foregroundPress = decorationColors->positiveSaturated;
-                } else if (_buttonType == DecorationButtonType::Minimize) {
-                    if (drawIconOnHover)
-                        foregroundHover = decorationColors->neutral;
-                    if (drawIconOnPress)
-                        foregroundPress = decorationColors->neutral;
-                }
             }
 
-            // get foregroundNormal
-            if (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarText) {
-                if ((buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
-                     || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarText)
-                    && !translucentBackgrounds) {
-                    if (drawBackgroundNormally) {
-                        if (drawIconNormally)
-                            foregroundNormal = base;
-                    } else {
-                        if (drawIconNormally)
-                            foregroundNormal = text;
-                    }
-                } else {
-                    if (drawIconNormally)
-                        foregroundNormal = text;
+        } else {
+            if (closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress) {
+                QColor bistate1, bistate2;
+                generateBistateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, bistate1, bistate2);
+                if (drawIconOnHover)
+                    foregroundHover = bistate1;
+                if (drawIconOnPress)
+                    foregroundPress = bistate2;
+            } else if (negativeWhenHoverPress) {
+                if (_buttonType == DecorationButtonType::Close) {
+                    QColor bistate1, bistate2;
+                    generateBistateColors(ButtonComponent::Icon, active, decorationColors->negativeSaturated, bistate1, bistate2);
+                    if (drawIconOnHover)
+                        foregroundHover = bistate1;
+                    if (drawIconOnPress)
+                        foregroundPress = bistate2;
+                } else if (_buttonType == DecorationButtonType::Maximize) {
+                    QColor bistate1, bistate2;
+                    generateBistateColors(ButtonComponent::Icon, active, decorationColors->positiveSaturated, bistate1, bistate2);
+                    if (drawIconOnHover)
+                        foregroundHover = bistate1;
+                    if (drawIconOnPress)
+                        foregroundPress = bistate2;
+                } else if (_buttonType == DecorationButtonType::Minimize) {
+                    QColor bistate1, bistate2;
+                    generateBistateColors(ButtonComponent::Icon, active, decorationColors->neutral, bistate1, bistate2);
+                    if (drawIconOnHover)
+                        foregroundHover = bistate1;
+                    if (drawIconOnPress)
+                        foregroundPress = bistate2;
                 }
-            } else if (!negativeWhenHoverPress
-                       && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-                           || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-                           || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
-                if (drawIconNormally)
-                    foregroundNormal = decorationColors->negativeSaturated;
-            } else { // Normal icon colour is selected default colour - treat as default button
-                closeForegroundIsDefault = true;
             }
         }
     }
@@ -769,71 +696,95 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
                 || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentNegativeClose
                 || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
             defaultButton = false;
-            if (drawIconNormally && !foregroundNormal.isValid())
-                foregroundNormal = decorationColors->negativeSaturated;
-            if (drawIconOnHover && !foregroundHover.isValid())
-                foregroundHover = decorationColors->negativeSaturated;
-            if (drawIconOnPress && !foregroundPress.isValid())
-                foregroundPress = decorationColors->negativeSaturated;
+            if (drawIconNormally) {
+                QColor tristate1, tristate2, tristate3;
+                generateTristateColors(ButtonComponent::Icon, active, decorationColors->negativeSaturated, tristate1, tristate2, tristate3);
+                if (!foregroundNormal.isValid())
+                    foregroundNormal = tristate1;
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = tristate2;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = tristate3;
+            } else {
+                QColor bistate1, bistate2;
+                generateBistateColors(ButtonComponent::Icon, active, decorationColors->negativeSaturated, bistate1, bistate2);
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = bistate1;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = bistate2;
+            }
         } else if (_buttonType == DecorationButtonType::Maximize && (buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
             defaultButton = false;
-            if (drawIconNormally && !foregroundNormal.isValid())
-                foregroundNormal = decorationColors->positiveSaturated;
-            if (drawIconOnHover && !foregroundHover.isValid())
-                foregroundHover = decorationColors->positiveSaturated;
-            if (drawIconOnPress && !foregroundPress.isValid())
-                foregroundPress = decorationColors->positiveSaturated;
+            if (drawIconNormally) {
+                QColor tristate1, tristate2, tristate3;
+                generateTristateColors(ButtonComponent::Icon, active, decorationColors->positiveSaturated, tristate1, tristate2, tristate3);
+                if (!foregroundNormal.isValid())
+                    foregroundNormal = decorationColors->positiveSaturated;
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = decorationColors->positiveSaturated;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = decorationColors->positiveSaturated;
+            } else {
+                QColor bistate1, bistate2;
+                generateBistateColors(ButtonComponent::Icon, active, decorationColors->positiveSaturated, bistate1, bistate2);
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = bistate1;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = bistate2;
+            }
         } else if (_buttonType == DecorationButtonType::Minimize && (buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
             defaultButton = false;
-            if (drawIconNormally && !foregroundNormal.isValid())
-                foregroundNormal = decorationColors->neutral;
-            if (drawIconOnHover && !foregroundHover.isValid())
-                foregroundHover = decorationColors->neutral;
-            if (drawIconOnPress && !foregroundPress.isValid())
-                foregroundPress = decorationColors->neutral;
+            if (drawIconNormally) {
+                QColor tristate1, tristate2, tristate3;
+                generateTristateColors(ButtonComponent::Icon, active, decorationColors->neutral, tristate1, tristate2, tristate3);
+                if (!foregroundNormal.isValid())
+                    foregroundNormal = tristate1;
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = tristate2;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = tristate3;
+            } else {
+                QColor bistate1, bistate2;
+                generateBistateColors(ButtonComponent::Icon, active, decorationColors->neutral, bistate1, bistate2);
+                if (drawIconOnHover && !foregroundHover.isValid())
+                    foregroundHover = bistate1;
+                if (drawIconOnPress && !foregroundPress.isValid())
+                    foregroundPress = bistate2;
+            }
         }
     }
 
-    if (defaultButton || closeForegroundIsDefault) {
-        if ((buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
-             || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarText)
-            && !translucentBackgrounds
-            && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-                || buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarText)) {
-            if (drawBackgroundNormally) {
-                if (drawIconNormally && !foregroundNormal.isValid())
-                    foregroundNormal = base;
-                if (drawIconOnHover && !foregroundHover.isValid())
-                    foregroundHover = base;
-                if (drawIconOnPress && !foregroundPress.isValid())
-                    foregroundPress = base;
-            } else {
-                if (drawIconNormally && !foregroundNormal.isValid())
-                    foregroundNormal = text;
-                if (drawIconOnHover && !foregroundHover.isValid())
-                    foregroundHover = drawBackgroundOnHover ? base : text;
-                if (drawIconOnPress && !foregroundPress.isValid())
-                    foregroundPress = drawBackgroundOnPress ? base : text;
-            }
+    if (defaultButton) {
+        QColor defaultButtonColor;
+        switch (buttonIconColors) {
+        default:
+        case InternalSettings::EnumButtonIconColors::Accent:
+        case InternalSettings::EnumButtonIconColors::AccentNegativeClose:
+        case InternalSettings::EnumButtonIconColors::AccentTrafficLights:
+            defaultButtonColor = decorationColors->buttonFocus;
+            break;
+        case InternalSettings::EnumButtonIconColors::TitlebarText:
+        case InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose:
+            defaultButtonColor = decorationColors->titleBarText;
+            break;
+        }
+
+        if (drawIconNormally) {
+            QColor tristate1, tristate2, tristate3;
+            generateTristateColors(ButtonComponent::Icon, active, defaultButtonColor, tristate1, tristate2, tristate3);
+            if (!foregroundNormal.isValid())
+                foregroundNormal = tristate1;
+            if (drawIconOnHover && !foregroundHover.isValid())
+                foregroundHover = tristate2;
+            if (drawIconOnPress && !foregroundPress.isValid())
+                foregroundPress = tristate3;
         } else {
-            if (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
-                || buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarText) {
-                if (drawIconNormally && !foregroundNormal.isValid())
-                    foregroundNormal = text;
-                if (drawIconOnHover && !foregroundHover.isValid())
-                    foregroundHover = text;
-                if (drawIconOnPress && !foregroundPress.isValid())
-                    foregroundPress = text;
-            } else if (buttonIconColors == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-                       || buttonIconColors == InternalSettings::EnumButtonIconColors::Accent
-                       || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
-                if (drawIconNormally && !foregroundNormal.isValid())
-                    foregroundNormal = decorationColors->highlight;
-                if (drawIconOnHover && !foregroundHover.isValid())
-                    foregroundHover = decorationColors->highlight;
-                if (drawIconOnPress && !foregroundPress.isValid())
-                    foregroundPress = decorationColors->highlight;
-            }
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Icon, active, defaultButtonColor, bistate1, bistate2);
+            if (drawIconOnHover && !foregroundHover.isValid())
+                foregroundHover = bistate1;
+            if (drawIconOnPress && !foregroundPress.isValid())
+                foregroundPress = bistate2;
         }
     }
 
@@ -851,15 +802,57 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
         }
     }
 
-    if (blackWhiteIconOnPoorContrast) {
-        if (foregroundNormal.isValid() && group->backgroundNormal.isValid())
-            ColorTools::getHigherContrastForegroundColor(foregroundNormal, group->backgroundNormal, 2.3, foregroundNormal);
+    if (_decorationSettings->onPoorIconContrast(active) != InternalSettings::EnumOnPoorIconContrast::Nothing) {
+        if (foregroundNormal.isValid() && group->backgroundNormal.isValid() && foregroundNormal.alpha() != 0) {
+            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
+                QColor titleBarBase = decorationColors->titleBarBase;
+                titleBarBase.setAlpha(255);
+                ColorTools::getHigherContrastForegroundColor(foregroundNormal,
+                                                             group->backgroundNormal,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundNormal,
+                                                             titleBarBase);
+            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
+                ColorTools::getHigherContrastForegroundColor(foregroundNormal,
+                                                             group->backgroundNormal,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundNormal);
+            }
+        }
 
-        if (foregroundHover.isValid() && group->backgroundHover.isValid())
-            ColorTools::getHigherContrastForegroundColor(foregroundHover, group->backgroundHover, 2.3, foregroundHover);
+        if (foregroundHover.isValid() && group->backgroundHover.isValid() && foregroundHover.alpha() != 0) {
+            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
+                QColor titleBarBase = decorationColors->titleBarBase;
+                titleBarBase.setAlpha(255);
+                ColorTools::getHigherContrastForegroundColor(foregroundHover,
+                                                             group->backgroundHover,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundHover,
+                                                             titleBarBase);
+            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
+                ColorTools::getHigherContrastForegroundColor(foregroundHover,
+                                                             group->backgroundHover,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundHover);
+            }
+        }
 
-        if (foregroundPress.isValid() && group->backgroundPress.isValid())
-            ColorTools::getHigherContrastForegroundColor(foregroundPress, group->backgroundPress, 2.3, foregroundPress);
+        if (foregroundPress.isValid() && group->backgroundPress.isValid() && foregroundPress.alpha() != 0) {
+            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
+                QColor titleBarBase = decorationColors->titleBarBase;
+                titleBarBase.setAlpha(255);
+                ColorTools::getHigherContrastForegroundColor(foregroundPress,
+                                                             group->backgroundPress,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundPress,
+                                                             titleBarBase);
+            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
+                ColorTools::getHigherContrastForegroundColor(foregroundPress,
+                                                             group->backgroundPress,
+                                                             _decorationSettings->poorIconContrastThreshold(active),
+                                                             foregroundPress);
+            }
+        }
     }
 }
 
@@ -874,8 +867,6 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     QColor &base = decorationColors->titleBarBase;
 
     const int buttonBackgroundColors = _decorationSettings->buttonBackgroundColors(active);
-    const bool translucentBackgrounds = _decorationSettings->translucentButtonBackgrounds(active);
-    const qreal translucentButtonBackgroundsOpacity = _decorationSettings->translucentButtonBackgroundsOpacity(active);
     const bool negativeCloseBackgroundHoverPress = _decorationSettings->negativeCloseBackgroundHoverPress(active);
     const bool adjustBackgroundColorOnPoorContrast = _decorationSettings->adjustBackgroundColorOnPoorContrast(active);
 
@@ -896,259 +887,105 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     const bool &drawOutlineOnPress =
         (_buttonType == DecorationButtonType::Close) ? _decorationSettings->showCloseOutlineOnPress(active) : _decorationSettings->showOutlineOnPress(active);
 
-    // set normal, hover and press colours
-    if (buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::Accent
-        || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-        || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-        if (translucentBackgrounds) {
-            if (_buttonType == DecorationButtonType::Close && negativeClose) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->negativeReducedOpacityOutline; // may want to change these to be distinct colours in the future
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeReducedOpacityOutline;
-                    } else {
-                        outlineNormal = decorationColors->buttonReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeReducedOpacityOutline;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->negativeReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->negativeReducedOpacityOutline;
-                }
-            } else if (_buttonType == DecorationButtonType::Minimize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->neutralReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->neutralReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->neutralReducedOpacityOutline;
-                    } else {
-                        outlineNormal = decorationColors->buttonReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->neutralReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->neutralReducedOpacityOutline;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->neutralReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->neutralReducedOpacityOutline;
-                }
-            } else if (_buttonType == DecorationButtonType::Maximize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->positiveReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->positiveReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->positiveReducedOpacityOutline;
-                    } else {
-                        outlineNormal = decorationColors->buttonReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->positiveReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->positiveReducedOpacityOutline;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->positiveReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->positiveReducedOpacityOutline;
-                }
-            }
-
-            if (defaultButton) {
-                if (drawOutlineNormally) {
-                    outlineNormal = decorationColors->buttonReducedOpacityOutline;
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->buttonReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->buttonReducedOpacityOutline;
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->buttonReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->buttonReducedOpacityOutline;
-                }
-            }
-        } else { // non-translucent accent colours
-            if (_buttonType == DecorationButtonType::Close && negativeClose) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->negativeSaturated;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeSaturated;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeSaturated;
-                    } else {
-                        outlineNormal = decorationColors->buttonFocus;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeSaturated;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeSaturated;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->negativeSaturated;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->negativeSaturated;
-                }
-            } else if (_buttonType == DecorationButtonType::Minimize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->neutral;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->neutral;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->neutral;
-                    } else {
-                        outlineNormal = decorationColors->buttonFocus;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->neutral;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->neutral;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->neutral;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->neutral;
-                }
-            } else if (_buttonType == DecorationButtonType::Maximize
-                       && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->positive;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->positive;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->positive;
-                    } else {
-                        outlineNormal = decorationColors->buttonFocus;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->positive;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->positive;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->positive;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->positive;
-                }
-            }
-
-            if (defaultButton) {
-                if (drawOutlineNormally) {
-                    outlineNormal = decorationColors->buttonFocus;
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->buttonFocus;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->buttonFocus;
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->buttonFocus;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->buttonFocus;
-                }
-            }
+    QColor defaultOutlineColor;
+    QColor accentHoverBase;
+    switch (buttonBackgroundColors) {
+    default:
+    case InternalSettings::EnumButtonBackgroundColors::Accent:
+    case InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose:
+    case InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights:
+        defaultOutlineColor = decorationColors->buttonFocus;
+        if (_decorationSettings->useHoverAccent(active)) {
+            accentHoverBase = decorationColors->buttonHover;
         }
+        break;
+    case InternalSettings::EnumButtonBackgroundColors::TitlebarText:
+    case InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose:
+        defaultOutlineColor = decorationColors->titleBarText;
+        break;
+    }
 
-    } else { // titlebar text colour, translucent
-        if (translucentBackgrounds) {
-            if (_buttonType == DecorationButtonType::Close && negativeClose) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->negativeReducedOpacityOutline;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeReducedOpacityOutline;
-                    } else {
-                        outlineNormal = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeReducedOpacityOutline;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeReducedOpacityOutline;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->negativeReducedOpacityOutline;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->negativeReducedOpacityOutline;
-                }
-            }
-            if (defaultButton) {
-                if (drawOutlineNormally) {
-                    outlineNormal = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                    if (drawOutlineOnHover)
-                        outlineHover = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                    if (drawOutlineOnPress)
-                        outlinePress = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                    if (drawOutlineOnPress)
-                        outlinePress = ColorTools::alphaMix(text, qMin(translucentButtonBackgroundsOpacity * 0.5, 1.0));
-                }
-            }
-        } else { // titlebar text colour, non-translucent
-            if (_buttonType == DecorationButtonType::Close && negativeClose) {
-                defaultButton = false;
-                if (drawOutlineNormally) {
-                    if (!negativeCloseBackgroundHoverPress) {
-                        outlineNormal = decorationColors->negativeSaturated;
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeSaturated;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeSaturated;
-                    } else {
-                        outlineNormal = KColorUtils::mix(base, text, 0.3);
-                        if (drawOutlineOnHover)
-                            outlineHover = decorationColors->negativeSaturated;
-                        if (drawOutlineOnPress)
-                            outlinePress = decorationColors->negativeSaturated;
-                    }
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = decorationColors->negativeSaturated;
-                    if (drawOutlineOnPress)
-                        outlinePress = decorationColors->negativeSaturated;
-                }
-            }
-            if (defaultButton) {
-                if (drawOutlineNormally) {
-                    outlineNormal = KColorUtils::mix(base, text, 0.3);
-                    if (drawOutlineOnHover)
-                        outlineHover = KColorUtils::mix(base, text, 0.3);
-                    if (drawOutlineOnPress)
-                        outlinePress = KColorUtils::mix(base, text, 0.3);
-                } else {
-                    if (drawOutlineOnHover)
-                        outlineHover = KColorUtils::mix(base, text, 0.3);
-                    if (drawOutlineOnHover)
-                        outlinePress = KColorUtils::mix(base, text, 0.3);
-                }
-            }
+    bool setDefaultOutlineNormallyOnly = false;
+
+    // set normal, hover and press colours
+    if (_buttonType == DecorationButtonType::Close && negativeClose) {
+        defaultButton = false;
+        if (drawOutlineNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultOutlineNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Outline, active, decorationColors->fullySaturatedNegative, tristate1, tristate2, tristate3);
+            outlineNormal = tristate1;
+            if (drawOutlineOnHover)
+                outlineHover = tristate2;
+            if (drawOutlineOnPress)
+                outlinePress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Outline, active, decorationColors->fullySaturatedNegative, bistate1, bistate2);
+            if (drawOutlineOnHover)
+                outlineHover = bistate1;
+            if (drawOutlineOnPress)
+                outlinePress = bistate2;
+        }
+    } else if (_buttonType == DecorationButtonType::Minimize && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        defaultButton = false;
+        if (drawOutlineNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultOutlineNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Outline, active, decorationColors->neutral, tristate1, tristate2, tristate3);
+            outlineNormal = tristate1;
+            if (drawOutlineOnHover)
+                outlineHover = tristate2;
+            if (drawOutlineOnPress)
+                outlinePress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Outline, active, decorationColors->neutral, bistate1, bistate2);
+            if (drawOutlineOnHover)
+                outlineHover = bistate1;
+            if (drawOutlineOnPress)
+                outlinePress = bistate2;
+        }
+    } else if (_buttonType == DecorationButtonType::Maximize && buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+        defaultButton = false;
+        if (drawOutlineNormally) {
+            QColor tristate1, tristate2, tristate3;
+            if (negativeCloseBackgroundHoverPress)
+                setDefaultOutlineNormallyOnly = true;
+            generateTristateColors(ButtonComponent::Outline, active, decorationColors->positiveSaturated, tristate1, tristate2, tristate3);
+            outlineNormal = tristate1;
+            if (drawOutlineOnHover)
+                outlineHover = tristate2;
+            if (drawOutlineOnPress)
+                outlinePress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Outline, active, decorationColors->positiveSaturated, bistate1, bistate2);
+            if (drawOutlineOnHover)
+                outlineHover = bistate1;
+            if (drawOutlineOnPress)
+                outlinePress = bistate2;
+        }
+    }
+
+    if (defaultButton || setDefaultOutlineNormallyOnly) {
+        if (drawOutlineNormally) {
+            QColor tristate1, tristate2, tristate3;
+            generateTristateColors(ButtonComponent::Outline, active, defaultOutlineColor, tristate1, tristate2, tristate3, accentHoverBase);
+            outlineNormal = tristate1;
+            if (drawOutlineOnHover && !setDefaultOutlineNormallyOnly)
+                outlineHover = tristate2;
+            if (drawOutlineOnPress)
+                outlinePress = tristate3;
+        } else {
+            QColor bistate1, bistate2;
+            generateBistateColors(ButtonComponent::Outline, active, defaultOutlineColor, bistate1, bistate2, accentHoverBase);
+            if (drawOutlineOnHover && !setDefaultOutlineNormallyOnly)
+                outlineHover = bistate1;
+            if (drawOutlineOnPress)
+                outlinePress = bistate2;
         }
     }
 
@@ -1168,14 +1005,14 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
 
     // low contrast correction between outline and titlebar
     if (adjustBackgroundColorOnPoorContrast) {
-        if (outlineNormal.isValid() && KColorUtils::contrastRatio(outlineNormal, base) < 1.3) {
+        if (outlineNormal.isValid() && KColorUtils::contrastRatio(outlineNormal, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlineNormal = KColorUtils::mix(outlineNormal, text, 0.4);
         }
 
-        if (outlineHover.isValid() && KColorUtils::contrastRatio(outlineHover, base) < 1.3) {
+        if (outlineHover.isValid() && KColorUtils::contrastRatio(outlineHover, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlineHover = KColorUtils::mix(outlineHover, text, 0.4);
         }
-        if (outlinePress.isValid() && KColorUtils::contrastRatio(outlinePress, base) < 1.3) {
+        if (outlinePress.isValid() && KColorUtils::contrastRatio(outlinePress, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlinePress = KColorUtils::mix(outlinePress, text, 0.4);
         }
     }

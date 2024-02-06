@@ -32,14 +32,16 @@ public:
      * @brief Checks the contrast ratio of the two given colours, and if is below the given threshold returns a higher contrast black or white foreground
      * @param foregroundColor The foreground colour to potentially replace
      * @param backgroundColor The background colour to compare with
-     * @param blackWhiteContrastThreshold The contrast threshold, below which a black or white foreground colour will be returned
+     * @param contrastThreshold The contrast threshold, below higher contrast foreground colour will be returned
      * @param outputColor The potentially-adjusted output colour
+     * @param potentialReplacementColor An optional colour to replace with on low contrast. If not set will replace with black or white.
      * @return returns true if a higher contrast colour was generated, false if the colour remained the same
      */
     static bool getHigherContrastForegroundColor(const QColor &foregroundColor,
                                                  const QColor &backgroundColor,
-                                                 const qreal blackWhiteContrastThreshold,
-                                                 QColor &outputColor);
+                                                 const qreal contrastThreshold,
+                                                 QColor &outputColor,
+                                                 QColor potentialReplacementColor = QColor());
 
     /**
      * @brief Given a background colour, will return either a black or white foregreound colour, depending upon which gives the best contrast
