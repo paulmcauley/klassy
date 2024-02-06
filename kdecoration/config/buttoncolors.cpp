@@ -962,9 +962,9 @@ void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
 
     QCheckBox *useHoverAccentActive = active ? m_ui->useHoverAccentActive : m_ui->useHoverAccentInactive;
     // also set useHoverAccent as also depends on buttonBackgroundColors change
-    if (m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::Accent
-        || m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-        || m_internalSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
+    if (buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::Accent
+        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights) {
         useHoverAccentActive->setVisible(true);
     } else {
         useHoverAccentActive->setVisible(false);
