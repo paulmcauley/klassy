@@ -7748,6 +7748,9 @@ bool Style::drawDialComplexControl(const QStyleOptionComplex *option, QPainter *
 //______________________________________________________________
 bool Style::drawScrollBarComplexControl(const QStyleOptionComplex *option, QPainter *painter, const QWidget *widget) const
 {
+    if (!option) {
+        return true;
+    }
     // the animation for QStyle::SC_ScrollBarGroove is special: it will animate
     // the opacity of everything else as well, included slider and arrows
     qreal opacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
