@@ -14,10 +14,8 @@
 #include <KDecoration2/DecorationButton>
 #include <KDecoration2/DecorationSettings>
 #include <QColor>
-#include <QDBusVariant>
 #include <QObject>
 #include <QPalette>
-#include <QSharedMemory>
 #include <map>
 #include <memory>
 
@@ -199,24 +197,5 @@ private:
     static QByteArray s_settingsUpdateUuid;
     static bool s_cachedColorsGenerated;
 };
-
-class BREEZECOMMON_EXPORT DecorationColorCacheUpdateNotifier : public QObject
-{
-    Q_OBJECT
-
-public:
-    DecorationColorCacheUpdateNotifier();
-
-public Q_SLOTS:
-    void onWindowDecorationSettingsUpdate();
-    void onSystemPaletteUpdate(QString, QString, QDBusVariant);
-
-Q_SIGNALS:
-    void decorationSettingsUpdate(QByteArray uuid);
-    void systemSettingsUpdate(QByteArray uuid);
-};
-
-extern DecorationColorCacheUpdateNotifier BREEZECOMMON_EXPORT g_decorationColorCacheUpdateNotifier;
-
 }
 #endif

@@ -19,12 +19,14 @@
 #include "breezebutton.h"
 
 #include "breezeboxshadowrenderer.h"
+#include "dbuslistener.h"
 
 #include <KDecoration2/DecorationButtonGroup>
 #include <KDecoration2/DecorationShadow>
 
 #include <KColorUtils>
 #include <KConfigGroup>
+#include <KIconLoader>
 #include <KPluginFactory>
 #include <KWindowSystem>
 
@@ -366,14 +368,15 @@ void Decoration::init()
 
     // color cache update
     // The slot will only update if the UUID has changed, hence preventing unnecessary multiple colour cache updates
-    connect(&g_decorationColorCacheUpdateNotifier,
-            &DecorationColorCacheUpdateNotifier::decorationSettingsUpdate,
-            this,
-            &Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate);
-    connect(&g_decorationColorCacheUpdateNotifier,
-            &DecorationColorCacheUpdateNotifier::systemSettingsUpdate,
-            this,
-            &Decoration::generateDecorationColorsOnSystemColorSettingsUpdate);
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::decorationSettingsUpdate, this, &Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate);
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemColorSchemeUpdate, this, &Decoration::generateDecorationColorsOnSystemColorSettingsUpdate);
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemIconsUpdate, this, [this]() {
+        if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+            KIconLoader *iconLoader = KIconLoader::global();
+            iconLoader->reconfigure(qAppName());
+            Q_EMIT reconfigured(); // this will trigger Button::reconfigure
+        }
+    });
     connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
 
     // buttons

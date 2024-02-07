@@ -19,7 +19,7 @@
 #include "breezetoolsareamanager.h"
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
-#include "colortools.h"
+#include "dbuslistener.h"
 #include "decorationcolors.h"
 
 #include <KColorUtils>
@@ -267,6 +267,15 @@ Style::Style()
     // call the slot directly; this initial call will set up things that also
     // need to be reset when the system palette changes
     loadConfiguration();
+
+    connect(&g_dBusUpdateNotifier,
+            &DBusUpdateNotifier::systemIconsUpdate,
+            this,
+            [this]() { // call this after loadConfiguration() as _helper->decorationConfig() needs to be initialized properly first
+                if (_helper->decorationConfig()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+                    loadConfiguration();
+                }
+            });
 }
 
 //______________________________________________________________
@@ -7769,6 +7778,17 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         return QIcon();
     }
 
+    // store palette
+    // due to Qt, it is not always safe to assume that either option, nor widget are defined
+    QPalette palette;
+    if (option) {
+        palette = option->palette;
+    } else if (widget) {
+        palette = widget->palette();
+    } else {
+        palette = QApplication::palette();
+    }
+
     DecorationButtonPalette decorationButtonPalette(buttonType);
     decorationButtonPalette.generate(_helper->decorationConfig(), _helper->decorationColors());
 
@@ -7855,7 +7875,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                                             buttonChecked,
                                             iconData._foregroundColor,
                                             iconData._backgroundColor,
-                                            iconData._outlineColor);
+                                            iconData._outlineColor,
+                                            palette);
 
             painter.end();
 

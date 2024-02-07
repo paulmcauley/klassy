@@ -7,7 +7,6 @@
 #include "colortools.h"
 #include <KColorUtils>
 #include <QDBusConnection>
-#include <QDBusMessage>
 
 namespace Breeze
 {
@@ -18,8 +17,6 @@ std::unique_ptr<DecorationPaletteGroup> DecorationColors::s_cachedDecorationPale
 std::map<KDecoration2::DecorationButtonType, DecorationButtonPalette> DecorationColors::s_cachedButtonPalettes;
 QByteArray DecorationColors::s_settingsUpdateUuid = "";
 bool DecorationColors::s_cachedColorsGenerated = false;
-
-DecorationColorCacheUpdateNotifier g_decorationColorCacheUpdateNotifier;
 
 DecorationColors::DecorationColors(const bool useCachedPalette, const bool forAppStyle)
     : m_forAppStyle(forAppStyle)
@@ -267,36 +264,4 @@ void DecorationColors::readSystemTitleBarColors(KSharedConfig::Ptr kdeGlobalConf
         }
     }
 }
-
-DecorationColorCacheUpdateNotifier::DecorationColorCacheUpdateNotifier()
-{
-    QDBusConnection dBusConnection = QDBusConnection::sessionBus();
-
-    dBusConnection.connect(QString(),
-                           QStringLiteral("/org/freedesktop/portal/desktop"),
-                           QStringLiteral("org.freedesktop.portal.Settings"),
-                           QStringLiteral("SettingChanged"),
-                           this,
-                           SLOT(onSystemPaletteUpdate(QString, QString, QDBusVariant)));
-
-    dBusConnection.connect(QString(),
-                           QStringLiteral("/KlassyDecoration"),
-                           QStringLiteral("org.kde.Klassy.Style"),
-                           QStringLiteral("updateDecorationColorCache"),
-                           this,
-                           SLOT(onWindowDecorationSettingsUpdate()));
-}
-
-void DecorationColorCacheUpdateNotifier::onWindowDecorationSettingsUpdate()
-{
-    Q_EMIT decorationSettingsUpdate(QUuid::createUuid().toByteArray());
-}
-
-void DecorationColorCacheUpdateNotifier::onSystemPaletteUpdate(QString first, QString second, QDBusVariant third)
-{
-    if (first == QStringLiteral("org.freedesktop.appearance") && second == QStringLiteral("color-scheme") && third.variant().toUInt()) {
-        Q_EMIT systemSettingsUpdate(QUuid::createUuid().toByteArray());
-    }
-}
-
 }
