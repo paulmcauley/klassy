@@ -369,12 +369,22 @@ ButtonBehaviour::ButtonBehaviour(KSharedConfig::Ptr config, KSharedConfig::Ptr p
 
     connect(m_ui->buttonStateCheckedActive, qOverload<int>(&QComboBox::currentIndexChanged), this, &ButtonBehaviour::updateChanged);
     connect(m_ui->buttonStateCheckedInactive, qOverload<int>(&QComboBox::currentIndexChanged), this, &ButtonBehaviour::updateChanged);
-    connect(m_ui->buttonStateCheckedActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonStateCheckedInactive, i);
-    });
-    connect(m_ui->buttonStateCheckedInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonStateCheckedActive, i);
-    });
+    connect(
+        m_ui->buttonStateCheckedActive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonStateCheckedInactive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
+    connect(
+        m_ui->buttonStateCheckedInactive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonStateCheckedActive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->lockButtonBehaviourActive, &QAbstractButton::toggled, m_ui->lockButtonBehaviourInactive, &QAbstractButton::setChecked);
     connect(m_ui->lockButtonBehaviourInactive, &QAbstractButton::toggled, m_ui->lockButtonBehaviourActive, &QAbstractButton::setChecked);

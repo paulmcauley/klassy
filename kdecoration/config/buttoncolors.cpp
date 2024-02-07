@@ -105,18 +105,28 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             SLOT(refreshCloseButtonIconColorStateActive()),
             Qt::ConnectionType::DirectConnection); // important that refreshCloseButtonIconColorState is before updateChanged
     connect(m_ui->buttonIconColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonIconColorsActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonIconColorsInactive, i);
-    });
+    connect(
+        m_ui->buttonIconColorsActive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonIconColorsInactive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonIconColorsInactive,
             SIGNAL(currentIndexChanged(int)),
             SLOT(refreshCloseButtonIconColorStateInactive()),
             Qt::ConnectionType::DirectConnection); // important that refreshCloseButtonIconColorState is before updateChanged
     connect(m_ui->buttonIconColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonIconColorsInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonIconColorsActive, i);
-    });
+    connect(
+        m_ui->buttonIconColorsInactive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonIconColorsActive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBackgroundColorsActive,
             SIGNAL(currentIndexChanged(int)),
@@ -126,9 +136,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             SIGNAL(currentIndexChanged(int)),
             SLOT(refreshCloseButtonIconColorStateActive()),
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonBackgroundColorsActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsInactive, i);
-    });
+    connect(
+        m_ui->buttonBackgroundColorsActive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsInactive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonBackgroundColorsActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBackgroundColorsInactive,
@@ -139,20 +154,35 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             SIGNAL(currentIndexChanged(int)),
             SLOT(refreshCloseButtonIconColorStateInactive()),
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonBackgroundColorsInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsActive, i);
-    });
+    connect(
+        m_ui->buttonBackgroundColorsInactive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsActive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonBackgroundColorsInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->closeButtonIconColorActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->closeButtonIconColorActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->closeButtonIconColorInactive, i);
-    });
+    connect(
+        m_ui->closeButtonIconColorActive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->closeButtonIconColorInactive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->closeButtonIconColorInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->closeButtonIconColorInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->closeButtonIconColorActive, i);
-    });
+    connect(
+        m_ui->closeButtonIconColorInactive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->closeButtonIconColorActive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     auto setOtherCheckedIfLocked = [this](QAbstractButton *other, const bool v) {
         if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
@@ -161,28 +191,48 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     };
 
     connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->negativeCloseBackgroundHoverPressActive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressInactive, v);
-    });
+    connect(
+        m_ui->negativeCloseBackgroundHoverPressActive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->negativeCloseBackgroundHoverPressInactive,
             &QAbstractButton::toggled,
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->negativeCloseBackgroundHoverPressInactive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressActive, v);
-    });
+    connect(
+        m_ui->negativeCloseBackgroundHoverPressInactive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->useHoverAccentActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->useHoverAccentActive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->useHoverAccentInactive, v);
-    });
+    connect(
+        m_ui->useHoverAccentActive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->useHoverAccentInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->useHoverAccentInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->useHoverAccentInactive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->useHoverAccentActive, v);
-    });
+    connect(
+        m_ui->useHoverAccentInactive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->useHoverAccentActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->onPoorIconContrastActive,
             qOverload<int>(&QComboBox::currentIndexChanged),
@@ -190,9 +240,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
     connect(m_ui->onPoorIconContrastActive, qOverload<int>(&QComboBox::currentIndexChanged), this, &ButtonColors::setPoorIconContrastThresholdVisibleActive);
-    connect(m_ui->onPoorIconContrastActive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->onPoorIconContrastInactive, i);
-    });
+    connect(
+        m_ui->onPoorIconContrastActive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->onPoorIconContrastInactive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->onPoorIconContrastInactive,
             qOverload<int>(&QComboBox::currentIndexChanged),
@@ -203,9 +258,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             qOverload<int>(&QComboBox::currentIndexChanged),
             this,
             &ButtonColors::setPoorIconContrastThresholdVisibleInactive);
-    connect(m_ui->onPoorIconContrastInactive, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-        setIndexOfOtherIfLocked(m_ui->onPoorIconContrastActive, i);
-    });
+    connect(
+        m_ui->onPoorIconContrastInactive,
+        qOverload<int>(&QComboBox::currentIndexChanged),
+        this,
+        [=](const int i) {
+            setIndexOfOtherIfLocked(m_ui->onPoorIconContrastActive, i);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->adjustBackgroundColorOnPoorContrastActive,
             &QAbstractButton::toggled,
@@ -213,9 +273,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
     connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, this, &ButtonColors::setPoorBackgroundContrastThresholdVisibleActive);
-    connect(m_ui->adjustBackgroundColorOnPoorContrastActive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastInactive, v);
-    });
+    connect(
+        m_ui->adjustBackgroundColorOnPoorContrastActive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->adjustBackgroundColorOnPoorContrastInactive,
             &QAbstractButton::toggled,
@@ -226,9 +291,14 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
             &QAbstractButton::toggled,
             this,
             &ButtonColors::setPoorBackgroundContrastThresholdVisibleInactive);
-    connect(m_ui->adjustBackgroundColorOnPoorContrastInactive, &QAbstractButton::toggled, [=](const bool v) {
-        setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastActive, v);
-    });
+    connect(
+        m_ui->adjustBackgroundColorOnPoorContrastInactive,
+        &QAbstractButton::toggled,
+        this,
+        [=](const bool v) {
+            setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     auto setOtherValueIfLocked = [this](QSpinBox *other, const int v) {
         if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
@@ -243,60 +313,100 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     };
 
     connect(m_ui->buttonIconOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonIconOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->buttonIconOpacityInactive, v);
-    });
+    connect(
+        m_ui->buttonIconOpacityActive,
+        qOverload<int>(&QSpinBox::valueChanged),
+        this,
+        [=](const int v) {
+            setOtherValueIfLocked(m_ui->buttonIconOpacityInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonIconOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonIconOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->buttonIconOpacityActive, v);
-    });
+    connect(
+        m_ui->buttonIconOpacityInactive,
+        qOverload<int>(&QSpinBox::valueChanged),
+        this,
+        [=](const int v) {
+            setOtherValueIfLocked(m_ui->buttonIconOpacityActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBackgroundOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonBackgroundOpacityActive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->buttonBackgroundOpacityInactive, v);
-    });
+    connect(
+        m_ui->buttonBackgroundOpacityActive,
+        qOverload<int>(&QSpinBox::valueChanged),
+        this,
+        [=](const int v) {
+            setOtherValueIfLocked(m_ui->buttonBackgroundOpacityInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBackgroundOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->buttonBackgroundOpacityInactive, qOverload<int>(&QSpinBox::valueChanged), [=](const int v) {
-        setOtherValueIfLocked(m_ui->buttonBackgroundOpacityActive, v);
-    });
+    connect(
+        m_ui->buttonBackgroundOpacityInactive,
+        qOverload<int>(&QSpinBox::valueChanged),
+        this,
+        [=](const int v) {
+            setOtherValueIfLocked(m_ui->buttonBackgroundOpacityActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->poorIconContrastThresholdActive,
             qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->poorIconContrastThresholdActive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
-        setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdInactive, v);
-    });
+    connect(
+        m_ui->poorIconContrastThresholdActive,
+        qOverload<double>(&QDoubleSpinBox::valueChanged),
+        this,
+        [=](const double v) {
+            setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->poorIconContrastThresholdInactive,
             qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->poorIconContrastThresholdInactive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
-        setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdActive, v);
-    });
+    connect(
+        m_ui->poorIconContrastThresholdInactive,
+        qOverload<double>(&QDoubleSpinBox::valueChanged),
+        this,
+        [=](const double v) {
+            setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->poorBackgroundContrastThresholdActive,
             qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->poorBackgroundContrastThresholdActive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
-        setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdInactive, v);
-    });
+    connect(
+        m_ui->poorBackgroundContrastThresholdActive,
+        qOverload<double>(&QDoubleSpinBox::valueChanged),
+        this,
+        [=](const double v) {
+            setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdInactive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->poorBackgroundContrastThresholdInactive,
             qOverload<double>(&QDoubleSpinBox::valueChanged),
             this,
             &ButtonColors::updateChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->poorBackgroundContrastThresholdInactive, qOverload<double>(&QDoubleSpinBox::valueChanged), [=](const double v) {
-        setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdActive, v);
-    });
+    connect(
+        m_ui->poorBackgroundContrastThresholdInactive,
+        qOverload<double>(&QDoubleSpinBox::valueChanged),
+        this,
+        [=](const double v) {
+            setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdActive, v);
+        },
+        Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->buttonColorOverrideToggleInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -347,7 +457,6 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             comboBox->setProperty("column", columnIndex);
             comboBox->setProperty("row", rowIndex);
             comboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-            comboBox->setVisible(false);
             hlayout0->addWidget(checkBox);
             hlayout0->addWidget(comboBox);
             hlayout0->addStretch();
@@ -355,7 +464,6 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             colorButton->setObjectName(QStringLiteral("colorButton") + activeString + QString(columnIndex) + QString(rowIndex));
             colorButton->setProperty("column", columnIndex);
             colorButton->setProperty("row", rowIndex);
-            colorButton->setVisible(false);
             QSpinBox *spinBox = new QSpinBox();
             spinBox->setObjectName(QStringLiteral("spinBox") + activeString + QString(columnIndex) + QString(rowIndex));
             spinBox->setProperty("column", columnIndex);
@@ -366,8 +474,6 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             spinBox->setSingleStep(1);
             QLabel *label = new QLabel(i18n("Opacity:"));
             label->setBuddy(spinBox);
-            spinBox->setVisible(false);
-            label->setVisible(false);
             hlayout1->addStretch();
             hlayout1->addWidget(colorButton);
             hlayout1->addStretch();
@@ -376,32 +482,51 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             QWidget *w = new QWidget();
             w->setLayout(vlayout);
             table->setCellWidget(rowIndex, columnIndex, w);
-            QSize sizeHidden = table->cellWidget(rowIndex, columnIndex)->size();
-            connect(checkBox, &QAbstractButton::toggled, [=](const bool checked) {
-                if (checked && comboBox->currentIndex() == 0) {
-                    colorButton->setVisible(true);
-                } else {
-                    colorButton->setVisible(false);
-                }
-                comboBox->setVisible(checked);
-                label->setVisible(checked);
-                spinBox->setVisible(checked);
-                if (!colorButton->isVisible() && !comboBox->isVisible())
-                    table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
-                table->resizeRowToContents(rowIndex);
-                table->resizeColumnToContents(columnIndex);
-            });
-            connect(comboBox, qOverload<int>(&QComboBox::currentIndexChanged), [=](const int i) {
-                if (i == 0 && checkBox->isChecked()) {
-                    colorButton->setVisible(true);
-                } else {
-                    colorButton->setVisible(false);
-                }
-                if (!colorButton->isVisible() && !comboBox->isVisible())
-                    table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
-                table->resizeRowToContents(rowIndex);
-                table->resizeColumnToContents(columnIndex);
-            });
+            QSize sizeVisible = w->size();
+            comboBox->setVisible(false);
+            colorButton->setVisible(false);
+            spinBox->setVisible(false);
+            label->setVisible(false);
+            QSize sizeHidden = w->size();
+            connect(
+                checkBox,
+                &QAbstractButton::toggled,
+                this,
+                [=](const bool checked) {
+                    if (checked && comboBox->currentIndex() == 0) {
+                        colorButton->setVisible(true);
+                    } else {
+                        colorButton->setVisible(false);
+                    }
+                    comboBox->setVisible(checked);
+                    label->setVisible(checked);
+                    spinBox->setVisible(checked);
+                    if (!colorButton->isVisible() && !comboBox->isVisible() && !spinBox->isVisible())
+                        table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
+                    else
+                        table->cellWidget(rowIndex, columnIndex)->resize(sizeVisible);
+                    table->resizeRowToContents(rowIndex);
+                    table->resizeColumnToContents(columnIndex);
+                },
+                Qt::ConnectionType::DirectConnection);
+            connect(
+                comboBox,
+                qOverload<int>(&QComboBox::currentIndexChanged),
+                this,
+                [=](const int i) {
+                    if (i == 0 && checkBox->isChecked()) {
+                        colorButton->setVisible(true);
+                    } else {
+                        colorButton->setVisible(false);
+                    }
+                    if (!colorButton->isVisible() && !comboBox->isVisible() && !spinBox->isVisible())
+                        table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
+                    else
+                        table->cellWidget(rowIndex, columnIndex)->resize(sizeVisible);
+                    table->resizeRowToContents(rowIndex);
+                    table->resizeColumnToContents(columnIndex);
+                },
+                Qt::ConnectionType::DirectConnection);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::resizeOverrideColorTable);
             // direct connections are used so the slot can detect the immediate m_loading status (not available in a queued connection)
