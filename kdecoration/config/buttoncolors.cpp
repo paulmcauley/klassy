@@ -480,14 +480,28 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             hlayout1->addWidget(label);
             hlayout1->addWidget(spinBox);
             QWidget *w = new QWidget();
-            w->setLayout(vlayout);
-            table->setCellWidget(rowIndex, columnIndex, w);
-            QSize sizeVisible = w->size();
+
             comboBox->setVisible(false);
             colorButton->setVisible(false);
             spinBox->setVisible(false);
             label->setVisible(false);
+            w->setLayout(vlayout);
+            table->setCellWidget(rowIndex, columnIndex, w);
             QSize sizeHidden = w->size();
+
+            comboBox->setVisible(true);
+            colorButton->setVisible(true);
+            spinBox->setVisible(true);
+            label->setVisible(true);
+            QSize sizeVisible = w->size();
+
+            comboBox->setVisible(false);
+            colorButton->setVisible(false);
+            spinBox->setVisible(false);
+            label->setVisible(false);
+            w->resize(sizeHidden);
+
+            table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
             connect(
                 checkBox,
                 &QAbstractButton::toggled,
