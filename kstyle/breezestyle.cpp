@@ -7448,19 +7448,30 @@ bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPaint
             iconState = QIcon::Off;
 
         } else {
-            if (mouseOver) {
-                iconMode = QIcon::Active;
-                if (active) {
+            if (subControlActive) { // pressed
+                if (active) { // Active MDI titlebar
+                    iconMode = QIcon::Selected;
                     iconState = QIcon::On;
-                } else {
+                } else { // inactive MDI titlebar
+                    iconMode = QIcon::Normal;
+                    iconState = QIcon::On;
+                }
+            } else if (mouseOver) {
+                if (active) { // Active MDI titlebar
+                    iconMode = QIcon::Disabled; // modified for Klassy to use this otherwise unused mode/state
+                    iconState = QIcon::On;
+                } else { // inactive MDI titlebar
+                    iconMode = QIcon::Active;
                     iconState = QIcon::Off;
                 }
-            } else if (active) {
-                iconMode = QIcon::Selected;
-                iconState = subControlActive ? QIcon::On : QIcon::Off;
             } else {
-                iconMode = QIcon::Normal;
-                iconState = subControlActive ? QIcon::On : QIcon::Off;
+                if (active) { // Active MDI titlebar
+                    iconMode = QIcon::Selected;
+                    iconState = QIcon::Off;
+                } else { // inactive MDI titlebar
+                    iconMode = QIcon::Normal;
+                    iconState = QIcon::Off;
+                }
             }
         }
 
@@ -7804,7 +7815,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     // map colors to icon states
     const QList<IconData> iconTypes = {
         // state off icons
-        {QIcon::Normal, // used for normal buttons and inactive MDI window titlebars (hence using inactive colours)
+        {QIcon::Normal, // used for standard widgets and inactive MDI window titlebars (hence using inactive colours)
          QIcon::Off,
          decorationButtonPalette.inactive()->foregroundNormal,
          decorationButtonPalette.inactive()->backgroundNormal,
@@ -7816,7 +7827,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
          decorationButtonPalette.active()->backgroundNormal,
          decorationButtonPalette.active()->outlineNormal},
 
-        {QIcon::Active, // hover colours, normal
+        {QIcon::Active, // hover colours, standard widgets and inactive MDI titlebars
          QIcon::Off,
          decorationButtonPalette.inactive()->foregroundHover,
          decorationButtonPalette.inactive()->backgroundHover,
@@ -7829,29 +7840,30 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
          ColorTools::alphaMix(decorationButtonPalette.inactive()->outlineNormal, 0.2)},
 
         // state on icons
-        {QIcon::Normal, // Pressed colours inactive
+        {QIcon::Normal, // Pressed colours on a standard widget / inactive
          QIcon::On,
          decorationButtonPalette.inactive()->foregroundPress,
          decorationButtonPalette.inactive()->backgroundPress,
          decorationButtonPalette.inactive()->outlinePress},
 
-        {QIcon::Selected, // Pressed colours on an active MDI titlebar active
+        {QIcon::Selected, // Pressed colours on MDI active titlebar
          QIcon::On,
          decorationButtonPalette.active()->foregroundPress,
          decorationButtonPalette.active()->backgroundPress,
          decorationButtonPalette.active()->outlinePress},
 
-        {QIcon::Active, // Hovered on an active MDI titlebar (drawTitleBarComplexControl modified to use this in Klassy)
+        {QIcon::Active, // Same as Normal::On -- needed like this for compatibility in drawToolButtonLabelControl
+         QIcon::On,
+         decorationButtonPalette.inactive()->foregroundPress,
+         decorationButtonPalette.inactive()->backgroundPress,
+         decorationButtonPalette.inactive()->outlinePress},
+
+        // This is unused elsewhere, so use instead for Hovered on an active MDI titlebar (drawTitleBarComplexControl modified to use this in Klassy)
+        {QIcon::Disabled,
          QIcon::On,
          decorationButtonPalette.active()->foregroundHover,
          decorationButtonPalette.active()->backgroundHover,
          decorationButtonPalette.active()->outlineHover},
-
-        {QIcon::Disabled,
-         QIcon::On,
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->foregroundNormal, 0.2),
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->backgroundNormal, 0.2),
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->outlineNormal, 0.2)},
 
     };
 

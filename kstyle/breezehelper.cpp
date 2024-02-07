@@ -1507,15 +1507,17 @@ void Helper::renderDecorationButton(QPainter *painter,
 
     if (backgroundColor.isValid() || outlineColor.isValid()) {
         // render circle or square background
-        if (outlineColor.isValid())
+        if (outlineColor.isValid()) {
             painter->setPen(outlineColor);
-        else
+        } else {
             painter->setPen(Qt::NoPen);
+        }
 
-        if (backgroundColor.isValid())
+        if (backgroundColor.isValid()) {
             painter->setBrush(backgroundColor);
-        else
+        } else {
             painter->setBrush(Qt::NoBrush);
+        }
 
         if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
             || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
@@ -1529,10 +1531,11 @@ void Helper::renderDecorationButton(QPainter *painter,
                  || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle)
             painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
         else { // circle
-            if (outlineColor.isValid())
+            if (outlineColor.isValid()) {
                 painter->drawEllipse(QRectF(1, 1, 16, 16)); // have to shrink outlined circle otherwise it gets clipped
-            else
+            } else {
                 painter->drawEllipse(QRectF(0, 0, 18, 18));
+            }
         }
     }
 
