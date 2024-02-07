@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 #include "dbuslistener.h"
+#include <KIconLoader>
 #include <QDBusConnection>
 #include <QDBusMessage>
 
@@ -41,6 +42,7 @@ void DBusUpdateNotifier::onSystemSettingUpdate(QString first, QString second, QD
 {
     Q_UNUSED(third);
     if (first == QStringLiteral("org.freedesktop.appearance") && second == QStringLiteral("color-scheme")) { // third is an int
+        KIconLoader::global()->reconfigure(qAppName());
         Q_EMIT systemColorSchemeUpdate(QUuid::createUuid().toByteArray());
     } else if (first == QStringLiteral("org.gnome.desktop.interface") && second == QStringLiteral("icon-theme")) { // third is a string with the icon theme name
         Q_EMIT systemIconsUpdate();

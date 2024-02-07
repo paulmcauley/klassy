@@ -26,7 +26,6 @@
 
 #include <KColorUtils>
 #include <KConfigGroup>
-#include <KIconLoader>
 #include <KPluginFactory>
 #include <KWindowSystem>
 
@@ -372,8 +371,6 @@ void Decoration::init()
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemColorSchemeUpdate, this, &Decoration::generateDecorationColorsOnSystemColorSettingsUpdate);
     connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::systemIconsUpdate, this, [this]() {
         if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-            KIconLoader *iconLoader = KIconLoader::global();
-            iconLoader->reconfigure(qAppName());
             Q_EMIT reconfigured(); // this will trigger Button::reconfigure
         }
     });
