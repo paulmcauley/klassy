@@ -7366,13 +7366,15 @@ bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPaint
         const auto background(titleBarColor);
         _helper->renderTabWidgetFrame(painter, rect.adjusted(-1, -1, 1, 3), background, outline, CornersTop);
 
-        const bool useSeparator(active && titleBarColor != palette.color(QPalette::Window) && !(titleBarOption->titleBarState & Qt::WindowMinimized));
+        const bool useSeparator(_helper->decorationConfig()->drawTitleBarSeparator() && active && titleBarColor != palette.color(QPalette::Window)
+                                && !(titleBarOption->titleBarState & Qt::WindowMinimized));
 
         if (useSeparator) {
             painter->setRenderHint(QPainter::Antialiasing, false);
             painter->setBrush(Qt::NoBrush);
-            painter->setPen(palette.color(QPalette::Highlight));
-            painter->drawLine(rect.bottomLeft(), rect.bottomRight());
+            QPen pen(_helper->buttonFocusColor(palette));
+            painter->setPen(pen);
+            painter->drawLine(QPoint(rect.left(), rect.top() + rect.height()), QPoint(rect.left() + rect.width(), rect.top() + rect.height()));
         }
 
         // render text
