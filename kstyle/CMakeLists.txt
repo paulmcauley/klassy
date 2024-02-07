@@ -61,6 +61,17 @@ kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
 
 add_library(klassy${QT_MAJOR_VERSION} MODULE ${breeze_PART_SRCS})
 
+ecm_qt_declare_logging_category(klassy${QT_MAJOR_VERSION}
+    HEADER
+        breeze_logging.h
+    IDENTIFIER
+        KLASSY
+    CATEGORY_NAME
+        klassy${QT_MAJOR_VERSION}
+    DEFAULT_SEVERITY
+        Warning
+)
+
 target_link_libraries(klassy${QT_MAJOR_VERSION}
     Qt${QT_MAJOR_VERSION}::Core
     Qt${QT_MAJOR_VERSION}::Gui

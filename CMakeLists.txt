@@ -32,6 +32,7 @@ endif()
 
 include(CMakePackageConfigHelpers)
 include(ECMInstallIcons)
+include(ECMQtDeclareLoggingCategory)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDEClangFormat)
 include(KDEGitCommitHooks)
