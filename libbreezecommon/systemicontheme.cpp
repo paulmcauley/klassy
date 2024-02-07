@@ -6,6 +6,7 @@
 
 #include "systemicontheme.h"
 #include "colortools.h"
+#include <KIconLoader>
 #include <QIcon>
 
 namespace Breeze
@@ -15,21 +16,29 @@ using KDecoration2::DecorationButtonType;
 
 void SystemIconTheme::paintIconFromSystemTheme(QString iconName)
 {
-    // QIcon::setThemeName(QIcon::themeName()); //doing this hack allows Adwaita icon theme to be partially loaded
-    QIcon icon(QIcon::fromTheme(iconName));
-    QSize pixmapSize(m_iconWidth, m_iconWidth);
-    QRect rect(QPoint(0, 0), pixmapSize); // Why not rectF, QSizeF??? experiment
+    QColor color = m_painter->pen().color();
 
-    if (m_internalSettings->colorizeSystemIcons()) {
+    KIconLoader iconLoader;
+
+    if (!m_internalSettings->forceColorizeSystemIcons()) {
+        m_palette.setColor(QPalette::WindowText, color);
+        iconLoader.setCustomPalette(m_palette);
+    }
+
+    int m_iconWidthScaled = qRound(m_iconWidth * m_devicePixelRatio);
+    QPixmap iconPixmap = iconLoader.loadIcon(iconName, KIconLoader::Group::NoGroup, m_iconWidthScaled);
+    iconPixmap.setDevicePixelRatio(m_devicePixelRatio);
+    QSize pixmapSize(m_iconWidth, m_iconWidth);
+    QRect rect(QPoint(0, 0), pixmapSize);
+
+    if (m_internalSettings->forceColorizeSystemIcons()) {
         // convert the alpha of the icon into tinted colour on transparent
-        // TODO: use pixmap(const QSize &size, qreal devicePixelRatio, QIcon::Mode mode = Normal, QIcon::State state = Off) const
-        //      this allows setting devicePixelRatioF in Qt6, fixing display of icons on multimonitor setups
-        QImage iconImage(icon.pixmap(pixmapSize).toImage());
-        ColorTools::convertAlphaToColor(iconImage, m_painter->pen().color());
+        QImage iconImage(iconPixmap.toImage());
+        ColorTools::convertAlphaToColor(iconImage, color);
 
         m_painter->drawImage(rect, iconImage);
     } else
-        icon.paint(m_painter, rect);
+        m_painter->drawPixmap(rect, iconPixmap);
 }
 
 void SystemIconTheme::renderIcon()
@@ -92,9 +101,10 @@ void SystemIconTheme::systemIconNames(KDecoration2::DecorationButtonType type, Q
 
 QString SystemIconTheme::isSystemIconNameAvailable(const QString &preferredIconName, const QString &backupIconName)
 {
-    if (QIcon::hasThemeIcon(preferredIconName))
+    KIconLoader *iconLoader = KIconLoader::global();
+    if (iconLoader->hasIcon(preferredIconName))
         return preferredIconName;
-    else if (QIcon::hasThemeIcon(backupIconName))
+    else if (iconLoader->hasIcon(backupIconName))
         return backupIconName;
     else
         return QString();

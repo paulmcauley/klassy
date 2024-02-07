@@ -315,7 +315,8 @@ public:
                                 const bool buttonChecked,
                                 const QColor &foregroundColor,
                                 const QColor &backgroundColor,
-                                const QColor &outlineColor) const;
+                                const QColor &outlineColor,
+                                const QPalette &palette) const;
 
     //* generic shadow for rounded rectangles
     void renderRoundedRectShadow(QPainter *, const QRectF &, const QColor &, qreal radius = Metrics::Frame_FrameRadius - PenWidth::Shadow / 2) const;

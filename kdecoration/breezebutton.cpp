@@ -135,12 +135,14 @@ Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *deco
 //__________________________________________________________________
 void Button::paint(QPainter *painter, const QRect &repaintRegion)
 {
-    Q_UNUSED(repaintRegion)
-
-    if (!decoration()) {
+    if (!geometry().intersects(repaintRegion)) {
         return;
     }
+
     auto d = qobject_cast<Decoration *>(decoration());
+    if (!d) {
+        return;
+    }
     auto c = d->client().toStrongRef();
     Q_ASSERT(c);
 
@@ -180,19 +182,16 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
         painter->translate(iconTranslationOffset, iconTranslationOffset);
 
         const QRectF iconRect(geometry().topLeft(), m_iconSize);
-        if (auto deco = qobject_cast<Decoration *>(decoration())) {
-            const QPalette activePalette = KIconLoader::global()->customPalette();
-            QPalette palette = c->palette();
-            palette.setColor(QPalette::WindowText, deco->fontColor());
-            KIconLoader::global()->setCustomPalette(palette);
-            c->icon().paint(painter, iconRect.toRect());
-            if (activePalette == QPalette()) {
-                KIconLoader::global()->resetPalette();
-            } else {
-                KIconLoader::global()->setCustomPalette(palette);
-            }
+
+        const QPalette originalPalette = KIconLoader::global()->customPalette();
+        QPalette palette = c->palette();
+        palette.setColor(QPalette::WindowText, m_foregroundColor);
+        KIconLoader::global()->setCustomPalette(palette);
+        c->icon().paint(painter, iconRect.toRect());
+        if (originalPalette == QPalette()) {
+            KIconLoader::global()->resetPalette();
         } else {
-            c->icon().paint(painter, iconRect.toRect());
+            KIconLoader::global()->setCustomPalette(originalPalette);
         }
 
     } else {
@@ -270,9 +269,11 @@ void Button::drawIcon(QPainter *painter) const
     painter->setPen(pen);
 
     if (m_renderSystemIcon) {
+        auto c = d->client().toStrongRef();
+        Q_ASSERT(c);
         QString systemIconName;
         systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
-        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio);
+        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio, c->palette());
         iconRenderer.renderIcon();
     } else {
         auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(d->internalSettings(),

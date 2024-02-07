@@ -1492,7 +1492,8 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     const bool buttonChecked,
                                     const QColor &foregroundColor,
                                     const QColor &backgroundColor,
-                                    const QColor &outlineColor) const
+                                    const QColor &outlineColor,
+                                    const QPalette &palette) const
 {
     painter->save();
     painter->setViewport(rect);
@@ -1561,7 +1562,7 @@ void Helper::renderDecorationButton(QPainter *painter,
 
         if (!systemIconName.isEmpty()) {
             painter->setWindow(rect);
-            SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1);
+            SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1, palette);
             iconRenderer.renderIcon();
         } else {
             auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true);
