@@ -757,7 +757,7 @@
         <default>true</default>
     </entry>
 
-    <entry name="lockButtonBehaviourActiveInactive" type = "Bool">
+    <entry name="LockButtonBehaviourActiveInactive" type = "Bool">
         <default>true</default>
     </entry>
 
