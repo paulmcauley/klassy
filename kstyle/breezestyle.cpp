@@ -7810,6 +7810,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         QIcon::Mode _mode;
         QIcon::State _state;
         QColor _foregroundColor;
+        bool _cutOutForeground;
         QColor _backgroundColor;
         QColor _outlineColor;
     };
@@ -7820,24 +7821,28 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         {QIcon::Normal, // used for standard widgets and inactive MDI window titlebars (hence using inactive colours)
          QIcon::Off,
          decorationButtonPalette.inactive()->foregroundNormal,
+         decorationButtonPalette.inactive()->cutOutForegroundNormal,
          decorationButtonPalette.inactive()->backgroundNormal,
          decorationButtonPalette.inactive()->outlineNormal},
 
         {QIcon::Selected, // used for active MDI window titlebars
          QIcon::Off,
          decorationButtonPalette.active()->foregroundNormal,
+         decorationButtonPalette.active()->cutOutForegroundNormal,
          decorationButtonPalette.active()->backgroundNormal,
          decorationButtonPalette.active()->outlineNormal},
 
         {QIcon::Active, // hover colours, standard widgets and inactive MDI titlebars
          QIcon::Off,
          decorationButtonPalette.inactive()->foregroundHover,
+         decorationButtonPalette.inactive()->cutOutForegroundHover,
          decorationButtonPalette.inactive()->backgroundHover,
          decorationButtonPalette.inactive()->outlineHover},
 
         {QIcon::Disabled,
          QIcon::Off,
          ColorTools::alphaMix(decorationButtonPalette.inactive()->foregroundNormal, 0.2),
+         false,
          ColorTools::alphaMix(decorationButtonPalette.inactive()->backgroundNormal, 0.2),
          ColorTools::alphaMix(decorationButtonPalette.inactive()->outlineNormal, 0.2)},
 
@@ -7845,18 +7850,21 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         {QIcon::Normal, // Pressed colours on a standard widget / inactive
          QIcon::On,
          decorationButtonPalette.inactive()->foregroundPress,
+         decorationButtonPalette.inactive()->cutOutForegroundPress,
          decorationButtonPalette.inactive()->backgroundPress,
          decorationButtonPalette.inactive()->outlinePress},
 
         {QIcon::Selected, // Pressed colours on MDI active titlebar
          QIcon::On,
          decorationButtonPalette.active()->foregroundPress,
+         decorationButtonPalette.active()->cutOutForegroundPress,
          decorationButtonPalette.active()->backgroundPress,
          decorationButtonPalette.active()->outlinePress},
 
         {QIcon::Active, // Same as Normal::On -- needed like this for compatibility in drawToolButtonLabelControl
          QIcon::On,
          decorationButtonPalette.inactive()->foregroundPress,
+         decorationButtonPalette.inactive()->cutOutForegroundPress,
          decorationButtonPalette.inactive()->backgroundPress,
          decorationButtonPalette.inactive()->outlinePress},
 
@@ -7864,6 +7872,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         {QIcon::Disabled,
          QIcon::On,
          decorationButtonPalette.active()->foregroundHover,
+         decorationButtonPalette.active()->cutOutForegroundHover,
          decorationButtonPalette.active()->backgroundHover,
          decorationButtonPalette.active()->outlineHover},
 
@@ -7888,6 +7897,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
                                             buttonType,
                                             buttonChecked,
                                             iconData._foregroundColor,
+                                            iconData._cutOutForeground,
                                             iconData._backgroundColor,
                                             iconData._outlineColor,
                                             palette);
