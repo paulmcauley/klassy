@@ -19,6 +19,7 @@
 namespace Breeze
 {
 
+struct DecorationPaletteGroup;
 class DecorationColors;
 
 const QList<KDecoration2::DecorationButtonType> coloredWindowDecorationButtonTypes{
@@ -104,6 +105,12 @@ struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
     QColor foregroundHover;
     QColor foregroundNormal;
 
+    //* These cutOut parameters signify that the corresponding colour has been set to the titlebar colour, and that it could be painted with black and
+    // CompositionMode_DestinationOut to give a cut-out effect.
+    bool cutOutForegroundPress = false;
+    bool cutOutForegroundHover = false;
+    bool cutOutForegroundNormal = false;
+
     QColor backgroundPress;
     QColor backgroundHover;
     QColor backgroundNormal;
@@ -158,6 +165,11 @@ private:
                                 QColor accentHoverBase = QColor());
     void generateButtonBackgroundPalette(const bool active);
     void generateButtonForegroundPalette(const bool active);
+    void adjustPoorForegroundContrast(QColor &baseForegroundColor,
+                                      const QColor &baseBackgroundColor,
+                                      bool &cutOutParameter,
+                                      const bool active,
+                                      const DecorationPaletteGroup *decorationColorGroup);
     void generateButtonOutlinePalette(const bool active);
 
     InternalSettingsPtr _decorationSettings;

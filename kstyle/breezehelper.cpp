@@ -1491,6 +1491,7 @@ void Helper::renderDecorationButton(QPainter *painter,
                                     KDecoration2::DecorationButtonType buttonType,
                                     const bool buttonChecked,
                                     const QColor &foregroundColor,
+                                    const bool cutOutForeground,
                                     const QColor &backgroundColor,
                                     const QColor &outlineColor,
                                     const QPalette &palette) const
@@ -1540,8 +1541,7 @@ void Helper::renderDecorationButton(QPainter *painter,
     }
 
     if (foregroundColor.isValid()) {
-        /* TODO:possibly reimplement this
-        if (inverted) {
+        if (cutOutForeground) {
             // take out the inner part
             painter->setCompositionMode(QPainter::CompositionMode_DestinationOut);
             painter->setBrush(Qt::NoBrush);
@@ -1549,9 +1549,7 @@ void Helper::renderDecorationButton(QPainter *painter,
         } else {
             painter->setBrush(Qt::NoBrush);
             pen.setColor(foregroundColor);
-        }*/
-        painter->setBrush(Qt::NoBrush);
-        pen.setColor(foregroundColor);
+        }
 
         QString systemIconNameUnchecked;
         QString systemIconNameChecked;

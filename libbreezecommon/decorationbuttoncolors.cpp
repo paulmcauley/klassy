@@ -607,6 +607,9 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     foregroundNormal = QColor();
     foregroundHover = QColor();
     foregroundPress = QColor();
+    group->cutOutForegroundNormal = false;
+    group->cutOutForegroundHover = false;
+    group->cutOutForegroundPress = false;
 
     const int buttonIconColors = _decorationSettings->buttonIconColors(active);
     const int closeButtonIconColor = _decorationSettings->closeButtonIconColor(active);
@@ -803,55 +806,36 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     }
 
     if (_decorationSettings->onPoorIconContrast(active) != InternalSettings::EnumOnPoorIconContrast::Nothing) {
-        if (foregroundNormal.isValid() && group->backgroundNormal.isValid() && foregroundNormal.alpha() != 0) {
-            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
-                QColor titleBarBase = decorationColors->titleBarBase;
-                titleBarBase.setAlpha(255);
-                ColorTools::getHigherContrastForegroundColor(foregroundNormal,
-                                                             group->backgroundNormal,
-                                                             _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundNormal,
-                                                             titleBarBase);
-            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
-                ColorTools::getHigherContrastForegroundColor(foregroundNormal,
-                                                             group->backgroundNormal,
-                                                             _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundNormal);
-            }
-        }
+        adjustPoorForegroundContrast(foregroundNormal, group->backgroundNormal, group->cutOutForegroundNormal, active, decorationColors);
+        adjustPoorForegroundContrast(foregroundHover, group->backgroundHover, group->cutOutForegroundHover, active, decorationColors);
+        adjustPoorForegroundContrast(foregroundPress, group->backgroundPress, group->cutOutForegroundPress, active, decorationColors);
+    }
+}
 
-        if (foregroundHover.isValid() && group->backgroundHover.isValid() && foregroundHover.alpha() != 0) {
-            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
-                QColor titleBarBase = decorationColors->titleBarBase;
-                titleBarBase.setAlpha(255);
-                ColorTools::getHigherContrastForegroundColor(foregroundHover,
-                                                             group->backgroundHover,
-                                                             _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundHover,
-                                                             titleBarBase);
-            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
-                ColorTools::getHigherContrastForegroundColor(foregroundHover,
-                                                             group->backgroundHover,
-                                                             _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundHover);
-            }
-        }
+void DecorationButtonPalette::adjustPoorForegroundContrast(QColor &baseForegroundColor,
+                                                           const QColor &baseBackgroundColor,
+                                                           bool &cutOutParameter,
+                                                           const bool active,
+                                                           const DecorationPaletteGroup *decorationColorGroup)
+{
+    if (baseForegroundColor.isValid() && baseBackgroundColor.isValid() && baseForegroundColor.alpha() != 0) {
+        if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
+            QColor titleBarBase;
+            titleBarBase = decorationColorGroup->titleBarBase;
+            titleBarBase.setAlpha(255);
 
-        if (foregroundPress.isValid() && group->backgroundPress.isValid() && foregroundPress.alpha() != 0) {
-            if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::TitleBarBackground) {
-                QColor titleBarBase = decorationColors->titleBarBase;
-                titleBarBase.setAlpha(255);
-                ColorTools::getHigherContrastForegroundColor(foregroundPress,
-                                                             group->backgroundPress,
+            if (ColorTools::getHigherContrastForegroundColor(baseForegroundColor,
+                                                             baseBackgroundColor,
                                                              _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundPress,
-                                                             titleBarBase);
-            } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
-                ColorTools::getHigherContrastForegroundColor(foregroundPress,
-                                                             group->backgroundPress,
-                                                             _decorationSettings->poorIconContrastThreshold(active),
-                                                             foregroundPress);
+                                                             baseForegroundColor,
+                                                             titleBarBase)) {
+                cutOutParameter = true;
             }
+        } else if (_decorationSettings->onPoorIconContrast(active) == InternalSettings::EnumOnPoorIconContrast::BlackWhite) {
+            ColorTools::getHigherContrastForegroundColor(baseForegroundColor,
+                                                         baseBackgroundColor,
+                                                         _decorationSettings->poorIconContrastThreshold(active),
+                                                         baseForegroundColor);
         }
     }
 }

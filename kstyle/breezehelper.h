@@ -314,6 +314,7 @@ public:
                                 KDecoration2::DecorationButtonType buttonType,
                                 const bool buttonChecked,
                                 const QColor &foregroundColor,
+                                const bool cutOutForeground,
                                 const QColor &backgroundColor,
                                 const QColor &outlineColor,
                                 const QPalette &palette) const;

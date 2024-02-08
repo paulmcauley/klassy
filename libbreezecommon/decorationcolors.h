@@ -83,6 +83,11 @@ public:
         return m_useCachedPalette;
     }
 
+    bool forAppStyle()
+    {
+        return m_forAppStyle;
+    }
+
     bool areColorsGenerated()
     {
         return *m_colorsGenerated;
