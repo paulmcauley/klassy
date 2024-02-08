@@ -487,38 +487,22 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             label->setVisible(false);
             w->setLayout(vlayout);
             table->setCellWidget(rowIndex, columnIndex, w);
-            QSize sizeHidden = w->size();
 
-            comboBox->setVisible(true);
-            colorButton->setVisible(true);
-            spinBox->setVisible(true);
-            label->setVisible(true);
-            QSize sizeVisible = w->size();
-
-            comboBox->setVisible(false);
-            colorButton->setVisible(false);
-            spinBox->setVisible(false);
-            label->setVisible(false);
-            w->resize(sizeHidden);
-
-            table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
             connect(
                 checkBox,
                 &QAbstractButton::toggled,
                 this,
                 [=](const bool checked) {
+                    comboBox->setVisible(checked);
+                    label->setVisible(checked);
+                    spinBox->setVisible(checked);
                     if (checked && comboBox->currentIndex() == 0) {
                         colorButton->setVisible(true);
                     } else {
                         colorButton->setVisible(false);
                     }
-                    comboBox->setVisible(checked);
-                    label->setVisible(checked);
-                    spinBox->setVisible(checked);
-                    if (!colorButton->isVisible() && !comboBox->isVisible() && !spinBox->isVisible())
-                        table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
-                    else
-                        table->cellWidget(rowIndex, columnIndex)->resize(sizeVisible);
+
+                    table->cellWidget(rowIndex, columnIndex)->adjustSize();
                     table->resizeRowToContents(rowIndex);
                     table->resizeColumnToContents(columnIndex);
                 },
@@ -533,12 +517,6 @@ void ButtonColors::generateTableCells(QTableWidget *table)
                     } else {
                         colorButton->setVisible(false);
                     }
-                    if (!colorButton->isVisible() && !comboBox->isVisible() && !spinBox->isVisible())
-                        table->cellWidget(rowIndex, columnIndex)->resize(sizeHidden);
-                    else
-                        table->cellWidget(rowIndex, columnIndex)->resize(sizeVisible);
-                    table->resizeRowToContents(rowIndex);
-                    table->resizeColumnToContents(columnIndex);
                 },
                 Qt::ConnectionType::DirectConnection);
             connect(checkBox, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
