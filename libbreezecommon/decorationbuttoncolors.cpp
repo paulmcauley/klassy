@@ -580,16 +580,16 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 
     // low contrast correction between background and titlebar
     if (adjustBackgroundColorOnPoorContrast) {
-        if (backgroundNormal.isValid()
+        if (backgroundNormal.isValid() && backgroundNormal.alpha() != 0
             && KColorUtils::contrastRatio(backgroundNormal, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             backgroundNormal = KColorUtils::mix(backgroundNormal, titleBarText, 0.3);
         }
 
-        if (backgroundHover.isValid()
+        if (backgroundHover.isValid() && backgroundHover.alpha() != 0
             && KColorUtils::contrastRatio(backgroundHover, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             backgroundHover = KColorUtils::mix(backgroundHover, titleBarText, 0.3);
         }
-        if (backgroundPress.isValid()
+        if (backgroundPress.isValid() && backgroundPress.alpha() != 0
             && KColorUtils::contrastRatio(backgroundPress, titleBarBase) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             backgroundPress = KColorUtils::mix(backgroundPress, titleBarText, 0.3);
         }
@@ -837,6 +837,12 @@ void DecorationButtonPalette::adjustPoorForegroundContrast(QColor &baseForegroun
                                                          _decorationSettings->poorIconContrastThreshold(active),
                                                          baseForegroundColor);
         }
+    } else if (baseForegroundColor.isValid() && baseForegroundColor.alpha() != 0) {
+        // use BlackWhite mode even if TitleBarBackground selected as a poor contrast here will be with the titlebar
+        ColorTools::getHigherContrastForegroundColor(baseForegroundColor,
+                                                     decorationColorGroup->titleBarBase,
+                                                     _decorationSettings->poorIconContrastThreshold(active),
+                                                     baseForegroundColor);
     }
 }
 
@@ -989,14 +995,17 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
 
     // low contrast correction between outline and titlebar
     if (adjustBackgroundColorOnPoorContrast) {
-        if (outlineNormal.isValid() && KColorUtils::contrastRatio(outlineNormal, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+        if (outlineNormal.isValid() && outlineNormal.alpha() != 0
+            && KColorUtils::contrastRatio(outlineNormal, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlineNormal = KColorUtils::mix(outlineNormal, text, 0.4);
         }
 
-        if (outlineHover.isValid() && KColorUtils::contrastRatio(outlineHover, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+        if (outlineHover.isValid() && outlineHover.alpha() != 0
+            && KColorUtils::contrastRatio(outlineHover, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlineHover = KColorUtils::mix(outlineHover, text, 0.4);
         }
-        if (outlinePress.isValid() && KColorUtils::contrastRatio(outlinePress, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
+        if (outlinePress.isValid() && outlinePress.alpha() != 0
+            && KColorUtils::contrastRatio(outlinePress, base) < _decorationSettings->poorBackgroundContrastThreshold(active)) {
             outlinePress = KColorUtils::mix(outlinePress, text, 0.4);
         }
     }
