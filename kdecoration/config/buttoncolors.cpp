@@ -1155,10 +1155,9 @@ void ButtonColors::showInactiveOverrideGroupBox(const bool value)
 void ButtonColors::resizeDialog()
 {
     if (!(m_ui->buttonColorOverrideToggleActive->isChecked() || m_ui->buttonColorOverrideToggleInactive->isChecked())) {
-        this->setMaximumSize(900, 450);
         this->showNormal();
+        this->adjustSize();
     } else {
-        this->setMaximumSize(16777215, 16777215);
         this->showMaximized();
     }
 }
