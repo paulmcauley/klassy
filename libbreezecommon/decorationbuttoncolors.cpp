@@ -961,14 +961,14 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
             outlineNormal = tristate1;
             if (drawOutlineOnHover && !setDefaultOutlineNormallyOnly)
                 outlineHover = tristate2;
-            if (drawOutlineOnPress)
+            if (drawOutlineOnPress && !setDefaultOutlineNormallyOnly)
                 outlinePress = tristate3;
         } else {
             QColor bistate1, bistate2;
             generateBistateColors(ButtonComponent::Outline, active, defaultOutlineColor, bistate1, bistate2, accentHoverBase);
             if (drawOutlineOnHover && !setDefaultOutlineNormallyOnly)
                 outlineHover = bistate1;
-            if (drawOutlineOnPress)
+            if (drawOutlineOnPress && !setDefaultOutlineNormallyOnly)
                 outlinePress = bistate2;
         }
     }
