@@ -42,7 +42,6 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     getButtonsOrderFromKwinConfig();
 
-    this->resize(755, 400);
     m_ui->activeOverrideGroupBox->setVisible(false);
     m_ui->inactiveOverrideGroupBox->setVisible(false);
     connect(m_ui->buttonColorOverrideToggleActive, &QAbstractButton::toggled, this, &ButtonColors::showActiveOverrideGroupBox);
@@ -438,9 +437,11 @@ void ButtonColors::generateTableCells(QTableWidget *table)
 
     // gnerate the overrideColorTable UI
     // populate the checkboxes and KColorButtons
-    for (int columnIndex = 0; columnIndex < m_colorOverridableButtonTypesStrings.count(); columnIndex++) {
+    for (int columnIndex = 0; columnIndex < m_allCustomizableButtonsOrder.count(); columnIndex++) {
         table->insertColumn(columnIndex);
+        QString columnName = m_colorOverridableButtonTypesStrings.value(m_allCustomizableButtonsOrder.value(columnIndex));
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+            QString rowName = m_overridableButtonColorStatesStrings.value(rowIndex);
             QVBoxLayout *vlayout = new QVBoxLayout();
             QHBoxLayout *hlayout0 = new QHBoxLayout();
             QHBoxLayout *hlayout1 = new QHBoxLayout();
@@ -487,6 +488,7 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             label->setVisible(false);
             w->setLayout(vlayout);
             table->setCellWidget(rowIndex, columnIndex, w);
+            w->setToolTip(columnName + i18n(", ") + rowName);
 
             connect(
                 checkBox,
@@ -502,7 +504,7 @@ void ButtonColors::generateTableCells(QTableWidget *table)
                         colorButton->setVisible(false);
                     }
 
-                    table->cellWidget(rowIndex, columnIndex)->adjustSize();
+                    w->adjustSize();
                     table->resizeRowToContents(rowIndex);
                     table->resizeColumnToContents(columnIndex);
                 },
