@@ -186,9 +186,9 @@ QColor DecorationButtonPalette::overrideColorItemsIndexToColor(const DecorationC
     case 6:
         return decorationColors->inactive()->titleBarBase;
     case 7:
-        return decorationColors->active()->buttonHover;
-    case 8:
         return decorationColors->active()->buttonFocus;
+    case 8:
+        return decorationColors->active()->buttonHover;
     case 9:
         return decorationColors->active()->highlight;
     case 10:
