@@ -2241,7 +2241,7 @@ void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButton
         }
 
         qreal dpr = devicePixelRatioF();
-        QPixmap pixmap(16.0 * dpr, 16.0 * dpr);
+        QPixmap pixmap(qRound(16.0 * dpr), qRound(16.0 * dpr));
         pixmap.setDevicePixelRatio(dpr);
         pixmap.fill(Qt::transparent);
         std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
@@ -2249,7 +2249,7 @@ void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButton
         painter->setRenderHints(QPainter::RenderHint::Antialiasing);
 
         if (renderSystemIcon) {
-            SystemIconTheme systemIconRenderer(painter.get(), 16, iconName, m_internalSettings, dpr, QApplication::palette());
+            SystemIconTheme systemIconRenderer(painter.get(), 16, iconName, m_internalSettings, QApplication::palette());
             systemIconRenderer.renderIcon();
         } else {
             auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), true, true, dpr));
