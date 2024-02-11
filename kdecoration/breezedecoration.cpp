@@ -993,10 +993,10 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         if (!hideTitleBar()) {
             clipRect.addRect(0, borderTop(), size().width(), size().height() - borderTop());
             // clip off the titlebar and draw bottom part
-            QPainterPath windowPathMinusTitleBar = m_windowPath->intersected(clipRect);
+            QPainterPath windowPathMinusTitleBar = m_windowPath.intersected(clipRect);
             painter->drawPath(windowPathMinusTitleBar);
         } else {
-            painter->drawPath(*m_windowPath);
+            painter->drawPath(m_windowPath);
         }
 
         painter->restore();
@@ -1028,30 +1028,30 @@ void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
     if (!windowShapeOnly || c->isShaded()) {
         // set titleBar geometry and path
         m_titleRect = QRect(QPoint(0, 0), QSize(size().width(), borderTop()));
-        m_titleBarPath->clear(); // clear the path for subsequent calls to this function
+        m_titleBarPath.clear(); // clear the path for subsequent calls to this function
         if (isMaximized() || !s->isAlphaChannelSupported()) {
-            m_titleBarPath->addRect(m_titleRect);
+            m_titleBarPath.addRect(m_titleRect);
         } else if (c->isShaded()) {
-            m_titleBarPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
+            m_titleBarPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         } else {
-            *m_titleBarPath = GeometryTools::roundedPath(m_titleRect, CornersTop, m_scaledCornerRadius);
+            m_titleBarPath = GeometryTools::roundedPath(m_titleRect, CornersTop, m_scaledCornerRadius);
         }
     }
 
     // set windowPath
-    m_windowPath->clear(); // clear the path for subsequent calls to this function
+    m_windowPath.clear(); // clear the path for subsequent calls to this function
     if (!c->isShaded()) {
         if (s->isAlphaChannelSupported() && !isMaximized()) {
             if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders()) { // round at top, square at bottom
-                *m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
+                m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
             } else {
-                m_windowPath->addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
+                m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             }
         } else // maximized / no alpha
-            m_windowPath->addRect(rect());
+            m_windowPath.addRect(rect());
 
     } else { // shaded
-        *m_windowPath = *m_titleBarPath;
+        m_windowPath = m_titleBarPath;
     }
 }
 
@@ -1083,7 +1083,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 
     auto s = settings();
 
-    painter->drawPath(*m_titleBarPath);
+    painter->drawPath(m_titleBarPath);
 
     // draw titlebar separator
     const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
@@ -1621,7 +1621,7 @@ void Decoration::updateBlur()
     } else { // transparent titlebar colours
         if (m_internalSettings->blurTransparentTitlebars()) { // enable blur
             calculateWindowAndTitleBarShapes(true); // refreshes m_windowPath
-            setBlurRegion(QRegion(m_windowPath->toFillPolygon().toPolygon()));
+            setBlurRegion(QRegion(m_windowPath.toFillPolygon().toPolygon()));
         } else
             setBlurRegion(QRegion());
     }
