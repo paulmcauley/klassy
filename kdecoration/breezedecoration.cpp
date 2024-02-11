@@ -13,13 +13,12 @@
 #include "setqdebug_logging.h"
 #endif
 
+#include "breezeboxshadowrenderer.h"
+#include "breezebutton.h"
 #include "breezesettingsprovider.h"
 #include "config/breezeconfigwidget.h"
-
-#include "breezebutton.h"
-
-#include "breezeboxshadowrenderer.h"
 #include "dbuslistener.h"
+#include "geometrytools.h"
 
 #include <KDecoration2/DecorationButtonGroup>
 #include <KDecoration2/DecorationShadow>
@@ -1035,7 +1034,7 @@ void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
         } else if (c->isShaded()) {
             m_titleBarPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         } else {
-            *m_titleBarPath = constructRoundedTopRectangle(m_titleRect, m_scaledCornerRadius);
+            *m_titleBarPath = GeometryTools::roundedPath(m_titleRect, CornersTop, m_scaledCornerRadius);
         }
     }
 
@@ -1044,7 +1043,7 @@ void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
     if (!c->isShaded()) {
         if (s->isAlphaChannelSupported() && !isMaximized()) {
             if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders()) { // round at top, square at bottom
-                *m_windowPath = constructRoundedTopRectangle(rect(), m_scaledCornerRadius);
+                *m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
             } else {
                 m_windowPath->addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             }
@@ -1419,7 +1418,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QC
 
     QPainterPath roundedRectMask;
     if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders() && !c->isShaded()) {
-        roundedRectMask = constructRoundedTopRectangle(innerRect, m_scaledCornerRadius + 0.5);
+        roundedRectMask = GeometryTools::roundedPath(innerRect, CornersTop, m_scaledCornerRadius + 0.5);
     } else {
         roundedRectMask.addRoundedRect(innerRect, m_scaledCornerRadius + 0.5, m_scaledCornerRadius + 0.5);
     }
@@ -1472,7 +1471,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QC
                 cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
 
             if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders() && !c->isShaded()) {
-                outlinePath = constructRoundedTopRectangle(outlineRect, cornerRadius);
+                outlinePath = GeometryTools::roundedPath(outlineRect, CornersTop, cornerRadius);
             } else {
                 outlinePath.addRoundedRect(outlineRect, cornerRadius, cornerRadius);
             }
@@ -1554,34 +1553,6 @@ void Decoration::setThinWindowOutlineColor()
         c->isActive() ? m_originalThinWindowOutlineActivePreOverride = m_thinWindowOutline
                       : m_originalThinWindowOutlineInactivePreOverride = m_thinWindowOutline;
     }
-}
-
-QPainterPath Decoration::constructRoundedTopRectangle(const QRectF &rect, const qreal &cornerRadius)
-{
-    QPainterPath path;
-
-    if (cornerRadius > 0) {
-        qreal cornerSize = cornerRadius * 2;
-        QRectF cornerRect(rect.left(), rect.top(), cornerSize, cornerSize);
-
-        // construct rounded top corners, starting at top-left
-        path.arcMoveTo(cornerRect, 180);
-        path.arcTo(cornerRect, 180, -90);
-        cornerRect.moveTopRight(rect.topRight());
-        path.arcTo(cornerRect, 90, -90);
-
-        // construct straight bottom corners
-        path.lineTo(rect.bottomRight());
-        path.lineTo(rect.bottomLeft());
-
-        // close path
-        path.closeSubpath();
-
-    } else { // 0 cornerRadius
-        path.addRect(rect);
-    }
-
-    return path;
 }
 
 void Decoration::setScaledTitleBarTopBottomMargins()
