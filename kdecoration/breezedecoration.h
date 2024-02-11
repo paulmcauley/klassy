@@ -229,9 +229,6 @@ private:
     //* calculates and sets m_thinWindowOutline
     void setThinWindowOutlineColor();
 
-    //* returns a path of a rounded rectangle, where only the top corners are rounded
-    QPainterPath constructRoundedTopRectangle(const QRectF &rect, const qreal &cornerRadius);
-
     static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;

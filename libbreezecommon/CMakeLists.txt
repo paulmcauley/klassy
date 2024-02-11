@@ -13,6 +13,7 @@ set(breezecommon_LIB_SRCS
     decorationbuttoncolors.cpp
     decorationcolors.cpp
     decorationexceptionlist.cpp
+    geometrytools.cpp
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
     renderdecorationbuttonicon18by18.cpp

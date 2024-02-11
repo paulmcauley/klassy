@@ -7,6 +7,7 @@
  */
 #include "breezebutton.h"
 #include "colortools.h"
+#include "geometrytools.h"
 #include "renderdecorationbuttonicon.h"
 #include "systemicontheme.h"
 
@@ -615,6 +616,12 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     painter->save();
     painter->translate(m_fullHeightVisibleBackgroundOffset);
 
+    qreal cornerRadius;
+    if (d->scaledCornerRadius() >= 0.05)
+        cornerRadius = d->scaledCornerRadius();
+    else
+        cornerRadius = 0;
+
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
     painter->setClipRect(backgroundBoundingRect);
     QPainterPath background;
@@ -631,9 +638,6 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     }
 
     if (m_outlineColor.isValid()) {
-        QRectF innerRect;
-        QRectF outerRect;
-
         qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal;
 
         if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
@@ -642,9 +646,10 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                             geometryShrinkOffsetVertical,
                                                                             -geometryShrinkOffsetHorizontal,
                                                                             -geometryShrinkOffsetVertical));
-            background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
+            background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
         } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+            QPainterPath inner;
             qreal halfPenWidth = penWidth / 2;
             geometryShrinkOffsetHorizontal = halfPenWidth;
             geometryShrinkOffsetVertical = halfPenWidth;
@@ -652,57 +657,52 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
             qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetVertical - halfPenWidth;
             qreal geometryShrinkOffsetVerticalInner = geometryShrinkOffsetVertical + halfPenWidth;
-            qreal extensionByCornerRadiusInnerOuter = d->scaledCornerRadius() + halfPenWidth;
+
+            qreal outerCornerRadius = cornerRadius + halfPenWidth;
+            qreal innerCornerRadius = qMax(0.0, cornerRadius - halfPenWidth);
+
             drawOutlineUsingPath = true;
 
             if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
-                outerRect = backgroundBoundingRect.adjusted(0,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            extensionByCornerRadiusInnerOuter,
-                                                            -geometryShrinkOffsetVerticalOuter);
-                innerRect = backgroundBoundingRect.adjusted(penWidth,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            extensionByCornerRadiusInnerOuter,
-                                                            -geometryShrinkOffsetVerticalInner);
-                backgroundBoundingRect =
-                    backgroundBoundingRect.adjusted(halfPenWidth, -d->scaledCornerRadius(), d->scaledCornerRadius(), -geometryShrinkOffsetVertical);
+                outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, 0, -geometryShrinkOffsetVerticalOuter),
+                                                     CornerBottomLeft,
+                                                     outerCornerRadius);
+                inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(penWidth, 0, 0, -geometryShrinkOffsetVerticalInner),
+                                                   CornerBottomLeft,
+                                                   innerCornerRadius);
+                background = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(halfPenWidth, 0, 0, -geometryShrinkOffsetVertical),
+                                                        CornerBottomLeft,
+                                                        cornerRadius);
             } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
-                outerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            0,
-                                                            -geometryShrinkOffsetVerticalOuter);
-                innerRect = backgroundBoundingRect.adjusted(-extensionByCornerRadiusInnerOuter,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            -penWidth,
-                                                            -geometryShrinkOffsetVerticalInner);
-                backgroundBoundingRect =
-                    backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), -halfPenWidth, -geometryShrinkOffsetVertical);
+                outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, 0, -geometryShrinkOffsetVerticalOuter),
+                                                     CornerBottomRight,
+                                                     outerCornerRadius);
+                inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, -penWidth, -geometryShrinkOffsetVerticalInner),
+                                                   CornerBottomRight,
+                                                   innerCornerRadius);
+                background = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, -halfPenWidth, -geometryShrinkOffsetVertical),
+                                                        CornerBottomRight,
+                                                        cornerRadius);
             } else {
-                outerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            -geometryShrinkOffsetHorizontalOuter,
-                                                            -geometryShrinkOffsetVerticalOuter);
-                innerRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner,
-                                                            -extensionByCornerRadiusInnerOuter,
-                                                            -geometryShrinkOffsetHorizontalInner,
-                                                            -geometryShrinkOffsetVerticalInner);
-                backgroundBoundingRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
-                                                                         -d->scaledCornerRadius(),
-                                                                         -geometryShrinkOffsetHorizontal,
-                                                                         -geometryShrinkOffsetVertical);
+                outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
+                                                                                     0,
+                                                                                     -geometryShrinkOffsetHorizontalOuter,
+                                                                                     -geometryShrinkOffsetVerticalOuter),
+                                                     CornersBottom,
+                                                     outerCornerRadius);
+                inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner,
+                                                                                   0,
+                                                                                   -geometryShrinkOffsetHorizontalInner,
+                                                                                   -geometryShrinkOffsetVerticalInner),
+                                                   CornersBottom,
+                                                   innerCornerRadius);
+                background = GeometryTools::roundedPath(
+                    backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal, 0, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical),
+                    CornersBottom,
+                    cornerRadius);
             }
 
-            qreal outerCornerRadius;
-            if (d->scaledCornerRadius() >= 0.05)
-                outerCornerRadius = d->scaledCornerRadius() + halfPenWidth;
-            else
-                outerCornerRadius = 0;
-            qreal innerCornerRadius = qMax(0.0, d->scaledCornerRadius() - halfPenWidth);
-            QPainterPath inner;
-            inner.addRoundedRect(innerRect, innerCornerRadius, innerCornerRadius);
-            outline.addRoundedRect(outerRect, outerCornerRadius, outerCornerRadius);
             outline = outline.subtracted(inner);
-            background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
         } else { // plain rectangle
 
             // shrink the backgroundBoundingRect to make border more visible
@@ -716,17 +716,16 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     } else { // non-shrunk background without outline
         painter->setPen(Qt::NoPen);
         if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
-            background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
+            background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
         else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
             if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
-                backgroundBoundingRect = backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), d->scaledCornerRadius(), 0);
+                background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
             } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
-                backgroundBoundingRect = backgroundBoundingRect.adjusted(-d->scaledCornerRadius(), -d->scaledCornerRadius(), 0, 0);
+                background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
             } else {
-                backgroundBoundingRect = backgroundBoundingRect.adjusted(0, -d->scaledCornerRadius(), 0, 0);
+                background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
             }
-            background.addRoundedRect(backgroundBoundingRect, d->scaledCornerRadius(), d->scaledCornerRadius());
         } else // plain rectangle
             background.addRect(backgroundBoundingRect);
     }
