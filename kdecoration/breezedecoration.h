@@ -109,13 +109,13 @@ public:
 
     void setThinWindowOutlineOverrideColor(const bool on, const QColor &color);
 
-    std::shared_ptr<QPainterPath> titleBarPath()
+    QPainterPath *titleBarPath()
     {
-        return m_titleBarPath;
+        return &m_titleBarPath;
     }
-    std::shared_ptr<QPainterPath> windowPath()
+    QPainterPath *windowPath()
     {
-        return m_windowPath;
+        return &m_windowPath;
     }
     qreal systemScaleFactorX11() const
     {
@@ -274,9 +274,9 @@ private:
     QRect m_titleRect;
 
     //* Exact titlebar path, with clipped rounded corners
-    std::shared_ptr<QPainterPath> m_titleBarPath = std::make_shared<QPainterPath>();
+    QPainterPath m_titleBarPath = QPainterPath();
     //* Exact window path, with clipped rounded corners
-    std::shared_ptr<QPainterPath> m_windowPath = std::make_shared<QPainterPath>();
+    QPainterPath m_windowPath = QPainterPath();
 
     qreal m_systemScaleFactorX11 = 1.0;
 
