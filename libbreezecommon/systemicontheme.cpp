@@ -25,9 +25,9 @@ void SystemIconTheme::paintIconFromSystemTheme(QString iconName)
         iconLoader.setCustomPalette(m_palette);
     }
 
-    int m_iconWidthScaled = qRound(m_iconWidth * m_devicePixelRatio);
+    int m_iconWidthScaled = qRound(m_iconWidth * m_painter->device()->devicePixelRatioF());
     QPixmap iconPixmap = iconLoader.loadIcon(iconName, KIconLoader::Group::NoGroup, m_iconWidthScaled);
-    iconPixmap.setDevicePixelRatio(m_devicePixelRatio);
+    iconPixmap.setDevicePixelRatio(m_painter->device()->devicePixelRatioF());
     QSize pixmapSize(m_iconWidth, m_iconWidth);
     QRect rect(QPoint(0, 0), pixmapSize);
 

@@ -32,13 +32,11 @@ public:
                     const qreal iconWidth,
                     const QString &iconName,
                     const QSharedPointer<InternalSettings> internalSettings,
-                    const qreal devicePixelRatio,
                     const QPalette &palette)
         : m_painter(painter)
         , m_iconWidth(iconWidth)
         , m_systemIconFromTheme(iconName)
         , m_internalSettings(internalSettings)
-        , m_devicePixelRatio(devicePixelRatio)
         , m_palette(palette){};
 
     void renderIcon();
@@ -55,7 +53,6 @@ private:
     const qreal m_iconWidth;
     QString m_systemIconFromTheme;
     const QSharedPointer<InternalSettings> m_internalSettings;
-    const qreal m_devicePixelRatio;
     QPalette m_palette;
 };
 

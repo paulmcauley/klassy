@@ -1563,7 +1563,7 @@ void Helper::renderDecorationButton(QPainter *painter,
 
         if (!systemIconName.isEmpty()) {
             painter->setWindow(rect);
-            SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), 1, palette);
+            SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), palette);
             iconRenderer.renderIcon();
         } else {
             auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true);

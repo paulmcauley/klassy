@@ -273,7 +273,7 @@ void Button::drawIcon(QPainter *painter) const
         Q_ASSERT(c);
         QString systemIconName;
         systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
-        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), m_devicePixelRatio, c->palette());
+        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), c->palette());
         iconRenderer.renderIcon();
     } else {
         auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(d->internalSettings(),
