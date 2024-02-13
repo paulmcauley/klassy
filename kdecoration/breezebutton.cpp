@@ -703,6 +703,146 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             }
 
             outline = outline.subtracted(inner);
+        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (type() != DecorationButtonType::Menu) {
+                QPainterPath inner;
+                qreal halfPenWidth = penWidth / 2;
+                geometryShrinkOffsetHorizontal = halfPenWidth;
+                geometryShrinkOffsetVertical = halfPenWidth;
+                qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
+                qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
+
+                qreal geometryShrinkOffsetHorizontalMiddle;
+                qreal geometryShrinkOffsetHorizontalMiddleOuter;
+                qreal geometryShrinkOffsetHorizontalMiddleInner;
+                if ((m_leftButtonVisible && d->internalSettings()->fullHeightButtonSpacingLeft() == 0)
+                    || (m_rightButtonVisible && d->internalSettings()->fullHeightButtonSpacingRight() == 0)) {
+                    geometryShrinkOffsetHorizontalMiddle = 0;
+                    geometryShrinkOffsetHorizontalMiddleOuter = -halfPenWidth;
+                    geometryShrinkOffsetHorizontalMiddleInner = halfPenWidth;
+                } else {
+                    geometryShrinkOffsetHorizontalMiddle = geometryShrinkOffsetHorizontal;
+                    geometryShrinkOffsetHorizontalMiddleOuter = geometryShrinkOffsetHorizontalOuter;
+                    geometryShrinkOffsetHorizontalMiddleInner = geometryShrinkOffsetHorizontalInner;
+                }
+
+                qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetVertical - halfPenWidth;
+                qreal geometryShrinkOffsetVerticalInner = geometryShrinkOffsetVertical + halfPenWidth;
+
+                qreal outerCornerRadius = cornerRadius + halfPenWidth;
+                qreal innerCornerRadius = qMax(0.0, cornerRadius - halfPenWidth);
+
+                drawOutlineUsingPath = true;
+
+                if (((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
+                    || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
+                    || ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
+                    || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
+                    outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
+                                                                                         0,
+                                                                                         -geometryShrinkOffsetHorizontalOuter,
+                                                                                         -geometryShrinkOffsetVerticalOuter),
+                                                         CornersBottom,
+                                                         outerCornerRadius);
+                    inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner,
+                                                                                       0,
+                                                                                       -geometryShrinkOffsetHorizontalInner,
+                                                                                       -geometryShrinkOffsetVerticalInner),
+                                                       CornersBottom,
+                                                       innerCornerRadius);
+                    background = GeometryTools::roundedPath(
+                        backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal, 0, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical),
+                        CornersBottom,
+                        cornerRadius);
+                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
+                    outline = GeometryTools::roundedPath(
+                        backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalOuter, -geometryShrinkOffsetVerticalOuter),
+                        CornerBottomRight,
+                        outerCornerRadius);
+                    inner = GeometryTools::roundedPath(
+                        backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalInner, -geometryShrinkOffsetVerticalInner),
+                        CornerBottomRight,
+                        innerCornerRadius);
+                    background =
+                        GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical),
+                                                   CornerBottomRight,
+                                                   cornerRadius);
+                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
+                    outline = GeometryTools::roundedPath(
+                        backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter, 0, 0, -geometryShrinkOffsetVerticalOuter),
+                        CornerBottomLeft,
+                        outerCornerRadius);
+                    inner = GeometryTools::roundedPath(
+                        backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner, 0, 0, -geometryShrinkOffsetVerticalInner),
+                        CornerBottomLeft,
+                        innerCornerRadius);
+                    background =
+                        GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal, 0, 0, -geometryShrinkOffsetVertical),
+                                                   CornerBottomLeft,
+                                                   cornerRadius);
+                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) {
+                    outline.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddleOuter, -geometryShrinkOffsetVerticalOuter));
+                    inner.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddleInner, -geometryShrinkOffsetVerticalInner));
+                    background.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddle, -geometryShrinkOffsetVertical));
+                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) {
+                    outline.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter, 0, 0, -geometryShrinkOffsetVerticalOuter));
+                    inner.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleInner, 0, 0, -geometryShrinkOffsetVerticalInner));
+                    background.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddle, 0, 0, -geometryShrinkOffsetVertical));
+                } else if ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                    outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter,
+                                                                                         0,
+                                                                                         -geometryShrinkOffsetHorizontalOuter,
+                                                                                         -geometryShrinkOffsetVerticalOuter),
+                                                         CornerBottomRight,
+                                                         outerCornerRadius);
+                    inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleInner,
+                                                                                       0,
+                                                                                       -geometryShrinkOffsetHorizontalInner,
+                                                                                       -geometryShrinkOffsetVerticalInner),
+                                                       CornerBottomRight,
+                                                       innerCornerRadius);
+                    background = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddle,
+                                                                                            0,
+                                                                                            -geometryShrinkOffsetHorizontal,
+                                                                                            -geometryShrinkOffsetVertical),
+                                                            CornerBottomRight,
+                                                            cornerRadius);
+                } else if ((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                    outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
+                                                                                         0,
+                                                                                         -geometryShrinkOffsetHorizontalMiddleOuter,
+                                                                                         -geometryShrinkOffsetVerticalOuter),
+                                                         CornerBottomLeft,
+                                                         outerCornerRadius);
+                    inner = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalInner,
+                                                                                       0,
+                                                                                       -geometryShrinkOffsetHorizontalMiddleInner,
+                                                                                       -geometryShrinkOffsetVerticalInner),
+                                                       CornerBottomLeft,
+                                                       innerCornerRadius);
+                    background = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
+                                                                                            0,
+                                                                                            -geometryShrinkOffsetHorizontalMiddle,
+                                                                                            -geometryShrinkOffsetVertical),
+                                                            CornerBottomLeft,
+                                                            cornerRadius);
+                } else {
+                    outline.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter,
+                                                                    0,
+                                                                    -geometryShrinkOffsetHorizontalMiddleOuter,
+                                                                    -geometryShrinkOffsetVerticalOuter));
+                    inner.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleInner,
+                                                                  0,
+                                                                  -geometryShrinkOffsetHorizontalMiddleInner,
+                                                                  -geometryShrinkOffsetVerticalInner));
+                    background.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddle,
+                                                                       0,
+                                                                       -geometryShrinkOffsetHorizontalMiddle,
+                                                                       -geometryShrinkOffsetVertical));
+                }
+
+                outline = outline.subtracted(inner);
+            }
         } else { // plain rectangle
 
             // shrink the backgroundBoundingRect to make border more visible
@@ -715,10 +855,10 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     } else { // non-shrunk background without outline
         painter->setPen(Qt::NoPen);
-        if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
+        if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
             background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
-        else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
             if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
             } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
@@ -726,8 +866,34 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             } else {
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
             }
-        } else // plain rectangle
+        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (type() != DecorationButtonType::Menu) {
+                painter->setPen(Qt::NoPen);
+
+                if (((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
+                    || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
+                    || ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
+                    || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
+                    background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
+                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
+                    background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
+                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
+                    background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
+                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) {
+                    background.addRect(backgroundBoundingRect);
+                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) {
+                    background.addRect(backgroundBoundingRect);
+                } else if ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                    background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
+                } else if ((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                    background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
+                } else {
+                    background.addRect(backgroundBoundingRect);
+                }
+            }
+        } else { // plain rectangle
             background.addRect(backgroundBoundingRect);
+        }
     }
 
     // clip the rounded corners using the windowPath

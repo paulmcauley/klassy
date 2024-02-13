@@ -78,6 +78,7 @@
           <choice name="ShapeFullHeightRectangle" />
           <choice name="ShapeFullHeightRoundedRectangle" />
           <choice name="ShapeIntegratedRoundedRectangle" />
+          <choice name="ShapeIntegratedRoundedRectangleGrouped" />
           <choice name="ShapeSmallCircle" />
           <choice name="ShapeSmallSquare" />
           <choice name="ShapeSmallRoundedSquare" />
