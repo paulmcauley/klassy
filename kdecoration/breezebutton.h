@@ -58,9 +58,29 @@ public:
     }
 
     //*set position of buttons which are both enabled and visible
+    void setLeftButtonVisible(bool value = true)
+    {
+        m_leftButtonVisible = value;
+    }
+
+    void setRightButtonVisible(bool value = true)
+    {
+        m_rightButtonVisible = value;
+    }
+
     void setLeftmostLeftVisible(bool value = true)
     {
         m_leftmostLeftVisible = value;
+    }
+
+    bool isVisibleAfterMenu()
+    {
+        return m_visibleAfterMenu;
+    }
+
+    void setVisibleAfterMenu(bool value = true)
+    {
+        m_visibleAfterMenu = value;
     }
 
     void setRightmostLeftVisible(bool value = true)
@@ -76,6 +96,16 @@ public:
     void setRightmostRightVisible(bool value = true)
     {
         m_rightmostRightVisible = value;
+    }
+
+    bool isVisibleBeforeMenu()
+    {
+        return m_visibleBeforeMenu;
+    }
+
+    void setVisibleBeforeMenu(bool value = true)
+    {
+        m_visibleBeforeMenu = value;
     }
 
     //* offset for drawing icon
@@ -195,10 +225,14 @@ private:
 
     Flag m_flag = FlagNone;
 
+    bool m_leftButtonVisible = false;
+    bool m_rightButtonVisible = false;
     bool m_leftmostLeftVisible = false;
+    bool m_visibleAfterMenu = false;
     bool m_rightmostLeftVisible = false;
     bool m_leftmostRightVisible = false;
     bool m_rightmostRightVisible = false;
+    bool m_visibleBeforeMenu = false;
 
     //* active state change animation
     QVariantAnimation *m_animation;

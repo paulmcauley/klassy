@@ -521,6 +521,11 @@
              </item>
              <item>
               <property name="text">
+               <string>Integrated Rounded Rectangle, grouped</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>Circle</string>
               </property>
              </item>
