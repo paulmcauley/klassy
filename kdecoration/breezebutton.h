@@ -188,9 +188,9 @@ private:
 
     //*@name colors
     //@{
-    QColor backgroundColor(bool getNonAnimatedColor = false) const;
-    QColor foregroundColor() const;
-    QColor outlineColor(bool getNonAnimatedColor = false) const;
+    QColor backgroundColor(const bool getNonAnimatedColor = false) const;
+    QColor foregroundColor(const bool getNonAnimatedColor = false) const;
+    QColor outlineColor(const bool getNonAnimatedColor = false) const;
     //@}
 
     //* gets base button state colors with the active change state animation considered

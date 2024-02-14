@@ -154,9 +154,10 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     m_renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
     setStandardScaledPenWidth();
 
-    m_backgroundColor = this->backgroundColor();
-    m_foregroundColor = this->foregroundColor();
-    m_outlineColor = this->outlineColor();
+    m_backgroundColor = this->backgroundColor(m_isGtkCsdButton);
+    m_foregroundColor = this->foregroundColor(m_isGtkCsdButton);
+    m_outlineColor = this->outlineColor(m_isGtkCsdButton);
+    // (the active-state animation breaks over states in m_isGtkCsdButton generation)
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
         m_smallButtonPaddedSize = geometry().size().toSize();
@@ -294,7 +295,7 @@ void Button::drawIcon(QPainter *painter) const
 }
 
 //__________________________________________________________________
-QColor Button::foregroundColor() const
+QColor Button::foregroundColor(const bool getNonAnimatedColor) const
 {
     if (!m_d)
         return QColor();
@@ -305,18 +306,18 @@ QColor Button::foregroundColor() const
 
     // return a variant of normal, hover and press colours, depending on state
     if (isPressed()) {
-        return foregroundPressActiveStateAnimated(active);
+        return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
     } else if (isChecked()
                && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                    || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
-            return foregroundHoverActiveStateAnimated(active);
+            return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
-            return foregroundPressActiveStateAnimated(active);
+            return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
         }
-    } else if (m_animation->state() == QAbstractAnimation::Running) { // button hover animation
-        QColor foregroundNormal = foregroundNormalActiveStateAnimated(active);
-        QColor foregroundHover = foregroundHoverActiveStateAnimated(active);
+    } else if (m_animation->state() == QAbstractAnimation::Running && !getNonAnimatedColor) { // button hover animation
+        QColor foregroundNormal = foregroundNormalActiveStateAnimated(active, getNonAnimatedColor);
+        QColor foregroundHover = foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         if (foregroundNormal.isValid() && foregroundHover.isValid()) {
             return KColorUtils::mix(foregroundNormal, foregroundHover, m_opacity);
         } else if (foregroundHover.isValid()) {
@@ -324,9 +325,9 @@ QColor Button::foregroundColor() const
         } else
             return QColor();
     } else if (isHovered()) {
-        return foregroundHoverActiveStateAnimated(active);
+        return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
     } else {
-        return foregroundNormalActiveStateAnimated(active);
+        return foregroundNormalActiveStateAnimated(active, getNonAnimatedColor);
     }
 }
 
@@ -487,7 +488,7 @@ QColor Button::backgroundPressActiveStateAnimated(const bool active, const bool 
 }
 
 // Returns a colour if an outline is to be drawn around the button
-QColor Button::outlineColor(bool getNonAnimatedColor) const
+QColor Button::outlineColor(const bool getNonAnimatedColor) const
 {
     if (!m_d)
         return QColor();
