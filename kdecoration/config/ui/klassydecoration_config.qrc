@@ -8,5 +8,12 @@
     <file>klassy_config_icons/Klassy_logo.svg</file>
     <file>klassy_config_icons/object-locked-symbolic.svg</file>
     <file>klassy_config_icons/object-unlocked-symbolic.svg</file>
+    <file>klassy_config_icons/circle.svg</file>
+    <file>klassy_config_icons/full_height_rectangle.svg</file>
+    <file>klassy_config_icons/full_height_rounded_rectangle.svg</file>
+    <file>klassy_config_icons/integrated_rounded_rectangle_grouped.svg</file>
+    <file>klassy_config_icons/integrated_rounded_rectangle.svg</file>
+    <file>klassy_config_icons/rounded_square.svg</file>
+    <file>klassy_config_icons/square.svg</file>
 </qresource>
 </RCC>
