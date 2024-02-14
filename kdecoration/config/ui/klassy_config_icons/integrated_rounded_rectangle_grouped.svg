@@ -1,9 +1,8 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg width="16" height="16" version="1.1" viewBox="0 0 4.2333 4.2333" xmlns="http://www.w3.org/2000/svg">
-    <style type="text/css" id="current-color-scheme">
-      .ColorScheme-Text {
+ <style id="current-color-scheme" type="text/css">.ColorScheme-Text {
         color:#232629;
-      }
-      </style>
- <path style="fill:currentColor;fill-opacity:1;stroke:none" class="ColorScheme-Text" d="m0.26367 0.79297v2.6465h3.7051v-1.9805c-1.125e-4 -0.36579-0.29849-0.66594-0.66406-0.66602zm0.26562 0.26562h2.7754c0.2228 4.36e-5 0.39837 0.17689 0.39844 0.40039v1.7148h-3.1738z"/>
+      }</style>
+ <path class="ColorScheme-Text" d="m0.26562 0.79492-0.0019531 1.9844c-2.7038e-4 0.36353 0.29674 0.66016 0.66016 0.66016h2.3848c0.36342 0 0.66016-0.29674 0.66016-0.66016 0-0.86738-0.00195-1.0989-0.00195-1.8535v-0.13086h-0.13086zm0.26172 0.26172h3.1777c1.683e-4 0.6383 0.00195 0.91677 0.00195 1.7227 0 0.22289-0.17554 0.39844-0.39844 0.39844h-2.3848c-0.22289 0-0.39665-0.17566-0.39648-0.39844z" fill="currentColor"/>
+ <path class="ColorScheme-Text" d="m1.9844 1.0586v2.1172h0.26367v-2.1172z" fill="currentColor"/>
 </svg>
