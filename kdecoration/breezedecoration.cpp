@@ -892,7 +892,7 @@ void Decoration::updateButtonsGeometry()
                 leftmostLeftVisibleIndex = i;
                 button->setLeftmostLeftVisible();
             } else if (menuButtonVisibleIndexLeft != -1 && !visibleAfterMenuSetLeft) {
-                if (i == (menuButtonVisibleIndexLeft + 1)) {
+                if (i > menuButtonVisibleIndexLeft) {
                     button->setVisibleAfterMenu(true);
                     visibleAfterMenuSetLeft = true;
                 }
@@ -965,7 +965,7 @@ void Decoration::updateButtonsGeometry()
                 leftmostRightVisibleIndex = i;
                 button->setLeftmostRightVisible();
             } else if (menuButtonVisibleIndexRight != -1 && !visibleAfterMenuSetRight) {
-                if (i == (menuButtonVisibleIndexRight + 1)) {
+                if (i > menuButtonVisibleIndexRight) {
                     button->setVisibleAfterMenu(true);
                     visibleAfterMenuSetRight = true;
                 }
