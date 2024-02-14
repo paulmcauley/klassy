@@ -388,7 +388,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
         if (((distanceBetweenSquaresX / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.4 - 0.001) // 0.001 is because sometimes there are floating point errors
+            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.45 - 0.001) // 0.001 is because sometimes there are floating point errors
         ) {
             shiftX = true;
             shiftOffsetX += singleDevicePixelin18By18;
@@ -398,7 +398,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
         if (((distanceBetweenSquaresY / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.4 - 0.001) // 0.001 is because sometimes there are floating point errors
+            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.45 - 0.001) // 0.001 is because sometimes there are floating point errors
         ) {
             shiftY = true;
             shiftOffsetY += singleDevicePixelin18By18;
