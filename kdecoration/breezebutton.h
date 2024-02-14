@@ -180,13 +180,6 @@ private Q_SLOTS:
     void updateThinWindowOutlineWithButtonColor(bool);
 
 private:
-    enum struct State {
-        Normal,
-        Hover,
-        Press,
-        COUNT,
-    };
-
     //* private constructor
     explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
 
@@ -199,6 +192,17 @@ private:
     QColor foregroundColor() const;
     QColor outlineColor(bool getNonAnimatedColor = false) const;
     //@}
+
+    //* gets base button state colors with the active change state animation considered
+    QColor foregroundNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor foregroundHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor foregroundPressActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor backgroundNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor backgroundHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor backgroundPressActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor outlineNormalActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor outlineHoverActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
+    QColor outlinePressActiveStateAnimated(const bool active, const bool getNonAnimatedColor = false) const;
 
     //* sets m_systemIconName and m_systemIconCheckedName
     void configureSystemIcons();
