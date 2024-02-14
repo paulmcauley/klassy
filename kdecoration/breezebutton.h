@@ -180,6 +180,13 @@ private Q_SLOTS:
     void updateThinWindowOutlineWithButtonColor(bool);
 
 private:
+    enum struct State {
+        Normal,
+        Hover,
+        Press,
+        COUNT,
+    };
+
     //* private constructor
     explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
 
@@ -217,6 +224,9 @@ private:
 
     //* Whether to invert the pinned-on-all-desktops icon like in Breeze
     bool titlebarTextPinnedInversion() const;
+
+    //* Pointer to the decoration
+    Decoration *m_d;
 
     //* these are the actual colors to be outputted (including for animations)
     QColor m_backgroundColor;

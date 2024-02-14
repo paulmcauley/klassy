@@ -32,6 +32,7 @@ using KDecoration2::DecorationButtonType;
 //__________________________________________________________________
 Button::Button(DecorationButtonType type, Decoration *decoration, QObject *parent)
     : DecorationButton(type, decoration, parent)
+    , m_d(qobject_cast<Decoration *>(decoration))
     , m_animation(new QVariantAnimation(this))
     , m_isGtkCsdButton(false)
 {
@@ -139,20 +140,18 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     if (!geometry().intersects(repaintRegion)) {
         return;
     }
-
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d) {
+    if (!m_d) {
         return;
     }
-    auto c = d->client().toStrongRef();
+    auto c = m_d->client().toStrongRef();
     Q_ASSERT(c);
 
-    m_buttonPalette = d->decorationColors()->buttonPalette(type()); // this is in paint() in-case caching type on m_buttonPalette changes
+    m_buttonPalette = m_d->decorationColors()->buttonPalette(type()); // this is in paint() in-case caching type on m_buttonPalette changes
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
 
     setDevicePixelRatio(painter);
     setShouldDrawBoldButtonIcons();
-    m_renderSystemIcon = d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
+    m_renderSystemIcon = m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme && isSystemIconAvailable();
     setStandardScaledPenWidth();
 
     m_backgroundColor = this->backgroundColor();
@@ -172,7 +171,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     if (type() == DecorationButtonType::Menu) {
         // draw a background only with Full-sized background shapes;
         // for standalone/GTK we draw small buttons so can't draw menu
-        if (d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton))
+        if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton))
             paintFullHeightButtonBackground(painter);
 
         // translate from icon offset -- translates to the edge of smallButtonPaddedSize
@@ -205,8 +204,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 //__________________________________________________________________
 void Button::drawIcon(QPainter *painter) const
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
 
     painter->setRenderHints(QPainter::Antialiasing);
@@ -214,7 +212,7 @@ void Button::drawIcon(QPainter *painter) const
     // for standalone/GTK we draw small buttons so don't do anything
     if (!(isStandAlone() || m_isGtkCsdButton)) {
         // draw a background only with Full-sized Rectangle button shape;
-        if (d->buttonBackgroundType() == ButtonBackgroundType::FullHeight)
+        if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight)
             paintFullHeightButtonBackground(painter);
     }
 
@@ -223,7 +221,7 @@ void Button::drawIcon(QPainter *painter) const
 
     // get top-left geometry relative to the decoration top-left as is is what kwin snaps to a whole pixel since Plasma 5.27
     //(on button hover sometimes the painter gives geometry relative to the button rather than to titlebar, so this is also why this is necessary)
-    QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(d->rect()).topLeft());
+    QPointF decorationTopLeftDeviceGeometry = painter->deviceTransform().map(QRectF(m_d->rect()).topLeft());
     deviceOffsetDecorationTopLeftToIconTopLeft = topLeftPaddedButtonDeviceGeometry - decorationTopLeftDeviceGeometry;
 
     painter->translate(geometry().topLeft());
@@ -242,7 +240,7 @@ void Button::drawIcon(QPainter *painter) const
         }
     }
 
-    if (d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
+    if (m_d->buttonBackgroundType() == ButtonBackgroundType::Small || isStandAlone() || m_isGtkCsdButton)
         paintSmallSizedButtonBackground(painter);
 
     if (!m_foregroundColor.isValid())
@@ -269,14 +267,14 @@ void Button::drawIcon(QPainter *painter) const
     painter->setPen(pen);
 
     if (m_renderSystemIcon) {
-        auto c = d->client().toStrongRef();
+        auto c = m_d->client().toStrongRef();
         Q_ASSERT(c);
         QString systemIconName;
         systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
-        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, d->internalSettings(), c->palette());
+        SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, m_d->internalSettings(), c->palette());
         iconRenderer.renderIcon();
     } else {
-        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(d->internalSettings(),
+        auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
                                                                                        painter,
                                                                                        false,
                                                                                        m_boldButtonIcons,
@@ -298,12 +296,10 @@ void Button::drawIcon(QPainter *painter) const
 //__________________________________________________________________
 QColor Button::foregroundColor() const
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-
-    if (!d)
+    if (!m_d)
         return QColor();
 
-    auto c = d->client().toStrongRef();
+    auto c = m_d->client().toStrongRef();
     Q_ASSERT(c);
     const bool active = c->isActive();
     DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
@@ -312,35 +308,35 @@ QColor Button::foregroundColor() const
     QColor foregroundNormal = group->foregroundNormal;
 
     // active change state animation
-    if (d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
+    if (m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running) {
         if (m_buttonPalette->active()->foregroundPress.isValid() && m_buttonPalette->inactive()->foregroundPress.isValid()) {
             foregroundPress = KColorUtils::mix(m_buttonPalette->inactive()->foregroundPress,
                                                m_buttonPalette->active()->foregroundPress,
-                                               d->activeStateChangeAnimationOpacity());
+                                               m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->foregroundPress.isValid() && !m_buttonPalette->inactive()->foregroundPress.isValid()) {
-            foregroundPress = ColorTools::alphaMix(m_buttonPalette->active()->foregroundPress, d->activeStateChangeAnimationOpacity());
+            foregroundPress = ColorTools::alphaMix(m_buttonPalette->active()->foregroundPress, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->foregroundPress.isValid() && m_buttonPalette->inactive()->foregroundPress.isValid()) {
-            foregroundPress = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundPress, (1.0 - d->activeStateChangeAnimationOpacity()));
+            foregroundPress = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundPress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->foregroundHover.isValid() && m_buttonPalette->inactive()->foregroundHover.isValid()) {
             foregroundHover = KColorUtils::mix(m_buttonPalette->inactive()->foregroundHover,
                                                m_buttonPalette->active()->foregroundHover,
-                                               d->activeStateChangeAnimationOpacity());
+                                               m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->foregroundHover.isValid() && !m_buttonPalette->inactive()->foregroundHover.isValid()) {
-            foregroundHover = ColorTools::alphaMix(m_buttonPalette->active()->foregroundHover, d->activeStateChangeAnimationOpacity());
+            foregroundHover = ColorTools::alphaMix(m_buttonPalette->active()->foregroundHover, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->foregroundHover.isValid() && m_buttonPalette->inactive()->foregroundHover.isValid()) {
-            foregroundHover = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundHover, (1.0 - d->activeStateChangeAnimationOpacity()));
+            foregroundHover = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->foregroundNormal.isValid() && m_buttonPalette->inactive()->foregroundNormal.isValid()) {
             foregroundNormal = KColorUtils::mix(m_buttonPalette->inactive()->foregroundNormal,
                                                 m_buttonPalette->active()->foregroundNormal,
-                                                d->activeStateChangeAnimationOpacity());
+                                                m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->foregroundNormal.isValid() && !m_buttonPalette->inactive()->foregroundNormal.isValid()) {
-            foregroundNormal = ColorTools::alphaMix(m_buttonPalette->active()->foregroundNormal, d->activeStateChangeAnimationOpacity());
+            foregroundNormal = ColorTools::alphaMix(m_buttonPalette->active()->foregroundNormal, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->foregroundNormal.isValid() && m_buttonPalette->inactive()->foregroundNormal.isValid()) {
-            foregroundNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundNormal, (1.0 - d->activeStateChangeAnimationOpacity()));
+            foregroundNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->foregroundNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
     }
 
@@ -350,7 +346,7 @@ QColor Button::foregroundColor() const
     } else if (isChecked()
                && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                    || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
-        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
+        if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return foregroundHover;
         } else {
             return foregroundPress;
@@ -372,12 +368,11 @@ QColor Button::foregroundColor() const
 //__________________________________________________________________
 QColor Button::backgroundColor(const bool getNonAnimatedColor) const
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d) {
+    if (!m_d) {
         return QColor();
     }
 
-    auto c = d->client().toStrongRef();
+    auto c = m_d->client().toStrongRef();
     Q_ASSERT(c);
     const bool active = c->isActive();
     DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
@@ -386,35 +381,35 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
     QColor backgroundNormal = group->backgroundNormal;
 
     // active change state animation
-    if (d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
+    if (m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (m_buttonPalette->active()->backgroundPress.isValid() && m_buttonPalette->inactive()->backgroundPress.isValid()) {
             backgroundPress = KColorUtils::mix(m_buttonPalette->inactive()->backgroundPress,
                                                m_buttonPalette->active()->backgroundPress,
-                                               d->activeStateChangeAnimationOpacity());
+                                               m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->backgroundPress.isValid() && !m_buttonPalette->inactive()->backgroundPress.isValid()) {
-            backgroundPress = ColorTools::alphaMix(m_buttonPalette->active()->backgroundPress, d->activeStateChangeAnimationOpacity());
+            backgroundPress = ColorTools::alphaMix(m_buttonPalette->active()->backgroundPress, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->backgroundPress.isValid() && m_buttonPalette->inactive()->backgroundPress.isValid()) {
-            backgroundPress = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundPress, (1.0 - d->activeStateChangeAnimationOpacity()));
+            backgroundPress = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundPress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->backgroundHover.isValid() && m_buttonPalette->inactive()->backgroundHover.isValid()) {
             backgroundHover = KColorUtils::mix(m_buttonPalette->inactive()->backgroundHover,
                                                m_buttonPalette->active()->backgroundHover,
-                                               d->activeStateChangeAnimationOpacity());
+                                               m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->backgroundHover.isValid() && !m_buttonPalette->inactive()->backgroundHover.isValid()) {
-            backgroundHover = ColorTools::alphaMix(m_buttonPalette->active()->backgroundHover, d->activeStateChangeAnimationOpacity());
+            backgroundHover = ColorTools::alphaMix(m_buttonPalette->active()->backgroundHover, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->backgroundHover.isValid() && m_buttonPalette->inactive()->backgroundHover.isValid()) {
-            backgroundHover = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundHover, (1.0 - d->activeStateChangeAnimationOpacity()));
+            backgroundHover = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->backgroundNormal.isValid() && m_buttonPalette->inactive()->backgroundNormal.isValid()) {
             backgroundNormal = KColorUtils::mix(m_buttonPalette->inactive()->backgroundNormal,
                                                 m_buttonPalette->active()->backgroundNormal,
-                                                d->activeStateChangeAnimationOpacity());
+                                                m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->backgroundNormal.isValid() && !m_buttonPalette->inactive()->backgroundNormal.isValid()) {
-            backgroundNormal = ColorTools::alphaMix(m_buttonPalette->active()->backgroundNormal, d->activeStateChangeAnimationOpacity());
+            backgroundNormal = ColorTools::alphaMix(m_buttonPalette->active()->backgroundNormal, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->backgroundNormal.isValid() && m_buttonPalette->inactive()->backgroundNormal.isValid()) {
-            backgroundNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundNormal, (1.0 - d->activeStateChangeAnimationOpacity()));
+            backgroundNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->backgroundNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
     }
 
@@ -424,7 +419,7 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
     } else if (isChecked()
                && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                    || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
-        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
+        if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return backgroundHover;
         } else {
             return backgroundPress;
@@ -446,11 +441,10 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
 // Returns a colour if an outline is to be drawn around the button
 QColor Button::outlineColor(bool getNonAnimatedColor) const
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return QColor();
 
-    auto c = d->client().toStrongRef();
+    auto c = m_d->client().toStrongRef();
     Q_ASSERT(c);
     const bool active = c->isActive();
     DecorationButtonPaletteGroup *group = active ? m_buttonPalette->active() : m_buttonPalette->inactive();
@@ -459,32 +453,33 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     QColor outlineNormal = group->outlineNormal;
 
     // active change state animation
-    if (d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
+    if (m_d->activeStateChangeAnimation()->state() == QAbstractAnimation::Running && !getNonAnimatedColor) {
         if (m_buttonPalette->active()->outlinePress.isValid() && m_buttonPalette->inactive()->outlinePress.isValid()) {
             outlinePress =
-                KColorUtils::mix(m_buttonPalette->inactive()->outlinePress, m_buttonPalette->active()->outlinePress, d->activeStateChangeAnimationOpacity());
+                KColorUtils::mix(m_buttonPalette->inactive()->outlinePress, m_buttonPalette->active()->outlinePress, m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->outlinePress.isValid() && !m_buttonPalette->inactive()->outlinePress.isValid()) {
-            outlinePress = ColorTools::alphaMix(m_buttonPalette->active()->outlinePress, d->activeStateChangeAnimationOpacity());
+            outlinePress = ColorTools::alphaMix(m_buttonPalette->active()->outlinePress, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->outlinePress.isValid() && m_buttonPalette->inactive()->outlinePress.isValid()) {
-            outlinePress = ColorTools::alphaMix(m_buttonPalette->inactive()->outlinePress, (1.0 - d->activeStateChangeAnimationOpacity()));
+            outlinePress = ColorTools::alphaMix(m_buttonPalette->inactive()->outlinePress, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->outlineHover.isValid() && m_buttonPalette->inactive()->outlineHover.isValid()) {
             outlineHover =
-                KColorUtils::mix(m_buttonPalette->inactive()->outlineHover, m_buttonPalette->active()->outlineHover, d->activeStateChangeAnimationOpacity());
+                KColorUtils::mix(m_buttonPalette->inactive()->outlineHover, m_buttonPalette->active()->outlineHover, m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->outlineHover.isValid() && !m_buttonPalette->inactive()->outlineHover.isValid()) {
-            outlineHover = ColorTools::alphaMix(m_buttonPalette->active()->outlineHover, d->activeStateChangeAnimationOpacity());
+            outlineHover = ColorTools::alphaMix(m_buttonPalette->active()->outlineHover, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->outlineHover.isValid() && m_buttonPalette->inactive()->outlineHover.isValid()) {
-            outlineHover = ColorTools::alphaMix(m_buttonPalette->inactive()->outlineHover, (1.0 - d->activeStateChangeAnimationOpacity()));
+            outlineHover = ColorTools::alphaMix(m_buttonPalette->inactive()->outlineHover, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
 
         if (m_buttonPalette->active()->outlineNormal.isValid() && m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            outlineNormal =
-                KColorUtils::mix(m_buttonPalette->inactive()->outlineNormal, m_buttonPalette->active()->outlineNormal, d->activeStateChangeAnimationOpacity());
+            outlineNormal = KColorUtils::mix(m_buttonPalette->inactive()->outlineNormal,
+                                             m_buttonPalette->active()->outlineNormal,
+                                             m_d->activeStateChangeAnimationOpacity());
         } else if (m_buttonPalette->active()->outlineNormal.isValid() && !m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            outlineNormal = ColorTools::alphaMix(m_buttonPalette->active()->outlineNormal, d->activeStateChangeAnimationOpacity());
+            outlineNormal = ColorTools::alphaMix(m_buttonPalette->active()->outlineNormal, m_d->activeStateChangeAnimationOpacity());
         } else if (!m_buttonPalette->active()->outlineNormal.isValid() && m_buttonPalette->inactive()->outlineNormal.isValid()) {
-            outlineNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->outlineNormal, (1.0 - d->activeStateChangeAnimationOpacity()));
+            outlineNormal = ColorTools::alphaMix(m_buttonPalette->inactive()->outlineNormal, (1.0 - m_d->activeStateChangeAnimationOpacity()));
         }
     }
 
@@ -494,7 +489,7 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
     } else if (isChecked()
                && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
                    || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
-        if (d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
+        if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return outlineHover;
         } else {
             return outlinePress;
@@ -515,43 +510,41 @@ QColor Button::outlineColor(bool getNonAnimatedColor) const
 
 bool Button::titlebarTextPinnedInversion() const
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return false;
-    auto c = d->client().toStrongRef();
+    auto c = m_d->client().toStrongRef();
     Q_ASSERT(c);
     bool active = c->isActive();
 
     return type() == DecorationButtonType::OnAllDesktops
-        && d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme
-        && (d->internalSettings()->buttonBackgroundOpacity(active) == 100 && d->internalSettings()->buttonIconOpacity(active) == 100
-            && (((d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
-                  || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
-                 && (d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarText
-                     || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose))
-                || ((d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::Accent
-                     || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-                     || d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights)
-                    && (d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::Accent
-                        || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-                        || d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentTrafficLights)))
+        && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme
+        && (m_d->internalSettings()->buttonBackgroundOpacity(active) == 100 && m_d->internalSettings()->buttonIconOpacity(active) == 100
+            && (((m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarText
+                  || m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)
+                 && (m_d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarText
+                     || m_d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose))
+                || ((m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::Accent
+                     || m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
+                     || m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights)
+                    && (m_d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::Accent
+                        || m_d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentNegativeClose
+                        || m_d->internalSettings()->buttonIconColors(active) == InternalSettings::EnumButtonIconColors::AccentTrafficLights)))
 
                 )
-        && !d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
+        && !m_d->internalSettings()->showBackgroundNormally(active); // inversion occuring for compatibility with breeze's circular pin on all desktops icon
 }
 
 //________________________________________________________________
 void Button::reconfigure()
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
 
     // animation
-    m_animation->setDuration(d->animationsDuration());
+    m_animation->setDuration(m_d->animationsDuration());
 
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
-    if (d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+    if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         SystemIconTheme::systemIconNames(type(), m_systemIconName, m_systemIconCheckedName);
     }
 }
@@ -559,8 +552,7 @@ void Button::reconfigure()
 //__________________________________________________________________
 void Button::updateAnimationState(bool hovered)
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!(d && d->animationsDuration() > 0)) {
+    if (!(m_d && m_d->animationsDuration() > 0)) {
         return;
     }
 
@@ -572,18 +564,17 @@ void Button::updateAnimationState(bool hovered)
 
 void Button::updateThinWindowOutlineWithButtonColor(bool on)
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d || !d->internalSettings()->colorizeThinWindowOutlineWithButton() || isStandAlone())
+    if (!m_d || !m_d->internalSettings()->colorizeThinWindowOutlineWithButton() || isStandAlone())
         return;
 
     QColor color = QColor();
     if (on) {
-        m_buttonPalette = d->decorationColors()->buttonPalette(type()); // this is here in-case caching type on m_buttonPalette changes
+        m_buttonPalette = m_d->decorationColors()->buttonPalette(type()); // this is here in-case caching type on m_buttonPalette changes
         m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
             color = this->backgroundColor(true); // use a background colour if outline colour not valid
-        d->setThinWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
+        m_d->setThinWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
     } else {
         if (!isHovered() && isPressed())
             return; // don't remove the window outline highlight if the button is still pressed
@@ -591,7 +582,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
         // Check if any other button is hovered/pressed.
         // This is to prevent glitches when you directly mouse over one button to another and the second button does not trigger on.
         // In the case where another button is hovered/pressed do not send an off flag.
-        for (QPointer<KDecoration2::DecorationButton> &decButton : d->leftButtons()->buttons() + d->rightButtons()->buttons()) {
+        for (QPointer<KDecoration2::DecorationButton> &decButton : m_d->leftButtons()->buttons() + m_d->rightButtons()->buttons()) {
             Button *button = static_cast<Button *>(decButton.data());
 
             if (button != this && (button->isHovered() || button->isPressed())) {
@@ -599,7 +590,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
             }
         }
 
-        d->setThinWindowOutlineOverrideColor(on, color);
+        m_d->setThinWindowOutlineOverrideColor(on, color);
     }
 }
 
@@ -607,17 +598,16 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 {
     if (!m_backgroundColor.isValid() && !m_outlineColor.isValid())
         return;
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
-    auto s = d->settings();
+    auto s = m_d->settings();
 
     painter->save();
     painter->translate(m_fullHeightVisibleBackgroundOffset);
 
     qreal cornerRadius;
-    if (d->scaledCornerRadius() >= 0.05)
-        cornerRadius = d->scaledCornerRadius();
+    if (m_d->scaledCornerRadius() >= 0.05)
+        cornerRadius = m_d->scaledCornerRadius();
     else
         cornerRadius = 0;
 
@@ -639,7 +629,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     if (m_outlineColor.isValid()) {
         qreal geometryShrinkOffsetVertical = geometryShrinkOffsetHorizontal;
 
-        if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
+        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
             // shrink the backgroundBoundingRect to make border more visible
             backgroundBoundingRect = QRectF(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
                                                                             geometryShrinkOffsetVertical,
@@ -647,7 +637,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                             -geometryShrinkOffsetVertical));
             background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
-        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
             QPainterPath inner;
             qreal halfPenWidth = penWidth / 2;
             geometryShrinkOffsetHorizontal = halfPenWidth;
@@ -662,7 +652,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
             drawOutlineUsingPath = true;
 
-            if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
+            if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin()) { // right-most-right
                 outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, 0, -geometryShrinkOffsetVerticalOuter),
                                                      CornerBottomLeft,
                                                      outerCornerRadius);
@@ -672,7 +662,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(halfPenWidth, 0, 0, -geometryShrinkOffsetVertical),
                                                         CornerBottomLeft,
                                                         cornerRadius);
-            } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
+            } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin()) { // left-most-left
                 outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, 0, -geometryShrinkOffsetVerticalOuter),
                                                      CornerBottomRight,
                                                      outerCornerRadius);
@@ -702,7 +692,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
             }
 
             outline = outline.subtracted(inner);
-        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
             if (type() != DecorationButtonType::Menu) {
                 QPainterPath inner;
                 qreal halfPenWidth = penWidth / 2;
@@ -714,8 +704,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 qreal geometryShrinkOffsetHorizontalMiddle;
                 qreal geometryShrinkOffsetHorizontalMiddleOuter;
                 qreal geometryShrinkOffsetHorizontalMiddleInner;
-                if ((m_leftButtonVisible && d->internalSettings()->fullHeightButtonSpacingLeft() == 0)
-                    || (m_rightButtonVisible && d->internalSettings()->fullHeightButtonSpacingRight() == 0)) {
+                if ((m_leftButtonVisible && m_d->internalSettings()->fullHeightButtonSpacingLeft() == 0)
+                    || (m_rightButtonVisible && m_d->internalSettings()->fullHeightButtonSpacingRight() == 0)) {
                     geometryShrinkOffsetHorizontalMiddle = 0;
                     geometryShrinkOffsetHorizontalMiddleOuter = -halfPenWidth;
                     geometryShrinkOffsetHorizontalMiddleInner = halfPenWidth;
@@ -733,9 +723,9 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
                 drawOutlineUsingPath = true;
 
-                if (((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
+                if (((m_leftmostLeftVisible && m_d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
                     || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
-                    || ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
+                    || ((m_rightmostRightVisible && m_d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
                     || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                                          0,
@@ -753,7 +743,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                         backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal, 0, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical),
                         CornersBottom,
                         cornerRadius);
-                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
+                } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
                     outline = GeometryTools::roundedPath(
                         backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalOuter, -geometryShrinkOffsetVerticalOuter),
                         CornerBottomRight,
@@ -766,7 +756,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                         GeometryTools::roundedPath(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontal, -geometryShrinkOffsetVertical),
                                                    CornerBottomRight,
                                                    cornerRadius);
-                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
+                } else if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
                     outline = GeometryTools::roundedPath(
                         backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter, 0, 0, -geometryShrinkOffsetVerticalOuter),
                         CornerBottomLeft,
@@ -779,15 +769,15 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                         GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal, 0, 0, -geometryShrinkOffsetVertical),
                                                    CornerBottomLeft,
                                                    cornerRadius);
-                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) {
+                } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin()) {
                     outline.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddleOuter, -geometryShrinkOffsetVerticalOuter));
                     inner.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddleInner, -geometryShrinkOffsetVerticalInner));
                     background.addRect(backgroundBoundingRect.adjusted(0, 0, -geometryShrinkOffsetHorizontalMiddle, -geometryShrinkOffsetVertical));
-                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) {
+                } else if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin()) {
                     outline.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter, 0, 0, -geometryShrinkOffsetVerticalOuter));
                     inner.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleInner, 0, 0, -geometryShrinkOffsetVerticalInner));
                     background.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddle, 0, 0, -geometryShrinkOffsetVertical));
-                } else if ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter,
                                                                                          0,
                                                                                          -geometryShrinkOffsetHorizontalOuter,
@@ -806,7 +796,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                                             -geometryShrinkOffsetVertical),
                                                             CornerBottomRight,
                                                             cornerRadius);
-                } else if ((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                                          0,
                                                                                          -geometryShrinkOffsetHorizontalMiddleOuter,
@@ -854,37 +844,37 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     } else { // non-shrunk background without outline
         painter->setPen(Qt::NoPen);
-        if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
+        if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle) {
             background.addRoundedRect(backgroundBoundingRect, cornerRadius, cornerRadius);
 
-        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
-            if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) { // right-most-right
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
+            if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin()) { // right-most-right
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
-            } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) { // left-most-left
+            } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin()) { // left-most-left
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
             } else {
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
             }
-        } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+        } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
             if (type() != DecorationButtonType::Menu) {
                 painter->setPen(Qt::NoPen);
 
-                if (((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
+                if (((m_leftmostLeftVisible && m_d->internalSettings()->titlebarLeftMargin()) && m_rightmostLeftVisible)
                     || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
-                    || ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
+                    || ((m_rightmostRightVisible && m_d->internalSettings()->titlebarRightMargin()) && m_leftmostRightVisible)
                     || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
-                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
+                } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin() && m_rightmostLeftVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
-                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
+                } else if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin() && m_leftmostRightVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
-                } else if (m_leftmostLeftVisible && !d->internalSettings()->titlebarLeftMargin()) {
+                } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titlebarLeftMargin()) {
                     background.addRect(backgroundBoundingRect);
-                } else if (m_rightmostRightVisible && !d->internalSettings()->titlebarRightMargin()) {
+                } else if (m_rightmostRightVisible && !m_d->internalSettings()->titlebarRightMargin()) {
                     background.addRect(backgroundBoundingRect);
-                } else if ((m_rightmostRightVisible && d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titlebarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
-                } else if ((m_leftmostLeftVisible && d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titlebarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
                 } else {
                     background.addRect(backgroundBoundingRect);
@@ -896,8 +886,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     }
 
     // clip the rounded corners using the windowPath
-    if (!d->isMaximized() && (!(!m_backgroundColor.isValid() && m_outlineColor.isValid() && drawOutlineUsingPath)))
-        background = background.intersected(*(d->windowPath()));
+    if (!m_d->isMaximized() && (!(!m_backgroundColor.isValid() && m_outlineColor.isValid() && drawOutlineUsingPath)))
+        background = background.intersected(*(m_d->windowPath()));
 
     if (m_outlineColor.isValid() && !drawOutlineUsingPath) {
         QPen pen(m_outlineColor);
@@ -914,8 +904,8 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     if (m_outlineColor.isValid() && drawOutlineUsingPath) {
         // clip the rounded corners using the windowPath
-        if (!d->isMaximized())
-            outline = outline.intersected(*(d->windowPath()));
+        if (!m_d->isMaximized())
+            outline = outline.intersected(*(m_d->windowPath()));
         painter->setBrush(m_outlineColor);
         painter->drawPath(outline);
     }
@@ -927,8 +917,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 {
     if (!m_backgroundColor.isValid() && (!m_outlineColor.isValid()))
         return;
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
 
     painter->save();
@@ -960,12 +949,12 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     else
         painter->setBrush(Qt::NoBrush);
 
-    if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
-        || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || ((d->internalSettings()->cornerRadius() < 0.2)
-            && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
-                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
-                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
+    if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
+        || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
+        || ((m_d->internalSettings()->cornerRadius() < 0.2)
+            && (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
+                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
+                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
                 ))) {
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
@@ -973,10 +962,10 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
                                  0 - geometryEnlargeOffset,
                                  backgroundSize + geometryEnlargeOffset * 2,
                                  backgroundSize + geometryEnlargeOffset * 2));
-    } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-               || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
-               || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
-               || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
+    } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
+               || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
     ) {
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
@@ -998,15 +987,14 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
 
 void Button::setDevicePixelRatio(QPainter *painter)
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
     // determine DPR
     m_devicePixelRatio = painter->device()->devicePixelRatioF();
 
     // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
     if (KWindowSystem::isPlatformX11())
-        m_devicePixelRatio = d->systemScaleFactorX11();
+        m_devicePixelRatio = m_d->systemScaleFactorX11();
     if (m_isGtkCsdButton)
         m_devicePixelRatio = 1.0;
 }
@@ -1019,14 +1007,13 @@ void Button::setStandardScaledPenWidth()
 
 void Button::setShouldDrawBoldButtonIcons()
 {
-    auto d = qobject_cast<Decoration *>(decoration());
-    if (!d)
+    if (!m_d)
         return;
 
     m_boldButtonIcons = false;
 
     if (!m_isGtkCsdButton) {
-        switch (d->internalSettings()->boldButtonIcons()) {
+        switch (m_d->internalSettings()->boldButtonIcons()) {
         default:
             break;
         case InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly:
