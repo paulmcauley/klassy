@@ -214,7 +214,6 @@ void Button::drawIcon(QPainter *painter) const
     // for standalone/GTK we draw small buttons so don't do anything
     if (!(isStandAlone() || m_isGtkCsdButton)) {
         // draw a background only with Full-sized Rectangle button shape;
-        // NB: paintFullHeightRectangleBackground function applies a translation to painter as different full-sized button geometry
         if (d->buttonBackgroundType() == ButtonBackgroundType::FullHeight)
             paintFullHeightButtonBackground(painter);
     }
@@ -964,9 +963,10 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
         || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || ((d->internalSettings()->cornerRadius() < 0.2)
-            && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle))
-        || ((d->internalSettings()->cornerRadius() < 0.2)
-            && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))) {
+            && (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
+                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
+                ))) {
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
         painter->drawRect(QRectF(0 - geometryEnlargeOffset,
@@ -976,6 +976,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
     } else if (d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle // case where standalone
                || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
+               || d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
     ) {
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
