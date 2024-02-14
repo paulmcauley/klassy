@@ -154,7 +154,7 @@ private:
     void writePreset(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName);
 
     void importBundledPresets();
-    void updateLockIcons();
+    void updateIcons();
 };
 }
 

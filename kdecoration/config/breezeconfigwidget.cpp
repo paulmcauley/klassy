@@ -200,7 +200,7 @@ void ConfigWidget::load()
     m_windowOutlineStyleDialog->load();
     m_shadowStyleDialog->load();
     PresetsModel::importBundledPresets(m_presetsConfiguration.data());
-    updateLockIcons();
+    updateIcons();
 
     // assign to ui
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
@@ -692,12 +692,45 @@ void ConfigWidget::presetsButtonClicked()
     m_loadPresetDialog->show();
 }
 
-void ConfigWidget::updateLockIcons()
+void ConfigWidget::updateIcons()
 {
-    ColorTools::convertAlphaToColor(m_unlockedIcon, QSize(16, 16), QApplication::palette().windowText().color());
-    ColorTools::convertAlphaToColor(m_lockedIcon, QSize(16, 16), QApplication::palette().windowText().color());
-    m_lockIcon.addPixmap(m_unlockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::Off);
-    m_lockIcon.addPixmap(m_lockedIcon.pixmap(QSize(16, 16)), QIcon::Mode::Normal, QIcon::State::On);
+    QSize sizeSixteen(16, 16);
+
+    QIcon icon;
+
+    // TODO:: update with better functions with DPR in Qt6
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/full_height_rectangle.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(0, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/full_height_rounded_rectangle.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(1, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/integrated_rounded_rectangle.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(2, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/integrated_rounded_rectangle_grouped.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(3, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/circle.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(4, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/square.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(5, icon);
+
+    icon = QIcon(QStringLiteral(":/klassy_config_icons/rounded_square.svg"));
+    ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
+    m_ui.buttonShape->setItemIcon(6, icon);
+
+    ColorTools::convertAlphaToColor(m_unlockedIcon, sizeSixteen, QApplication::palette().windowText().color());
+    ColorTools::convertAlphaToColor(m_lockedIcon, sizeSixteen, QApplication::palette().windowText().color());
+    m_lockIcon.addPixmap(m_unlockedIcon.pixmap(sizeSixteen), QIcon::Mode::Normal, QIcon::State::Off);
+    m_lockIcon.addPixmap(m_lockedIcon.pixmap(sizeSixteen), QIcon::Mode::Normal, QIcon::State::On);
 
     m_buttonSizingDialog->updateLockIcons();
     m_buttonColorsDialog->updateLockIcons();
@@ -710,7 +743,7 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
 {
     if (ev->type() == QEvent::ApplicationPaletteChange) {
         // overwrite handling of palette change
-        updateLockIcons();
+        updateIcons();
         return QObject::eventFilter(obj, ev);
     }
     // Make sure the rest of events are handled
