@@ -90,8 +90,6 @@ protected Q_SLOTS:
     void setEnabledAnimationsSpeed();
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
-    void integratedRoundedRectangleSizingButtonClicked();
-    void fullHeightRectangleSizingButtonClicked();
     void buttonSizingButtonClicked();
     void buttonColorsButtonClicked();
     void buttonBehaviourButtonClicked();

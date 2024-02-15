@@ -680,11 +680,18 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     painter->save();
     painter->translate(m_fullHeightVisibleBackgroundOffset);
 
-    qreal cornerRadius;
-    if (m_d->scaledCornerRadius() >= 0.05)
-        cornerRadius = m_d->scaledCornerRadius();
-    else
-        cornerRadius = 0;
+    qreal cornerRadius = 0;
+
+    if (m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::ShapeFullHeightRectangle) {
+        if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() * m_d->settings()->smallSpacing();
+        } else {
+            cornerRadius = m_d->scaledCornerRadius();
+        }
+        if (cornerRadius < 0.05) {
+            cornerRadius = 0;
+        }
+    }
 
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
     painter->setClipRect(backgroundBoundingRect);
@@ -1042,20 +1049,30 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
     ) {
+        qreal cornerRadius;
+        if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() * m_d->settings()->smallSpacing();
+        } else {
+            cornerRadius = m_d->scaledCornerRadius();
+        }
+        if (cornerRadius < 0.05) {
+            cornerRadius = 0;
+        }
+
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
         painter->drawRoundedRect(QRectF(0 - geometryEnlargeOffset,
                                         0 - geometryEnlargeOffset,
                                         backgroundSize + geometryEnlargeOffset * 2,
                                         backgroundSize + geometryEnlargeOffset * 2),
-                                 20,
-                                 20,
-                                 Qt::RelativeSize);
-    } else
+                                 cornerRadius,
+                                 cornerRadius);
+    } else {
         painter->drawEllipse(QRectF(0 - geometryEnlargeOffset,
                                     0 - geometryEnlargeOffset,
                                     backgroundSize + geometryEnlargeOffset * 2,
                                     backgroundSize + geometryEnlargeOffset * 2));
+    }
 
     painter->restore();
 }

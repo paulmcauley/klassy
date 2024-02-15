@@ -25,11 +25,15 @@ public:
     explicit ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
     ~ButtonSizing();
 
+    void loadMain(const bool assignUiValuesOnly = false);
     void save(const bool reloadKwinConfig = true);
     void defaults();
 
 public Q_SLOTS:
-    void load();
+    void load()
+    {
+        loadMain();
+    }
 
 private Q_SLOTS:
     void accept() override;
@@ -47,6 +51,7 @@ private Q_SLOTS:
     }
     void setApplyButtonState(const bool on);
     void updateLockIcons();
+    void setButtonCustomCornerRadiusVisible();
 
 Q_SIGNALS:
     void changed(bool);
@@ -54,6 +59,7 @@ Q_SIGNALS:
 private:
     void setChanged(bool value);
     bool isDefaults();
+    void setVisibleUiElements();
 
     Ui_ButtonSizing m_ui;
 
@@ -71,6 +77,8 @@ private:
     bool m_loading = false;
     bool m_loaded;
     bool m_processingDefaults = false;
+
+    int m_buttonShape = 0;
 };
 
 }
