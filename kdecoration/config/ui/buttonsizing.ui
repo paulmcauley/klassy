@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
+    <width>669</width>
     <height>571</height>
    </rect>
   </property>
@@ -302,7 +302,7 @@ Left-hand buttons:</string>
            <widget class="QLabel" name="closeFullHeightButtonWidthMarginRelativeLabel">
             <property name="text">
              <string>Close button Width margins:
-(relative to others)</string>
+(relative to other buttons)</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
