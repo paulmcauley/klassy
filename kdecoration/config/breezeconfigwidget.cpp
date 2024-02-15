@@ -108,7 +108,15 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, m_presetsConfiguration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, m_presetsConfiguration, this);
 
-    // the dispayed colours in the ButtonColors UI depend upon ButtonBehaviour
+    connect(m_buttonSizingDialog, &ButtonSizing::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_buttonColorsDialog, &ButtonColors::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_buttonBehaviourDialog, &ButtonBehaviour::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_titleBarSpacingDialog, &TitleBarSpacing::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_titleBarOpacityDialog, &TitleBarOpacity::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_windowOutlineStyleDialog, &WindowOutlineStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_shadowStyleDialog, &ShadowStyle::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+
+    // the displayed colours in the ButtonColors UI depend upon ButtonBehaviour
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::loadButtonPaletteColorsIcons);
 
     // update the horizontal header icons in-case the icon style has changed
@@ -151,7 +159,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()));
+    connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -458,7 +466,17 @@ void ConfigWidget::updateChanged()
     // dialogs
     else if (m_buttonSizingDialog->m_changed)
         modified = true;
+    else if (m_buttonColorsDialog->m_changed)
+        modified = true;
+    else if (m_buttonBehaviourDialog->m_changed)
+        modified = true;
+    else if (m_titleBarSpacingDialog->m_changed)
+        modified = true;
+    else if (m_titleBarOpacityDialog->m_changed)
+        modified = true;
     else if (m_windowOutlineStyleDialog->m_changed)
+        modified = true;
+    else if (m_shadowStyleDialog->m_changed)
         modified = true;
 
     // exceptions
@@ -514,7 +532,7 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
 
-    m_buttonSizingDialog->load();
+    m_buttonSizingDialog->setVisibleUiElements();
 }
 
 void ConfigWidget::dialogChanged(bool changed)
@@ -524,8 +542,6 @@ void ConfigWidget::dialogChanged(bool changed)
 
 void ConfigWidget::buttonSizingButtonClicked()
 {
-    if (!m_buttonSizingDialog->m_loaded)
-        m_buttonSizingDialog->load();
     m_buttonSizingDialog->show();
 }
 
