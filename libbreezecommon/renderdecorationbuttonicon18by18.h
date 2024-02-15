@@ -39,7 +39,7 @@ protected:
     virtual void renderContextHelpIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
-    qreal renderSquareMaximizeIcon(bool returnSizeOnly = false);
+    QRectF renderSquareMaximizeIcon(bool returnSizeOnly = false);
 
     void renderOverlappingWindowsIcon();
     /**
