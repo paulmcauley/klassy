@@ -298,19 +298,12 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
         setChanged(false);
         Q_EMIT saved();
 
-        bool updateColorCachePresetPresent = false;
-        for (auto &exception : (exceptions + defaultExceptions)) {
-            if ((!exception->exceptionPreset().isEmpty() && PresetsModel::isPresetPresent(m_presetsConfiguration.data(), exception->exceptionPreset()))
-                || exception->opaqueTitleBar()) {
-                updateColorCachePresetPresent = true;
-                break;
-            }
-        }
-        if (updateColorCachePresetPresent)
-            DBusMessages::updateDecorationColorCache();
+        DBusMessages::updateDecorationColorCache();
         // needed to tell kwin to reload when running from external kcmshell
         DBusMessages::kwinReloadConfig();
-        DBusMessages::kstyleReloadDecorationConfig();
+
+        // not needed as both of the other DBUS messages also update KStyle
+        // DBusMessages::kstyleReloadDecorationConfig();
 
     } else { // set the preset
         // delete the preset if one of that name already exists
