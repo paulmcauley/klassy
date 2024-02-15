@@ -174,6 +174,12 @@
        <max>50</max>
     </entry>
 
+    <entry name="CloseFullHeightButtonWidthMarginRelative" type = "Int">
+       <default>100</default>
+       <min>25</min>
+       <max>400</max>
+    </entry>
+
     <entry name="LockFullHeightButtonWidthMargins" type = "Bool">
         <default>false</default>
     </entry>
@@ -194,6 +200,20 @@
 
     <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
         <default>true</default>
+    </entry>
+
+    <entry name="ButtonCornerRadius" type="Enum">
+        <choices>
+            <choice name="SameAsWindow" />
+            <choice name="Custom" />
+        </choices>
+        <default>SameAsWindow</default>
+    </entry>
+
+    <entry name="ButtonCustomCornerRadius" type = "Double">
+       <default>1</default>
+       <min>0</min>
+       <max>12</max>
     </entry>
 
     <!--Integrated Rounded Rectangle Bottom Padding -->

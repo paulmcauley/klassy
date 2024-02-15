@@ -133,8 +133,8 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 #endif
 
-    connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::integratedRoundedRectangleSizingButtonClicked);
-    connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::fullHeightRectangleSizingButtonClicked);
+    connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
+    connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.buttonColorsButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonColorsButtonClicked);
     connect(m_ui.buttonBehaviourButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonBehaviourButtonClicked);
@@ -503,6 +503,8 @@ void ConfigWidget::updateIconsStackedWidgetVisible()
 
 void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
 {
+    m_buttonSizingDialog->m_buttonShape = m_ui.buttonShape->currentIndex();
+
     if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
@@ -511,6 +513,8 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(2);
     else
         m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
+
+    m_buttonSizingDialog->load();
 }
 
 void ConfigWidget::dialogChanged(bool changed)
@@ -518,132 +522,10 @@ void ConfigWidget::dialogChanged(bool changed)
     setChanged(changed);
 }
 
-// these 3 functions would be better rewritten with a stacked widget (like for windowOutlineButtonClicked) for simplicity
-void ConfigWidget::integratedRoundedRectangleSizingButtonClicked()
-{
-    m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 400);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
-    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Integrated Rounded Rectangle Width && Spacing"));
-
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercent->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
-    m_buttonSizingDialog->m_ui.line->setVisible(true);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
-    m_buttonSizingDialog->m_ui.line_2->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeft->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLine->setVisible(true);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonSpacingLeftRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLine->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeft->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLine->setVisible(false);
-    m_buttonSizingDialog->m_ui.lockButtonSpacingLeftRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLine->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPadding->setVisible(true);
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
-
-    if (!m_buttonSizingDialog->m_loaded)
-        m_buttonSizingDialog->load();
-    m_buttonSizingDialog->show();
-}
-
-void ConfigWidget::fullHeightRectangleSizingButtonClicked()
-{
-    m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 300);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Width & Spacing - Klassy Settings"));
-    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Full-height Rectangle Width && Spacing"));
-
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercent->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
-    m_buttonSizingDialog->m_ui.line->setVisible(true);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
-    m_buttonSizingDialog->m_ui.line_2->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeft->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLine->setVisible(true);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonSpacingLeftRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLine->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeft->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLine->setVisible(false);
-    m_buttonSizingDialog->m_ui.lockButtonSpacingLeftRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLine->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPadding->setVisible(false);
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
-    m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(20, 40, QSizePolicy::Fixed, QSizePolicy::Expanding);
-
-    m_buttonSizingDialog->show();
-}
-
 void ConfigWidget::buttonSizingButtonClicked()
 {
-    m_buttonSizingDialog->setGeometry(0, 0, m_buttonSizingDialog->geometry().width(), 275);
-    m_buttonSizingDialog->setWindowTitle(i18n("Button Size & Spacing - Klassy Settings"));
-    m_buttonSizingDialog->m_ui.groupBox->setTitle(i18n("Button Size && Spacing"));
-
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercentLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.scaleBackgroundPercent->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginLeft->setVisible(false);
-    m_buttonSizingDialog->m_ui.line->setVisible(false);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonWidthMargins->setVisible(false);
-    m_buttonSizingDialog->m_ui.line_2->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonWidthMarginRight->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeft->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingLeftLine->setVisible(false);
-    m_buttonSizingDialog->m_ui.lockFullHeightButtonSpacingLeftRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLabel->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRight->setVisible(false);
-    m_buttonSizingDialog->m_ui.fullHeightButtonSpacingRightLine->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeft->setVisible(true);
-    m_buttonSizingDialog->m_ui.buttonSpacingLeftLine->setVisible(true);
-    m_buttonSizingDialog->m_ui.lockButtonSpacingLeftRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLabel->setVisible(true);
-    m_buttonSizingDialog->m_ui.buttonSpacingRight->setVisible(true);
-    m_buttonSizingDialog->m_ui.buttonSpacingRightLine->setVisible(true);
-
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPadding->setVisible(false);
-    m_buttonSizingDialog->m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(false);
-
-    m_buttonSizingDialog->m_ui.verticalSpacer_2->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
-    m_buttonSizingDialog->m_ui.verticalSpacer_3->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
-
+    if (!m_buttonSizingDialog->m_loaded)
+        m_buttonSizingDialog->load();
     m_buttonSizingDialog->show();
 }
 
