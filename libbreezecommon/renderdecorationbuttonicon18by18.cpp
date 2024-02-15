@@ -14,8 +14,9 @@ RenderDecorationButtonIcon18By18::RenderDecorationButtonIcon18By18(QPainter *pai
                                                                    const bool fromKstyle,
                                                                    const bool boldButtonIcons,
                                                                    const qreal devicePixelRatio,
-                                                                   const QPointF &deviceOffsetFromZeroReference)
-    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference)
+                                                                   const QPointF &deviceOffsetFromZeroReference,
+                                                                   const bool forceEvenSquares)
+    : RenderDecorationButtonIcon(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares)
 {
 }
 
@@ -256,26 +257,38 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
 
     QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
     qreal adjustmentOffset = 0;
-    constexpr int maxIterations = 4;
+    constexpr int maxIterations = 5;
     int i = 0;
+    qreal designedWidthDevicePixels = 9 * m_totalScalingFactor;
     do {
         if (isOddPenWidth) {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
         } else {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
         }
 
-        qreal snappedWidth = rect.width();
-        qreal snappedHeight = rect.height();
-        if (snappedWidth != snappedHeight) { // happens on display scales which are not a factor of 0.5
-            qreal maxSide = std::max(snappedWidth, snappedHeight);
-            rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
+        qreal maxSide =
+            qMax(rect.width(), rect.height()); // ensure width and height are the same -- they are sometimes not on display scales which are not a factor of 0.5
+        rect.setTopLeft(QPointF(0, 0));
+        rect.setBottomRight(QPointF(maxSide, maxSide));
+
+        qreal rectWidthDevicePixels = rect.width() * m_totalScalingFactor;
+        bool increaseSize = false;
+        if (m_forceEvenSquares) {
+            // if m_forceEvenSquares and total device square width is not even
+            if (qRound(rectWidthDevicePixels + penWidthToDevice(pen)) % 2 != 0) {
+                increaseSize = true;
+            }
+        } else {
+            // if size is still smaller than linear to original design, increase again
+            if (rectWidthDevicePixels < (designedWidthDevicePixels - 0.001)) { // 0.001 as sometimes there are floating point errors
+                increaseSize = true;
+            }
         }
 
-        // if size is still smaller than linear to original design, increase again
-        if ((rect.width() * m_totalScalingFactor) < (9 * m_totalScalingFactor - 0.001)) { // 0.001 as sometimes there are floating point errors
+        if (increaseSize) {
             adjustmentOffset = convertDevicePixelsToLocal(0.5);
             rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
         } else {
@@ -284,7 +297,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
         i++;
     } while (adjustmentOffset && i < maxIterations);
 
-    // centre -- the generated square is not always centred
+    // centre
     QPointF centerTranslate = QPointF(9, 9) - rect.center();
     if (centerTranslate != QPointF(0, 0)) {
         QPointF centrePixelRealignmentOffset;
@@ -372,7 +385,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     qreal diameter = qMax((bottomRight.y() - topLeft.y()), (bottomRight.x() - topLeft.x()));
 
-    QRectF foregroundSquare(QPointF(bottomRight.x() - diameter, topLeft.y()), QPointF(bottomRight.x(), topLeft.y() + diameter));
+    QRectF foregroundSquare(QPointF(0, 0), QPointF(diameter, diameter));
     QGraphicsRectItem *foregroundRect = new QGraphicsRectItem(foregroundSquare);
     overlappingWindowsGroup->addToGroup(foregroundRect);
     // set no pen to make all dimension calculations simpler
@@ -513,8 +526,9 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     // tiny filled square
     QRectF rect(QPointF(7.5, 7.5), QPointF(10.5, 10.5));
     qreal adjustmentOffset = 0;
-    constexpr int maxIterations = 4;
+    constexpr int maxIterations = 5;
     int i = 0;
+    qreal designedWidthDevicePixels = 3 * m_totalScalingFactor;
     do {
         if (isOddPenWidth) {
             rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
@@ -523,15 +537,26 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
             rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
                           snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
         }
-        qreal snappedWidth = rect.width();
-        qreal snappedHeight = rect.height();
-        if (snappedWidth != snappedHeight) { // happens on display scales which are not a factor of 0.5
-            qreal maxSide = std::max(snappedWidth, snappedHeight);
-            rect.setBottomRight(QPointF(rect.topLeft().x() + maxSide, rect.topLeft().y() + maxSide));
+        qreal maxSide =
+            qMax(rect.width(), rect.height()); // ensure width and height are the same -- they are sometimes not on display scales which are not a factor of 0.5
+        rect.setTopLeft(QPointF(0, 0));
+        rect.setBottomRight(QPointF(maxSide, maxSide));
+
+        qreal rectWidthDevicePixels = rect.width() * m_totalScalingFactor;
+        bool increaseSize = false;
+        if (m_forceEvenSquares) {
+            // if m_forceEvenSquares and total device square width is not even
+            if (qRound(rectWidthDevicePixels + penWidthToDevice(pen)) % 2 != 0) {
+                increaseSize = true;
+            }
+        } else {
+            // if size is still smaller than linear to original design, increase again
+            if (rectWidthDevicePixels < (designedWidthDevicePixels - 0.001)) { // 0.001 as sometimes there are floating point errors
+                increaseSize = true;
+            }
         }
 
-        // if size is still smaller than linear to original design, increase again
-        if ((rect.width() * m_totalScalingFactor) < (3 * m_totalScalingFactor - 0.001)) { // 0.001 as sometimes there are floating point errors
+        if (increaseSize) {
             adjustmentOffset = convertDevicePixelsToLocal(0.5);
             rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
         } else {
@@ -540,7 +565,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         i++;
     } while (adjustmentOffset && i < maxIterations);
 
-    // centre -- the generated square is not always centred
+    // centre
     QPointF centerTranslate = QPointF(9, 9) - rect.center();
     if (centerTranslate != QPointF(0, 0)) {
         QPointF centrePixelRealignmentOffset;

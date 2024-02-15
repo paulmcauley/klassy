@@ -42,7 +42,8 @@ public:
                                                                                const bool fromKstyle = false,
                                                                                const bool boldButtonIcons = false,
                                                                                const qreal devicePixelRatio = 1,
-                                                                               const QPointF &deviceOffsetFromZeroReference = QPointF(0, 0));
+                                                                               const QPointF &deviceOffsetFromZeroReference = QPointF(0, 0),
+                                                                               const bool forceEvenSquares = false);
 
     virtual ~RenderDecorationButtonIcon();
 
@@ -59,12 +60,15 @@ protected:
      * @param iconWidth the unscaled icon width -- used only when the system icon theme is used
      * @param devicePixelRatio the device pixel ratio (set also for X11 from system scale factor)
      * @param deviceOffsetFromZeroReference The offset of the top-left of this icon from a zero whole-pixel reference point (in device pixels)
+     * @param forceEvenSquares When set, instructs the renderer to try to draw squares at an even device size - can help with centring with small button sizes
+     * which are also forced even
      */
     RenderDecorationButtonIcon(QPainter *painter,
                                const bool fromKstyle,
                                const bool boldButtonIcons,
                                const qreal devicePixelRatio,
-                               const QPointF &deviceOffsetFromZeroReference);
+                               const QPointF &deviceOffsetFromZeroReference,
+                               const bool forceEvenSquares);
 
     /**
      * @brief Initialises pen to standardise cap and join styles.
@@ -99,9 +103,17 @@ protected:
      * @brief Converts between actual device pixels and the number of pixels in the local reference grid (accounting for all possible scaling)
      *
      * @param devicePixels The input number of actual pixels on the screen
-     * @return The equivalent number of pixels in this 18x18 reference grid
+     * @return The equivalent number of pixels in this local (e.g. 18x18) reference grid
      */
     qreal convertDevicePixelsToLocal(const qreal devicePixels);
+
+    /**
+     * @brief Converts from pixels in the local reference grid to device pixels (accounting for all possible scaling)
+     *
+     * @param localPixels The input number of pixels on the current local reference grid
+     * @return The equivalent number of device pixels
+     */
+    qreal convertLocalPixelsToDevice(const qreal localPixels);
 
     /**
      * @brief Translates painter so antialiased painting co-ordinates will be painted in the same position if aliased
@@ -160,6 +172,13 @@ protected:
     qreal penWidthToLocal(const QPen &pen);
 
     /**
+     * @brief given a pen, returns it in device co-ordinates, accounting for whether the pen is cosmetic or not
+     * @param pen the input pen
+     * @return the pen width in device coordinates
+     */
+    qreal penWidthToDevice(const QPen &pen);
+
+    /**
      * @brief Sometimes the diagonals of a close button look fainter than a straight line, so reduce the opacity of the straight lines to compensate
      * @return Returns the opacity for a straight line
      */
@@ -172,6 +191,7 @@ protected:
     qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11
     qreal m_totalScalingFactor;
     QPointF m_deviceOffsetFromZeroReference;
+    bool m_forceEvenSquares;
 
     //* how much to factor the pen width for a bold restore button
     static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;

@@ -21,7 +21,8 @@ protected:
                                      const bool fromKstyle,
                                      const bool boldButtonIcons,
                                      const qreal devicePixelRatio,
-                                     const QPointF &deviceOffsetFromZeroReference);
+                                     const QPointF &deviceOffsetFromZeroReference,
+                                     const bool forceEvenSquares);
 
     virtual ~RenderDecorationButtonIcon18By18() = default;
 
