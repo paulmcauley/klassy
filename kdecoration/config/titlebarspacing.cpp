@@ -140,7 +140,7 @@ void TitleBarSpacing::setChanged(bool value)
 {
     m_changed = value;
     setApplyButtonState(value);
-    // Q_EMIT changed(value);
+    Q_EMIT changed(value);
 }
 
 void TitleBarSpacing::accept()
