@@ -221,7 +221,7 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 {
     // first determine the size of the maximize icon so the close icon can match in size
-    qreal maximizeSize = renderSquareMaximizeIcon(true);
+    QRectF maximizeRect = renderSquareMaximizeIcon(true);
     QPen pen = m_painter->pen();
 
     if (m_fromKstyle) {
@@ -232,15 +232,11 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 
     m_painter->setPen(pen);
 
-    QPointF topLeft;
-    topLeft.setX((18 - maximizeSize) / 2);
-    topLeft.setY(topLeft.x());
-
-    m_painter->drawLine(topLeft, QPointF(topLeft.x() + maximizeSize, topLeft.y() + maximizeSize)); // top-left to bottom-right
-    m_painter->drawLine(QPointF(topLeft.x() + maximizeSize, topLeft.y()), QPointF(topLeft.x(), topLeft.y() + maximizeSize)); // top-right to bottom-left
+    m_painter->drawLine(maximizeRect.topLeft(), maximizeRect.bottomRight()); // top-left to bottom-right
+    m_painter->drawLine(maximizeRect.topRight(), maximizeRect.bottomLeft()); // top-right to bottom-left
 }
 
-qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly)
+QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly)
 {
     if (returnSizeOnly)
         m_painter->save(); // needed so doesn't interfere when called from renderCloseIcon
@@ -264,11 +260,11 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
     int i = 0;
     do {
         if (isOddPenWidth) {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down));
         } else {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
         }
 
         qreal snappedWidth = rect.width();
@@ -288,21 +284,26 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
         i++;
     } while (adjustmentOffset && i < maxIterations);
 
-    if (!returnSizeOnly) {
-        // centre -- the generated square is not always centred
-        QPointF centerTranslate = QPointF(9, 9) - rect.center();
-        if (centerTranslate != QPointF(0, 0)) {
-            QPointF centrePixelRealignmentOffset;
+    // centre -- the generated square is not always centred
+    QPointF centerTranslate = QPointF(9, 9) - rect.center();
+    if (centerTranslate != QPointF(0, 0)) {
+        QPointF centrePixelRealignmentOffset;
 
-            // realign to pixel grid after centring -- use top-left of rect to sample
-            if (isOddPenWidth) {
-                centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
-            } else {
-                centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
-            }
-            m_painter->translate(centrePixelRealignmentOffset);
+        // realign to pixel grid after centring -- use top-left of rect to sample
+        if (isOddPenWidth) {
+            centrePixelRealignmentOffset =
+                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down)
+                - rect.topLeft();
+        } else {
+            centrePixelRealignmentOffset =
+                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down)
+                - rect.topLeft();
         }
 
+        rect.moveTopLeft(rect.topLeft() + centrePixelRealignmentOffset);
+    }
+
+    if (!returnSizeOnly) {
         // make excessively thick pen widths translucent to balance with other buttons
 
         qreal opacity = straightLineOpacity();
@@ -315,7 +316,7 @@ qreal RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSize
     } else
         m_painter->restore();
 
-    return rect.height();
+    return rect;
 }
 
 void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
@@ -516,11 +517,11 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     int i = 0;
     do {
         if (isOddPenWidth) {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down));
         } else {
-            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
+            rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
+                          snapToNearestPixel(rect.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
         }
         qreal snappedWidth = rect.width();
         qreal snappedHeight = rect.height();
@@ -546,9 +547,13 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
 
         // realign to pixel grid after centring -- use top-left of rect to sample
         if (isOddPenWidth) {
-            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
+            centrePixelRealignmentOffset =
+                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down)
+                - rect.topLeft();
         } else {
-            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
+            centrePixelRealignmentOffset =
+                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down)
+                - rect.topLeft();
         }
         m_painter->translate(centrePixelRealignmentOffset);
     }
