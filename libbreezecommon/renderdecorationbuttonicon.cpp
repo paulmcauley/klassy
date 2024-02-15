@@ -23,21 +23,36 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 const bool fromKstyle,
                                                                                                 const bool boldButtonIcons,
                                                                                                 const qreal devicePixelRatio,
-                                                                                                const QPointF &deviceOffsetFromZeroReference)
+                                                                                                const QPointF &deviceOffsetFromZeroReference,
+                                                                                                const bool forceEvenSquares)
 {
     switch (internalSettings->buttonIconStyle()) {
     case InternalSettings::EnumButtonIconStyle::StyleKlassy:
     default:
-        return {std::make_unique<RenderStyleKlassy18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference), 18};
+        return {
+            std::make_unique<RenderStyleKlassy18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
 
     case InternalSettings::EnumButtonIconStyle::StyleKite:
-        return {std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference), 18};
+        return {
+            std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
     case InternalSettings::EnumButtonIconStyle::StyleOxygen:
-        return {std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference), 18};
+        return {
+            std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
     case InternalSettings::EnumButtonIconStyle::StyleRedmond:
-        return {std::make_unique<RenderStyleRedmond18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference), 18};
+        return {
+            std::make_unique<RenderStyleRedmond18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
     case InternalSettings::EnumButtonIconStyle::StyleRedmond10:
-        return {std::make_unique<RenderStyleRedmond1018By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference), 18};
+        return {std::make_unique<RenderStyleRedmond1018By18>(painter,
+                                                             fromKstyle,
+                                                             boldButtonIcons,
+                                                             devicePixelRatio,
+                                                             deviceOffsetFromZeroReference,
+                                                             forceEvenSquares),
+                18};
     }
 }
 
@@ -45,12 +60,14 @@ RenderDecorationButtonIcon::RenderDecorationButtonIcon(QPainter *painter,
                                                        const bool fromKstyle,
                                                        const bool boldButtonIcons,
                                                        const qreal devicePixelRatio,
-                                                       const QPointF &deviceOffsetFromZeroReference)
+                                                       const QPointF &deviceOffsetFromZeroReference,
+                                                       const bool forceEvenSquares)
     : m_painter(painter)
     , m_fromKstyle(fromKstyle)
     , m_boldButtonIcons(boldButtonIcons)
     , m_devicePixelRatio(devicePixelRatio)
     , m_deviceOffsetFromZeroReference(deviceOffsetFromZeroReference)
+    , m_forceEvenSquares(forceEvenSquares)
 {
 }
 
@@ -140,6 +157,11 @@ bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const qreal &m_penWidth, i
 qreal RenderDecorationButtonIcon::convertDevicePixelsToLocal(const qreal devicePixels)
 {
     return (devicePixels / m_totalScalingFactor);
+}
+
+qreal RenderDecorationButtonIcon::convertLocalPixelsToDevice(const qreal localPixels)
+{
+    return (localPixels * m_totalScalingFactor);
 }
 
 void RenderDecorationButtonIcon::translatePainterForAliasedPainting(const bool penWidthOdd)
@@ -261,6 +283,15 @@ qreal RenderDecorationButtonIcon::penWidthToLocal(const QPen &pen)
         return convertDevicePixelsToLocal(pen.widthF());
     } else {
         return pen.widthF();
+    }
+}
+
+qreal RenderDecorationButtonIcon::penWidthToDevice(const QPen &pen)
+{
+    if (pen.isCosmetic()) {
+        return pen.widthF();
+    } else {
+        return convertLocalPixelsToDevice(pen.widthF());
     }
 }
 

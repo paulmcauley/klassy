@@ -1567,7 +1567,7 @@ void Helper::renderDecorationButton(QPainter *painter,
             SystemIconTheme iconRenderer(painter, rect.width(), systemIconName, decorationConfig(), palette);
             iconRenderer.renderIcon();
         } else {
-            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true);
+            auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(decorationConfig(), painter, true, false, 1, QPointF(0, 0), true);
             pen = painter->pen();
             pen.setWidthF(PenWidth::Symbol * qMax(1.0, qreal(localRenderingWidth) / rect.width()));
             painter->setPen(pen);

@@ -275,12 +275,17 @@ void Button::drawIcon(QPainter *painter) const
         SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, m_d->internalSettings(), c->palette());
         iconRenderer.renderIcon();
     } else {
+        // at loDPI background are even and have a centred background when small, therefore need an even icon in such circumstances
+        bool forceEvenSquares = (m_devicePixelRatio <= 1.001
+                                 && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
+                                     || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium));
         auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
                                                                                        painter,
                                                                                        false,
                                                                                        m_boldButtonIcons,
                                                                                        m_devicePixelRatio,
-                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft);
+                                                                                       deviceOffsetDecorationTopLeftToIconTopLeft,
+                                                                                       forceEvenSquares);
 
         qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
