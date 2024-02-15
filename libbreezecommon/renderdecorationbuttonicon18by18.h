@@ -53,7 +53,8 @@ protected:
                                            const qreal shiftOffsetY,
                                            QGraphicsItemGroup *overlappingWindowsGroup,
                                            QGraphicsRectItem *foregroundSquareItem,
-                                           QGraphicsPathItem *&backgroundSquareItem);
+                                           QGraphicsPathItem *&backgroundSquareItem,
+                                           qreal halfPenWidthLocal);
 
     void renderTinySquareMinimizeIcon();
     void renderKeepBehindIconAsFromBreezeIcons();

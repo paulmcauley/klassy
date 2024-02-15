@@ -335,6 +335,8 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     // thicker pen in titlebar
     pen.setWidthF(roundedBoldPenWidth);
+    qreal penWidth18By18 = penWidthToLocal(pen);
+    qreal halfPenWidth18By18 = penWidth18By18 / 2;
 
     qreal singleDevicePixelin18By18 = convertDevicePixelsToLocal(1);
     // this is to calculate the offset to move the two rectangles further from each other onto an aligned pixel
@@ -377,18 +379,17 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 
     // calculate the geometry of the background square, iterate until an appropriate separation from foreground square achieved
     for (int i = 0; (shiftX || shiftY) && (i < maxIterations); i++) {
-        calculateBackgroundSquareGeometry(shiftOffsetX, shiftOffsetY, overlappingWindowsGroup, foregroundRect, backgroundPath);
+        calculateBackgroundSquareGeometry(shiftOffsetX, shiftOffsetY, overlappingWindowsGroup, foregroundRect, backgroundPath, halfPenWidth18By18);
 
         if (!(overlappingWindows && overlappingWindowsGroup && foregroundRect && backgroundPath))
             return;
 
         qreal distanceBetweenSquaresX = backgroundPath->path().elementAt(3).x - backgroundPath->path().elementAt(4).x;
         qreal distanceBetweenSquaresY = backgroundPath->path().elementAt(0).y - backgroundPath->path().elementAt(1).y;
-        qreal penWidth18By18 = penWidthToLocal(pen);
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
-        if (((distanceBetweenSquaresX / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.45 - 0.001) // 0.001 is because sometimes there are floating point errors
+        if (((distanceBetweenSquaresX / penWidth18By18) < 1.5 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.001)
+            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.5 - 0.001) // 0.001 is because sometimes there are floating point errors
         ) {
             shiftX = true;
             shiftOffsetX += singleDevicePixelin18By18;
@@ -397,8 +398,8 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
         }
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
-        if (((distanceBetweenSquaresY / penWidth18By18) < 1.25 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.45 - 0.001) // 0.001 is because sometimes there are floating point errors
+        if (((distanceBetweenSquaresY / penWidth18By18) < 1.5 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.001)
+            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.5 - 0.001) // 0.001 is because sometimes there are floating point errors
         ) {
             shiftY = true;
             shiftOffsetY += singleDevicePixelin18By18;
@@ -439,7 +440,8 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
                                                                          const qreal shiftOffsetY,
                                                                          QGraphicsItemGroup *overlappingWindowsGroup,
                                                                          QGraphicsRectItem *foregroundSquareItem,
-                                                                         QGraphicsPathItem *&backgroundSquareItem)
+                                                                         QGraphicsPathItem *&backgroundSquareItem,
+                                                                         qreal halfPenWidthLocal)
 {
     qreal diameter = foregroundSquareItem->rect().width();
 
@@ -450,7 +452,7 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
     background[1] = foregroundSquareItem->rect().topLeft();
     background[1].setX(background[1].x() + shiftOffsetX);
     background[0].setX(background[1].x());
-    background[0].setY(foregroundSquareItem->rect().top() - convertDevicePixelsToLocal(0.5));
+    background[0].setY(foregroundSquareItem->rect().top() - halfPenWidthLocal);
     background[1].setY(foregroundSquareItem->rect().top() - shiftOffsetY);
 
     background[2].setX(background[1].x() + diameter);
@@ -459,7 +461,7 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
     background[3].setX(background[2].x());
     background[3].setY(background[2].y() + diameter);
 
-    background[4].setX(foregroundSquareItem->rect().right() + convertDevicePixelsToLocal(0.5));
+    background[4].setX(foregroundSquareItem->rect().right() + halfPenWidthLocal);
     background[4].setY(background[3].y());
 
     QPainterPath backgroundSquarePath;
