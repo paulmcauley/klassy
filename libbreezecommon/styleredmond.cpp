@@ -26,6 +26,8 @@ void RenderStyleRedmond18By18::renderRestoreIcon()
 
 void RenderStyleRedmond18By18::renderMinimizeIcon()
 {
+    // first determine the size of the maximize icon so the minimize icon can align with it
+    QRectF maximizeRect = renderSquareMaximizeIcon(true);
     QPen pen = m_painter->pen();
     bool isOddPenWidth = true;
 
@@ -48,13 +50,16 @@ void RenderStyleRedmond18By18::renderMinimizeIcon()
     m_painter->setPen(pen);
 
     // horizontal line
+    // original y position in design was 12.5 -- this is often too high
     if (isOddPenWidth) {
-        m_painter->drawLine(snapToNearestPixel(QPointF(4.5, 12.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                            snapToNearestPixel(QPointF(13.5, 12.5), SnapPixel::ToHalf, SnapPixel::ToHalf));
+        m_painter->drawLine(
+            snapToNearestPixel(QPointF(4.5, maximizeRect.bottom()), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
+            snapToNearestPixel(QPointF(13.5, maximizeRect.bottom()), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down));
 
     } else {
-        m_painter->drawLine(snapToNearestPixel(QPointF(4.5, 12.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                            snapToNearestPixel(QPointF(13.5, 12.5), SnapPixel::ToWhole, SnapPixel::ToWhole));
+        m_painter->drawLine(
+            snapToNearestPixel(QPointF(4.5, maximizeRect.bottom()), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down),
+            snapToNearestPixel(QPointF(13.5, maximizeRect.bottom()), SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down));
     }
 }
 
