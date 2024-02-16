@@ -402,7 +402,7 @@ void ButtonSizing::updateChanged()
         modified = true;
     else if (m_ui.buttonCornerRadius->currentIndex() != m_internalSettings->buttonCornerRadius())
         modified = true;
-    else if (m_ui.buttonCustomCornerRadius->value() != m_internalSettings->buttonCustomCornerRadius())
+    else if (qAbs(m_ui.buttonCustomCornerRadius->value() - m_internalSettings->buttonCustomCornerRadius()) > 0.001)
         modified = true;
 
     setChanged(modified);
