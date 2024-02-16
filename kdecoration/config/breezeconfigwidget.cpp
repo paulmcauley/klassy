@@ -445,7 +445,7 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;
-    else if (m_ui.cornerRadius->value() != m_internalSettings->cornerRadius())
+    else if (qAbs(m_ui.cornerRadius->value() - m_internalSettings->cornerRadius()) > 0.001)
         modified = true;
     else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;
