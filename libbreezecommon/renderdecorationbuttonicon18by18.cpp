@@ -240,7 +240,7 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly)
 {
     if (returnSizeOnly)
-        m_painter->save(); // needed so doesn't interfere when called from renderCloseIcon
+        m_painter->save(); // needed so doesn't interfere when called from renderCloseIconAtSquareMaximizeSize etc.
 
     QPen pen = m_painter->pen();
 
@@ -257,6 +257,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
 
     QRectF rect(QPointF(4.5, 4.5), QPointF(13.5, 13.5));
     qreal adjustmentOffset = 0;
+    qreal halfDevicePixelInLocal = convertDevicePixelsToLocal(0.5);
     constexpr int maxIterations = 5;
     int i = 0;
     qreal designedWidthDevicePixels = 9 * m_totalScalingFactor;
@@ -289,7 +290,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
         }
 
         if (increaseSize) {
-            adjustmentOffset = convertDevicePixelsToLocal(0.5);
+            adjustmentOffset = halfDevicePixelInLocal;
             rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
         } else {
             adjustmentOffset = 0;
@@ -304,13 +305,9 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
 
         // realign to pixel grid after centring -- use top-left of rect to sample
         if (isOddPenWidth) {
-            centrePixelRealignmentOffset =
-                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down)
-                - rect.topLeft();
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
         } else {
-            centrePixelRealignmentOffset =
-                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down)
-                - rect.topLeft();
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
         }
 
         rect.moveTopLeft(rect.topLeft() + centrePixelRealignmentOffset);
@@ -334,6 +331,9 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
 
 void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
 {
+    // first determine the size of the maximize icon so the restore icon can align with it
+    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+
     QPen pen = m_painter->pen();
 
     pen.setJoinStyle(Qt::BevelJoin);
@@ -363,33 +363,55 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     QGraphicsPathItem *backgroundPath = nullptr;
 
     std::unique_ptr<QGraphicsScene> overlappingWindows = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
-    int maxIterations = 6 * qRound(m_devicePixelRatio); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
-                                                        // crash in some circunstances
 
     QGraphicsItemGroup *overlappingWindowsGroup = new QGraphicsItemGroup;
 
     overlappingWindows->addItem(overlappingWindowsGroup);
 
-    // foreground square
-    QPointF topLeft{4.5, 6.5};
-    if (isOddPenWidth)
-        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToHalf, SnapPixel::ToHalf);
-    else
-        topLeft = snapToNearestPixel(topLeft, SnapPixel::ToWhole, SnapPixel::ToWhole);
+    qreal designedWidthDevicePixels = convertLocalPixelsToDevice(7);
+    qreal adjustmentOffset = 0;
+    qreal halfDevicePixelInLocal = convertDevicePixelsToLocal(0.5);
+    int maxIterations = 5;
+    int i = 0;
+    // foreground square, iterate until big enough
+    QRectF foregroundSquare(QPointF(4.5, 6.5), QPointF(11.5, 13.5));
+    do {
+        if (isOddPenWidth) {
+            foregroundSquare = QRectF(snapToNearestPixel(foregroundSquare.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf),
+                                      snapToNearestPixel(foregroundSquare.bottomRight(), SnapPixel::ToHalf, SnapPixel::ToHalf));
+        } else {
+            foregroundSquare = QRectF(snapToNearestPixel(foregroundSquare.topLeft(), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                                      snapToNearestPixel(foregroundSquare.bottomRight(), SnapPixel::ToWhole, SnapPixel::ToWhole));
+        }
 
-    QPointF bottomRight{11.5, 13.5};
-    if (isOddPenWidth)
-        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToHalf, SnapPixel::ToHalf);
-    else
-        bottomRight = snapToNearestPixel(bottomRight, SnapPixel::ToWhole, SnapPixel::ToWhole);
+        qreal maxSide =
+            qMax(foregroundSquare.width(),
+                 foregroundSquare.height()); // ensure width and height are the same -- they are sometimes not on display scales which are not a factor of 0.5
+        foregroundSquare.setTopLeft(QPointF(0, 0));
+        foregroundSquare.setBottomRight(QPointF(maxSide, maxSide));
 
-    qreal diameter = qMax((bottomRight.y() - topLeft.y()), (bottomRight.x() - topLeft.x()));
+        qreal rectWidthDevicePixels = foregroundSquare.width() * m_totalScalingFactor;
+        bool increaseSize = false;
+        // if size is still smaller than linear to original design, increase again
+        if (rectWidthDevicePixels < (designedWidthDevicePixels - 0.001)) { // 0.001 as sometimes there are floating point errors
+            increaseSize = true;
+        }
 
-    QRectF foregroundSquare(QPointF(0, 0), QPointF(diameter, diameter));
+        if (increaseSize) {
+            adjustmentOffset = halfDevicePixelInLocal;
+            foregroundSquare.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
+        } else {
+            adjustmentOffset = 0;
+        }
+        i++;
+    } while (adjustmentOffset && i < maxIterations);
+
     QGraphicsRectItem *foregroundRect = new QGraphicsRectItem(foregroundSquare);
     overlappingWindowsGroup->addToGroup(foregroundRect);
     // set no pen to make all dimension calculations simpler
     foregroundRect->setPen(Qt::PenStyle::NoPen);
+    maxIterations = 6 * qRound(m_devicePixelRatio); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
+                                                    // crash in some circunstances
 
     // calculate the geometry of the background square, iterate until an appropriate separation from foreground square achieved
     for (int i = 0; (shiftX || shiftY) && (i < maxIterations); i++) {
@@ -423,7 +445,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     }
 
     // centre -- centre the result, then snap centred position to a pixel boundary
-    QPointF centerTranslate = QPointF(9, 9) - overlappingWindowsGroup->boundingRect().center();
+    QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - overlappingWindowsGroup->boundingRect().center();
     if (centerTranslate != QPointF(0, 0)) {
         QPointF centrePixelRealignmentOffset;
 
@@ -490,6 +512,9 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
 
 void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
 {
+    // first determine the size of the maximize icon so the minimize icon can align with it
+    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+
     bool isOddPenWidth = true;
     int roundedBoldPenWidth;
 
@@ -529,6 +554,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     constexpr int maxIterations = 5;
     int i = 0;
     qreal designedWidthDevicePixels = 3 * m_totalScalingFactor;
+    qreal halfDevicePixelInLocal = convertDevicePixelsToLocal(0.5);
     do {
         if (isOddPenWidth) {
             rect = QRectF(snapToNearestPixel(rect.topLeft(), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down),
@@ -557,7 +583,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         }
 
         if (increaseSize) {
-            adjustmentOffset = convertDevicePixelsToLocal(0.5);
+            adjustmentOffset = halfDevicePixelInLocal;
             rect.adjust(-adjustmentOffset, -adjustmentOffset, adjustmentOffset, adjustmentOffset);
         } else {
             adjustmentOffset = 0;
@@ -566,19 +592,15 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
     } while (adjustmentOffset && i < maxIterations);
 
     // centre
-    QPointF centerTranslate = QPointF(9, 9) - rect.center();
+    QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - rect.center();
     if (centerTranslate != QPointF(0, 0)) {
         QPointF centrePixelRealignmentOffset;
 
         // realign to pixel grid after centring -- use top-left of rect to sample
         if (isOddPenWidth) {
-            centrePixelRealignmentOffset =
-                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Up, ThresholdRound::Down)
-                - rect.topLeft();
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToHalf, SnapPixel::ToHalf) - rect.topLeft();
         } else {
-            centrePixelRealignmentOffset =
-                snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole, ThresholdRound::Up, ThresholdRound::Down)
-                - rect.topLeft();
+            centrePixelRealignmentOffset = snapToNearestPixel(rect.topLeft() + centerTranslate, SnapPixel::ToWhole, SnapPixel::ToWhole) - rect.topLeft();
         }
         m_painter->translate(centrePixelRealignmentOffset);
     }

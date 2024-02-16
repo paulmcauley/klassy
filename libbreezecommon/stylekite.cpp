@@ -20,14 +20,18 @@ void RenderStyleKite18By18::renderMaximizeIcon()
 
 void RenderStyleKite18By18::renderRestoreIcon()
 {
+    // first determine the size of the maximize icon so the restore icon can align with it vertically
+    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+
     QPen pen = m_painter->pen();
+    QPolygonF poly;
 
     if (m_fromKstyle) { // slightly smaller diamond
         pen.setJoinStyle(Qt::RoundJoin);
         m_painter->setPen(pen);
 
         // diamond / floating kite
-        m_painter->drawConvexPolygon(QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)});
+        poly = QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)};
 
     } else {
         // thicker pen in titlebar
@@ -38,7 +42,7 @@ void RenderStyleKite18By18::renderRestoreIcon()
         m_painter->setPen(pen);
 
         // diamond / floating kite
-        m_painter->drawConvexPolygon(QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)});
+        poly = QVector<QPointF>{QPointF(4.5, 9), QPointF(9, 4.5), QPointF(13.5, 9), QPointF(9, 13.5)};
 
         /* //original large diamond
         m_painter->drawConvexPolygon( QVector<QPointF>{
@@ -48,6 +52,11 @@ void RenderStyleKite18By18::renderRestoreIcon()
             QPointF( 9, 14 )} );
         */
     }
+    // centre
+    QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - poly.boundingRect().center();
+    poly.translate(centerTranslate);
+
+    m_painter->drawConvexPolygon(poly);
 }
 
 void RenderStyleKite18By18::renderMinimizeIcon()
