@@ -366,6 +366,9 @@ void Style::polish(QWidget *widget)
         // remove opaque painting for scrollbars
         widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
 
+    } else if (widget->parent() && widget->parent()->inherits("QComboBoxListView")) {
+        widget->setAutoFillBackground(false);
+
     } else if (widget->inherits("KTextEditor::View")) {
         addEventFilter(widget);
 
