@@ -9,6 +9,7 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -119,6 +120,9 @@ void LoadPreset::loadButtonClicked()
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
         QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
+        // auto-generate the klassy and klassy-dark system icons
+        SystemIconGenerator iconGenerator(internalSettings);
+        iconGenerator.generate();
     }
 }
 

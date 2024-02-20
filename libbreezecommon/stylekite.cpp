@@ -5,6 +5,7 @@
  */
 
 #include "stylekite.h"
+#include <QPainterPathStroker>
 
 namespace Breeze
 {
@@ -56,7 +57,18 @@ void RenderStyleKite18By18::renderRestoreIcon()
     QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - poly.boundingRect().center();
     poly.translate(centerTranslate);
 
-    m_painter->drawConvexPolygon(poly);
+    if (m_strokeToFilledPath) {
+        QPainterPath path;
+        path.addPolygon(poly);
+        path.closeSubpath();
+        QPainterPathStroker stroker(m_painter->pen());
+        path = stroker.createStroke(path);
+        m_painter->setBrush(m_painter->pen().color());
+        m_painter->setPen(Qt::NoPen);
+        m_painter->drawPath(path);
+    } else {
+        m_painter->drawConvexPolygon(poly);
+    }
 }
 
 void RenderStyleKite18By18::renderMinimizeIcon()

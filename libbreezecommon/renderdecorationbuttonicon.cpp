@@ -148,10 +148,14 @@ void RenderDecorationButtonIcon::renderIcon(KDecoration2::DecorationButtonType t
     m_painter->restore();
 }
 
-bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const qreal &m_penWidth, int &outputRoundedPenWidth, const qreal boldingFactor)
+bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const QPen &pen, qreal &outputRoundedPenWidth, const qreal boldingFactor)
 {
-    outputRoundedPenWidth = qRound(m_penWidth * boldingFactor);
-    return (outputRoundedPenWidth % 2 != 0);
+    outputRoundedPenWidth = qRound(penWidthToDevice(pen) * boldingFactor);
+    bool isOdd(int(outputRoundedPenWidth) % 2 != 0);
+    if (!pen.isCosmetic()) {
+        outputRoundedPenWidth = outputRoundedPenWidth / m_totalScalingFactor;
+    }
+    return (isOdd);
 }
 
 qreal RenderDecorationButtonIcon::convertDevicePixelsToLocal(const qreal devicePixels)
@@ -177,7 +181,7 @@ qreal RenderDecorationButtonIcon::roundCoordToHalf(qreal coord, const ThresholdR
     qreal coordIntegralPart, coordFractionalPart;
     static constexpr qreal zeroLimit = 0.0001;
 
-    coordFractionalPart = modf(coord, &coordIntegralPart);
+    coordFractionalPart = abs(modf(coord, &coordIntegralPart));
 
     if (coordFractionalPart > (1 - zeroLimit)) { // at 1 -- same as zero
         coordFractionalPart = 0;
@@ -211,7 +215,7 @@ qreal RenderDecorationButtonIcon::roundCoordToWhole(qreal coord, const Threshold
     qreal coordIntegralPart, coordFractionalPart;
     static constexpr qreal halfLimit = 0.0001;
 
-    coordFractionalPart = modf(coord, &coordIntegralPart);
+    coordFractionalPart = abs(modf(coord, &coordIntegralPart));
 
     if (coordFractionalPart > (0.5 + halfLimit) || coordFractionalPart < (0.5 - halfLimit)) {
         coord = round(coord);

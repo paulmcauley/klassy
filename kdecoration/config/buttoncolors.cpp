@@ -9,6 +9,7 @@
 #include "dbusmessages.h"
 #include "presetsmodel.h"
 #include "renderdecorationbuttonicon.h"
+#include "systemicongenerator.h"
 #include "systemicontheme.h"
 #include <KColorCombo>
 #include <KColorUtils>
@@ -677,7 +678,11 @@ void ButtonColors::save(const bool reloadKwinConfig)
     if (reloadKwinConfig) {
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
-        DBusMessages::kstyleReloadDecorationConfig();
+        // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
+        // auto-generate the klassy and klassy-dark system icons
+
+        SystemIconGenerator iconGenerator(m_internalSettings);
+        iconGenerator.generate();
     }
 }
 
@@ -2241,7 +2246,8 @@ void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButton
         }
 
         qreal dpr = devicePixelRatioF();
-        QPixmap pixmap(qRound(16.0 * dpr), qRound(16.0 * dpr));
+        int scaledSize = qRound(16.0 * dpr);
+        QPixmap pixmap(scaledSize, scaledSize);
         pixmap.setDevicePixelRatio(dpr);
         pixmap.fill(Qt::transparent);
         std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
@@ -2253,10 +2259,9 @@ void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButton
             systemIconRenderer.renderIcon();
         } else {
             auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(m_internalSettings, painter.get(), true, true, dpr));
-
-            int centringOffset = (localRenderingWidth - 16) / 2;
+            iconRenderer->setForceEvenSquares(true);
             painter->setViewport(0, 0, 16, 16);
-            painter->setWindow(centringOffset, centringOffset, 16, 16);
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
 
             QPen pen = painter->pen();
             pen.setWidthF(PenWidth::Symbol * dpr);

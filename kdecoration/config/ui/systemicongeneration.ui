@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SystemIconGeneration</class>
+ <widget class="QDialog" name="SystemIconGeneration">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>459</width>
+    <height>391</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="title">
+      <string>System Icon Generation</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item alignment="Qt::AlignTop">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>The &quot;Klassy&quot; and &quot;Klassy Dark&quot; system icon themes are auto-generated.  These are used to provide the window control icons for right-click menus, other context menus, QQC2 applications and in GTK applications (window control icons from the system icon theme show in Wayland GTK applications if &quot;Adwaita&quot; is set as the GNOME/GTK Application style theme).
+
+Icons unrelated to window control are inherited from another icon theme, as set below:</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QFormLayout" name="formLayout">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Klassy icon theme inherits:</string>
+          </property>
+          <property name="buddy">
+           <cstring>klassyIconThemeInherits</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Klassy Dark icon theme inherits:</string>
+          </property>
+          <property name="buddy">
+           <cstring>klassyDarkIconThemeInherits</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QComboBox" name="klassyIconThemeInherits"/>
+        </item>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="klassyDarkIconThemeInherits"/>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok|QDialogButtonBox::Reset|QDialogButtonBox::RestoreDefaults</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="klassydecoration_config.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>SystemIconGeneration</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>257</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SystemIconGeneration</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>391</x>
+     <y>384</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>376</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

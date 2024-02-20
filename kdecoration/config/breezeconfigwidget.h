@@ -18,6 +18,7 @@
 #include "buttonsizing.h"
 #include "loadpreset.h"
 #include "shadowstyle.h"
+#include "systemicongeneration.h"
 #include "titlebaropacity.h"
 #include "titlebarspacing.h"
 #include "ui_breezeconfigurationui.h"
@@ -90,6 +91,7 @@ protected Q_SLOTS:
     void setEnabledAnimationsSpeed();
     void updateIconsStackedWidgetVisible();
     void updateBackgroundShapeStackedWidgetVisible();
+    void systemIconGenerationButtonClicked();
     void buttonSizingButtonClicked();
     void buttonColorsButtonClicked();
     void buttonBehaviourButtonClicked();
@@ -132,6 +134,7 @@ private:
     bool m_loading = false;
 
     //* dialogs behind button
+    SystemIconGeneration *m_systemIconGenerationDialog;
     ButtonSizing *m_buttonSizingDialog;
     ButtonColors *m_buttonColorsDialog;
     ButtonBehaviour *m_buttonBehaviourDialog;

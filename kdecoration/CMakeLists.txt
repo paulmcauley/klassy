@@ -1,7 +1,7 @@
 add_definitions(-DTRANSLATION_DOMAIN="klassy_kwin_deco")
 
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus Widgets)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus Widgets Svg Xml) #TODO: remove Svg and Xml from here
 
 ################# includes #################
 include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
@@ -29,6 +29,8 @@ set(breezedecoration_config_SRCS
     config/addpreset.cpp
     config/buttoncolors.cpp
     config/buttonbehaviour.cpp
+    config/systemicongeneration.cpp
+    config/systemicongenerator.cpp
     config/titlebarspacing.cpp
     config/titlebaropacity.cpp
     config/shadowstyle.cpp
@@ -44,6 +46,7 @@ ki18n_wrap_ui(breezedecoration_config_SRCS
    config/ui/addpreset.ui
    config/ui/buttoncolors.ui
    config/ui/buttonbehaviour.ui
+   config/ui/systemicongeneration.ui
    config/ui/titlebarspacing.ui
    config/ui/titlebaropacity.ui
    config/ui/shadowstyle.ui
@@ -62,6 +65,8 @@ target_link_libraries(klassydecoration_STATIC
         Qt::Core
         Qt::Gui
         Qt::DBus
+        Qt::Svg #TODO: remove from here
+        Qt::Xml #TODO: remove from here
         KDecoration2::KDecoration
     PRIVATE
         #KF5::ConfigCore

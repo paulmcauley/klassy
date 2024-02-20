@@ -9,6 +9,7 @@
 #include "dbusmessages.h"
 #include "decorationcolors.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 #include <KColorScheme>
 #include <QPushButton>
 
@@ -119,7 +120,10 @@ void TitleBarOpacity::save(const bool reloadKwinConfig)
     if (reloadKwinConfig) {
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
-        DBusMessages::kstyleReloadDecorationConfig();
+        // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
+
+        SystemIconGenerator iconGenerator(m_internalSettings);
+        iconGenerator.generate();
     }
 }
 
