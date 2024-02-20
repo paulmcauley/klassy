@@ -12,6 +12,7 @@
 #include "dbusmessages.h"
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 
 #include <KLocalizedString>
 
@@ -99,6 +100,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     // add corner icon
     m_ui.cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
 
+    m_systemIconGenerationDialog = new SystemIconGeneration(m_configuration, m_presetsConfiguration, this);
     m_loadPresetDialog = new LoadPreset(m_configuration, m_presetsConfiguration, this);
     m_buttonSizingDialog = new ButtonSizing(m_configuration, m_presetsConfiguration, this);
     m_buttonColorsDialog = new ButtonColors(m_configuration, m_presetsConfiguration, this);
@@ -108,6 +110,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     m_windowOutlineStyleDialog = new WindowOutlineStyle(m_configuration, m_presetsConfiguration, this);
     m_shadowStyleDialog = new ShadowStyle(m_configuration, m_presetsConfiguration, this);
 
+    connect(m_systemIconGenerationDialog, &SystemIconGeneration::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_buttonSizingDialog, &ButtonSizing::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_buttonColorsDialog, &ButtonColors::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::changed, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -141,6 +144,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     }
 #endif
 
+    connect(m_ui.systemIconGenerationButton, &QAbstractButton::clicked, this, &ConfigWidget::systemIconGenerationButtonClicked);
     connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
@@ -200,6 +204,7 @@ void ConfigWidget::load()
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->load();
+    m_systemIconGenerationDialog->load();
     m_buttonSizingDialog->load();
     m_buttonColorsDialog->load();
     m_buttonBehaviourDialog->load();
@@ -276,6 +281,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
     if (saveAsPresetName.isEmpty()) { // normal case
+        m_systemIconGenerationDialog->save(false);
         m_buttonSizingDialog->save(false);
         m_buttonColorsDialog->save(false);
         m_buttonBehaviourDialog->save(false);
@@ -304,6 +310,10 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
 
         // not needed as both of the other DBUS messages also update KStyle
         // DBusMessages::kstyleReloadDecorationConfig();
+
+        // auto-generate the klassy and klassy-dark system icons
+        SystemIconGenerator iconGenerator(m_internalSettings);
+        iconGenerator.generate();
 
     } else { // set the preset
         // delete the preset if one of that name already exists
@@ -342,6 +352,7 @@ void ConfigWidget::defaults()
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     // set defaults in dialogs
+    m_systemIconGenerationDialog->defaults();
     m_buttonSizingDialog->defaults();
     m_buttonColorsDialog->defaults();
     m_buttonBehaviourDialog->defaults();
@@ -376,6 +387,10 @@ bool ConfigWidget::isDefaults()
         KConfigGroup group = m_configuration->group(groupName);
         if (group.keyList().count())
             return false;
+    }
+
+    if (!m_systemIconGenerationDialog->isDefaults()) {
+        return false;
     }
 
     if (!m_buttonSizingDialog->isDefaults()) {
@@ -457,6 +472,8 @@ void ConfigWidget::updateChanged()
         modified = true;
 
     // dialogs
+    else if (m_systemIconGenerationDialog->m_changed)
+        modified = true;
     else if (m_buttonSizingDialog->m_changed)
         modified = true;
     else if (m_buttonColorsDialog->m_changed)
@@ -506,10 +523,13 @@ void ConfigWidget::setEnabledAnimationsSpeed()
 
 void ConfigWidget::updateIconsStackedWidgetVisible()
 {
-    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)
-        m_ui.iconsStackedWidget->setCurrentIndex(1);
-    else
-        m_ui.iconsStackedWidget->setCurrentIndex(0);
+    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
+        m_ui.iconSizeStackedWidget->setCurrentIndex(1);
+        m_ui.iconOptionsStackedWidget->setCurrentIndex(1);
+    } else {
+        m_ui.iconSizeStackedWidget->setCurrentIndex(0);
+        m_ui.iconOptionsStackedWidget->setCurrentIndex(0);
+    }
 }
 
 void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
@@ -531,6 +551,11 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
 void ConfigWidget::dialogChanged(bool changed)
 {
     setChanged(changed);
+}
+
+void ConfigWidget::systemIconGenerationButtonClicked()
+{
+    m_systemIconGenerationDialog->show();
 }
 
 void ConfigWidget::buttonSizingButtonClicked()

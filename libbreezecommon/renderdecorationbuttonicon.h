@@ -47,6 +47,35 @@ public:
 
     virtual ~RenderDecorationButtonIcon();
 
+    void setFromKstyle(bool v)
+    {
+        m_fromKstyle = v;
+    }
+
+    void setBoldButtonIcons(bool v)
+    {
+        m_boldButtonIcons = v;
+    }
+
+    void setDevicePixelRatio(qreal v)
+    {
+        m_devicePixelRatio = v;
+    }
+
+    void setDeviceOffsetFromZeroReference(QPointF v)
+    {
+        m_deviceOffsetFromZeroReference = v;
+    }
+
+    void setForceEvenSquares(bool v)
+    {
+        m_forceEvenSquares = v;
+    }
+
+    void setStrokeToFilledPath(bool v)
+    {
+        m_strokeToFilledPath = v;
+    }
     void renderIcon(KDecoration2::DecorationButtonType type, bool checked);
 
 protected:
@@ -93,11 +122,11 @@ protected:
      *@brief Multiplies the pen width by the bolding factor, and rounds it. Also returns whether the integer-rounded bold pen with is an even or odd number of
      *pixels This is useful for pixel alignment
      *
-     *@param penWidth The input pen width
+     *@param pen The input pen
      *@param outputRoundedPenWidth The output pen width, factored by boldingFactor, and rounded
      *@param boldingFactor Optional bolding factor. Set to 1 for no bolding
      */
-    bool roundedPenWidthIsOdd(const qreal &penWidth, int &outputRoundedPenWidth, const qreal boldingFactor);
+    bool roundedPenWidthIsOdd(const QPen &pen, qreal &outputRoundedPenWidth, const qreal boldingFactor);
 
     /**
      * @brief Converts between actual device pixels and the number of pixels in the local reference grid (accounting for all possible scaling)
@@ -191,7 +220,9 @@ protected:
     qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11
     qreal m_totalScalingFactor;
     QPointF m_deviceOffsetFromZeroReference;
-    bool m_forceEvenSquares;
+    bool m_forceEvenSquares = false;
+    bool m_strokeToFilledPath =
+        false; // When outputting icons for GTK, closed pens get filled -- this flag is to convert pen strokes to filled paths to fix this
 
     //* how much to factor the pen width for a bold restore button
     static constexpr qreal m_overlappingWindowsBoldPenWidthFactor = 1.5;

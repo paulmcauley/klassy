@@ -275,10 +275,11 @@ void Button::drawIcon(QPainter *painter) const
         SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, m_d->internalSettings(), c->palette());
         iconRenderer.renderIcon();
     } else {
-        // at loDPI background are even and have a centred background when small, therefore need an even icon in such circumstances
-        bool forceEvenSquares = (m_devicePixelRatio <= 1.001
-                                 && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
-                                     || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium));
+        // at loDPI backgrounds are even, therefore need an even icon in such circumstances for correct centring
+        bool forceEvenSquares = (m_isGtkCsdButton || isStandAlone()
+                                 || (m_devicePixelRatio <= 1.001
+                                     && (m_d->buttonBackgroundType() == ButtonBackgroundType::Small
+                                         || m_d->internalSettings()->iconSize() < InternalSettings::EnumIconSize::IconLargeMedium)));
         auto [iconRenderer, localRenderingWidth] = RenderDecorationButtonIcon::factory(m_d->internalSettings(),
                                                                                        painter,
                                                                                        false,
@@ -290,8 +291,6 @@ void Button::drawIcon(QPainter *painter) const
         qreal scaleFactor = iconWidth / localRenderingWidth;
         /*
         scale painter so that all further rendering is preformed inside QRect( 0, 0, localRenderingWidth, localRenderingWidth )
-        TODO: localRenderingWidth currently assumed to be 18. If add 16x16 rendering support most likely need an additional translate to centre the icon with an
-        additional deviceOffsetDecorationTopLeftToIconTopLeft adjustment
         */
         painter->scale(scaleFactor, scaleFactor);
 

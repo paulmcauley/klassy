@@ -8,6 +8,7 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 #include <QPushButton>
 
 namespace Breeze
@@ -80,7 +81,10 @@ void ShadowStyle::save(const bool reloadKwinConfig)
     if (reloadKwinConfig) {
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
-        DBusMessages::kstyleReloadDecorationConfig();
+        // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
+
+        SystemIconGenerator iconGenerator(m_internalSettings);
+        iconGenerator.generate();
     }
 }
 

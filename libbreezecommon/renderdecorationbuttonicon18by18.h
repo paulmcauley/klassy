@@ -53,7 +53,7 @@ protected:
     void calculateBackgroundSquareGeometry(const qreal shiftOffsetX,
                                            const qreal shiftOffsetY,
                                            QGraphicsItemGroup *overlappingWindowsGroup,
-                                           QGraphicsRectItem *foregroundSquareItem,
+                                           QGraphicsPathItem *foregroundSquareItem,
                                            QGraphicsPathItem *&backgroundSquareItem,
                                            qreal halfPenWidthLocal);
 

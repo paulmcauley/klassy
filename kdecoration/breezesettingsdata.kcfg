@@ -134,6 +134,21 @@
 
   </group>
 
+
+  <!-- _______________________________DIALOG GROUPS____________________________ -->
+
+  <group name="SystemIconGeneration">
+
+      <entry name="KlassyIconThemeInherits" type = "String">
+          <default>breeze</default>
+      </entry>
+
+      <entry name="KlassyDarkIconThemeInherits" type = "String">
+          <default>breeze-dark</default>
+      </entry>
+
+  </group>
+
   <group name="ButtonSizing">
     <!-- Scale for small buttons -->
     <entry name="ScaleBackgroundPercent" type = "Int">

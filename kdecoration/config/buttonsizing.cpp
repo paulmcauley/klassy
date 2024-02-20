@@ -8,6 +8,7 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 
 namespace Breeze
 {
@@ -322,8 +323,13 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     m_internalSettings->save();
     setChanged(false);
 
-    if (reloadKwinConfig)
+    if (reloadKwinConfig) {
         DBusMessages::kwinReloadConfig();
+
+        // auto-generate the klassy and klassy-dark system icons
+        SystemIconGenerator iconGenerator(m_internalSettings);
+        iconGenerator.generate();
+    }
 }
 
 void ButtonSizing::defaults()
