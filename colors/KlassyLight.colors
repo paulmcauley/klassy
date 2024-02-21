@@ -21,9 +21,9 @@ IntensityEffect=0
 [Colors:Button]
 BackgroundAlternate=163,212,250
 BackgroundNormal=252,252,252
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -35,9 +35,9 @@ ForegroundVisited=155,89,182
 [Colors:Complementary]
 BackgroundAlternate=27,30,32
 BackgroundNormal=42,46,50
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -48,10 +48,10 @@ ForegroundVisited=155,89,182
 
 [Colors:Header]
 BackgroundAlternate=239,240,241
-BackgroundNormal=222,224,226
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+BackgroundNormal=237,238,239
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -63,9 +63,9 @@ ForegroundVisited=155,89,182
 [Colors:Header][Inactive]
 BackgroundAlternate=227,229,231
 BackgroundNormal=239,240,241
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -76,9 +76,9 @@ ForegroundVisited=155,89,182
 
 [Colors:Selection]
 BackgroundAlternate=163,212,250
-BackgroundNormal=61,174,233
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
+BackgroundNormal=57,153,230
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
 ForegroundActive=255,255,255
 ForegroundInactive=112,125,138
 ForegroundLink=253,188,75
@@ -91,9 +91,9 @@ ForegroundVisited=155,89,182
 [Colors:Tooltip]
 BackgroundAlternate=239,240,241
 BackgroundNormal=247,247,247
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -105,9 +105,9 @@ ForegroundVisited=155,89,182
 [Colors:View]
 BackgroundAlternate=247,247,247
 BackgroundNormal=255,255,255
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -118,10 +118,10 @@ ForegroundVisited=155,89,182
 
 [Colors:Window]
 BackgroundAlternate=227,229,231
-BackgroundNormal=239,240,241
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
+BackgroundNormal=240,240,240
+DecorationFocus=57,153,230
+DecorationHover=57,153,230
+ForegroundActive=57,153,230
 ForegroundInactive=112,125,138
 ForegroundLink=41,128,185
 ForegroundNegative=218,68,83
@@ -132,48 +132,7 @@ ForegroundVisited=155,89,182
 
 [General]
 ColorScheme=BreezeLight
-Name=Breeze Light
-Name[ar]=نسيم فاتح
-Name[az]=Breeze - İşıqlı
-Name[bg]=Breeze Светъл
-Name[ca]=Brisa clara
-Name[ca@valencia]=Brisa clara
-Name[cs]=Breeze Světlé
-Name[da]=Breeze Light
-Name[de]=Breeze Hell
-Name[el]=Breeze φωτεινό
-Name[en_GB]=Breeze Light
-Name[es]=Brisa claro
-Name[et]=Breeze hele
-Name[eu]=Breeze argia
-Name[fi]=Vaalea Breeze
-Name[fr]=Brise clair
-Name[gl]=Breeze claro
-Name[hi]=ब्रीज़ हलका
-Name[hu]=Breeze Light
-Name[ia]=Brisa Ligier
-Name[id]=Breeze Terang
-Name[it]=Brezza chiaro
-Name[ja]=Breeze ライト
-Name[ko]=밝은 Breeze
-Name[lt]=Breeze šviesus
-Name[nl]=Breeze Light
-Name[nn]=Breeze lys
-Name[pa]=ਬਰੀਜ਼ ਹਲਕਾ
-Name[pl]=Jasna Bryza
-Name[pt]=Brisa Clara
-Name[pt_BR]=Breeze Light
-Name[ro]=Briză, luminos
-Name[ru]=Breeze, светлый вариант
-Name[sk]=Svetlý vánok
-Name[sl]=Sapica, svetla
-Name[sv]=Breeze ljus
-Name[tg]=Насими сабук
-Name[tr]=Esinti Açık
-Name[uk]=Світла Breeze
-Name[x-test]=xxBreeze Lightxx
-Name[zh_CN]=Breeze 微风浅色
-Name[zh_TW]=Breeze Light
+Name=Klassy Light
 shadeSortColumn=true
 
 [KDE]
