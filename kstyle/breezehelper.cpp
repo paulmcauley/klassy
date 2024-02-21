@@ -97,7 +97,7 @@ void Helper::loadConfig()
     const QString colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
     // bool isApplicationSpecificColorScheme = (!colorSchemePath.isEmpty() && colorSchemePath != QStringLiteral("kdeglobals"));
 
-    // bool noCache = _decorationConfig->property("presetException").toBool() || isApplicationSpecificColorScheme;
+    // bool noCache = _decorationConfig->property("noCacheException").toBool() || isApplicationSpecificColorScheme;
     bool noCache = true; // cannot easily cache between applications. TODO: reimplement with shared memory and re-enable
 
     if (noCache) {

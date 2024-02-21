@@ -399,7 +399,6 @@ private:
     mutable std::unique_ptr<DecorationColors> _decorationColors;
     //@}
     QByteArray _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
-    mutable bool _presetExceptionDecorationColors = false;
 
     mutable bool _cachedAutoValid = false;
 
