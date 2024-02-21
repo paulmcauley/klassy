@@ -280,42 +280,32 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setForceColorizeSystemIcons(m_ui.forceColorizeSystemIcons->isChecked());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
-    if (saveAsPresetName.isEmpty()) { // normal case
-        m_systemIconGenerationDialog->save(false);
-        m_buttonSizingDialog->save(false);
-        m_buttonColorsDialog->save(false);
-        m_buttonBehaviourDialog->save(false);
-        m_titleBarSpacingDialog->save(false);
-        m_titleBarOpacityDialog->save(false);
-        m_shadowStyleDialog->save(false);
-        m_windowOutlineStyleDialog->save(false);
+    m_systemIconGenerationDialog->save(false);
+    m_buttonSizingDialog->save(false);
+    m_buttonColorsDialog->save(false);
+    m_buttonBehaviourDialog->save(false);
+    m_titleBarSpacingDialog->save(false);
+    m_titleBarOpacityDialog->save(false);
+    m_shadowStyleDialog->save(false);
+    m_windowOutlineStyleDialog->save(false);
 
-        // save configuration
-        m_internalSettings->save();
+    // save configuration
+    m_internalSettings->save();
 
-        // get list of exceptions and write
-        InternalSettingsList exceptions(m_ui.exceptions->exceptions());
-        InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
-        DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
+    // get list of exceptions and write
+    InternalSettingsList exceptions(m_ui.exceptions->exceptions());
+    InternalSettingsList defaultExceptions(m_ui.defaultExceptions->exceptions());
+    DecorationExceptionList(exceptions, defaultExceptions).writeConfig(m_configuration);
 
-        // sync configuration for exceptions
-        m_configuration->sync();
+    // sync configuration for exceptions
+    m_configuration->sync();
 
-        setChanged(false);
-        Q_EMIT saved();
+    setChanged(false);
+    Q_EMIT saved();
 
-        DBusMessages::updateDecorationColorCache();
-        // needed to tell kwin to reload when running from external kcmshell
-        DBusMessages::kwinReloadConfig();
+    if (!saveAsPresetName.isEmpty()) { // set the preset
+        m_internalSettings->load();
 
-        // not needed as both of the other DBUS messages also update KStyle
-        // DBusMessages::kstyleReloadDecorationConfig();
-
-        // auto-generate the klassy and klassy-dark system icons
-        SystemIconGenerator iconGenerator(m_internalSettings);
-        iconGenerator.generate();
-
-    } else { // set the preset
         // delete the preset if one of that name already exists
         PresetsModel::deletePreset(m_presetsConfiguration.data(), saveAsPresetName);
 
@@ -324,6 +314,17 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
         // sync configuration for presets
         m_presetsConfiguration->sync();
     }
+
+    DBusMessages::updateDecorationColorCache();
+    // needed to tell kwin to reload when running from external kcmshell
+    DBusMessages::kwinReloadConfig();
+
+    // not needed as both of the other DBUS messages also update KStyle
+    // DBusMessages::kstyleReloadDecorationConfig();
+
+    // auto-generate the klassy and klassy-dark system icons
+    SystemIconGenerator iconGenerator(m_internalSettings);
+    iconGenerator.generate();
 }
 
 //_________________________________________________________
