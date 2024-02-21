@@ -12,6 +12,7 @@
 #include "breeze.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
+#include "systemicongenerator.h"
 #include <QAbstractScrollArea>
 #include <QApplication>
 #include <QCommandLineParser>
@@ -140,6 +141,10 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
         PresetsModel::loadPresetAndSave(internalSettings.data(), config.data(), presetsConfig.data(), parser.value(loadWindecoPresetOption), true);
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
+
+        // auto-generate the klassy and klassy-dark system icons
+        SystemIconGenerator iconGenerator(internalSettings);
+        iconGenerator.generate();
 
         output << i18n("Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" loaded.") << Qt::endl;
         // if Decoration::reconfigure is reloaded twice the corruption when changing border sizes clears, therefore tell Decoration to reconfigure again after 1
