@@ -1520,12 +1520,19 @@ void Helper::renderDecorationButton(QPainter *painter,
             painter->setBrush(Qt::NoBrush);
         }
 
-        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
-            || (decorationConfig()->cornerRadius() < 0.2
-                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
-            || (decorationConfig()->cornerRadius() < 0.2
-                && decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))
+        qreal cornerRadius = 0;
+        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
+            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (decorationConfig()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+                cornerRadius = decorationConfig()->buttonCustomCornerRadius();
+            } else {
+                cornerRadius = decorationConfig()->cornerRadius();
+            }
+        }
+
+        if (cornerRadius < 0.2 && decorationConfig()->buttonShape() != InternalSettings::EnumButtonShape::ShapeSmallCircle)
             painter->drawRect(QRectF(2, 2, 14, 14));
         else if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                  || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle

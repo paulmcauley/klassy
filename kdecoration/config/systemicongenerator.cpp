@@ -170,12 +170,20 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                     painter->setWindow(0, 0, 16, 16);
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(decorationColors.buttonPalette(iconType.type)->active()->backgroundHover);
-                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallSquare
-                        || (m_internalSettings->cornerRadius() < 0.2
-                            && m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
-                        || (m_internalSettings->cornerRadius() < 0.2
-                            && m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle))
+
+                    qreal cornerRadius = 0;
+                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
+                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+                        if (m_internalSettings->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+                            cornerRadius = m_internalSettings->buttonCustomCornerRadius();
+                        } else {
+                            cornerRadius = m_internalSettings->cornerRadius();
+                        }
+                    }
+
+                    if (cornerRadius < 0.2 && m_internalSettings->buttonShape() != InternalSettings::EnumButtonShape::ShapeSmallCircle)
                         painter->drawRect(QRectF(2, 2, 12, 12));
                     else if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
                              || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
