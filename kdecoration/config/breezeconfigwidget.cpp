@@ -20,6 +20,7 @@
 #include <QRegularExpression>
 #include <QStackedLayout>
 #include <QStackedWidget>
+#include <QTimer>
 #include <QWindow>
 
 void initKlassydecorationConfigQrc()
@@ -322,9 +323,8 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     // not needed as both of the other DBUS messages also update KStyle
     // DBusMessages::kstyleReloadDecorationConfig();
 
-    // auto-generate the klassy and klassy-dark system icons
-    SystemIconGenerator iconGenerator(m_internalSettings);
-    iconGenerator.generate();
+    // auto-generate the klassy and klassy-dark system icons -- use timer to put on different thread to prevent hanging when saving a preset
+    QTimer::singleShot(0, this, &ConfigWidget::generateSystemIcons);
 }
 
 //_________________________________________________________
@@ -607,6 +607,13 @@ void ConfigWidget::presetsButtonClicked()
     m_loadPresetDialog->setWindowTitle(i18n("Presets - Klassy Settings"));
     m_loadPresetDialog->initPresetsList();
     m_loadPresetDialog->show();
+}
+
+void ConfigWidget::generateSystemIcons()
+{
+    // auto-generate the klassy and klassy-dark system icons
+    SystemIconGenerator iconGenerator(m_internalSettings);
+    iconGenerator.generate();
 }
 
 void ConfigWidget::updateIcons()

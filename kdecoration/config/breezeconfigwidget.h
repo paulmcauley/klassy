@@ -84,6 +84,9 @@ public:
 Q_SIGNALS:
     void saved();
 
+public Q_SLOTS:
+    void generateSystemIcons();
+
 protected Q_SLOTS:
 
     //* update changed state
