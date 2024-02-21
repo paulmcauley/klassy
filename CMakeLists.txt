@@ -42,7 +42,7 @@ find_package(KDecoration2 REQUIRED)
 add_subdirectory(kdecoration)
 
 
-#add_subdirectory(colors)
+add_subdirectory(colors)
 add_subdirectory(libbreezecommon)
 add_subdirectory(kstyle)
 add_subdirectory(icons)

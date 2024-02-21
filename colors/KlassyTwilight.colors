@@ -32,6 +32,20 @@ ForegroundNormal=35,38,39
 ForegroundPositive=39,174,96
 ForegroundVisited=127,140,141
 
+[Colors:Complementary]
+BackgroundAlternate=59,64,69
+BackgroundNormal=49,54,59
+DecorationFocus=30,146,255
+DecorationHover=61,174,230
+ForegroundActive=147,206,233
+ForegroundInactive=175,176,179
+ForegroundLink=61,174,230
+ForegroundNegative=231,76,60
+ForegroundNeutral=253,188,75
+ForegroundNormal=239,240,241
+ForegroundPositive=46,204,113
+ForegroundVisited=61,174,230
+
 [Colors:Selection]
 BackgroundAlternate=29,153,243
 BackgroundNormal=61,174,233
@@ -88,69 +102,19 @@ ForegroundNormal=35,38,39
 ForegroundPositive=39,174,96
 ForegroundVisited=127,140,141
 
-[Colors:Complementary]
-BackgroundAlternate=59,64,69
-BackgroundNormal=49,54,59
-DecorationFocus=30,146,255
-DecorationHover=61,174,230
-ForegroundActive=147,206,233
-ForegroundInactive=175,176,179
-ForegroundLink=61,174,230
-ForegroundNegative=231,76,60
-ForegroundNeutral=253,188,75
-ForegroundNormal=239,240,241
-ForegroundPositive=46,204,113
-ForegroundVisited=61,174,230
-
 [General]
 ColorScheme=BreezeClassic
-Name=Breeze Classic
-Name[ar]=نسيم التقليدي
-Name[az]=Breeze klassik
-Name[bg]=Breeze Класически
-Name[ca]=Brisa clàssica
-Name[ca@valencia]=Brisa clàssica
-Name[cs]=Breeze Classic
-Name[da]=Breeze Classic
-Name[de]=Breeze Klassisch
-Name[el]=Breeze κλασικό
-Name[en_GB]=Breeze Classic
-Name[es]=Brisa clásico
-Name[eu]=Breeze klasikoa
-Name[fi]=Perinteinen Breeze
-Name[fr]=Breeze classique
-Name[hi]=ब्रीज़ क्लासिक
-Name[hu]=Breeze Classic
-Name[ia]=Brisa Classic
-Name[id]=Breeze Klasik
-Name[it]=Brezza classico
-Name[ja]=Breeze クラシック
-Name[ko]=Breeze 고전
-Name[nl]=Breeze Classic
-Name[nn]=Breeze klassisk
-Name[pl]=Klasyczna Bryza
-Name[pt]=Brisa Clássica
-Name[pt_BR]=Breeze Classic
-Name[ro]=Briză, clasic
-Name[ru]=Breeze, классический вариант
-Name[sk]=Klasický vánok
-Name[sl]=Sapica, klasična
-Name[sv]=Breeze klassisk
-Name[tr]=Esinti Klasik
-Name[uk]=Класична Breeze
-Name[x-test]=xxBreeze Classicxx
-Name[zh_CN]=Breeze 微风经典
-accentActiveTitlebar=true
-accentInactiveTitlebar=false
+Name=Klassy Twilight
+TitlebarIsAccentColored=true
 shadeSortColumn=true
 
 [KDE]
 contrast=4
 
 [WM]
-activeBackground=71,80,87
+activeBackground=49,54,59,153
 activeBlend=252,252,252
 activeForeground=252,252,252
 inactiveBackground=239,240,241
 inactiveBlend=75,71,67
-inactiveForeground=189,195,199
+inactiveForeground=159,165,168
