@@ -617,7 +617,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
 
     // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
     // cache the decoration colours as it may corrupt the colours for normal non-exception decoration windows
-    bool noCache = m_internalSettings->property("presetException").toBool() || clientSpecificPalette;
+    bool noCache = m_internalSettings->property("noCacheException").toBool() || clientSpecificPalette;
 
     if (noCache) {
         if (!m_decorationColors || m_decorationColors->isCachedPalette()) {
@@ -1422,7 +1422,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
     // The preset exception may modify the shadow, so in this case there is a "noCache" property set - we don't want to cache the exception shadow as it may
     // corrupt the shadow cache for normal non-exception decoration windows For shaded windows the shadow/outline has a potentially different shape so do not
     // use the shadow cache when shaded
-    if (m_internalSettings->property("presetException").toBool() || c->isShaded()) {
+    if (m_internalSettings->property("noCacheException").toBool() || c->isShaded()) {
         noCache = true;
     }
 

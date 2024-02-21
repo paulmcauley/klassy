@@ -81,9 +81,12 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings()
                 }
 
                 PresetsModel::loadPreset(internalSettings.data(), m_presetsConfig.data(), internalSettings->exceptionPreset());
-                internalSettings->setProperty("presetException",
+                internalSettings->setProperty("noCacheException",
                                               true); // this property is to indicate not to cache shadows or colours for an exception with a Preset
                                                      // -- this is because the Preset exception can alter shadows and colours
+            }
+            if (internalSettings->opaqueTitleBar()) {
+                internalSettings->setProperty("noCacheException", true);
             }
             return internalSettings;
         }
