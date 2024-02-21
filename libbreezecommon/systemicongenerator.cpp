@@ -257,12 +257,16 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                                                == QStringLiteral("none")) { // remove invisible groups - fixes rendering in GTK apps
                                     svgChildElement.removeChild(svgGroupElement);
                                 } else { // change attributes so KIconLoader can use system colours
-                                    svgGroupElement.setAttribute(QStringLiteral("class"), QStringLiteral("ColorScheme-Text"));
-                                    if (svgGroupElement.attribute(QStringLiteral("stroke")) == textColorString) {
-                                        svgGroupElement.setAttribute(QStringLiteral("stroke"), QStringLiteral("currentColor"));
-                                    }
-                                    if (svgGroupElement.attribute(QStringLiteral("fill")) == textColorString) {
-                                        svgGroupElement.setAttribute(QStringLiteral("fill"), QStringLiteral("currentColor"));
+                                    // don't overwrite white close button foregrounds
+                                    if (!(iconType.type == KDecoration2::DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")
+                                          && textColorString == QStringLiteral("#ffffff"))) {
+                                        svgGroupElement.setAttribute(QStringLiteral("class"), QStringLiteral("ColorScheme-Text"));
+                                        if (svgGroupElement.attribute(QStringLiteral("stroke")) == textColorString) {
+                                            svgGroupElement.setAttribute(QStringLiteral("stroke"), QStringLiteral("currentColor"));
+                                        }
+                                        if (svgGroupElement.attribute(QStringLiteral("fill")) == textColorString) {
+                                            svgGroupElement.setAttribute(QStringLiteral("fill"), QStringLiteral("currentColor"));
+                                        }
                                     }
                                 }
                             }
