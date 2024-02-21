@@ -25,7 +25,7 @@ include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
 
 set(breeze_settings_SOURCES main.cpp)
 add_executable(klassy-settings ${breeze_settings_SOURCES} )
-target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
+target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets)
 target_link_libraries(klassy-settings KF5::I18n KF5::KCMUtils KF5::CoreAddons)
 target_link_libraries(klassy-settings klassycommon5)
 
