@@ -143,12 +143,6 @@ void ToolsAreaManager::configUpdated()
         KColorScheme inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
         KColorScheme disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
 
-        if (_helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
-            if (!active.background().isOpaque() || !inactive.background().isOpaque() || !disabled.background().isOpaque()
-                || _helper->decorationConfig()->activeTitlebarOpacity() < 100 || _helper->decorationConfig()->inactiveTitlebarOpacity() < 100)
-                translucent = true;
-        }
-
         _palette.setBrush(QPalette::Active, QPalette::Window, active.background());
         _palette.setBrush(QPalette::Active, QPalette::WindowText, active.foreground());
         _palette.setBrush(QPalette::Disabled, QPalette::Window, disabled.background());
@@ -156,12 +150,17 @@ void ToolsAreaManager::configUpdated()
         _palette.setBrush(QPalette::Inactive, QPalette::Window, inactive.background());
         _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
 
-        if (_helper->decorationConfig()->applyOpacityToHeader()) {
+        if (_helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
             // override active with colour with opacity from decoration if needed
             _palette.setColor(QPalette::Active, QPalette::Window, _helper->decorationColors()->active()->titleBarBase);
 
             // override inactive with colour with opacity from decoration if needed
             _palette.setColor(QPalette::Inactive, QPalette::Window, _helper->decorationColors()->inactive()->titleBarBase);
+
+            if (_palette.color(QPalette::Active, QPalette::Window).alpha() < 255 || _palette.color(QPalette::Inactive, QPalette::Window).alpha() < 255
+                || _palette.color(QPalette::Disabled, QPalette::Window).alpha() < 255) {
+                translucent = true;
+            }
         }
     }
 
