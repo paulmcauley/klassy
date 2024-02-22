@@ -38,9 +38,14 @@ TitleBarOpacity::TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui->inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), m_ui->inactiveTitlebarOpacity_2, SLOT(setValue(int)));
     connect(m_ui->inactiveTitlebarOpacity_2, SIGNAL(valueChanged(int)), m_ui->inactiveTitlebarOpacity, SLOT(setValue(int)));
 
+    connect(m_ui->overrideActiveTitleBarOpacity, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->overrideInactiveTitleBarOpacity, &QAbstractButton::toggled, this, &TitleBarOpacity::updateChanged, Qt::ConnectionType::DirectConnection);
+
     // only enable transparency options when transparency is setActiveTitlebarOpacity
     connect(m_ui->activeTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()));
     connect(m_ui->inactiveTitlebarOpacity, SIGNAL(valueChanged(int)), SLOT(setEnabledTransparentTitlebarOptions()));
+    connect(m_ui->overrideActiveTitleBarOpacity, &QAbstractButton::toggled, this, &TitleBarOpacity::setEnabledTransparentTitlebarOptions);
+    connect(m_ui->overrideInactiveTitleBarOpacity, &QAbstractButton::toggled, this, &TitleBarOpacity::setEnabledTransparentTitlebarOptions);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &TitleBarOpacity::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &TitleBarOpacity::load);
@@ -63,25 +68,22 @@ void TitleBarOpacity::loadMain(const bool assignUiValuesOnly)
     }
 
     getTitlebarOpacityFromColorScheme();
+    m_ui->overrideActiveTitleBarOpacity->setChecked(m_internalSettings->overrideActiveTitleBarOpacity());
+    m_ui->overrideInactiveTitleBarOpacity->setChecked(m_internalSettings->overrideInactiveTitleBarOpacity());
+
     // if there is a non-opaque colour set in the system colour scheme then this overrides the control here and disables it
-    if (m_translucentActiveSchemeColor) {
+    if (m_translucentActiveSchemeColor && !m_ui->overrideActiveTitleBarOpacity->isChecked()) {
         m_ui->activeTitlebarOpacity->setValue(m_activeSchemeColorAlpha * 100);
-        m_ui->activeTitlebarOpacity->setEnabled(false);
-        m_ui->activeTitlebarOpacity_2->setEnabled(false);
     } else {
         m_ui->activeTitlebarOpacity->setValue(m_internalSettings->activeTitlebarOpacity());
-        m_ui->activeTitlebarOpacity->setEnabled(true);
-        m_ui->activeTitlebarOpacity_2->setEnabled(true);
     }
     m_ui->activeTitlebarOpacity_2->setValue(m_ui->activeTitlebarOpacity->value());
-    if (m_translucentInactiveSchemeColor) {
+
+    m_ui->overrideInactiveTitleBarOpacity->setChecked(m_internalSettings->overrideInactiveTitleBarOpacity());
+    if (m_translucentInactiveSchemeColor && !m_ui->overrideInactiveTitleBarOpacity->isChecked()) {
         m_ui->inactiveTitlebarOpacity->setValue(m_inactiveSchemeColorAlpha * 100);
-        m_ui->inactiveTitlebarOpacity->setEnabled(false);
-        m_ui->inactiveTitlebarOpacity_2->setEnabled(false);
     } else {
         m_ui->inactiveTitlebarOpacity->setValue(m_internalSettings->inactiveTitlebarOpacity());
-        m_ui->inactiveTitlebarOpacity->setEnabled(true);
-        m_ui->inactiveTitlebarOpacity_2->setEnabled(true);
     }
     m_ui->inactiveTitlebarOpacity_2->setValue(m_ui->inactiveTitlebarOpacity->value());
     setEnabledTransparentTitlebarOptions();
@@ -105,9 +107,13 @@ void TitleBarOpacity::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
-    if (!m_translucentActiveSchemeColor || m_defaultsPressed)
+    if (m_translucentActiveSchemeColor)
+        m_internalSettings->setActiveTitlebarOpacity(m_translucentActiveSchemeColor);
+    if (m_translucentInactiveSchemeColor)
+        m_internalSettings->setInactiveTitlebarOpacity(m_translucentInactiveSchemeColor);
+    if (!m_translucentActiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity))
         m_internalSettings->setActiveTitlebarOpacity(m_ui->activeTitlebarOpacity->value());
-    if (!m_translucentInactiveSchemeColor || m_defaultsPressed)
+    if (!m_translucentInactiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity))
         m_internalSettings->setInactiveTitlebarOpacity(m_ui->inactiveTitlebarOpacity->value());
 
     m_internalSettings->setOpaqueMaximizedTitlebars(m_ui->opaqueMaximizedTitlebars->isChecked());
@@ -192,6 +198,16 @@ void TitleBarOpacity::updateChanged()
         modified = true;
     else if ((!m_translucentInactiveSchemeColor) && (m_ui->inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity()))
         modified = true;
+    else if (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity->isChecked()
+             && (m_ui->activeTitlebarOpacity->value() != m_internalSettings->activeTitlebarOpacity()))
+        modified = true;
+    else if (m_translucentInactiveSchemeColor && m_ui->overrideInactiveTitleBarOpacity->isChecked()
+             && (m_ui->inactiveTitlebarOpacity->value() != m_internalSettings->inactiveTitlebarOpacity()))
+        modified = true;
+    else if (m_translucentActiveSchemeColor && (m_ui->overrideActiveTitleBarOpacity->isChecked() != m_internalSettings->overrideActiveTitleBarOpacity()))
+        modified = true;
+    else if (m_translucentInactiveSchemeColor && (m_ui->overrideInactiveTitleBarOpacity->isChecked() != m_internalSettings->overrideInactiveTitleBarOpacity()))
+        modified = true;
     else if (m_ui->opaqueMaximizedTitlebars->isChecked() != m_internalSettings->opaqueMaximizedTitlebars())
         modified = true;
     else if (m_ui->blurTransparentTitlebars->isChecked() != m_internalSettings->blurTransparentTitlebars())
@@ -210,6 +226,40 @@ void TitleBarOpacity::setApplyButtonState(const bool on)
 // only enable blurTransparentTitlebars and opaqueMaximizedTitlebars options if transparent titlebars are enabled
 void TitleBarOpacity::setEnabledTransparentTitlebarOptions()
 {
+    if (m_translucentActiveSchemeColor) {
+        m_ui->overrideActiveTitleBarOpacity->setVisible(true);
+    } else {
+        m_ui->overrideActiveTitleBarOpacity->setVisible(false);
+    }
+
+    if (m_translucentActiveSchemeColor && !m_ui->overrideActiveTitleBarOpacity->isChecked()) {
+        m_ui->activeTitlebarOpacity->setValue(m_activeSchemeColorAlpha * 100);
+        m_ui->activeTitlebarOpacity->setEnabled(false);
+        m_ui->activeTitlebarOpacity_2->setEnabled(false);
+        m_ui->activeTitleBarOpacityFromColorSchemeLabel->setVisible(true);
+    } else {
+        m_ui->activeTitlebarOpacity->setEnabled(true);
+        m_ui->activeTitlebarOpacity_2->setEnabled(true);
+        m_ui->activeTitleBarOpacityFromColorSchemeLabel->setVisible(false);
+    }
+
+    if (m_translucentInactiveSchemeColor) {
+        m_ui->overrideInactiveTitleBarOpacity->setVisible(true);
+    } else {
+        m_ui->overrideInactiveTitleBarOpacity->setVisible(false);
+    }
+
+    if (m_translucentInactiveSchemeColor && !m_ui->overrideInactiveTitleBarOpacity->isChecked()) {
+        m_ui->inactiveTitlebarOpacity->setValue(m_inactiveSchemeColorAlpha * 100);
+        m_ui->inactiveTitlebarOpacity->setEnabled(false);
+        m_ui->inactiveTitlebarOpacity_2->setEnabled(false);
+        m_ui->inactiveTitleBarOpacityFromColorSchemeLabel->setVisible(true);
+    } else {
+        m_ui->inactiveTitlebarOpacity->setEnabled(true);
+        m_ui->inactiveTitlebarOpacity_2->setEnabled(true);
+        m_ui->inactiveTitleBarOpacityFromColorSchemeLabel->setVisible(false);
+    }
+
     if (m_ui->activeTitlebarOpacity->value() != 100 || m_ui->inactiveTitlebarOpacity->value() != 100) {
         m_ui->opaqueMaximizedTitlebars->setEnabled(true);
         m_ui->blurTransparentTitlebars->setEnabled(true);

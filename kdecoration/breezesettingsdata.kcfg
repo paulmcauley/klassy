@@ -874,7 +874,7 @@
        <max>100</max>
     </entry>
 
-      <!-- opaque maximized titlebars -->
+    <!-- opaque maximized titlebars -->
     <entry name="OpaqueMaximizedTitlebars" type = "Bool">
         <default>true</default>
     </entry>
@@ -888,6 +888,15 @@
     <entry name="ApplyOpacityToHeader" type = "Bool">
         <default>true</default>
     </entry>
+
+    <entry name="OverrideActiveTitleBarOpacity" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="OverrideInactiveTitleBarOpacity" type = "Bool">
+        <default>false</default>
+    </entry>
+
   </group>
 
   <group name="WindowOutlineStyle">

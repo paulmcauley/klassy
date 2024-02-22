@@ -121,7 +121,6 @@ void Helper::loadConfig()
                 || (!noCache
                     && _generateDecorationColorsOnDecorationColorSettingsUpdateUuid
                         != _decorationColors->settingsUpdateUuid()))) { // case from generateDecorationColorsOnDecorationSettingsPaletteUpdate()
-            _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
             generateColors = true;
         }
         // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration2::DecoratedClient to read QString
@@ -156,6 +155,7 @@ void Helper::loadConfig()
                                                     text,
                                                     base,
                                                     _generateDecorationColorsOnDecorationColorSettingsUpdateUuid);
+        _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
     }
 }
 

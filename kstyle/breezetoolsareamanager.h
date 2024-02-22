@@ -40,7 +40,7 @@ private:
     QPalette _palette = QPalette();
     AppListener *_listener;
     bool _colorSchemeHasHeaderColor;
-    bool _translucent;
+    bool _translucent = false;
 
     friend class AppListener;
 

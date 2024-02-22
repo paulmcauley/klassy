@@ -115,7 +115,18 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     std::unique_ptr<DecorationPaletteGroup> *decorationPaletteGroup = active ? m_decorationPaletteGroupActive : m_decorationPaletteGroupInactive;
 
     (*decorationPaletteGroup)->titleBarBase = active ? titleBarBaseActive : titleBarBaseInactive;
-    if (!decorationSettings->opaqueTitleBar() && (*decorationPaletteGroup)->titleBarBase.alpha() == 255) {
+    bool setTitleBarBaseOpacity = false;
+    if (!decorationSettings->opaqueTitleBar()) {
+        if ((*decorationPaletteGroup)->titleBarBase.alpha() == 255) {
+            setTitleBarBaseOpacity = true;
+        } else {
+            bool override = active ? decorationSettings->overrideActiveTitleBarOpacity() : decorationSettings->overrideInactiveTitleBarOpacity();
+            if (override) {
+                setTitleBarBaseOpacity = true;
+            }
+        }
+    }
+    if (setTitleBarBaseOpacity) {
         (*decorationPaletteGroup)
             ->titleBarBase.setAlphaF(qreal(active ? decorationSettings->activeTitlebarOpacity() : decorationSettings->inactiveTitlebarOpacity()) / 100);
     }
