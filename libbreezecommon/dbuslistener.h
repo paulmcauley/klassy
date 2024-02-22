@@ -1,4 +1,4 @@
-#ifndef BREEZE_DBUSLISTINER_H
+#ifndef BREEZE_DBUSLISTENER_H
 #define BREEZE_DBUSLISTENER_H
 
 /*
@@ -8,6 +8,7 @@
  */
 
 #include "breeze.h"
+#include "breezecommon_export.h"
 #include <QDBusVariant>
 #include <QString>
 

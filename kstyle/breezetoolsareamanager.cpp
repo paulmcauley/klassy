@@ -20,20 +20,6 @@ ToolsAreaManager::ToolsAreaManager(Helper *helper, QObject *parent)
     : QObject(parent)
     , _helper(helper)
 {
-    if (qApp && qApp->property(colorProperty).isValid()) {
-        auto path = qApp->property(colorProperty).toString();
-        if (path.isEmpty() || path == QStringLiteral("kdeglobals")) {
-            _config = KSharedConfig::openConfig();
-        } else {
-            _config = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
-        }
-    } else {
-        _config = KSharedConfig::openConfig();
-    }
-    _translucent = false;
-    _watcher = KConfigWatcher::create(_config);
-    connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated);
-    configUpdated();
 }
 
 ToolsAreaManager::~ToolsAreaManager()
@@ -171,19 +157,11 @@ void ToolsAreaManager::configUpdated()
         _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
 
         if (_helper->decorationConfig()->applyOpacityToHeader()) {
-            // override active with opacity from decoration if needed
-            if (active.background().isOpaque() && _helper->decorationConfig()->activeTitlebarOpacity() < 100) {
-                QColor activeReplacedAlpha = active.background().color();
-                activeReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->activeTitlebarOpacity()) / 100);
-                _palette.setColor(QPalette::Active, QPalette::Window, activeReplacedAlpha);
-            }
+            // override active with colour with opacity from decoration if needed
+            _palette.setColor(QPalette::Active, QPalette::Window, _helper->decorationColors()->active()->titleBarBase);
 
-            // override inactive with opacity from decoration if needed
-            if (inactive.background().isOpaque() && _helper->decorationConfig()->inactiveTitlebarOpacity() < 100) {
-                QColor inactiveReplacedAlpha = inactive.background().color();
-                inactiveReplacedAlpha.setAlphaF(qreal(_helper->decorationConfig()->inactiveTitlebarOpacity()) / 100);
-                _palette.setColor(QPalette::Inactive, QPalette::Window, inactiveReplacedAlpha);
-            }
+            // override inactive with colour with opacity from decoration if needed
+            _palette.setColor(QPalette::Inactive, QPalette::Window, _helper->decorationColors()->inactive()->titleBarBase);
         }
     }
 

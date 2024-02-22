@@ -246,12 +246,14 @@ Style::Style()
                  this,
                  SLOT(configurationChanged()));
 
-    dbus.connect(QString(),
+    // not needed
+    /*dbus.connect(QString(),
                  QStringLiteral("/KlassyDecoration"),
                  QStringLiteral("org.kde.Klassy.Style"),
                  QStringLiteral("reparseConfiguration"),
                  this,
                  SLOT(configurationChanged()));
+    */
 
     dbus.connect(QString(),
                  QStringLiteral("/KGlobalSettings"),
@@ -260,7 +262,9 @@ Style::Style()
                  this,
                  SLOT(configurationChanged()));
 
-    dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
+    connect(&g_dBusUpdateNotifier, &DBusUpdateNotifier::decorationSettingsUpdate, this, &Style::generateDecorationColorsOnDecorationColorSettingsUpdate);
+
+    // dbus.connect(QString(), QStringLiteral("/KWin"), QStringLiteral("org.kde.KWin"), QStringLiteral("reloadConfig"), this, SLOT(configurationChanged()));
 
     connect(qApp, &QApplication::paletteChanged, this, &Style::loadConfiguration);
 
@@ -7915,6 +7919,7 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
 void Style::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid)
 {
     _helper->setGenerateDecorationColorsOnDecorationColorSettingsUpdateFlag(&uuid);
+    loadConfiguration();
 }
 
 //____________________________________________________________________
