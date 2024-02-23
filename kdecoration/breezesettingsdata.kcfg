@@ -18,6 +18,7 @@
           <choice name="StyleOxygen" />
           <choice name="StyleRedmond" />
           <choice name="StyleRedmond10" />
+          <choice name="StyleRedmond11" />
           <choice name="StyleSystemIconTheme" />
       </choices>
       <default>StyleKlassy</default>

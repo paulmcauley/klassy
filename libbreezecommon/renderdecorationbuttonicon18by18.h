@@ -40,9 +40,9 @@ protected:
     virtual void renderContextHelpIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
-    QRectF renderSquareMaximizeIcon(bool returnSizeOnly = false);
+    QRectF renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
 
-    void renderOverlappingWindowsIcon();
+    void renderOverlappingWindowsIcon(qreal cornerRelativePercent = -1);
     /**
      * @param shiftOffsetX How much to separate the two squares to prevent blurriness
      * @param shiftOffsetY How much to separate the two squares to prevent blurriness
