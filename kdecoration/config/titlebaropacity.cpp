@@ -106,14 +106,16 @@ void TitleBarOpacity::save(const bool reloadKwinConfig)
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->load();
 
+    if (m_translucentActiveSchemeColor) {
+        m_internalSettings->setOverrideActiveTitleBarOpacity(m_ui->overrideActiveTitleBarOpacity->isChecked());
+    }
+    if (m_translucentInactiveSchemeColor) {
+        m_internalSettings->setOverrideInactiveTitleBarOpacity(m_ui->overrideInactiveTitleBarOpacity->isChecked());
+    }
     // apply modifications from ui
-    if (m_translucentActiveSchemeColor)
-        m_internalSettings->setActiveTitlebarOpacity(m_translucentActiveSchemeColor);
-    if (m_translucentInactiveSchemeColor)
-        m_internalSettings->setInactiveTitlebarOpacity(m_translucentInactiveSchemeColor);
-    if (!m_translucentActiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity))
+    if (!m_translucentActiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity->isChecked()))
         m_internalSettings->setActiveTitlebarOpacity(m_ui->activeTitlebarOpacity->value());
-    if (!m_translucentInactiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity))
+    if (!m_translucentInactiveSchemeColor || (m_translucentActiveSchemeColor && m_ui->overrideActiveTitleBarOpacity->isChecked()))
         m_internalSettings->setInactiveTitlebarOpacity(m_ui->inactiveTitlebarOpacity->value());
 
     m_internalSettings->setOpaqueMaximizedTitlebars(m_ui->opaqueMaximizedTitlebars->isChecked());
