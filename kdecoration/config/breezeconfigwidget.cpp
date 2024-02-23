@@ -172,8 +172,6 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
-    connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons);
-    connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateWindowControlPreviewIcons);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -782,6 +780,10 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
     if (ev->type() == QEvent::ApplicationPaletteChange) {
         // overwrite handling of palette change
         updateIcons();
+        return QObject::eventFilter(obj, ev);
+    } else if (ev->type() == QEvent::Show) {
+        connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons, Qt::ConnectionType::UniqueConnection);
+        connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateWindowControlPreviewIcons, Qt::ConnectionType::UniqueConnection);
         return QObject::eventFilter(obj, ev);
     }
 
