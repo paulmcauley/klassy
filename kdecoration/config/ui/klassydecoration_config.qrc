@@ -1,10 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>klassy_config_icons/Klassy.png</file>
-    <file>klassy_config_icons/Kite.png</file>
-    <file>klassy_config_icons/Oxygen.png</file>
-    <file>klassy_config_icons/Redmond.png</file>
-    <file>klassy_config_icons/Redmond10.png</file>
     <file>klassy_config_icons/Klassy_logo.svg</file>
     <file>klassy_config_icons/object-locked-symbolic.svg</file>
     <file>klassy_config_icons/object-unlocked-symbolic.svg</file>

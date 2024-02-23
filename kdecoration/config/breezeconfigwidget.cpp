@@ -12,12 +12,14 @@
 #include "dbusmessages.h"
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
+#include "renderdecorationbuttonicon.h"
 #include "systemicongenerator.h"
 
 #include <KLocalizedString>
 
 #include <QIcon>
 #include <QRegularExpression>
+#include <QScreen>
 #include <QStackedLayout>
 #include <QStackedWidget>
 #include <QTimer>
@@ -169,6 +171,9 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
+    connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons);
+    connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateWindowControlPreviewIcons);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -215,6 +220,7 @@ void ConfigWidget::load()
     m_shadowStyleDialog->load();
     PresetsModel::importBundledPresets(m_presetsConfiguration.data());
     updateIcons();
+    updateWindowControlPreviewIcons();
 
     // assign to ui
     m_ui.buttonIconStyle->setCurrentIndex(m_internalSettings->buttonIconStyle());
@@ -361,6 +367,8 @@ void ConfigWidget::defaults()
     m_titleBarOpacityDialog->defaults();
     m_windowOutlineStyleDialog->defaults();
     m_shadowStyleDialog->defaults();
+
+    updateWindowControlPreviewIcons();
 
     // load default exceptions and refresh (leave user-set exceptions alone)
     DecorationExceptionList exceptions;
@@ -663,6 +671,112 @@ void ConfigWidget::updateIcons()
     m_windowOutlineStyleDialog->updateLockIcons();
 }
 
+void ConfigWidget::updateWindowControlPreviewIcons()
+{
+    QSize size(115, 72);
+    m_ui.buttonIconStyle->setIconSize(size);
+
+    for (int i = 0; i < InternalSettings::EnumButtonIconStyle::COUNT; i++) {
+        if (i != static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme)) {
+            generateWindowControlPreviewIcon(size, static_cast<InternalSettings::EnumButtonIconStyle::type>(i));
+        } else {
+            m_ui.buttonIconStyle->setItemIcon(static_cast<int>(InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme),
+                                              QIcon::fromTheme(QStringLiteral("preferences-desktop-icons")));
+        }
+    }
+}
+
+void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings::EnumButtonIconStyle::type iconStyle)
+{
+    QSize sizeScaled(qRound(size.width() * devicePixelRatioF()), qRound(size.height() * devicePixelRatioF()));
+    QPixmap pixmap(sizeScaled);
+    pixmap.setDevicePixelRatio(devicePixelRatioF());
+
+    pixmap.fill(QColor("#eeeff0"));
+
+    QRect windowRect(0, size.height() / 2, size.width(), size.height() / 2);
+
+    std::unique_ptr<QPainter> painter = std::make_unique<QPainter>(&pixmap);
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(QColor("#a3a6a9"));
+    painter->drawRect(windowRect);
+
+    QSize iconSize(20, 20);
+    int maximizedButtonTop = size.height() / 4 - iconSize.height() / 2;
+    int floatingButtonTop = (size.height() * 3 / 4) - (iconSize.height() * 3 / 4);
+    int iconSpacing = 14;
+
+    bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
+                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && devicePixelRatioF() >= 1.2));
+    auto internalSettings = InternalSettingsPtr(new InternalSettings());
+    internalSettings->setButtonIconStyle(iconStyle);
+
+    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons, devicePixelRatioF()));
+    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+
+    QPen pen("#bcc1c5");
+    pen.setWidthF(PenWidth::Symbol * devicePixelRatioF());
+    pen.setCosmetic(true);
+    painter->setPen(pen);
+
+    int iconLeft = maximizedButtonTop;
+    QPoint iconTopLeft(iconLeft, maximizedButtonTop);
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Minimize, false);
+    painter->restore();
+
+    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Maximize, true);
+    painter->restore();
+
+    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Close, false);
+    painter->restore();
+
+    pen = painter->pen();
+    pen.setColor(QColor("#fcfcfc"));
+    painter->setPen(pen);
+    iconTopLeft = QPoint(maximizedButtonTop, floatingButtonTop);
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Minimize, false);
+    painter->restore();
+
+    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Maximize, false);
+    painter->restore();
+
+    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+    painter->save();
+    painter->translate(iconTopLeft);
+    ;
+    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Close, false);
+    painter->restore();
+
+    QIcon icon(pixmap);
+
+    m_ui.buttonIconStyle->setItemIcon(iconStyle, icon);
+}
+
 bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
 {
     if (ev->type() == QEvent::ApplicationPaletteChange) {
@@ -670,6 +784,7 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
         updateIcons();
         return QObject::eventFilter(obj, ev);
     }
+
     // Make sure the rest of events are handled
     return QObject::eventFilter(obj, ev);
 }

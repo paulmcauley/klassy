@@ -768,7 +768,7 @@
                <string>  Klassy</string>
               </property>
               <property name="icon">
-               <iconset resource="klassydecoration_config.qrc">
+               <iconset>
                 <normaloff>:/klassy_config_icons/Klassy.png</normaloff>:/klassy_config_icons/Klassy.png</iconset>
               </property>
              </item>
@@ -777,7 +777,7 @@
                <string>  Kite</string>
               </property>
               <property name="icon">
-               <iconset resource="klassydecoration_config.qrc">
+               <iconset>
                 <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
               </property>
              </item>
@@ -786,7 +786,7 @@
                <string>  Oxygen/Breeze</string>
               </property>
               <property name="icon">
-               <iconset resource="klassydecoration_config.qrc">
+               <iconset>
                 <normaloff>:/klassy_config_icons/Oxygen.png</normaloff>:/klassy_config_icons/Oxygen.png</iconset>
               </property>
              </item>
@@ -795,7 +795,7 @@
                <string>  Redmond</string>
               </property>
               <property name="icon">
-               <iconset resource="klassydecoration_config.qrc">
+               <iconset>
                 <normaloff>:/klassy_config_icons/Redmond.png</normaloff>:/klassy_config_icons/Redmond.png</iconset>
               </property>
              </item>
@@ -804,17 +804,13 @@
                <string>  Redmond 10</string>
               </property>
               <property name="icon">
-               <iconset resource="klassydecoration_config.qrc">
+               <iconset>
                 <normaloff>:/klassy_config_icons/Redmond10.png</normaloff>:/klassy_config_icons/Redmond10.png</iconset>
               </property>
              </item>
              <item>
               <property name="text">
                <string>Use system icon theme</string>
-              </property>
-              <property name="icon">
-               <iconset theme="preferences-desktop-icons">
-                <normaloff>.</normaloff>.</iconset>
               </property>
              </item>
             </widget>
