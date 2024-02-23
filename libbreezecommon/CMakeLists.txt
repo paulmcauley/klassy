@@ -22,6 +22,7 @@ set(breezecommon_LIB_SRCS
     styleoxygen.cpp
     styleredmond.cpp
     styleredmond10.cpp
+    styleredmond11.cpp
     systemicongenerator.cpp
     systemicontheme.cpp
     dbusmessages.h

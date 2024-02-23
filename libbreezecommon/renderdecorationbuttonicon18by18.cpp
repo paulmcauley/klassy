@@ -464,7 +464,7 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     }
 }
 
-QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly)
+QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly, qreal cornerRelativePercent)
 {
     if (returnSizeOnly)
         m_painter->save(); // needed so doesn't interfere when called from renderCloseIconAtSquareMaximizeSize etc.
@@ -551,7 +551,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
         // convert strokes to paths needed as otherwise GTK apps fill the square in generated icons
         if (m_strokeToFilledPath) {
             QPainterPath path;
-            path.addRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
+            path.addRoundedRect(rect, cornerRelativePercent, cornerRelativePercent, Qt::RelativeSize);
             QPainterPathStroker stroker(pen);
             path = stroker.createStroke(path);
             m_painter->setBrush(pen.color());
@@ -559,7 +559,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
             m_painter->drawPath(path);
         } else {
             m_painter->setPen(pen);
-            m_painter->drawRoundedRect(rect, 0.025, 0.025, Qt::RelativeSize);
+            m_painter->drawRoundedRect(rect, cornerRelativePercent, cornerRelativePercent, Qt::RelativeSize);
         }
     } else
         m_painter->restore();
@@ -567,7 +567,7 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
     return rect;
 }
 
-void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
+void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal cornerRelativePercent)
 {
     // first determine the size of the maximize icon so the restore icon can align with it
     QRectF maximizeRect = renderSquareMaximizeIcon(true);
@@ -704,6 +704,37 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon()
     QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
     pen.setColor(penColor);
+
+    if (cornerRelativePercent > -0.001) {
+        if (m_devicePixelRatio >= 1.5)
+            pen.setCapStyle(Qt::PenCapStyle::RoundCap);
+        QPainterPath roundedForegroundPath;
+        roundedForegroundPath.addRoundedRect(foregroundPathItem->path().boundingRect(),
+                                             cornerRelativePercent,
+                                             cornerRelativePercent,
+                                             Qt::SizeMode::RelativeSize);
+        foregroundPathItem->setPath(roundedForegroundPath);
+
+        QPainterPath roundedBackgroundPath;
+        qreal cornerRadius = foregroundPathItem->path().boundingRect().width() * cornerRelativePercent / 100.0f;
+        qreal doubleCornerRadius = cornerRadius * 2;
+        roundedBackgroundPath.moveTo(backgroundPathItem->path().boundingRect().topLeft());
+        roundedBackgroundPath.lineTo(backgroundPathItem->path().boundingRect().topRight() - QPointF(cornerRadius, 0));
+        roundedBackgroundPath.arcMoveTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadius,
+                                        backgroundPathItem->path().boundingRect().topRight().y(),
+                                        doubleCornerRadius,
+                                        doubleCornerRadius,
+                                        90);
+        roundedBackgroundPath.arcTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadius,
+                                    backgroundPathItem->path().boundingRect().topRight().y(),
+                                    doubleCornerRadius,
+                                    doubleCornerRadius,
+                                    90,
+                                    -90);
+        roundedBackgroundPath.lineTo(backgroundPathItem->path().boundingRect().bottomRight());
+
+        backgroundPathItem->setPath(roundedBackgroundPath);
+    }
 
     if (m_strokeToFilledPath) {
         QPainterPathStroker stroker(pen);
