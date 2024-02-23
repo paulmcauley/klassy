@@ -757,6 +757,9 @@
                <verstretch>0</verstretch>
               </sizepolicy>
              </property>
+             <property name="sizeAdjustPolicy">
+              <enum>QComboBox::AdjustToContents</enum>
+             </property>
              <property name="iconSize">
               <size>
                <width>115</width>
