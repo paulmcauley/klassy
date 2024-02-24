@@ -159,7 +159,7 @@ void RenderDecorationButtonIcon::renderIcon(KDecoration2::DecorationButtonType t
 
 bool RenderDecorationButtonIcon::roundedPenWidthIsOdd(const QPen &pen, qreal &outputRoundedPenWidth, const qreal boldingFactor)
 {
-    outputRoundedPenWidth = qRound(penWidthToDevice(pen) * boldingFactor);
+    outputRoundedPenWidth = qRound(penWidthToDevice(pen) * boldingFactor) * PenWidth::Symbol;
     bool isOdd(int(outputRoundedPenWidth) % 2 != 0);
     if (!pen.isCosmetic()) {
         outputRoundedPenWidth = outputRoundedPenWidth / m_totalScalingFactor;

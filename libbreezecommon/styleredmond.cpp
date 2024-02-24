@@ -27,7 +27,7 @@ void RenderStyleRedmond18By18::renderRestoreIcon()
 void RenderStyleRedmond18By18::renderMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
-    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
     QPen pen = m_painter->pen();
     bool isOddPenWidth = true;
 

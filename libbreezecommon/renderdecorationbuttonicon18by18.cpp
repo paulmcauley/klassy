@@ -433,14 +433,10 @@ void RenderDecorationButtonIcon18By18::renderContextHelpIcon()
 void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
 {
     // first determine the size of the maximize icon so the close icon can match in size
-    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
     QPen pen = m_painter->pen();
 
-    if (m_fromKstyle) {
-        pen.setWidthF(pen.widthF() * 1.2);
-    } else if (m_boldButtonIcons) {
-        pen.setWidthF(pen.widthF() * 1.6);
-    }
+    pen.setWidthF(maximizePenWidth);
 
     m_painter->setPen(pen);
 
@@ -464,7 +460,7 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     }
 }
 
-QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly, qreal cornerRelativePercent)
+std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly, qreal cornerRelativePercent)
 {
     if (returnSizeOnly)
         m_painter->save(); // needed so doesn't interfere when called from renderCloseIconAtSquareMaximizeSize etc.
@@ -564,13 +560,13 @@ QRectF RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSiz
     } else
         m_painter->restore();
 
-    return rect;
+    return {rect, pen.widthF()};
 }
 
 void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal cornerRelativePercent)
 {
     // first determine the size of the maximize icon so the restore icon can align with it
-    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
 
     QPen pen = m_painter->pen();
 
@@ -664,8 +660,9 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
         qreal distanceBetweenSquaresY = backgroundPathItem->path().elementAt(0).y - backgroundPathItem->path().elementAt(1).y;
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
-        if (((distanceBetweenSquaresX / penWidth18By18) < 1.5 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresX < 1.5 - 0.001) // 0.001 is because sometimes there are floating point errors
+        if (((distanceBetweenSquaresX / penWidth18By18) < 1.5 - 0.01) || (m_boldButtonIcons && distanceBetweenSquaresX < 2 - 0.01)
+            || (!m_boldButtonIcons
+                && distanceBetweenSquaresX < 1.5 - 0.01) // 0.01 is because sometimes there are floating point errors, and also due to PenWidth::Symbol
         ) {
             shiftX = true;
             shiftOffsetX += singleDevicePixelin18By18;
@@ -674,8 +671,9 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
         }
 
         // if distance between squares < pen width (factoring in that the background square does not join the foreground at the foreground's centre-point)
-        if (((distanceBetweenSquaresY / penWidth18By18) < 1.5 - 0.001) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.001)
-            || (!m_boldButtonIcons && distanceBetweenSquaresY < 1.5 - 0.001) // 0.001 is because sometimes there are floating point errors
+        if (((distanceBetweenSquaresY / penWidth18By18) < 1.5 - 0.01) || (m_boldButtonIcons && distanceBetweenSquaresY < 2 - 0.01)
+            || (!m_boldButtonIcons
+                && distanceBetweenSquaresY < 1.5 - 0.01) // 0.01 is because sometimes there are floating point errors, and also due to PenWidth::Symbol
         ) {
             shiftY = true;
             shiftOffsetY += singleDevicePixelin18By18;
@@ -794,7 +792,7 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
 void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
-    QRectF maximizeRect = renderSquareMaximizeIcon(true);
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
 
     bool isOddPenWidth = true;
     qreal roundedBoldPenWidth;
