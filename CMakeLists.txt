@@ -40,12 +40,12 @@ find_package(KF5KCMUtils ${KF5_MIN_VERSION} REQUIRED)
 
 find_package(KDecoration2 REQUIRED)
 add_subdirectory(kdecoration)
-
-
-add_subdirectory(colors)
 add_subdirectory(libbreezecommon)
 add_subdirectory(kstyle)
 add_subdirectory(icons)
+add_subdirectory(colors)
+add_subdirectory(layout-templates)
+add_subdirectory(look-and-feel)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
     find_package(KF5I18n ${KF5_MIN_VERSION} CONFIG REQUIRED)

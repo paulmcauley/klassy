@@ -229,6 +229,8 @@ private:
     //* calculates and sets m_thinWindowOutline
     void setThinWindowOutlineColor();
 
+    void setGlobalLookAndFeelOptions(QString lookAndFeelPackageName);
+
     static KSharedConfig::Ptr s_kdeGlobalConfig;
     InternalSettingsPtr m_internalSettings;
     KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;

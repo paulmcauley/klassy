@@ -1,0 +1,24 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Klassy bottom panel featuring application launcher, task manager and system tray",
+        "EnabledByDefault": true,
+        "Id": "org.kde.klassy.plasma.desktop.bottomPanel",
+        "License": "LGPLv2+",
+        "Name": "Klassy Bottom Panel",
+        "ServiceTypes": [
+            "Plasma/LayoutTemplate"
+        ],
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-ContainmentCategories": [
+        "panel"
+    ],
+    "X-Plasma-Shell": "plasmashell"
+}

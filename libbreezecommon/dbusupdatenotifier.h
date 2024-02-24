@@ -1,5 +1,5 @@
-#ifndef BREEZE_DBUSLISTENER_H
-#define BREEZE_DBUSLISTENER_H
+#ifndef BREEZE_DBUSUPDATENOTIFIER_H
+#define BREEZE_DBUSUPDATENOTIFIER_H
 
 /*
  * SPDX-FileCopyrightText: 2024 Paul A McAuley <kde@paulmcauley.com>

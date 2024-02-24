@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=4.4.9.breeze5.27.5.git
 
-[Windeco Preset Klassy tallscreen]
+[Windeco Preset Klassy bottom panel]
 ActiveTitlebarOpacity=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
@@ -14,6 +14,8 @@ ButtonBackgroundColorsActive=AccentNegativeClose
 ButtonBackgroundColorsInactive=AccentNegativeClose
 ButtonBackgroundOpacityActive=50
 ButtonBackgroundOpacityInactive=50
+ButtonCornerRadius=SameAsWindow
+ButtonCustomCornerRadius=1
 ButtonIconColorsActive=TitlebarText
 ButtonIconColorsInactive=TitlebarText
 ButtonIconOpacityActive=100
@@ -48,6 +50,7 @@ ButtonStateCheckedActive=Press
 ButtonStateCheckedInactive=Press
 CloseButtonIconColorActive=WhiteWhenHoverPress
 CloseButtonIconColorInactive=WhiteWhenHoverPress
+CloseFullHeightButtonWidthMarginRelative=100
 ColorizeThinWindowOutlineWithButton=true
 CornerRadius=1
 DrawBackgroundGradient=false
@@ -61,6 +64,8 @@ FullHeightButtonWidthMarginRight=8
 IconSize=IconLargeMedium
 InactiveTitlebarOpacity=100
 IntegratedRoundedRectangleBottomPadding=1
+KlassyDarkIconThemeInherits=breeze-dark
+KlassyIconThemeInherits=breeze
 KwinBorderSize=None
 LockButtonBehaviourActiveInactive=true
 LockButtonColorsActiveInactive=true
@@ -78,6 +83,8 @@ NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=TitleBarBackground
 OnPoorIconContrastInactive=TitleBarBackground
 OpaqueMaximizedTitlebars=true
+OverrideActiveTitleBarOpacity=false
+OverrideInactiveTitleBarOpacity=false
 PercentMaximizedTopBottomMargins=100
 PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1

@@ -1,0 +1,18 @@
+install(DIRECTORY org.kde.klassylight.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassylightbottompanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassylightleftpanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassydark.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassydarkbottompanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassydarkleftpanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassytwilight.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassytwilightbottompanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassytwilightleftpanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)

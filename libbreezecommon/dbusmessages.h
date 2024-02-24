@@ -45,6 +45,16 @@ public:
                                                         QStringLiteral("updateDecorationColorCache")));
         QDBusConnection::sessionBus().send(message);
     }
+
+    static void setGtkTheme(QString themeName)
+    {
+        QDBusMessage message(QDBusMessage::createMethodCall(QStringLiteral("org.kde.GtkConfig"),
+                                                            QStringLiteral("/GtkConfig"),
+                                                            QStringLiteral("org.kde.GtkConfig"),
+                                                            QStringLiteral("setGtkTheme")));
+        message.setArguments(QList{QVariant(themeName)});
+        QDBusConnection::sessionBus().send(message);
+    }
 };
 
 }
