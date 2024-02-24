@@ -32,10 +32,10 @@ public:
 
     //* needed to handle special data types like enums, intLists
     static void writeSkeletonItemToConfigGroup(KConfigSkeletonItem *item, KConfigGroup &configGroup);
-    static void loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName, bool writeKwinBorderConfig = false);
+    static bool loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName, bool writeKwinBorderConfig = false);
 
     //* loadPresetAndSave method is needed because the skeleton->save() member method does not work when loadPreset is called
-    static void
+    static bool
     loadPresetAndSave(KCoreConfigSkeleton *skeleton, KConfig *mainConfig, KConfig *presetsConfig, const QString &presetName, bool writeKwinBorderConfig);
     static bool presetHasKwinBorderSizeKey(KConfig *presetsConfig, const QString &presetName);
 

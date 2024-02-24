@@ -6,6 +6,7 @@
  */
 
 #include "breezesettingsprovider.h"
+#include "dbusmessages.h"
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
 

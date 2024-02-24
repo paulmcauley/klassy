@@ -24,7 +24,7 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *presetsCo
 
     // write window decoration configuration as a preset
     for (auto item : skeleton->items()) {
-        if (item->group() == "Exceptions")
+        if (item->group() == QStringLiteral("Exceptions") || item->group() == QStringLiteral("Global"))
             continue;
 
         KConfigGroup configGroup(presetsConfig, groupName);
@@ -78,16 +78,16 @@ void PresetsModel::writeSkeletonItemToConfigGroup(KConfigSkeletonItem *item, KCo
     }
 }
 
-void PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName, bool writeKwinBorderConfig)
+bool PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName, bool writeKwinBorderConfig)
 {
     QString groupName = presetGroupName(presetName);
 
     if (groupName.isEmpty() || !presetsConfig->hasGroup(groupName))
-        return;
+        return false;
 
     for (KConfigSkeletonItem *item : skeleton->items()) {
         QString originalGroup = item->group();
-        if (originalGroup == "Exceptions") {
+        if (originalGroup == QStringLiteral("Exceptions") || originalGroup == QStringLiteral("Global")) {
             continue;
         }
         item->setGroup(groupName);
@@ -102,15 +102,19 @@ void PresetsModel::loadPreset(KCoreConfigSkeleton *skeleton, KConfig *presetsCon
             writeBorderSizeToKwinConfig(configGroup.readEntry(QStringLiteral("KwinBorderSize")));
         }
     }
+
+    return true;
 }
 
-void PresetsModel::loadPresetAndSave(KCoreConfigSkeleton *skeleton,
+bool PresetsModel::loadPresetAndSave(KCoreConfigSkeleton *skeleton,
                                      KConfig *mainConfig,
                                      KConfig *presetsConfig,
                                      const QString &presetName,
                                      bool writeKwinBorderConfig)
 {
-    loadPreset(skeleton, presetsConfig, presetName, writeKwinBorderConfig);
+    if (!loadPreset(skeleton, presetsConfig, presetName, writeKwinBorderConfig)) {
+        return false;
+    }
 
     for (KConfigSkeletonItem *item : skeleton->items()) {
         KConfigGroup mainConfigGroup = mainConfig->group(item->group());
@@ -123,6 +127,7 @@ void PresetsModel::loadPresetAndSave(KCoreConfigSkeleton *skeleton,
         }
     }
     mainConfig->sync();
+    return true;
 }
 
 void PresetsModel::copyKwinBorderSizeFromPresetToExceptionBorderSize(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName)

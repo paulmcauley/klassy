@@ -9,7 +9,7 @@ set(breezecommon_LIB_SRCS
     breeze.cpp
     breezeboxshadowrenderer.cpp
     colortools.cpp
-    dbuslistener.cpp
+    dbusupdatenotifier.cpp
     decorationbuttoncolors.cpp
     decorationcolors.cpp
     decorationexceptionlist.cpp

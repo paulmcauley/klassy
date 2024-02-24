@@ -19,7 +19,7 @@
 #include "breezetoolsareamanager.h"
 #include "breezewidgetexplorer.h"
 #include "breezewindowmanager.h"
-#include "dbuslistener.h"
+#include "dbusupdatenotifier.h"
 #include "decorationcolors.h"
 
 #include <KColorUtils>
