@@ -40,7 +40,7 @@ protected:
     virtual void renderContextHelpIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
-    QRectF renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
+    std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
 
     void renderOverlappingWindowsIcon(qreal cornerRelativePercent = -1);
     /**
