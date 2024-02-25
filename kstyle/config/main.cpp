@@ -88,6 +88,11 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
                                    i18n("Force the import of a preset file from a different Klassy version."));
     parser.addOption(forceOption);
 
+    QCommandLineOption generateIcons(QStringList() << "g"
+                                                   << "generate-system-icons",
+                                     i18n("Generate klassy and klassy-dark system icons."));
+    parser.addOption(generateIcons);
+
     parser.process(app);
 
     char const *configFile = "klassy/klassyrc";
@@ -144,14 +149,21 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
 
-        // auto-generate the klassy and klassy-dark system icons
-        SystemIconGenerator iconGenerator(internalSettings);
-        iconGenerator.generate();
-
-        output << i18n("Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" loaded.") << Qt::endl;
+        output << i18n("Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" loaded...") << Qt::endl;
         // if Decoration::reconfigure is reloaded twice the corruption when changing border sizes clears, therefore tell Decoration to reconfigure again after 1
         // second
         QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
+    }
+
+    if (parser.isSet(generateIcons) || parser.isSet(loadWindecoPresetOption)) {
+        commandSet = true;
+        InternalSettingsPtr internalSettings = InternalSettingsPtr(new InternalSettings());
+        internalSettings->load();
+
+        // auto-generate the klassy and klassy-dark system icons
+        SystemIconGenerator iconGenerator(internalSettings);
+        iconGenerator.generate();
+        output << i18n("klassy and klassy-dark system icons generated.") << Qt::endl;
     }
 
     if (commandSet) {

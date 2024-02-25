@@ -13,7 +13,6 @@
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
 #include "renderdecorationbuttonicon.h"
-#include "systemicongenerator.h"
 
 #include <KLocalizedString>
 
@@ -327,8 +326,8 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     // not needed as both of the other DBUS messages also update KStyle
     // DBusMessages::kstyleReloadDecorationConfig();
 
-    // auto-generate the klassy and klassy-dark system icons -- use timer to put on different thread to prevent hanging when saving a preset
-    QTimer::singleShot(0, this, &ConfigWidget::generateSystemIcons);
+    // auto-generate the klassy and klassy-dark system icons
+    generateSystemIcons();
 }
 
 //_________________________________________________________
@@ -617,9 +616,8 @@ void ConfigWidget::presetsButtonClicked()
 
 void ConfigWidget::generateSystemIcons()
 {
-    // auto-generate the klassy and klassy-dark system icons
-    SystemIconGenerator iconGenerator(m_internalSettings);
-    iconGenerator.generate();
+    // auto-generate the klassy and klassy-dark system icons in a separate process
+    system("klassy-settings -g &");
 }
 
 void ConfigWidget::updateIcons()

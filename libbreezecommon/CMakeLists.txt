@@ -1,6 +1,6 @@
 ################# dependencies #################
 ### Qt/KDE
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets Svg Xml)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigWidgets IconThemes I18n)
 find_package(KDecoration2 REQUIRED)
 
@@ -23,7 +23,6 @@ set(breezecommon_LIB_SRCS
     styleredmond.cpp
     styleredmond10.cpp
     styleredmond11.cpp
-    systemicongenerator.cpp
     systemicontheme.cpp
     dbusmessages.h
     setqdebug_logging.h
@@ -42,8 +41,6 @@ target_link_libraries(klassycommon5
         Qt::Core
         Qt::Gui
         Qt::DBus
-        Qt::Svg
-        Qt::Xml
 
         KDecoration2::KDecoration
     PRIVATE

@@ -7,7 +7,6 @@
 #include "systemicongeneration.h"
 #include "breezeconfigwidget.h"
 #include "presetsmodel.h"
-#include "systemicongenerator.h"
 #include <QPushButton>
 #include <kicontheme.h>
 
@@ -19,6 +18,7 @@ SystemIconGeneration::SystemIconGeneration(KSharedConfig::Ptr config, KSharedCon
     , m_ui(new Ui_SystemIconGeneration)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
+    , m_parent(parent)
 {
     m_ui->setupUi(this);
     this->setWindowTitle(i18n("System Icon Generation - Klassy Settings"));
@@ -83,8 +83,7 @@ void SystemIconGeneration::save(const bool reloadKwinConfig)
     setChanged(false);
 
     if (reloadKwinConfig) {
-        SystemIconGenerator iconGenerator(m_internalSettings);
-        iconGenerator.generate();
+        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
     }
 }
 

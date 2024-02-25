@@ -8,7 +8,6 @@
  */
 
 #include "breeze.h"
-#include "breezecommon_export.h"
 #include "decorationcolors.h"
 #include <KDecoration2/DecorationButton>
 #include <KDecoration2/DecorationSettings>
@@ -16,7 +15,7 @@
 namespace Breeze
 {
 
-class BREEZECOMMON_EXPORT SystemIconGenerator
+class SystemIconGenerator
 {
 public:
     SystemIconGenerator(InternalSettingsPtr internalSettings);

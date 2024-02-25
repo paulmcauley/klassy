@@ -9,7 +9,6 @@
 #include "dbusmessages.h"
 #include "presetsmodel.h"
 #include "renderdecorationbuttonicon.h"
-#include "systemicongenerator.h"
 #include "systemicontheme.h"
 #include <KColorCombo>
 #include <KColorUtils>
@@ -681,8 +680,7 @@ void ButtonColors::save(const bool reloadKwinConfig)
         // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
         // auto-generate the klassy and klassy-dark system icons
 
-        SystemIconGenerator iconGenerator(m_internalSettings);
-        iconGenerator.generate();
+        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
     }
 }
 
