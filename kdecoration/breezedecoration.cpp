@@ -717,9 +717,6 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
 
     QString gtkThemeName = KWindowSystem::isPlatformWayland() ? QStringLiteral("Adwaita") : QStringLiteral("Breeze");
 
-    const QStringList autoPanelPackages = {QStringLiteral("org.kde.klassydark.desktop"),
-                                           QStringLiteral("org.kde.klassylight.desktop"),
-                                           QStringLiteral("org.kde.klassytwilight.desktop")};
     const QStringList leftPanelPackages = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
                                            QStringLiteral("org.kde.klassylightleftpanel.desktop"),
                                            QStringLiteral("org.kde.klassytwilightleftpanel.desktop")};
@@ -727,14 +724,7 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
                                              QStringLiteral("org.kde.klassylightbottompanel.desktop"),
                                              QStringLiteral("org.kde.klassytwilightbottompanel.desktop")};
 
-    if (autoPanelPackages.contains(lookAndFeelPackageName)) {
-        if (m_internalSettings->autoPanelLocation() == InternalSettings::EnumAutoPanelLocation::Bottom) {
-            system("klassy-settings -w \"Klassy bottom panel\" &");
-        } else {
-            system("klassy-settings -w Klassy &");
-        }
-        DBusMessages::setGtkTheme(gtkThemeName);
-    } else if (leftPanelPackages.contains(lookAndFeelPackageName)) {
+    if (leftPanelPackages.contains(lookAndFeelPackageName)) {
         system("klassy-settings -w Klassy &");
         DBusMessages::setGtkTheme(gtkThemeName);
     } else if (bottomPanelPackages.contains(lookAndFeelPackageName)) {
