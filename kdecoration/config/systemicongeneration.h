@@ -53,6 +53,7 @@ private:
     InternalSettingsPtr m_internalSettings;
     KSharedConfig::Ptr m_configuration;
     KSharedConfig::Ptr m_presetsConfiguration;
+    QObject *m_parent;
 
     //* changed state
     bool m_changed;

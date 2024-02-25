@@ -8,7 +8,6 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
-#include "systemicongenerator.h"
 #include <KColorButton>
 #include <QPushButton>
 
@@ -169,8 +168,7 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
 
-        SystemIconGenerator iconGenerator(m_internalSettings);
-        iconGenerator.generate();
+        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
     }
 }
 

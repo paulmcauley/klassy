@@ -8,7 +8,6 @@
 #include "breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "presetsmodel.h"
-#include "systemicongenerator.h"
 #include <QPushButton>
 
 namespace Breeze
@@ -19,6 +18,7 @@ ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsCo
     , m_ui(new Ui_ShadowStyle)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
+    , m_parent(parent)
 {
     m_ui->setupUi(this);
 
@@ -83,8 +83,7 @@ void ShadowStyle::save(const bool reloadKwinConfig)
         DBusMessages::kwinReloadConfig();
         // DBusMessages::kstyleReloadDecorationConfig(); //should reload anyway
 
-        SystemIconGenerator iconGenerator(m_internalSettings);
-        iconGenerator.generate();
+        static_cast<ConfigWidget *>(m_parent)->generateSystemIcons();
     }
 }
 
