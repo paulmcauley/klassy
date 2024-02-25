@@ -8,15 +8,6 @@
   <group name="Global">
     <!-- used to indicate that Klassy settings have been set for the specified look-and-feel global theme -->
     <entry name="LookAndFeelSet" type="String" />
-
-    <!-- Panel location set automatically when loading some look-and-feel global themes -->
-    <entry name="AutoPanelLocation" type="Enum">
-    <choices>
-        <choice name="Left" />
-        <choice name="Bottom" />
-    </choices>
-    <default>Left</default>
-    </entry>
   </group>
 
   <group name="Windeco">
