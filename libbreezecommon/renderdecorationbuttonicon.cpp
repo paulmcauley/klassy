@@ -246,14 +246,14 @@ QPointF RenderDecorationButtonIcon::snapToNearestPixel(const QPointF pointLocal)
     SnapPixel snapX;
     SnapPixel snapY;
 
-    coordFractionalPart = modf(pointLocal.x(), &coordIntegralPart);
+    coordFractionalPart = abs(modf(pointLocal.x(), &coordIntegralPart));
     if (coordFractionalPart < (0.5 + halfLimit) && coordFractionalPart > (0.5 - halfLimit)) { // if around 0.5 snap to a half-pixel
         snapX = m_isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole;
     } else {
         snapX = m_isOddPenWidth ? SnapPixel::ToWhole : SnapPixel::ToHalf;
     }
 
-    coordFractionalPart = modf(pointLocal.y(), &coordIntegralPart);
+    coordFractionalPart = abs(modf(pointLocal.y(), &coordIntegralPart));
     if (coordFractionalPart < (0.5 + halfLimit) && coordFractionalPart > (0.5 - halfLimit)) { // if around 0.5 snap to a half-pixel
         snapY = m_isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole;
     } else {
