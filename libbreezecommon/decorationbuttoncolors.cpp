@@ -444,7 +444,7 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
 
     const bool negativeCloseCategory( // whether the button background colour is in the general negative category as selected in the "Background & Outline
                                       // Colours" combobox
-        buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+        buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose
         || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
         || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
 
@@ -469,8 +469,8 @@ void DecorationButtonPalette::generateButtonBackgroundPalette(const bool active)
             accentHoverBase = decorationColors->buttonHover;
         }
         break;
-    case InternalSettings::EnumButtonBackgroundColors::TitlebarText:
-    case InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose:
+    case InternalSettings::EnumButtonBackgroundColors::TitleBarText:
+    case InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose:
         defaultButtonColor = decorationColors->titleBarText;
         break;
     }
@@ -627,10 +627,10 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
     const bool negativeCloseBackground =
         (_decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
          || _decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights
-         || _decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
+         || _decorationSettings->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose);
 
     const bool negativeWhenHoverPress = closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress
-        && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+        && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose
             || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentNegativeClose
             || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights);
 
@@ -695,7 +695,7 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
 
     if (!negativeWhenHoverPress) {
         if (_buttonType == DecorationButtonType::Close
-            && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+            && (buttonIconColors == InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose
                 || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentNegativeClose
                 || buttonIconColors == InternalSettings::EnumButtonIconColors::AccentTrafficLights)) {
             defaultButton = false;
@@ -766,8 +766,8 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
         case InternalSettings::EnumButtonIconColors::AccentTrafficLights:
             defaultButtonColor = decorationColors->buttonFocus;
             break;
-        case InternalSettings::EnumButtonIconColors::TitlebarText:
-        case InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose:
+        case InternalSettings::EnumButtonIconColors::TitleBarText:
+        case InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose:
             defaultButtonColor = decorationColors->titleBarText;
             break;
         }
@@ -864,7 +864,7 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
     outlineHover = QColor();
     outlinePress = QColor();
 
-    const bool negativeClose(buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+    const bool negativeClose(buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose
                              || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
                              || buttonBackgroundColors == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
 
@@ -889,8 +889,8 @@ void DecorationButtonPalette::generateButtonOutlinePalette(const bool active)
             accentHoverBase = decorationColors->buttonHover;
         }
         break;
-    case InternalSettings::EnumButtonBackgroundColors::TitlebarText:
-    case InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose:
+    case InternalSettings::EnumButtonBackgroundColors::TitleBarText:
+    case InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose:
         defaultOutlineColor = decorationColors->titleBarText;
         break;
     }

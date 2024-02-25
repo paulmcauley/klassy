@@ -1251,7 +1251,7 @@
              <number>10</number>
             </property>
             <item row="0" column="0">
-             <widget class="QCheckBox" name="useTitlebarColorForAllBorders">
+             <widget class="QCheckBox" name="useTitleBarColorForAllBorders">
               <property name="text">
                <string>Use titlebar colour for all window borders</string>
               </property>
@@ -1769,7 +1769,7 @@
   <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>cornerRadius</tabstop>
   <tabstop>roundBottomCornersWhenNoBorders</tabstop>
-  <tabstop>useTitlebarColorForAllBorders</tabstop>
+  <tabstop>useTitleBarColorForAllBorders</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>thinWindowOutlineStyleButton</tabstop>
   <tabstop>colorizeThinWindowOutlineWithButton</tabstop>

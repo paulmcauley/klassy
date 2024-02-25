@@ -26,19 +26,19 @@ TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui->titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->titleSidePadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarTopMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarBottomMargin, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->percentMaximizedTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarLeftMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarRightMargin, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->lockTitleBarTopBottomMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->lockTitleBarLeftRightMargins, &QAbstractButton::toggled, this, &TitleBarSpacing::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // connect dual controls with same values
-    connect(m_ui->titlebarTopMargin, SIGNAL(valueChanged(double)), SLOT(titlebarTopMarginChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titlebarBottomMarginChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titlebarLeftMarginChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->titlebarRightMargin, SIGNAL(valueChanged(int)), SLOT(titlebarRightMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarTopMargin, SIGNAL(valueChanged(double)), SLOT(titleBarTopMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarBottomMargin, SIGNAL(valueChanged(double)), SLOT(titleBarBottomMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarLeftMargin, SIGNAL(valueChanged(int)), SLOT(titleBarLeftMarginChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->titleBarRightMargin, SIGNAL(valueChanged(int)), SLOT(titleBarRightMarginChanged()), Qt::ConnectionType::DirectConnection);
 
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &TitleBarSpacing::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &TitleBarSpacing::load);
@@ -61,11 +61,11 @@ void TitleBarSpacing::load()
 
     m_ui->titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui->titleSidePadding->setValue(m_internalSettings->titleSidePadding());
-    m_ui->titlebarTopMargin->setValue(m_internalSettings->titlebarTopMargin());
-    m_ui->titlebarBottomMargin->setValue(m_internalSettings->titlebarBottomMargin());
+    m_ui->titleBarTopMargin->setValue(m_internalSettings->titleBarTopMargin());
+    m_ui->titleBarBottomMargin->setValue(m_internalSettings->titleBarBottomMargin());
     m_ui->percentMaximizedTopBottomMargins->setValue(m_internalSettings->percentMaximizedTopBottomMargins());
-    m_ui->titlebarLeftMargin->setValue(m_internalSettings->titlebarLeftMargin());
-    m_ui->titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
+    m_ui->titleBarLeftMargin->setValue(m_internalSettings->titleBarLeftMargin());
+    m_ui->titleBarRightMargin->setValue(m_internalSettings->titleBarRightMargin());
     m_ui->lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
     m_ui->lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
 
@@ -85,11 +85,11 @@ void TitleBarSpacing::save(const bool reloadKwinConfig)
     // apply modifications from ui
     m_internalSettings->setTitleAlignment(m_ui->titleAlignment->currentIndex());
     m_internalSettings->setTitleSidePadding(m_ui->titleSidePadding->value());
-    m_internalSettings->setTitlebarTopMargin(m_ui->titlebarTopMargin->value());
-    m_internalSettings->setTitlebarBottomMargin(m_ui->titlebarBottomMargin->value());
+    m_internalSettings->setTitleBarTopMargin(m_ui->titleBarTopMargin->value());
+    m_internalSettings->setTitleBarBottomMargin(m_ui->titleBarBottomMargin->value());
     m_internalSettings->setPercentMaximizedTopBottomMargins(m_ui->percentMaximizedTopBottomMargins->value());
-    m_internalSettings->setTitlebarLeftMargin(m_ui->titlebarLeftMargin->value());
-    m_internalSettings->setTitlebarRightMargin(m_ui->titlebarRightMargin->value());
+    m_internalSettings->setTitleBarLeftMargin(m_ui->titleBarLeftMargin->value());
+    m_internalSettings->setTitleBarRightMargin(m_ui->titleBarRightMargin->value());
     m_internalSettings->setLockTitleBarTopBottomMargins(m_ui->lockTitleBarTopBottomMargins->isChecked());
     m_internalSettings->setLockTitleBarLeftRightMargins(m_ui->lockTitleBarLeftRightMargins->isChecked());
 
@@ -110,11 +110,11 @@ void TitleBarSpacing::defaults()
     // assign to ui
     m_ui->titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
     m_ui->titleSidePadding->setValue(m_internalSettings->titleSidePadding());
-    m_ui->titlebarTopMargin->setValue(m_internalSettings->titlebarTopMargin());
-    m_ui->titlebarBottomMargin->setValue(m_internalSettings->titlebarBottomMargin());
+    m_ui->titleBarTopMargin->setValue(m_internalSettings->titleBarTopMargin());
+    m_ui->titleBarBottomMargin->setValue(m_internalSettings->titleBarBottomMargin());
     m_ui->percentMaximizedTopBottomMargins->setValue(m_internalSettings->percentMaximizedTopBottomMargins());
-    m_ui->titlebarLeftMargin->setValue(m_internalSettings->titlebarLeftMargin());
-    m_ui->titlebarRightMargin->setValue(m_internalSettings->titlebarRightMargin());
+    m_ui->titleBarLeftMargin->setValue(m_internalSettings->titleBarLeftMargin());
+    m_ui->titleBarRightMargin->setValue(m_internalSettings->titleBarRightMargin());
 
     setChanged(!isDefaults());
 
@@ -171,15 +171,15 @@ void TitleBarSpacing::updateChanged()
         modified = true;
     else if (m_ui->titleSidePadding->value() != m_internalSettings->titleSidePadding())
         modified = true;
-    else if (m_ui->titlebarTopMargin->value() != m_internalSettings->titlebarTopMargin())
+    else if (m_ui->titleBarTopMargin->value() != m_internalSettings->titleBarTopMargin())
         modified = true;
-    else if (m_ui->titlebarBottomMargin->value() != m_internalSettings->titlebarBottomMargin())
+    else if (m_ui->titleBarBottomMargin->value() != m_internalSettings->titleBarBottomMargin())
         modified = true;
     else if (m_ui->percentMaximizedTopBottomMargins->value() != m_internalSettings->percentMaximizedTopBottomMargins())
         modified = true;
-    else if (m_ui->titlebarLeftMargin->value() != m_internalSettings->titlebarLeftMargin())
+    else if (m_ui->titleBarLeftMargin->value() != m_internalSettings->titleBarLeftMargin())
         modified = true;
-    else if (m_ui->titlebarRightMargin->value() != m_internalSettings->titlebarRightMargin())
+    else if (m_ui->titleBarRightMargin->value() != m_internalSettings->titleBarRightMargin())
         modified = true;
     else if (m_ui->lockTitleBarTopBottomMargins->isChecked() != m_internalSettings->lockTitleBarTopBottomMargins())
         modified = true;
@@ -194,28 +194,28 @@ void TitleBarSpacing::setApplyButtonState(const bool on)
     m_ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(on);
 }
 
-void TitleBarSpacing::titlebarTopMarginChanged()
+void TitleBarSpacing::titleBarTopMarginChanged()
 {
     if (m_ui->lockTitleBarTopBottomMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->titlebarBottomMargin->setValue(m_ui->titlebarTopMargin->value());
+        m_ui->titleBarBottomMargin->setValue(m_ui->titleBarTopMargin->value());
 }
 
-void TitleBarSpacing::titlebarBottomMarginChanged()
+void TitleBarSpacing::titleBarBottomMarginChanged()
 {
     if (m_ui->lockTitleBarTopBottomMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->titlebarTopMargin->setValue(m_ui->titlebarBottomMargin->value());
+        m_ui->titleBarTopMargin->setValue(m_ui->titleBarBottomMargin->value());
 }
 
-void TitleBarSpacing::titlebarLeftMarginChanged()
+void TitleBarSpacing::titleBarLeftMarginChanged()
 {
     if (m_ui->lockTitleBarLeftRightMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->titlebarRightMargin->setValue(m_ui->titlebarLeftMargin->value());
+        m_ui->titleBarRightMargin->setValue(m_ui->titleBarLeftMargin->value());
 }
 
-void TitleBarSpacing::titlebarRightMarginChanged()
+void TitleBarSpacing::titleBarRightMarginChanged()
 {
     if (m_ui->lockTitleBarLeftRightMargins->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->titlebarLeftMargin->setValue(m_ui->titlebarRightMargin->value());
+        m_ui->titleBarLeftMargin->setValue(m_ui->titleBarRightMargin->value());
 }
 
 void TitleBarSpacing::updateLockIcons()

@@ -80,11 +80,11 @@ namespace Metrics
 
 //* titlebar metrics, in units of small spacing
 
-// Paul A McAuley: No longer used - now InternalSettings::titlebarTopMargin(), InternalSettings::titlebarBottomMargin()
+// Paul A McAuley: No longer used - now InternalSettings::titleBarTopMargin(), InternalSettings::titleBarBottomMargin()
 // TitleBar_TopMargin = 2,
 // TitleBar_BottomMargin = 2,
 
-// Paul A McAuley: No longer used - now InternalSettings::titlebarLeftMargin(), InternalSettings::titlebarRightMargin()
+// Paul A McAuley: No longer used - now InternalSettings::titleBarLeftMargin(), InternalSettings::titleBarRightMargin()
 // TitleBar_SideMargin = 2,
 
 // Paul A McAuley: No longer used - now InternalSettings::buttonSpacingLeft() and InternalSettings::buttonSpacingRight()

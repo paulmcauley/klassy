@@ -42,10 +42,10 @@ private Q_SLOTS:
     }
     void setApplyButtonState(const bool on);
 
-    void titlebarTopMarginChanged();
-    void titlebarBottomMarginChanged();
-    void titlebarLeftMarginChanged();
-    void titlebarRightMarginChanged();
+    void titleBarTopMarginChanged();
+    void titleBarBottomMarginChanged();
+    void titleBarLeftMarginChanged();
+    void titleBarRightMarginChanged();
 
     void updateLockIcons();
 
