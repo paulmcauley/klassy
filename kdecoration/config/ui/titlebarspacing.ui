@@ -113,7 +113,7 @@
            </widget>
           </item>
           <item row="1" column="3">
-           <widget class="QDoubleSpinBox" name="titlebarTopMargin">
+           <widget class="QDoubleSpinBox" name="titleBarTopMargin">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -134,7 +134,7 @@
              <set>Qt::AlignCenter</set>
             </property>
             <property name="buddy">
-             <cstring>titlebarTopMargin</cstring>
+             <cstring>titleBarTopMargin</cstring>
             </property>
            </widget>
           </item>
@@ -187,7 +187,7 @@
            <number>0</number>
           </property>
           <item row="2" column="9">
-           <widget class="QSpinBox" name="titlebarRightMargin">
+           <widget class="QSpinBox" name="titleBarRightMargin">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -244,7 +244,7 @@ right margin:</string>
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
-             <cstring>titlebarRightMargin</cstring>
+             <cstring>titleBarRightMargin</cstring>
             </property>
            </widget>
           </item>
@@ -297,12 +297,12 @@ left margin:</string>
              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
             </property>
             <property name="buddy">
-             <cstring>titlebarLeftMargin</cstring>
+             <cstring>titleBarLeftMargin</cstring>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QSpinBox" name="titlebarLeftMargin">
+           <widget class="QSpinBox" name="titleBarLeftMargin">
             <property name="minimum">
              <number>0</number>
             </property>
@@ -463,7 +463,7 @@ padding:</string>
            </spacer>
           </item>
           <item row="1" column="2">
-           <widget class="QDoubleSpinBox" name="titlebarBottomMargin">
+           <widget class="QDoubleSpinBox" name="titleBarBottomMargin">
             <property name="enabled">
              <bool>true</bool>
             </property>
@@ -510,7 +510,7 @@ padding:</string>
              <set>Qt::AlignCenter</set>
             </property>
             <property name="buddy">
-             <cstring>titlebarBottomMargin</cstring>
+             <cstring>titleBarBottomMargin</cstring>
             </property>
            </widget>
           </item>
@@ -603,16 +603,16 @@ padding:</string>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>titlebarTopMargin</tabstop>
+  <tabstop>titleBarTopMargin</tabstop>
   <tabstop>lockTitleBarTopBottomMargins</tabstop>
-  <tabstop>titlebarLeftMargin</tabstop>
+  <tabstop>titleBarLeftMargin</tabstop>
   <tabstop>lockTitleBarLeftRightMargins</tabstop>
   <tabstop>titleSidePadding</tabstop>
   <tabstop>titleAlignment</tabstop>
   <tabstop>titleSidePadding_2</tabstop>
-  <tabstop>titlebarRightMargin</tabstop>
+  <tabstop>titleBarRightMargin</tabstop>
   <tabstop>lockTitleBarLeftRightMargins_2</tabstop>
-  <tabstop>titlebarBottomMargin</tabstop>
+  <tabstop>titleBarBottomMargin</tabstop>
   <tabstop>lockTitleBarTopBottomMargins_2</tabstop>
   <tabstop>percentMaximizedTopBottomMargins</tabstop>
  </tabstops>

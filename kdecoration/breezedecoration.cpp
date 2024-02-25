@@ -187,12 +187,12 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 {
     auto c = client().toStrongRef();
     Q_ASSERT(c);
-    if (hideTitleBar() && !m_internalSettings->useTitlebarColorForAllBorders())
+    if (hideTitleBar() && !m_internalSettings->useTitleBarColorForAllBorders())
         return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
 
     QColor activeTitleBarColor = m_decorationColors->active()->titleBarBase;
     QColor inactiveTitlebarColor = m_decorationColors->inactive()->titleBarBase;
-    if (m_internalSettings->opaqueTitleBar() || (m_internalSettings->opaqueMaximizedTitlebars() && c->isMaximized())) {
+    if (m_internalSettings->opaqueTitleBar() || (m_internalSettings->opaqueMaximizedTitleBars() && c->isMaximized())) {
         activeTitleBarColor.setAlpha(255);
         inactiveTitlebarColor.setAlpha(255);
     }
@@ -788,9 +788,9 @@ void Decoration::recalculateBorders()
             extLeft = extSize;
             extRight = extSize;
         } else {
-            if (m_internalSettings->titlebarLeftMargin() == 0)
+            if (m_internalSettings->titleBarLeftMargin() == 0)
                 extLeft = extSize;
-            if (m_internalSettings->titlebarRightMargin() == 0)
+            if (m_internalSettings->titleBarRightMargin() == 0)
                 extRight = extSize;
         }
     }
@@ -1125,7 +1125,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         painter->setPen(Qt::NoPen);
 
         QColor windowBorderColor;
-        if (m_internalSettings->useTitlebarColorForAllBorders()) {
+        if (m_internalSettings->useTitleBarColorForAllBorders()) {
             windowBorderColor = titleBarColor();
         } else
             windowBorderColor = c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Frame);
@@ -1244,7 +1244,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 
         QRectF titleRectF(m_titleRect); // use a QRectF because QRects have quirks when getting their corner positions
         qreal separatorYCoOrd = qreal(titleRectF.bottom()) - qreal(separatorHeight) / 2;
-        if (m_internalSettings->useTitlebarColorForAllBorders()) {
+        if (m_internalSettings->useTitleBarColorForAllBorders()) {
             painter->drawLine(QPointF(titleRectF.bottomLeft().x() + borderLeft(), separatorYCoOrd),
                               QPointF(titleRectF.bottomRight().x() - borderRight(), separatorYCoOrd));
         } else {
@@ -1705,8 +1705,8 @@ void Decoration::setScaledTitleBarTopBottomMargins()
     auto c = client().toStrongRef();
     Q_ASSERT(c);
 
-    qreal topMargin = m_internalSettings->titlebarTopMargin();
-    qreal bottomMargin = m_internalSettings->titlebarBottomMargin();
+    qreal topMargin = m_internalSettings->titleBarTopMargin();
+    qreal bottomMargin = m_internalSettings->titleBarBottomMargin();
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
         m_scaledIntegratedRoundedRectangleBottomPadding = m_internalSettings->integratedRoundedRectangleBottomPadding() * settings()->smallSpacing();
@@ -1725,8 +1725,8 @@ void Decoration::setScaledTitleBarTopBottomMargins()
 
 void Decoration::setScaledTitleBarSideMargins()
 {
-    m_scaledTitleBarLeftMargin = int(qreal(m_internalSettings->titlebarLeftMargin()) * qreal(settings()->smallSpacing()));
-    m_scaledTitleBarRightMargin = int(qreal(m_internalSettings->titlebarRightMargin()) * qreal(settings()->smallSpacing()));
+    m_scaledTitleBarLeftMargin = int(qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing()));
+    m_scaledTitleBarRightMargin = int(qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing()));
 
     // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
@@ -1764,7 +1764,7 @@ void Decoration::updateBlur()
     if (isOpaqueTitleBar()) { // opaque titlebar colours
         setBlurRegion(QRegion());
     } else { // transparent titlebar colours
-        if (m_internalSettings->blurTransparentTitlebars()) { // enable blur
+        if (m_internalSettings->blurTransparentTitleBars()) { // enable blur
             calculateWindowAndTitleBarShapes(true); // refreshes m_windowPath
             setBlurRegion(QRegion(m_windowPath.toFillPolygon().toPolygon()));
         } else

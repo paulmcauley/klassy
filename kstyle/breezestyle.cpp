@@ -1394,11 +1394,11 @@ void Style::drawToolsAreaBackground(QPainter *painter, Helper *_helper, ToolsAre
     QBrush color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
 
     if (_helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255) {
-        if ((mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitlebars()) {
+        if ((mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitleBars()) {
             QColor colorWithoutAlpha = color.color();
             colorWithoutAlpha.setAlpha(255);
             color.setColor(colorWithoutAlpha);
-        } else if (_helper->decorationConfig()->blurTransparentTitlebars()) { // apply blur to tools area
+        } else if (_helper->decorationConfig()->blurTransparentTitleBars()) { // apply blur to tools area
             if ((mw->testAttribute(Qt::WA_WState_Created) || mw->internalWinId())) {
                 // PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence
                 // blurring the entire window and causing kornerbug

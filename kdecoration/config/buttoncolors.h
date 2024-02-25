@@ -239,8 +239,8 @@ private:
         m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
     QList<KDecoration2::DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
                                                                              // including the dummy custom button added in m_visibleButtonsOrder
-    QColor m_systemTitlebarTextActive;
-    QColor m_systemTitlebarTextInactive;
+    QColor m_systemTitleBarTextActive;
+    QColor m_systemTitleBarTextInactive;
     QColor m_systemTitlebarBackgroundActive;
     QColor m_systemTitlebarBackgroundInactive;
 };

@@ -99,7 +99,7 @@
     </entry>
 
     <entry name="DrawTitleBarSeparator" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <!-- ______________________________WINDOW______________________________ -->
@@ -114,7 +114,7 @@
         <default>false</default>
     </entry>
 
-    <entry name="UseTitlebarColorForAllBorders" type = "Bool">
+    <entry name="UseTitleBarColorForAllBorders" type = "Bool">
         <default>true</default>
     </entry>
     
@@ -260,13 +260,13 @@
             </values>
         </parameter>
         <choices>
-            <choice name="TitlebarText" />
-            <choice name="TitlebarTextNegativeClose" />
+            <choice name="TitleBarText" />
+            <choice name="TitleBarTextNegativeClose" />
             <choice name="Accent" />
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
         </choices>
-        <default>TitlebarText</default>
+        <default>TitleBarText</default>
     </entry>
 
 
@@ -310,7 +310,7 @@
         </parameter>
         <min>1.0</min>
         <max>21.0</max>
-        <default>2.3</default>
+        <default>1.5</default>
     </entry>
 
     <entry name="ButtonBackgroundColors$(ButtonBackgroundColorsActive)" type="Enum">
@@ -321,8 +321,8 @@
             </values>
         </parameter>
         <choices>
-            <choice name="TitlebarText" />
-            <choice name="TitlebarTextNegativeClose" />
+            <choice name="TitleBarText" />
+            <choice name="TitleBarTextNegativeClose" />
             <choice name="Accent" />
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
@@ -391,7 +391,7 @@
                 <value>Active</value>
             </values>
         </parameter>
-        <default>50</default>
+        <default>60</default>
         <min>0</min>
         <max>100</max>
     </entry>
@@ -805,13 +805,13 @@
   </group>
 
   <group name="TitleBarSpacing">
-    <entry name="TitlebarTopMargin" type = "Double">
+    <entry name="TitleBarTopMargin" type = "Double">
        <default>1.7</default>
        <min>0</min>
        <max>25</max>
     </entry>
 
-    <entry name="TitlebarBottomMargin" type = "Double">
+    <entry name="TitleBarBottomMargin" type = "Double">
        <default>1.7</default>
        <min>0</min>
        <max>25</max>
@@ -821,13 +821,13 @@
         <default>true</default>
     </entry>
 
-    <entry name="TitlebarLeftMargin" type = "Int">
+    <entry name="TitleBarLeftMargin" type = "Int">
        <default>0</default>
        <min>0</min>
        <max>30</max>
     </entry>
 
-    <entry name="TitlebarRightMargin" type = "Int">
+    <entry name="TitleBarRightMargin" type = "Int">
        <default>0</default>
        <min>0</min>
        <max>30</max>
@@ -866,26 +866,26 @@
 
   <group name="TitleBarOpacity">
     <!-- Titlebar opacity for active window -->
-    <entry name="ActiveTitlebarOpacity" type = "Int">
+    <entry name="ActiveTitleBarOpacity" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
 
     <!-- Titlebar opacity for inactive window -->
-    <entry name="InactiveTitlebarOpacity" type = "Int">
+    <entry name="InactiveTitleBarOpacity" type = "Int">
        <default>100</default>
        <min>0</min>
        <max>100</max>
     </entry>
 
     <!-- opaque maximized titlebars -->
-    <entry name="OpaqueMaximizedTitlebars" type = "Bool">
+    <entry name="OpaqueMaximizedTitleBars" type = "Bool">
         <default>true</default>
     </entry>
 
     <!-- blur transparent titlebars -->
-    <entry name="BlurTransparentTitlebars" type = "Bool">
+    <entry name="BlurTransparentTitleBars" type = "Bool">
         <default>true</default>
     </entry>
 
@@ -922,7 +922,7 @@
             <choice name="WindowOutlineCustomColor" />
             <choice name="WindowOutlineCustomWithContrast" />
         </choices>
-        <default>WindowOutlineAccentWithContrast</default>
+        <default>WindowOutlineAccentColor</default>
     </entry>
 
 
@@ -975,8 +975,8 @@
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">87</default>
-       <default param ="Inactive">50</default>
+       <default param ="Active">60</default>
+       <default param ="Inactive">25</default>
        <min>0</min>
        <max>100</max>
     </entry>
@@ -1001,8 +1001,8 @@
                 <value>Active</value>
             </values>
         </parameter>
-       <default param ="Active">87</default>
-       <default param ="Inactive">50</default>
+       <default param ="Active">60</default>
+       <default param ="Inactive">25</default>
        <min>0</min>
        <max>100</max>
     </entry>

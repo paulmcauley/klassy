@@ -56,9 +56,9 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     DecorationColors decorationColors(false);
     decorationColors.generateDecorationColors(QApplication::palette(),
                                               m_internalSettings,
-                                              m_systemTitlebarTextActive,
+                                              m_systemTitleBarTextActive,
                                               m_systemTitlebarBackgroundActive,
-                                              m_systemTitlebarTextInactive,
+                                              m_systemTitleBarTextInactive,
                                               m_systemTitlebarBackgroundInactive);
     setOverrideComboBoxColorIcons(true, decorationColors);
     setOverrideComboBoxColorIcons(false, decorationColors);
@@ -773,7 +773,7 @@ void ButtonColors::updateChanged()
         modified = true;
     else if (m_ui->onPoorIconContrastActive->currentIndex() != m_internalSettings->onPoorIconContrast(true))
         modified = true;
-    else if (m_ui->onPoorIconContrastActive->currentIndex() != m_internalSettings->onPoorIconContrast(false))
+    else if (m_ui->onPoorIconContrastInactive->currentIndex() != m_internalSettings->onPoorIconContrast(false))
         modified = true;
     else if (m_ui->poorIconContrastThresholdActive->value() != m_internalSettings->poorIconContrastThreshold(true))
         modified = true;
@@ -841,8 +841,8 @@ void ButtonColors::setSystemTitlebarColors()
     DecorationColors::readSystemTitleBarColors(config,
                                                m_systemTitlebarBackgroundActive,
                                                m_systemTitlebarBackgroundInactive,
-                                               m_systemTitlebarTextActive,
-                                               m_systemTitlebarTextInactive);
+                                               m_systemTitleBarTextActive,
+                                               m_systemTitleBarTextInactive);
 }
 
 void ButtonColors::setOverrideComboBoxColorIcons(const bool active, DecorationColors &decorationColors)
@@ -908,7 +908,7 @@ void ButtonColors::refreshCloseButtonIconColorState(bool active)
     QString WhiteWhenHoveredPressedString;
 
     bool negativeCloseBackground = buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose
+        || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose
         || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights;
 
     if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
@@ -931,7 +931,7 @@ void ButtonColors::refreshCloseButtonIconColorState(bool active)
     }
 
     if (buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentNegativeClose
-        || buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose
+        || buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose
         || buttonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
         visible = true;
         closeButtonIconColorState = closeButtonIconColorState | static_cast<uint32_t>(CloseButtonIconColorState::NegativeWhenHoveredPressed);
@@ -945,10 +945,10 @@ void ButtonColors::refreshCloseButtonIconColorState(bool active)
 
     QString closeIconAsSelectedString;
     switch (buttonIconColors->currentIndex()) {
-    case InternalSettings::EnumButtonIconColors::TitlebarText:
+    case InternalSettings::EnumButtonIconColors::TitleBarText:
         closeIconAsSelectedString = i18n("Titlebar text");
         break;
-    case InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose:
+    case InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose:
         closeIconAsSelectedString = i18n("Negative");
         break;
     case InternalSettings::EnumButtonIconColors::Accent:
@@ -1071,7 +1071,7 @@ void ButtonColors::setNegativeCloseBackgroundHoverPressState(bool active)
 
     if (m_internalSettings->showCloseBackgroundNormally(active)
         && (buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose
-            || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose)) {
+            || buttonBackgroundColors->currentIndex() == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose)) {
         negativeCloseBackgroundHoverPress->setText(i18n("Negative close on hover/press only"));
         negativeCloseBackgroundHoverPress->setVisible(true);
     } else if (m_internalSettings->showBackgroundNormally(active)
@@ -1581,9 +1581,9 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     DecorationColors decorationPalette(false);
     decorationPalette.generateDecorationColors(QApplication::palette(),
                                                temporaryColorSettings,
-                                               m_systemTitlebarTextActive,
+                                               m_systemTitleBarTextActive,
                                                m_systemTitlebarBackgroundActive,
-                                               m_systemTitlebarTextInactive,
+                                               m_systemTitleBarTextInactive,
                                                m_systemTitlebarBackgroundInactive,
                                                "",
                                                true,
@@ -1648,7 +1648,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     painter->setPen(Qt::NoPen);
 
     // background colors
-    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarText);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitleBarText);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
     };
@@ -1671,9 +1671,9 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         }
     }
     QIcon titlebarText(pixmap);
-    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarText, titlebarText);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitleBarText, titlebarText);
 
-    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose);
+    temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
     };
@@ -1694,8 +1694,8 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             painter->drawRect(twoByThree[i][2]);
         }
     }
-    QIcon backgroundTitlebarTextNegativeClose(pixmap);
-    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitlebarTextNegativeClose, backgroundTitlebarTextNegativeClose);
+    QIcon backgroundTitleBarTextNegativeClose(pixmap);
+    uiButtonBackgroundColors->setItemIcon(InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose, backgroundTitleBarTextNegativeClose);
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
@@ -1775,7 +1775,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     uiButtonIconColors->setIconSize(QSize(24, 24));
     temporaryColorSettings->setButtonBackgroundColors(active, uiButtonBackgroundColors->currentIndex());
 
-    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarText);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitleBarText);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
     };
@@ -1795,10 +1795,10 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             painter->drawRect(twoByThree[i][2]);
         }
     }
-    QIcon iconTitlebarText(pixmap);
-    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarText, iconTitlebarText);
+    QIcon iconTitleBarText(pixmap);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitleBarText, iconTitleBarText);
 
-    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose);
+    temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
         buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
     };
@@ -1818,8 +1818,8 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
             painter->drawRect(twoByThree[i][2]);
         }
     }
-    QIcon iconTitlebarTextNegativeClose(pixmap);
-    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitlebarTextNegativeClose, iconTitlebarTextNegativeClose);
+    QIcon iconTitleBarTextNegativeClose(pixmap);
+    uiButtonIconColors->setItemIcon(InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose, iconTitleBarTextNegativeClose);
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
@@ -2291,9 +2291,9 @@ bool ButtonColors::event(QEvent *ev)
             DecorationColors decorationColors(false);
             decorationColors.generateDecorationColors(QApplication::palette(),
                                                       m_internalSettings,
-                                                      m_systemTitlebarTextActive,
+                                                      m_systemTitleBarTextActive,
                                                       m_systemTitlebarBackgroundActive,
-                                                      m_systemTitlebarTextInactive,
+                                                      m_systemTitleBarTextInactive,
                                                       m_systemTitlebarBackgroundInactive);
             setOverrideComboBoxColorIcons(true, decorationColors);
             setOverrideComboBoxColorIcons(false, decorationColors);

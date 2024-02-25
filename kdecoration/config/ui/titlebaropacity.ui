@@ -67,7 +67,7 @@
              <string>Inactive window:</string>
             </property>
             <property name="buddy">
-             <cstring>inactiveTitlebarOpacity_2</cstring>
+             <cstring>inactiveTitleBarOpacity_2</cstring>
             </property>
            </widget>
           </item>
@@ -94,7 +94,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="activeTitlebarOpacity_2">
+             <widget class="QSpinBox" name="activeTitleBarOpacity_2">
               <property name="suffix">
                <string> %</string>
               </property>
@@ -151,7 +151,7 @@
              </spacer>
             </item>
             <item>
-             <widget class="QSpinBox" name="inactiveTitlebarOpacity_2">
+             <widget class="QSpinBox" name="inactiveTitleBarOpacity_2">
               <property name="suffix">
                <string> %</string>
               </property>
@@ -186,7 +186,7 @@
            </layout>
           </item>
           <item row="4" column="1">
-           <widget class="QSlider" name="inactiveTitlebarOpacity">
+           <widget class="QSlider" name="inactiveTitleBarOpacity">
             <property name="minimum">
              <number>0</number>
             </property>
@@ -225,7 +225,7 @@
              <string>Active window:</string>
             </property>
             <property name="buddy">
-             <cstring>activeTitlebarOpacity_2</cstring>
+             <cstring>activeTitleBarOpacity_2</cstring>
             </property>
            </widget>
           </item>
@@ -274,7 +274,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSlider" name="activeTitlebarOpacity">
+           <widget class="QSlider" name="activeTitleBarOpacity">
             <property name="minimum">
              <number>0</number>
             </property>
@@ -336,7 +336,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QCheckBox" name="blurTransparentTitlebars">
+       <widget class="QCheckBox" name="blurTransparentTitleBars">
         <property name="text">
          <string>Blur titlebars that have transparency</string>
         </property>
@@ -359,7 +359,7 @@
        </spacer>
       </item>
       <item row="2" column="0">
-       <widget class="QCheckBox" name="opaqueMaximizedTitlebars">
+       <widget class="QCheckBox" name="opaqueMaximizedTitleBars">
         <property name="text">
          <string>Always make maximized titlebars opaque</string>
         </property>
@@ -381,12 +381,12 @@
   </layout>
  </widget>
  <tabstops>
-  <tabstop>activeTitlebarOpacity_2</tabstop>
-  <tabstop>activeTitlebarOpacity</tabstop>
-  <tabstop>inactiveTitlebarOpacity_2</tabstop>
-  <tabstop>inactiveTitlebarOpacity</tabstop>
-  <tabstop>opaqueMaximizedTitlebars</tabstop>
-  <tabstop>blurTransparentTitlebars</tabstop>
+  <tabstop>activeTitleBarOpacity_2</tabstop>
+  <tabstop>activeTitleBarOpacity</tabstop>
+  <tabstop>inactiveTitleBarOpacity_2</tabstop>
+  <tabstop>inactiveTitleBarOpacity</tabstop>
+  <tabstop>opaqueMaximizedTitleBars</tabstop>
+  <tabstop>blurTransparentTitleBars</tabstop>
   <tabstop>applyOpacityToHeader</tabstop>
  </tabstops>
  <resources>
