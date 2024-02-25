@@ -131,6 +131,8 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
         KSharedConfig::Ptr config(KSharedConfig::openConfig(configFile));
         KSharedConfig::Ptr presetsConfig(KSharedConfig::openConfig(presetsConfigFile));
 
+        PresetsModel::importBundledPresets(presetsConfig.data());
+
         if (!PresetsModel::isPresetPresent(presetsConfig.data(), parser.value(loadWindecoPresetOption))) {
             output << i18n("ERROR: Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" not found.") << Qt::endl;
             return {CommandLineProcessResult::Status::Error};
