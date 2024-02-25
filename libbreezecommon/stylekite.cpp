@@ -23,6 +23,7 @@ void RenderStyleKite18By18::renderRestoreIcon()
 {
     // first determine the size of the maximize icon so the restore icon can align with it vertically
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+    Q_UNUSED(maximizePenWidth);
 
     QPen pen = m_painter->pen();
     QPolygonF poly;

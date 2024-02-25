@@ -567,6 +567,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
 {
     // first determine the size of the maximize icon so the restore icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+    Q_UNUSED(maximizePenWidth);
 
     QPen pen = m_painter->pen();
 
@@ -793,6 +794,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+    Q_UNUSED(maximizePenWidth);
 
     bool isOddPenWidth = true;
     qreal roundedBoldPenWidth;
