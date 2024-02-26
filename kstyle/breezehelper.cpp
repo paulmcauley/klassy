@@ -1520,31 +1520,29 @@ void Helper::renderDecorationButton(QPainter *painter,
             painter->setBrush(Qt::NoBrush);
         }
 
-        qreal cornerRadius = 0;
-        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-            || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-            if (decorationConfig()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
-                cornerRadius = decorationConfig()->buttonCustomCornerRadius();
-            } else {
-                cornerRadius = decorationConfig()->cornerRadius();
-            }
-        }
-
-        if (cornerRadius < 0.2 && decorationConfig()->buttonShape() != InternalSettings::EnumButtonShape::ShapeSmallCircle)
-            painter->drawRect(QRectF(2, 2, 14, 14));
-        else if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-                 || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped)
-            painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
-        else { // circle
+        if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallCircle) {
             if (outlineColor.isValid()) {
                 painter->drawEllipse(QRectF(1, 1, 16, 16)); // have to shrink outlined circle otherwise it gets clipped
             } else {
                 painter->drawEllipse(QRectF(0, 0, 18, 18));
             }
+        } else {
+            qreal cornerRadius = 0;
+            if (decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
+                || decorationConfig()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+                if (decorationConfig()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+                    cornerRadius = decorationConfig()->buttonCustomCornerRadius();
+                } else {
+                    cornerRadius = decorationConfig()->cornerRadius();
+                }
+            }
+
+            if (cornerRadius < 0.2 && decorationConfig()->cornerRadius() < 2)
+                painter->drawRect(QRectF(2, 2, 14, 14));
+            else
+                painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
         }
     }
 
