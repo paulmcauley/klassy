@@ -171,29 +171,26 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(decorationColors.buttonPalette(iconType.type)->active()->backgroundHover);
 
-                    qreal cornerRadius = 0;
-                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-                        || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-                        if (m_internalSettings->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
-                            cornerRadius = m_internalSettings->buttonCustomCornerRadius();
-                        } else {
-                            cornerRadius = m_internalSettings->cornerRadius();
-                        }
-                    }
-
-                    if (cornerRadius < 0.2 && m_internalSettings->buttonShape() != InternalSettings::EnumButtonShape::ShapeSmallCircle)
-                        painter->drawRect(QRectF(2, 2, 12, 12));
-                    else if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
-                             || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
-                             || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-                             || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped)
-                        painter->drawRoundedRect(QRectF(2, 2, 12, 12), 20, 20, Qt::RelativeSize);
-                    else { // circle
+                    if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallCircle) {
                         boldButtons ? painter->drawEllipse(QRectF(0, 0, 16, 16)) : painter->drawEllipse(QRectF(1, 1, 14, 14));
-                    }
+                    } else {
+                        qreal cornerRadius = 0;
+                        if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeSmallRoundedSquare
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
+                            || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+                            if (m_internalSettings->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
+                                cornerRadius = m_internalSettings->buttonCustomCornerRadius();
+                            } else {
+                                cornerRadius = m_internalSettings->cornerRadius();
+                            }
+                        }
 
+                        if ((cornerRadius < 0.2 && m_internalSettings->cornerRadius() < 2))
+                            painter->drawRect(QRectF(2, 2, 12, 12));
+                        else
+                            painter->drawRoundedRect(QRectF(2, 2, 12, 12), 20, 20, Qt::RelativeSize);
+                    }
                     pen.setColor(textColor = decorationColors.buttonPalette(iconType.type)->active()->foregroundHover);
                 }
 
