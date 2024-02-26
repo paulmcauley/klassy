@@ -1719,8 +1719,8 @@ void Decoration::setScaledTitleBarTopBottomMargins()
         bottomMargin *= maximizedScaleFactor;
     }
 
-    m_scaledTitleBarTopMargin = int(settings()->smallSpacing() * topMargin);
-    m_scaledTitleBarBottomMargin = int(settings()->smallSpacing() * bottomMargin);
+    m_scaledTitleBarTopMargin = qRound(settings()->smallSpacing() * topMargin);
+    m_scaledTitleBarBottomMargin = qRound(settings()->smallSpacing() * bottomMargin);
 }
 
 void Decoration::setScaledTitleBarSideMargins()
