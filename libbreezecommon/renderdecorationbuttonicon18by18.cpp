@@ -705,8 +705,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
     pen.setColor(penColor);
 
     if (cornerRelativePercent > -0.001) {
-        if (m_devicePixelRatio >= 1.5)
-            pen.setCapStyle(Qt::PenCapStyle::RoundCap);
+        pen.setCapStyle(Qt::PenCapStyle::RoundCap);
         QPainterPath roundedForegroundPath;
         roundedForegroundPath.addRoundedRect(foregroundPathItem->path().boundingRect(),
                                              cornerRelativePercent,
@@ -715,19 +714,21 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
         foregroundPathItem->setPath(roundedForegroundPath);
 
         QPainterPath roundedBackgroundPath;
-        qreal cornerRadius = foregroundPathItem->path().boundingRect().width() * cornerRelativePercent / 100.0f;
-        qreal doubleCornerRadius = cornerRadius * 2;
+        qreal cornerRadiusForeground = foregroundPathItem->path().boundingRect().width() * cornerRelativePercent / 100.0f;
+        qreal cornerRadiusBackground = cornerRadiusForeground + penWidthToLocal(pen);
+        qreal doubleCornerRadiusBackground = cornerRadiusBackground * 2;
+
         roundedBackgroundPath.moveTo(backgroundPathItem->path().boundingRect().topLeft());
-        roundedBackgroundPath.lineTo(backgroundPathItem->path().boundingRect().topRight() - QPointF(cornerRadius, 0));
-        roundedBackgroundPath.arcMoveTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadius,
+        roundedBackgroundPath.lineTo(backgroundPathItem->path().boundingRect().topRight() - QPointF(cornerRadiusBackground, 0));
+        roundedBackgroundPath.arcMoveTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadiusBackground,
                                         backgroundPathItem->path().boundingRect().topRight().y(),
-                                        doubleCornerRadius,
-                                        doubleCornerRadius,
+                                        doubleCornerRadiusBackground,
+                                        doubleCornerRadiusBackground,
                                         90);
-        roundedBackgroundPath.arcTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadius,
+        roundedBackgroundPath.arcTo(backgroundPathItem->path().boundingRect().topRight().x() - doubleCornerRadiusBackground,
                                     backgroundPathItem->path().boundingRect().topRight().y(),
-                                    doubleCornerRadius,
-                                    doubleCornerRadius,
+                                    doubleCornerRadiusBackground,
+                                    doubleCornerRadiusBackground,
                                     90,
                                     -90);
         roundedBackgroundPath.lineTo(backgroundPathItem->path().boundingRect().bottomRight());
