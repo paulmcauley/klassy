@@ -1,5 +1,4 @@
 #include "breezetoolsareamanager.h"
-#include "breezedecorationsettingsprovider.h"
 #include "breezepropertynames.h"
 
 #include <QMainWindow>
@@ -129,8 +128,6 @@ void ToolsAreaManager::configUpdated()
     } else {
         _config = KSharedConfig::openConfig();
     }
-    _watcher = KConfigWatcher::create(_config);
-    connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated, Qt::ConnectionType::UniqueConnection);
 
     _colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
 

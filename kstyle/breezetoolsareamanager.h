@@ -3,7 +3,6 @@
 
 #include "breezehelper.h"
 #include "breezestyle.h"
-#include <KConfigWatcher>
 #include <KSharedConfig>
 #include <QApplication>
 #include <QObject>
@@ -36,7 +35,6 @@ private:
     Helper *_helper;
     QHash<const QMainWindow *, QVector<QPointer<QToolBar>>> _windows;
     KSharedConfigPtr _config;
-    KConfigWatcher::Ptr _watcher;
     QPalette _palette = QPalette();
     AppListener *_listener;
     bool _colorSchemeHasHeaderColor;
