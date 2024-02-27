@@ -14,7 +14,7 @@
 <a name="overview"/>
 
 ## Overview
-_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration and Application Style plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _Klassy_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then enable in System Settings -> Appearance -> Window Decorations, and also in System Settings -> Appearance -> Application Style.
+_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop. [Initially taking inspiration from the iconography of KDE 1](https://forum.kde.org/viewtopic.php?f=285&t=138602?raw=true), the _Klassy_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then make sure it is enabled in System Settings -> Appearance -> Window Decorations, in System Settings -> Appearance -> Application Style and in System Settings -> Appearance -> Icons.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icons
@@ -55,24 +55,22 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 
 * Configurable animations
 
-* Ability to load icons from the system icon theme. For example, the following is with the quasi-Windows 11-style _Cobalt_ icon theme:
-![Screenshot of using system icon theme](screenshots/use_system_icon_theme.png?raw=true "Screenshot of using system icon theme")
+* Ability to load icons from the system icon theme. `window-*-symbolic` icons are recommended for this purpose. If the icons have been designed properly with SVG CSS properties then they will be colourized by default. You can also force the colourization of any symbolic icon by checking the _Force-colourize icons_ window decoration setting.
 
 &nbsp;
 
 <a name="installation"/>
 
 ## Installation
-_Klassy_ from version 4.0 onwards requires at least __Plasma 5.25__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_Klassy_ version 5.0 requires at least __Plasma 5.27__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
 [Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
-> NB: for OpenSUSE Leap you will [first need to install newer "Argon" KDE packages](https://en.opensuse.org/SDB:KDE_repositories), otherwise you could corrupt your system!
 
 &nbsp;
 
-Raw binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly" -- a .rpm or .deb file from one of the selected distributions should also work on other distributions.
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
 
 &nbsp;
 &nbsp;
@@ -81,14 +79,13 @@ Raw binary packages are also available from the Open Build Service link above if
 ### Compile from source
 ### Step 1: First, Install Dependencies
 #### OpenSUSE Tumbleweed/Leap build dependencies
-(Leap requires newer KDE packages from https://en.opensuse.org/SDB:KDE_repositories first):
 ```
-sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5DBus-devel libqt5-qtx11extras-devel libkdecoration2-devel kcoreaddons-devel kguiaddons-devel kconfigwidgets-devel kwindowsystem-devel ki18n-devel kiconthemes-devel kpackage-devel libQt5QuickControls2-devel frameworkintegration-devel kcmutils-devel kirigami2-devel
+sudo zypper in cmake extra-cmake-modules libQt5Core-devel libQt5Gui-devel libQt5DBus-devel libqt5-qtx11extras-devel libkdecoration2-devel kcoreaddons-devel kguiaddons-devel kconfigwidgets-devel kwindowsystem-devel ki18n-devel kiconthemes-devel kpackage-devel libQt5QuickControls2-devel frameworkintegration-devel kcmutils-devel kirigami2-devel libqt5-qtsvg-devel libQt5Xml-devel
 ```
 
 #### Debian/Ubuntu/KDE Neon build dependencies
 ```
-sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev libkf5style-dev libkf5kcmutils-dev kirigami2-dev
+sudo apt install build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext cmake libkf5iconthemes-dev libkf5package-dev libkf5style-dev libkf5kcmutils-dev kirigami2-dev libqt5svg5-dev
 ```
 
 #### Arch/Manjaro build dependencies
@@ -99,7 +96,7 @@ sudo pacman -S kdecoration qt5-declarative qt5-x11extras cmake make gcc extra-cm
 #### Fedora build dependencies
 ```
 sudo dnf install cmake extra-cmake-modules
-sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11Extras)" "cmake(KF5GuiAddons)" "cmake(KF5WindowSystem)" "cmake(KF5I18n)" "cmake(KDecoration2)" "cmake(KF5CoreAddons)" "cmake(KF5ConfigWidgets)" "cmake(KF5IconThemes)" "cmake(KF5Package)" "cmake(Qt5Quick)" "cmake(KF5FrameworkIntegration)" "cmake(KF5KCMUtils)" "cmake(KF5Kirigami2)"
+sudo dnf install "cmake(Qt5Core)" "cmake(Qt5Gui)" "cmake(Qt5DBus)" "cmake(Qt5X11Extras)" "cmake(KF5GuiAddons)" "cmake(KF5WindowSystem)" "cmake(KF5I18n)" "cmake(KDecoration2)" "cmake(KF5CoreAddons)" "cmake(KF5ConfigWidgets)" "cmake(KF5IconThemes)" "cmake(KF5Package)" "cmake(Qt5Quick)" "cmake(KF5FrameworkIntegration)" "cmake(KF5KCMUtils)" "cmake(KF5Kirigami2)" "cmake(Qt5Svg)"
 ```
 
 ### Step 2: Then, build and install
@@ -117,16 +114,15 @@ Uninstall build script:
 <a name="icons"/>
 
 ## System icon theme
-To make your Plasma Desktop fully consistent, there are also matching system icon themes. These add consistent titlebar button icons to certain minor context menus in Plasma, and also add consistent GTK application titlebars (for Firefox to have consistent titlebar icons, it is recommended to set the system GNOME/GTK Application style to Adwaita as Breeze is buggy). For example, _Klassy-with-Square-highlight_:
-> <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with Square highlight icon theme" width="512">
+To make your Plasma Desktop fully consistent, Klassy auto-generates "Klassy" and "Klassy Dark" system icon themes whenever a window-decoration setting changes. These add consistent titlebar button icons to certain minor context menus in Plasma, and also add consistent GTK application titlebar icons (for Firefox to have consistent titlebar icons on Wayland, it is recommended to set the system GNOME/GTK Application style to Adwaita as Breeze is buggy).
+> <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with  icon theme" width="512">
 
-To obtain these icon themes go to System Settings->Appearance->Icons->Get New Icons... and search for "klassy". Then download your theme of choice to match your Button icon style and Button highlight style:
-> ![Screenshot of downloading matching Klassy system icons](screenshots/icon_download.png?raw=true "Screenshot of downloading matching Klassy system icons")
+These icons inherit the _Breeze_ icon theme by default, only overriding the titlebar button icons. Another icon theme may be inherited by changing the setting in the Window Decoration settings under the _System Icon Generation..._ button.
 
-Alternatively, the icons can be downloaded from [the icons source repository](https://github.com/paulmcauley/klassy-icons/releases) and installed via System Settings->Appearance->Icons->Install from file...
+## Klassy Settings
+Klassy includes a settings application, `klassy-settings`. This shows Window Decoration and Application Style settings in one place.
 
-These icons inherit the _Breeze_ icon theme, only overriding the titlebar button icons. To inherit a different icon theme, go to ```~/.local/share/icons/``` and edit the ```Inherits``` line in your ```index.theme``` file.
-
+`klassy-settings` also has command-line options to allow Preset file imports, load Presets and generate system icons. Run `klassy-setttings --help` for details.
 
 <a name="donations"/>
 
