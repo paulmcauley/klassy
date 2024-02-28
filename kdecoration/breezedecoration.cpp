@@ -38,6 +38,7 @@
 #include <QTimer>
 
 #include <cmath>
+#include <mutex>
 
 K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();
                            registerPlugin<Breeze::ConfigWidget>();)
@@ -127,6 +128,8 @@ KSharedConfig::Ptr Decoration::s_kdeGlobalConfig = KSharedConfig::Ptr();
 
 using KDecoration2::ColorGroup;
 using KDecoration2::ColorRole;
+
+static std::mutex g_setGlobalLookAndFeelOptionsMutex;
 
 // cached shadow values
 static int g_sDecoCount = 0;
@@ -712,24 +715,32 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
     if (lookAndFeelPackageName == m_internalSettings->lookAndFeelSet()) {
         return;
     }
-    m_internalSettings->setLookAndFeelSet(lookAndFeelPackageName);
-    m_internalSettings->save();
 
-    QString gtkThemeName = KWindowSystem::isPlatformWayland() ? QStringLiteral("Adwaita") : QStringLiteral("Breeze");
+    // only allow one thread at a time to set the look-and-feel options
+    std::unique_lock<std::mutex> lock(g_setGlobalLookAndFeelOptionsMutex, std::try_to_lock);
+    if (lock.owns_lock()) {
+        m_internalSettings->setLookAndFeelSet(lookAndFeelPackageName);
+        m_internalSettings->save();
 
-    const QStringList leftPanelPackages = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
-                                           QStringLiteral("org.kde.klassylightleftpanel.desktop"),
-                                           QStringLiteral("org.kde.klassytwilightleftpanel.desktop")};
-    const QStringList bottomPanelPackages = {QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
-                                             QStringLiteral("org.kde.klassylightbottompanel.desktop"),
-                                             QStringLiteral("org.kde.klassytwilightbottompanel.desktop")};
+        QString gtkThemeName = KWindowSystem::isPlatformWayland() ? QStringLiteral("Adwaita") : QStringLiteral("Breeze");
 
-    if (leftPanelPackages.contains(lookAndFeelPackageName)) {
-        system("klassy-settings -w Klassy &");
-        DBusMessages::setGtkTheme(gtkThemeName);
-    } else if (bottomPanelPackages.contains(lookAndFeelPackageName)) {
-        system("klassy-settings -w \"Klassy bottom panel\" &");
-        DBusMessages::setGtkTheme(gtkThemeName);
+        const QStringList leftPanelPackages = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
+                                               QStringLiteral("org.kde.klassylightleftpanel.desktop"),
+                                               QStringLiteral("org.kde.klassytwilightleftpanel.desktop")};
+
+        if (leftPanelPackages.contains(lookAndFeelPackageName)) {
+            system("klassy-settings -w Klassy &");
+            DBusMessages::setGtkTheme(gtkThemeName);
+        } else {
+            const QStringList bottomPanelPackages = {QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
+                                                     QStringLiteral("org.kde.klassylightbottompanel.desktop"),
+                                                     QStringLiteral("org.kde.klassytwilightbottompanel.desktop")};
+
+            if (bottomPanelPackages.contains(lookAndFeelPackageName)) {
+                system("klassy-settings -w \"Klassy bottom panel\" &");
+                DBusMessages::setGtkTheme(gtkThemeName);
+            }
+        }
     }
 }
 
