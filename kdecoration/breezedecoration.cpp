@@ -826,7 +826,7 @@ void Decoration::updateButtonsGeometry()
     qreal bWidth = 0;
     const int &smallButtonPaddedWidth = m_smallButtonPaddedHeight;
     qreal verticalIconOffsetNormal = 0;
-    qreal bHeightMenuGrouped; // used only for the menu button with Integrated rounded rectangle, grouped
+    qreal bHeightMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
     qreal verticalIconOffsetMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
     qreal horizontalIconOffsetLeftButtons = 0;
     qreal horizontalIconOffsetLeftFullHeightClose = 0;
