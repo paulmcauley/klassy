@@ -1,12 +1,13 @@
 # Klassy
 
-##### Table of Contents  
+##### Table of Contents
 [Overview](#overview)  
 [Installation](#installation)  
 >[Pre-built packages](#prebuilt)  
->[Compile from source](#compile)
+>[Compile from source](#compile)  
 
-[System icon theme](#icons)   
+[System icon theme](#icons)  
+[Klassy Settings](#klassy-settings)  
 [Donations](#donations)
 
 &nbsp;
@@ -36,7 +37,7 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 
 * Full-height Rectangular (_ClassikStyles_ preset) or Circular (_Classik-Aurorae_ preset) button highlights:
 > ![Full-height Rectangle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
-> 
+>
 > (Above-left configuration: Background shape: Full-height Rectangle, Titlebar side margins: 0, Right-hand button spacing: 0, Button width margins Right-hand buttons: 10, Highlight using: Background
 >
 > Above-right configuration: Background shape: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5, Highlight using: Background )
@@ -118,6 +119,8 @@ To make your Plasma Desktop fully consistent, Klassy auto-generates "Klassy" and
 > <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with  icon theme" width="512">
 
 These icons inherit the _Breeze_ icon theme by default, only overriding the titlebar button icons. Another icon theme may be inherited by changing the setting in the Window Decoration settings under the _System Icon Generation..._ button.
+
+<a name="klassy-settings"/>
 
 ## Klassy Settings
 Klassy includes a settings application, `klassy-settings`. This shows Window Decoration and Application Style settings in one place.
