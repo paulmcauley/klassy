@@ -7806,8 +7806,19 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         palette = QApplication::palette();
     }
 
-    DecorationButtonPalette decorationButtonPalette(buttonType);
-    decorationButtonPalette.generate(_helper->decorationConfig(), _helper->decorationColors());
+    // active button states which are used for MDI titlebars only
+    DecorationButtonPalette decorationButtonPaletteMdi(buttonType);
+    decorationButtonPaletteMdi.generate(_helper->decorationConfig(), _helper->decorationColors(), true, true); //generate active button colours only
+
+    //generate a different DecorationColors for buttons on a toolbar. These set the titlebar background to the toolbar background, and use the inactive button states
+    DecorationColors decorationColorsToolbar(false, true);
+    palette.setCurrentColorGroup(QPalette::Active);
+    const QColor toolbarBase(palette.color(QPalette::Window));
+    const QColor toolbarText(KColorUtils::mix(toolbarBase, palette.color(QPalette::WindowText), 0.7));
+    //generate inactive decoration colours only
+    decorationColorsToolbar.generateDecorationColors(palette, _helper->decorationConfig(), QColor(), QColor(), toolbarText, toolbarBase, "", true, false);
+    DecorationButtonPalette decorationButtonPaletteToolbar(buttonType);
+    decorationButtonPaletteToolbar.generate(_helper->decorationConfig(), &decorationColorsToolbar, true, false); //generate inactive button colours only);
 
     // convenience class to map color to icon mode
     struct IconData {
@@ -7824,61 +7835,61 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         // state off icons
         {QIcon::Normal, // used for standard widgets and inactive MDI window titlebars (hence using inactive colours)
          QIcon::Off,
-         decorationButtonPalette.inactive()->foregroundNormal,
-         decorationButtonPalette.inactive()->cutOutForegroundNormal,
-         decorationButtonPalette.inactive()->backgroundNormal,
-         decorationButtonPalette.inactive()->outlineNormal},
+         decorationButtonPaletteToolbar.inactive()->foregroundNormal,
+         decorationButtonPaletteToolbar.inactive()->cutOutForegroundNormal,
+         decorationButtonPaletteToolbar.inactive()->backgroundNormal,
+         decorationButtonPaletteToolbar.inactive()->outlineNormal},
 
         {QIcon::Selected, // used for active MDI window titlebars
          QIcon::Off,
-         decorationButtonPalette.active()->foregroundNormal,
-         decorationButtonPalette.active()->cutOutForegroundNormal,
-         decorationButtonPalette.active()->backgroundNormal,
-         decorationButtonPalette.active()->outlineNormal},
+         decorationButtonPaletteMdi.active()->foregroundNormal,
+         decorationButtonPaletteMdi.active()->cutOutForegroundNormal,
+         decorationButtonPaletteMdi.active()->backgroundNormal,
+         decorationButtonPaletteMdi.active()->outlineNormal},
 
         {QIcon::Active, // hover colours, standard widgets and inactive MDI titlebars
          QIcon::Off,
-         decorationButtonPalette.inactive()->foregroundHover,
-         decorationButtonPalette.inactive()->cutOutForegroundHover,
-         decorationButtonPalette.inactive()->backgroundHover,
-         decorationButtonPalette.inactive()->outlineHover},
+         decorationButtonPaletteToolbar.inactive()->foregroundHover,
+         decorationButtonPaletteToolbar.inactive()->cutOutForegroundHover,
+         decorationButtonPaletteToolbar.inactive()->backgroundHover,
+         decorationButtonPaletteToolbar.inactive()->outlineHover},
 
         {QIcon::Disabled,
          QIcon::Off,
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->foregroundNormal, 0.2),
+         ColorTools::alphaMix(decorationButtonPaletteToolbar.inactive()->foregroundNormal, 0.2),
          false,
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->backgroundNormal, 0.2),
-         ColorTools::alphaMix(decorationButtonPalette.inactive()->outlineNormal, 0.2)},
+         ColorTools::alphaMix(decorationButtonPaletteToolbar.inactive()->backgroundNormal, 0.2),
+         ColorTools::alphaMix(decorationButtonPaletteToolbar.inactive()->outlineNormal, 0.2)},
 
         // state on icons
         {QIcon::Normal, // Pressed colours on a standard widget / inactive
          QIcon::On,
-         decorationButtonPalette.inactive()->foregroundPress,
-         decorationButtonPalette.inactive()->cutOutForegroundPress,
-         decorationButtonPalette.inactive()->backgroundPress,
-         decorationButtonPalette.inactive()->outlinePress},
+         decorationButtonPaletteToolbar.inactive()->foregroundPress,
+         decorationButtonPaletteToolbar.inactive()->cutOutForegroundPress,
+         decorationButtonPaletteToolbar.inactive()->backgroundPress,
+         decorationButtonPaletteToolbar.inactive()->outlinePress},
 
         {QIcon::Selected, // Pressed colours on MDI active titlebar
          QIcon::On,
-         decorationButtonPalette.active()->foregroundPress,
-         decorationButtonPalette.active()->cutOutForegroundPress,
-         decorationButtonPalette.active()->backgroundPress,
-         decorationButtonPalette.active()->outlinePress},
+         decorationButtonPaletteMdi.active()->foregroundPress,
+         decorationButtonPaletteMdi.active()->cutOutForegroundPress,
+         decorationButtonPaletteMdi.active()->backgroundPress,
+         decorationButtonPaletteMdi.active()->outlinePress},
 
         {QIcon::Active, // Same as Normal::On -- needed like this for compatibility in drawToolButtonLabelControl
          QIcon::On,
-         decorationButtonPalette.inactive()->foregroundPress,
-         decorationButtonPalette.inactive()->cutOutForegroundPress,
-         decorationButtonPalette.inactive()->backgroundPress,
-         decorationButtonPalette.inactive()->outlinePress},
+         decorationButtonPaletteToolbar.inactive()->foregroundPress,
+         decorationButtonPaletteToolbar.inactive()->cutOutForegroundPress,
+         decorationButtonPaletteToolbar.inactive()->backgroundPress,
+         decorationButtonPaletteToolbar.inactive()->outlinePress},
 
         // This is unused elsewhere, so use instead for Hovered on an active MDI titlebar (drawTitleBarComplexControl modified to use this in Klassy)
         {QIcon::Disabled,
          QIcon::On,
-         decorationButtonPalette.active()->foregroundHover,
-         decorationButtonPalette.active()->cutOutForegroundHover,
-         decorationButtonPalette.active()->backgroundHover,
-         decorationButtonPalette.active()->outlineHover},
+         decorationButtonPaletteMdi.active()->foregroundHover,
+         decorationButtonPaletteMdi.active()->cutOutForegroundHover,
+         decorationButtonPaletteMdi.active()->backgroundHover,
+         decorationButtonPaletteMdi.active()->outlineHover},
 
     };
 

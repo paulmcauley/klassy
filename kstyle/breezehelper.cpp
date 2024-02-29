@@ -131,29 +131,19 @@ void Helper::loadConfig()
     }
 
     if (generateColors) {
-        QColor systemActiveTitleBarColor, systemActiveTitleBarTextColor, systemInactiveTitleBarColor, systemInactiveTitleBarTextColor;
-
         DecorationColors::readSystemTitleBarColors(_config,
-                                                   systemActiveTitleBarColor,
-                                                   systemInactiveTitleBarColor,
-                                                   systemActiveTitleBarTextColor,
-                                                   systemInactiveTitleBarTextColor,
+                                                   _systemActiveTitleBarColor,
+                                                   _systemInactiveTitleBarColor,
+                                                   _systemActiveTitleBarTextColor,
+                                                   _systemInactiveTitleBarTextColor,
                                                    colorSchemePath);
-
-        palette.setCurrentColorGroup(QPalette::Active);
-        const QColor base(palette.color(QPalette::Window));
-        const QColor text(KColorUtils::mix(base, palette.color(QPalette::WindowText), 0.7));
-        const QColor mdiActiveTitleBarBase(systemActiveTitleBarColor); // used for MDI active titlebars only
-        const QColor mdiActiveTitleBarText(systemActiveTitleBarTextColor);
-        Q_UNUSED(systemInactiveTitleBarColor);
-        Q_UNUSED(systemInactiveTitleBarTextColor);
 
         _decorationColors->generateDecorationColors(palette,
                                                     _decorationConfig,
-                                                    mdiActiveTitleBarText,
-                                                    mdiActiveTitleBarBase,
-                                                    text,
-                                                    base,
+                                                    _systemActiveTitleBarTextColor,
+                                                    _systemActiveTitleBarColor,
+                                                    _systemInactiveTitleBarTextColor,
+                                                    _systemInactiveTitleBarColor,
                                                     _generateDecorationColorsOnDecorationColorSettingsUpdateUuid);
         _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
     }
