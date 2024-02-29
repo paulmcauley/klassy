@@ -20,7 +20,11 @@ class ConfigurationModule : public KCModule
     Q_OBJECT
 
 public:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    ConfigurationModule(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
+#else
     ConfigurationModule(QWidget *parent, const QVariantList &args);
+#endif
 
 public Q_SLOTS:
 
