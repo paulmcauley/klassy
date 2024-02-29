@@ -20,6 +20,9 @@ find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS 
 
 target_link_libraries(klassystyleconfig Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(klassystyleconfig KF${QT_MAJOR_VERSION}::CoreAddons KF${QT_MAJOR_VERSION}::ConfigCore KF${QT_MAJOR_VERSION}::ConfigWidgets KF${QT_MAJOR_VERSION}::I18n)
+if(QT_MAJOR_VERSION STREQUAL "6")
+    target_link_libraries(breezestyleconfig KF${QT_MAJOR_VERSION}::KCMUtils)
+endif()
 kcmutils_generate_desktop_file(klassystyleconfig)
 
 include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
