@@ -1,6 +1,6 @@
 ################# Qt/KDE #################
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons
     I18n
     Config
@@ -12,7 +12,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
 set(BREEZE_HAVE_QTQUICK ${Qt${QT_MAJOR_VERSION}Quick_FOUND})
 if( BREEZE_HAVE_QTQUICK )
-    find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+    find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
 endif()
 
 if (TARGET Qt5::Core)
@@ -22,14 +22,14 @@ elseif(NOT WIN32)
     set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
 endif()
 
-find_package( KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
-set_package_properties(KF5FrameworkIntegration PROPERTIES
-    DESCRIPTION "KF5 Framework Integration"
+find_package( KF${QT_MAJOR_VERSION}FrameworkIntegration ${KF${QT_MAJOR_VERSION}_MIN_VERSION} CONFIG )
+set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+    DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
     URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
     TYPE OPTIONAL
     PURPOSE "Required to use KStyle convenience functionalities in style")
 
-set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
+set(BREEZE_HAVE_KSTYLE ${KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND})
 
 
 ################# includes #################
@@ -95,18 +95,18 @@ kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
 add_library(klassy MODULE ${breeze_PART_SRCS})
 target_link_libraries(klassy Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 if( BREEZE_HAVE_QTQUICK )
-    target_link_libraries(klassy Qt::Quick KF5::CoreAddons KF5::Kirigami2)
+    target_link_libraries(klassy Qt::Quick KF${QT_MAJOR_VERSION}::CoreAddons KF${QT_MAJOR_VERSION}::Kirigami2)
 endif()
 if (TARGET Qt5::X11Extras)
     target_link_libraries(klassy Qt5::X11Extras)
 elseif (TARGET Qt6::Gui)
     target_link_libraries(klassy Qt6::GuiPrivate)
 endif()
-target_link_libraries(klassy KF5::CoreAddons KF5::ConfigCore KF5::ConfigWidgets KF5::GuiAddons KF5::IconThemes KF5::WindowSystem)
+target_link_libraries(klassy KF${QT_MAJOR_VERSION}::CoreAddons KF${QT_MAJOR_VERSION}::ConfigCore KF${QT_MAJOR_VERSION}::ConfigWidgets KF${QT_MAJOR_VERSION}::GuiAddons KF${QT_MAJOR_VERSION}::IconThemes KF${QT_MAJOR_VERSION}::WindowSystem)
 target_link_libraries(klassy klassycommon5)
 
-if(KF5FrameworkIntegration_FOUND)
-    target_link_libraries(klassy KF5::Style)
+if(KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND)
+    target_link_libraries(klassy KF${QT_MAJOR_VERSION}::Style)
 endif()
 
 if (WIN32)
