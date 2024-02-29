@@ -330,60 +330,52 @@ bool Decoration::hasNoSideBorders() const
 
 bool Decoration::isMaximized() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     return c->isMaximized() && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isMaximizedHorizontally() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     return c->isMaximizedHorizontally() && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isMaximizedVertically() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     return c->isMaximizedVertically() && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isLeftEdge() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::LeftEdge)) && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isRightEdge() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::RightEdge)) && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isTopEdge() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge)) && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::isBottomEdge() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::BottomEdge)) && !m_internalSettings->drawBorderOnMaximizedWindows();
 }
 
 bool Decoration::hideTitleBar() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     return m_internalSettings->hideTitleBar() && !c->isShaded();
 }
 } // end Breeze namespace

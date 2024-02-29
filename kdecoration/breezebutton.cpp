@@ -36,8 +36,7 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
     , m_animation(new QVariantAnimation(this))
     , m_isGtkCsdButton(false)
 {
-    auto c = decoration->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = decoration->client();
 
     // setup animation
     // It is important start and end value are of the same type, hence 0.0 and not just 0
@@ -65,7 +64,7 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
     setBackgroundVisibleSize((QSizeF(smallButtonBackgroundHeight, smallButtonBackgroundHeight)));
 
     // connections
-    connect(c.data(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
+    connect(c, SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
     connect(decoration, &Decoration::reconfigured, this, &Button::reconfigure);
     connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
     connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
@@ -88,38 +87,37 @@ Button::Button(QObject *parent, const QVariantList &args)
 Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
 {
     if (auto d = qobject_cast<Decoration *>(decoration)) {
-        auto c = d->client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = d->client();
 
         Button *b = new Button(type, d, parent);
         switch (type) {
         case DecorationButtonType::Close:
             b->setVisible(c->isCloseable());
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible);
             break;
 
         case DecorationButtonType::Maximize:
             b->setVisible(c->isMaximizeable());
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible);
             break;
 
         case DecorationButtonType::Minimize:
             b->setVisible(c->isMinimizeable());
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible);
             break;
 
         case DecorationButtonType::ContextHelp:
             b->setVisible(c->providesContextHelp());
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible);
             break;
 
         case DecorationButtonType::Shade:
             b->setVisible(c->isShadeable());
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible);
+            QObject::connect(c, &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible);
             break;
 
         case DecorationButtonType::Menu:
-            QObject::connect(c.data(), &KDecoration2::DecoratedClient::iconChanged, b, [b]() {
+            QObject::connect(c, &KDecoration2::DecoratedClient::iconChanged, b, [b]() {
                 b->update();
             });
             break;
@@ -143,8 +141,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     if (!m_d) {
         return;
     }
-    auto c = m_d->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = m_d->client();
 
     m_buttonPalette = m_d->decorationColors()->buttonPalette(type()); // this is in paint() in-case caching type on m_buttonPalette changes
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
@@ -268,8 +265,7 @@ void Button::drawIcon(QPainter *painter) const
     painter->setPen(pen);
 
     if (m_renderSystemIcon) {
-        auto c = m_d->client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = m_d->client();
         QString systemIconName;
         systemIconName = isChecked() ? m_systemIconCheckedName : m_systemIconName;
         SystemIconTheme iconRenderer(painter, iconWidth, systemIconName, m_d->internalSettings(), c->palette());
@@ -304,8 +300,7 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
     if (!m_d)
         return QColor();
 
-    auto c = m_d->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = m_d->client();
     const bool active = c->isActive();
 
     // return a variant of normal, hover and press colours, depending on state
@@ -401,8 +396,7 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
         return QColor();
     }
 
-    auto c = m_d->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = m_d->client();
     const bool active = c->isActive();
 
     // return a variant of normal, hover and press colours, depending on state
@@ -497,8 +491,7 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
     if (!m_d)
         return QColor();
 
-    auto c = m_d->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = m_d->client();
     const bool active = c->isActive();
 
     // return a variant of normal, hover and press colours, depending on state
@@ -591,8 +584,7 @@ bool Button::titlebarTextPinnedInversion() const
 {
     if (!m_d)
         return false;
-    auto c = m_d->client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = m_d->client();
     bool active = c->isActive();
 
     return type() == DecorationButtonType::OnAllDesktops
