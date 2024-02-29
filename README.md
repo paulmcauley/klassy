@@ -18,9 +18,10 @@
 _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop. Initially taking inspiration from the iconography of KDE 1, the _Klassy_ defaults are an attempt to create a usable and appealing look for the modern Plasma desktop. Install with the instructions below, and then make sure it is enabled in System Settings -> Appearance -> Window Decorations, in System Settings -> Appearance -> Application Style and in System Settings -> Appearance -> Icons.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
+>(Above Preset: Glassy Klassy, Colours: Klassy Dark)
 * Also provides _Oxygen/Breeze_ and _Redmond_ button icons
 * Provides both a Window Decoration and an Application Style so that icons in dockable panels and MDI applications consistently match the titlebar icons (make sure to enable both in your Plasma Appearance settings!):
-> [![Watch the demo video on enabling the Application Style](screenshots/video_dummy.png "Watch the demo video on enabling the Application Style")](http://paulmcauley.com/kde/classikstyles/ClassikStyles_ApplicationStyle_demo.mp4)
+> [![Watch the Klassy demo video](screenshots/video_dummy.png "Watch the Klassy demo video")](http://paulmcauley.com/kde/klassy/klassy_demo.webm)
 
 * Configurable button size, shape, translucency, colours and outlining
 
@@ -37,10 +38,6 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 
 * Full-height Rectangular (_ClassikStyles_ preset) or Circular (_Classik-Aurorae_ preset) button highlights:
 > ![Full-height Rectangle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/squareHighlight.gif?raw=true "Full-height Rectangle button highlight style, inheriting system highlight colours")![Circle button highlight style, inheriting system highlight colours](screenshots/highlight_gifs/circleHighlight.gif?raw=true "Circle button highlight style, inheriting system highlight colours")
->
-> (Above-left configuration: Background shape: Full-height Rectangle, Titlebar side margins: 0, Right-hand button spacing: 0, Button width margins Right-hand buttons: 10, Highlight using: Background
->
-> Above-right configuration: Background shape: Small Circle, Titlebar side margins: 3, Right-hand button spacing: 5, Highlight using: Background )
 
 * Ability to inherit system colour-scheme highlight colours for hover and focus, as well as titlebar colour. Auto-enhances contrast in cases where it is poor
 * Option to have matching titlebar colour and border colour
