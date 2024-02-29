@@ -58,8 +58,7 @@ void SettingsProvider::reconfigure()
 InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
 {
     // get the client
-    auto client = decoration->client().toStrongRef();
-    Q_ASSERT(client);
+    auto client = decoration->client();
 
     foreach (auto internalSettings, m_exceptions) {
         // discard disabled exceptions

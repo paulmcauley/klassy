@@ -188,8 +188,7 @@ void Decoration::setOpacity(qreal value)
 //________________________________________________________________
 QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     if (hideTitleBar() && !m_internalSettings->useTitleBarColorForAllBorders())
         return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
 
@@ -211,8 +210,7 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 //________________________________________________________________
 QColor Decoration::titleBarSeparatorColor() const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
@@ -229,8 +227,7 @@ QColor Decoration::overriddenOutlineColorAnimateIn() const
 {
     QColor color = m_thinWindowOutlineOverride;
     if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
         QColor originalColor;
         c->isActive() ? originalColor = m_originalThinWindowOutlineActivePreOverride : originalColor = m_originalThinWindowOutlineInactivePreOverride;
 
@@ -247,8 +244,7 @@ QColor Decoration::overriddenOutlineColorAnimateIn() const
 QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationColor)
 {
     if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
         QColor originalColor;
         c->isActive() ? originalColor = m_originalThinWindowOutlineActivePreOverride : originalColor = m_originalThinWindowOutlineInactivePreOverride;
 
@@ -276,8 +272,7 @@ QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationCol
 //________________________________________________________________
 QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     if (m_animation->state() == QAbstractAnimation::Running && !returnNonAnimatedColor) {
         return KColorUtils::mix(m_decorationColors->inactive()->titleBarText, m_decorationColors->active()->titleBarText);
@@ -289,8 +284,7 @@ QColor Decoration::fontColor(bool returnNonAnimatedColor) const
 //________________________________________________________________
 void Decoration::init()
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     reconfigureMain(true);
     
@@ -377,7 +371,7 @@ void Decoration::init()
             Q_EMIT reconfigured(); // this will trigger Button::reconfigure
         }
     });
-    connect(c.data(), &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
+    connect(c, &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
 
     // buttons
     connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
@@ -388,29 +382,29 @@ void Decoration::init()
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
     connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
-    connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
-    connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
-    connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateShadowOnShadedChange);
-    connect(c.data(), &KDecoration2::DecoratedClient::captionChanged, this, [this]() {
+    connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
+    connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
+    connect(c, &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
+    connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
+    connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateShadowOnShadedChange);
+    connect(c, &KDecoration2::DecoratedClient::captionChanged, this, [this]() {
         // update the caption area
         update(titleBar());
     });
 
-    connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
-    connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateOpaque);
-    connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateBlur);
-    connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
-    connect(c.data(), &KDecoration2::DecoratedClient::sizeChanged, this, &Decoration::updateBlur);
+    connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
+    connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateOpaque);
+    connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateBlur);
+    connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
+    connect(c, &KDecoration2::DecoratedClient::sizeChanged, this, &Decoration::updateBlur);
 
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateOpaque);
+    connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
+    connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateOpaque);
 
-    connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
-    connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-    connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
-    connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
+    connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
     createButtons();
     updateShadow();
@@ -420,9 +414,8 @@ void Decoration::init()
 void Decoration::updateTitleBar()
 {
     auto s = settings();
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
-    // TODO: check whether isMaximized() should really be split into isMaximizedHorizontally() and isMaximizedVertically()
+    auto c = client();
+
     const bool maximized = isMaximized();
     int width, height, x, y;
     setScaledTitleBarTopBottomMargins();
@@ -450,8 +443,7 @@ void Decoration::updateTitleBar()
 void Decoration::updateAnimationState()
 {
     if (m_shadowAnimation->duration() > 0) {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
         m_shadowAnimation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
         m_shadowAnimation->setEasingCurve(c->isActive() ? QEasingCurve::OutCubic : QEasingCurve::InCubic);
         if (m_shadowAnimation->state() != QAbstractAnimation::Running) {
@@ -463,8 +455,7 @@ void Decoration::updateAnimationState()
     }
 
     if (m_animation->duration() > 0) {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
         m_animation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
         if (m_animation->state() != QAbstractAnimation::Running) {
             m_animation->start();
@@ -544,8 +535,7 @@ int Decoration::borderSize(bool bottom) const
 //________________________________________________________________
 void Decoration::reconfigureMain(const bool noUpdateShadow)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     SettingsProvider::self()->reconfigure();
     m_internalSettings = SettingsProvider::self()->internalSettings(this);
@@ -655,8 +645,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
     }
 
     if (generateColors) {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
 
         QColor activeTitleBarBase = c->color(ColorGroup::Active, ColorRole::TitleBar);
         QColor inactiveTitlebarBase = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
@@ -685,8 +674,7 @@ void Decoration::generateDecorationColorsOnClientPaletteUpdate(const QPalette &c
 
 void Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     QPalette clientPalette = c->palette();
 
     SettingsProvider::self()->reconfigure();
@@ -698,8 +686,7 @@ void Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteAr
 
 void Decoration::generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray uuid)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     QPalette clientPalette = c->palette();
 
     SettingsProvider::self()->reconfigure();
@@ -747,8 +734,7 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
 //________________________________________________________________
 void Decoration::recalculateBorders()
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     auto s = settings();
 
     // setScaledTitleBarTopBottomMargins();
@@ -827,8 +813,6 @@ void Decoration::updateButtonsGeometryDelayed()
 void Decoration::updateButtonsGeometry()
 {
     const auto s = settings();
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
 
     setScaledTitleBarSideMargins();
 
@@ -892,7 +876,7 @@ void Decoration::updateButtonsGeometry()
     int numLeftButtons = m_leftButtons->buttons().count();
 
     for (int i = 0; i < numLeftButtons; i++) {
-        Button *button = static_cast<Button *>(m_leftButtons->buttons()[i].data());
+        Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
 
         qreal bHeight = bHeightNormal;
         qreal verticalIconOffset = verticalIconOffsetNormal;
@@ -956,11 +940,11 @@ void Decoration::updateButtonsGeometry()
     }
 
     if (rightmostLeftVisibleIndex != -1) {
-        static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex].data())->setRightmostLeftVisible();
+        static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex])->setRightmostLeftVisible();
 
         if (menuButtonVisibleIndexLeft != -1) {
             for (int i = menuButtonVisibleIndexLeft - 1; i >= 0; i--) {
-                Button *button = static_cast<Button *>(m_leftButtons->buttons()[i].data());
+                Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
                 if (button->isEnabled() && button->isVisible()) {
                     button->setVisibleBeforeMenu();
                     break;
@@ -976,7 +960,7 @@ void Decoration::updateButtonsGeometry()
     int numRightButtons = m_rightButtons->buttons().count();
 
     for (int i = 0; i < numRightButtons; i++) {
-        Button *button = static_cast<Button *>(m_rightButtons->buttons()[i].data());
+        Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
 
         qreal bHeight = bHeightNormal;
         qreal verticalIconOffset = verticalIconOffsetNormal;
@@ -1041,11 +1025,11 @@ void Decoration::updateButtonsGeometry()
     }
 
     if (rightmostRightVisibleIndex != -1) {
-        static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex].data())->setRightmostRightVisible();
+        static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex])->setRightmostRightVisible();
 
         if (menuButtonVisibleIndexRight != -1) {
             for (int i = menuButtonVisibleIndexRight - 1; i >= 0; i--) {
-                Button *button = static_cast<Button *>(m_rightButtons->buttons()[i].data());
+                Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
                 if (button->isEnabled() && button->isVisible()) {
                     button->setVisibleBeforeMenu();
                     break;
@@ -1067,7 +1051,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const int hPadding = m_scaledTitleBarLeftMargin;
 
-        auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex].data());
+        auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex]);
         firstButton->setFlag(Button::FlagFirstInList);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
@@ -1101,7 +1085,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
         const int hPadding = m_scaledTitleBarRightMargin;
 
-        auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex].data());
+        auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex]);
         lastButton->setFlag(Button::FlagLastInList);
         if (isRightEdge()) {
             lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));
@@ -1122,8 +1106,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
     m_painting = true;
 
     // TODO: optimize based on repaintRegion
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     auto s = settings();
 
     calculateWindowAndTitleBarShapes();
@@ -1176,8 +1159,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 
 void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
     auto s = settings();
 
     if (!windowShapeOnly || c->isShaded()) {
@@ -1213,8 +1195,7 @@ void Decoration::calculateWindowAndTitleBarShapes(const bool windowShapeOnly)
 //________________________________________________________________
 void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
 {
-    const auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    const auto c = client();
 
     if (!m_titleRect.intersects(repaintRegion)) {
         return;
@@ -1399,8 +1380,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
-        auto c = client().toStrongRef();
-        Q_ASSERT(c);
+        auto c = client();
 
         int padding = m_internalSettings->titleSidePadding() * settings()->smallSpacing();
 
@@ -1448,8 +1428,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const bool isThinWindowOutlineOverride)
 {
     auto s = settings();
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     // if the decoration is painting, abandon setting the shadow.
     // Setting the shadow at the same time as paint() being executed causes a EGL_BAD_SURFACE error and a SEGFAULT from Plasma 5.26 onwards.
@@ -1523,8 +1502,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 //________________________________________________________________
 QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
     bool windowOutlineNone =
@@ -1645,8 +1623,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QC
 
 void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &color)
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     if (on) {
         if (!c->isMaximized()) {
@@ -1666,8 +1643,7 @@ void Decoration::setThinWindowOutlineOverrideColor(const bool on, const QColor &
 
 void Decoration::setThinWindowOutlineColor()
 {
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     if (m_thinWindowOutlineOverride.isValid()) {
         m_thinWindowOutline = overriddenOutlineColorAnimateIn();
@@ -1713,8 +1689,7 @@ void Decoration::setThinWindowOutlineColor()
 void Decoration::setScaledTitleBarTopBottomMargins()
 {
     // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     qreal topMargin = m_internalSettings->titleBarTopMargin();
     qreal bottomMargin = m_internalSettings->titleBarBottomMargin();
@@ -1756,8 +1731,7 @@ void Decoration::setScaledCornerRadius()
 void Decoration::updateOpaque()
 {
     // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     if (isOpaqueTitleBar()) { // opaque titlebar colours
         if (c->isMaximized())
@@ -1791,8 +1765,7 @@ bool Decoration::isOpaqueTitleBar()
 int Decoration::titleBarSeparatorHeight() const
 {
     // access client
-    auto c = client().toStrongRef();
-    Q_ASSERT(c);
+    auto c = client();
 
     if (m_internalSettings->drawTitleBarSeparator() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
         qreal height = 1;
