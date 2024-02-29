@@ -67,7 +67,7 @@ target_link_libraries(klassydecoration_STATIC
         KDecoration2::KDecoration
     PRIVATE
         #KF6::ConfigCore
-        klassycommon5
+        klassycommon
         KF6::CoreAddons
         KF6::ConfigWidgets
         KF6::GuiAddons
@@ -88,7 +88,7 @@ set_target_properties(klassydecoration PROPERTIES
 
 target_link_libraries(klassydecoration
     PRIVATE
-        klassycommon5
+        klassycommon
         klassydecoration_STATIC
         KF6::CoreAddons
         KF6::ConfigWidgets
