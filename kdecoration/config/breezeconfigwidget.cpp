@@ -42,8 +42,8 @@ namespace Breeze
 {
 
 //_________________________________________________________
-ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
-    : KCModule(parent, args)
+ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList &args)
+    : KCModule(parent, data, args)
     , m_configuration(KSharedConfig::openConfig(QStringLiteral("klassy/klassyrc")))
     , m_presetsConfiguration(KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc")))
     , m_changed(false)
@@ -60,7 +60,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     initKlassydecorationConfigQrc();
 
     // configuration
-    m_ui.setupUi(this);
+    m_ui.setupUi(widget());
 
     m_ui.defaultExceptions->setKConfig(m_configuration, m_presetsConfiguration);
     m_ui.exceptions->setKConfig(m_configuration, m_presetsConfiguration);
@@ -73,12 +73,15 @@ ConfigWidget::ConfigWidget(QWidget *parent, const QVariantList &args)
     presetsButtonVLayout->setContentsMargins(0, 0, 0, 0);
     m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
     connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
-    this->setTabOrder(m_presetsButton, m_ui.tabWidget);
+
+    //TODO:: check changed from this to widget()
+    widget()->setTabOrder(m_presetsButton, m_ui.tabWidget);
 
     // hide the title if a kcmshell dialog
-    if (this->window()) {
+    //TODO:: check changed from this to widget()
+    if (widget()->window()) {
         window()->setMinimumWidth(775);
-        m_kPageWidget = this->window()->findChild<KPageWidget *>();
+        m_kPageWidget = widget()->window()->findChild<KPageWidget *>();
         if (m_kPageWidget) {
             KPageWidgetItem *currentPage = m_kPageWidget->currentPage();
             if (currentPage)
@@ -251,7 +254,7 @@ void ConfigWidget::load()
         m_ui.defaultExceptionsSpacer->setGeometry(QRect());
     }
     m_ui.exceptions->setExceptions(exceptions.get());
-    setChanged(false);
+    setNeedsSave(false);
     m_loading = false;
 }
 
@@ -304,7 +307,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     // sync configuration for exceptions
     m_configuration->sync();
 
-    setChanged(false);
+    setNeedsSave(false);
     Q_EMIT saved();
 
     if (!saveAsPresetName.isEmpty()) { // set the preset
@@ -378,7 +381,7 @@ void ConfigWidget::defaults()
 
     updateIconsStackedWidgetVisible();
     updateBackgroundShapeStackedWidgetVisible();
-    setChanged(!isDefaults());
+    setNeedsSave(!isDefaults());
 
     m_processingDefaults = false;
     m_defaultsPressed = true;
@@ -501,13 +504,7 @@ void ConfigWidget::updateChanged()
     else if (m_ui.exceptions->isChanged())
         modified = true;
 
-    setChanged(modified);
-}
-
-//_______________________________________________
-void ConfigWidget::setChanged(bool value)
-{
-    Q_EMIT changed(value);
+    setNeedsSave(modified);
 }
 
 void ConfigWidget::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before)
@@ -556,7 +553,7 @@ void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
 
 void ConfigWidget::dialogChanged(bool changed)
 {
-    setChanged(changed);
+    setNeedsSave(changed);
 }
 
 void ConfigWidget::systemIconGenerationButtonClicked()
