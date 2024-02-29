@@ -203,7 +203,7 @@ private:
     void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
     void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
     void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
-    QSharedPointer<KDecoration2::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
+    std::shared_ptr<KDecoration2::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
     //*@name border size
