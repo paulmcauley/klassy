@@ -5,7 +5,7 @@ set(PROJECT_VERSION_MAJOR 5)
 
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=0)
 
-set(KF5_MIN_VERSION "5.102.0")
+set(KF_MIN_VERSION "5.102.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 set(QT_MIN_VERSION "5.15.2")
 
@@ -13,7 +13,7 @@ include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
-find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -35,7 +35,7 @@ if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
     set(WITH_DECORATIONS OFF)
 endif()
 
-find_package(KF5KCMUtils ${KF5_MIN_VERSION} REQUIRED)
+find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION} REQUIRED)
 
 
 find_package(KDecoration2 REQUIRED)
@@ -48,7 +48,7 @@ add_subdirectory(layout-templates)
 add_subdirectory(look-and-feel)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
-    find_package(KF5I18n ${KF5_MIN_VERSION} CONFIG REQUIRED)
+    find_package(KF${QT_MAJOR_VERSION}I18n ${KF_MIN_VERSION} CONFIG REQUIRED)
     ki18n_install(po)
 endif()
 

@@ -1,6 +1,6 @@
 add_definitions(-DTRANSLATION_DOMAIN="klassy_kwin_deco")
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
+find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus Widgets)
 
 ################# includes #################
@@ -66,14 +66,14 @@ target_link_libraries(klassydecoration_STATIC
         Qt::DBus
         KDecoration2::KDecoration
     PRIVATE
-        #KF5::ConfigCore
+        #KF6::ConfigCore
         klassycommon5
-        KF5::CoreAddons
-        KF5::ConfigWidgets
-        KF5::GuiAddons
-        KF5::I18n
-        KF5::IconThemes
-        KF5::WindowSystem
+        KF6::CoreAddons
+        KF6::ConfigWidgets
+        KF6::GuiAddons
+        KF6::I18n
+        KF6::IconThemes
+        KF6::WindowSystem
 )
 
 ### build library
@@ -89,12 +89,12 @@ target_link_libraries(klassydecoration
     PRIVATE
         klassycommon5
         klassydecoration_STATIC
-        KF5::CoreAddons
-        KF5::ConfigWidgets
-        KF5::GuiAddons
-        KF5::I18n
-        KF5::IconThemes
-        KF5::WindowSystem)
+        KF6::CoreAddons
+        KF6::ConfigWidgets
+        KF6::GuiAddons
+        KF6::I18n
+        KF6::IconThemes
+        KF6::WindowSystem)
 
 install(TARGETS klassydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 

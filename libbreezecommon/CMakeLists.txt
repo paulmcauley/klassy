@@ -1,7 +1,7 @@
 ################# dependencies #################
 ### Qt/KDE
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigWidgets IconThemes I18n)
+find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigWidgets IconThemes I18n)
 find_package(KDecoration2 REQUIRED)
 
 ################# breezestyle target #################
@@ -44,12 +44,12 @@ target_link_libraries(klassycommon5
 
         KDecoration2::KDecoration
     PRIVATE
-        KF5::GuiAddons
-        KF5::ConfigCore
-        KF5::ConfigGui
-        KF5::ConfigWidgets
-        KF5::IconThemes
-        KF5::I18n)
+        KF${QT_MAJOR_VERSION}::GuiAddons
+        KF${QT_MAJOR_VERSION}::ConfigCore
+        KF${QT_MAJOR_VERSION}::ConfigGui
+        KF${QT_MAJOR_VERSION}::ConfigWidgets
+        KF${QT_MAJOR_VERSION}::IconThemes
+        KF${QT_MAJOR_VERSION}::I18n)
 
 set_target_properties(klassycommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}
