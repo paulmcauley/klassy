@@ -671,7 +671,6 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
         return;
     if (!m_d)
         return;
-    auto s = m_d->settings();
 
     painter->save();
     painter->translate(m_fullHeightVisibleBackgroundOffset);

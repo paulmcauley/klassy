@@ -145,8 +145,8 @@ static int g_thinWindowOutlineStyleInactive = 0;
 static QColor g_thinWindowOutlineColorActive = Qt::black;
 static QColor g_thinWindowOutlineColorInactive = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
-static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
-static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
+static std::shared_ptr<KDecoration2::DecorationShadow> g_sShadow;
+static std::shared_ptr<KDecoration2::DecorationShadow> g_sShadowInactive;
 
 //________________________________________________________________
 Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -171,7 +171,7 @@ Decoration::~Decoration()
     g_sDecoCount--;
     if (g_sDecoCount == 0) {
         // last deco destroyed, clean up shadow
-        g_sShadow.clear();
+        g_sShadow.reset();
     }
 }
 
@@ -353,14 +353,14 @@ void Decoration::init()
 
     updateTitleBar();
     auto s = settings();
-    connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
-    connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
+    connect(s.get(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
+    connect(s.get(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
     // a change in font might cause the borders to change
-    connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
-    connect(s.data(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
-    connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
-    connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
+    connect(s.get(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
+    connect(s.get(), &KDecoration2::DecorationSettings::fontChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
+    connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
+    connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateBlur); // for the case when a border with transparency
 
     // color cache update
     // The slot will only update if the UUID has changed, hence preventing unnecessary multiple colour cache updates
@@ -374,13 +374,13 @@ void Decoration::init()
     connect(c, &KDecoration2::DecoratedClient::paletteChanged, this, &Decoration::generateDecorationColorsOnClientPaletteUpdate);
 
     // buttons
-    connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
-    connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
-    connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(s.get(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(s.get(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
-    connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
-    connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
+    connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
     connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
@@ -413,7 +413,6 @@ void Decoration::init()
 //________________________________________________________________
 void Decoration::updateTitleBar()
 {
-    auto s = settings();
     auto c = client();
 
     const bool maximized = isMaximized();
@@ -1427,7 +1426,6 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 //________________________________________________________________
 void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const bool isThinWindowOutlineOverride)
 {
-    auto s = settings();
     auto c = client();
 
     // if the decoration is painting, abandon setting the shadow.
@@ -1468,8 +1466,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyle(false)
             || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
             || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness())) {
-        g_sShadow.clear();
-        g_sShadowInactive.clear();
+        g_sShadow.reset();
+        g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
         g_shadowStrength = m_internalSettings->shadowStrength();
         g_shadowColor = m_internalSettings->shadowColor();
@@ -1483,8 +1481,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
     }
 
-    QSharedPointer<KDecoration2::DecorationShadow> nonCachedShadow;
-    QSharedPointer<KDecoration2::DecorationShadow> *shadow = nullptr;
+    std::shared_ptr<KDecoration2::DecorationShadow> nonCachedShadow;
+    std::shared_ptr<KDecoration2::DecorationShadow> *shadow = nullptr;
 
     if (noCache)
         shadow = &nonCachedShadow;
@@ -1500,7 +1498,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 }
 
 //________________________________________________________________
-QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride)
+std::shared_ptr<KDecoration2::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride)
 {
     auto c = client();
 
@@ -1614,7 +1612,7 @@ QSharedPointer<KDecoration2::DecorationShadow> Decoration::createShadowObject(QC
     }
     painter.end();
 
-    auto ret = QSharedPointer<KDecoration2::DecorationShadow>::create();
+    auto ret = std::make_shared<KDecoration2::DecorationShadow>();
     ret->setPadding(padding);
     ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
     ret->setShadow(shadowTexture);
