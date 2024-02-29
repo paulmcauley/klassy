@@ -36,7 +36,7 @@ set(breeze_settings_SOURCES
 add_executable(klassy-settings ${breeze_settings_SOURCES} )
 target_link_libraries(klassy-settings Qt::Core Qt::Gui Qt::Widgets Qt::Svg Qt::Xml)
 target_link_libraries(klassy-settings KF${QT_MAJOR_VERSION}::I18n KF${QT_MAJOR_VERSION}::KCMUtils KF${QT_MAJOR_VERSION}::CoreAddons)
-target_link_libraries(klassy-settings klassycommon5)
+target_link_libraries(klassy-settings klassycommon)
 
 install(TARGETS klassy-settings ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 
