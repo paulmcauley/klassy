@@ -81,6 +81,10 @@ add_library(klassydecoration MODULE
     ${breezedecoration_SRCS}
     ${breezedecoration_config_PART_FORMS_HEADERS})
 
+set_target_properties(klassydecoration PROPERTIES
+    OUTPUT_NAME org.kde.klassy
+)
+
 target_link_libraries(klassydecoration
     PRIVATE
         klassycommon5
