@@ -74,6 +74,7 @@ target_link_libraries(klassydecoration_STATIC
         KF6::I18n
         KF6::IconThemes
         KF6::WindowSystem
+        KF6::KCMUtils
 )
 
 ### build library
@@ -94,7 +95,8 @@ target_link_libraries(klassydecoration
         KF6::GuiAddons
         KF6::I18n
         KF6::IconThemes
-        KF6::WindowSystem)
+        KF6::WindowSystem
+        KF6::KCMUtils)
 
 install(TARGETS klassydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 

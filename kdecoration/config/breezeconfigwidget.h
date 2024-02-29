@@ -53,7 +53,7 @@ class ConfigWidget : public KCModule
 
 public:
     //* constructor
-    explicit ConfigWidget(QWidget *, const QVariantList &);
+    explicit ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
 
     //* destructor
     virtual ~ConfigWidget();
@@ -108,8 +108,6 @@ protected Q_SLOTS:
     void updateWindowControlPreviewIcons();
 
 protected:
-    //* set changed state
-    void setChanged(bool);
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
