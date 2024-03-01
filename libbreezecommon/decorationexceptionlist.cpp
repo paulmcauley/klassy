@@ -156,7 +156,7 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
     QStringList keys = {"Enabled"};
 
     // write all items
-    for (auto key, keys) {
+    for (auto key : keys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
         if (!item || item->isEqual(true)) // don't write true to file as it's already the default
             continue;
