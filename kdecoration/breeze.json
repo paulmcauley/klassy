@@ -2,10 +2,7 @@
     "KPlugin": {
         "Description": "Customizable window decorations using the Klassy, Kite, Breeze or Redmond visual styles for the Plasma Desktop",
         "EnabledByDefault": true,
-        "Name": "Klassy",
-        "ServiceTypes": [
-            "org.kde.kdecoration2"
-        ]
+        "Name": "Klassy"
     },
     "X-KDE-ConfigModule": "kcm_klassydecoration",
     "org.kde.kdecoration2": {
