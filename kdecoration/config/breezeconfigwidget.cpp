@@ -78,9 +78,8 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     widget()->setTabOrder(m_presetsButton, m_ui.tabWidget);
 
     // hide the title if a kcmshell dialog
-    //TODO:: check changed from this to widget()
     if (widget()->window()) {
-        window()->setMinimumWidth(775);
+        widget()->window()->setMinimumWidth(775);
         m_kPageWidget = widget()->window()->findChild<KPageWidget *>();
         if (m_kPageWidget) {
             KPageWidgetItem *currentPage = m_kPageWidget->currentPage();
@@ -681,9 +680,10 @@ void ConfigWidget::updateWindowControlPreviewIcons()
 
 void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings::EnumButtonIconStyle::type iconStyle)
 {
-    QSize sizeScaled(qRound(size.width() * devicePixelRatioF()), qRound(size.height() * devicePixelRatioF()));
+    qreal dpr = widget()->devicePixelRatioF();
+    QSize sizeScaled(qRound(size.width() * dpr), qRound(size.height() * dpr));
     QPixmap pixmap(sizeScaled);
-    pixmap.setDevicePixelRatio(devicePixelRatioF());
+    pixmap.setDevicePixelRatio(dpr);
 
     pixmap.fill(QColor("#eeeff0"));
 
@@ -702,14 +702,14 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     int iconSpacing = 14;
 
     bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && devicePixelRatioF() >= 1.2));
+                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2));
     auto internalSettings = InternalSettingsPtr(new InternalSettings());
     internalSettings->setButtonIconStyle(iconStyle);
 
-    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons, devicePixelRatioF()));
+    auto [iconRenderer, localRenderingWidth](RenderDecorationButtonIcon::factory(internalSettings, painter.get(), false, boldIcons, dpr));
 
     QPen pen("#bcc1c5");
-    pen.setWidthF(PenWidth::Symbol * devicePixelRatioF());
+    pen.setWidthF(PenWidth::Symbol * dpr);
     pen.setCosmetic(true);
     painter->setPen(pen);
 
@@ -783,8 +783,14 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
         updateIcons();
         return QObject::eventFilter(obj, ev);
     } else if (ev->type() == QEvent::Show) {
-        connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons, Qt::ConnectionType::UniqueConnection);
-        connect(window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateWindowControlPreviewIcons, Qt::ConnectionType::UniqueConnection);
+        if (widget()->window()) {
+            connect(widget()->window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons, Qt::ConnectionType::UniqueConnection);
+            connect(widget()->window()->windowHandle(),
+                    &QWindow::screenChanged,
+                    this,
+                    &ConfigWidget::updateWindowControlPreviewIcons,
+                    Qt::ConnectionType::UniqueConnection);
+        }
         return QObject::eventFilter(obj, ev);
     }
 

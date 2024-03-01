@@ -22,7 +22,7 @@ class ShadowStyle : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~ShadowStyle();
 
     void save(const bool reloadKwinConfig = true);

@@ -22,7 +22,7 @@ class SystemIconGeneration : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit SystemIconGeneration(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit SystemIconGeneration(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~SystemIconGeneration();
 
     void save(const bool reloadKwinConfig = true);

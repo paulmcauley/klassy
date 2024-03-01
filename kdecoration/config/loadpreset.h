@@ -20,7 +20,7 @@ class LoadPreset : public QDialog
     Q_OBJECT
 
 public:
-    explicit LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~LoadPreset();
     void initPresetsList();
 
@@ -40,7 +40,7 @@ private:
     KSharedConfig::Ptr m_configuration;
     //* presets kconfiguration object
     KSharedConfig::Ptr m_presetsConfiguration;
-    QWidget *m_parent;
+    QObject *m_parent;
 };
 
 }
