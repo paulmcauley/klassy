@@ -28,7 +28,7 @@ target_link_libraries(klassydecoration
         klassycommon
         Qt::DBus
         KF6::CoreAddons
-        KF6::ConfigWidgets
+        KF6::ConfigGui
         KF6::GuiAddons
         KF6::I18n
         KF6::IconThemes

@@ -28,7 +28,6 @@ Dependencies:
     'frameworks/kcmutils': '@latest-kf6'
     'frameworks/kcodecs': '@latest-kf6'
     'frameworks/kconfig': '@latest-kf6'
-    'frameworks/kconfigwidgets': '@latest-kf6'
     'frameworks/kcoreaddons': '@latest-kf6'
     'frameworks/kguiaddons': '@latest-kf6'
     'frameworks/ki18n': '@latest-kf6'
