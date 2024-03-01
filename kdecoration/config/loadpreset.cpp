@@ -50,7 +50,7 @@ void LoadPreset::initPresetsList()
     m_ui->exportButton->setEnabled(false);
     m_ui->presetsList->clear();
     QStringList presets(PresetsModel::readPresetsList(m_presetsConfiguration.data()));
-    foreach (const QString presetName, presets) {
+    for (const QString presetName : presets) {
         m_ui->presetsList->addItem(presetName);
     }
     m_ui->presetsList->setFocus();

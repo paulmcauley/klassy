@@ -60,7 +60,7 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
     // get the client
     auto client = decoration->client();
 
-    foreach (auto internalSettings, m_exceptions) {
+    for (auto internalSettings : std::as_const(m_exceptions)) {
         // discard disabled exceptions
         if (!internalSettings->enabled()) {
             continue;
