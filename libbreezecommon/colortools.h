@@ -10,6 +10,7 @@
 #include "breezecommon_export.h"
 
 #include <QColor>
+#include <QIcon>
 #include <QImage>
 
 namespace Breeze
