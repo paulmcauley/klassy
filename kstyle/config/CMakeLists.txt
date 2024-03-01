@@ -13,7 +13,7 @@ set(CMAKE_AUTORCC ON)
 kcoreaddons_add_plugin(klassystyleconfig SOURCES
     ${kstyle_breeze_config_PART_SRCS}
     ${kstyle_breeze_config_PART_FORMS_HEADERS}
-    INSTALL_NAMESPACE "plasma/kcms/systemsettings_qwidgets"
+    INSTALL_NAMESPACE "kstyle_config"
 )
 
 target_link_libraries(klassystyleconfig Qt::Core Qt::Gui Qt::Widgets Qt::DBus)

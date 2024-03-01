@@ -1,7 +1,7 @@
 [Misc]
 Name=Klassy
 
-ConfigPage=plasma/kcms/systemsettings_qwidgets/klassystyleconfig
+ConfigPage=kstyle_config/klassystyleconfig
 Comment=Widget style for KDE Frameworks
 Comment[ar]=نمط ودجات أُطر عمل كدي
 Comment[az]=KDE Frameworks üçün Vidjet üslubu
