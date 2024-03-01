@@ -496,8 +496,8 @@ void Style::polishScrollArea(QAbstractScrollArea *scrollArea)
     // change viewport autoFill background.
     // do the same for all children if the background role is QPalette::Window
     viewport->setAutoFillBackground(false);
-    QList<QWidget *> children(viewport->findChildren<QWidget *>());
-    foreach (QWidget *child, children) {
+    const QList<QWidget *> children(viewport->findChildren<QWidget *>());
+    for (QWidget *child : children) {
         if (child->parent() == viewport && child->backgroundRole() == QPalette::Window) {
             child->setAutoFillBackground(false);
         }
@@ -1530,7 +1530,7 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
         painter.setBrush(background);
 
         // render
-        foreach (auto *child, children) {
+        for (auto *child : std::as_const(children)) {
             painter.drawRect(child->geometry());
         }
 
@@ -1560,7 +1560,7 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
         }
 
         // loop over found scrollbars
-        foreach (QScrollBar *scrollBar, scrollBars) {
+        for (QScrollBar *scrollBar : std::as_const(scrollBars)) {
             if (!(scrollBar && scrollBar->isVisible())) {
                 continue;
             }
@@ -3380,8 +3380,8 @@ QSize Style::tabWidgetSizeFromContents(const QStyleOption *option, const QSize &
     }
     QTabBar *tabBar = nullptr;
     QStackedWidget *stack = nullptr;
-    auto children(widget->children());
-    foreach (auto child, children) {
+    const auto children(widget->children());
+    for (auto child : children) {
         if (!tabBar) {
             tabBar = qobject_cast<QTabBar *>(child);
         }
@@ -7128,7 +7128,7 @@ bool Style::drawSliderComplexControl(const QStyleOptionComplex *option, QPainter
 
                 // calculate positions and draw lines
                 int position(sliderPositionFromValue(sliderOption->minimum, sliderOption->maximum, current, available) + fudge);
-                foreach (const QLine &tickLine, tickLines) {
+                for (const QLine &tickLine : std::as_const(tickLines)) {
                     if (horizontal) {
                         painter->drawLine(tickLine.translated(reverseTicks ? (rect.width() - position) : position, 0));
                     } else {
@@ -7400,7 +7400,7 @@ bool Style::drawTitleBarComplexControl(const QStyleOptionComplex *option, QPaint
                                                   SC_TitleBarSysMenu};
 
     // loop over supported buttons
-    foreach (const SubControl &subControl, subControls) {
+    for (const SubControl &subControl : subControls) {
         // skip if not requested
         if (!(titleBarOption->subControls & subControl)) {
             continue;
@@ -7739,8 +7739,8 @@ QIcon Style::toolBarExtensionIcon(StandardPixmap standardPixmap, const QStyleOpt
 
     // create icon and fill
     QIcon icon;
-    foreach (const IconData &iconData, iconTypes) {
-        foreach (const int &iconSize, iconSizes) {
+    for (const IconData &iconData : iconTypes) {
+        for (const int &iconSize : iconSizes) {
             // create pixmap
             QPixmap pixmap(iconSize, iconSize);
             pixmap.fill(Qt::transparent);
@@ -7907,8 +7907,8 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
     // output icon
     QIcon icon;
 
-    foreach (const IconData &iconData, iconTypes) {
-        foreach (const int &iconSize, iconSizes) {
+    for (const IconData &iconData : iconTypes) {
+        for (const int &iconSize : iconSizes) {
             // create pixmap
             QPixmap pixmap(iconSize, iconSize);
             pixmap.fill(Qt::transparent);

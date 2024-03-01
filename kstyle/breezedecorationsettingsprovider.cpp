@@ -58,7 +58,7 @@ void DecorationSettingsProvider::reconfigure()
 //__________________________________________________________________
 InternalSettingsPtr DecorationSettingsProvider::internalSettings()
 {
-    for (const auto &internalSettings : m_exceptions) {
+    for (auto internalSettings : std::as_const(m_exceptions)) {
         // discard disabled exceptions
         if (!internalSettings->enabled())
             continue;

@@ -103,7 +103,7 @@ void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 
     // rewrite current default exceptions with user-set enable flag
     int index = 0;
-    foreach (const InternalSettingsPtr &exception, _defaultExceptions) {
+    for (const InternalSettingsPtr &exception : std::as_const(_defaultExceptions)) {
         writeDefaultsConfig(exception.data(), config.data(), defaultExceptionGroupName(index));
         ++index;
     }
@@ -115,7 +115,7 @@ void DecorationExceptionList::writeConfig(KSharedConfig::Ptr config)
 
     // rewrite current user-set exceptions
     index = 0;
-    foreach (const InternalSettingsPtr &exception, _exceptions) {
+    for (const InternalSettingsPtr &exception : std::as_const(_exceptions)) {
         writeConfig(exception.data(), config.data(), exceptionGroupName(index));
         ++index;
     }
@@ -137,7 +137,7 @@ QString DecorationExceptionList::defaultExceptionGroupName(int index)
 void DecorationExceptionList::writeConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
     // write all items in windecoExceptionKeys
-    foreach (auto key, windecoExceptionKeys) {
+    for (auto key : windecoExceptionKeys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
         if (!item)
             continue;
@@ -156,7 +156,7 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
     QStringList keys = {"Enabled"};
 
     // write all items
-    foreach (auto key, keys) {
+    for (auto key, keys) {
         KConfigSkeletonItem *item(skeleton->findItem(key));
         if (!item || item->isEqual(true)) // don't write true to file as it's already the default
             continue;
@@ -171,7 +171,8 @@ void DecorationExceptionList::writeDefaultsConfig(KCoreConfigSkeleton *skeleton,
 //______________________________________________________________
 void DecorationExceptionList::readConfig(KCoreConfigSkeleton *skeleton, KConfig *config, const QString &groupName)
 {
-    foreach (KConfigSkeletonItem *item, skeleton->items()) {
+    const auto items = skeleton->items();
+    for (KConfigSkeletonItem *item : items) {
         if (!groupName.isEmpty())
             item->setGroup(groupName);
         item->readConfig(config);
