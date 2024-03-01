@@ -12,8 +12,8 @@
 namespace Breeze
 {
 
-ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
     , m_parent(parent)

@@ -31,8 +31,8 @@ namespace Breeze
 
 using KDecoration2::DecorationButtonType;
 
-ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_ui(new Ui_ButtonColors)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
@@ -449,12 +449,12 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             vlayout->addLayout(hlayout1);
             hlayout0->addStretch();
             QCheckBox *checkBox = new QCheckBox();
-            checkBox->setObjectName(QStringLiteral("checkBox") + activeString + QString(columnIndex) + QString(rowIndex));
+            checkBox->setObjectName(QStringLiteral("checkBox") + activeString + QString::number(columnIndex) + QString::number(rowIndex));
             checkBox->setProperty("column", columnIndex);
             checkBox->setProperty("row", rowIndex);
             QComboBox *comboBox = new QComboBox();
             comboBox->addItems(m_overrideComboBoxItems);
-            comboBox->setObjectName(QStringLiteral("comboBox") + activeString + QString(columnIndex) + QString(rowIndex));
+            comboBox->setObjectName(QStringLiteral("comboBox") + activeString + QString::number(columnIndex) + QString::number(rowIndex));
             comboBox->setProperty("column", columnIndex);
             comboBox->setProperty("row", rowIndex);
             comboBox->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -462,11 +462,11 @@ void ButtonColors::generateTableCells(QTableWidget *table)
             hlayout0->addWidget(comboBox);
             hlayout0->addStretch();
             KColorButton *colorButton = new KColorButton();
-            colorButton->setObjectName(QStringLiteral("colorButton") + activeString + QString(columnIndex) + QString(rowIndex));
+            colorButton->setObjectName(QStringLiteral("colorButton") + activeString + QString::number(columnIndex) + QString::number(rowIndex));
             colorButton->setProperty("column", columnIndex);
             colorButton->setProperty("row", rowIndex);
             QSpinBox *spinBox = new QSpinBox();
-            spinBox->setObjectName(QStringLiteral("spinBox") + activeString + QString(columnIndex) + QString(rowIndex));
+            spinBox->setObjectName(QStringLiteral("spinBox") + activeString + QString::number(columnIndex) + QString::number(rowIndex));
             spinBox->setProperty("column", columnIndex);
             spinBox->setProperty("row", rowIndex);
             spinBox->setMaximum(100);
@@ -869,7 +869,7 @@ void ButtonColors::setOverrideComboBoxColorIcons(const bool active, DecorationCo
             QWidget *w = table->cellWidget(row, column);
             if (!w)
                 continue;
-            QComboBox *comboBox = w->findChild<QComboBox *>(QStringLiteral("comboBox") + activeString + QString(column) + QString(row));
+            QComboBox *comboBox = w->findChild<QComboBox *>(QStringLiteral("comboBox") + activeString + QString::number(column) + QString::number(row));
             if (!comboBox)
                 continue;
 
@@ -1367,19 +1367,19 @@ bool ButtonColors::checkBoxComboBoxColorButtonSpinBoxAtTableCell(const bool acti
     if (!widget->children().count())
         return false;
 
-    outputCheckBox = widget->findChild<QCheckBox *>(QStringLiteral("checkBox") + activeString + QString(column) + QString(row));
+    outputCheckBox = widget->findChild<QCheckBox *>(QStringLiteral("checkBox") + activeString + QString::number(column) + QString::number(row));
     if (!outputCheckBox)
         return false;
 
-    outputComboBox = widget->findChild<QComboBox *>(QStringLiteral("comboBox") + activeString + QString(column) + QString(row));
+    outputComboBox = widget->findChild<QComboBox *>(QStringLiteral("comboBox") + activeString + QString::number(column) + QString::number(row));
     if (!outputComboBox)
         return false;
 
-    outputColorButton = widget->findChild<KColorButton *>(QStringLiteral("colorButton") + activeString + QString(column) + QString(row));
+    outputColorButton = widget->findChild<KColorButton *>(QStringLiteral("colorButton") + activeString + QString::number(column) + QString::number(row));
     if (!outputColorButton)
         return false;
 
-    outputSpinBox = widget->findChild<QSpinBox *>(QStringLiteral("spinBox") + activeString + QString(column) + QString(row));
+    outputSpinBox = widget->findChild<QSpinBox *>(QStringLiteral("spinBox") + activeString + QString::number(column) + QString::number(row));
     if (!outputColorButton)
         return false;
 

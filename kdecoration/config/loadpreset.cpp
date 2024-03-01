@@ -18,8 +18,8 @@
 
 namespace Breeze
 {
-LoadPreset::LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+LoadPreset::LoadPreset(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_ui(new Ui_LoadPreset)
     , m_addDialog(new AddPreset)
     , m_configuration(config)
@@ -50,7 +50,7 @@ void LoadPreset::initPresetsList()
     m_ui->exportButton->setEnabled(false);
     m_ui->presetsList->clear();
     QStringList presets(PresetsModel::readPresetsList(m_presetsConfiguration.data()));
-    for (const QString presetName : presets) {
+    for (const QString &presetName : presets) {
         m_ui->presetsList->addItem(presetName);
     }
     m_ui->presetsList->setFocus();

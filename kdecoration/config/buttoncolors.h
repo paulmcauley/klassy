@@ -32,7 +32,7 @@ class ButtonColors : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~ButtonColors();
 
     void loadMain(const bool assignUiValuesOnly = false);

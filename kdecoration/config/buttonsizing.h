@@ -22,7 +22,7 @@ class ButtonSizing : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~ButtonSizing();
 
     void loadMain(const bool assignUiValuesOnly = false);

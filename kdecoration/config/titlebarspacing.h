@@ -22,7 +22,7 @@ class TitleBarSpacing : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~TitleBarSpacing();
 
     void loadMain(const QString loadPreset = QString());

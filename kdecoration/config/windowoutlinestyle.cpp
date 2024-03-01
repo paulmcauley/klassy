@@ -14,8 +14,8 @@
 namespace Breeze
 {
 
-WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_ui(new Ui_WindowOutlineStyle)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)

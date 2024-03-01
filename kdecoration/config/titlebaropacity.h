@@ -22,7 +22,7 @@ class TitleBarOpacity : public QDialog
     friend class ConfigWidget;
 
 public:
-    explicit TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent = nullptr);
+    explicit TitleBarOpacity(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent = nullptr);
     ~TitleBarOpacity();
 
     void loadMain(const bool assignUiValuesOnly = false);

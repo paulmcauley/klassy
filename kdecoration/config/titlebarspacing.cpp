@@ -13,8 +13,8 @@
 namespace Breeze
 {
 
-TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+TitleBarSpacing::TitleBarSpacing(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_ui(new Ui_TitleBarSpacing)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)

@@ -13,8 +13,8 @@
 namespace Breeze
 {
 
-ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QWidget *parent)
-    : QDialog(parent)
+ShadowStyle::ShadowStyle(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
+    : QDialog(static_cast<ConfigWidget *>(parent)->widget())
     , m_ui(new Ui_ShadowStyle)
     , m_configuration(config)
     , m_presetsConfiguration(presetsConfig)
