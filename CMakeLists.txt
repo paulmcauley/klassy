@@ -5,15 +5,17 @@ set(PROJECT_VERSION_MAJOR 5)
 
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=1)
 
-set(KF_MIN_VERSION "5.102.0")
+set(KF5_MIN_VERSION "5.102.0")
+set(KF_MIN_VERSION "5.240.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
-set(QT_MIN_VERSION "5.15.2")
+set(QT5_MIN_VERSION "5.15.2")
+set(QT_MIN_VERSION "6.5")
 
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
-find_package(ECM ${KF_MIN_VERSION} REQUIRED NO_MODULE)
+find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -21,76 +23,139 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(CMakePackageConfigHelpers)
 include(ECMInstallIcons)
-include(KDEInstallDirs)
-include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(KDEClangFormat)
 include(KDEGitCommitHooks)
 
 include(GtkUpdateIconCache)
 
-option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
+option(BUILD_QT5 "Build Qt5 style" ON)
+option(BUILD_QT6 "Build with Qt6" ON)
+option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ${BUILD_QT6})
 
-if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
+set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
+set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS ON)
+
+# For KDE CI only. As the current infrastructure doesn't allow us to set CMAKE options per build variant
+if($ENV{CI_JOB_NAME_SLUG} MATCHES "qt5")
+    set(BUILD_QT5 ON)
+    set(BUILD_QT6 OFF)
+elseif($ENV{CI_JOB_NAME_SLUG} MATCHES "qt6")
+    set(BUILD_QT5 OFF)
+    set(BUILD_QT6 ON)
+endif()
+
+if(WIN32 OR APPLE)
     set(WITH_DECORATIONS OFF)
 endif()
 
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #TODO:Svg and Xml only used for klassy-settings
-find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
-    CoreAddons
-    Config
-    GuiAddons
-    I18n
-    IconThemes
-    WindowSystem)
+if(BUILD_QT6)
+    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
+    find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS
+        CoreAddons
+        ColorScheme
+        Config
+        GuiAddons
+        I18n
+        IconThemes
+        WindowSystem)
+    if(NOT WIN32 AND NOT APPLE)
+        find_package(KF6KCMUtils ${KF_MIN_VERSION})
+        set_package_properties(KF6KCMUtils PROPERTIES
+            TYPE REQUIRED
+            DESCRIPTION "Helps create configuration modules"
+            PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+        )
+    endif()
 
-if (QT_MAJOR_VERSION STREQUAL "6")
-    find_package(KF6ColorScheme ${KF_MIN_VERSION} REQUIRED)
+    find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
+    if(${Qt6Quick_FOUND})
+        find_package(KF6 ${KF_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+    endif()
+
+    find_package(KF6FrameworkIntegration ${KF_MIN_VERSION} CONFIG )
+    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+        DESCRIPTION "KF6 Framework Integration"
+        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+        TYPE OPTIONAL
+        PURPOSE "Required to use KStyle convenience functionalities in style")
 endif()
 
-if (NOT WIN32 AND NOT APPLE)
-    find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION})
-    set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
-        TYPE REQUIRED
-        DESCRIPTION "Helps create configuration modules"
-        PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
-    )
+if(BUILD_QT5)
+    find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
+    find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+        CoreAddons
+        Config
+        ConfigWidgets
+        GuiAddons
+        I18n
+        IconThemes
+        WindowSystem)
+
+    find_package(Qt5 ${QT5_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
+    if(${Qt5Quick_FOUND})
+        find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+    endif()
+
+    find_package(KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
+    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+        DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
+        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+        TYPE OPTIONAL
+        PURPOSE "Required to use KStyle convenience functionalities in style")
+
+    find_package(Qt5 ${QT5_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
+    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+        DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
+        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+        TYPE OPTIONAL
+        PURPOSE "Required to use KStyle convenience functionalities in style")
 endif()
-
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
-set(BREEZE_HAVE_QTQUICK ${Qt${QT_MAJOR_VERSION}Quick_FOUND})
-if(BREEZE_HAVE_QTQUICK)
-    find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
-endif()
-
-if(${QT_MAJOR_VERSION} EQUAL 5)
-    find_package(KF5ConfigWidgets ${KF_MIN_VERSION} REQUIRED)
-endif()
-
-
-find_package(KF${QT_MAJOR_VERSION}FrameworkIntegration ${KF${QT_MAJOR_VERSION}_MIN_VERSION} CONFIG)
-set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
-    DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
-    URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
-    TYPE OPTIONAL
-    PURPOSE "Required to use KStyle convenience functionalities in style")
-set(BREEZE_HAVE_KSTYLE ${KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND})
-
 
 find_package(KDecoration2 REQUIRED)
-if(WITH_DECORATIONS)
-    find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
-    add_subdirectory(kdecoration)
-    add_subdirectory(icons)
-    add_subdirectory(layout-templates)
-    add_subdirectory(look-and-feel)
+
+if(BUILD_QT5)
+    set(QT_MAJOR_VERSION 5)
+    include(KDEInstallDirs5)
+    include(KDECMakeSettings)
+
+    set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
+    set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
+
+    add_subdirectory(kstyle kstyle5)
+    add_subdirectory(libbreezecommon libbreezecommon5)
+
+    unset(QUERY_EXECUTABLE CACHE)
 endif()
+if(BUILD_QT6)
+    set(QT_MAJOR_VERSION 6)
+    include(KDEInstallDirs6)
+    include(KDECMakeSettings)
 
-add_subdirectory(libbreezecommon)
-add_subdirectory(kstyle)
-add_subdirectory(colors)
+    set(BREEZE_HAVE_KSTYLE ${KF6FrameworkIntegration_FOUND})
+    set(BREEZE_HAVE_QTQUICK ${Qt6Quick_FOUND})
 
-ki18n_install(po)
+    # https://bugreports.qt.io/browse/QTBUG-114706
+    add_library(Qt::Core ALIAS Qt6::Core)
+    add_library(Qt::Gui ALIAS Qt6::Gui)
+    add_library(Qt::OpenGL ALIAS Qt6::OpenGL)
+    add_library(Qt::Network ALIAS Qt6::Network)
+
+    add_subdirectory(colors)
+    add_subdirectory(kstyle kstyle6)
+    add_subdirectory(libbreezecommon libbreezecommon6)
+
+    if(WITH_DECORATIONS)
+        add_subdirectory(kdecoration)
+        add_subdirectory(icons)
+        add_subdirectory(layout-templates)
+        add_subdirectory(look-and-feel)
+    endif()
+
+    ki18n_install(po)
+
+    unset(QUERY_EXECUTABLE CACHE)
+endif()
 
 include(ECMSetupVersion)
 ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE

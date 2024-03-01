@@ -5,7 +5,7 @@ include_directories(
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
-include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
+include_directories(${CMAKE_BINARY_DIR}/libbreezecommon${QT_MAJOR_VERSION})
 
 ################# configuration #################
 configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
@@ -59,18 +59,24 @@ set(breeze_PART_SRCS
 #kconfig_add_kcfg_files(breeze_PART_SRCS ../kdecoration/breezesettings.kcfgc)
 kconfig_add_kcfg_files(breeze_PART_SRCS breezestyleconfigdata.kcfgc)
 
-add_library(klassy MODULE ${breeze_PART_SRCS})
+add_library(klassy${QT_MAJOR_VERSION} MODULE ${breeze_PART_SRCS})
 
-target_link_libraries(klassy Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
+target_link_libraries(klassy${QT_MAJOR_VERSION}
+    Qt${QT_MAJOR_VERSION}::Core
+    Qt${QT_MAJOR_VERSION}::Gui
+    Qt${QT_MAJOR_VERSION}::Widgets
+    Qt${QT_MAJOR_VERSION}::DBus
+)
+
 if( BREEZE_HAVE_QTQUICK )
-    target_link_libraries(klassy
-        Qt::Quick
+    target_link_libraries(klassy${QT_MAJOR_VERSION}
+        Qt${QT_MAJOR_VERSION}::Quick
         KF${QT_MAJOR_VERSION}::CoreAddons
         KF${QT_MAJOR_VERSION}::Kirigami2
     )
 endif()
 
-target_link_libraries(klassy
+target_link_libraries(klassy${QT_MAJOR_VERSION}
     KF${QT_MAJOR_VERSION}::CoreAddons
     KF${QT_MAJOR_VERSION}::ConfigCore
     KF${QT_MAJOR_VERSION}::ConfigGui
@@ -80,31 +86,31 @@ target_link_libraries(klassy
 )
 
 if(QT_MAJOR_VERSION STREQUAL "5")
-    target_link_libraries(breeze KF5::ConfigWidgets)
+    target_link_libraries(klassy5 KF5::ConfigWidgets)
 else()
-    target_link_libraries(breeze KF6::ColorScheme)
+    target_link_libraries(klassy6 KF6::ColorScheme)
 endif()
 
 
-target_link_libraries(klassy klassycommon)
+target_link_libraries(klassy${QT_MAJOR_VERSION} klassycommon${QT_MAJOR_VERSION})
 
 if(KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND)
-    target_link_libraries(klassy KF${QT_MAJOR_VERSION}::Style)
+    target_link_libraries(klassy${QT_MAJOR_VERSION} KF${QT_MAJOR_VERSION}::Style)
 endif()
 
 if (WIN32)
     # As stated in https://docs.microsoft.com/en-us/cpp/c-runtime-library/math-constants M_PI only gets defined
     # when if _USE_MATH_DEFINES is defined
-    target_compile_definitions(klassy PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
+    target_compile_definitions(klassy${QT_MAJOR_VERSION} PRIVATE _USE_MATH_DEFINES _BSD_SOURCE)
 endif()
 
 
 ########### install files ###############
-install(TARGETS klassy DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
+install(TARGETS klassy${QT_MAJOR_VERSION} DESTINATION ${KDE_INSTALL_QTPLUGINDIR}/styles/)
 install(FILES klassy.themerc  DESTINATION  ${KDE_INSTALL_DATADIR}/kstyle/themes)
 
 ########### subdirectories ###############
 
-if (TARGET "KF${QT_MAJOR_VERSION}::KCMUtils")
+if (QT_MAJOR_VERSION EQUAL "6" AND TARGET "KF6::KCMUtils")
     add_subdirectory(config)
 endif()
