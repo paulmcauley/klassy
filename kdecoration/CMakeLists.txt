@@ -2,7 +2,7 @@ add_definitions(-DTRANSLATION_DOMAIN="klassy_kwin_deco")
 
 ################# includes #################
 include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
-include_directories(${CMAKE_BINARY_DIR}/libbreezecommon)
+include_directories(${CMAKE_BINARY_DIR}/libbreezecommon6)
 
 ################# newt target #################
 ### plugin classes
@@ -25,8 +25,8 @@ set_target_properties(klassydecoration PROPERTIES
 
 target_link_libraries(klassydecoration
     PRIVATE
-        klassycommon
-        Qt::DBus
+        klassycommon6
+        Qt6::DBus
         KF6::CoreAddons
         KF6::ConfigGui
         KF6::GuiAddons
@@ -38,6 +38,4 @@ target_link_libraries(klassydecoration
 
 install(TARGETS klassydecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/${KDECORATION_PLUGIN_DIR})
 
-if (TARGET "KF${QT_MAJOR_VERSION}::KCMUtils")
-    add_subdirectory(config)
-endif()
+add_subdirectory(config)

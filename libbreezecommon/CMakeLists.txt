@@ -24,30 +24,35 @@ set(breezecommon_LIB_SRCS
 
 kconfig_add_kcfg_files(breezecommon_LIB_SRCS ../kdecoration/breezesettings.kcfgc)
 
-add_library(klassycommon ${breezecommon_LIB_SRCS})
+add_library(klassycommon${QT_MAJOR_VERSION} ${breezecommon_LIB_SRCS})
 
-generate_export_header(klassycommon
+generate_export_header(klassycommon${QT_MAJOR_VERSION}
     BASE_NAME breezecommon
     EXPORT_FILE_NAME breezecommon_export.h)
 
-target_link_libraries(klassycommon
+target_link_libraries(klassycommon${QT_MAJOR_VERSION}
     PUBLIC
-        Qt::Core
-        Qt::Gui
-        Qt::DBus
+        Qt${QT_MAJOR_VERSION}::Core
+        Qt${QT_MAJOR_VERSION}::Gui
+        Qt${QT_MAJOR_VERSION}::DBus
+        Qt${QT_MAJOR_VERSION}::Widgets
 
         KDecoration2::KDecoration
-    PRIVATE
         KF${QT_MAJOR_VERSION}::GuiAddons
         KF${QT_MAJOR_VERSION}::ConfigCore
         KF${QT_MAJOR_VERSION}::ConfigGui
-        KF${QT_MAJOR_VERSION}::ConfigWidgets
         KF${QT_MAJOR_VERSION}::IconThemes
         KF${QT_MAJOR_VERSION}::I18n)
 
-set_target_properties(klassycommon PROPERTIES
+if(QT_MAJOR_VERSION STREQUAL "5")
+    target_link_libraries(klassycommon${QT_MAJOR_VERSION} PUBLIC KF5::ConfigWidgets)
+else()
+    target_link_libraries(klassycommon${QT_MAJOR_VERSION} PUBLIC KF6::ColorScheme)
+endif()
+
+set_target_properties(klassycommon${QT_MAJOR_VERSION} PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR}
     OUTPUT_NAME klassycommon${QT_MAJOR_VERSION})
 
-install(TARGETS klassycommon ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
+install(TARGETS klassycommon${QT_MAJOR_VERSION} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
