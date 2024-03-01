@@ -1470,40 +1470,40 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         } else if (widget->inherits("QComboBoxPrivateContainer")) {
             return eventFilterComboBoxContainer(widget, event);
         }
-    }
 
-    auto mw = qobject_cast<QMainWindow *>(object);
-    if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
-        QPainter painter(mw);
-        // painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
-        painter.save();
+        auto mw = qobject_cast<QMainWindow *>(object);
+        if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
+            QPainter painter(mw);
+            // painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
+            painter.save();
 
-        if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
-            auto rect = _toolsAreaManager->toolsAreaRect(mw);
-            if (rect.height() == 0) {
-                auto bg = mw->rect();
-                painter.setPen(mw->palette().color(QPalette::Window));
-                painter.setBrush(mw->palette().color(QPalette::Window));
-                painter.drawRect(bg);
-                drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
+            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
+                auto rect = _toolsAreaManager->toolsAreaRect(mw);
+                if (rect.height() == 0) {
+                    auto bg = mw->rect();
+                    painter.setPen(mw->palette().color(QPalette::Window));
+                    painter.setBrush(mw->palette().color(QPalette::Window));
+                    painter.drawRect(bg);
+                    drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
+                } else {
+                    auto bg = mw->rect();
+                    auto rect = _toolsAreaManager->toolsAreaRect(mw);
+                    bg.setTop(rect.height());
+
+                    painter.setPen(mw->palette().color(QPalette::Window));
+                    painter.setBrush(mw->palette().color(QPalette::Window));
+                    painter.drawRect(bg);
+                    drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
+                }
             } else {
                 auto bg = mw->rect();
-                auto rect = _toolsAreaManager->toolsAreaRect(mw);
-                bg.setTop(rect.height());
 
                 painter.setPen(mw->palette().color(QPalette::Window));
                 painter.setBrush(mw->palette().color(QPalette::Window));
                 painter.drawRect(bg);
-                drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
             }
-        } else {
-            auto bg = mw->rect();
-
-            painter.setPen(mw->palette().color(QPalette::Window));
-            painter.setBrush(mw->palette().color(QPalette::Window));
-            painter.drawRect(bg);
+            painter.restore();
         }
-        painter.restore();
     }
 
     // fallback
