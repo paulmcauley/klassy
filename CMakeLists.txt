@@ -64,13 +64,9 @@ if(BREEZE_HAVE_QTQUICK)
 endif()
 
 if(${QT_MAJOR_VERSION} EQUAL 5)
-    find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
-    set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
-
     find_package(KF5ConfigWidgets ${KF_MIN_VERSION} REQUIRED)
-elseif(NOT WIN32)
-    set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
 endif()
+
 
 find_package(KF${QT_MAJOR_VERSION}FrameworkIntegration ${KF${QT_MAJOR_VERSION}_MIN_VERSION} CONFIG)
 set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES

@@ -21,6 +21,9 @@
 #include <KColorUtils>
 #include <KIconLoader>
 #include <KWindowSystem>
+#if __has_include(<KX11Extras>)
+#include <KX11Extras>
+#endif
 
 #include <algorithm>
 #include <memory>
@@ -35,14 +38,6 @@
 #include <QMenuBar>
 #include <QPainter>
 #include <QWindow>
-
-#if BREEZE_HAVE_QTX11EXTRAS
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <private/qtx11extras_p.h>
-#else
-#include <QX11Info>
-#endif
-#endif
 
 namespace Breeze
 {
@@ -1711,9 +1706,12 @@ bool Helper::compositingActive() const
 {
 #if BREEZE_HAVE_QTX11EXTRAS
     if (isX11()) {
-        return QX11Info::isCompositingManagerRunning(QX11Info::appScreen());
-    }
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+        return KWindowSystem::compositingActive();
+#elif __has_include(<KX11Extras>)
+        return KX11Extras::compositingActive();
 #endif
+    }
 
     return true;
 }
