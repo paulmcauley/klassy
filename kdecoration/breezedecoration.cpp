@@ -16,7 +16,6 @@
 #include "breezeboxshadowrenderer.h"
 #include "breezebutton.h"
 #include "breezesettingsprovider.h"
-#include "config/breezeconfigwidget.h"
 #include "dbusmessages.h"
 #include "dbusupdatenotifier.h"
 #include "geometrytools.h"
@@ -40,8 +39,7 @@
 #include <cmath>
 #include <mutex>
 
-K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();
-                           registerPlugin<Breeze::ConfigWidget>();)
+K_PLUGIN_FACTORY_WITH_JSON(BreezeDecoFactory, "breeze.json", registerPlugin<Breeze::Decoration>(); registerPlugin<Breeze::Button>();)
 
 namespace
 {

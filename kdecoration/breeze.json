@@ -7,8 +7,8 @@
             "org.kde.kdecoration2"
         ]
     },
+    "X-KDE-ConfigModule": "kcm_klassydecoration",
     "org.kde.kdecoration2": {
-        "kcmodule": true,
         "recommendedBorderSize": "None"
     }
 }
