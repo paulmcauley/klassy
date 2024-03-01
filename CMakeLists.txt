@@ -36,10 +36,9 @@ if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
 endif()
 
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #TODO:Svg and Xml only used for klassy-settings
-find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF${QT_MAJOR_VERSION} ${KF_MIN_VERSION} REQUIRED COMPONENTS
     CoreAddons
     Config
-    ConfigWidgets
     GuiAddons
     I18n
     IconThemes
@@ -62,6 +61,8 @@ endif()
 if(${QT_MAJOR_VERSION} EQUAL 5)
     find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
     set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
+
+    find_package(KF5ConfigWidgets ${KF_MIN_VERSION} REQUIRED)
 elseif(NOT WIN32)
     set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
 endif()
