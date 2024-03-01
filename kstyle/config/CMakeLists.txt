@@ -16,8 +16,6 @@ kcoreaddons_add_plugin(klassystyleconfig SOURCES
     INSTALL_NAMESPACE "plasma/kcms/systemsettings_qwidgets"
 )
 
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Svg Xml)
-
 target_link_libraries(klassystyleconfig Qt::Core Qt::Gui Qt::Widgets Qt::DBus)
 target_link_libraries(klassystyleconfig KF${QT_MAJOR_VERSION}::CoreAddons KF${QT_MAJOR_VERSION}::ConfigCore KF${QT_MAJOR_VERSION}::ConfigWidgets KF${QT_MAJOR_VERSION}::I18n)
 if(QT_MAJOR_VERSION STREQUAL "6")

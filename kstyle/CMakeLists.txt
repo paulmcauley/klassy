@@ -1,37 +1,3 @@
-################# Qt/KDE #################
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
-find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS
-    CoreAddons
-    I18n
-    Config
-    GuiAddons
-    IconThemes
-    ConfigWidgets
-    WindowSystem)
-
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
-set(BREEZE_HAVE_QTQUICK ${Qt${QT_MAJOR_VERSION}Quick_FOUND})
-if( BREEZE_HAVE_QTQUICK )
-    find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
-endif()
-
-if (TARGET Qt5::Core)
-    find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
-    set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
-elseif(NOT WIN32)
-    set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
-endif()
-
-find_package( KF${QT_MAJOR_VERSION}FrameworkIntegration ${KF${QT_MAJOR_VERSION}_MIN_VERSION} CONFIG )
-set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
-    DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
-    URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
-    TYPE OPTIONAL
-    PURPOSE "Required to use KStyle convenience functionalities in style")
-
-set(BREEZE_HAVE_KSTYLE ${KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND})
-
-
 ################# includes #################
 include_directories(
   animations
