@@ -31,7 +31,6 @@ include(GtkUpdateIconCache)
 
 option(BUILD_QT5 "Build Qt5 style" ON)
 option(BUILD_QT6 "Build with Qt6" ON)
-option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ${BUILD_QT6})
 
 set(QT_NO_CREATE_VERSIONLESS_TARGETS ON)
 set(QT_NO_CREATE_VERSIONLESS_FUNCTIONS ON)
@@ -99,6 +98,9 @@ function(build_Qt6)
     set(QT_MAJOR_VERSION 6)
     include(KDEInstallDirs6)
     include(KDECMakeSettings)
+
+    option(WITH_DECORATIONS "Build Klassy window decorations for KWin")
+
     find_package(KDecoration2 REQUIRED)
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
     find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
