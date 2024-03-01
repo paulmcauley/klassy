@@ -99,7 +99,7 @@ function(build_Qt6)
     include(KDEInstallDirs6)
     include(KDECMakeSettings)
 
-    option(WITH_DECORATIONS "Build Klassy window decorations for KWin")
+    option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
 
     find_package(KDecoration2 REQUIRED)
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
