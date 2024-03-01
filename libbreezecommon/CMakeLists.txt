@@ -1,9 +1,3 @@
-################# dependencies #################
-### Qt/KDE
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
-find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Config GuiAddons ConfigWidgets IconThemes I18n)
-find_package(KDecoration2 REQUIRED)
-
 ################# breezestyle target #################
 set(breezecommon_LIB_SRCS
     breeze.cpp

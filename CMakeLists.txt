@@ -35,6 +35,17 @@ if(WIN32 OR APPLE OR QT_MAJOR_VERSION STREQUAL "5")
     set(WITH_DECORATIONS OFF)
 endif()
 
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #TODO:Svg and Xml only used for klassy-settings
+find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS
+    CoreAddons
+    Config
+    ConfigWidgets
+    GuiAddons
+    I18n
+    IconThemes
+    KCMUtils
+    WindowSystem)
+
 find_package(KF${QT_MAJOR_VERSION}KCMUtils ${KF_MIN_VERSION})
 set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
     TYPE REQUIRED
@@ -42,20 +53,42 @@ set_package_properties(KF${QT_MAJOR_VERSION}KCMUtils PROPERTIES
     PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
 )
 
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
+set(BREEZE_HAVE_QTQUICK ${Qt${QT_MAJOR_VERSION}Quick_FOUND})
+if(BREEZE_HAVE_QTQUICK)
+    find_package(KF${QT_MAJOR_VERSION} ${KF${QT_MAJOR_VERSION}_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
+endif()
+
+if(${QT_MAJOR_VERSION} EQUAL 5)
+    find_package(Qt5 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
+    set(BREEZE_HAVE_QTX11EXTRAS ${Qt5X11Extras_FOUND})
+elseif(NOT WIN32)
+    set(BREEZE_HAVE_QTX11EXTRAS TRUE) # part of Qt6::Gui
+endif()
+
+find_package(KF${QT_MAJOR_VERSION}FrameworkIntegration ${KF${QT_MAJOR_VERSION}_MIN_VERSION} CONFIG)
+set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+    DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
+    URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+    TYPE OPTIONAL
+    PURPOSE "Required to use KStyle convenience functionalities in style")
+set(BREEZE_HAVE_KSTYLE ${KF${QT_MAJOR_VERSION}FrameworkIntegration_FOUND})
+
 
 find_package(KDecoration2 REQUIRED)
-add_subdirectory(kdecoration)
+if(WITH_DECORATIONS)
+    find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
+    add_subdirectory(kdecoration)
+    add_subdirectory(icons)
+    add_subdirectory(layout-templates)
+    add_subdirectory(look-and-feel)
+endif()
+
 add_subdirectory(libbreezecommon)
 add_subdirectory(kstyle)
-add_subdirectory(icons)
 add_subdirectory(colors)
-add_subdirectory(layout-templates)
-add_subdirectory(look-and-feel)
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/po AND IS_DIRECTORY ${CMAKE_SOURCE_DIR}/po)
-    find_package(KF${QT_MAJOR_VERSION}I18n ${KF_MIN_VERSION} CONFIG REQUIRED)
-    ki18n_install(po)
-endif()
+ki18n_install(po)
 
 include(ECMSetupVersion)
 ecm_setup_version(${PROJECT_VERSION} VARIABLE_PREFIX BREEZE
