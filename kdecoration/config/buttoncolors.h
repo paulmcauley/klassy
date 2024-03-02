@@ -13,8 +13,6 @@
 #include "decorationcolors.h"
 #include "ui_buttoncolors.h"
 #include <KColorButton>
-#include <KDecoration2/DecorationButton>
-#include <KDecoration2/DecorationSettings>
 #include <QDialog>
 
 namespace Breeze
@@ -147,7 +145,7 @@ private:
     QByteArray encodeColorOverrideLockStates(const bool active);
     void decodeAndLoadColorOverrideLockStates(const bool active);
 
-    void setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section);
+    void setHorizontalHeaderSectionIcon(DecorationButtonType type, QTableWidget *table, int section);
 
     void loadButtonPaletteColorsIconsMain(bool active);
 
@@ -174,17 +172,17 @@ private:
     ColumnsLoaded m_overrideColorsLoaded = {false, false};
 
     // strings for UI corresponding to overridableButtonTypes
-    const QHash<KDecoration2::DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
-        {KDecoration2::DecorationButtonType::Close, i18n("Close")},
-        {KDecoration2::DecorationButtonType::Maximize, i18n("Maximize/Restore")},
-        {KDecoration2::DecorationButtonType::Minimize, i18n("Minimize")},
-        {KDecoration2::DecorationButtonType::ContextHelp, i18n("Help")},
-        {KDecoration2::DecorationButtonType::Shade, i18n("Shade")},
-        {KDecoration2::DecorationButtonType::OnAllDesktops, i18n("All desktops")},
-        {KDecoration2::DecorationButtonType::KeepBelow, i18n("Keep Below")},
-        {KDecoration2::DecorationButtonType::KeepAbove, i18n("Keep Above")},
-        {KDecoration2::DecorationButtonType::ApplicationMenu, i18n("Application Menu")},
-        {KDecoration2::DecorationButtonType::Menu, i18n("Menu")},
+    const QHash<DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
+        {DecorationButtonType::Close, i18n("Close")},
+        {DecorationButtonType::Maximize, i18n("Maximize/Restore")},
+        {DecorationButtonType::Minimize, i18n("Minimize")},
+        {DecorationButtonType::ContextHelp, i18n("Help")},
+        {DecorationButtonType::Shade, i18n("Shade")},
+        {DecorationButtonType::OnAllDesktops, i18n("All desktops")},
+        {DecorationButtonType::KeepBelow, i18n("Keep Below")},
+        {DecorationButtonType::KeepAbove, i18n("Keep Above")},
+        {DecorationButtonType::ApplicationMenu, i18n("Application Menu")},
+        {DecorationButtonType::Menu, i18n("Menu")},
     };
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
@@ -233,12 +231,12 @@ private:
 
     uint32_t m_closeButtonIconColorStateActive;
     uint32_t m_closeButtonIconColorStateInactive;
-    QList<KDecoration2::DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
-                                                                     // of the colour palette for "other" buttons)
-    QList<KDecoration2::DecorationButtonType>
+    QList<DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
+                                                       // of the colour palette for "other" buttons)
+    QList<DecorationButtonType>
         m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
-    QList<KDecoration2::DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
-                                                                             // including the dummy custom button added in m_visibleButtonsOrder
+    QList<DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
+                                                               // including the dummy custom button added in m_visibleButtonsOrder
     QColor m_systemTitleBarTextActive;
     QColor m_systemTitleBarTextInactive;
     QColor m_systemTitlebarBackgroundActive;

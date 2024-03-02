@@ -9,8 +9,6 @@
 
 #include "breeze.h"
 #include "decorationcolors.h"
-#include <KDecoration2/DecorationButton>
-#include <KDecoration2/DecorationSettings>
 
 namespace Breeze
 {
@@ -40,43 +38,43 @@ private:
     };
 
     struct iconType {
-        KDecoration2::DecorationButtonType type;
+        DecorationButtonType type;
         bool checked;
         QString name;
     };
 
     const QList<iconType> m_iconTypes{
-        {KDecoration2::DecorationButtonType::ApplicationMenu, false, QStringLiteral("application-menu-symbolic")},
-        {KDecoration2::DecorationButtonType::ApplicationMenu, false, QStringLiteral("application-menu")},
-        {KDecoration2::DecorationButtonType::OnAllDesktops, false, QStringLiteral("window-pin-symbolic")},
-        //{KDecoration2::DecorationButtonType::OnAllDesktops, false, QStringLiteral("window-pin")},
-        {KDecoration2::DecorationButtonType::OnAllDesktops, true, QStringLiteral("window-unpin-symbolic")},
-        //{KDecoration2::DecorationButtonType::OnAllDesktops, true, QStringLiteral("window-unpin")},
-        {KDecoration2::DecorationButtonType::Minimize, false, QStringLiteral("window-minimize-symbolic")},
-        {KDecoration2::DecorationButtonType::Minimize, false, QStringLiteral("window-minimize")},
-        {KDecoration2::DecorationButtonType::Maximize, false, QStringLiteral("window-maximize-symbolic")},
-        {KDecoration2::DecorationButtonType::Maximize, false, QStringLiteral("window-maximize")},
-        {KDecoration2::DecorationButtonType::Maximize, true, QStringLiteral("window-restore-symbolic")},
-        {KDecoration2::DecorationButtonType::Maximize, true, QStringLiteral("window-restore")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("window-close-symbolic")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("window-close")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("dialog-close")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("geany-close-all")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("gtk-close")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("gtk-no")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("kontes-close")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("tab-close-other")},
-        {KDecoration2::DecorationButtonType::Close, false, QStringLiteral("tab-close")},
-        {KDecoration2::DecorationButtonType::ContextHelp, false, QStringLiteral("help-contextual-symbolic")},
-        //{KDecoration2::DecorationButtonType::ContextHelp, false, QStringLiteral("help-contextual")},
-        {KDecoration2::DecorationButtonType::Shade, false, QStringLiteral("window-shade-symbolic")},
-        {KDecoration2::DecorationButtonType::Shade, false, QStringLiteral("window-shade")},
-        {KDecoration2::DecorationButtonType::Shade, true, QStringLiteral("window-unshade-symbolic")},
-        {KDecoration2::DecorationButtonType::Shade, true, QStringLiteral("window-unshade")},
-        {KDecoration2::DecorationButtonType::KeepBelow, false, QStringLiteral("window-keep-below-symbolic")},
-        {KDecoration2::DecorationButtonType::KeepBelow, false, QStringLiteral("window-keep-below")},
-        {KDecoration2::DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above-symbolic")},
-        {KDecoration2::DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above")},
+        {DecorationButtonType::ApplicationMenu, false, QStringLiteral("application-menu-symbolic")},
+        {DecorationButtonType::ApplicationMenu, false, QStringLiteral("application-menu")},
+        {DecorationButtonType::OnAllDesktops, false, QStringLiteral("window-pin-symbolic")},
+        //{DecorationButtonType::OnAllDesktops, false, QStringLiteral("window-pin")},
+        {DecorationButtonType::OnAllDesktops, true, QStringLiteral("window-unpin-symbolic")},
+        //{DecorationButtonType::OnAllDesktops, true, QStringLiteral("window-unpin")},
+        {DecorationButtonType::Minimize, false, QStringLiteral("window-minimize-symbolic")},
+        {DecorationButtonType::Minimize, false, QStringLiteral("window-minimize")},
+        {DecorationButtonType::Maximize, false, QStringLiteral("window-maximize-symbolic")},
+        {DecorationButtonType::Maximize, false, QStringLiteral("window-maximize")},
+        {DecorationButtonType::Maximize, true, QStringLiteral("window-restore-symbolic")},
+        {DecorationButtonType::Maximize, true, QStringLiteral("window-restore")},
+        {DecorationButtonType::Close, false, QStringLiteral("window-close-symbolic")},
+        {DecorationButtonType::Close, false, QStringLiteral("window-close")},
+        {DecorationButtonType::Close, false, QStringLiteral("dialog-close")},
+        {DecorationButtonType::Close, false, QStringLiteral("geany-close-all")},
+        {DecorationButtonType::Close, false, QStringLiteral("gtk-close")},
+        {DecorationButtonType::Close, false, QStringLiteral("gtk-no")},
+        {DecorationButtonType::Close, false, QStringLiteral("kontes-close")},
+        {DecorationButtonType::Close, false, QStringLiteral("tab-close-other")},
+        {DecorationButtonType::Close, false, QStringLiteral("tab-close")},
+        {DecorationButtonType::ContextHelp, false, QStringLiteral("help-contextual-symbolic")},
+        //{DecorationButtonType::ContextHelp, false, QStringLiteral("help-contextual")},
+        {DecorationButtonType::Shade, false, QStringLiteral("window-shade-symbolic")},
+        {DecorationButtonType::Shade, false, QStringLiteral("window-shade")},
+        {DecorationButtonType::Shade, true, QStringLiteral("window-unshade-symbolic")},
+        {DecorationButtonType::Shade, true, QStringLiteral("window-unshade")},
+        {DecorationButtonType::KeepBelow, false, QStringLiteral("window-keep-below-symbolic")},
+        {DecorationButtonType::KeepBelow, false, QStringLiteral("window-keep-below")},
+        {DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above-symbolic")},
+        {DecorationButtonType::KeepAbove, false, QStringLiteral("window-keep-above")},
     };
 };
 

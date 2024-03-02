@@ -60,7 +60,6 @@ function(build_Qt5)
     set(QT_MAJOR_VERSION 5)
     include(KDEInstallDirs5)
     include(KDECMakeSettings)
-    find_package(KDecoration2 REQUIRED)
     find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
@@ -109,7 +108,6 @@ function(build_Qt6)
 
     option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
 
-    find_package(KDecoration2 REQUIRED)
     find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
     find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
@@ -154,6 +152,7 @@ function(build_Qt6)
     add_subdirectory(libbreezecommon libbreezecommon6)
 
     if(WITH_DECORATIONS)
+        find_package(KDecoration2 REQUIRED)
         add_subdirectory(kdecoration)
         add_subdirectory(icons)
         add_subdirectory(layout-templates)

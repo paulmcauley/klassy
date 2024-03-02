@@ -12,8 +12,6 @@
 namespace Breeze
 {
 
-using KDecoration2::DecorationButtonType;
-
 void SystemIconTheme::paintIconFromSystemTheme(QString iconName)
 {
     QColor color = m_painter->pen().color();
@@ -46,7 +44,7 @@ void SystemIconTheme::renderIcon()
     paintIconFromSystemTheme(m_systemIconFromTheme);
 }
 
-void SystemIconTheme::systemIconNames(KDecoration2::DecorationButtonType type, QString &systemIconName, QString &systemIconCheckedName)
+void SystemIconTheme::systemIconNames(DecorationButtonType type, QString &systemIconName, QString &systemIconCheckedName)
 {
     switch (type) {
     case DecorationButtonType::Close:

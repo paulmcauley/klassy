@@ -166,7 +166,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                      || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && m_scales.at(i) >= 1.2));
 
                 // paint the close background to SVG
-                if (iconType.type == KDecoration2::DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")) {
+                if (iconType.type == DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")) {
                     painter->setWindow(0, 0, 16, 16);
                     painter->setPen(Qt::NoPen);
                     painter->setBrush(decorationColors.buttonPalette(iconType.type)->active()->backgroundHover);
@@ -255,7 +255,7 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                                     svgChildElement.removeChild(svgGroupElement);
                                 } else { // change attributes so KIconLoader can use system colours
                                     // don't overwrite white close button foregrounds
-                                    if (!(iconType.type == KDecoration2::DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")
+                                    if (!(iconType.type == DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")
                                           && textColorString == QStringLiteral("#ffffff"))) {
                                         svgGroupElement.setAttribute(QStringLiteral("class"), QStringLiteral("ColorScheme-Text"));
                                         if (svgGroupElement.attribute(QStringLiteral("stroke")) == textColorString) {

@@ -720,7 +720,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Minimize, false);
+    iconRenderer->renderIcon(DecorationButtonType::Minimize, false);
     painter->restore();
 
     iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
@@ -729,7 +729,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Maximize, true);
+    iconRenderer->renderIcon(DecorationButtonType::Maximize, true);
     painter->restore();
 
     iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
@@ -738,7 +738,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Close, false);
+    iconRenderer->renderIcon(DecorationButtonType::Close, false);
     painter->restore();
 
     pen = painter->pen();
@@ -750,7 +750,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Minimize, false);
+    iconRenderer->renderIcon(DecorationButtonType::Minimize, false);
     painter->restore();
 
     iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
@@ -759,7 +759,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Maximize, false);
+    iconRenderer->renderIcon(DecorationButtonType::Maximize, false);
     painter->restore();
 
     iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
@@ -768,7 +768,7 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
     painter->setViewport(0, 0, iconSize.width(), iconSize.height());
     painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(KDecoration2::DecorationButtonType::Close, false);
+    iconRenderer->renderIcon(DecorationButtonType::Close, false);
     painter->restore();
 
     QIcon icon(pixmap);

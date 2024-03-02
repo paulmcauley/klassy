@@ -7833,22 +7833,22 @@ bool Style::isTabletMode() const
 QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOption *option, const QWidget *widget) const
 {
     // map standardPixmap to button type
-    KDecoration2::DecorationButtonType buttonType;
+    DecorationButtonType buttonType;
     bool buttonChecked = false;
     switch (standardPixmap) {
     case SP_TitleBarNormalButton:
-        buttonType = KDecoration2::DecorationButtonType::Maximize;
+        buttonType = DecorationButtonType::Maximize;
         buttonChecked = true;
         break;
     case SP_TitleBarMinButton:
-        buttonType = KDecoration2::DecorationButtonType::Minimize;
+        buttonType = DecorationButtonType::Minimize;
         break;
     case SP_TitleBarMaxButton:
-        buttonType = KDecoration2::DecorationButtonType::Maximize;
+        buttonType = DecorationButtonType::Maximize;
         break;
     case SP_TitleBarCloseButton:
     case SP_DockWidgetCloseButton:
-        buttonType = KDecoration2::DecorationButtonType::Close;
+        buttonType = DecorationButtonType::Close;
         break;
 
     default:

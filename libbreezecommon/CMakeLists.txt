@@ -37,7 +37,6 @@ target_link_libraries(klassycommon${QT_MAJOR_VERSION}
         Qt${QT_MAJOR_VERSION}::DBus
         Qt${QT_MAJOR_VERSION}::Widgets
 
-        KDecoration2::KDecoration
         KF${QT_MAJOR_VERSION}::GuiAddons
         KF${QT_MAJOR_VERSION}::ConfigCore
         KF${QT_MAJOR_VERSION}::ConfigGui

@@ -11,8 +11,6 @@
 #include "breezecommon_export.h"
 #include "breezesettings.h"
 
-#include <KDecoration2/DecorationButton>
-#include <KDecoration2/DecorationSettings>
 #include <QPainter>
 #include <QPainterPath>
 #include <memory>
@@ -77,7 +75,7 @@ public:
     {
         m_strokeToFilledPath = v;
     }
-    void renderIcon(KDecoration2::DecorationButtonType type, bool checked);
+    void renderIcon(DecorationButtonType type, bool checked);
 
 protected:
     /**

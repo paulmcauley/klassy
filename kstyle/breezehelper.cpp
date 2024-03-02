@@ -1513,7 +1513,7 @@ void Helper::renderArrow(QPainter *painter, const QRect &rect, const QColor &col
 //______________________________________________________________________________
 void Helper::renderDecorationButton(QPainter *painter,
                                     const QRect &rect,
-                                    KDecoration2::DecorationButtonType buttonType,
+                                    DecorationButtonType buttonType,
                                     const bool buttonChecked,
                                     const QColor &foregroundColor,
                                     const bool cutOutForeground,
