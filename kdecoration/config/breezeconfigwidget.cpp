@@ -48,12 +48,12 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     , m_presetsConfiguration(KSharedConfig::openConfig(QStringLiteral("klassy/windecopresetsrc")))
     , m_changed(false)
 {
-    QDialog *parentDialog = qobject_cast<QDialog *>(parent);
-
     // this is a hack to get an Apply button
-    if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell6 plasma/kcms/klassy/kcm_klassydecoration &");
-        parentDialog->close();
+    if (widget() && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
+        if (widget()->window()) {
+            widget()->window()->close();
+        }
+        system("kcmshell6 org.kde.kdecoration2.kcm/kcm_klassydecoration.so &");
     }
     setButtons(KCModule::Default | KCModule::Apply);
 
@@ -74,12 +74,10 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     m_ui.gridLayout_9->addLayout(presetsButtonVLayout, 0, 0, Qt::AlignRight | Qt::AlignTop);
     connect(m_presetsButton, &QAbstractButton::clicked, this, &ConfigWidget::presetsButtonClicked);
 
-    //TODO:: check changed from this to widget()
     widget()->setTabOrder(m_presetsButton, m_ui.tabWidget);
 
-    // hide the title if a kcmshell dialog
-    if (widget()->window()) {
-        widget()->window()->setMinimumWidth(775);
+    // hide the title if not klassy-settings
+    if (widget()->window() && qAppName() != "klassy-settings") {
         m_kPageWidget = widget()->window()->findChild<KPageWidget *>();
         if (m_kPageWidget) {
             KPageWidgetItem *currentPage = m_kPageWidget->currentPage();
@@ -128,11 +126,6 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
 
     // update the horizontal header icons in-case the icon style has changed
     connect(this, &ConfigWidget::saved, m_buttonColorsDialog, &ButtonColors::load);
-
-    // this is necessary because when you reload the kwin config in a sub-dialog it prevents this main dialog from saving (this happens when run from
-    // systemsettings only)
-    if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings"))
-        connect(parentDialog, &QDialog::accepted, this, &ConfigWidget::save);
 
 #if KLASSY_GIT_MASTER
     // set the long version string if from the git master
@@ -569,7 +562,6 @@ void ConfigWidget::buttonColorsButtonClicked()
 {
     m_buttonColorsDialog->setWindowTitle(i18n("Button Colours - Klassy Settings"));
     m_buttonColorsDialog->setWindowIcon(QIcon::fromTheme(QStringLiteral("color-management")));
-    m_buttonColorsDialog->resizeDialog();
     m_buttonColorsDialog->show();
 }
 
