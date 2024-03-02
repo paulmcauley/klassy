@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>494</height>
+    <width>958</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -98,7 +98,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
+            <width>903</width>
             <height>615</height>
            </rect>
           </property>
@@ -324,7 +324,7 @@
                     </size>
                    </property>
                    <property name="text">
-                    <string>Close icon colour :</string>
+                    <string>C&amp;lose icon colour :</string>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -386,7 +386,7 @@
                  <item>
                   <widget class="QLabel" name="poorIconContrastThresholdActive_label">
                    <property name="text">
-                    <string>  Threshold:</string>
+                    <string>  &amp;Threshold:</string>
                    </property>
                    <property name="buddy">
                     <cstring>poorIconContrastThresholdActive</cstring>
@@ -884,7 +884,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
+            <width>902</width>
             <height>615</height>
            </rect>
           </property>

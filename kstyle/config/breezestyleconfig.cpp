@@ -31,14 +31,14 @@ StyleConfig::StyleConfig(QWidget *parent)
     // this is a hack to get an Apply button
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
     if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell6 kstyle_config/klassystyleconfig &");
         parentDialog->close();
+        system("kcmshell6 kstyle_config/klassystyleconfig &");
     }
 
     setupUi(this);
 
-    // hide the title if a kcmshell dialog
-    if (this->window()) {
+    // hide the title if not klassy-settings
+    if (this->window() && qAppName() != QStringLiteral("klassy-settings")) {
         KPageWidget *kPageWidget = this->window()->findChild<KPageWidget *>();
         if (kPageWidget) {
             KPageWidgetItem *currentPage = kPageWidget->currentPage();

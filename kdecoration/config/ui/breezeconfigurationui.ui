@@ -64,7 +64,7 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>20</height>
+             <height>30</height>
             </size>
            </property>
           </spacer>
@@ -435,8 +435,7 @@
                   <string>Button Size &amp;&amp; Spacing...</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="transform-crop-and-resize">
-                   <normaloff>.</normaloff>.</iconset>
+                  <iconset theme="transform-crop-and-resize"/>
                  </property>
                  <property name="iconSize">
                   <size>
@@ -483,8 +482,7 @@
                   <string>Button Width &amp;&amp; Spacing...</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="transform-crop-and-resize">
-                   <normaloff>.</normaloff>.</iconset>
+                  <iconset theme="transform-crop-and-resize"/>
                  </property>
                 </widget>
                </item>
@@ -525,8 +523,7 @@
                   <string>Button Width &amp;&amp; Spacing...</string>
                  </property>
                  <property name="icon">
-                  <iconset theme="transform-crop-and-resize">
-                   <normaloff>.</normaloff>.</iconset>
+                  <iconset theme="transform-crop-and-resize"/>
                  </property>
                 </widget>
                </item>
@@ -582,7 +579,6 @@
              </property>
              <property name="font">
               <font>
-               <weight>50</weight>
                <bold>false</bold>
               </font>
              </property>
@@ -593,8 +589,7 @@
               <string>Button Behaviour...</string>
              </property>
              <property name="icon">
-              <iconset theme="preferences-system-windows-behavior">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset theme="preferences-system-windows-behavior"/>
              </property>
              <property name="iconSize">
               <size>
@@ -657,19 +652,6 @@
               </widget>
              </item>
             </layout>
-           </item>
-           <item row="9" column="2">
-            <spacer name="verticalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
            <item row="4" column="0">
             <spacer name="horizontalSpacer">
@@ -821,8 +803,7 @@
               <string>Button &amp;Colours...</string>
              </property>
              <property name="icon">
-              <iconset theme="color-management">
-               <normaloff>.</normaloff>.</iconset>
+              <iconset theme="color-management"/>
              </property>
              <property name="iconSize">
               <size>
@@ -1033,6 +1014,19 @@
              </widget>
             </widget>
            </item>
+           <item row="9" column="2">
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </item>
         </layout>
@@ -1099,8 +1093,7 @@
             <string>Titlebar &amp;Opacity...</string>
            </property>
            <property name="icon">
-            <iconset theme="edit-opacity">
-             <normaloff>.</normaloff>.</iconset>
+            <iconset theme="edit-opacity"/>
            </property>
           </widget>
          </item>
@@ -1221,8 +1214,7 @@
                <string>Shadow Style...</string>
               </property>
               <property name="icon">
-               <iconset theme="draw-brush">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="draw-brush"/>
               </property>
              </widget>
             </item>
@@ -1464,8 +1456,7 @@
                <string>Window Outline Style...</string>
               </property>
               <property name="icon">
-               <iconset theme="borderpainter">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="borderpainter"/>
               </property>
              </widget>
             </item>

@@ -48,7 +48,7 @@
         "Description[zh_CN]": "调整窗口部件外观",
         "Description[zh_TW]": "變更元件外觀",
         "Icon": "preferences-desktop-theme",
-        "Name": "Klassy: Widget Style",
+        "Name": "Klassy: Application Style",
         "ServiceTypes": [
             "KCModule"
         ]
