@@ -16,7 +16,6 @@
 #include "breezeboxshadowrenderer.h"
 #include "breezebutton.h"
 #include "breezesettingsprovider.h"
-#include "dbusmessages.h"
 #include "dbusupdatenotifier.h"
 #include "geometrytools.h"
 
@@ -713,15 +712,12 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         m_internalSettings->setLookAndFeelSet(lookAndFeelPackageName);
         m_internalSettings->save();
 
-        QString gtkThemeName = KWindowSystem::isPlatformWayland() ? QStringLiteral("Adwaita") : QStringLiteral("Breeze");
-
         const QStringList leftPanelPackages = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
                                                QStringLiteral("org.kde.klassylightleftpanel.desktop"),
                                                QStringLiteral("org.kde.klassytwilightleftpanel.desktop")};
 
         if (leftPanelPackages.contains(lookAndFeelPackageName)) {
             system("klassy-settings -w Klassy &");
-            DBusMessages::setGtkTheme(gtkThemeName);
         } else {
             const QStringList bottomPanelPackages = {QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
                                                      QStringLiteral("org.kde.klassylightbottompanel.desktop"),
@@ -729,7 +725,6 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
 
             if (bottomPanelPackages.contains(lookAndFeelPackageName)) {
                 system("klassy-settings -w \"Klassy bottom panel\" &");
-                DBusMessages::setGtkTheme(gtkThemeName);
             }
         }
     }
