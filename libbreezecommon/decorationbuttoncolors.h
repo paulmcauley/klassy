@@ -11,8 +11,6 @@
 #include "breezecommon_export.h"
 #include "decorationcolors.h"
 #include <KColorScheme>
-#include <KDecoration2/DecorationButton>
-#include <KDecoration2/DecorationSettings>
 #include <QColor>
 #include <memory>
 
@@ -22,24 +20,24 @@ namespace Breeze
 struct DecorationPaletteGroup;
 class DecorationColors;
 
-const QList<KDecoration2::DecorationButtonType> coloredWindowDecorationButtonTypes{
-    KDecoration2::DecorationButtonType::Menu,
-    KDecoration2::DecorationButtonType::ApplicationMenu,
-    KDecoration2::DecorationButtonType::OnAllDesktops,
-    KDecoration2::DecorationButtonType::Minimize,
-    KDecoration2::DecorationButtonType::Maximize,
-    KDecoration2::DecorationButtonType::Close,
-    KDecoration2::DecorationButtonType::ContextHelp,
-    KDecoration2::DecorationButtonType::Shade,
-    KDecoration2::DecorationButtonType::KeepBelow,
-    KDecoration2::DecorationButtonType::KeepAbove,
-    KDecoration2::DecorationButtonType::Custom,
+const QList<DecorationButtonType> coloredWindowDecorationButtonTypes{
+    DecorationButtonType::Menu,
+    DecorationButtonType::ApplicationMenu,
+    DecorationButtonType::OnAllDesktops,
+    DecorationButtonType::Minimize,
+    DecorationButtonType::Maximize,
+    DecorationButtonType::Close,
+    DecorationButtonType::ContextHelp,
+    DecorationButtonType::Shade,
+    DecorationButtonType::KeepBelow,
+    DecorationButtonType::KeepAbove,
+    DecorationButtonType::Custom,
 };
 
-const QList<KDecoration2::DecorationButtonType> coloredAppStyleDecorationButtonTypes{
-    KDecoration2::DecorationButtonType::Minimize,
-    KDecoration2::DecorationButtonType::Maximize,
-    KDecoration2::DecorationButtonType::Close,
+const QList<DecorationButtonType> coloredAppStyleDecorationButtonTypes{
+    DecorationButtonType::Minimize,
+    DecorationButtonType::Maximize,
+    DecorationButtonType::Close,
 };
 
 enum struct BREEZECOMMON_EXPORT OverridableButtonColorState {
@@ -126,7 +124,7 @@ struct BREEZECOMMON_EXPORT DecorationButtonPaletteGroup {
 class BREEZECOMMON_EXPORT DecorationButtonPalette
 {
 public:
-    DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType);
+    DecorationButtonPalette(DecorationButtonType buttonType);
 
     void generate(InternalSettingsPtr decorationSettings,
                   DecorationColors *decorationColors,
@@ -141,7 +139,7 @@ public:
         return _inactive.get();
     }
 
-    KDecoration2::DecorationButtonType buttonType()
+    DecorationButtonType buttonType()
     {
         return _buttonType;
     }
@@ -173,7 +171,7 @@ private:
     void generateButtonOutlinePalette(const bool active);
 
     InternalSettingsPtr _decorationSettings;
-    KDecoration2::DecorationButtonType _buttonType;
+    DecorationButtonType _buttonType;
     DecorationColors *_decorationColors;
 
     bool _buttonOverrideColorsPresentActive{false};

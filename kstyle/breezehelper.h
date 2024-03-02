@@ -320,7 +320,7 @@ public:
     //* generic button (for mdi decorations, tabs and dock widgets)
     void renderDecorationButton(QPainter *painter,
                                 const QRect &rect,
-                                KDecoration2::DecorationButtonType buttonType,
+                                DecorationButtonType buttonType,
                                 const bool buttonChecked,
                                 const QColor &foregroundColor,
                                 const bool cutOutForeground,

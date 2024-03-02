@@ -12,7 +12,6 @@
 #include "systemicontheme.h"
 #include <KColorCombo>
 #include <KColorUtils>
-#include <KDecoration2/DecorationSettings>
 #include <QCheckBox>
 #include <QHBoxLayout>
 #include <QJsonArray>
@@ -28,8 +27,6 @@
 
 namespace Breeze
 {
-
-using KDecoration2::DecorationButtonType;
 
 ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presetsConfig, QObject *parent)
     : QDialog(static_cast<ConfigWidget *>(parent)->widget())
@@ -597,12 +594,12 @@ void ButtonColors::loadMain(const bool assignUiValuesOnly)
     m_overrideColorsLoaded.inactive = false;
     for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
         if (decodeOverrideColorsAndLoadTableColumn(m_internalSettings->buttonOverrideColorsActive(i).toUtf8(),
-                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)),
+                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
                                                    true)) {
             m_overrideColorsLoaded.active = true;
         }
         if (decodeOverrideColorsAndLoadTableColumn(m_internalSettings->buttonOverrideColorsInactive(i).toUtf8(),
-                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)),
+                                                   m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)),
                                                    false)) {
             m_overrideColorsLoaded.inactive = true;
         }
@@ -662,10 +659,10 @@ void ButtonColors::save(const bool reloadKwinConfig)
     for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
         m_internalSettings->setButtonOverrideColorsActive(
             i,
-            encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)), true, resetActive));
+            encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)), true, resetActive));
         m_internalSettings->setButtonOverrideColorsInactive(
             i,
-            encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)), false, resetInactive));
+            encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)), false, resetInactive));
     }
 
     m_internalSettings->save();
@@ -807,7 +804,7 @@ void ButtonColors::updateChanged()
     if (!modified) {
         bool resetActive = !m_ui->buttonColorOverrideToggleActive->isChecked();
         for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
-            if (encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)), true, resetActive)
+            if (encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)), true, resetActive)
                 != m_internalSettings->buttonOverrideColorsActive(i).toUtf8()) {
                 modified = true;
                 break;
@@ -817,7 +814,7 @@ void ButtonColors::updateChanged()
     if (!modified) {
         bool resetInactive = !m_ui->buttonColorOverrideToggleInactive->isChecked();
         for (int i = 0; i < InternalSettings::EnumButtonOverrideColorsActiveButtonType::COUNT; i++) {
-            if (encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<KDecoration2::DecorationButtonType>(i)), false, resetInactive)
+            if (encodeColorOverrideTableColumn(m_allCustomizableButtonsOrder.indexOf(static_cast<DecorationButtonType>(i)), false, resetInactive)
                 != m_internalSettings->buttonOverrideColorsInactive(i).toUtf8()) {
                 modified = true;
                 break;
@@ -1592,10 +1589,10 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     auto getGroup = [](DecorationButtonPalette *palette, bool active) {
         return active ? palette->active() : palette->inactive();
     };
-    DecorationButtonPalette closeButtonPalette(KDecoration2::DecorationButtonType::Close);
-    DecorationButtonPalette maximizeButtonPalette(KDecoration2::DecorationButtonType::Maximize);
-    DecorationButtonPalette minimizeButtonPalette(KDecoration2::DecorationButtonType::Minimize);
-    DecorationButtonPalette otherButtonPalette(KDecoration2::DecorationButtonType::Custom);
+    DecorationButtonPalette closeButtonPalette(DecorationButtonType::Close);
+    DecorationButtonPalette maximizeButtonPalette(DecorationButtonType::Maximize);
+    DecorationButtonPalette minimizeButtonPalette(DecorationButtonType::Minimize);
+    DecorationButtonPalette otherButtonPalette(DecorationButtonType::Custom);
 
     QList<DecorationButtonPalette *> otherCloseButtonList{&otherButtonPalette, &closeButtonPalette};
     otherCloseButtonList = sortButtonsAsPerKwinConfig(otherCloseButtonList);
@@ -2065,18 +2062,18 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
 void ButtonColors::getButtonsOrderFromKwinConfig()
 {
-    QMap<KDecoration2::DecorationButtonType, QChar> buttonNames;
+    QMap<DecorationButtonType, QChar> buttonNames;
     // list modified from https://invent.kde.org/plasma/kwin/-/blob/master/src/decorations/settings.cpp
-    buttonNames[KDecoration2::DecorationButtonType::Menu] = QChar('M');
-    buttonNames[KDecoration2::DecorationButtonType::ApplicationMenu] = QChar('N');
-    buttonNames[KDecoration2::DecorationButtonType::OnAllDesktops] = QChar('S');
-    buttonNames[KDecoration2::DecorationButtonType::KeepAbove] = QChar('F');
-    buttonNames[KDecoration2::DecorationButtonType::KeepBelow] = QChar('B');
-    buttonNames[KDecoration2::DecorationButtonType::Shade] = QChar('L');
-    buttonNames[KDecoration2::DecorationButtonType::ContextHelp] = QChar('H');
-    buttonNames[KDecoration2::DecorationButtonType::Minimize] = QChar('I');
-    buttonNames[KDecoration2::DecorationButtonType::Maximize] = QChar('A');
-    buttonNames[KDecoration2::DecorationButtonType::Close] = QChar('X');
+    buttonNames[DecorationButtonType::Menu] = QChar('M');
+    buttonNames[DecorationButtonType::ApplicationMenu] = QChar('N');
+    buttonNames[DecorationButtonType::OnAllDesktops] = QChar('S');
+    buttonNames[DecorationButtonType::KeepAbove] = QChar('F');
+    buttonNames[DecorationButtonType::KeepBelow] = QChar('B');
+    buttonNames[DecorationButtonType::Shade] = QChar('L');
+    buttonNames[DecorationButtonType::ContextHelp] = QChar('H');
+    buttonNames[DecorationButtonType::Minimize] = QChar('I');
+    buttonNames[DecorationButtonType::Maximize] = QChar('A');
+    buttonNames[DecorationButtonType::Close] = QChar('X');
 
     QString buttonsOnLeft;
     QString buttonsOnRight;
@@ -2098,8 +2095,8 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
 
     m_visibleButtonsOrder.clear();
     for (QChar *it = visibleButtons.begin(); it != visibleButtons.end(); it++) {
-        auto key = buttonNames.key(*it, KDecoration2::DecorationButtonType::Custom);
-        if (key != KDecoration2::DecorationButtonType::Custom)
+        auto key = buttonNames.key(*it, DecorationButtonType::Custom);
+        if (key != DecorationButtonType::Custom)
             m_visibleButtonsOrder.append(key);
     }
 
@@ -2113,13 +2110,13 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
 
     // Place a custom button type in the average position of these "other" button types
     QList<int> otherButtonIndexes{
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::Menu),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::ApplicationMenu),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::OnAllDesktops),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::ContextHelp),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepAbove),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::KeepBelow),
-        m_visibleButtonsOrder.indexOf(KDecoration2::DecorationButtonType::Shade),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::Menu),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
+        m_visibleButtonsOrder.indexOf(DecorationButtonType::Shade),
     };
 
     // remove the -1s (index not found)
@@ -2141,28 +2138,28 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     }
 
     // Want to give Close/Maximize/Minimize buttons priority over the custom button to be at either the left or right edges
-    QMap<int, KDecoration2::DecorationButtonType> leftEdgePriorityButtons; // a list of Close/Maximize/Minimize if at left edge
-    QMap<int, KDecoration2::DecorationButtonType> rightEdgePriorityButtons; // a list of Close/Maximize/Minimize if at right edge
+    QMap<int, DecorationButtonType> leftEdgePriorityButtons; // a list of Close/Maximize/Minimize if at left edge
+    QMap<int, DecorationButtonType> rightEdgePriorityButtons; // a list of Close/Maximize/Minimize if at right edge
 
     // find leftEdgePriorityButtons
     for (int i = 0; i < 3; i++) {
         if (buttonsOnLeft.indexOf(QChar('X')) == i) {
-            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Close);
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Close);
         } else if (buttonsOnLeft.indexOf(QChar('A')) == i) {
-            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Maximize);
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Maximize);
         } else if (buttonsOnLeft.indexOf(QChar('I')) == i) {
-            leftEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Minimize);
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Minimize);
         }
     }
 
     // find rightEdgePrioritybuttons
     for (int i = m_visibleButtonsOrder.count() - 1; i >= m_visibleButtonsOrder.count() - 3; i--) {
         if (buttonsOnRight.lastIndexOf(QChar('X')) == i) { // lastIndexOf in-case a weirdo adds more than one button of the same type
-            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Close);
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Close);
         } else if (buttonsOnRight.lastIndexOf(QChar('A')) == i) {
-            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Maximize);
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Maximize);
         } else if (buttonsOnRight.lastIndexOf(QChar('I')) == i) {
-            rightEdgePriorityButtons.insert(i, KDecoration2::DecorationButtonType::Minimize);
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Minimize);
         }
     }
 
@@ -2178,7 +2175,7 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     m_allCustomizableButtonsOrder = m_visibleButtonsOrder + m_hiddenButtons;
 
     m_visibleButtonsOrder.insert(indexOfCustom,
-                                 KDecoration2::DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
+                                 DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
 }
 
 QList<DecorationButtonPalette *> ButtonColors::sortButtonsAsPerKwinConfig(QList<DecorationButtonPalette *> inputlist)
@@ -2226,7 +2223,7 @@ void ButtonColors::updateLockIcons()
     }
 }
 
-void ButtonColors::setHorizontalHeaderSectionIcon(KDecoration2::DecorationButtonType type, QTableWidget *table, int section)
+void ButtonColors::setHorizontalHeaderSectionIcon(DecorationButtonType type, QTableWidget *table, int section)
 {
     QIcon icon;
 

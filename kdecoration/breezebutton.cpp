@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 #include "breezebutton.h"
+#include "breeze.h"
 #include "colortools.h"
 #include "geometrytools.h"
 #include "renderdecorationbuttonicon.h"
@@ -27,10 +28,9 @@ namespace Breeze
 
 using KDecoration2::ColorGroup;
 using KDecoration2::ColorRole;
-using KDecoration2::DecorationButtonType;
 
 //__________________________________________________________________
-Button::Button(DecorationButtonType type, Decoration *decoration, QObject *parent)
+Button::Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent)
     : DecorationButton(type, decoration, parent)
     , m_d(qobject_cast<Decoration *>(decoration))
     , m_animation(new QVariantAnimation(this))
@@ -75,7 +75,7 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
 
 //__________________________________________________________________
 Button::Button(QObject *parent, const QVariantList &args)
-    : Button(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration *>(), parent)
+    : Button(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration *>(), parent)
 {
     m_flag = FlagStandalone;
     //! small button size must return to !valid because it was altered from the default constructor,
@@ -84,39 +84,39 @@ Button::Button(QObject *parent, const QVariantList &args)
 }
 
 //__________________________________________________________________
-Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
+Button *Button::create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
 {
     if (auto d = qobject_cast<Decoration *>(decoration)) {
         auto c = d->client();
 
         Button *b = new Button(type, d, parent);
         switch (type) {
-        case DecorationButtonType::Close:
+        case KDecoration2::DecorationButtonType::Close:
             b->setVisible(c->isCloseable());
             QObject::connect(c, &KDecoration2::DecoratedClient::closeableChanged, b, &Breeze::Button::setVisible);
             break;
 
-        case DecorationButtonType::Maximize:
+        case KDecoration2::DecorationButtonType::Maximize:
             b->setVisible(c->isMaximizeable());
             QObject::connect(c, &KDecoration2::DecoratedClient::maximizeableChanged, b, &Breeze::Button::setVisible);
             break;
 
-        case DecorationButtonType::Minimize:
+        case KDecoration2::DecorationButtonType::Minimize:
             b->setVisible(c->isMinimizeable());
             QObject::connect(c, &KDecoration2::DecoratedClient::minimizeableChanged, b, &Breeze::Button::setVisible);
             break;
 
-        case DecorationButtonType::ContextHelp:
+        case KDecoration2::DecorationButtonType::ContextHelp:
             b->setVisible(c->providesContextHelp());
             QObject::connect(c, &KDecoration2::DecoratedClient::providesContextHelpChanged, b, &Breeze::Button::setVisible);
             break;
 
-        case DecorationButtonType::Shade:
+        case KDecoration2::DecorationButtonType::Shade:
             b->setVisible(c->isShadeable());
             QObject::connect(c, &KDecoration2::DecoratedClient::shadeableChanged, b, &Breeze::Button::setVisible);
             break;
 
-        case DecorationButtonType::Menu:
+        case KDecoration2::DecorationButtonType::Menu:
             QObject::connect(c, &KDecoration2::DecoratedClient::iconChanged, b, [b]() {
                 b->update();
             });
@@ -143,7 +143,8 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     }
     auto c = m_d->client();
 
-    m_buttonPalette = m_d->decorationColors()->buttonPalette(type()); // this is in paint() in-case caching type on m_buttonPalette changes
+    m_buttonPalette =
+        m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is in paint() in-case caching type on m_buttonPalette changes
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
 
     setDevicePixelRatio(painter);
@@ -166,7 +167,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     painter->save();
 
     // menu button (with application icon)
-    if (type() == DecorationButtonType::Menu) {
+    if (type() == KDecoration2::DecorationButtonType::Menu) {
         // draw a background only with Full-sized background shapes;
         // for standalone/GTK we draw small buttons so can't draw menu
         if (m_d->buttonBackgroundType() == ButtonBackgroundType::FullHeight && !(isStandAlone() || m_isGtkCsdButton))
@@ -290,7 +291,7 @@ void Button::drawIcon(QPainter *painter) const
         */
         painter->scale(scaleFactor, scaleFactor);
 
-        iconRenderer->renderIcon(type(), isChecked());
+        iconRenderer->renderIcon(static_cast<DecorationButtonType>(type()), isChecked());
     }
 }
 
@@ -307,8 +308,9 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
     if (isPressed()) {
         return foregroundPressActiveStateAnimated(active, getNonAnimatedColor);
     } else if (isChecked()
-               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
-                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+               && (type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove
+                   || type() == KDecoration2::DecorationButtonType::Shade
+                   || (type() == KDecoration2::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -403,8 +405,9 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
     if (isPressed()) {
         return backgroundPressActiveStateAnimated(active, getNonAnimatedColor);
     } else if (isChecked()
-               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
-                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+               && (type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove
+                   || type() == KDecoration2::DecorationButtonType::Shade
+                   || (type() == KDecoration2::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -498,8 +501,9 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
     if (isPressed()) {
         return outlinePressActiveStateAnimated(active, getNonAnimatedColor);
     } else if (isChecked()
-               && (type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove || type() == DecorationButtonType::Shade
-                   || (type() == DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
+               && (type() == KDecoration2::DecorationButtonType::KeepBelow || type() == KDecoration2::DecorationButtonType::KeepAbove
+                   || type() == KDecoration2::DecorationButtonType::Shade
+                   || (type() == KDecoration2::DecorationButtonType::OnAllDesktops && !m_titlebarTextPinnedInversion))) {
         if (m_d->internalSettings()->buttonStateChecked(active) == InternalSettings::EnumButtonStateChecked::Hover) {
             return outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
         } else {
@@ -587,7 +591,7 @@ bool Button::titlebarTextPinnedInversion() const
     auto c = m_d->client();
     bool active = c->isActive();
 
-    return type() == DecorationButtonType::OnAllDesktops
+    return type() == KDecoration2::DecorationButtonType::OnAllDesktops
         && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme
         && (m_d->internalSettings()->buttonBackgroundOpacity(active) == 100 && m_d->internalSettings()->buttonIconOpacity(active) == 100
             && (((m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarText
@@ -616,7 +620,7 @@ void Button::reconfigure()
 
     // set m_systemIconName and m_systemIconCheckedName if a system icon theme is set
     if (m_d->internalSettings()->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
-        SystemIconTheme::systemIconNames(type(), m_systemIconName, m_systemIconCheckedName);
+        SystemIconTheme::systemIconNames(static_cast<DecorationButtonType>(type()), m_systemIconName, m_systemIconCheckedName);
     }
 }
 
@@ -640,7 +644,8 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
 
     QColor color = QColor();
     if (on) {
-        m_buttonPalette = m_d->decorationColors()->buttonPalette(type()); // this is here in-case caching type on m_buttonPalette changes
+        m_buttonPalette =
+            m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is here in-case caching type on m_buttonPalette changes
         m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
@@ -770,7 +775,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
             outline = outline.subtracted(inner);
         } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-            if (type() != DecorationButtonType::Menu) {
+            if (type() != KDecoration2::DecorationButtonType::Menu) {
                 QPainterPath inner;
                 qreal halfPenWidth = penWidth / 2;
                 geometryShrinkOffsetHorizontal = halfPenWidth;
@@ -933,7 +938,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
             }
         } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-            if (type() != DecorationButtonType::Menu) {
+            if (type() != KDecoration2::DecorationButtonType::Menu) {
                 painter->setPen(Qt::NoPen);
 
                 if (((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) && m_rightmostLeftVisible)

@@ -15,7 +15,7 @@ namespace Breeze
 QPalette DecorationColors::s_cachedKdeGlobalPalette;
 std::unique_ptr<DecorationPaletteGroup> DecorationColors::s_cachedDecorationPaletteGroupActive;
 std::unique_ptr<DecorationPaletteGroup> DecorationColors::s_cachedDecorationPaletteGroupInactive;
-std::map<KDecoration2::DecorationButtonType, DecorationButtonPalette> DecorationColors::s_cachedButtonPalettes;
+std::map<DecorationButtonType, DecorationButtonPalette> DecorationColors::s_cachedButtonPalettes;
 QByteArray DecorationColors::s_settingsUpdateUuid = "";
 bool DecorationColors::s_cachedColorsGenerated = false;
 
@@ -43,8 +43,7 @@ DecorationColors::DecorationColors(const bool useCachedPalette, const bool forAp
     }
 
     if (!m_buttonPalettes->size() && !m_forAppStyle) { // appStyle should generate buttons separately
-        const QList<KDecoration2::DecorationButtonType> &coloredButtonTypes =
-            m_forAppStyle ? coloredAppStyleDecorationButtonTypes : coloredWindowDecorationButtonTypes;
+        const QList<DecorationButtonType> &coloredButtonTypes = m_forAppStyle ? coloredAppStyleDecorationButtonTypes : coloredWindowDecorationButtonTypes;
 
         // initialise m_buttonPalettes map so that only generate() needs called later -- ensures the values in the map are at the same memory location
         for (int i = 0; i < coloredButtonTypes.count(); i++) {

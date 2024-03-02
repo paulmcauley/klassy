@@ -11,8 +11,6 @@
 #include "breezecommon_export.h"
 #include "decorationbuttoncolors.h"
 #include <KColorScheme>
-#include <KDecoration2/DecorationButton>
-#include <KDecoration2/DecorationSettings>
 #include <QColor>
 #include <QObject>
 #include <QPalette>
@@ -73,7 +71,7 @@ public:
         return (m_decorationPaletteGroupInactive->get());
     }
 
-    DecorationButtonPalette *buttonPalette(KDecoration2::DecorationButtonType type) const
+    DecorationButtonPalette *buttonPalette(DecorationButtonType type) const
     {
         return (&m_buttonPalettes->at(type));
     }
@@ -183,7 +181,7 @@ private:
     QPalette *m_basePalette;
     std::unique_ptr<DecorationPaletteGroup> *m_decorationPaletteGroupActive;
     std::unique_ptr<DecorationPaletteGroup> *m_decorationPaletteGroupInactive;
-    std::map<KDecoration2::DecorationButtonType, DecorationButtonPalette> *m_buttonPalettes;
+    std::map<DecorationButtonType, DecorationButtonPalette> *m_buttonPalettes;
     bool *m_colorsGenerated;
     void *m_settingsUpdateUuid;
 
@@ -191,14 +189,14 @@ private:
     QPalette m_nonCachedClientPalette;
     std::unique_ptr<DecorationPaletteGroup> m_nonCachedDecorationPaletteGroupActive;
     std::unique_ptr<DecorationPaletteGroup> m_nonCachedDecorationPaletteGroupInactive;
-    std::map<KDecoration2::DecorationButtonType, DecorationButtonPalette> m_nonCachedButtonPalettes;
+    std::map<DecorationButtonType, DecorationButtonPalette> m_nonCachedButtonPalettes;
     bool m_nonCachedColorsGenerated = false;
 
     //* cached data used for window decorations
     static QPalette s_cachedKdeGlobalPalette;
     static std::unique_ptr<DecorationPaletteGroup> s_cachedDecorationPaletteGroupActive;
     static std::unique_ptr<DecorationPaletteGroup> s_cachedDecorationPaletteGroupInactive;
-    static std::map<KDecoration2::DecorationButtonType, DecorationButtonPalette> s_cachedButtonPalettes;
+    static std::map<DecorationButtonType, DecorationButtonPalette> s_cachedButtonPalettes;
     static QByteArray s_settingsUpdateUuid;
     static bool s_cachedColorsGenerated;
 };

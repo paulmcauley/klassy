@@ -13,9 +13,7 @@
 namespace Breeze
 {
 
-using KDecoration2::DecorationButtonType;
-
-DecorationButtonPalette::DecorationButtonPalette(KDecoration2::DecorationButtonType buttonType)
+DecorationButtonPalette::DecorationButtonPalette(DecorationButtonType buttonType)
     : _buttonType(buttonType)
     , _active(std::make_shared<DecorationButtonPaletteGroup>())
     , _inactive(std::make_shared<DecorationButtonPaletteGroup>())

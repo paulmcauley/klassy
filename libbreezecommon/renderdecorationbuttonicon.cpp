@@ -17,7 +17,6 @@
 
 namespace Breeze
 {
-using KDecoration2::DecorationButtonType;
 
 std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButtonIcon::factory(const QSharedPointer<Breeze::InternalSettings> internalSettings,
                                                                                                 QPainter *painter,
@@ -96,7 +95,7 @@ void RenderDecorationButtonIcon::initPainter()
     m_totalScalingFactor = m_painter->deviceTransform().m22();
 }
 
-void RenderDecorationButtonIcon::renderIcon(KDecoration2::DecorationButtonType type, bool checked)
+void RenderDecorationButtonIcon::renderIcon(DecorationButtonType type, bool checked)
 {
     m_painter->save();
     initPainter();
