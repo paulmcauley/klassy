@@ -13,7 +13,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
-#include <QTimer>
 #include <memory>
 
 namespace Breeze
@@ -118,7 +117,6 @@ void LoadPreset::loadButtonClicked()
         configWidget->load();
         DBusMessages::updateDecorationColorCache();
         DBusMessages::kwinReloadConfig();
-        QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
         configWidget->generateSystemIcons();
     }
 }
