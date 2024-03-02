@@ -34,7 +34,7 @@ ki18n_wrap_ui(breezedecoration_config_SRCS
    ui/shadowstyle.ui
 )
 
-qt6_add_resources(breezedecoration_config_SRCS config/ui/klassydecoration_config.qrc)
+qt6_add_resources(breezedecoration_config_SRCS ui/klassydecoration_config.qrc)
 
 kcoreaddons_add_plugin(kcm_klassydecoration SOURCES kcm_breezedecoration.cpp ${breezedecoration_config_SRCS} INSTALL_NAMESPACE "${KDECORATION_KCM_PLUGIN_DIR}")
 #This is removed as kdecoration InternalSettings is now generated from libbreezecommon
