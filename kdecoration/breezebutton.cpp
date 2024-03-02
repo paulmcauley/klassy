@@ -48,8 +48,8 @@ Button::Button(DecorationButtonType type, Decoration *decoration, QObject *paren
     });
 
     // detect the kde-gtk-config-daemon
-    // kde-gtk-config has a kded5 module which renders the buttons to svgs for gtk
-    if (QCoreApplication::applicationName() == QStringLiteral("kded5")) {
+    // kde-gtk-config has a kded6 module which renders the buttons to svgs for gtk
+    if (QCoreApplication::applicationName() == QStringLiteral("kded6")) {
         m_isGtkCsdButton = true;
     }
 
