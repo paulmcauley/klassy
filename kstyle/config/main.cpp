@@ -17,7 +17,6 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QIcon>
-#include <QTimer>
 
 #include <KCMultiDialog>
 #include <KConfig>
@@ -148,9 +147,6 @@ CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser
         DBusMessages::kwinReloadConfig();
 
         output << i18n("Preset, \"") << parser.value(loadWindecoPresetOption) << i18n("\" loaded...") << Qt::endl;
-        // if Decoration::reconfigure is reloaded twice the corruption when changing border sizes clears, therefore tell Decoration to reconfigure again after 1
-        // second
-        QTimer::singleShot(1000, &DBusMessages::kwinReloadConfig);
     }
 
     if (parser.isSet(generateIcons) || parser.isSet(loadWindecoPresetOption)) {
