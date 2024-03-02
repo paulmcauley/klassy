@@ -22,3 +22,6 @@ theme=Klassy
 
 [plasmarc][Theme]
 name=breeze-dark
+
+[KSplash]
+Theme=org.kde.Breeze

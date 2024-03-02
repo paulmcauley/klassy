@@ -1,0 +1,18 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Light theme with panel on the left",
+        "Id": "org.kde.klassylightleftpanel.desktop",
+        "License": "LGPL 2.1",
+        "Name": "Klassy Light - Left Panel",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-APIVersion": "2"
+}
