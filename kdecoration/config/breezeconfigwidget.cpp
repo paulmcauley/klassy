@@ -52,7 +52,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
 
     // this is a hack to get an Apply button
     if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell5 plasma/kcms/klassy/kcm_klassydecoration &");
+        system("kcmshell6 plasma/kcms/klassy/kcm_klassydecoration &");
         parentDialog->close();
     }
     setButtons(KCModule::Default | KCModule::Apply);

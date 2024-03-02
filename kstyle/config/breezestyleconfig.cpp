@@ -31,7 +31,7 @@ StyleConfig::StyleConfig(QWidget *parent)
     // this is a hack to get an Apply button
     QDialog *parentDialog = qobject_cast<QDialog *>(parent);
     if (parentDialog && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
-        system("kcmshell5 klassystyleconfig &");
+        system("kcmshell6 kstyle_config/klassystyleconfig &");
         parentDialog->close();
     }
 
