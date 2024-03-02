@@ -105,7 +105,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonIconColorsActive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->buttonIconColorsInactive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -119,7 +119,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonIconColorsInactive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->buttonIconColorsActive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -136,7 +136,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonBackgroundColorsActive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsInactive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -154,7 +154,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonBackgroundColorsInactive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->buttonBackgroundColorsActive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -165,7 +165,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->closeButtonIconColorActive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->closeButtonIconColorInactive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -175,7 +175,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->closeButtonIconColorInactive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->closeButtonIconColorActive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -191,7 +191,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->negativeCloseBackgroundHoverPressActive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -205,7 +205,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->negativeCloseBackgroundHoverPressInactive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->negativeCloseBackgroundHoverPressActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -215,7 +215,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->useHoverAccentActive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->useHoverAccentInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -225,7 +225,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->useHoverAccentInactive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->useHoverAccentActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -240,7 +240,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->onPoorIconContrastActive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->onPoorIconContrastInactive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -258,7 +258,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->onPoorIconContrastInactive,
         qOverload<int>(&QComboBox::currentIndexChanged),
         this,
-        [=](const int i) {
+        [=, this](const int i) {
             setIndexOfOtherIfLocked(m_ui->onPoorIconContrastActive, i);
         },
         Qt::ConnectionType::DirectConnection);
@@ -273,7 +273,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->adjustBackgroundColorOnPoorContrastActive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -291,7 +291,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->adjustBackgroundColorOnPoorContrastInactive,
         &QAbstractButton::toggled,
         this,
-        [=](const bool v) {
+        [=, this](const bool v) {
             setOtherCheckedIfLocked(m_ui->adjustBackgroundColorOnPoorContrastActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -313,7 +313,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonIconOpacityActive,
         qOverload<int>(&QSpinBox::valueChanged),
         this,
-        [=](const int v) {
+        [=, this](const int v) {
             setOtherValueIfLocked(m_ui->buttonIconOpacityInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -323,7 +323,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonIconOpacityInactive,
         qOverload<int>(&QSpinBox::valueChanged),
         this,
-        [=](const int v) {
+        [=, this](const int v) {
             setOtherValueIfLocked(m_ui->buttonIconOpacityActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -333,7 +333,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonBackgroundOpacityActive,
         qOverload<int>(&QSpinBox::valueChanged),
         this,
-        [=](const int v) {
+        [=, this](const int v) {
             setOtherValueIfLocked(m_ui->buttonBackgroundOpacityInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -343,7 +343,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->buttonBackgroundOpacityInactive,
         qOverload<int>(&QSpinBox::valueChanged),
         this,
-        [=](const int v) {
+        [=, this](const int v) {
             setOtherValueIfLocked(m_ui->buttonBackgroundOpacityActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -357,7 +357,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->poorIconContrastThresholdActive,
         qOverload<double>(&QDoubleSpinBox::valueChanged),
         this,
-        [=](const double v) {
+        [=, this](const double v) {
             setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -371,7 +371,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->poorIconContrastThresholdInactive,
         qOverload<double>(&QDoubleSpinBox::valueChanged),
         this,
-        [=](const double v) {
+        [=, this](const double v) {
             setOtherDoubleValueIfLocked(m_ui->poorIconContrastThresholdActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -385,7 +385,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->poorBackgroundContrastThresholdActive,
         qOverload<double>(&QDoubleSpinBox::valueChanged),
         this,
-        [=](const double v) {
+        [=, this](const double v) {
             setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdInactive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -399,7 +399,7 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
         m_ui->poorBackgroundContrastThresholdInactive,
         qOverload<double>(&QDoubleSpinBox::valueChanged),
         this,
-        [=](const double v) {
+        [=, this](const double v) {
             setOtherDoubleValueIfLocked(m_ui->poorBackgroundContrastThresholdActive, v);
         },
         Qt::ConnectionType::DirectConnection);
@@ -2110,13 +2110,13 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
 
     // Place a custom button type in the average position of these "other" button types
     QList<int> otherButtonIndexes{
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::Menu),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::ContextHelp),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepAbove),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepBelow),
-        m_visibleButtonsOrder.indexOf(DecorationButtonType::Shade),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::Menu)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::ContextHelp)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepAbove)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepBelow)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::Shade)),
     };
 
     // remove the -1s (index not found)
