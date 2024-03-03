@@ -1,5 +1,3 @@
-#ifndef breezedecorationsettingsprovider_h
-#define breezedecorationsettingsprovider_h
 /*
  * SPDX-FileCopyrightText: 2022-2024 Paul A McAuley <kde@paulmcauley.com>
  *
@@ -11,6 +9,8 @@
  * Provides access to kdecoration exceptions to kstyle
  *
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -62,5 +62,3 @@ private:
 };
 
 }
-
-#endif

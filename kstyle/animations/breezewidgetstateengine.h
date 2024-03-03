@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezewidgetstateengine_h
-#define breezewidgetstateengine_h
+#pragma once
 
 #include "breeze.h"
 #include "breezebaseengine.h"
@@ -164,5 +163,3 @@ private:
     DataMap<WidgetStateData> _pressedData;
 };
 }
-
-#endif

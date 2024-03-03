@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeheaderview_data_h
-#define breezeheaderview_data_h
+#pragma once
 
 #include "breezeanimationdata.h"
 #include <QHeaderView>
@@ -150,5 +149,3 @@ private:
     Data _previous;
 };
 }
-
-#endif

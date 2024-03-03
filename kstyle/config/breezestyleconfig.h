@@ -5,8 +5,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezestyleconfig_h
-#define breezestyleconfig_h
+#pragma once
 
 #include "breeze.h"
 #include "ui_breezestyleconfig.h"
@@ -62,4 +61,3 @@ private:
     KSharedConfig::Ptr _configuration;
 };
 }
-#endif

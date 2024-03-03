@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeanimation_h
-#define breezeanimation_h
+#pragma once
 
 #include "breeze.h"
 
@@ -46,5 +45,3 @@ public:
     }
 };
 }
-
-#endif

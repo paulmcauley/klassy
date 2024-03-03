@@ -1,11 +1,10 @@
-#ifndef BUTTONCOLORS_H
-#define BUTTONCOLORS_H
-
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -244,5 +243,3 @@ private:
 };
 
 }
-
-#endif // BUTTONCOLORS_H

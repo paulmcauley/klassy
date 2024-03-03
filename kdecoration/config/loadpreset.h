@@ -1,11 +1,10 @@
-#ifndef LOADPRESET_H
-#define LOADPRESET_H
-
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "addpreset.h"
 #include "breeze.h"
@@ -44,4 +43,3 @@ private:
 };
 
 }
-#endif // LOADPRESET_H

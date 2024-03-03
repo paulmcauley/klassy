@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezemnemonics_h
-#define breezemnemonics_h
+#pragma once
 
 #include <QApplication>
 #include <QEvent>
@@ -54,5 +53,3 @@ private:
     bool _enabled = true;
 };
 }
-
-#endif

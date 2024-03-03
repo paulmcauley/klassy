@@ -1,11 +1,10 @@
-#ifndef TITLEBARSPACING_H
-#define TITLEBARSPACING_H
-
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -75,5 +74,3 @@ private:
 };
 
 }
-
-#endif // TITLEBARSPACING_H

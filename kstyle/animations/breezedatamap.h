@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezedatamap_h
-#define breezedatamap_h
+#pragma once
 
 #include "breeze.h"
 
@@ -123,5 +122,3 @@ private:
     Value _lastValue;
 };
 }
-
-#endif

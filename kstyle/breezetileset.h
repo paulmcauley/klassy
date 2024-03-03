@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezetileset_h
-#define breezetileset_h
+#pragma once
 
 #include <QPixmap>
 #include <QRect>
@@ -110,5 +109,3 @@ private:
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::TileSet::Tiles)
-
-#endif // TILESET_H

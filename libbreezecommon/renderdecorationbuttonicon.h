@@ -1,11 +1,10 @@
-#ifndef BREEZE_RENDERDECORATIONBUTTONICON_H
-#define BREEZE_RENDERDECORATIONBUTTONICON_H
-
 /*
  * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezecommon_export.h"
@@ -230,5 +229,3 @@ protected:
     static constexpr qreal m_squareMaximizeBoldPenWidthFactor = 1.5;
 };
 }
-
-#endif

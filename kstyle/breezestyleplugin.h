@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezestyleplugin_h
-#define breezestyleplugin_h
+#pragma once
 
 #include <QStylePlugin>
 
@@ -32,5 +31,3 @@ public:
     QStyle *create(const QString &) override;
 };
 }
-
-#endif

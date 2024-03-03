@@ -1,11 +1,10 @@
-#ifndef TITLEBAROPACITY_H
-#define TITLEBAROPACITY_H
-
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -82,5 +81,3 @@ private:
 };
 
 }
-
-#endif // TITLEBAROPACITY_H

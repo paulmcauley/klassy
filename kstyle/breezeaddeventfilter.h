@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeaddeventfilter_h
-#define breezeaddeventfilter_h
+#pragma once
 
 #include <QEvent>
 #include <QObject>
@@ -32,5 +31,3 @@ public:
     }
 };
 }
-
-#endif

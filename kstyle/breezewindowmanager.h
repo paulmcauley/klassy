@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezewindowmanager_h
-#define breezewindowmanager_h
+#pragma once
 
 #include "breeze.h"
 #include "breezestyleconfigdata.h"
@@ -294,5 +293,3 @@ T WindowManager::findParent(const QWidget *widget) const
     return nullptr;
 }
 }
-
-#endif

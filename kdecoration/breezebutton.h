@@ -1,6 +1,3 @@
-#ifndef BREEZE_BUTTONS_H
-#define BREEZE_BUTTONS_H
-
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -8,6 +5,9 @@
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
+
+#pragma once
+
 #include "breezedecoration.h"
 #include "decorationbuttoncolors.h"
 #include <KDecoration2/DecorationButton>
@@ -282,5 +282,3 @@ private:
 };
 
 } // namespace
-
-#endif

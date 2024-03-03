@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezestyle_h
-#define breezestyle_h
+#pragma once
 
 #include "breeze.h"
 #include "breezehelper.h"
@@ -595,5 +594,3 @@ bool Style::hasParent(const QWidget *widget, const char *className) const
     return false;
 }
 }
-
-#endif

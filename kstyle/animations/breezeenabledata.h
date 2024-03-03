@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeenable_data_h
-#define breezeenable_data_h
+#pragma once
 
 #include "breezewidgetstatedata.h"
 
@@ -29,5 +28,3 @@ public:
     bool eventFilter(QObject *, QEvent *) override;
 };
 }
-
-#endif

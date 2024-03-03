@@ -1,6 +1,3 @@
-#ifndef breezestackedwidgetengine_h
-#define breezestackedwidgetengine_h
-
 //////////////////////////////////////////////////////////////////////////////
 // breezestackedwidgetengine.h
 // stores event filters and maps widgets to animations
@@ -10,6 +7,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezebaseengine.h"
 #include "breezedatamap.h"
@@ -60,5 +59,3 @@ private:
     DataMap<StackedWidgetData> _data;
 };
 }
-
-#endif

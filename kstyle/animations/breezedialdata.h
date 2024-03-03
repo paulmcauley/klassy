@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezedial_data_h
-#define breezedial_data_h
+#pragma once
 
 #include "breezewidgetstatedata.h"
 
@@ -50,5 +49,3 @@ private:
     QPoint _position;
 };
 }
-
-#endif

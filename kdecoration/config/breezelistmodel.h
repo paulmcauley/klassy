@@ -1,5 +1,3 @@
-#ifndef ListModel_h
-#define ListModel_h
 //////////////////////////////////////////////////////////////////////////////
 // listmodel.h
 // -------------------
@@ -8,6 +6,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezeitemmodel.h"
 
@@ -371,4 +371,3 @@ private:
     List _selection;
 };
 }
-#endif

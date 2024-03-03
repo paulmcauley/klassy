@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeframeshadow_h
-#define breezeframeshadow_h
+#pragma once
 
 #include "breeze.h"
 #include "breezeaddeventfilter.h"
@@ -127,5 +126,3 @@ private:
     //@}
 };
 }
-
-#endif

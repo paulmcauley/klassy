@@ -1,5 +1,4 @@
-#ifndef KLASSY_SETQDEBUG_LOGGING_H
-#define KLASSY_SETQDEBUG_LOGGING_H
+#pragma once
 
 #include "QDebug"
 #include "iostream"
@@ -63,5 +62,3 @@ void setDebugOutput(const QString &rawTargetFilePath_)
     qInstallMessageHandler(HelperClass::messageHandler);
 }
 }
-
-#endif

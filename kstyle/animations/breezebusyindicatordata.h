@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezebusyindicatordata_h
-#define breezebusyindicatordata_h
+#pragma once
 
 #include <QObject>
 
@@ -66,5 +65,3 @@ private:
     bool _animated;
 };
 }
-
-#endif
