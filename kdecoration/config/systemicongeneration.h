@@ -1,11 +1,10 @@
-#ifndef SYSTEMICONGENERATION_H
-#define SYSTEMICONGENERATION_H
-
 /*
  * SPDX-FileCopyrightText: 2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -67,5 +66,3 @@ private:
 };
 
 }
-
-#endif

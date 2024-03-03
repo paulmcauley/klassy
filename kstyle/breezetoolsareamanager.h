@@ -1,5 +1,4 @@
-#ifndef breezetoolsareamanager_h
-#define breezetoolsareamanager_h
+#pragma once
 
 #include "breezehelper.h"
 #include "breezestyle.h"
@@ -72,5 +71,3 @@ public:
     void becomeOpaque();
 };
 }
-
-#endif

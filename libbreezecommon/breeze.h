@@ -1,12 +1,11 @@
-#ifndef breeze_h
-#define breeze_h
-
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2022 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
+
+#pragma once
 
 #define KLASSY_DECORATION_DEBUG_MODE 0
 #define KLASSY_STYLE_DEBUG_MODE 0
@@ -239,5 +238,3 @@ enum BREEZECOMMON_EXPORT ArrowOrientation {
 Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::AnimationModes)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::Corners)
 Q_DECLARE_OPERATORS_FOR_FLAGS(Breeze::Sides)
-
-#endif

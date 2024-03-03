@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezegeneric_data_h
-#define breezegeneric_data_h
+#pragma once
 
 #include "breezeanimation.h"
 #include "breezeanimationdata.h"
@@ -66,5 +65,3 @@ private:
     qreal _opacity = 0;
 };
 }
-
-#endif

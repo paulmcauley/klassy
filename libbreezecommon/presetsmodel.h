@@ -1,11 +1,10 @@
-#ifndef BREEZE_PRESETSMODEL_H
-#define BREEZE_PRESETSMODEL_H
-
 /*
  * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezecommon_export.h"
@@ -62,5 +61,3 @@ public:
 };
 
 }
-
-#endif

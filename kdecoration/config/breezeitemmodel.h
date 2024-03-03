@@ -1,6 +1,3 @@
-#ifndef ItemModel_h
-#define ItemModel_h
-
 //////////////////////////////////////////////////////////////////////////////
 // itemmodel.h
 // -------------------
@@ -9,6 +6,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include <QAbstractItemModel>
 
@@ -93,5 +92,3 @@ private:
     Qt::SortOrder m_sortOrder = Qt::AscendingOrder;
 };
 }
-
-#endif

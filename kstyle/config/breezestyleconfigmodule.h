@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezestyleconfigmodule_h
-#define breezestyleconfigmodule_h
+#pragma once
 
 #include "breezestyleconfig.h"
 
@@ -37,5 +36,3 @@ private:
     StyleConfig *m_config;
 };
 }
-
-#endif

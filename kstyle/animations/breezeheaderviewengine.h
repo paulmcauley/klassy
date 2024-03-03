@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezeheaderviewengine_h
-#define breezeheaderviewengine_h
+#pragma once
 
 #include "breezebaseengine.h"
 #include "breezedatamap.h"
@@ -76,5 +75,3 @@ private:
     DataMap<HeaderViewData> _data;
 };
 }
-
-#endif

@@ -1,6 +1,3 @@
-#ifndef decorationexceptionlist_h
-#define decorationexceptionlist_h
-
 //////////////////////////////////////////////////////////////////////////////
 // decorationexceptionlist.h
 // window decoration exceptions
@@ -11,6 +8,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezecommon_export.h"
 
@@ -82,5 +81,3 @@ private:
     InternalSettingsList _defaultExceptions;
 };
 }
-
-#endif

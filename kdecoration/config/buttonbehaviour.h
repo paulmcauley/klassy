@@ -1,11 +1,10 @@
-#ifndef BUTTONBEHAVIOUR_H
-#define BUTTONBEHAVIOUR_H
-
 /*
  * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezesettings.h"
@@ -126,5 +125,3 @@ private:
 };
 
 }
-
-#endif // BUTTONBEHAVIOUR_H

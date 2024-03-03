@@ -1,11 +1,10 @@
-#ifndef BREEZE_DECORATIONCOLORS_H
-#define BREEZE_DECORATIONCOLORS_H
-
 /*
  * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezecommon_export.h"
@@ -201,4 +200,3 @@ private:
     static bool s_cachedColorsGenerated;
 };
 }
-#endif

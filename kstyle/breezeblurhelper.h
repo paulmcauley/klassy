@@ -1,6 +1,3 @@
-#ifndef breezeblurhelper_h
-#define breezeblurhelper_h
-
 //////////////////////////////////////////////////////////////////////////////
 // breezeblurhelper.h
 // handle regions passed to kwin for blurring
@@ -14,6 +11,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breeze.h"
 #include "breezehelper.h"
@@ -52,5 +51,3 @@ protected:
     void update(QWidget *) const;
 };
 }
-
-#endif

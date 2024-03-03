@@ -1,11 +1,10 @@
-#ifndef BREEZE_SYSTEMICONGENERATOR_H
-#define BREEZE_SYSTEMICONGENERATOR_H
-
 /*
  * SPDX-FileCopyrightText: 2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "decorationcolors.h"
@@ -79,5 +78,3 @@ private:
 };
 
 }
-
-#endif

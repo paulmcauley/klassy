@@ -1,6 +1,3 @@
-#ifndef breezetransitiondata_h
-#define breezetransitiondata_h
-
 //////////////////////////////////////////////////////////////////////////////
 // breezetransitiondata.h
 // data container for generic transitions
@@ -10,6 +7,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezetransitionwidget.h"
 
@@ -143,5 +142,3 @@ bool TransitionData::hasParent(const QWidget *widget, const char *className) con
     return false;
 }
 }
-
-#endif

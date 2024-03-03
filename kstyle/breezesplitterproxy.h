@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezesplitterproxy_h
-#define breezesplitterproxy_h
+#pragma once
 
 #include "breeze.h"
 #include "breezeaddeventfilter.h"
@@ -106,5 +105,3 @@ private:
     int _timerId;
 };
 }
-
-#endif

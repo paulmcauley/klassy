@@ -1,11 +1,10 @@
-#ifndef ADDPRESET_H
-#define ADDPRESET_H
-
 /*
  * SPDX-FileCopyrightText: 2023 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
+
+#pragma once
 
 #include "ui_addpreset.h"
 #include <QDialog>
@@ -32,5 +31,3 @@ private:
 };
 
 }
-
-#endif // ADDPRESET_H

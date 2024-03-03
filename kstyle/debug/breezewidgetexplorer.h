@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezewidgetexplorer_h
-#define breezewidgetexplorer_h
+#pragma once
 
 #include <QEvent>
 #include <QMap>
@@ -58,5 +57,3 @@ private:
     QMap<QEvent::Type, QString> _eventTypes;
 };
 }
-
-#endif

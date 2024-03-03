@@ -1,5 +1,3 @@
-#ifndef breezeexceptiondialog_h
-#define breezeexceptiondialog_h
 //////////////////////////////////////////////////////////////////////////////
 // breezeexceptiondialog.h
 // -------------------
@@ -8,6 +6,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breeze.h"
 #include "ui_breezeexceptiondialog.h"
@@ -97,5 +97,3 @@ private:
     bool m_loading = false;
 };
 }
-
-#endif

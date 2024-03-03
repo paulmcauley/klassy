@@ -5,8 +5,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezemetrics_h
-#define breezemetrics_h
+#pragma once
 
 #include <QtGlobal>
 
@@ -142,4 +141,3 @@ static constexpr int Splitter_SplitterWidth = 1;
 static constexpr int Shadow_Overlap = 2;
 }
 }
-#endif

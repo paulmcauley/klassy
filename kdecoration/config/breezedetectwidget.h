@@ -1,6 +1,3 @@
-#ifndef breezedetectwidget_h
-#define breezedetectwidget_h
-
 //////////////////////////////////////////////////////////////////////////////
 // breezedetectwidget.h
 // Note: this class is a stripped down version of
@@ -13,6 +10,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include <QObject>
 #include <QVariantMap>
@@ -43,5 +42,3 @@ private:
 };
 
 } // namespace
-
-#endif

@@ -1,10 +1,10 @@
-#ifndef breezesettingsprovider_h
-#define breezesettingsprovider_h
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
+
+#pragma once
 
 #include "breeze.h"
 #include "breezedecoration.h"
@@ -56,5 +56,3 @@ private:
     static SettingsProvider *s_self;
 };
 }
-
-#endif

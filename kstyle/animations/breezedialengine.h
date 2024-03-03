@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#ifndef breezedialengine_h
-#define breezedialengine_h
+#pragma once
 
 #include "breezedialdata.h"
 #include "breezewidgetstateengine.h"
@@ -53,5 +52,3 @@ public:
     }
 };
 }
-
-#endif

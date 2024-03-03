@@ -1,5 +1,3 @@
-#ifndef breezeexceptionlistwidget_h
-#define breezeexceptionlistwidget_h
 //////////////////////////////////////////////////////////////////////////////
 // breezeexceptionlistwidget.h
 // -------------------
@@ -9,6 +7,8 @@
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezeexceptionmodel.h"
 #include "ui_breezeexceptionlistwidget.h"
@@ -114,5 +114,3 @@ private:
     bool m_changed = false;
 };
 }
-
-#endif
