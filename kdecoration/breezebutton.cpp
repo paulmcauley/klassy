@@ -658,7 +658,8 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
         // Check if any other button is hovered/pressed.
         // This is to prevent glitches when you directly mouse over one button to another and the second button does not trigger on.
         // In the case where another button is hovered/pressed do not send an off flag.
-        for (KDecoration2::DecorationButton *decButton : m_d->leftButtons()->buttons() + m_d->rightButtons()->buttons()) {
+        const auto decButtons = m_d->leftButtons()->buttons() + m_d->rightButtons()->buttons();
+        for (KDecoration2::DecorationButton *decButton : decButtons) {
             Button *button = static_cast<Button *>(decButton);
 
             if (button != this && (button->isHovered() || button->isPressed())) {
