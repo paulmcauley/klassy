@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(klassy)
-set(PROJECT_VERSION "5.99.breeze5.27.80")
+set(PROJECT_VERSION "5.100.breeze5.27.80")
 set(PROJECT_VERSION_MAJOR 6)
 
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=1)

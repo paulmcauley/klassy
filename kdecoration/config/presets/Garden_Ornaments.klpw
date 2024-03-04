@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=5.0.breeze5.27.10
+version=5.100.breeze5.27.80.git
 
 [Windeco Preset Garden Ornaments]
 ActiveTitleBarOpacity=100
@@ -158,10 +158,10 @@ VaryColorIconActive=No
 VaryColorIconInactive=No
 VaryColorOutlineActive=No
 VaryColorOutlineInactive=No
-WindowOutlineAccentColorOpacityActive=60
+WindowOutlineAccentColorOpacityActive=67
 WindowOutlineAccentColorOpacityInactive=25
 WindowOutlineAccentWithContrastOpacityActive=50
-WindowOutlineAccentWithContrastOpacityInactive=25
+WindowOutlineAccentWithContrastOpacityInactive=20
 WindowOutlineContrastOpacityActive=25
 WindowOutlineContrastOpacityInactive=25
 WindowOutlineCustomColorOpacityActive=60
