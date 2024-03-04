@@ -430,6 +430,7 @@ void Style::polish(QWidget *widget)
         addEventFilter(widget);
     } else if (qobject_cast<QDialog *>(widget)) {
         widget->setAttribute(Qt::WA_StyledBackground);
+        addEventFilter(widget);
     } else if (auto pushButton = qobject_cast<QPushButton *>(widget)) {
         QDialog *dialog = nullptr;
         auto p = pushButton->parentWidget();
@@ -1141,18 +1142,10 @@ void Style::drawPrimitive(PrimitiveElement element, const QStyleOption *option, 
 
 bool Style::drawWidgetPrimitive(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
-    Q_UNUSED(option)
-    auto parent = widget;
-    if (!_toolsAreaManager->hasHeaderColors() || !_helper->shouldDrawToolsArea(widget)) {
-        return true;
-    }
-    if (auto dialog = qobject_cast<const QDialog *>(widget)) {
-        if (dialog->isFullScreen()) {
-            return true;
-        }
-        painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * widget->devicePixelRatio()));
-        painter->drawLine(widget->rect().topLeft(), widget->rect().topRight());
-    }
+    Q_UNUSED(option);
+    Q_UNUSED(painter);
+    Q_UNUSED(widget);
+    // Paint functions for QMainWindow and QDialog tools areas are moved to eventFilter() to allow translucent headers to be painted early enough
     return true;
 }
 
@@ -1410,47 +1403,14 @@ bool Style::event(QEvent *e)
     return ParentStyleClass::event(e);
 }
 
-void Style::drawToolsAreaSeparator(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw)
-{
-    if (mw->property(PropertyNames::noSeparator).toBool() || mw->isFullScreen()) {
-        return;
-    }
-    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * mw->devicePixelRatio()));
-    painter->drawLine(mw->rect().topLeft(), mw->rect().topRight());
-}
-
-void Style::drawToolsAreaBackground(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw, const QRect &rect)
-{
-    QBrush color = _toolsAreaManager->palette().brush(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
-
-    if (_helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255) {
-        if ((mw->isMaximized() || mw->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitleBars()) {
-            QColor colorWithoutAlpha = color.color();
-            colorWithoutAlpha.setAlpha(255);
-            color.setColor(colorWithoutAlpha);
-        } else if (_helper->decorationConfig()->blurTransparentTitleBars()) { // apply blur to tools area
-            if ((mw->testAttribute(Qt::WA_WState_Created) || mw->internalWinId())) {
-                // PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence
-                // blurring the entire window and causing kornerbug
-                mw->winId(); // force creation of the window handle
-                KWindowEffects::enableBlurBehind(mw->windowHandle(), true, rect);
-
-                // no force update at this point like in breezeblurhelper.cpp, as already drawing next and creates an infinite loop
-            }
-        }
-    }
-    painter->setPen(Qt::transparent);
-    painter->setBrush(color);
-    painter->drawRect(rect);
-
-    painter->setPen(_helper->separatorColor(_toolsAreaManager->palette()));
-    painter->drawLine(rect.bottomLeft(), rect.bottomRight());
-}
-
 //_____________________________________________________________________
 bool Style::eventFilter(QObject *object, QEvent *event)
 {
-    if (auto dockWidget = qobject_cast<QDockWidget *>(object)) {
+    if (auto mw = qobject_cast<QMainWindow *>(object)) {
+        return eventFilterMainWindow(mw, event);
+    } else if (auto dialog = qobject_cast<QDialog *>(object)) {
+        return eventFilterDialog(dialog, event);
+    } else if (auto dockWidget = qobject_cast<QDockWidget *>(object)) {
         return eventFilterDockWidget(dockWidget, event);
     } else if (auto subWindow = qobject_cast<QMdiSubWindow *>(object)) {
         return eventFilterMdiSubWindow(subWindow, event);
@@ -1469,40 +1429,6 @@ bool Style::eventFilter(QObject *object, QEvent *event)
             return eventFilterScrollArea(widget, event);
         } else if (widget->inherits("QComboBoxPrivateContainer")) {
             return eventFilterComboBoxContainer(widget, event);
-        }
-
-        auto mw = qobject_cast<QMainWindow *>(object);
-        if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
-            QPainter painter(mw);
-            // painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
-            painter.save();
-
-            if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(widget)) {
-                auto rect = _toolsAreaManager->toolsAreaRect(mw);
-                if (rect.height() == 0) {
-                    auto bg = mw->rect();
-                    painter.setPen(mw->palette().color(QPalette::Window));
-                    painter.setBrush(mw->palette().color(QPalette::Window));
-                    painter.drawRect(bg);
-                    drawToolsAreaSeparator(&painter, _helper, _toolsAreaManager, mw);
-                } else {
-                    auto bg = mw->rect();
-                    auto rect = _toolsAreaManager->toolsAreaRect(mw);
-                    bg.setTop(rect.height());
-
-                    painter.setPen(mw->palette().color(QPalette::Window));
-                    painter.setBrush(mw->palette().color(QPalette::Window));
-                    painter.drawRect(bg);
-                    drawToolsAreaBackground(&painter, _helper, _toolsAreaManager, mw, rect);
-                }
-            } else {
-                auto bg = mw->rect();
-
-                painter.setPen(mw->palette().color(QPalette::Window));
-                painter.setBrush(mw->palette().color(QPalette::Window));
-                painter.drawRect(bg);
-            }
-            painter.restore();
         }
     }
 
@@ -1646,6 +1572,171 @@ bool Style::eventFilterComboBoxContainer(QWidget *widget, QEvent *event)
     }
 
     return false;
+}
+
+//____________________________________________________________________________
+bool Style::eventFilterMainWindow(QMainWindow *mw, QEvent *event)
+{
+    if (event->type() == QEvent::Paint && mw && mw->window() == mw) {
+        QPainter painter(mw);
+        painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
+        drawMainWindow(&painter, mw, true);
+    }
+    return ParentStyleClass::eventFilter(mw, event);
+}
+
+//____________________________________________________________________________
+bool Style::eventFilterDialog(QDialog *dialog, QEvent *event)
+{
+    if (event->type() == QEvent::Paint) {
+        QPainter painter(dialog);
+        painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
+        drawDialog(&painter, dialog, true);
+    }
+    return ParentStyleClass::eventFilter(dialog, event);
+}
+
+void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool drawWindowBackground) const
+{
+    const QColor windowColor = mw->palette().color(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const bool hasAlpha(_helper->hasAlphaChannel(mw));
+    if (hasAlpha)
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
+    if (_toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(mw)) {
+        auto rect = _toolsAreaManager->toolsAreaRect(mw);
+        if (rect.height() == 0) {
+            if (drawWindowBackground) {
+                auto bg = mw->rect();
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(windowColor);
+                painter->drawRect(bg);
+            }
+            drawToolsAreaSeparator(painter, mw);
+        } else {
+            if (drawWindowBackground) {
+                auto bg = mw->rect();
+                auto rect = _toolsAreaManager->toolsAreaRect(mw);
+                bg.setTop(rect.height() - 1);
+
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(windowColor);
+                painter->drawRect(bg);
+            }
+            drawToolsAreaBackground(painter, mw, rect);
+        }
+    } else if (drawWindowBackground) {
+        auto bg = mw->rect();
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(windowColor);
+        painter->drawRect(bg);
+    }
+}
+
+void Style::drawDialog(QPainter *painter, const QDialog *dialog, const bool drawDialogBackground) const
+{
+    const QColor windowColor = dialog->palette().color(dialog->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+    painter->setCompositionMode(QPainter::CompositionMode_Source);
+
+    auto vLayout = qobject_cast<QVBoxLayout *>(dialog->layout());
+    if (vLayout && _toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(dialog)) {
+        QRect rect(0, 0, dialog->width(), 0);
+        const auto color = _toolsAreaManager->palette().brush(dialog->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+
+        if (vLayout->menuBar()) {
+            rect.setHeight(rect.height() + vLayout->menuBar()->rect().height());
+        }
+
+        for (int i = 0, count = vLayout->count(); i < count; i++) {
+            const auto layoutItem = vLayout->itemAt(i);
+            if (layoutItem->widget() && qobject_cast<QToolBar *>(layoutItem->widget())) {
+                rect.setHeight(rect.height() + layoutItem->widget()->rect().height() + vLayout->spacing());
+            } else {
+                break;
+            }
+        }
+
+        if (rect.height() > 0) {
+            // We found either a QMenuBar or a QToolBar
+
+            // Add contentsMargins + separator
+            rect.setHeight(rect.height() + 1 + vLayout->contentsMargins().top());
+
+            if (drawDialogBackground) {
+                auto bg = dialog->rect();
+                bg.setTop(rect.height());
+
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(windowColor);
+                painter->drawRect(bg);
+            }
+            drawToolsAreaBackground(painter, dialog, rect);
+        } else {
+            if (drawDialogBackground) {
+                auto bg = dialog->rect();
+                painter->setPen(Qt::NoPen);
+                painter->setBrush(windowColor);
+                painter->drawRect(bg);
+            }
+            drawToolsAreaSeparator(painter, dialog);
+        }
+    } else if (drawDialogBackground) {
+        auto bg = dialog->rect();
+
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(windowColor);
+        painter->drawRect(bg);
+    }
+}
+
+void Style::drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const
+{
+    if (!(qobject_cast<const QMainWindow *>(w) || qobject_cast<const QDialog *>(w))) {
+        return;
+    }
+
+    if (w->property(PropertyNames::noSeparator).toBool() || w->isFullScreen()) {
+        return;
+    }
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
+    painter->drawLine(w->rect().topLeft(), w->rect().topRight() + QPoint(1, 0));
+}
+
+void Style::drawToolsAreaBackground(QPainter *painter, const QWidget *w, const QRect &rect) const
+{
+    if (!(qobject_cast<const QMainWindow *>(w) || qobject_cast<const QDialog *>(w))) {
+        return;
+    }
+
+    QBrush color = _toolsAreaManager->palette().brush(w->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+
+    if (_helper->decorationConfig()->applyOpacityToHeader() && color.color().alpha() < 255) {
+        if ((w->isMaximized() || w->isFullScreen()) && _helper->decorationConfig()->opaqueMaximizedTitleBars()) {
+            QColor colorWithoutAlpha = color.color();
+            colorWithoutAlpha.setAlpha(255);
+            color.setColor(colorWithoutAlpha);
+        } else if (_helper->decorationConfig()->blurTransparentTitleBars()) { // apply blur to tools area
+            if ((w->testAttribute(Qt::WA_WState_Created) || w->internalWinId())) {
+                // PAM: modified from breezeblurhelper.cpp -- did not use _blurHelper->registerWidget() as it doesn't allow you to specify a region, hence
+                // blurring the entire window and causing kornerbug
+                w->winId(); // force creation of the window handle
+                KWindowEffects::enableBlurBehind(w->windowHandle(), true, rect);
+
+                // no force update at this point like in breezeblurhelper.cpp, as already drawing next and creates an infinite loop
+            }
+        }
+    }
+    painter->setPen(Qt::NoPen);
+    painter->setBrush(color);
+    painter->drawRect(rect);
+
+    // default Painter composition mode from previous function may be CompositionMode_Source
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
+    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
+    painter->drawLine(rect.bottomLeft() + QPoint(0, 1), rect.bottomRight() + QPoint(1, 1));
 }
 
 //____________________________________________________________________________

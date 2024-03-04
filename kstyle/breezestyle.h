@@ -128,6 +128,8 @@ public:
     bool eventFilter(QObject *, QEvent *) override;
     bool eventFilterScrollArea(QWidget *, QEvent *);
     bool eventFilterComboBoxContainer(QWidget *, QEvent *);
+    bool eventFilterMainWindow(QMainWindow *mw, QEvent *event);
+    bool eventFilterDialog(QDialog *dialog, QEvent *event);
     bool eventFilterDockWidget(QDockWidget *, QEvent *);
     bool eventFilterMdiSubWindow(QMdiSubWindow *, QEvent *);
     bool eventFilterCommandLinkButton(QCommandLinkButton *, QEvent *);
@@ -377,8 +379,10 @@ private:
     //* translucent background
     void setTranslucentBackground(QWidget *) const;
 
-    void drawToolsAreaSeparator(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw);
-    void drawToolsAreaBackground(QPainter *painter, Helper *_helper, ToolsAreaManager *_toolsAreaManager, QMainWindow *mw, const QRect &rect);
+    void drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool drawWindowBackground) const;
+    void drawDialog(QPainter *painter, const QDialog *dialog, const bool drawDialogBackground) const;
+    void drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const;
+    void drawToolsAreaBackground(QPainter *painter, const QWidget *w, const QRect &rect) const;
 
     //* create toolbar extension icon
     QIcon toolBarExtensionIcon(StandardPixmap, const QStyleOption *, const QWidget *) const;
