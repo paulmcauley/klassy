@@ -712,20 +712,19 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         m_internalSettings->setLookAndFeelSet(lookAndFeelPackageName);
         m_internalSettings->save();
 
-        const QStringList leftPanelPackages = {QStringLiteral("org.kde.klassydarkleftpanel.desktop"),
-                                               QStringLiteral("org.kde.klassylightleftpanel.desktop"),
-                                               QStringLiteral("org.kde.klassytwilightleftpanel.desktop")};
+        // associate the look-and-feel package with a Klassy window decoration preset
+        const QHash<QString, QString> lfPackagePresetNames{
+            {QStringLiteral("org.kde.klassydarkleftpanel.desktop"), QStringLiteral("Klassy")},
+            {QStringLiteral("org.kde.klassylightleftpanel.desktop"), QStringLiteral("Klassy")},
+            {QStringLiteral("org.kde.klassytwilightleftpanel.desktop"), QStringLiteral("Klassy Twilight")},
+            {QStringLiteral("org.kde.klassydarkbottompanel.desktop"), QStringLiteral("Klassy - bottom panel")},
+            {QStringLiteral("org.kde.klassylightbottompanel.desktop"), QStringLiteral("Klassy - bottom panel")},
+            {QStringLiteral("org.kde.klassytwilightbottompanel.desktop"), QStringLiteral("Klassy Twilight - bottom panel")},
+        };
 
-        if (leftPanelPackages.contains(lookAndFeelPackageName)) {
-            system("klassy-settings -w Klassy &");
-        } else {
-            const QStringList bottomPanelPackages = {QStringLiteral("org.kde.klassydarkbottompanel.desktop"),
-                                                     QStringLiteral("org.kde.klassylightbottompanel.desktop"),
-                                                     QStringLiteral("org.kde.klassytwilightbottompanel.desktop")};
-
-            if (bottomPanelPackages.contains(lookAndFeelPackageName)) {
-                system("klassy-settings -w \"Klassy bottom panel\" &");
-            }
+        auto presetNameIt = lfPackagePresetNames.find(lookAndFeelPackageName);
+        if (presetNameIt != lfPackagePresetNames.end()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
+            system("klassy-settings -w \"" + presetNameIt.value().toUtf8() + "\" &");
         }
     }
 }

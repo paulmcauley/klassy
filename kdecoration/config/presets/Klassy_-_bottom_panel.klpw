@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=5.101.breeze5.27.80.git
 
-[Windeco Preset Klassy]
+[Windeco Preset Klassy - bottom panel]
 ActiveTitleBarOpacity=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
@@ -20,7 +20,7 @@ ButtonIconColorsActive=TitleBarText
 ButtonIconColorsInactive=TitleBarText
 ButtonIconOpacityActive=100
 ButtonIconOpacityInactive=100
-ButtonIconStyle=StyleKlassy
+ButtonIconStyle=StyleRedmond
 ButtonOverrideColorsActiveApplicationMenu=
 ButtonOverrideColorsActiveClose=
 ButtonOverrideColorsActiveContextHelp=
