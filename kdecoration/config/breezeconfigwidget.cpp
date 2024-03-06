@@ -775,7 +775,7 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
         updateIcons();
         return QObject::eventFilter(obj, ev);
     } else if (ev->type() == QEvent::Show) {
-        if (widget()->window()) {
+        if (widget()->window() && widget()->window()->windowHandle()) {
             connect(widget()->window()->windowHandle(), &QWindow::screenChanged, this, &ConfigWidget::updateIcons, Qt::ConnectionType::UniqueConnection);
             connect(widget()->window()->windowHandle(),
                     &QWindow::screenChanged,
