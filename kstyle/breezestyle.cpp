@@ -1702,7 +1702,7 @@ void Style::drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const
     }
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
-    painter->drawLine(w->rect().topLeft(), w->rect().topRight() + QPoint(1, 0));
+    painter->drawLine(w->rect().topLeft() + QPoint(0, 1), w->rect().topRight() + QPoint(1, 1));
 }
 
 void Style::drawToolsAreaBackground(QPainter *painter, const QWidget *w, const QRect &rect) const
