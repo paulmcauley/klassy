@@ -14,6 +14,7 @@ set(QT_MIN_VERSION "6.6.0")
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
+include(GNUInstallDirs)
 
 find_package(ECM ${KF5_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH}  ${CMAKE_SOURCE_DIR}/cmake)
@@ -60,6 +61,7 @@ function(build_Qt5)
     set(QT_MAJOR_VERSION 5)
     include(KDEInstallDirs5)
     include(KDECMakeSettings)
+
     find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
@@ -150,7 +152,6 @@ function(build_Qt6)
         add_library(Qt::PlatformModuleInternal ALIAS Qt6::PlatformModuleInternal)
     endif()
 
-    add_subdirectory(colors)
     add_subdirectory(kstyle kstyle6)
     add_subdirectory(libbreezecommon libbreezecommon6)
 
@@ -187,6 +188,8 @@ endfunction()
 if(BUILD_QT6)
     build_Qt6()
 endif()
+
+add_subdirectory(colors)
 
 # add clang-format target for all our real source files
 file(GLOB_RECURSE ALL_CLANG_FORMAT_SOURCE_FILES *.cpp *.h)
