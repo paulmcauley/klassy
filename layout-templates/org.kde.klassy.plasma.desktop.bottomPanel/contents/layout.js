@@ -24,7 +24,9 @@ panel.addWidget("org.kde.plasma.pager");
 var taskmanager = panel.addWidget("org.kde.plasma.taskmanager");
 taskmanager.currentConfigGroup = ["General"];
 taskmanager.writeConfig('launchers', 'preferred://filemanager,preferred://browser');
-
+taskmanager.reloadConfig(); //launchers don't get set unless reloadConfig() is called between writes
+taskmanager.writeConfig('separateLaunchers', false);
+taskmanager.reloadConfig();
 
 /* Next up is determining whether to add the Input Method Panel
  * widget to the panel or not. This is done based on whether
