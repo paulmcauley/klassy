@@ -1932,7 +1932,7 @@ void Style::drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget
     // default Painter composition mode from previous function may be CompositionMode_Source
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
-    painter->drawLine(rect.bottomLeft() + QPoint(0, 1), rect.bottomRight() + QPoint(1, 1));
+    painter->drawLine(rect.bottomLeft(), rect.bottomRight() + QPoint(1, 0));
 }
 
 //____________________________________________________________________________
