@@ -1562,7 +1562,7 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         return eventFilterCommandLinkButton(commandLinkButton, event);
     }
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    else if (object == qApp && event->type() == QEvent::PaletteChange) {
+    else if (object == qApp && event->type() == QEvent::ApplicationPaletteChange) {
         loadConfiguration();
     }
 #endif
@@ -1822,7 +1822,7 @@ void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool 
             painter->setBrush(windowColor);
             painter->drawRect(bg);
         }
-        drawToolsAreaBackgroundAndSeparator(painter, mw, rect, toolsAreaWithHeaderColors);
+        drawToolsAreaBackgroundAndSeparator(painter, mw, rect, true);
     }
 }
 
@@ -1864,7 +1864,7 @@ void Style::drawDialog(QPainter *painter, const QDialog *dialog, const bool draw
                 painter->setBrush(windowColor);
                 painter->drawRect(bg);
             }
-            drawToolsAreaBackgroundAndSeparator(painter, dialog, rect, toolsAreaWithHeaderColors);
+            drawToolsAreaBackgroundAndSeparator(painter, dialog, rect, true);
         } else {
             if (drawDialogBackground) {
                 auto bg = dialog->rect();
