@@ -69,7 +69,6 @@ void TitleBarSpacing::load()
     m_ui->lockTitleBarTopBottomMargins->setChecked(m_internalSettings->lockTitleBarTopBottomMargins());
     m_ui->lockTitleBarLeftRightMargins->setChecked(m_internalSettings->lockTitleBarLeftRightMargins());
 
-    // TODO:add all lock variants
     setChanged(false);
 
     m_loading = false;

@@ -614,7 +614,6 @@ void ConfigWidget::updateIcons()
 
     QIcon icon;
 
-    // TODO:: update with better functions with DPR in Qt6
     icon = QIcon(QStringLiteral(":/klassy_config_icons/full_height_rectangle.svg"));
     ColorTools::convertAlphaToColor(icon, sizeSixteen, QApplication::palette().windowText().color());
     m_ui.buttonShape->setItemIcon(0, icon);

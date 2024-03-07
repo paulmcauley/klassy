@@ -57,7 +57,6 @@ void ShadowStyle::load()
     m_ui->shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength() * 100) / 255));
     m_ui->shadowColor->setColor(m_internalSettings->shadowColor());
 
-    // TODO:add all lock variants
     setChanged(false);
 
     m_loading = false;
