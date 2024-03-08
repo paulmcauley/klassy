@@ -54,14 +54,14 @@ Button::Button(KDecoration2::DecorationButtonType type, Decoration *decoration, 
     }
 
     // setup default geometry
-    int smallButtonPaddedHeight = decoration->smallButtonPaddedHeight();
-    int iconHeight = decoration->iconHeight();
-    int smallButtonBackgroundHeight = decoration->smallButtonBackgroundHeight();
+    int smallButtonPaddedSize = decoration->smallButtonPaddedSize();
+    int iconSize = decoration->iconSize();
+    int smallButtonBackgroundSize = decoration->smallButtonBackgroundSize();
 
-    setGeometry(QRect(0, 0, smallButtonPaddedHeight, smallButtonPaddedHeight));
-    setSmallButtonPaddedSize(QSize(smallButtonPaddedHeight, smallButtonPaddedHeight));
-    setIconSize(QSize(iconHeight, iconHeight));
-    setBackgroundVisibleSize((QSizeF(smallButtonBackgroundHeight, smallButtonBackgroundHeight)));
+    setGeometry(QRect(0, 0, smallButtonPaddedSize, smallButtonPaddedSize));
+    setSmallButtonPaddedSize(QSize(smallButtonPaddedSize, smallButtonPaddedSize));
+    setIconSize(QSize(iconSize, iconSize));
+    setBackgroundVisibleSize((QSizeF(smallButtonBackgroundSize, smallButtonBackgroundSize)));
 
     // connections
     connect(c, SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
