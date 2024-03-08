@@ -124,17 +124,17 @@ public:
     {
         return m_buttonBackgroundType;
     }
-    int smallButtonPaddedHeight()
+    int smallButtonPaddedSize()
     {
-        return m_smallButtonPaddedHeight;
+        return m_smallButtonPaddedSize;
     }
-    int iconHeight()
+    int iconSize()
     {
-        return m_iconHeight;
+        return m_iconSize;
     }
-    int smallButtonBackgroundHeight()
+    int smallButtonBackgroundSize()
     {
-        return m_smallButtonBackgroundHeight;
+        return m_smallButtonBackgroundSize;
     }
     qreal scaledCornerRadius()
     {
@@ -223,8 +223,8 @@ private:
     int titleBarSeparatorHeight() const;
     qreal devicePixelRatio(QPainter *painter) const;
 
-    //* button heights
-    void calculateButtonHeights();
+    //* icon + padding sizes
+    void calculateIconSizes();
 
     //* override thin window outline colour from button colour animation update
     void updateOverrideOutlineFromButtonAnimationState();
@@ -286,9 +286,9 @@ private:
     qreal m_systemScaleFactorX11 = 1.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
-    int m_smallButtonPaddedHeight = 20;
-    int m_iconHeight = 18;
-    int m_smallButtonBackgroundHeight = 18;
+    int m_smallButtonPaddedSize = 20;
+    int m_iconSize = 18;
+    int m_smallButtonBackgroundSize = 18;
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;

@@ -565,7 +565,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     else
         m_buttonBackgroundType = ButtonBackgroundType::Small;
 
-    calculateButtonHeights();
+    calculateIconSizes();
 
     const KConfigGroup cg(s_kdeGlobalConfig, QStringLiteral("KDE"));
 
@@ -747,7 +747,7 @@ void Decoration::recalculateBorders()
         top = bottom;
     } else {
         QFontMetrics fm(s->font());
-        top += qMax(fm.height(), m_smallButtonPaddedHeight);
+        top += qMax(fm.height(), m_smallButtonPaddedSize);
 
         // padding below
         top += titleBarSeparatorHeight();
@@ -817,7 +817,6 @@ void Decoration::updateButtonsGeometry()
     // adjust button position
     qreal bHeightNormal;
     qreal bWidth = 0;
-    const int &smallButtonPaddedWidth = m_smallButtonPaddedHeight;
     qreal verticalIconOffsetNormal = 0;
     qreal bHeightMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
     qreal verticalIconOffsetMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
@@ -848,20 +847,20 @@ void Decoration::updateButtonsGeometry()
                     shrinkOffsetWithOutline *= m_systemScaleFactorX11;
                 }
             }
-            verticalIconOffsetNormal = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2 - m_scaledIntegratedRoundedRectangleBottomPadding / 2
+            verticalIconOffsetNormal = buttonTopMargin + (captionHeight() - m_smallButtonPaddedSize) / 2 - m_scaledIntegratedRoundedRectangleBottomPadding / 2
                 - shrinkOffsetWithOutline;
             if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-                verticalIconOffsetMenuGrouped = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2;
+                verticalIconOffsetMenuGrouped = buttonTopMargin + (captionHeight() - m_smallButtonPaddedSize) / 2;
             }
         } else {
-            verticalIconOffsetNormal = buttonTopMargin + (captionHeight() - m_smallButtonPaddedHeight) / 2;
+            verticalIconOffsetNormal = buttonTopMargin + (captionHeight() - m_smallButtonPaddedSize) / 2;
         }
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
     } else {
         bHeightNormal = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
-        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight() - m_smallButtonPaddedHeight) / 2;
+        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight() - m_smallButtonPaddedSize) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
@@ -892,18 +891,18 @@ void Decoration::updateButtonsGeometry()
             if (button->type() == KDecoration2::DecorationButtonType::Close) {
                 qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft()
                     * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
-                bWidth = m_smallButtonPaddedHeight + bWidthMargin;
+                bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetLeftFullHeightClose = bWidthMargin / 2;
             } else {
                 qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
-                bWidth = m_smallButtonPaddedHeight + bWidthMargin;
+                bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetLeftButtons = bWidthMargin / 2;
             }
             button->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = m_smallButtonPaddedHeight;
+            bWidth = m_smallButtonPaddedSize;
             horizontalIconOffsetLeftButtons = 0;
-            button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundHeight, m_smallButtonBackgroundHeight));
+            button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -912,8 +911,8 @@ void Decoration::updateButtonsGeometry()
         } else {
             button->setIconOffset(QPointF(horizontalIconOffsetLeftButtons, verticalIconOffset));
         }
-        button->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
-        button->setIconSize(QSize(m_iconHeight, m_iconHeight));
+        button->setSmallButtonPaddedSize(QSize(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
+        button->setIconSize(QSize(m_iconSize, m_iconSize));
 
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && button->isEnabled()) {
@@ -977,18 +976,18 @@ void Decoration::updateButtonsGeometry()
             if (button->type() == KDecoration2::DecorationButtonType::Close) {
                 qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight()
                     * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
-                bWidth = m_smallButtonPaddedHeight + bWidthMargin;
+                bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetRightFullHeightClose = bWidthMargin / 2;
             } else {
                 qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
-                bWidth = m_smallButtonPaddedHeight + bWidthMargin;
+                bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetRightButtons = bWidthMargin / 2;
             }
             button->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = m_smallButtonPaddedHeight;
+            bWidth = m_smallButtonPaddedSize;
             horizontalIconOffsetRightButtons = 0;
-            button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundHeight, m_smallButtonBackgroundHeight));
+            button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -997,8 +996,8 @@ void Decoration::updateButtonsGeometry()
         } else {
             button->setIconOffset(QPointF(horizontalIconOffsetRightButtons, verticalIconOffset));
         }
-        button->setSmallButtonPaddedSize(QSize(smallButtonPaddedWidth, smallButtonPaddedWidth));
-        button->setIconSize(QSize(m_iconHeight, m_iconHeight));
+        button->setSmallButtonPaddedSize(QSize(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
+        button->setIconSize(QSize(m_iconSize, m_iconSize));
 
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && button->isEnabled()) {
@@ -1254,8 +1253,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     m_rightButtons->paint(painter, repaintRegion);
 }
 
-// outputs the icon height + padding to make a small button, the actual icon height, and the background height to make a small button
-void Decoration::calculateButtonHeights()
+// outputs the icon size + padding to make a small button, the actual icon size, and the background size to make a small button
+void Decoration::calculateIconSizes()
 {
     int baseSize = settings()->gridUnit(); // 10 on Wayland
     int basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
@@ -1335,31 +1334,31 @@ void Decoration::calculateButtonHeights()
         }
     }
 
-    m_smallButtonPaddedHeight = baseSize;
-    m_iconHeight = baseSize - basePaddingSize;
+    m_smallButtonPaddedSize = baseSize;
+    m_iconSize = baseSize - basePaddingSize;
 
     if (m_buttonBackgroundType == ButtonBackgroundType::Small) {
         qreal smallBackgroundScaleFactor = qreal(m_internalSettings->scaleBackgroundPercent()) / 100;
 
-        m_smallButtonPaddedHeight = qRound(m_smallButtonPaddedHeight * smallBackgroundScaleFactor);
+        m_smallButtonPaddedSize = qRound(m_smallButtonPaddedSize * smallBackgroundScaleFactor);
 
-        m_smallButtonBackgroundHeight = qRound(m_iconHeight * smallBackgroundScaleFactor);
+        m_smallButtonBackgroundSize = qRound(m_iconSize * smallBackgroundScaleFactor);
     }
 
-    if (m_iconHeight % 2 == 1) // if an odd value make even
-        m_iconHeight += 1;
+    if (m_iconSize % 2 == 1) // if an odd value make even
+        m_iconSize += 1;
 
-    if (m_smallButtonPaddedHeight % 2 == 1) // if an odd value make even
-        m_smallButtonPaddedHeight += 1;
+    if (m_smallButtonPaddedSize % 2 == 1) // if an odd value make even
+        m_smallButtonPaddedSize += 1;
 
-    if (m_smallButtonBackgroundHeight % 2 == 1) // if an odd value make even
-        m_smallButtonBackgroundHeight += 1;
+    if (m_smallButtonBackgroundSize % 2 == 1) // if an odd value make even
+        m_smallButtonBackgroundSize += 1;
 }
 
 void Decoration::onTabletModeChanged(bool mode)
 {
     m_tabletMode = mode;
-    calculateButtonHeights();
+    calculateIconSizes();
     recalculateBorders();
     updateButtonsGeometry();
 }
