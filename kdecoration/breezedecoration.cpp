@@ -1050,7 +1050,6 @@ void Decoration::updateButtonsGeometry()
         const int hPadding = m_scaledTitleBarLeftMargin;
 
         auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex]);
-        firstButton->setFlag(Button::FlagFirstInList);
         if (isLeftEdge()) {
             // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
             firstButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(firstButton->geometry().width() + hPadding, firstButton->geometry().height())));
@@ -1084,7 +1083,6 @@ void Decoration::updateButtonsGeometry()
         const int hPadding = m_scaledTitleBarRightMargin;
 
         auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex]);
-        lastButton->setFlag(Button::FlagLastInList);
         if (isRightEdge()) {
             lastButton->setGeometry(QRectF(QPoint(0, 0), QSizeF(lastButton->geometry().width() + hPadding, lastButton->geometry().height())));
 
