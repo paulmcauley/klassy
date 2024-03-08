@@ -37,24 +37,10 @@ public:
     //* render
     virtual void paint(QPainter *painter, const QRect &repaintRegion) override;
 
-    //* flag
-    enum Flag {
-        FlagNone,
-        FlagStandalone,
-        FlagFirstInList,
-        FlagLastInList,
-    };
-
-    //* flag
-    void setFlag(Flag value)
-    {
-        m_flag = value;
-    }
-
     //* standalone buttons
     bool isStandAlone() const
     {
-        return m_flag == FlagStandalone;
+        return m_standAlone;
     }
 
     //*set position of buttons which are both enabled and visible
@@ -237,7 +223,7 @@ private:
     QColor m_foregroundColor;
     QColor m_outlineColor;
 
-    Flag m_flag = FlagNone;
+    bool m_standAlone = false;
 
     bool m_leftButtonVisible = false;
     bool m_rightButtonVisible = false;

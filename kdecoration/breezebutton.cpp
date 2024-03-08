@@ -77,7 +77,7 @@ Button::Button(KDecoration2::DecorationButtonType type, Decoration *decoration, 
 Button::Button(QObject *parent, const QVariantList &args)
     : Button(args.at(0).value<KDecoration2::DecorationButtonType>(), args.at(1).value<Decoration *>(), parent)
 {
-    m_flag = FlagStandalone;
+    m_standAlone = true;
     //! small button size must return to !valid because it was altered from the default constructor,
     //! in Standalone mode the button is not using the decoration metrics but its geometry
     m_smallButtonPaddedSize = QSize(-1, -1);
