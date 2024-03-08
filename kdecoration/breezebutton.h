@@ -255,7 +255,7 @@ private:
     //* active state change opacity
     qreal m_opacity = 0;
 
-    DecorationButtonPalette *m_buttonPalette;
+    DecorationButtonPalette *m_buttonPalette = nullptr;
     bool m_renderSystemIcon;
     QString m_systemIconName;
     QString m_systemIconCheckedName;

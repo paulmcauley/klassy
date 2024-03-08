@@ -53,6 +53,16 @@ DecorationColors::DecorationColors(const bool useCachedPalette, const bool forAp
     }
 }
 
+DecorationButtonPalette *DecorationColors::buttonPalette(DecorationButtonType type) const
+{
+    auto it = m_buttonPalettes->find(type);
+    if (it != m_buttonPalettes->end()) {
+        return &(it->second);
+    } else {
+        return nullptr;
+    }
+}
+
 void DecorationColors::generateDecorationColors(const QPalette &palette,
                                                 const QSharedPointer<InternalSettings> decorationSettings,
                                                 QColor titleBarTextActive,
