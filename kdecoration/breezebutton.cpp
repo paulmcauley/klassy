@@ -145,6 +145,9 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     m_buttonPalette =
         m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is in paint() in-case caching type on m_buttonPalette changes
+    if (!m_buttonPalette) {
+        return;
+    }
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
 
     setDevicePixelRatio(painter);
@@ -646,6 +649,9 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
     if (on) {
         m_buttonPalette =
             m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is here in-case caching type on m_buttonPalette changes
+        if (!m_buttonPalette) {
+            return;
+        }
         m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())

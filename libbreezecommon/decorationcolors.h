@@ -70,10 +70,7 @@ public:
         return (m_decorationPaletteGroupInactive->get());
     }
 
-    DecorationButtonPalette *buttonPalette(DecorationButtonType type) const
-    {
-        return (&m_buttonPalettes->at(type));
-    }
+    DecorationButtonPalette *buttonPalette(DecorationButtonType type) const;
 
     bool isCachedPalette()
     {
