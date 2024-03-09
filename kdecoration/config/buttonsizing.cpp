@@ -65,6 +65,9 @@ ButtonSizing::ButtonSizing(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     connect(m_ui.fullHeightButtonSpacingLeft, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingLeftChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.fullHeightButtonSpacingRight, SIGNAL(valueChanged(int)), SLOT(fullHeightButtonSpacingRightChanged()), Qt::ConnectionType::DirectConnection);
 
+    connect(m_ui.spacerButtonWidthRelative, &QSpinBox::valueChanged, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.scaleTouchMode, &QSpinBox::valueChanged, this, &ButtonSizing::updateChanged, Qt::ConnectionType::DirectConnection);
+
     connect(m_ui.buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonSizing::defaults);
     connect(m_ui.buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonSizing::load);
     connect(m_ui.buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &ButtonSizing::saveAndReloadKWinConfig);
@@ -101,6 +104,9 @@ void ButtonSizing::loadMain(const bool assignUiValuesOnly)
     m_ui.buttonCornerRadius->setCurrentIndex(m_internalSettings->buttonCornerRadius());
     m_ui.buttonCustomCornerRadius->setValue(m_internalSettings->buttonCustomCornerRadius());
 
+    m_ui.spacerButtonWidthRelative->setValue(m_internalSettings->spacerButtonWidthRelative());
+    m_ui.scaleTouchMode->setValue(m_internalSettings->scaleTouchMode());
+
     setVisibleUiElements(); // needs to be at the end of load to get the correct value of m_ui.buttonCornerRadius
 
     if (!assignUiValuesOnly) {
@@ -128,9 +134,9 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
         m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
-        m_ui.line->setVisible(true);
+        m_ui.fullHeightButtonWidthMarginLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
-        m_ui.line_2->setVisible(true);
+        m_ui.fullHeightButtonWidthMarginRightLine->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
 
@@ -157,6 +163,7 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.integratedRoundedRectangleBottomPadding->setVisible(false);
         m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(false);
+        m_ui.fullHeightOnlySpacer->changeSize(0, 40, QSizePolicy::Expanding, QSizePolicy::Fixed);
         m_ui.integratedOnlySpacer->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_ui.integratedOnlyGrid->invalidate();
 
@@ -174,9 +181,9 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(true);
         m_ui.fullHeightButtonWidthMarginLeft->setVisible(true);
-        m_ui.line->setVisible(true);
+        m_ui.fullHeightButtonWidthMarginLeftLine->setVisible(true);
         m_ui.lockFullHeightButtonWidthMargins->setVisible(true);
-        m_ui.line_2->setVisible(true);
+        m_ui.fullHeightButtonWidthMarginRightLine->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(true);
         m_ui.fullHeightButtonWidthMarginRight->setVisible(true);
 
@@ -203,6 +210,7 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.integratedRoundedRectangleBottomPadding->setVisible(true);
         m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(true);
+        m_ui.fullHeightOnlySpacer->changeSize(0, 40, QSizePolicy::Expanding, QSizePolicy::Fixed);
         m_ui.integratedOnlySpacer->changeSize(0, 30, QSizePolicy::Fixed, QSizePolicy::MinimumExpanding);
         m_ui.integratedOnlyGrid->invalidate();
 
@@ -219,9 +227,9 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.fullHeightButtonWidthMarginLeftLabel->setVisible(false);
         m_ui.fullHeightButtonWidthMarginLeft->setVisible(false);
-        m_ui.line->setVisible(false);
+        m_ui.fullHeightButtonWidthMarginLeftLine->setVisible(false);
         m_ui.lockFullHeightButtonWidthMargins->setVisible(false);
-        m_ui.line_2->setVisible(false);
+        m_ui.fullHeightButtonWidthMarginRightLine->setVisible(false);
         m_ui.fullHeightButtonWidthMarginRightLabel->setVisible(false);
         m_ui.fullHeightButtonWidthMarginRight->setVisible(false);
 
@@ -248,6 +256,7 @@ void ButtonSizing::setVisibleUiElements()
 
         m_ui.integratedRoundedRectangleBottomPadding->setVisible(false);
         m_ui.integratedRoundedRectangleBottomPaddingLabel->setVisible(false);
+        m_ui.fullHeightOnlySpacer->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_ui.integratedOnlySpacer->changeSize(0, 0, QSizePolicy::Fixed, QSizePolicy::Fixed);
         m_ui.integratedOnlyGrid->invalidate();
 
@@ -318,6 +327,9 @@ void ButtonSizing::save(const bool reloadKwinConfig)
     m_internalSettings->setCloseFullHeightButtonWidthMarginRelative(m_ui.closeFullHeightButtonWidthMarginRelative->value());
     m_internalSettings->setButtonCornerRadius(m_ui.buttonCornerRadius->currentIndex());
     m_internalSettings->setButtonCustomCornerRadius(m_ui.buttonCustomCornerRadius->value());
+
+    m_internalSettings->setSpacerButtonWidthRelative(m_ui.spacerButtonWidthRelative->value());
+    m_internalSettings->setScaleTouchMode(m_ui.scaleTouchMode->value());
 
     m_internalSettings->save();
     setChanged(false);
@@ -406,6 +418,11 @@ void ButtonSizing::updateChanged()
     else if (m_ui.buttonCornerRadius->currentIndex() != m_internalSettings->buttonCornerRadius())
         modified = true;
     else if (qAbs(m_ui.buttonCustomCornerRadius->value() - m_internalSettings->buttonCustomCornerRadius()) > 0.001)
+        modified = true;
+
+    else if (m_ui.spacerButtonWidthRelative->value() != m_internalSettings->spacerButtonWidthRelative())
+        modified = true;
+    else if (m_ui.scaleTouchMode->value() != m_internalSettings->scaleTouchMode())
         modified = true;
 
     setChanged(modified);

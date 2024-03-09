@@ -816,7 +816,10 @@ void Decoration::updateButtonsGeometry()
 
     // adjust button position
     qreal bHeightNormal;
-    qreal bWidth = 0;
+    qreal bWidthLeft = 0;
+    qreal bWidthRight = 0;
+    qreal bWidthMarginLeft = 0;
+    qreal bWidthMarginRight = 0;
     qreal verticalIconOffsetNormal = 0;
     qreal bHeightMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
     qreal verticalIconOffsetMenuGrouped = 0; // used only for the menu button with Integrated rounded rectangle, grouped
@@ -858,18 +861,26 @@ void Decoration::updateButtonsGeometry()
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
+
+        bWidthMarginLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
+        bWidthMarginRight = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
+        bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
+        bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
+        horizontalIconOffsetLeftButtons = bWidthMarginLeft / 2;
+        horizontalIconOffsetRightButtons = bWidthMarginRight / 2;
     } else {
         bHeightNormal = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
         verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight() - m_smallButtonPaddedSize) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
+
+        bWidthLeft = m_smallButtonPaddedSize;
+        bWidthRight = m_smallButtonPaddedSize;
     }
 
     int leftmostLeftVisibleIndex = -1;
     int rightmostLeftVisibleIndex = -1;
-    int menuButtonVisibleIndexLeft = -1;
-    bool visibleAfterMenuSetLeft = false;
     int numLeftButtons = m_leftButtons->buttons().count();
 
     for (int i = 0; i < numLeftButtons; i++) {
@@ -878,31 +889,28 @@ void Decoration::updateButtonsGeometry()
         qreal bHeight = bHeightNormal;
         qreal verticalIconOffset = verticalIconOffsetNormal;
         if (button->type() == KDecoration2::DecorationButtonType::Menu) {
-            if (button->isVisible() && button->isEnabled()) {
-                menuButtonVisibleIndexLeft = i;
-            }
-            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
                 bHeight = bHeightMenuGrouped;
                 verticalIconOffset = verticalIconOffsetMenuGrouped;
             }
         }
 
+        qreal bWidth;
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             if (button->type() == KDecoration2::DecorationButtonType::Close) {
-                qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft()
-                    * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
+                qreal bWidthMargin = bWidthMarginLeft * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
                 bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetLeftFullHeightClose = bWidthMargin / 2;
             } else {
-                qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
-                bWidth = m_smallButtonPaddedSize + bWidthMargin;
-                horizontalIconOffsetLeftButtons = bWidthMargin / 2;
+                bWidth = bWidthLeft;
             }
             button->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = m_smallButtonPaddedSize;
-            horizontalIconOffsetLeftButtons = 0;
+            bWidth = bWidthLeft;
             button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
+        }
+        if (button->type() == KDecoration2::DecorationButtonType::Spacer) {
+            bWidth *= m_internalSettings->spacerButtonWidthRelative() / 100.0f;
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -926,10 +934,19 @@ void Decoration::updateButtonsGeometry()
             if (leftmostLeftVisibleIndex == -1) {
                 leftmostLeftVisibleIndex = i;
                 button->setLeftmostLeftVisible();
-            } else if (menuButtonVisibleIndexLeft != -1 && !visibleAfterMenuSetLeft) {
-                if (i > menuButtonVisibleIndexLeft) {
-                    button->setVisibleAfterMenu(true);
-                    visibleAfterMenuSetLeft = true;
+            } else {
+                Button *buttonBefore = static_cast<Button *>(m_leftButtons->buttons()[i - 1]);
+                switch (buttonBefore->type()) {
+                case KDecoration2::DecorationButtonType::Menu:
+                    if (buttonBefore->isVisible() && buttonBefore->isEnabled()) {
+                        button->setVisibleAfterMenu();
+                    }
+                    break;
+                case KDecoration2::DecorationButtonType::Spacer:
+                    button->setVisibleAfterSpacer();
+                    break;
+                default:
+                    break;
                 }
             }
             rightmostLeftVisibleIndex = i;
@@ -939,11 +956,20 @@ void Decoration::updateButtonsGeometry()
     if (rightmostLeftVisibleIndex != -1) {
         static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex])->setRightmostLeftVisible();
 
-        if (menuButtonVisibleIndexLeft != -1) {
-            for (int i = menuButtonVisibleIndexLeft - 1; i >= 0; i--) {
-                Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
-                if (button->isEnabled() && button->isVisible()) {
-                    button->setVisibleBeforeMenu();
+        for (int i = numLeftButtons - 2; i >= 0; i--) {
+            Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
+            if (button->isEnabled() && button->isVisible()) {
+                Button *buttonAfter = static_cast<Button *>(m_leftButtons->buttons()[i + 1]);
+                switch (buttonAfter->type()) {
+                case KDecoration2::DecorationButtonType::Menu:
+                    if (buttonAfter->isVisible() && buttonAfter->isEnabled()) {
+                        button->setVisibleBeforeMenu();
+                    }
+                    break;
+                case KDecoration2::DecorationButtonType::Spacer:
+                    button->setVisibleBeforeSpacer();
+                    break;
+                default:
                     break;
                 }
             }
@@ -952,8 +978,6 @@ void Decoration::updateButtonsGeometry()
 
     int leftmostRightVisibleIndex = -1;
     int rightmostRightVisibleIndex = -1;
-    int menuButtonVisibleIndexRight = -1;
-    bool visibleAfterMenuSetRight = false;
     int numRightButtons = m_rightButtons->buttons().count();
 
     for (int i = 0; i < numRightButtons; i++) {
@@ -963,31 +987,28 @@ void Decoration::updateButtonsGeometry()
         qreal verticalIconOffset = verticalIconOffsetNormal;
 
         if (button->type() == KDecoration2::DecorationButtonType::Menu) {
-            if (button->isVisible() && button->isEnabled()) {
-                menuButtonVisibleIndexRight = i;
-            }
-            if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
+            if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
                 bHeight = bHeightMenuGrouped;
                 verticalIconOffset = verticalIconOffsetMenuGrouped;
             }
         }
 
+        qreal bWidth;
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             if (button->type() == KDecoration2::DecorationButtonType::Close) {
-                qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight()
-                    * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
+                qreal bWidthMargin = bWidthMarginRight * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
                 bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetRightFullHeightClose = bWidthMargin / 2;
             } else {
-                qreal bWidthMargin = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
-                bWidth = m_smallButtonPaddedSize + bWidthMargin;
-                horizontalIconOffsetRightButtons = bWidthMargin / 2;
+                bWidth = bWidthRight;
             }
             button->setBackgroundVisibleSize(QSizeF(bWidth, bHeight));
         } else {
-            bWidth = m_smallButtonPaddedSize;
-            horizontalIconOffsetRightButtons = 0;
+            bWidth = bWidthRight;
             button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
+        }
+        if (button->type() == KDecoration2::DecorationButtonType::Spacer) {
+            bWidth *= m_internalSettings->spacerButtonWidthRelative() / 100.0f;
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -1011,10 +1032,19 @@ void Decoration::updateButtonsGeometry()
             if (leftmostRightVisibleIndex == -1) {
                 leftmostRightVisibleIndex = i;
                 button->setLeftmostRightVisible();
-            } else if (menuButtonVisibleIndexRight != -1 && !visibleAfterMenuSetRight) {
-                if (i > menuButtonVisibleIndexRight) {
-                    button->setVisibleAfterMenu(true);
-                    visibleAfterMenuSetRight = true;
+            } else {
+                Button *buttonBefore = static_cast<Button *>(m_rightButtons->buttons()[i - 1]);
+                switch (buttonBefore->type()) {
+                case KDecoration2::DecorationButtonType::Menu:
+                    if (buttonBefore->isVisible() && buttonBefore->isEnabled()) {
+                        button->setVisibleAfterMenu();
+                    }
+                    break;
+                case KDecoration2::DecorationButtonType::Spacer:
+                    button->setVisibleAfterSpacer();
+                    break;
+                default:
+                    break;
                 }
             }
             rightmostRightVisibleIndex = i;
@@ -1024,11 +1054,20 @@ void Decoration::updateButtonsGeometry()
     if (rightmostRightVisibleIndex != -1) {
         static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex])->setRightmostRightVisible();
 
-        if (menuButtonVisibleIndexRight != -1) {
-            for (int i = menuButtonVisibleIndexRight - 1; i >= 0; i--) {
-                Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
-                if (button->isEnabled() && button->isVisible()) {
-                    button->setVisibleBeforeMenu();
+        for (int i = numRightButtons - 2; i >= 0; i--) {
+            Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
+            if (button->isEnabled() && button->isVisible()) {
+                Button *buttonAfter = static_cast<Button *>(m_rightButtons->buttons()[i + 1]);
+                switch (buttonAfter->type()) {
+                case KDecoration2::DecorationButtonType::Menu:
+                    if (buttonAfter->isVisible() && buttonAfter->isEnabled()) {
+                        button->setVisibleBeforeMenu();
+                    }
+                    break;
+                case KDecoration2::DecorationButtonType::Spacer:
+                    button->setVisibleBeforeSpacer();
+                    break;
+                default:
                     break;
                 }
             }
@@ -1260,7 +1299,7 @@ void Decoration::calculateIconSizes()
     int basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
 
     if (m_tabletMode)
-        baseSize *= 2;
+        baseSize = qRound(baseSize * m_internalSettings->scaleTouchMode() / 100.0f);
 
     if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {

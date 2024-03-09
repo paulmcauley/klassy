@@ -69,6 +69,16 @@ public:
         m_visibleAfterMenu = value;
     }
 
+    bool isVisibleAfterSpacer()
+    {
+        return m_visibleAfterSpacer;
+    }
+
+    void setVisibleAfterSpacer(bool value = true)
+    {
+        m_visibleAfterSpacer = value;
+    }
+
     void setRightmostLeftVisible(bool value = true)
     {
         m_rightmostLeftVisible = value;
@@ -92,6 +102,16 @@ public:
     void setVisibleBeforeMenu(bool value = true)
     {
         m_visibleBeforeMenu = value;
+    }
+
+    bool isVisibleBeforeSpacer()
+    {
+        return m_visibleBeforeSpacer;
+    }
+
+    void setVisibleBeforeSpacer(bool value = true)
+    {
+        m_visibleBeforeSpacer = value;
     }
 
     //* offset for drawing icon
@@ -229,10 +249,12 @@ private:
     bool m_rightButtonVisible = false;
     bool m_leftmostLeftVisible = false;
     bool m_visibleAfterMenu = false;
+    bool m_visibleAfterSpacer = false;
     bool m_rightmostLeftVisible = false;
     bool m_leftmostRightVisible = false;
     bool m_rightmostRightVisible = false;
     bool m_visibleBeforeMenu = false;
+    bool m_visibleBeforeSpacer = false;
 
     //* active state change animation
     QVariantAnimation *m_animation;
