@@ -113,7 +113,7 @@ Uninstall build script:
 
 ## System icon theme
 To make your Plasma Desktop fully consistent, Klassy auto-generates "Klassy" and "Klassy Dark" system icon themes whenever a window-decoration setting changes. These add consistent titlebar button icons to certain minor context menus in Plasma, and also add consistent GTK application titlebar icons (for Firefox to have consistent titlebar icons on Wayland, it is recommended to set the system GNOME/GTK Application style to Adwaita as Breeze is buggy).
-> <img src="https://raw.githubusercontent.com/paulmcauley/classikstyles/paulmcauley/selectable_buttoniconstyles/screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with  icon theme" width="512">
+> <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
 
 These icons inherit the _Breeze_ icon theme by default, only overriding the titlebar button icons. Another icon theme may be inherited by changing the setting in the Window Decoration settings under the _System Icon Generation..._ button.
 
