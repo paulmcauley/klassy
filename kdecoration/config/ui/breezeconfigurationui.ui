@@ -696,72 +696,6 @@
              </property>
             </spacer>
            </item>
-           <item row="9" column="4" colspan="3">
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>6</number>
-             </property>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>0</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item>
-              <widget class="QGraphicsView" name="klassy_logo">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>156</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="baseSize">
-                <size>
-                 <width>156</width>
-                 <height>64</height>
-                </size>
-               </property>
-               <property name="layoutDirection">
-                <enum>Qt::LeftToRight</enum>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">border-image: url(:/klassy_config_icons/Klassy_logo.svg);</string>
-               </property>
-               <property name="interactive">
-                <bool>false</bool>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
-               </property>
-               <property name="rubberBandSelectionMode">
-                <enum>Qt::IntersectsItemShape</enum>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
            <item row="10" column="4" colspan="3">
             <layout class="QVBoxLayout" name="verticalLayout_9">
              <property name="rightMargin">
@@ -912,6 +846,72 @@
               </layout>
              </widget>
             </widget>
+           </item>
+           <item row="9" column="4" colspan="3">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>6</number>
+             </property>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>0</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item alignment="Qt::AlignRight|Qt::AlignBottom">
+              <widget class="QGraphicsView" name="klassy_logo">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>156</width>
+                 <height>64</height>
+                </size>
+               </property>
+               <property name="baseSize">
+                <size>
+                 <width>156</width>
+                 <height>64</height>
+                </size>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">border-image: url(:/klassy_config_icons/Klassy_logo.svg);</string>
+               </property>
+               <property name="interactive">
+                <bool>false</bool>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
+               </property>
+               <property name="rubberBandSelectionMode">
+                <enum>Qt::IntersectsItemShape</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </item>
