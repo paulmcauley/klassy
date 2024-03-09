@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>719</width>
-    <height>598</height>
+    <height>630</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -85,7 +85,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>45</height>
               </size>
              </property>
             </spacer>
@@ -389,148 +389,6 @@
              </item>
             </widget>
            </item>
-           <item row="4" column="4" colspan="2">
-            <widget class="QStackedWidget" name="backgroundShapeStackedWidget">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="currentIndex">
-              <number>2</number>
-             </property>
-             <widget class="QWidget" name="backgroundShapeBlankPage">
-              <layout class="QVBoxLayout" name="verticalLayout_10">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="buttonSizingButton">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Button Size &amp;&amp; Spacing...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="transform-crop-and-resize"/>
-                 </property>
-                 <property name="iconSize">
-                  <size>
-                   <width>22</width>
-                   <height>16</height>
-                  </size>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="fullHeightRectangleOptions">
-              <layout class="QVBoxLayout" name="verticalLayout_14">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="fullHeightRectangleSizingButton">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Button Width &amp;&amp; Spacing...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="transform-crop-and-resize"/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-             <widget class="QWidget" name="integratedRoundedRectangleOptions">
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <property name="spacing">
-                <number>0</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="integratedRoundedRectangleSizingButton">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Button Width &amp;&amp; Spacing...</string>
-                 </property>
-                 <property name="icon">
-                  <iconset theme="transform-crop-and-resize"/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </widget>
-           </item>
            <item row="5" column="2">
             <spacer name="verticalSpacer_20">
              <property name="orientation">
@@ -542,7 +400,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>45</height>
               </size>
              </property>
             </spacer>
@@ -946,7 +804,48 @@
              </item>
             </layout>
            </item>
-           <item row="2" column="4" colspan="2" alignment="Qt::AlignRight">
+           <item row="9" column="2">
+            <spacer name="verticalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="4" column="4" colspan="2">
+            <widget class="QPushButton" name="buttonSizingButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>40</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Button Size &amp;&amp; Spacing...</string>
+             </property>
+             <property name="icon">
+              <iconset theme="transform-crop-and-resize"/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>22</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="4" colspan="2">
             <widget class="QStackedWidget" name="iconOptionsStackedWidget">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -971,7 +870,7 @@
                <property name="bottomMargin">
                 <number>0</number>
                </property>
-               <item>
+               <item alignment="Qt::AlignRight">
                 <widget class="QPushButton" name="systemIconGenerationButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -1003,7 +902,7 @@
                <property name="bottomMargin">
                 <number>0</number>
                </property>
-               <item>
+               <item alignment="Qt::AlignRight">
                 <widget class="QCheckBox" name="forceColorizeSystemIcons">
                  <property name="text">
                   <string>Force-colourize icons</string>
@@ -1013,19 +912,6 @@
               </layout>
              </widget>
             </widget>
-           </item>
-           <item row="9" column="2">
-            <spacer name="verticalSpacer_5">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>
@@ -1116,7 +1002,7 @@
          <item>
           <widget class="QCheckBox" name="drawBackgroundGradient">
            <property name="text">
-            <string>Draw titlebar background &amp;gradient</string>
+            <string>Draw active titlebar background &amp;gradient</string>
            </property>
           </widget>
          </item>
@@ -1255,7 +1141,7 @@
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This setting will allow you to resize from window edges touching screen edges.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
-               <string>Draw border on maximized and tiled windows</string>
+               <string>Draw border on maximized and tiled windows (not recommended)</string>
               </property>
              </widget>
             </item>
@@ -1404,7 +1290,7 @@
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Normally, you can round bottom corners by setting a border in the Window Decoration settings. &lt;/p&gt;&lt;p&gt;This option allows a 3rd party Desktop Effect (e.g. LightlyShaders) to round the bottom corners on a borderless window by clipping the window content.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
-               <string>Round bottom corners when no borders (requires corresponding Desktop Effect)</string>
+               <string>Round bottom corners when no borders (not recommended, requires corresponding desktop effect)</string>
               </property>
              </widget>
             </item>
@@ -1512,7 +1398,7 @@
             <bool>false</bool>
            </property>
            <property name="text">
-            <string>Animations speed:</string>
+            <string>Animations spee&amp;d:</string>
            </property>
            <property name="buddy">
             <cstring>animationsSpeedRelativeSystem</cstring>
@@ -1731,6 +1617,16 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0">
+    <widget class="QFrame" name="frame">
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -1744,13 +1640,12 @@
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>buttonIconStyle</tabstop>
+  <tabstop>iconSize</tabstop>
   <tabstop>systemIconSize</tabstop>
   <tabstop>boldButtonIcons</tabstop>
   <tabstop>systemIconGenerationButton</tabstop>
   <tabstop>forceColorizeSystemIcons</tabstop>
   <tabstop>buttonShape</tabstop>
-  <tabstop>fullHeightRectangleSizingButton</tabstop>
-  <tabstop>integratedRoundedRectangleSizingButton</tabstop>
   <tabstop>buttonSizingButton</tabstop>
   <tabstop>buttonColorsButton</tabstop>
   <tabstop>buttonBehaviourButton</tabstop>

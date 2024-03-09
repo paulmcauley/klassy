@@ -81,6 +81,11 @@ public:
         }
     }
 
+    int currentButtonShape()
+    {
+        return m_ui.buttonShape->currentIndex();
+    }
+
 Q_SIGNALS:
     void saved();
 
@@ -93,7 +98,6 @@ protected Q_SLOTS:
     virtual void updateChanged();
     void setEnabledAnimationsSpeed();
     void updateIconsStackedWidgetVisible();
-    void updateBackgroundShapeStackedWidgetVisible();
     void systemIconGenerationButtonClicked();
     void buttonSizingButtonClicked();
     void buttonColorsButtonClicked();
