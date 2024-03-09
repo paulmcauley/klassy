@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>669</width>
-    <height>571</height>
+    <height>625</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,685 +21,942 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <spacer name="verticalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="widgetResizable">
+         <bool>true</bool>
         </property>
-        <property name="sizeType">
-         <enum>QSizePolicy::MinimumExpanding</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>5</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-         <enum>QFormLayout::FieldsStayAtSizeHint</enum>
-        </property>
-        <property name="formAlignment">
-         <set>Qt::AlignHCenter|Qt::AlignTop</set>
-        </property>
-        <item row="0" column="0">
-         <widget class="QLabel" name="scaleBackgroundPercentLabel">
-          <property name="text">
-           <string>Scale button background: </string>
-          </property>
-          <property name="buddy">
-           <cstring>scaleBackgroundPercent</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QSpinBox" name="scaleBackgroundPercent">
-          <property name="inputMethodHints">
-           <set>Qt::ImhDigitsOnly</set>
-          </property>
-          <property name="suffix">
-           <string> %</string>
-          </property>
-          <property name="minimum">
-           <number>100</number>
-          </property>
-          <property name="maximum">
-           <number>250</number>
-          </property>
-          <property name="singleStep">
-           <number>5</number>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <property name="sizeConstraint">
-         <enum>QLayout::SetNoConstraint</enum>
-        </property>
-        <item row="4" column="4">
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>50</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="5">
-         <spacer name="horizontalSpacer_19">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>10</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="3">
-         <spacer name="horizontalSpacer_31">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>10</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="fullHeightButtonWidthMarginLeftLabel">
-          <property name="text">
-           <string>&amp;Left-hand buttons'
- Width margins:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>fullHeightButtonWidthMarginLeft</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="7">
-         <widget class="QLabel" name="buttonSpacingRightLabel">
-          <property name="text">
-           <string>Spacing between
-Right-hand buttons:</string>
-          </property>
-          <property name="buddy">
-           <cstring>buttonSpacingRight</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="8">
-         <widget class="QSpinBox" name="buttonSpacingRight">
-          <property name="suffix">
-           <string/>
-          </property>
-          <property name="prefix">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="line">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="6" column="8">
-         <widget class="QSpinBox" name="fullHeightButtonSpacingRight">
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="5" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_3">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="line_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="6" column="4">
-         <widget class="QPushButton" name="lockFullHeightButtonSpacingLeftRight">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="fullHeightButtonSpacingLeftLabel">
-          <property name="text">
-           <string>Spacing between
-Left-hand buttons:</string>
-          </property>
-          <property name="buddy">
-           <cstring>fullHeightButtonSpacingLeft</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0">
-         <widget class="QLabel" name="buttonSpacingLeftLabel">
-          <property name="text">
-           <string>Spacing between
-Left-hand buttons:</string>
-          </property>
-          <property name="buddy">
-           <cstring>buttonSpacingLeft</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QSpinBox" name="buttonSpacingLeft">
-          <property name="suffix">
-           <string/>
-          </property>
-          <property name="prefix">
-           <string/>
-          </property>
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="4">
-         <widget class="QPushButton" name="lockButtonSpacingLeftRight">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="2" colspan="5">
-         <layout class="QFormLayout" name="closeFullHeightButtonWidthMarginRelativeLayout">
-          <property name="topMargin">
-           <number>12</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="closeFullHeightButtonWidthMarginRelativeLabel">
-            <property name="text">
-             <string>Close button Width margins:
-(relative to other buttons)</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-            <property name="buddy">
-             <cstring>closeFullHeightButtonWidthMarginRelative</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="closeFullHeightButtonWidthMarginRelative">
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="minimum">
-             <number>25</number>
-            </property>
-            <property name="maximum">
-             <number>400</number>
-            </property>
-            <property name="singleStep">
-             <number>5</number>
-            </property>
-            <property name="value">
-             <number>100</number>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="1">
-         <widget class="QSpinBox" name="fullHeightButtonWidthMarginLeft">
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="4">
-         <widget class="QPushButton" name="lockFullHeightButtonWidthMargins">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="toolTip">
-           <string>Lock to make Left-hand button width margin and Right-hand button width margin have the same value</string>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="1">
-         <widget class="QSpinBox" name="fullHeightButtonSpacingLeft">
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="2" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_6">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="fullHeightButtonSpacingLeftLine">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="1" column="7">
-         <widget class="QLabel" name="fullHeightButtonWidthMarginRightLabel">
-          <property name="text">
-           <string>&amp;Right-hand buttons'
- Width margins:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>fullHeightButtonWidthMarginRight</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="7">
-         <widget class="QLabel" name="fullHeightButtonSpacingRightLabel">
-          <property name="text">
-           <string>Spacing between
-Right-hand buttons:</string>
-          </property>
-          <property name="buddy">
-           <cstring>fullHeightButtonSpacingRight</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="8">
-         <widget class="QSpinBox" name="fullHeightButtonWidthMarginRight">
-          <property name="maximum">
-           <number>50</number>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="5" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_5">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="buttonSpacingRightLine">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="5" column="2" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_4">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="buttonSpacingLeftLine">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item row="0" column="6">
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="6" column="5" colspan="2">
-         <layout class="QGridLayout" name="gridLayout_7">
-          <property name="sizeConstraint">
-           <enum>QLayout::SetNoConstraint</enum>
-          </property>
-          <property name="verticalSpacing">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="Line" name="fullHeightButtonSpacingRightLine">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="corneredOnlyLayout">
-        <property name="topMargin">
-         <number>30</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="cornerRadiusIcon">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="cornerRadiusLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Corner Radius:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>buttonCornerRadius</cstring>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="buttonCornerRadius">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>-164</y>
+           <width>622</width>
+           <height>695</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
-           <property name="text">
-            <string>Same as window</string>
-           </property>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="title">
+             <string>Scaling</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <spacer name="horizontalSpacer_10">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="formAlignment">
+                  <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="scaleBackgroundPercentLabel">
+                   <property name="text">
+                    <string>Scale b&amp;utton background: </string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>scaleBackgroundPercent</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="scaleBackgroundPercent">
+                   <property name="inputMethodHints">
+                    <set>Qt::ImhDigitsOnly</set>
+                   </property>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="minimum">
+                    <number>100</number>
+                   </property>
+                   <property name="maximum">
+                    <number>250</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <spacer name="verticalSpacer_2">
+                   <property name="orientation">
+                    <enum>Qt::Vertical</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>20</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_8">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
+               <item row="0" column="5">
+                <spacer name="horizontalSpacer_20">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="5" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_9">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="fullHeightButtonWidthMarginRightLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="6">
+                <spacer name="horizontalSpacer_14">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="fullHeightButtonWidthMarginLeft">
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0" colspan="9">
+                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                 <item>
+                  <spacer name="horizontalSpacer_11">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <spacer name="fullHeightOnlySpacer">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>0</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_13">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="8">
+                <widget class="QSpinBox" name="fullHeightButtonWidthMarginRight">
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="fullHeightButtonWidthMarginLeftLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="5" column="0" colspan="9">
+                <layout class="QFormLayout" name="formLayout_4">
+                 <property name="formAlignment">
+                  <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                 </property>
+                 <property name="topMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>6</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="scaleTouchModeLabel">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="text">
+                    <string>Scale &amp;Touch Mode buttons:</string>
+                   </property>
+                   <property name="buddy">
+                    <cstring>scaleTouchMode</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="scaleTouchMode">
+                   <property name="inputMethodHints">
+                    <set>Qt::ImhDigitsOnly</set>
+                   </property>
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="minimum">
+                    <number>100</number>
+                   </property>
+                   <property name="maximum">
+                    <number>400</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="1" column="7">
+                <widget class="QLabel" name="fullHeightButtonWidthMarginRightLabel">
+                 <property name="text">
+                  <string>&amp;Right-hand buttons'
+ Width-margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>fullHeightButtonWidthMarginRight</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="4">
+                <widget class="QPushButton" name="lockFullHeightButtonWidthMargins">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Lock to make Left-hand button width margin and Right-hand button width margin have the same value</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="fullHeightButtonWidthMarginLeftLabel">
+                 <property name="text">
+                  <string>&amp;Left-hand buttons'
+ Width-margins:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>fullHeightButtonWidthMarginLeft</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0" colspan="9">
+                <layout class="QFormLayout" name="formLayout_5">
+                 <property name="formAlignment">
+                  <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                 </property>
+                 <property name="topMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>6</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="spacerButtonWidthRelativeLabel">
+                   <property name="text">
+                    <string>Spacer button width:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="buddy">
+                    <cstring>spacerButtonWidthRelative</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="spacerButtonWidthRelative">
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="minimum">
+                    <number>1</number>
+                   </property>
+                   <property name="maximum">
+                    <number>400</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                   <property name="value">
+                    <number>100</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="3">
+                <spacer name="horizontalSpacer_32">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="0" column="2">
+                <spacer name="horizontalSpacer_15">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="3" column="0" colspan="9">
+                <layout class="QFormLayout" name="closeFullHeightButtonWidthMarginRelativeLayout">
+                 <property name="formAlignment">
+                  <set>Qt::AlignHCenter|Qt::AlignTop</set>
+                 </property>
+                 <property name="topMargin">
+                  <number>6</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>6</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="closeFullHeightButtonWidthMarginRelativeLabel">
+                   <property name="text">
+                    <string>&amp;Close button width-margins:</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="buddy">
+                    <cstring>closeFullHeightButtonWidthMarginRelative</cstring>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QSpinBox" name="closeFullHeightButtonWidthMarginRelative">
+                   <property name="suffix">
+                    <string> %</string>
+                   </property>
+                   <property name="minimum">
+                    <number>25</number>
+                   </property>
+                   <property name="maximum">
+                    <number>400</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>5</number>
+                   </property>
+                   <property name="value">
+                    <number>100</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
           </item>
           <item>
-           <property name="text">
-            <string>Custom</string>
-           </property>
+           <spacer name="verticalSpacer">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::MinimumExpanding</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>30</height>
+             </size>
+            </property>
+           </spacer>
           </item>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="buttonCustomCornerRadius">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="decimals">
-           <number>1</number>
-          </property>
-          <property name="maximum">
-           <double>12.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.100000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QGridLayout" name="integratedOnlyGrid">
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <item row="2" column="2">
-         <spacer name="horizontalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="0" column="1">
-         <spacer name="integratedOnlySpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>0</width>
-            <height>30</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="2" column="1">
-         <widget class="QDoubleSpinBox" name="integratedRoundedRectangleBottomPadding">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="decimals">
-           <number>2</number>
-          </property>
-          <property name="maximum">
-           <double>10.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.250000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <spacer name="horizontalSpacer_6">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>0</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="1" column="0" colspan="3">
-         <widget class="QLabel" name="integratedRoundedRectangleBottomPaddingLabel">
-          <property name="text">
-           <string>Bottom padding:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="buddy">
-           <cstring>integratedRoundedRectangleBottomPadding</cstring>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <spacer name="verticalSpacer_5">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
+          <item>
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="title">
+             <string>Spacing</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <item>
+              <layout class="QGridLayout" name="gridLayout">
+               <property name="sizeConstraint">
+                <enum>QLayout::SetNoConstraint</enum>
+               </property>
+               <item row="2" column="2" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="buttonSpacingLeftLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="2" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="fullHeightButtonSpacingLeftLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="0" column="2">
+                <spacer name="horizontalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="3" column="7">
+                <widget class="QLabel" name="fullHeightButtonSpacingRightLabel">
+                 <property name="text">
+                  <string>Spacin&amp;g between
+Right-hand buttons:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>fullHeightButtonSpacingRight</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="3">
+                <spacer name="horizontalSpacer_31">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="buttonSpacingLeftLabel">
+                 <property name="text">
+                  <string>Spacing between
+&amp;Left-hand buttons:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>buttonSpacingLeft</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="7">
+                <widget class="QLabel" name="buttonSpacingRightLabel">
+                 <property name="text">
+                  <string>S&amp;pacing between
+Right-hand buttons:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>buttonSpacingRight</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="8">
+                <widget class="QSpinBox" name="fullHeightButtonSpacingRight">
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QSpinBox" name="fullHeightButtonSpacingLeft">
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="5">
+                <spacer name="horizontalSpacer_19">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::Fixed</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>10</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="fullHeightButtonSpacingLeftLabel">
+                 <property name="text">
+                  <string>&amp;Spacing between
+&amp;Left-hand buttons:</string>
+                 </property>
+                 <property name="buddy">
+                  <cstring>fullHeightButtonSpacingLeft</cstring>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="6">
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="2" column="8">
+                <widget class="QSpinBox" name="buttonSpacingRight">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="5" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_7">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="fullHeightButtonSpacingRightLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="3" column="4">
+                <widget class="QPushButton" name="lockFullHeightButtonSpacingLeftRight">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSpinBox" name="buttonSpacingLeft">
+                 <property name="suffix">
+                  <string/>
+                 </property>
+                 <property name="prefix">
+                  <string/>
+                 </property>
+                 <property name="maximum">
+                  <number>50</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="5" colspan="2">
+                <layout class="QGridLayout" name="gridLayout_5">
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetNoConstraint</enum>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="Line" name="buttonSpacingRightLine">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="2" column="4">
+                <widget class="QPushButton" name="lockButtonSpacingLeftRight">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Lock to make Left-hand button spacing and Right-hand button spacing have the same value</string>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                 <property name="checkable">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="4">
+                <spacer name="integratedOnlySpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeType">
+                  <enum>QSizePolicy::MinimumExpanding</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>0</width>
+                   <height>30</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="integratedOnlyGrid">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item row="2" column="2">
+                <spacer name="horizontalSpacer_5">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="2" column="1">
+                <widget class="QDoubleSpinBox" name="integratedRoundedRectangleBottomPadding">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="decimals">
+                  <number>2</number>
+                 </property>
+                 <property name="maximum">
+                  <double>10.000000000000000</double>
+                 </property>
+                 <property name="singleStep">
+                  <double>0.250000000000000</double>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <spacer name="horizontalSpacer_6">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item row="1" column="0" colspan="3">
+                <widget class="QLabel" name="integratedRoundedRectangleBottomPaddingLabel">
+                 <property name="text">
+                  <string>Botto&amp;m padding:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                 <property name="buddy">
+                  <cstring>integratedRoundedRectangleBottomPadding</cstring>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="corneredOnlyLayout">
+            <property name="topMargin">
+             <number>30</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::MinimumExpanding</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="cornerRadiusIcon">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="cornerRadiusLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Corner Rad&amp;ius:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>buttonCornerRadius</cstring>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="buttonCornerRadius">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <item>
+               <property name="text">
+                <string>Same as window</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Custom</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="buttonCustomCornerRadius">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <double>12.000000000000000</double>
+              </property>
+              <property name="singleStep">
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>0</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -717,20 +974,23 @@ Right-hand buttons:</string>
   </layout>
  </widget>
  <tabstops>
+  <tabstop>scrollArea</tabstop>
   <tabstop>scaleBackgroundPercent</tabstop>
   <tabstop>fullHeightButtonWidthMarginLeft</tabstop>
   <tabstop>lockFullHeightButtonWidthMargins</tabstop>
   <tabstop>fullHeightButtonWidthMarginRight</tabstop>
   <tabstop>closeFullHeightButtonWidthMarginRelative</tabstop>
+  <tabstop>spacerButtonWidthRelative</tabstop>
+  <tabstop>scaleTouchMode</tabstop>
   <tabstop>buttonSpacingLeft</tabstop>
   <tabstop>lockButtonSpacingLeftRight</tabstop>
   <tabstop>buttonSpacingRight</tabstop>
   <tabstop>fullHeightButtonSpacingLeft</tabstop>
   <tabstop>lockFullHeightButtonSpacingLeftRight</tabstop>
   <tabstop>fullHeightButtonSpacingRight</tabstop>
+  <tabstop>integratedRoundedRectangleBottomPadding</tabstop>
   <tabstop>buttonCornerRadius</tabstop>
   <tabstop>buttonCustomCornerRadius</tabstop>
-  <tabstop>integratedRoundedRectangleBottomPadding</tabstop>
  </tabstops>
  <resources>
   <include location="klassydecoration_config.qrc"/>

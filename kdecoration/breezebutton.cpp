@@ -145,7 +145,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 
     m_buttonPalette =
         m_d->decorationColors()->buttonPalette(static_cast<DecorationButtonType>(type())); // this is in paint() in-case caching type on m_buttonPalette changes
-    if (!m_buttonPalette) {
+    if (!m_buttonPalette) { // this is the case when a spacer button
         return;
     }
     m_titlebarTextPinnedInversion = titlebarTextPinnedInversion();
@@ -812,10 +812,13 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
                 drawOutlineUsingPath = true;
 
+                bool visibleAfterSpacer = m_visibleAfterMenu || m_visibleAfterSpacer;
+                bool visibleBeforeSpacer = m_visibleBeforeMenu || m_visibleBeforeSpacer;
+
                 if (((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) && m_rightmostLeftVisible)
-                    || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
+                    || (visibleAfterSpacer && (m_rightmostRightVisible || m_rightmostLeftVisible))
                     || ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) && m_leftmostRightVisible)
-                    || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
+                    || (visibleBeforeSpacer && (m_leftmostRightVisible || m_leftmostLeftVisible)) || (visibleBeforeSpacer && visibleAfterSpacer)) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                                          0,
                                                                                          -geometryShrinkOffsetHorizontalOuter,
@@ -866,7 +869,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                     outline.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter, 0, 0, -geometryShrinkOffsetVerticalOuter));
                     inner.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleInner, 0, 0, -geometryShrinkOffsetVerticalInner));
                     background.addRect(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddle, 0, 0, -geometryShrinkOffsetVertical));
-                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) || visibleBeforeSpacer || m_rightmostLeftVisible) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalMiddleOuter,
                                                                                          0,
                                                                                          -geometryShrinkOffsetHorizontalOuter,
@@ -885,7 +888,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                                                                                             -geometryShrinkOffsetVertical),
                                                             CornerBottomRight,
                                                             cornerRadius);
-                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) || visibleAfterSpacer || m_leftmostRightVisible) {
                     outline = GeometryTools::roundedPath(backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontalOuter,
                                                                                          0,
                                                                                          -geometryShrinkOffsetHorizontalMiddleOuter,
@@ -947,11 +950,13 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
         } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
             if (type() != KDecoration2::DecorationButtonType::Menu) {
                 painter->setPen(Qt::NoPen);
+                bool visibleAfterSpacer = m_visibleAfterMenu || m_visibleAfterSpacer;
+                bool visibleBeforeSpacer = m_visibleBeforeMenu || m_visibleBeforeSpacer;
 
                 if (((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) && m_rightmostLeftVisible)
-                    || (m_visibleAfterMenu && (m_rightmostRightVisible || m_rightmostLeftVisible))
+                    || (visibleAfterSpacer && (m_rightmostRightVisible || m_rightmostLeftVisible))
                     || ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) && m_leftmostRightVisible)
-                    || (m_visibleBeforeMenu && (m_leftmostRightVisible || m_leftmostLeftVisible))) {
+                    || (visibleBeforeSpacer && (m_leftmostRightVisible || m_leftmostLeftVisible)) || (visibleBeforeSpacer && visibleAfterSpacer)) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornersBottom, cornerRadius);
                 } else if (m_leftmostLeftVisible && !m_d->internalSettings()->titleBarLeftMargin() && m_rightmostLeftVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
@@ -961,9 +966,9 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                     background.addRect(backgroundBoundingRect);
                 } else if (m_rightmostRightVisible && !m_d->internalSettings()->titleBarRightMargin()) {
                     background.addRect(backgroundBoundingRect);
-                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) || m_visibleBeforeMenu || m_rightmostLeftVisible) {
+                } else if ((m_rightmostRightVisible && m_d->internalSettings()->titleBarRightMargin()) || visibleBeforeSpacer || m_rightmostLeftVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomRight, cornerRadius);
-                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) || m_visibleAfterMenu || m_leftmostRightVisible) {
+                } else if ((m_leftmostLeftVisible && m_d->internalSettings()->titleBarLeftMargin()) || visibleAfterSpacer || m_leftmostRightVisible) {
                     background = GeometryTools::roundedPath(backgroundBoundingRect, CornerBottomLeft, cornerRadius);
                 } else {
                     background.addRect(backgroundBoundingRect);

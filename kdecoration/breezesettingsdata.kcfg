@@ -243,6 +243,18 @@
        <max>10</max>
     </entry>
 
+    <entry name="SpacerButtonWidthRelative" type = "Int">
+       <default>50</default>
+       <min>1</min>
+       <max>400</max>
+    </entry>
+
+    <entry name="ScaleTouchMode" type = "Int">
+       <default>150</default>
+       <min>100</min>
+       <max>400</max>
+    </entry>
+
   </group>
 
   <group name="ButtonColors">
