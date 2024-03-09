@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Integrated Rounded Rectangle Width &amp;&amp; Spacing</string>
+      <string>Integrated Rounded Rectangle Sizing &amp;&amp; Spacing</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -29,7 +29,7 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>-164</y>
+           <y>0</y>
            <width>622</width>
            <height>695</height>
           </rect>
@@ -38,7 +38,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>Scaling</string>
+             <string>Sizing</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_3">
              <item>

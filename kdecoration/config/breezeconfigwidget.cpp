@@ -50,10 +50,10 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
 {
     // this is a hack to get an Apply button
     if (widget() && QCoreApplication::applicationName() == QStringLiteral("systemsettings")) {
+        system("kcmshell6 org.kde.kdecoration2.kcm/kcm_klassydecoration.so &");
         if (widget()->window()) {
             widget()->window()->close();
         }
-        system("kcmshell6 org.kde.kdecoration2.kcm/kcm_klassydecoration.so &");
     }
     setButtons(KCModule::Default | KCModule::Apply);
 
@@ -142,8 +142,6 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
 #endif
 
     connect(m_ui.systemIconGenerationButton, &QAbstractButton::clicked, this, &ConfigWidget::systemIconGenerationButtonClicked);
-    connect(m_ui.integratedRoundedRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
-    connect(m_ui.fullHeightRectangleSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
     connect(m_ui.buttonColorsButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonColorsButtonClicked);
     connect(m_ui.buttonBehaviourButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonBehaviourButtonClicked);
@@ -153,14 +151,12 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.shadowStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::shadowStyleButtonClicked);
 
     updateIconsStackedWidgetVisible();
-    updateBackgroundShapeStackedWidgetVisible();
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateBackgroundShapeStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.cornerRadius, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -234,7 +230,7 @@ void ConfigWidget::load()
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
     updateIconsStackedWidgetVisible();
-    updateBackgroundShapeStackedWidgetVisible();
+
     // load exceptions
     DecorationExceptionList exceptions;
     exceptions.readConfig(m_configuration);
@@ -372,7 +368,7 @@ void ConfigWidget::defaults()
     }
 
     updateIconsStackedWidgetVisible();
-    updateBackgroundShapeStackedWidgetVisible();
+
     setNeedsSave(!isDefaults());
 
     m_processingDefaults = false;
@@ -527,22 +523,6 @@ void ConfigWidget::updateIconsStackedWidgetVisible()
     }
 }
 
-void ConfigWidget::updateBackgroundShapeStackedWidgetVisible()
-{
-    m_buttonSizingDialog->m_buttonShape = m_ui.buttonShape->currentIndex();
-
-    if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
-        || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle)
-        m_ui.backgroundShapeStackedWidget->setCurrentIndex(1);
-    else if (m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
-             || m_ui.buttonShape->currentIndex() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped)
-        m_ui.backgroundShapeStackedWidget->setCurrentIndex(2);
-    else
-        m_ui.backgroundShapeStackedWidget->setCurrentIndex(0);
-
-    m_buttonSizingDialog->setVisibleUiElements();
-}
-
 void ConfigWidget::dialogChanged(bool changed)
 {
     setNeedsSave(changed);
@@ -555,6 +535,7 @@ void ConfigWidget::systemIconGenerationButtonClicked()
 
 void ConfigWidget::buttonSizingButtonClicked()
 {
+    m_buttonSizingDialog->setVisibleUiElements();
     m_buttonSizingDialog->show();
 }
 

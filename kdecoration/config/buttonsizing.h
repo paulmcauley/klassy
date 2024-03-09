@@ -76,8 +76,6 @@ private:
     bool m_loading = false;
     bool m_loaded;
     bool m_processingDefaults = false;
-
-    int m_buttonShape = 0;
 };
 
 }
