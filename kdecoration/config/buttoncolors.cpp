@@ -847,7 +847,7 @@ void ButtonColors::setOverrideComboBoxColorIcons(const bool active, DecorationCo
     QList<QColor> overrideComboBoxColors;
 
     for (int i = 0; i < overrideColorItems.count(); i++) {
-        overrideComboBoxColors << DecorationButtonPalette::overrideColorItemsIndexToColor(&decorationColors, i, active);
+        overrideComboBoxColors << DecorationButtonPalette::overrideColorItemsIndexToColor(decorationColors.active(), decorationColors.inactive(), i, active);
     }
 
     QList<QIcon> overrideComboBoxIcons;
@@ -1582,9 +1582,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
                                                m_systemTitlebarBackgroundActive,
                                                m_systemTitleBarTextInactive,
                                                m_systemTitlebarBackgroundInactive,
-                                               "",
-                                               true,
-                                               active);
+                                               "");
 
     auto getGroup = [](DecorationButtonPalette *palette, bool active) {
         return active ? palette->active() : palette->inactive();
@@ -1647,7 +1645,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     // background colors
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitleBarText);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     uiButtonBackgroundColors->setIconSize(QSize(size, size));
@@ -1672,7 +1670,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1696,7 +1694,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1720,7 +1718,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1745,7 +1743,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
     temporaryColorSettings->setButtonBackgroundColors(active, InternalSettings::EnumButtonBackgroundColors::AccentTrafficLights);
 
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     }
 
     pixmap.fill(Qt::transparent);
@@ -1774,7 +1772,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitleBarText);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1797,7 +1795,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::TitleBarTextNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1820,7 +1818,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::Accent);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1843,7 +1841,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentNegativeClose);
     for (auto &buttonPalette : otherCloseButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     };
 
     pixmap.fill(Qt::transparent);
@@ -1866,7 +1864,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
     temporaryColorSettings->setButtonIconColors(active, InternalSettings::EnumButtonIconColors::AccentTrafficLights);
     for (auto &buttonPalette : otherTrafficLightsButtonList) {
-        buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+        buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
     }
 
     pixmap.fill(Qt::transparent);
@@ -1899,7 +1897,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::AsSelected);
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+                buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
@@ -1919,7 +1917,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
                 }
             }
         } else {
-            closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
+            closeButtonPalette.generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             pixmap.fill(Qt::transparent);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
                                                                                                 : Qt::transparent);
@@ -1940,7 +1938,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::NegativeWhenHoverPress);
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+                buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
@@ -1960,7 +1958,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
                 }
             }
         } else {
-            closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
+            closeButtonPalette.generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             pixmap.fill(Qt::transparent);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
                                                                                                 : Qt::transparent);
@@ -1981,7 +1979,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
         temporaryColorSettings->setCloseButtonIconColor(active, InternalSettings::EnumCloseButtonIconColor::White);
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+                buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
@@ -2001,7 +1999,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
                 }
             }
         } else {
-            closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
+            closeButtonPalette.generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             pixmap.fill(Qt::transparent);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
                                                                                                 : Qt::transparent);
@@ -2023,7 +2021,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
 
         if (uiButtonIconColors->currentIndex() == InternalSettings::EnumButtonIconColors::AccentTrafficLights) {
             for (auto &buttonPalette : trafficLightsButtonList) {
-                buttonPalette->generate(temporaryColorSettings, &decorationPalette, true, active);
+                buttonPalette->generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             }
             pixmap.fill(Qt::transparent);
             for (int i = 0; i < 3; i++) {
@@ -2043,7 +2041,7 @@ void ButtonColors::loadButtonPaletteColorsIconsMain(bool active)
                 }
             }
         } else {
-            closeButtonPalette.generate(temporaryColorSettings, &decorationPalette, true, active);
+            closeButtonPalette.generate(temporaryColorSettings, decorationPalette.active(), decorationPalette.inactive(), true, active);
             pixmap.fill(Qt::transparent);
             painter->setBrush(getGroup(&closeButtonPalette, active)->foregroundNormal.isValid() ? getGroup(&closeButtonPalette, active)->foregroundNormal
                                                                                                 : Qt::transparent);

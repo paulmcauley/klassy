@@ -126,14 +126,15 @@ public:
     DecorationButtonPalette(DecorationButtonType buttonType);
 
     void generate(InternalSettingsPtr decorationSettings,
-                  DecorationColors *decorationColors,
+                  const DecorationPaletteGroup *decorationColorsActive,
+                  const DecorationPaletteGroup *decorationColorsInactive,
                   const bool generateOneGroupOnly = false,
                   const bool oneGroupActiveState = true);
-    DecorationButtonPaletteGroup *active() const
+    const DecorationButtonPaletteGroup *active() const
     {
         return _active.get();
     }
-    DecorationButtonPaletteGroup *inactive() const
+    const DecorationButtonPaletteGroup *inactive() const
     {
         return _inactive.get();
     }
@@ -143,7 +144,10 @@ public:
         return _buttonType;
     }
 
-    static QColor overrideColorItemsIndexToColor(const DecorationColors *decorationColors, const int overrideColorItemsIndex, const bool active);
+    static QColor overrideColorItemsIndexToColor(const DecorationPaletteGroup *decorationColorsActive,
+                                                 const DecorationPaletteGroup *decorationColorsInactive,
+                                                 const int overrideColorItemsIndex,
+                                                 const bool active);
 
 private:
     void decodeButtonOverrideColors(const bool active);
@@ -171,7 +175,8 @@ private:
 
     InternalSettingsPtr _decorationSettings;
     DecorationButtonType _buttonType;
-    DecorationColors *_decorationColors;
+    const DecorationPaletteGroup *_decorationColorsActive;
+    const DecorationPaletteGroup *_decorationColorsInactive;
 
     bool _buttonOverrideColorsPresentActive{false};
     bool _buttonOverrideColorsPresentInactive{false};
