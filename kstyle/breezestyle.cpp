@@ -3517,7 +3517,8 @@ QSize Style::pushButtonSizeFromContents(const QStyleOption *option, const QSize 
 
         // text
         if (hasText) {
-            size = buttonOption->fontMetrics.size(Qt::TextShowMnemonic, buttonOption->text);
+            const int textFlags(_mnemonics->textFlags() | Qt::AlignCenter);
+            size = option->fontMetrics.size(textFlags, buttonOption->text);
         }
 
         // icon
