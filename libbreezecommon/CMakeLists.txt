@@ -22,7 +22,7 @@ set(breezecommon_LIB_SRCS
     setqdebug_logging.h
 )
 
-kconfig_add_kcfg_files(breezecommon_LIB_SRCS ../kdecoration/breezesettings.kcfgc)
+kconfig_add_kcfg_files(breezecommon_LIB_SRCS breezesettings.kcfgc)
 
 add_library(klassycommon${QT_MAJOR_VERSION} ${breezecommon_LIB_SRCS})
 
