@@ -1702,7 +1702,7 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
 
         // loop over found scrollbars
         for (QScrollBar *scrollBar : std::as_const(scrollBars)) {
-            if (!(scrollBar && scrollBar->isVisible())) {
+            if (!(scrollBar && scrollBar->isVisible() && scrollBar->isEnabled())) {
                 continue;
             }
 
