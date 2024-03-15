@@ -45,7 +45,7 @@ public:
     }
 
     //* enability
-    virtual bool enabled() const
+    [[nodiscard]] virtual bool enabled() const
     {
         return _enabled;
     }
@@ -57,7 +57,7 @@ public:
     }
 
     //* target
-    const WeakPointer<QObject> &target() const
+    [[nodiscard]] const WeakPointer<QObject> &target() const
     {
         return _target;
     }
