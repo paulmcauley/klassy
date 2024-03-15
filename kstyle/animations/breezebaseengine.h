@@ -35,7 +35,7 @@ public:
     }
 
     //* enability
-    virtual bool enabled() const
+    [[nodiscard]] virtual bool enabled() const
     {
         return _enabled;
     }
@@ -47,7 +47,7 @@ public:
     }
 
     //* duration
-    virtual int duration() const
+    [[nodiscard]] virtual int duration() const
     {
         return _duration;
     }
