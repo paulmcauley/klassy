@@ -44,7 +44,7 @@ bool StackedWidgetData::initializeAnimation()
     }
 
     // do not animate if either index or currentIndex is not valid
-    // but update _index none the less
+    // but update _index nonetheless
     if (_target.data()->currentIndex() < 0 || _index < 0) {
         _index = _target.data()->currentIndex();
         return false;

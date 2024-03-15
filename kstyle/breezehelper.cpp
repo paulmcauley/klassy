@@ -1380,7 +1380,7 @@ void Helper::renderTabBarTab(QPainter *painter,
 
     if (selected) {
         // overlap border
-        // This covers just enough of the border, so that both the border and it's
+        // This covers just enough of the border, so that both the border and its
         // antialiasing effect is covered. On 100% scale it does nothing
         const qreal overlap = devicePixelRatio(painter) * devicePixelRatio(painter);
         frameRect.adjust(east ? -overlap : 0, south ? -overlap : 0, west ? overlap : 0, north ? overlap : 0);
@@ -1412,7 +1412,7 @@ void Helper::renderTabBarTab(QPainter *painter,
         painter->drawPath(highlightPath);
     } else {
         // don't overlap border
-        // Since we dont set the rectangle as strokedRect here, modify only one side of it
+        // Since we don't set the rectangle as strokedRect here, modify only one side of it
         // the same amount strokedRect method would, to make it snap next to the border
         const qreal overlap = PenWidth::Frame;
         frameRect.adjust(east ? overlap : 0, south ? overlap : 0, west ? -overlap : 0, north ? -overlap : 0);
