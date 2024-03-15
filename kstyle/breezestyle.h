@@ -366,7 +366,7 @@ private:
         DoubleButton,
     };
 
-    //* returns height for scrollbar buttons depending of button types
+    //* returns height for scrollbar buttons depending on button types
     int scrollBarButtonHeight(const ScrollBarButtonType &type) const
     {
         switch (type) {
