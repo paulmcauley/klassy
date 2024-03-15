@@ -138,7 +138,7 @@ public:
             return;
         }
 
-        // otherwise we draw the selected/highlighted background ourself...
+        // otherwise we draw the selected/highlighted background ourselves.
         if (option.showDecorationSelected && (option.state & QStyle::State_Selected)) {
             using namespace Breeze;
 
@@ -345,7 +345,7 @@ void Style::polish(QWidget *widget)
     polishScrollArea(qobject_cast<QAbstractScrollArea *>(widget));
 
     if (auto itemView = qobject_cast<QAbstractItemView *>(widget)) {
-        // enable mouse over effects in itemviews' viewport
+        // enable mouse over effects in the viewport of the itemview
         itemView->viewport()->setAttribute(Qt::WA_Hover);
 
     } else if (auto groupBox = qobject_cast<QGroupBox *>(widget)) {
@@ -1483,7 +1483,7 @@ void Style::drawItemText(QPainter *painter,
         /*
          * check if painter engine is registered to WidgetEnabilityEngine, and animated
          * if yes, merge the palettes. Note: void * is used here because we only care
-         * about the pointer value which is used a as a key to lookup a value in a map
+         * about the pointer value which is used as a key to look up a value in a map.
          */
         const void *key = painter->device();
         if (_animations->widgetEnabilityEngine().isAnimated(key, AnimationEnable)) {
@@ -3743,7 +3743,7 @@ QSize Style::tabWidgetSizeFromContents(const QStyleOption *option, const QSize &
         return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
     }
 
-    // try find direct children of type QTabBar and QStackedWidget
+    // try to find direct children of type QTabBar and QStackedWidget
     // this is needed in order to add TabWidget margins only if they are necessary around tabWidget content, not the tabbar
     if (!widget) {
         return expandSize(contentsSize, Metrics::TabWidget_MarginWidth);
@@ -6634,7 +6634,7 @@ bool Style::drawHeaderSectionControl(const QStyleOption *option, QPainter *paint
     // separators
     painter->setPen(_helper->alphaColor(palette.color(QPalette::WindowText), Metrics::Bias_Default));
 
-    // If the separator would be next to a "HeaderEmptyArea", skip it and let that draw
+    // If the separator is next to a "HeaderEmptyArea", skip it and let that draw
     // the separator instead. This means that those separators are only visible when necessary.
 
     if (horizontal) {
@@ -7335,7 +7335,7 @@ bool Style::drawToolButtonComplexControl(const QStyleOptionComplex *option, QPai
         auto contentsRect(buttonRect);
 
         // detect dock widget title button
-        // for dockwidget title buttons, do not take out margins, so that icon do not get scaled down
+        // for dockwidget title buttons, do not take out margins, so that the icons do not get scaled down
         const bool isDockWidgetTitleButton(widget && widget->inherits("QDockWidgetTitleButton"));
         if (isDockWidgetTitleButton) {
             // cast to abstract button

@@ -113,7 +113,7 @@ protected:
         Q_UNUSED(event);
 
         /*
-        post some mouseRelease event to the target, in order to counter balance
+        post some mouseRelease event to the target, in order to counterbalance
         the mouse press that triggered the drag. Note that it triggers a resetDrag
         */
         QMouseEvent mouseEvent(QEvent::MouseButtonRelease, _parent->_dragPoint, QCursor::pos(), Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);

@@ -99,7 +99,7 @@ bool ShadowHelper::registerWidget(QWidget *widget, bool force)
         return false;
     }
 
-    // try create shadow directly
+    // try to create shadow directly
     installShadows(widget);
     _widgets.insert(widget);
 
