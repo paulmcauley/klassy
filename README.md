@@ -67,11 +67,11 @@ _Klassy_ version 6.0 requires at least __Plasma 6.0__, so please check you have 
 <a name="prebuilt"/>
 
 ### Pre-built packages
-[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+[Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
 
 &nbsp;
 
-Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". For KDE Neon 6.0 [a .deb package can be downloaded here](https://github.com/paulmcauley/klassy/releases/download/6.0.breeze6.0.2/klassy_6.0.breeze6.0.2-1_amd64_KDE_Neon_6.0.deb).
 
 &nbsp;
 &nbsp;
