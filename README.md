@@ -60,18 +60,8 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires a development version of Plasma 6.0.80 so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
-<a name="prebuilt"/>
+_Klassy_ master branch requires a development version of Plasma 6.0.80 so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
 
-### Pre-built packages
-[Respositories are available from the Open Build Service](https://software.opensuse.org//download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu/KDE Neon, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
-
-&nbsp;
-
-Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
-
-&nbsp;
-&nbsp;
 <a name="compile"/>
 
 ### Compile from source
