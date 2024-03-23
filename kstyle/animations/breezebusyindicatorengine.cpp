@@ -15,6 +15,7 @@
 #endif
 
 #include <QVariant>
+#include <QWidget>
 
 namespace Breeze
 {
@@ -127,13 +128,16 @@ void BusyIndicatorEngine::setValue(int value)
             // update animation flag
             animated = true;
 
-#if BREEZE_HAVE_QTQUICK
             const void *key = iter.key();
             QObject *obj = const_cast<QObject *>(static_cast<const QObject *>(key));
+#if BREEZE_HAVE_QTQUICK
             if (QQuickItem *item = qobject_cast<QQuickItem *>(obj)) {
                 item->polish();
-            }
+            } else
 #endif
+                if (QWidget *widget = qobject_cast<QWidget *>(obj)) {
+                widget->update();
+            }
         }
     }
 
