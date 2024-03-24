@@ -1,6 +1,6 @@
 const panel = new Panel;
 panel.location = "left";
-panel.height = Math.round(gridUnit * 10 / 3); //gridUnit is 18
+panel.height = Math.round(gridUnit * 28 / 9); //gridUnit is 18
 panel.hiding = "normal";
 panel.offset = 0;
 panel.floating = false;
@@ -56,6 +56,7 @@ if (langIds.indexOf(languageId) != -1) {
 }
 
 panel.addWidget("org.kde.plasma.systemtray");
+panel.addWidget("org.kde.plasma.marginsseparator");
 var digitalclock = panel.addWidget("org.kde.plasma.digitalclock");
 digitalclock.currentConfigGroup = ["Appearance"];
 digitalclock.writeConfig("customDateFormat", "ddd-d");
