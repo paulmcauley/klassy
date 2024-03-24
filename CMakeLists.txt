@@ -162,6 +162,7 @@ function(build_Qt6)
         add_subdirectory(icons)
         add_subdirectory(layout-templates)
         add_subdirectory(look-and-feel)
+        add_subdirectory(desktoptheme)
     endif()
 
     ki18n_install(po)
