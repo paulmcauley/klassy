@@ -14,7 +14,7 @@ set(breezecommon_LIB_SRCS
     styleklassy.cpp
     stylekite.cpp
     styleoxygen.cpp
-    styleredmond.cpp
+    styletraditional.cpp
     styleredmond10.cpp
     styleredmond11.cpp
     systemicontheme.cpp
