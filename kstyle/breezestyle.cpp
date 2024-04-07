@@ -1780,7 +1780,6 @@ bool Style::eventFilterMainWindow(QMainWindow *mw, QEvent *event)
         QPainter painter(mw);
         painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
         drawMainWindow(&painter, mw, true);
-        return true;
     }
     return ParentStyleClass::eventFilter(mw, event);
 }
@@ -1792,7 +1791,6 @@ bool Style::eventFilterDialog(QDialog *dialog, QEvent *event)
         QPainter painter(dialog);
         painter.setClipRegion(static_cast<QPaintEvent *>(event)->region());
         drawDialog(&painter, dialog, true);
-        return true;
     }
     return ParentStyleClass::eventFilter(dialog, event);
 }
@@ -1800,6 +1798,11 @@ bool Style::eventFilterDialog(QDialog *dialog, QEvent *event)
 void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool drawWindowBackground) const
 {
     const QColor windowColor = mw->palette().color(mw->isActiveWindow() ? QPalette::Active : QPalette::Inactive, QPalette::Window);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const bool hasAlpha(_helper->hasAlphaChannel(mw));
+    if (hasAlpha)
+        painter->setCompositionMode(QPainter::CompositionMode_Source);
+#endif
     const bool toolsAreaWithHeaderColors = _toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(mw);
 
     auto rect = _toolsAreaManager->toolsAreaRect(mw);
@@ -1895,6 +1898,7 @@ void Style::drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const
     if (w->property(PropertyNames::noSeparator).toBool() || w->isFullScreen()) {
         return;
     }
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setRenderHints(QPainter::Antialiasing);
     painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
     painter->drawLine(w->rect().topLeft() + QPointF(0, PenWidth::Frame / 2), w->rect().topRight() + QPointF(1, PenWidth::Frame / 2));
@@ -1930,6 +1934,8 @@ void Style::drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget
         painter->drawRect(rect);
     }
 
+    // default Painter composition mode from previous function may be CompositionMode_Source
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setRenderHints(QPainter::Antialiasing);
     painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
     painter->drawLine(rect.bottomLeft() + QPointF(0, 1 - PenWidth::Frame / 2), rect.bottomRight() + QPointF(1, 1 - PenWidth::Frame / 2));
