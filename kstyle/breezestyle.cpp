@@ -1680,12 +1680,14 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
         // get scrollarea horizontal and vertical containers
         QWidget *child(nullptr);
         QList<QWidget *> children;
-        if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_vcontainer")) && child->isVisible()) {
-            children.append(child);
-        }
+        if (!widget->inherits("QComboBoxListView")) {
+            if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_vcontainer")) && child->isVisible()) {
+                children.append(child);
+            }
 
-        if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_hcontainer")) && child->isVisible()) {
-            children.append(child);
+            if ((child = scrollArea->findChild<QWidget *>("qt_scrollarea_hcontainer")) && child->isVisible()) {
+                children.append(child);
+            }
         }
 
         if (children.empty()) {
