@@ -1913,7 +1913,9 @@ void Style::drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const
     }
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
+    QPen pen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * qRound(w->devicePixelRatioF()));
+    pen.setCosmetic(true);
+    painter->setPen(pen);
     painter->drawLine(w->rect().topLeft() + QPointF(0, PenWidth::Frame / 2), w->rect().topRight() + QPointF(1, PenWidth::Frame / 2));
 }
 
@@ -1950,7 +1952,9 @@ void Style::drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget
     // default Painter composition mode from previous function may be CompositionMode_Source
     painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     painter->setRenderHints(QPainter::Antialiasing);
-    painter->setPen(QPen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame));
+    QPen pen(_helper->separatorColor(_toolsAreaManager->palette()), PenWidth::Frame * qRound(w->devicePixelRatioF()));
+    pen.setCosmetic(true);
+    painter->setPen(pen);
     painter->drawLine(rect.bottomLeft() + QPointF(0, 1 - PenWidth::Frame / 2), rect.bottomRight() + QPointF(1, 1 - PenWidth::Frame / 2));
 }
 
