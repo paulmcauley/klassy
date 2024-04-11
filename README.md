@@ -63,7 +63,7 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 <a name="installation"/>
 
 ## Installation
-_Klassy_ version 6.0 requires at least __Plasma 6.0__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_Klassy_ version 6.1 requires at least __Plasma 6.0__, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
@@ -118,7 +118,7 @@ cd klassy
 ```
 
 ```
-git checkout 6.0.breeze6.0.2
+git checkout 6.1.breeze6.0.3
 ```
 
 ```
