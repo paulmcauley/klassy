@@ -71,7 +71,7 @@ _Klassy_ version 6.1 requires at least __Plasma 6.0__, so please check you have 
 
 &nbsp;
 
-Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". For KDE Neon 6.0 [a .deb package can be downloaded here](https://github.com/paulmcauley/klassy/releases/download/6.0.breeze6.0.2/klassy_6.0.breeze6.0.2-1_amd64_KDE_Neon_6.0.deb).
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". For KDE Neon 6.0 [a .deb package can be downloaded here](https://github.com/paulmcauley/klassy/releases/download/6.1.breeze6.0.3/klassy_6.1.breeze6.0.3-1_amd64_KDE_Neon_6.0.deb).
 
 &nbsp;
 &nbsp;
