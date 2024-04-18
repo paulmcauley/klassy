@@ -215,6 +215,8 @@ public:
                          bool roundCorners = true,
                          Qt::Edges seamlessEdges = Qt::Edges()) const;
 
+    QRegion menuFrameRegion(const QMenu *widget);
+
     //* button frame
     void renderButtonFrame(QPainter *painter,
                            const QRectF &rect,

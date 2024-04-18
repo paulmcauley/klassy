@@ -13,18 +13,21 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "breezeblurhelper.h"
+#include "breezehelper.h"
 #include "breezestyleconfigdata.h"
 
 #include <KWindowEffects>
 
 #include <QEvent>
+#include <QMenu>
 #include <QVector>
 
 namespace Breeze
 {
 //___________________________________________________________
-BlurHelper::BlurHelper()
+BlurHelper::BlurHelper(const std::shared_ptr<Helper> &helper)
     : QObject()
+    , _helper(helper)
 {
 }
 
@@ -83,7 +86,12 @@ void BlurHelper::update(QWidget *widget) const
     }
 
     widget->winId(); // force creation of the window handle
-    KWindowEffects::enableBlurBehind(widget->windowHandle(), true);
+
+    QRegion region;
+    if (const auto menu = qobject_cast<QMenu *>(widget)) {
+        region = _helper->menuFrameRegion(menu);
+    }
+    KWindowEffects::enableBlurBehind(widget->windowHandle(), true, region);
 
     // force update
     if (widget->isVisible()) {
