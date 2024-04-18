@@ -644,6 +644,39 @@ void Helper::renderMenuFrame(QPainter *painter, const QRectF &rect, const QColor
     painter->restore();
 }
 
+QRegion Helper::menuFrameRegion(const QMenu *widget)
+{
+    if (!widget) {
+        return {};
+    }
+
+    const bool hasAlpha(hasAlphaChannel(widget));
+    const auto seamlessEdges = menuSeamlessEdges(widget);
+    const auto roundCorners = hasAlpha;
+
+    if (roundCorners) {
+        QRectF frameRect(widget->rect());
+
+        qreal radius(Metrics::Frame_FrameRadius);
+
+        frameRect.adjust( //
+            seamlessEdges.testFlag(Qt::LeftEdge) ? -radius : 0,
+            seamlessEdges.testFlag(Qt::TopEdge) ? -radius : 0,
+            seamlessEdges.testFlag(Qt::RightEdge) ? radius : 0,
+            seamlessEdges.testFlag(Qt::BottomEdge) ? radius : 0);
+
+        // outline is always valid/drawn
+        frameRect = strokedRect(frameRect);
+        radius = frameRadiusForNewPenWidth(radius, PenWidth::Frame);
+
+        QPainterPath path;
+        path.addRoundedRect(frameRect, radius, radius);
+        return QRegion(path.toFillPolygon().toPolygon()).intersected(widget->rect());
+    }
+
+    return QRegion(widget->rect());
+}
+
 //______________________________________________________________________________
 void Helper::renderButtonFrame(QPainter *painter,
                                const QRectF &rect,
