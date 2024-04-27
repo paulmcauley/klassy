@@ -15,7 +15,7 @@ const char *colorProperty = "KDE_COLOR_SCHEME_PATH";
 
 namespace Breeze
 {
-ToolsAreaManager::ToolsAreaManager(Helper *helper, QObject *parent)
+ToolsAreaManager::ToolsAreaManager(std::shared_ptr<Helper> helper, QObject *parent)
     : QObject(parent)
     , _helper(helper)
 {

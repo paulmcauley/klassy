@@ -20,9 +20,13 @@
 
 namespace Breeze
 {
+FrameShadowFactory::FrameShadowFactory(QObject *parent)
+    : QObject(parent)
+{
+}
 
 //____________________________________________________________________________________
-bool FrameShadowFactory::registerWidget(QWidget *widget, Helper &helper)
+bool FrameShadowFactory::registerWidget(QWidget *widget, const std::shared_ptr<Helper> &helper)
 {
     if (!widget) {
         return false;
@@ -109,7 +113,7 @@ bool FrameShadowFactory::eventFilter(QObject *object, QEvent *event)
 }
 
 //____________________________________________________________________________________
-void FrameShadowFactory::installShadows(QWidget *widget, Helper &helper)
+void FrameShadowFactory::installShadows(QWidget *widget, const std::shared_ptr<Helper> &helper)
 {
     removeShadows(widget);
 
@@ -181,7 +185,7 @@ void FrameShadowFactory::updateState(const QWidget *widget, bool focus, bool hov
 }
 
 //____________________________________________________________________________________
-void FrameShadowFactory::installShadow(QWidget *widget, Helper &helper, Side area) const
+void FrameShadowFactory::installShadow(QWidget *widget, const std::shared_ptr<Helper> &helper, Side area) const
 {
     FrameShadow *shadow(nullptr);
     shadow = new FrameShadow(area, helper);
@@ -196,10 +200,12 @@ void FrameShadowFactory::widgetDestroyed(QObject *object)
 }
 
 //____________________________________________________________________________________
-FrameShadow::FrameShadow(Side area, Helper &helper)
+FrameShadow::FrameShadow(Side area, const std::shared_ptr<Helper> &helper)
     : _helper(helper)
     , _area(area)
 {
+    Q_ASSERT(helper);
+
     setAttribute(Qt::WA_OpaquePaintEvent, false);
 
     setFocusPolicy(Qt::NoFocus);
@@ -311,9 +317,9 @@ void FrameShadow::paintEvent(QPaintEvent *event)
     painter.setClipRegion(event->region());
     painter.setRenderHint(QPainter::Antialiasing);
 
-    const QColor outline(_helper.frameOutlineColor(palette(), _mouseOver, _hasFocus, _opacity, _mode));
+    const QColor outline(_helper->frameOutlineColor(palette(), _mouseOver, _hasFocus, _opacity, _mode));
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-    _helper.renderFrame(&painter, rect, QColor(), outline);
+    _helper->renderFrame(&painter, rect, QColor(), outline);
 }
 
 //____________________________________________________________________________________

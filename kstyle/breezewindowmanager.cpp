@@ -123,7 +123,7 @@ protected:
     }
 
 private:
-    //* parent
+    // lifetime: _parent IS the parent QObject. When it is destructed, so is the filter.
     WindowManager *_parent = nullptr;
 };
 

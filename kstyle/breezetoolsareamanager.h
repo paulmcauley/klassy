@@ -25,13 +25,14 @@ class AppListener : public QObject
     friend class ToolsAreaManager;
 };
 
+//* signal manager for the tools area
 class ToolsAreaManager : public QObject
 {
     Q_OBJECT
 
 private:
     void doTranslucency(QMainWindow *win, bool on);
-    Helper *_helper;
+    std::shared_ptr<Helper> _helper;
     QHash<const QMainWindow *, QVector<QPointer<QToolBar>>> _windows;
     KSharedConfigPtr _config;
     QPalette _palette = QPalette();
@@ -46,7 +47,7 @@ protected:
     void tryUnregisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
 
 public:
-    explicit ToolsAreaManager(Helper *helper, QObject *parent = nullptr);
+    explicit ToolsAreaManager(std::shared_ptr<Helper> helper, QObject *parent = nullptr);
     ~ToolsAreaManager();
 
     void configUpdated();

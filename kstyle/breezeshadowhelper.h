@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include "breezehelper.h"
 #include "breezetileset.h"
 
 #include <KWindowShadow>
@@ -19,9 +20,6 @@
 
 namespace Breeze
 {
-
-//* forward declaration
-class Helper;
 
 struct ShadowParams {
     ShadowParams() = default;
@@ -78,7 +76,7 @@ class ShadowHelper : public QObject
 
 public:
     //* constructor
-    explicit ShadowHelper(Helper &helper, QObject *parent = nullptr);
+    explicit ShadowHelper(const std::shared_ptr<Helper> &helper, QObject *parent = nullptr);
 
     //* destructor
     ~ShadowHelper() override;
@@ -108,7 +106,7 @@ public:
     //* return device pixel ratio for the window containing the widget
     static qreal devicePixelRatio(QWidget *);
 
-    Helper &helper()
+    std::shared_ptr<Helper> helper()
     {
         return _helper;
     }
@@ -154,7 +152,7 @@ protected:
 
 private:
     //* helper
-    Helper &_helper;
+    std::shared_ptr<Helper> _helper;
 
     //* registered widgets
     QSet<QWidget *> _widgets;
