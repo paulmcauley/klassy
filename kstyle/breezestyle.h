@@ -495,43 +495,21 @@ private:
     //@}
 
     //* focus frame
-    QPointer<QFocusFrame> _focusFrame = nullptr;
+    QPointer<QFocusFrame> _focusFrame;
 
-    //* helper
-    Helper *_helper = nullptr;
+    std::shared_ptr<Helper> _helper;
 
-    //* shadow helper
-    ShadowHelper *_shadowHelper = nullptr;
-
-    //* animations
-    Animations *_animations = nullptr;
-
-    //* keyboard accelerators
-    Mnemonics *_mnemonics = nullptr;
-
-    //* blur helper
-    BlurHelper *_blurHelper = nullptr;
-
-    //* window manager
-    WindowManager *_windowManager = nullptr;
-
-    //* frame shadows
-    FrameShadowFactory *_frameShadowFactory = nullptr;
-
-    //* mdi window shadows
-    MdiWindowShadowFactory *_mdiWindowShadowFactory = nullptr;
-
-    //* splitter Factory, to extend splitters hit area
-    SplitterFactory *_splitterFactory = nullptr;
-
-    //* signal manager for the tools area
-    ToolsAreaManager *_toolsAreaManager = nullptr;
-
-    //* widget explorer
-    WidgetExplorer *_widgetExplorer = nullptr;
-
-    //* tabbar data
-    BreezePrivate::TabBarData *_tabBarData = nullptr;
+    std::unique_ptr<ShadowHelper> _shadowHelper;
+    std::unique_ptr<Animations> _animations;
+    std::unique_ptr<Mnemonics> _mnemonics;
+    std::unique_ptr<BlurHelper> _blurHelper;
+    std::unique_ptr<WindowManager> _windowManager;
+    std::unique_ptr<FrameShadowFactory> _frameShadowFactory;
+    std::unique_ptr<MdiWindowShadowFactory> _mdiWindowShadowFactory;
+    std::unique_ptr<SplitterFactory> _splitterFactory;
+    std::unique_ptr<ToolsAreaManager> _toolsAreaManager;
+    std::unique_ptr<WidgetExplorer> _widgetExplorer;
+    std::unique_ptr<BreezePrivate::TabBarData> _tabBarData;
 
     //* icon hash
     using IconCache = QHash<StandardPixmap, QIcon>;

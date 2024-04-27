@@ -14,17 +14,14 @@
 
 namespace Breeze
 {
-
+//* keyboard accelerators
 class Mnemonics : public QObject
 {
     Q_OBJECT
 
 public:
     //* constructor
-    explicit Mnemonics(QObject *parent)
-        : QObject(parent)
-    {
-    }
+    explicit Mnemonics(QObject *parent = nullptr);
 
     //* set mode
     void setMode(int);

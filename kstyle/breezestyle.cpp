@@ -112,7 +112,7 @@ class TabBarData : public QObject
 {
 public:
     //* constructor
-    explicit TabBarData(QObject *parent)
+    explicit TabBarData(QObject *parent = nullptr)
         : QObject(parent)
     {
     }
@@ -258,20 +258,18 @@ namespace Breeze
 
 //______________________________________________________________
 Style::Style()
-    :
-
-    _helper(new Helper(StyleConfigData::self()->sharedConfig()))
-    , _shadowHelper(new ShadowHelper(*_helper, this))
-    , _animations(new Animations(this))
-    , _mnemonics(new Mnemonics(this))
-    , _blurHelper(new BlurHelper(this))
-    , _windowManager(new WindowManager(this))
-    , _frameShadowFactory(new FrameShadowFactory(this))
-    , _mdiWindowShadowFactory(new MdiWindowShadowFactory(this))
-    , _splitterFactory(new SplitterFactory(this))
-    , _toolsAreaManager(new ToolsAreaManager(_helper, this))
-    , _widgetExplorer(new WidgetExplorer(this))
-    , _tabBarData(new BreezePrivate::TabBarData(this))
+    : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig()))
+    , _shadowHelper(std::make_unique<ShadowHelper>(_helper))
+    , _animations(std::make_unique<Animations>())
+    , _mnemonics(std::make_unique<Mnemonics>())
+    , _blurHelper(std::make_unique<BlurHelper>())
+    , _windowManager(std::make_unique<WindowManager>())
+    , _frameShadowFactory(std::make_unique<FrameShadowFactory>())
+    , _mdiWindowShadowFactory(std::make_unique<MdiWindowShadowFactory>())
+    , _splitterFactory(std::make_unique<SplitterFactory>())
+    , _toolsAreaManager(std::make_unique<ToolsAreaManager>(_helper))
+    , _widgetExplorer(std::make_unique<WidgetExplorer>())
+    , _tabBarData(std::make_unique<BreezePrivate::TabBarData>())
 #if BREEZE_HAVE_KSTYLE
     , SH_ArgbDndWindow(newStyleHint(QStringLiteral("SH_ArgbDndWindow")))
     , CE_CapacityBar(newControlElement(QStringLiteral("CE_CapacityBar")))
@@ -330,8 +328,6 @@ Style::Style()
 //______________________________________________________________
 Style::~Style()
 {
-    delete _shadowHelper;
-    delete _helper;
 }
 
 //______________________________________________________________
@@ -344,7 +340,7 @@ void Style::polish(QWidget *widget)
     // register widget to animations
     _animations->registerWidget(widget);
     _windowManager->registerWidget(widget);
-    _frameShadowFactory->registerWidget(widget, *_helper);
+    _frameShadowFactory->registerWidget(widget, _helper);
     _mdiWindowShadowFactory->registerWidget(widget);
     _shadowHelper->registerWidget(widget);
     _splitterFactory->registerWidget(widget);
@@ -2232,7 +2228,7 @@ void Style::loadConfiguration()
     _shadowHelper->loadConfig();
 
     // set mdiwindow factory shadow tiles
-    _mdiWindowShadowFactory->setShadowHelper(_shadowHelper);
+    _mdiWindowShadowFactory->setShadowHelper(_shadowHelper.get());
 
     // clear icon cache
     _iconCache.clear();

@@ -74,7 +74,7 @@ class MdiWindowShadowFactory : public QObject
 
 public:
     //* constructor
-    explicit MdiWindowShadowFactory(QObject *);
+    explicit MdiWindowShadowFactory(QObject *parent = nullptr);
 
     //* set shadow helper
     void setShadowHelper(ShadowHelper *shadowHelper)
