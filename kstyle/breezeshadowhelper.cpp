@@ -67,7 +67,7 @@ CompositeShadowParams ShadowHelper::lookupShadowParams(int shadowSizeEnum)
 }
 
 //_____________________________________________________
-ShadowHelper::ShadowHelper(QObject *parent, Helper &helper)
+ShadowHelper::ShadowHelper(Helper &helper, QObject *parent)
     : QObject(parent)
     , _helper(helper)
 {

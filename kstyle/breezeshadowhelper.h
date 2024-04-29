@@ -78,7 +78,7 @@ class ShadowHelper : public QObject
 
 public:
     //* constructor
-    ShadowHelper(QObject *, Helper &);
+    explicit ShadowHelper(Helper &helper, QObject *parent = nullptr);
 
     //* destructor
     ~ShadowHelper() override;

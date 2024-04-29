@@ -261,7 +261,7 @@ Style::Style()
     :
 
     _helper(new Helper(StyleConfigData::self()->sharedConfig()))
-    , _shadowHelper(new ShadowHelper(this, *_helper))
+    , _shadowHelper(new ShadowHelper(*_helper, this))
     , _animations(new Animations(this))
     , _mnemonics(new Mnemonics(this))
     , _blurHelper(new BlurHelper(this))
