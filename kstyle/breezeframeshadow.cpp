@@ -20,8 +20,8 @@
 
 namespace Breeze
 {
-FrameShadowFactory::FrameShadowFactory(QObject *parent)
-    : QObject(parent)
+FrameShadowFactory::FrameShadowFactory()
+    : QObject()
 {
 }
 

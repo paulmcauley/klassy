@@ -38,7 +38,7 @@ class Helper : public QObject
 
 public:
     //* constructor
-    explicit Helper(KSharedConfig::Ptr, QObject *parent = nullptr);
+    explicit Helper(KSharedConfig::Ptr);
 
     //* destructor
     virtual ~Helper()

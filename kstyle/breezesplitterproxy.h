@@ -29,7 +29,7 @@ class SplitterFactory : public QObject
 
 public:
     //* constructor
-    explicit SplitterFactory(QObject *parent = nullptr);
+    explicit SplitterFactory();
 
     //* enabled state
     void setEnabled(bool);

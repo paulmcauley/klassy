@@ -28,7 +28,7 @@ class FrameShadowFactory : public QObject
 
 public:
     //* constructor
-    explicit FrameShadowFactory(QObject *parent = nullptr);
+    explicit FrameShadowFactory();
 
     //* register widget
     bool registerWidget(QWidget *, const std::shared_ptr<Helper> &helper);

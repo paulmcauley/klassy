@@ -21,7 +21,7 @@ class Mnemonics : public QObject
 
 public:
     //* constructor
-    explicit Mnemonics(QObject *parent = nullptr);
+    explicit Mnemonics();
 
     //* set mode
     void setMode(int);

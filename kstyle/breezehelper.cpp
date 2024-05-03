@@ -52,8 +52,8 @@ static const qreal highlightBackgroundAlpha = 0.33;
 static const auto radioCheckSunkenDarkeningFactor = 110;
 
 //____________________________________________________________________
-Helper::Helper(KSharedConfig::Ptr config, QObject *parent)
-    : QObject(parent)
+Helper::Helper(KSharedConfig::Ptr config)
+    : QObject()
     , _config(std::move(config))
     , _kwinConfig(KSharedConfig::openConfig("kwinrc"))
     , _decorationConfig(DecorationSettingsProvider::self()->internalSettings())

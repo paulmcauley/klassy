@@ -28,7 +28,7 @@ class Animations : public QObject
 
 public:
     //* constructor
-    explicit Animations(QObject *parent = nullptr);
+    explicit Animations();
 
     //* register animations corresponding to given widget, depending on its type.
     void registerWidget(QWidget *widget) const;

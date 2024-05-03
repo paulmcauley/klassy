@@ -17,8 +17,8 @@ namespace Breeze
 {
 
 //________________________________________________
-WidgetExplorer::WidgetExplorer(QObject *parent)
-    : QObject(parent)
+WidgetExplorer::WidgetExplorer()
+    : QObject()
 {
     _eventTypes.insert(QEvent::Enter, QStringLiteral("Enter"));
     _eventTypes.insert(QEvent::Leave, QStringLiteral("Leave"));

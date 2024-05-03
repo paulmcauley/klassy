@@ -47,7 +47,7 @@ protected:
     void tryUnregisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
 
 public:
-    explicit ToolsAreaManager(std::shared_ptr<Helper> helper, QObject *parent = nullptr);
+    explicit ToolsAreaManager(std::shared_ptr<Helper> helper);
     ~ToolsAreaManager();
 
     void configUpdated();

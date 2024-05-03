@@ -33,7 +33,7 @@ class WindowManager : public QObject
 
 public:
     //* constructor
-    explicit WindowManager(QObject *parent = nullptr);
+    explicit WindowManager();
 
     //* initialize
     /** read relevant options from config */

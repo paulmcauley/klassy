@@ -76,7 +76,7 @@ class ShadowHelper : public QObject
 
 public:
     //* constructor
-    explicit ShadowHelper(const std::shared_ptr<Helper> &helper, QObject *parent = nullptr);
+    explicit ShadowHelper(const std::shared_ptr<Helper> &helper);
 
     //* destructor
     ~ShadowHelper() override;
