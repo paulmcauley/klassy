@@ -23,8 +23,8 @@
 namespace Breeze
 {
 //___________________________________________________________
-BlurHelper::BlurHelper(QObject *parent)
-    : QObject(parent)
+BlurHelper::BlurHelper()
+    : QObject()
 {
 }
 

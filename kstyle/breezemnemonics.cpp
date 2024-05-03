@@ -11,8 +11,8 @@
 
 namespace Breeze
 {
-Mnemonics::Mnemonics(QObject *parent)
-    : QObject(parent)
+Mnemonics::Mnemonics()
+    : QObject()
 {
 }
 

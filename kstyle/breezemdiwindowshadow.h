@@ -29,7 +29,7 @@ class MdiWindowShadow : public QWidget
 
 public:
     //* constructor
-    explicit MdiWindowShadow(QWidget *, const TileSet &, ShadowHelper *shadowHelper);
+    explicit MdiWindowShadow(QWidget *parent, const TileSet &shadowTiles, ShadowHelper *shadowHelper);
 
     //* update geometry
     void updateGeometry();
@@ -74,7 +74,7 @@ class MdiWindowShadowFactory : public QObject
 
 public:
     //* constructor
-    explicit MdiWindowShadowFactory(QObject *parent = nullptr);
+    explicit MdiWindowShadowFactory();
 
     //* set shadow helper
     void setShadowHelper(ShadowHelper *shadowHelper)

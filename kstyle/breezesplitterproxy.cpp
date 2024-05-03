@@ -36,8 +36,8 @@
 
 namespace Breeze
 {
-SplitterFactory::SplitterFactory(QObject *parent)
-    : QObject(parent)
+SplitterFactory::SplitterFactory()
+    : QObject()
     , _enabled(false)
 {
 }

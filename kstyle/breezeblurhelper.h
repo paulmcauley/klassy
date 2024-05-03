@@ -28,7 +28,7 @@ class BlurHelper : public QObject
 
 public:
     //! constructor
-    explicit BlurHelper(QObject *parent = nullptr);
+    explicit BlurHelper();
 
     //! register widget
     void registerWidget(QWidget *);
