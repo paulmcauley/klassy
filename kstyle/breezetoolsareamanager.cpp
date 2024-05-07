@@ -267,8 +267,8 @@ void ToolsAreaManager::registerWidget(QWidget *widget)
         if (qobject_cast<QMdiArea *>(parent) || qobject_cast<QDockWidget *>(parent)) {
             break;
         }
-        if (qobject_cast<QMainWindow *>(parent)) {
-            mainWindow = qobject_cast<QMainWindow *>(parent);
+        if (auto window = qobject_cast<QMainWindow *>(parent)) {
+            mainWindow = window;
         }
         parent = parent->parentWidget();
     }
