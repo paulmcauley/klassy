@@ -26,6 +26,7 @@
 #include <KColorUtils>
 #include <KIconLoader>
 #include <KWindowEffects>
+#include <kguiaddons_version.h>
 
 #include <QApplication>
 #include <QBitmap>
@@ -385,9 +386,12 @@ void Style::polish(QWidget *widget)
 
     } else if (qobject_cast<QAbstractButton *>(widget) && qobject_cast<QToolBox *>(widget->parent())) {
         widget->setAttribute(Qt::WA_Hover);
-
+#if KGUIADDONS_VERSION < QT_VERSION_CHECK(6, 4, 0)
     } else if (qobject_cast<QFrame *>(widget) && widget->parent() && widget->parent()->inherits("KTitleWidget")) {
+        // Using available KGuiAddons version as reference, assuming KF6 modules all same version
+        // With KWidgetsAddons >= 6.4 the child QFrame is gone and all children default to sutoFillBackground == false.
         widget->setAutoFillBackground(false);
+#endif
     }
 
     if (qobject_cast<QScrollBar *>(widget)) {
