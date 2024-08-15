@@ -1435,6 +1435,136 @@ void Helper::renderScrollBarBorder(QPainter *painter, const QRectF &rect, const 
     }
 }
 
+void Helper::renderStaticTabBarTab(QPainter *painter,
+                                   const QRectF &rect,
+                                   const QPalette &palette,
+                                   const QHash<QByteArray, bool> &stateProperties,
+                                   Corners corners,
+                                   qreal animation) const
+{
+    bool enabled = stateProperties.value("enabled", true);
+    bool hovered = stateProperties.value("hovered");
+    bool selected = stateProperties.value("selected");
+    bool documentMode = stateProperties.value("documentMode");
+    bool north = stateProperties.value("north");
+    bool south = stateProperties.value("south");
+    bool west = stateProperties.value("west");
+    bool east = stateProperties.value("east");
+    bool isFirst = stateProperties.value("isFirst");
+    bool isLast = stateProperties.value("isLast");
+    bool isRightOfSelected = stateProperties.value("isRightOfSelected");
+    bool animated = animation != AnimationData::OpacityInvalid;
+    bool isQtQuickControl = stateProperties.value("isQtQuickControl");
+    bool hasAlteredBackground = stateProperties.value("hasAlteredBackground");
+    const auto baseColor = palette.color(QPalette::Base).darker(102);
+
+    // setup painter
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    QRectF frameRect = rect;
+    QColor bgBrush;
+
+    if (selected) {
+        // overlap border
+        bgBrush = baseColor;
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(bgBrush);
+        painter->drawRect(frameRect);
+
+        if (documentMode && !isQtQuickControl && !hasAlteredBackground) {
+            const auto highligthBackground = alphaColor(palette.color(QPalette::Highlight), 0.2);
+            bgBrush = highligthBackground;
+        } else {
+            bgBrush = frameBackgroundColor(palette);
+        }
+        QColor penBrush = KColorUtils::mix(bgBrush, palette.color(QPalette::WindowText), Metrics::Bias_Default);
+        painter->setBrush(bgBrush);
+        painter->setPen(QPen(penBrush, PenWidth::Frame));
+        QRectF highlightRect = frameRect;
+        if (north || south) {
+            highlightRect.setHeight(Metrics::TabBar_ActiveEffectSize);
+        } else if (west || east) {
+            highlightRect.setWidth(Metrics::TabBar_ActiveEffectSize);
+        }
+        if (south) {
+            highlightRect.moveBottom(frameRect.bottom());
+        } else if (east) {
+            highlightRect.moveRight(frameRect.right());
+        }
+
+        auto rect = strokedRect(frameRect);
+        // don't strock the first and last tab
+        if (isFirst) {
+            if (north || south) {
+                rect.adjust(-PenWidth::Frame, 0, 0, 0);
+            } else {
+                rect.adjust(0, -PenWidth::Frame, 0, 0);
+            }
+        } else if (isLast) {
+            if (north || south) {
+                rect.adjust(0, 0, PenWidth::Frame, 0);
+            } else {
+                rect.adjust(PenWidth::Frame, 0, 0, 0);
+            }
+        }
+        painter->drawRect(rect);
+        painter->setBrush(palette.color(QPalette::Highlight));
+        painter->setPen(Qt::NoPen);
+        painter->drawRect(highlightRect);
+    } else {
+        // don't overlap border
+        // Since we don't set the rectangle as strokedRect here, modify only one side of it
+        // the same amount strokedRect method would, to make it snap next to the border
+        const qreal overlap = PenWidth::Frame;
+        frameRect.adjust(east || west ? overlap : 0, south || north ? overlap : 0, west || east ? -overlap : 0, north || south ? -overlap : 0);
+
+        bgBrush = baseColor;
+        const auto hover = alphaColor(hoverColor(palette), 0.2);
+        if (animated) {
+            bgBrush = KColorUtils::mix(bgBrush, hover, animation);
+        } else if (enabled && hovered && !selected) {
+            bgBrush = hover;
+        }
+        auto penColor = KColorUtils::mix(baseColor, palette.color(QPalette::WindowText), 0.20);
+        painter->setBrush(bgBrush);
+        painter->setPen(Qt::NoPen);
+        painter->drawRect(frameRect);
+    }
+
+    if (!isRightOfSelected && !isFirst && (north || south)) {
+        auto penColor = KColorUtils::mix(baseColor, palette.color(QPalette::WindowText), 0.20);
+        QRectF lineRect = frameRect;
+        lineRect.setRight(lineRect.x() + 1);
+        lineRect.adjust(0, 0, 0, -1);
+
+        // ensure the background it the right color
+        painter->setBrush(bgBrush);
+        painter->drawRect(lineRect);
+
+        // draw separator
+        if (!isRightOfSelected && !selected) {
+            lineRect.adjust(0, 6, 0, -5);
+        }
+        painter->setBrush(penColor);
+        painter->drawRect(lineRect);
+    } else if (!isRightOfSelected && !isFirst && (east || west)) {
+        auto penColor = KColorUtils::mix(baseColor, palette.color(QPalette::WindowText), 0.20);
+        QRectF lineRect = frameRect;
+        lineRect.setBottom(lineRect.y() - 1);
+        lineRect.adjust(0, 0, -1, 0);
+
+        // ensure the background it the right color
+        painter->setBrush(bgBrush);
+        painter->drawRect(lineRect);
+
+        // draw separator
+        if (!isRightOfSelected && !selected) {
+            lineRect.adjust(0, 6, 0, -5);
+        }
+        painter->setBrush(penColor);
+        painter->drawRect(lineRect);
+    }
+}
+
 //______________________________________________________________________________
 void Helper::renderTabBarTab(QPainter *painter,
                              const QRectF &rect,
