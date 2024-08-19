@@ -35,7 +35,7 @@ public:
     static Button *create(KDecoration2::DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent);
 
     //* render
-    virtual void paint(QPainter *painter, const QRect &repaintRegion) override;
+    void paint(QPainter *painter, const QRect &repaintRegion) override;
 
     //* standalone buttons
     bool isStandAlone() const
