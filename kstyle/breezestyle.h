@@ -481,6 +481,8 @@ private:
     //* return true if passed widget is a menu title (KMenu::addTitle)
     bool hasAlteredBackground(const QWidget *) const;
 
+    void tabLayout(const QStyleOptionTab *opt, const QWidget *widget, QRect *textRect, QRect *iconRect, bool isExpanding) const;
+
     /*
      * return true if the widget should be highlighted with neutral color
      * if widget is null, check for the styleObject in option
