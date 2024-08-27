@@ -1480,7 +1480,8 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
             } else {
                 rect.adjust(0, -PenWidth::Frame, 0, 0);
             }
-        } else if (isLast) {
+        }
+        if (isLast) {
             if (north || south) {
                 rect.adjust(0, 0, PenWidth::Frame, 0);
             } else {
@@ -1496,7 +1497,7 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         // Since we don't set the rectangle as strokedRect here, modify only one side of it
         // the same amount strokedRect method would, to make it snap next to the border
         const qreal overlap = PenWidth::Frame;
-        frameRect.adjust(east || west ? overlap : 0, south || north ? overlap : 0, west || east ? -overlap : 0, north || south ? -overlap : 0);
+        frameRect.adjust(west ? overlap : 0, south || north ? overlap : 0, east ? -overlap : 0, south || north ? -overlap : 0);
 
         bgBrush = baseColor;
         const auto hover = alphaColor(hoverColor(palette), 0.2);
@@ -1505,7 +1506,6 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         } else if (enabled && hovered && !selected) {
             bgBrush = hover;
         }
-        auto penColor = KColorUtils::mix(baseColor, palette.color(QPalette::WindowText), 0.20);
         painter->setBrush(bgBrush);
         painter->setPen(Qt::NoPen);
         painter->drawRect(frameRect);
