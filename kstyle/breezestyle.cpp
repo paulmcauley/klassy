@@ -4083,7 +4083,8 @@ QSize Style::tabBarTabSizeFromContents(const QStyleOption *option, const QSize &
     const bool verticalTabs(tabOption && isVerticalTab(tabOption));
 
     const auto tabBar = qobject_cast<const QTabBar *>(widget);
-    const bool isStatic = tabOption->documentMode && tabBar && !tabBar->tabsClosable() && !tabBar->isMovable() && (tabBar->expanding() || verticalTabs);
+    const bool isStatic =
+        tabOption && tabOption->documentMode && tabBar && !tabBar->tabsClosable() && !tabBar->isMovable() && (tabBar->expanding() || verticalTabs);
     const auto minHeight = isStatic ? Metrics::TabBar_StaticTabMinHeight : Metrics::TabBar_TabMinHeight;
 
     // calculate width increment for horizontal tabs
