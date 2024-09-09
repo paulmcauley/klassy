@@ -261,8 +261,18 @@ void ToolsAreaManager::registerWidget(QWidget *widget)
     Q_ASSERT(widget);
     auto ptr = QPointer<QWidget>(widget);
 
+    QPointer<QMainWindow> mainWindow = qobject_cast<QMainWindow *>(ptr);
+
+    if (mainWindow && mainWindow == mainWindow->window()) {
+        const auto toolBars = mainWindow->findChildren<QToolBar *>(QString(), Qt::FindDirectChildrenOnly);
+        for (auto *toolBar : toolBars) {
+            tryRegisterToolBar(mainWindow, toolBar);
+        }
+        return;
+    }
+
     auto parent = ptr;
-    QPointer<QMainWindow> mainWindow = nullptr;
+
     while (parent != nullptr) {
         if (qobject_cast<QMdiArea *>(parent) || qobject_cast<QDockWidget *>(parent)) {
             break;
