@@ -735,7 +735,7 @@ void Decoration::recalculateBorders()
     auto c = client();
     auto s = settings();
 
-    // setScaledTitleBarTopBottomMargins();
+    setScaledTitleBarTopBottomMargins();
 
     // left, right and bottom borders
     const int left = isLeftEdge() ? 0 : borderSize();
