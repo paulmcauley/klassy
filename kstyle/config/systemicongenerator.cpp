@@ -182,11 +182,11 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                             if (m_internalSettings->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
                                 cornerRadius = m_internalSettings->buttonCustomCornerRadius();
                             } else {
-                                cornerRadius = m_internalSettings->cornerRadius();
+                                cornerRadius = m_internalSettings->windowCornerRadius();
                             }
                         }
 
-                        if ((cornerRadius < 0.2 && m_internalSettings->cornerRadius() < 2))
+                        if ((cornerRadius < 0.4 && m_internalSettings->windowCornerRadius() < 4))
                             painter->drawRect(QRectF(2, 2, 12, 12));
                         else
                             painter->drawRoundedRect(QRectF(2, 2, 12, 12), 20, 20, Qt::RelativeSize);

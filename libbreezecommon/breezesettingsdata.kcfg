@@ -104,10 +104,10 @@
 
     <!-- ______________________________WINDOW______________________________ -->
     
-    <entry name="CornerRadius" type = "Double">
-       <default>1</default>
+    <entry name="WindowCornerRadius" type = "Double">
+       <default>2.5</default>
        <min>0</min>
-       <max>12</max>
+       <max>24.0</max>
     </entry>
     
    <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
@@ -231,9 +231,9 @@
     </entry>
 
     <entry name="ButtonCustomCornerRadius" type = "Double">
-       <default>1</default>
+       <default>2.5</default>
        <min>0</min>
-       <max>12</max>
+       <max>24.0</max>
     </entry>
 
     <!--Integrated Rounded Rectangle Bottom Padding -->

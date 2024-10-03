@@ -138,7 +138,7 @@ namespace Metrics
 {
 
 //* corner radius (pixels)
-// Paul A McAuley: No longer used - now InternalSettings::cornerRadius()
+// Paul A McAuley: No longer used - now InternalSettings::windowCornerRadius()
 // Frame_FrameRadius = 3,
 
 //* titlebar metrics, in units of small spacing
