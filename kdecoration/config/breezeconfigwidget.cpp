@@ -215,7 +215,7 @@ void ConfigWidget::load()
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
-    m_ui.cornerRadius->setValue(m_internalSettings->cornerRadius());
+    m_ui.cornerRadius->setValue(m_internalSettings->windowCornerRadius());
 
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
@@ -263,7 +263,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setButtonShape(m_ui.buttonShape->currentIndex());
     m_internalSettings->setIconSize(m_ui.iconSize->currentIndex());
     m_internalSettings->setSystemIconSize(m_ui.systemIconSize->currentIndex());
-    m_internalSettings->setCornerRadius(m_ui.cornerRadius->value());
+    m_internalSettings->setWindowCornerRadius(m_ui.cornerRadius->value());
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
@@ -334,7 +334,7 @@ void ConfigWidget::defaults()
     m_ui.buttonShape->setCurrentIndex(m_internalSettings->buttonShape());
     m_ui.iconSize->setCurrentIndex(m_internalSettings->iconSize());
     m_ui.systemIconSize->setCurrentIndex(m_internalSettings->systemIconSize());
-    m_ui.cornerRadius->setValue(m_internalSettings->cornerRadius());
+    m_ui.cornerRadius->setValue(m_internalSettings->windowCornerRadius());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
@@ -457,7 +457,7 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;
-    else if (qAbs(m_ui.cornerRadius->value() - m_internalSettings->cornerRadius()) > 0.001)
+    else if (qAbs(m_ui.cornerRadius->value() - m_internalSettings->windowCornerRadius()) > 0.001)
         modified = true;
     else if (m_ui.colorizeThinWindowOutlineWithButton->isChecked() != m_internalSettings->colorizeThinWindowOutlineWithButton())
         modified = true;

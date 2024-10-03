@@ -1618,7 +1618,7 @@ std::shared_ptr<KDecoration2::DecorationShadow> Decoration::createShadowObject(Q
             QPen p;
             p.setColor(m_thinWindowOutline);
             // use a miter join rather than the default bevel join to get sharp corners at low radii
-            if (m_internalSettings->cornerRadius() < 0.2)
+            if (m_internalSettings->windowCornerRadius() < 0.4)
                 p.setJoinStyle(Qt::MiterJoin);
 
             qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
@@ -1652,7 +1652,7 @@ std::shared_ptr<KDecoration2::DecorationShadow> Decoration::createShadowObject(Q
             QPainterPath outlinePath;
             qreal cornerRadius;
 
-            if (m_internalSettings->cornerRadius() < 0.2)
+            if (m_internalSettings->windowCornerRadius() < 0.4)
                 cornerRadius = m_scaledCornerRadius; // give a square corner for when corner radius is 0
             else
                 cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
@@ -1779,7 +1779,9 @@ void Decoration::setScaledTitleBarSideMargins()
 
 void Decoration::setScaledCornerRadius()
 {
-    m_scaledCornerRadius = m_internalSettings->cornerRadius() * settings()->smallSpacing();
+    // on Wayland smallSpacing is always 2 (scaling is then automatic), on X11 varies with font size
+    // the division by 2 ensures that the value in the UI corresponds to pixels @100% in Wayland
+    m_scaledCornerRadius = m_internalSettings->windowCornerRadius() / 2.0f * settings()->smallSpacing();
 }
 
 void Decoration::updateOpaque()

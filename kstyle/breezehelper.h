@@ -363,7 +363,7 @@ public:
     //@}
 
     //* frame radius
-    constexpr qreal frameRadius(const int penWidth = PenWidth::NoPen, const qreal bias = 0) const
+    qreal frameRadius(const int penWidth = PenWidth::NoPen, const qreal bias = 0) const
     {
         return qMax(Metrics::Frame_FrameRadius - (0.5 * penWidth) + bias, 0.0);
     }

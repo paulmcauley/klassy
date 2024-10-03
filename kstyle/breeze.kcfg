@@ -8,6 +8,20 @@
   <!-- widget style -->
   <group name="Style">
 
+    <entry name="FrameCornerRadius" type="Enum">
+      <choices>
+          <choice name="FCR_DerivedFromWindow" />
+          <choice name="FCR_Custom" />
+      </choices>
+      <default>FCR_DerivedFromWindow</default>
+    </entry>
+
+    <entry name="FrameCustomCornerRadius" type="Double">
+      <default>3.0</default>
+      <min>0</min>
+      <max>24.0</max>
+    </entry>
+
     <!-- animations -->
     <entry name="AnimationsEnabled" type="Bool">
       <default>true</default>

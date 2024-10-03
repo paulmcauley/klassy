@@ -62,9 +62,19 @@ StyleConfig::StyleConfig(QWidget *parent)
     }
 #endif
 
+    // add corner icon
+    _cornerRadiusIcon->setPixmap(QIcon::fromTheme(QStringLiteral("tool_curve")).pixmap(16, 16));
+
     // load setup from configData
     load();
 
+    connect(_frameCornerRadius,
+            qOverload<int>(&QComboBox::currentIndexChanged),
+            this,
+            &StyleConfig::setFrameCustomCornerRadiusVisible,
+            Qt::ConnectionType::DirectConnection);
+    connect(_frameCornerRadius, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_frameCustomCornerRadius, &QDoubleSpinBox::valueChanged, this, &StyleConfig::updateChanged);
     connect(_tabBarDrawCenteredTabs, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_buttonGradient, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_toolBarDrawItemSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
@@ -84,6 +94,8 @@ StyleConfig::StyleConfig(QWidget *parent)
 //__________________________________________________________________
 void StyleConfig::save()
 {
+    StyleConfigData::setFrameCornerRadius(_frameCornerRadius->currentIndex());
+    StyleConfigData::setFrameCustomCornerRadius(_frameCustomCornerRadius->value());
     StyleConfigData::setTabBarDrawCenteredTabs(_tabBarDrawCenteredTabs->isChecked());
     StyleConfigData::setButtonGradient(_buttonGradient->isChecked());
     StyleConfigData::setToolBarDrawItemSeparator(_toolBarDrawItemSeparator->isChecked());
@@ -146,7 +158,11 @@ void StyleConfig::updateChanged()
     bool modified(false);
 
     // check if any value was modified
-    if (_tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs())
+    if (_frameCornerRadius->currentIndex() != StyleConfigData::frameCornerRadius())
+        modified = true;
+    else if (qAbs(_frameCustomCornerRadius->value() - StyleConfigData::frameCustomCornerRadius()) > 0.001)
+        modified = true;
+    else if (_tabBarDrawCenteredTabs->isChecked() != StyleConfigData::tabBarDrawCenteredTabs())
         modified = true;
     else if (_buttonGradient->isChecked() != StyleConfigData::buttonGradient())
         modified = true;
@@ -181,6 +197,9 @@ void StyleConfig::updateChanged()
 //__________________________________________________________________
 void StyleConfig::load()
 {
+    _frameCornerRadius->setCurrentIndex(StyleConfigData::frameCornerRadius());
+    _frameCustomCornerRadius->setValue(StyleConfigData::frameCustomCornerRadius());
+    setFrameCustomCornerRadiusVisible();
     _tabBarDrawCenteredTabs->setChecked(StyleConfigData::tabBarDrawCenteredTabs());
     _buttonGradient->setChecked(StyleConfigData::buttonGradient());
     _toolBarDrawItemSeparator->setChecked(StyleConfigData::toolBarDrawItemSeparator());
@@ -202,6 +221,15 @@ void StyleConfig::kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *
     Q_UNUSED(before)
     if (current) {
         current->setHeaderVisible(false);
+    }
+}
+
+void StyleConfig::setFrameCustomCornerRadiusVisible()
+{
+    if (_frameCornerRadius->currentIndex()) {
+        _frameCustomCornerRadius->setVisible(true);
+    } else {
+        _frameCustomCornerRadius->setVisible(false);
     }
 }
 }

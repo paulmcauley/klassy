@@ -53,6 +53,8 @@ protected Q_SLOTS:
     void updateChanged();
     void kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before);
 
+    void setFrameCustomCornerRadiusVisible();
+
 
 private:
     bool isDefaults();

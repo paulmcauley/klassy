@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2021 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -144,6 +144,10 @@ void Helper::loadConfig()
                                                     _generateDecorationColorsOnDecorationColorSettingsUpdateUuid);
         _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
     }
+
+    Metrics::Frame_FrameRadius =
+        StyleConfigData::frameCornerRadius() ? StyleConfigData::frameCustomCornerRadius() : qMin(5.0, _decorationConfig->windowCornerRadius());
+    Metrics::CheckBox_Radius = qMax(0.0, Metrics::Frame_FrameRadius - 1);
 }
 
 QColor transparentize(const QColor &color, qreal amount)
@@ -1117,7 +1121,12 @@ void Helper::renderSliderGroove(QPainter *painter, const QRectF &rect, const QCo
 
     QRectF baseRect(rect);
     baseRect.adjust(0.5, 0.5, -0.5, -0.5);
-    const qreal radius(0.5 * Metrics::Slider_GrooveThickness);
+    qreal radius;
+    if (Metrics::Frame_FrameRadius < 0.4) {
+        radius = 0;
+    } else {
+        radius = 0.5 * Metrics::Slider_GrooveThickness;
+    }
 
     // content
     // content
@@ -1205,8 +1214,9 @@ void Helper::renderSliderHandle(QPainter *painter, const QRectF &rect, const QCo
 
     // copy rect
     QRectF frameRect(rect);
-    frameRect.adjust(1, 1, -1, -1);
-
+    if (Metrics::Frame_FrameRadius >= 0.4) {
+        frameRect.adjust(1, 1, -1, -1);
+    }
     // shadow
     if (!sunken) {
         renderEllipseShadow(painter, frameRect, shadow);
@@ -1240,7 +1250,12 @@ void Helper::renderProgressBarGroove(QPainter *painter, const QRectF &rect, cons
 
     QRectF baseRect(rect);
     baseRect.adjust(0.5, 0.5, -0.5, -0.5);
-    const qreal radius(0.5 * Metrics::ProgressBar_Thickness);
+    qreal radius;
+    if (Metrics::Frame_FrameRadius < 0.4) {
+        radius = 0;
+    } else {
+        radius = 0.5 * Metrics::ProgressBar_Thickness;
+    }
 
     // content
     if (fg.isValid()) {
@@ -1263,7 +1278,12 @@ void Helper::renderProgressBarBusyContents(QPainter *painter,
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     const QRectF baseRect(rect);
-    const qreal radius(0.5 * Metrics::ProgressBar_Thickness);
+    qreal radius;
+    if (Metrics::Frame_FrameRadius < 0.4) {
+        radius = 0;
+    } else {
+        radius = 0.5 * Metrics::ProgressBar_Thickness;
+    }
 
     // setup brush
     QPixmap pixmap(horizontal ? 2 * Metrics::ProgressBar_BusyIndicatorSize : 1, horizontal ? 1 : 2 * Metrics::ProgressBar_BusyIndicatorSize);
@@ -1309,7 +1329,13 @@ void Helper::renderScrollBarHandle(QPainter *painter, const QRectF &rect, const 
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     const QRectF baseRect(rect);
-    const qreal radius(0.5 * std::min({baseRect.width(), baseRect.height()}));
+
+    qreal radius;
+    if (Metrics::Frame_FrameRadius < 0.4) {
+        radius = 0;
+    } else {
+        radius = 0.5 * std::min({baseRect.width(), baseRect.height()});
+    }
 
     painter->setPen(Qt::NoPen);
     painter->setPen(QPen(transparentize(fg, Metrics::Bias_Default), 1.001));
@@ -1329,7 +1355,12 @@ void Helper::renderScrollBarGroove(QPainter *painter, const QRectF &rect, const 
 
     const QRectF baseRect(rect);
     // const qreal radius( 0.5 * std::min({baseRect.width(), baseRect.height(), (qreal)Metrics::ScrollBar_SliderWidth}) );
-    const qreal radius(0.5 * std::min({baseRect.width(), baseRect.height()}));
+    qreal radius;
+    if (Metrics::Frame_FrameRadius < 0.4) {
+        radius = 0;
+    } else {
+        radius = 0.5 * std::min({baseRect.width(), baseRect.height()});
+    }
 
     // content
     if (color.isValid()) {
@@ -1395,9 +1426,11 @@ void Helper::renderTabBarTab(QPainter *painter,
         painter->setPen(QPen(penBrush, PenWidth::Frame));
         QRectF highlightRect = frameRect;
         if (north || south) {
-            highlightRect.setHeight(Metrics::Frame_FrameRadius);
+            // highlightRect.setHeight(Metrics::Frame_FrameRadius);
+            highlightRect.setHeight(3);
         } else if (west || east) {
-            highlightRect.setWidth(Metrics::Frame_FrameRadius);
+            // highlightRect.setWidth(Metrics::Frame_FrameRadius);
+            highlightRect.setWidth(3);
         }
         if (south) {
             highlightRect.moveBottom(frameRect.bottom());
@@ -1407,6 +1440,9 @@ void Helper::renderTabBarTab(QPainter *painter,
         QPainterPath path = roundedPath(strokedRect(frameRect), corners, frameRadius(PenWidth::Frame));
         painter->drawPath(path);
         QPainterPath highlightPath = roundedPath(highlightRect, corners, Metrics::Frame_FrameRadius);
+        QPainterPath highlightClip;
+        highlightClip.addRect(highlightRect);
+        highlightPath = highlightPath.intersected(highlightClip);
         painter->setBrush(palette.color(QPalette::Highlight));
         painter->setPen(Qt::NoPen);
         painter->drawPath(highlightPath);
@@ -1552,11 +1588,11 @@ void Helper::renderDecorationButton(QPainter *painter,
                 if (decorationConfig()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
                     cornerRadius = decorationConfig()->buttonCustomCornerRadius();
                 } else {
-                    cornerRadius = decorationConfig()->cornerRadius();
+                    cornerRadius = decorationConfig()->windowCornerRadius();
                 }
             }
 
-            if (cornerRadius < 0.2 && decorationConfig()->cornerRadius() < 2)
+            if (cornerRadius < 0.4 && decorationConfig()->windowCornerRadius() < 4)
                 painter->drawRect(QRectF(2, 2, 14, 14));
             else
                 painter->drawRoundedRect(QRectF(2, 2, 14, 14), 20, 20, Qt::RelativeSize);
