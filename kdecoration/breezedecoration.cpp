@@ -183,7 +183,7 @@ void Decoration::setOpacity(qreal value)
 }
 
 //________________________________________________________________
-QColor Decoration::titleBarColor(bool returnNonAnimatedColor, ActiveReturn active) const
+QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 {
     auto c = client();
     if (hideTitleBar() && !m_internalSettings->useTitleBarColorForAllBorders())
@@ -200,15 +200,7 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor, ActiveReturn activ
     if (!m_toolsAreaWillBeDrawn && (m_animation->state() == QAbstractAnimation::Running) && !returnNonAnimatedColor) {
         return KColorUtils::mix(inactiveTitlebarColor, activeTitleBarColor, m_opacity);
     } else {
-        switch (active) {
-        default:
-        case ActiveReturn::Client:
-            return c->isActive() ? activeTitleBarColor : inactiveTitlebarColor;
-        case ActiveReturn::Active:
-            return activeTitleBarColor;
-        case ActiveReturn::Inactive:
-            return inactiveTitlebarColor;
-        }
+        return c->isActive() ? activeTitleBarColor : inactiveTitlebarColor;
     }
 }
 
@@ -1815,7 +1807,15 @@ void Decoration::updateBlur()
 
 bool Decoration::isOpaqueTitleBar()
 {
-    return ((titleBarColor(true, ActiveReturn::Active).alpha() == 255) && (titleBarColor(true, ActiveReturn::Inactive).alpha() == 255));
+    QColor activeTitleBarColor = m_decorationColors->active()->titleBarBase;
+    QColor inactiveTitlebarColor = m_decorationColors->inactive()->titleBarBase;
+
+    if (m_internalSettings->opaqueTitleBar()) {
+        activeTitleBarColor.setAlpha(255);
+        inactiveTitlebarColor.setAlpha(255);
+    }
+
+    return ((activeTitleBarColor.alpha() == 255) && (inactiveTitlebarColor.alpha() == 255));
 }
 
 int Decoration::titleBarSeparatorHeight() const

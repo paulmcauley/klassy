@@ -40,12 +40,6 @@ enum struct ButtonBackgroundType {
     FullHeight,
 };
 
-enum class ActiveReturn {
-    Client,
-    Active,
-    Inactive,
-};
-
 class Decoration : public KDecoration2::Decoration
 {
     Q_OBJECT
@@ -92,7 +86,7 @@ public:
         return m_decorationColors.get();
     }
 
-    QColor titleBarColor(bool returnNonAnimatedColor = false, ActiveReturn active = ActiveReturn::Client) const;
+    QColor titleBarColor(bool returnNonAnimatedColor = false) const;
     QColor titleBarSeparatorColor() const;
     QColor fontColor(bool returnNonAnimatedColor = false) const;
     QColor overriddenOutlineColorAnimateIn() const;
