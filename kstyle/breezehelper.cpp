@@ -1457,6 +1457,7 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
     bool isQtQuickControl = stateProperties.value("isQtQuickControl");
     bool hasAlteredBackground = stateProperties.value("hasAlteredBackground");
     const auto baseColor = palette.color(QPalette::Base).darker(102);
+    const auto windowColor = palette.color(QPalette::Window);
 
     // setup painter
     painter->setRenderHint(QPainter::Antialiasing, true);
@@ -1465,14 +1466,14 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
 
     if (selected) {
         // overlap border
-        bgBrush = baseColor;
+        bgBrush = windowColor;
         painter->setPen(Qt::NoPen);
         painter->setBrush(bgBrush);
         painter->drawRect(frameRect);
 
         if (documentMode && !isQtQuickControl && !hasAlteredBackground) {
-            const auto highligthBackground = alphaColor(palette.color(QPalette::Highlight), 0.2);
-            bgBrush = highligthBackground;
+            const auto highlightBackground = alphaColor(palette.color(QPalette::Highlight), Metrics::Bias_Default);
+            bgBrush = highlightBackground;
         } else {
             bgBrush = frameBackgroundColor(palette);
         }
@@ -1492,7 +1493,7 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         }
 
         auto rect = strokedRect(frameRect);
-        // don't strock the first and last tab
+        // don't stroke the first and last tab
         if (isFirst) {
             if (north || south) {
                 rect.adjust(-PenWidth::Frame, 0, 0, 0);
@@ -1518,11 +1519,16 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         const qreal overlap = PenWidth::Frame;
         frameRect.adjust(west ? overlap : 0, south || north ? overlap : 0, east ? -overlap : 0, south || north ? -overlap : 0);
 
-        bgBrush = baseColor;
-        const auto hover = alphaColor(hoverColor(palette), 0.2);
+        if (hovered) {
+            bgBrush = windowColor;
+        } else {
+            bgBrush = baseColor;
+        }
+
+        const auto hover = alphaColor(hoverColor(palette), Metrics::Bias_Default);
         if (animated) {
             bgBrush = KColorUtils::mix(bgBrush, hover, animation);
-        } else if (enabled && hovered && !selected) {
+        } else if (enabled && hovered) {
             bgBrush = hover;
         }
         painter->setBrush(bgBrush);
@@ -1536,13 +1542,13 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         lineRect.setRight(lineRect.x() + 1);
         lineRect.adjust(0, 0, 0, -1);
 
-        // ensure the background it the right color
+        // ensure the background is the right color
         painter->setBrush(bgBrush);
         painter->drawRect(lineRect);
 
         // draw separator
         if (!isRightOfSelected && !selected) {
-            lineRect.adjust(0, 6, 0, -5);
+            lineRect.adjust(0, 8, 0, -7);
         }
         painter->setBrush(penColor);
         painter->drawRect(lineRect);
@@ -1552,13 +1558,13 @@ void Helper::renderStaticTabBarTab(QPainter *painter,
         lineRect.setBottom(lineRect.y() - 1);
         lineRect.adjust(0, 0, -1, 0);
 
-        // ensure the background it the right color
+        // ensure the background is the right color
         painter->setBrush(bgBrush);
         painter->drawRect(lineRect);
 
         // draw separator
         if (!isRightOfSelected && !selected) {
-            lineRect.adjust(0, 6, 0, -5);
+            lineRect.adjust(0, 8, 0, -7);
         }
         painter->setBrush(penColor);
         painter->drawRect(lineRect);
