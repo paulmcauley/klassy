@@ -3365,7 +3365,7 @@ QRect Style::sliderSubControlRect(const QStyleOptionComplex *option, SubControl 
 }
 
 //______________________________________________________________
-QSize Style::checkBoxSizeFromContents(const QStyleOption *, const QSize &contentsSize, const QWidget *) const
+QSize Style::checkBoxSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
 {
     // get contents size
     QSize size(contentsSize);
@@ -3376,11 +3376,23 @@ QSize Style::checkBoxSizeFromContents(const QStyleOption *, const QSize &content
     // make sure there is enough height for indicator
     size.setHeight(qMax(size.height(), int(Metrics::CheckBox_Size)));
 
-    // Add space for the indicator and the icon
-    size.rwidth() += Metrics::CheckBox_Size + Metrics::CheckBox_ItemSpacing;
+    // Add space for the indicator
+    size.rwidth() += Metrics::CheckBox_Size;
 
-    // also add extra space, to leave room to the right of the label
-    size.rwidth() += Metrics::CheckBox_ItemSpacing;
+    auto buttonOption = qstyleoption_cast<const QStyleOptionButton *>(option);
+    if (!buttonOption) {
+        return size;
+    }
+
+    if (!buttonOption->icon.isNull()) {
+        // Add space for the icon
+        size.rwidth() += Metrics::CheckBox_ItemSpacing;
+    }
+
+    if (!buttonOption->text.isEmpty()) {
+        // also add extra space, to leave room to the right of the label
+        size.rwidth() += Metrics::CheckBox_ItemSpacing;
+    }
 
     return size;
 }
