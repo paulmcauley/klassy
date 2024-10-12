@@ -13,3 +13,5 @@
 
 /* Define to 1 if FrameworkIntegration/Kstyle libraries are found */
 #cmakedefine01 BREEZE_HAVE_KSTYLE
+
+#cmakedefine01 HAVE_QTDBUS

@@ -3,7 +3,6 @@ set(breezecommon_LIB_SRCS
     breeze.cpp
     breezeboxshadowrenderer.cpp
     colortools.cpp
-    dbusupdatenotifier.cpp
     decorationbuttoncolors.cpp
     decorationcolors.cpp
     decorationexceptionlist.cpp
@@ -18,9 +17,15 @@ set(breezecommon_LIB_SRCS
     styleredmond10.cpp
     styleredmond11.cpp
     systemicontheme.cpp
-    dbusmessages.h
     setqdebug_logging.h
 )
+
+if(HAVE_QTDBUS)
+    list(APPEND breezecommon_LIB_SRCS
+        dbusupdatenotifier.cpp
+        dbusmessages.h
+    )
+endif()
 
 kconfig_add_kcfg_files(breezecommon_LIB_SRCS breezesettings.kcfgc)
 
@@ -34,7 +39,6 @@ target_link_libraries(klassycommon${QT_MAJOR_VERSION}
     PUBLIC
         Qt${QT_MAJOR_VERSION}::Core
         Qt${QT_MAJOR_VERSION}::Gui
-        Qt${QT_MAJOR_VERSION}::DBus
         Qt${QT_MAJOR_VERSION}::Widgets
 
         KF${QT_MAJOR_VERSION}::GuiAddons
@@ -42,6 +46,13 @@ target_link_libraries(klassycommon${QT_MAJOR_VERSION}
         KF${QT_MAJOR_VERSION}::ConfigGui
         KF${QT_MAJOR_VERSION}::IconThemes
         KF${QT_MAJOR_VERSION}::I18n)
+
+if(HAVE_QTDBUS)
+    target_link_libraries(klassycommon${QT_MAJOR_VERSION}
+    PUBLIC
+        Qt${QT_MAJOR_VERSION}::DBus
+    )
+endif()
 
 if(QT_MAJOR_VERSION STREQUAL "5")
     target_link_libraries(klassycommon${QT_MAJOR_VERSION} PUBLIC KF5::ConfigWidgets)
