@@ -16,10 +16,32 @@ kcoreaddons_add_plugin(klassystyleconfig SOURCES
     INSTALL_NAMESPACE "kstyle_config"
 )
 
-target_link_libraries(klassystyleconfig Qt6::Core Qt6::Gui Qt6::Widgets Qt6::DBus)
-target_link_libraries(klassystyleconfig KF6::CoreAddons KF6::ConfigCore KF6::ConfigWidgets KF6::I18n)
+target_link_libraries(klassystyleconfig
+    PUBLIC
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+)
+
+if(HAVE_QTDBUS)
+    target_link_libraries(klassystyleconfig
+        PUBLIC
+            Qt6::DBus
+    )
+endif()
+
+target_link_libraries(klassystyleconfig
+    PUBLIC
+        KF6::CoreAddons
+        KF6::ConfigCore
+        KF6::ConfigWidgets
+        KF6::I18n
+)
 if(QT_MAJOR_VERSION STREQUAL "6")
-    target_link_libraries(klassystyleconfig KF6::KCMUtils)
+    target_link_libraries(klassystyleconfig
+        PUBLIC
+        KF6::KCMUtils
+    )
 endif()
 kcmutils_generate_desktop_file(klassystyleconfig)
 

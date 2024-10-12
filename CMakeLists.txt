@@ -53,16 +53,32 @@ elseif($ENV{CI_JOB_NAME_SLUG} MATCHES "qt6")
     set(BUILD_QT6 ON)
 endif()
 
-if(WIN32 OR APPLE)
-    set(WITH_DECORATIONS OFF)
-endif()
-
 function(build_Qt5)
     set(QT_MAJOR_VERSION 5)
     include(KDEInstallDirs5)
     include(KDECMakeSettings)
 
-    find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus)
+    find_package(Qt5 ${QT5_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
+
+    if(UNIX AND NOT APPLE AND NOT ANDROID)
+        find_package(Qt5 ${QT5_MIN_VERSION} CONFIG REQUIRED DBus)
+        set(HAVE_QTDBUS ${Qt5DBus_FOUND})
+
+        find_package(KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
+        set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+            DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
+            URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+            TYPE OPTIONAL
+            PURPOSE "Required to use KStyle convenience functionalities in style")
+
+        find_package(Qt5 ${QT5_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
+        set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+            DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
+            URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+            TYPE OPTIONAL
+            PURPOSE "Required to use KStyle convenience functionalities in style")
+    endif()
+
     find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
         Config
@@ -76,20 +92,6 @@ function(build_Qt5)
     if(${Qt5Quick_FOUND})
         find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS Kirigami2)
     endif()
-
-    find_package(KF5FrameworkIntegration ${KF5_MIN_VERSION} CONFIG )
-    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
-        DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
-        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
-        TYPE OPTIONAL
-        PURPOSE "Required to use KStyle convenience functionalities in style")
-
-    find_package(Qt5 ${QT5_MIN_VERSION} OPTIONAL_COMPONENTS X11Extras)
-    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
-        DESCRIPTION "KF${QT_MAJOR_VERSION} Framework Integration"
-        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
-        TYPE OPTIONAL
-        PURPOSE "Required to use KStyle convenience functionalities in style")
 
     set(BREEZE_HAVE_KSTYLE ${KF5FrameworkIntegration_FOUND})
     set(BREEZE_HAVE_QTQUICK ${Qt5Quick_FOUND})
@@ -108,9 +110,31 @@ function(build_Qt6)
     include(KDEInstallDirs6)
     include(KDECMakeSettings)
 
-    option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
+    if(UNIX AND NOT APPLE AND NOT ANDROID)
+        find_package(Qt6 ${REQUIRED_QT_VERSION} CONFIG REQUIRED DBus)
+        set(HAVE_QTDBUS ${Qt6DBus_FOUND})
 
-    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets DBus Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
+        option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
+
+        find_package(KF6FrameworkIntegration ${KF6_MIN_VERSION} CONFIG )
+        set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
+            DESCRIPTION "KF6 Framework Integration"
+            URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
+            TYPE OPTIONAL
+            PURPOSE "Required to use KStyle convenience functionalities in style")
+
+        find_package(KF6KCMUtils ${KF6_MIN_VERSION})
+        set_package_properties(KF6KCMUtils PROPERTIES
+            TYPE REQUIRED
+            DESCRIPTION "Helps create configuration modules"
+            PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+        )
+    else()
+        set(WITH_DECORATIONS OFF)
+    endif()
+
+    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
+
     find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
         ColorScheme
@@ -119,26 +143,11 @@ function(build_Qt6)
         I18n
         IconThemes
         WindowSystem)
-    if(NOT WIN32 AND NOT APPLE)
-        find_package(KF6KCMUtils ${KF6_MIN_VERSION})
-        set_package_properties(KF6KCMUtils PROPERTIES
-            TYPE REQUIRED
-            DESCRIPTION "Helps create configuration modules"
-            PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
-        )
-    endif()
 
     find_package(Qt6 ${QT_MIN_VERSION} OPTIONAL_COMPONENTS Quick)
     if(${Qt6Quick_FOUND})
         find_package(KF6KirigamiPlatform ${KF6_MIN_VERSION} REQUIRED)
     endif()
-
-    find_package(KF6FrameworkIntegration ${KF6_MIN_VERSION} CONFIG )
-    set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
-        DESCRIPTION "KF6 Framework Integration"
-        URL "https://projects.kde.org/projects/frameworks/frameworkintegration"
-        TYPE OPTIONAL
-        PURPOSE "Required to use KStyle convenience functionalities in style")
 
     set(BREEZE_HAVE_KSTYLE ${KF6FrameworkIntegration_FOUND})
     set(BREEZE_HAVE_QTQUICK ${Qt6Quick_FOUND})

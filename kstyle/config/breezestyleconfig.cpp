@@ -8,7 +8,10 @@
 
 #include "../config-breeze.h"
 #include "breezestyleconfigdata.h"
+
+#if HAVE_QTDBUS
 #include "dbusmessages.h"
+#endif
 
 #include <QDialog>
 #include <QRegularExpression>
@@ -114,8 +117,10 @@ void StyleConfig::save()
     StyleConfigData::self()->save();
     _configuration->sync();
 
+#if HAVE_QTDBUS
     // emit dbus signal
     DBusMessages::kstyleReloadConfig();
+#endif
 }
 
 //__________________________________________________________________
