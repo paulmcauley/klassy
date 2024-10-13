@@ -396,6 +396,7 @@ void Decoration::init()
     connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
     connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateOpaque);
     connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateBlur);
+    connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration2::DecoratedClient::sizeChanged, this, &Decoration::updateBlur);
 
@@ -434,9 +435,9 @@ void Decoration::updateTitleBar()
     } else {
         // for smaller circular buttons increase the resizable area
         width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
-        height = maximized ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
+        height = (maximized || isTopEdge()) ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
         x = maximized ? 0 : m_scaledTitleBarLeftMargin;
-        y = maximized ? 0 : m_scaledTitleBarTopMargin;
+        y = (maximized || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
     }
 
     setTitleBar(QRect(x, y, width, height));
