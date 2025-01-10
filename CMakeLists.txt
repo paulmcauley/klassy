@@ -165,7 +165,7 @@ function(build_Qt6)
     add_subdirectory(libbreezecommon libbreezecommon6)
 
     if(WITH_DECORATIONS)
-        find_package(KDecoration2 REQUIRED)
+        find_package(KDecoration3 REQUIRED)
         add_subdirectory(kdecoration)
         add_subdirectory(icons)
         add_subdirectory(layout-templates)
