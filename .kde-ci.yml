@@ -19,7 +19,7 @@ Dependencies:
     'frameworks/frameworkintegration': '@latest'
     'frameworks/kcmutils': '@latest'
 
- - 'on': ['Linux/Qt6', 'FreeBSD/Qt6', 'Windows/Qt6']
+ - 'on': ['Linux/Qt6', 'FreeBSD/Qt6', 'Windows/Qt6', 'Linux/Qt6Next']
    'require':
     'frameworks/extra-cmake-modules': '@latest-kf6'
     'frameworks/kconfig': '@latest-kf6'
@@ -31,7 +31,7 @@ Dependencies:
     'frameworks/kwindowsystem': '@latest-kf6'
     'frameworks/kcolorscheme': '@latest-kf6'
 
- - 'on': ['Linux/Qt6', 'FreeBSD/Qt6']
+ - 'on': ['Linux/Qt6', 'FreeBSD/Qt6', 'Linux/Qt6Next']
    'require':
     'plasma/kdecoration': '@same'
     'frameworks/frameworkintegration': '@latest-kf6'
