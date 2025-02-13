@@ -2628,7 +2628,7 @@ QRect Style::tabWidgetTabBarRect(const QStyleOption *option, const QWidget *widg
     }
 
     const auto tabWidget = qobject_cast<const QTabWidget *>(widget);
-    const auto documentMode = tabWidget->documentMode();
+    const auto documentMode = tabWidget ? tabWidget->documentMode() : false;
 
     // do nothing if tabbar is hidden
     const QSize tabBarSize(tabOption->tabBarSize);
