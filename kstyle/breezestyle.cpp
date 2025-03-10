@@ -1747,6 +1747,12 @@ bool Style::eventFilterScrollArea(QWidget *widget, QEvent *event)
         // get frame framewidth
         const int frameWidth(pixelMetric(PM_DefaultFrameWidth, nullptr, widget));
 
+        // We would just send it to where we were before, stop.
+        // NOTE: From Qt 6.9 sending the event will lead to infinite recursion!
+        if (!frameWidth) {
+            return false;
+        }
+
         // find list of scrollbars
         QList<QScrollBar *> scrollBars;
         if (auto scrollArea = qobject_cast<QAbstractScrollArea *>(widget)) {
