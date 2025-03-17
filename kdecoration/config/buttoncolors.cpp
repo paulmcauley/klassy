@@ -2076,14 +2076,14 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     QString buttonsOnLeft;
     QString buttonsOnRight;
 
-    // very hacky way to do this -- better would be to find a way to get the settings from <KDecoration2/DecorationSettings>
+    // very hacky way to do this -- better would be to find a way to get the settings from <KDecoration3/DecorationSettings>
     //  read kwin button border setting
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
-    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
-        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration3"))) {
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration3"));
 
-        buttonsOnLeft = kdecoration2Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MS"));
-        buttonsOnRight = kdecoration2Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
+        buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MS"));
+        buttonsOnRight = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
     } else {
         buttonsOnLeft = QStringLiteral("MS");
         buttonsOnRight = QStringLiteral("HIAX");
