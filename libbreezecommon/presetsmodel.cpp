@@ -35,13 +35,13 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *presetsCo
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
     if (!kwinConfig)
         return;
-    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) {
-        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration3"))) {
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration3"));
         QString borderSize;
-        if (!kdecoration2Group.hasKey(QStringLiteral("BorderSize"))) {
+        if (!kdecoration3Group.hasKey(QStringLiteral("BorderSize"))) {
             borderSize = QStringLiteral("Normal"); // Normal is the KWin default, so will nor write a BorderSize key in this case
         } else {
-            borderSize = kdecoration2Group.readEntry(QStringLiteral("BorderSize"));
+            borderSize = kdecoration3Group.readEntry(QStringLiteral("BorderSize"));
         }
         if (!groupName.isEmpty()) {
             KConfigGroup configGroup(presetsConfig, groupName);
@@ -169,12 +169,12 @@ void PresetsModel::writeBorderSizeToKwinConfig(const QString &borderSize)
 {
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
     if (kwinConfig) {
-        KConfigGroup kdecoration2Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration3"));
 
         // this is when "Theme's Default" is selected for the border size - if this is true then kwin will ignore the "BorderSize" key
-        kdecoration2Group.writeEntry(QStringLiteral("BorderSizeAuto"), QStringLiteral("false"));
+        kdecoration3Group.writeEntry(QStringLiteral("BorderSizeAuto"), QStringLiteral("false"));
 
-        kdecoration2Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
+        kdecoration3Group.writeEntry(QStringLiteral("BorderSize"), borderSize);
         kwinConfig->sync();
     }
 }
@@ -346,7 +346,7 @@ bool PresetsModel::isKeyValid(const QString &key)
     return false;
 }
 
-// copies bundled presets in /usr/lib64/qt6/plugins/org.kde.kdecoration2.kcm/klassydecoration/presets into ~/.config/klassy/klassyrc once per release
+// copies bundled presets in /usr/lib64/qt6/plugins/org.kde.kdecoration3.kcm/klassydecoration/presets into ~/.config/klassy/klassyrc once per release
 void PresetsModel::importBundledPresets(KConfig *presetsConfig)
 {
     // don't copy if BundledWindecoPresetsImportedVersion has been set for the current release version
@@ -366,7 +366,7 @@ void PresetsModel::importBundledPresets(KConfig *presetsConfig)
     PresetsModel::deleteBundledPresets(presetsConfig);
 
     for (QString libraryPath : QCoreApplication::libraryPaths()) {
-        libraryPath += "/org.kde.kdecoration2.kcm/klassydecoration/presets";
+        libraryPath += "/org.kde.kdecoration3.kcm/klassydecoration/presets";
         QDir presetsDir(libraryPath);
         if (presetsDir.exists()) {
             QStringList filters;

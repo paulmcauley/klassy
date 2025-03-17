@@ -119,7 +119,7 @@ void Helper::loadConfig()
                         != _decorationColors->settingsUpdateUuid()))) { // case from generateDecorationColorsOnDecorationSettingsPaletteUpdate()
             generateColors = true;
         }
-        // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration2::DecoratedClient to read QString
+        // TODO: palette may not be a reliable indicator of the entire colour scheme - get an update to KDecoration3::DecoratedWindow to read QString
         // m_colorScheme instead and update to compare m_colorScheme and system titlebar colours
         if (!generateColors && palette != *_decorationColors->basePalette()) {
             generateColors = true;
@@ -1860,7 +1860,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
     static bool isAuto = false;
     static QString borderSize;
     if (!_cachedAutoValid) {
-        KConfigGroup kdecorationGroup(_kwinConfig->group(QStringLiteral("org.kde.kdecoration2")));
+        KConfigGroup kdecorationGroup(_kwinConfig->group(QStringLiteral("org.kde.kdecoration3")));
         isAuto = kdecorationGroup.readEntry("BorderSizeAuto", true);
         borderSize = kdecorationGroup.readEntry("BorderSize", "Normal");
         _cachedAutoValid = true;
