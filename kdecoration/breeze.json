@@ -5,7 +5,7 @@
         "Name": "Klassy"
     },
     "X-KDE-ConfigModule": "kcm_klassydecoration",
-    "org.kde.kdecoration2": {
+    "org.kde.kdecoration3": {
         "recommendedBorderSize": "None"
     }
 }
