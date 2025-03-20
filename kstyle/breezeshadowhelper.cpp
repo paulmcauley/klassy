@@ -415,18 +415,18 @@ QMargins ShadowHelper::shadowMargins(QWidget *widget) const
     const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-    const QSize shadowSize = BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow1.radius, params.shadow1.offset)
-                                 .expandedTo(BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow2.radius, params.shadow2.offset));
+    const QSizeF shadowSize = BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow1.radius, params.shadow1.offset)
+                                  .expandedTo(BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow2.radius, params.shadow2.offset));
 
-    const QRect shadowRect(QPoint(0, 0), shadowSize);
+    const QRectF shadowRect(QPoint(0, 0), shadowSize);
 
-    QRect boxRect(QPoint(0, 0), boxSize);
+    QRectF boxRect(QPoint(0, 0), boxSize);
     boxRect.moveCenter(shadowRect.center());
 
-    QMargins margins(boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
-                     boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
-                     shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
-                     shadowRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
+    QMarginsF margins(boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x(),
+                      boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y(),
+                      shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x(),
+                      shadowRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
 
     if (widget->inherits("QBalloonTip")) {
         // Balloon tip needs special margins to deal with the arrow.
@@ -445,7 +445,7 @@ QMargins ShadowHelper::shadowMargins(QWidget *widget) const
         }
     }
 
-    return margins;
+    return margins.toMargins();
 }
 
 //_______________________________________________________
