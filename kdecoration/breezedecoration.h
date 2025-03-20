@@ -66,7 +66,7 @@ public:
     }
 
     //* caption height
-    int captionHeight() const;
+    qreal captionHeight() const;
 
     //*@name active state change animation
     //@{
@@ -199,7 +199,7 @@ private Q_SLOTS:
 
 private:
     //* return the rect in which caption will be drawn
-    QPair<QRect, Qt::Alignment> captionRect() const;
+    QPair<QRectF, Qt::Alignment> captionRect() const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
@@ -266,9 +266,9 @@ private:
     bool m_tabletMode = false;
 
     //* titleBar top margin, scaled according to smallspacing
-    int m_scaledTitleBarTopMargin = 1;
+    qreal m_scaledTitleBarTopMargin = 1;
     //* titleBar bottom margin, scaled according to smallspacing
-    int m_scaledTitleBarBottomMargin = 1;
+    qreal m_scaledTitleBarBottomMargin = 1;
     //* integrated rounded rectangle bottom padding, scaled according to smallspacing
     qreal m_scaledIntegratedRoundedRectangleBottomPadding = 0;
 

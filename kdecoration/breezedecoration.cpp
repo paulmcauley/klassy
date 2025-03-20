@@ -396,6 +396,7 @@ void Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateAnimationState);
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateOpaque);
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateBlur);
+    connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration3::DecoratedWindow::sizeChanged, this, &Decoration::updateBlur);
@@ -421,7 +422,7 @@ void Decoration::updateTitleBar()
     auto c = window();
 
     const bool maximized = isMaximized();
-    int width, height, x, y;
+    qreal width, height, x, y;
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
 
@@ -440,7 +441,7 @@ void Decoration::updateTitleBar()
         y = (maximized || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
     }
 
-    setTitleBar(QRect(x, y, width, height));
+    setTitleBar(QRectF(x, y, width, height));
 }
 
 // For Titlebar active state and shadow animations only
@@ -739,11 +740,11 @@ void Decoration::recalculateBorders()
     setScaledTitleBarTopBottomMargins();
 
     // left, right and bottom borders
-    const int left = isLeftEdge() ? 0 : borderSize();
-    const int right = isRightEdge() ? 0 : borderSize();
-    const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
+    const qreal left = isLeftEdge() ? 0 : borderSize();
+    const qreal right = isRightEdge() ? 0 : borderSize();
+    const qreal bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
 
-    int top = 0;
+    qreal top = 0;
     if (hideTitleBar()) {
         top = bottom;
     } else {
@@ -755,14 +756,14 @@ void Decoration::recalculateBorders()
         top += (m_scaledTitleBarTopMargin + m_scaledTitleBarBottomMargin);
     }
 
-    setBorders(QMargins(left, top, right, bottom));
+    setBorders(QMarginsF(left, top, right, bottom));
 
     // extended sizes
-    const int extSize = s->largeSpacing();
-    int extLeft = 0;
-    int extRight = 0;
-    int extBottom = 0;
-    int extTop = 0;
+    const qreal extSize = s->largeSpacing();
+    qreal extLeft = 0;
+    qreal extRight = 0;
+    qreal extBottom = 0;
+    qreal extTop = 0;
 
     // Add extended resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
@@ -791,7 +792,7 @@ void Decoration::recalculateBorders()
         }
     }
 
-    setResizeOnlyBorders(QMargins(extLeft, extTop, extRight, extBottom));
+    setResizeOnlyBorders(QMarginsF(extLeft, extTop, extRight, extBottom));
 }
 
 //________________________________________________________________
@@ -1416,13 +1417,13 @@ void Decoration::onTabletModeChanged(bool mode)
 }
 
 //________________________________________________________________
-int Decoration::captionHeight() const
+qreal Decoration::captionHeight() const
 {
     return hideTitleBar() ? borderTop() : borderTop() - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
 }
 
 //________________________________________________________________
-QPair<QRect, Qt::Alignment> Decoration::captionRect() const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
@@ -1435,8 +1436,8 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
 
         const int rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
-        const int yOffset = m_scaledTitleBarTopMargin;
-        const QRect maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
+        const qreal yOffset = m_scaledTitleBarTopMargin;
+        const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
 
         switch (m_internalSettings->titleAlignment()) {
         case InternalSettings::EnumTitleAlignment::AlignLeft:
@@ -1451,7 +1452,7 @@ QPair<QRect, Qt::Alignment> Decoration::captionRect() const
         default:
         case InternalSettings::EnumTitleAlignment::AlignCenterFullWidth: {
             // full caption rect
-            const QRect fullRect = QRect(0, yOffset, size().width(), captionHeight());
+            const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight());
             QRect boundingRect(settings()->fontMetrics().boundingRect(c->caption()).toRect());
 
             // text bounding rect
@@ -1579,16 +1580,16 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     QPainter painter(&shadowTexture);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    const QRect outerRect = shadowTexture.rect();
+    const QRectF outerRect = shadowTexture.rect();
 
-    QRect boxRect(QPoint(0, 0), boxSize);
+    QRectF boxRect(QPoint(0, 0), boxSize);
     boxRect.moveCenter(outerRect.center());
 
     // Mask out inner rect.
-    const QMargins padding = QMargins(boxRect.left() - outerRect.left() - Metrics::Decoration_Shadow_Overlap - params.offset.x(),
-                                      boxRect.top() - outerRect.top() - Metrics::Decoration_Shadow_Overlap - params.offset.y(),
-                                      outerRect.right() - boxRect.right() - Metrics::Decoration_Shadow_Overlap + params.offset.x(),
-                                      outerRect.bottom() - boxRect.bottom() - Metrics::Decoration_Shadow_Overlap + params.offset.y());
+    const QMarginsF padding = QMarginsF(boxRect.left() - outerRect.left() - Metrics::Decoration_Shadow_Overlap - params.offset.x(),
+                                        boxRect.top() - outerRect.top() - Metrics::Decoration_Shadow_Overlap - params.offset.y(),
+                                        outerRect.right() - boxRect.right() - Metrics::Decoration_Shadow_Overlap + params.offset.x(),
+                                        outerRect.bottom() - boxRect.bottom() - Metrics::Decoration_Shadow_Overlap + params.offset.y());
     const QRectF innerRect = outerRect - padding;
 
     painter.setPen(Qt::NoPen);
@@ -1662,7 +1663,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
 
     auto ret = std::make_shared<KDecoration3::DecorationShadow>();
     ret->setPadding(padding);
-    ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
+    ret->setInnerShadowRect(QRectF(outerRect.center(), QSizeF(1, 1)));
     ret->setShadow(shadowTexture);
     return ret;
 }
@@ -1751,14 +1752,14 @@ void Decoration::setScaledTitleBarTopBottomMargins()
         bottomMargin *= maximizedScaleFactor;
     }
 
-    m_scaledTitleBarTopMargin = qRound(settings()->smallSpacing() * topMargin);
-    m_scaledTitleBarBottomMargin = qRound(settings()->smallSpacing() * bottomMargin);
+    m_scaledTitleBarTopMargin = settings()->smallSpacing() * topMargin;
+    m_scaledTitleBarBottomMargin = settings()->smallSpacing() * bottomMargin;
 }
 
 void Decoration::setScaledTitleBarSideMargins()
 {
-    m_scaledTitleBarLeftMargin = int(qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing()));
-    m_scaledTitleBarRightMargin = int(qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing()));
+    m_scaledTitleBarLeftMargin = qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing());
+    m_scaledTitleBarRightMargin = qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing());
 
     // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
