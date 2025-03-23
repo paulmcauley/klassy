@@ -17,15 +17,16 @@
     <!-- button icon style -->
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
-          <choice name="StyleKlassy" />
+          <choice name="StyleSystemIconTheme" />
+          <choice name="StyleKisweet" />
+          <choice name="StyleKlasse" />
           <choice name="StyleKite" />
           <choice name="StyleOxygen" />
           <choice name="StyleTraditional" />
           <choice name="StyleRedmond10" />
           <choice name="StyleRedmond11" />
-          <choice name="StyleSystemIconTheme" />
       </choices>
-      <default>StyleKlassy</default>
+      <default>StyleKisweet</default>
     </entry>
 
     <!-- button size -->

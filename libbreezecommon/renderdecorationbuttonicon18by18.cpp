@@ -460,7 +460,7 @@ void RenderDecorationButtonIcon18By18::renderCloseIconAtSquareMaximizeSize()
     }
 }
 
-std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly, qreal cornerRelativePercent)
+std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeIcon(bool returnSizeOnly, qreal cornerRelativePercent, bool showArrows)
 {
     if (returnSizeOnly)
         m_painter->save(); // needed so doesn't interfere when called from renderCloseIconAtSquareMaximizeSize etc.
@@ -557,13 +557,37 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
             m_painter->setPen(pen);
             m_painter->drawRoundedRect(rect, cornerRelativePercent, cornerRelativePercent, Qt::RelativeSize);
         }
+        if (showArrows) {
+            qreal penWidth18By18 = penWidthToLocal(pen);
+            qreal halfPenWidth18By18 = penWidth18By18 / 2;
+            qreal arrowLength = rect.height() / 4 - halfPenWidth18By18;
+
+            QPointF arrowTopRight = rect.topRight() + QPointF(-halfPenWidth18By18, halfPenWidth18By18);
+            QPointF arrowBottomLeft = rect.bottomLeft() + QPointF(halfPenWidth18By18, -halfPenWidth18By18);
+            QPolygonF topArrow;
+            topArrow << arrowTopRight << (arrowTopRight + QPointF(0, arrowLength)) << (arrowTopRight - QPointF(arrowLength, 0)) << arrowTopRight;
+            QPolygonF bottomArrow;
+            bottomArrow << arrowBottomLeft << (arrowBottomLeft - QPointF(0, arrowLength)) << (arrowBottomLeft + QPointF(arrowLength, 0)) << arrowBottomLeft;
+            /*QPointF arrowTopLeft = rect.topLeft() + QPointF(halfPenWidth18By18, halfPenWidth18By18);
+            QPointF arrowBottomRight = rect.bottomRight() - QPointF(halfPenWidth18By18, halfPenWidth18By18);
+            QPolygonF topArrow;
+            topArrow << arrowTopLeft << (arrowTopLeft + QPointF(0, arrowLength)) << (arrowTopLeft + QPointF(arrowLength, 0)) << arrowTopLeft;
+            QPolygonF bottomArrow;
+            bottomArrow << arrowBottomRight << (arrowBottomRight - QPointF(0, arrowLength)) << (arrowBottomRight - QPointF(arrowLength, 0)) <<
+            arrowBottomRight;*/
+
+            m_painter->setBrush(pen.color());
+            // m_painter->setPen(Qt::NoPen);
+            m_painter->drawPolygon(topArrow);
+            m_painter->drawPolygon(bottomArrow);
+        }
     } else
         m_painter->restore();
 
     return {rect, pen.widthF()};
 }
 
-void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal cornerRelativePercent)
+void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(bool showArrows, qreal cornerRelativePercent, bool highlightInFront, bool highlightBehind)
 {
     // first determine the size of the maximize icon so the restore icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -596,6 +620,7 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
     bool shiftY = true;
 
     QGraphicsPathItem *backgroundPathItem = nullptr;
+    QGraphicsPathItem *backgroundFillPathItem = nullptr;
 
     std::unique_ptr<QGraphicsScene> overlappingWindows = std::unique_ptr<QGraphicsScene>(new QGraphicsScene(0, 0, 18, 18));
 
@@ -644,17 +669,27 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
     QPainterPath foregroundPath;
     foregroundPath.addRect(foregroundSquare);
     QGraphicsPathItem *foregroundPathItem = new QGraphicsPathItem(foregroundPath);
+    QGraphicsPathItem *foregroundFillPathItem = new QGraphicsPathItem(foregroundPath);
     overlappingWindowsGroup->addToGroup(foregroundPathItem);
+    overlappingWindowsGroup->addToGroup(foregroundFillPathItem);
     // set no pen to make all dimension calculations simpler
     foregroundPathItem->setPen(Qt::PenStyle::NoPen);
+    foregroundFillPathItem->setPen(Qt::PenStyle::NoPen);
+
     maxIterations = 6 * qRound(m_devicePixelRatio); // would rather have based this on m_totalScalingFactor, but for some strange reason this causes kwin to
-                                                    // crash in some circunstances
+                                                    // crash in some circumstances
 
     // calculate the geometry of the background square, iterate until an appropriate separation from foreground square achieved
     for (int i = 0; (shiftX || shiftY) && (i < maxIterations); i++) {
-        calculateBackgroundSquareGeometry(shiftOffsetX, shiftOffsetY, overlappingWindowsGroup, foregroundPathItem, backgroundPathItem, halfPenWidth18By18);
+        calculateBackgroundSquareGeometry(shiftOffsetX,
+                                          shiftOffsetY,
+                                          overlappingWindowsGroup,
+                                          foregroundPathItem,
+                                          backgroundPathItem,
+                                          backgroundFillPathItem,
+                                          halfPenWidth18By18);
 
-        if (!(overlappingWindows && overlappingWindowsGroup && foregroundPathItem && backgroundPathItem))
+        if (!(overlappingWindows && overlappingWindowsGroup && foregroundPathItem && backgroundPathItem && backgroundFillPathItem))
             return;
 
         qreal distanceBetweenSquaresX = backgroundPathItem->path().elementAt(3).x - backgroundPathItem->path().elementAt(4).x;
@@ -683,6 +718,49 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
         }
     }
 
+    if (showArrows) {
+        QPolygonF topArrow, bottomArrow;
+        QPointF foregroundTopLeft = foregroundPathItem->boundingRect().topLeft() - QPointF(halfPenWidth18By18, 0);
+        QPointF topIntersection = backgroundPathItem->path().elementAt(0) + QPointF(0, halfPenWidth18By18);
+        QPointF backgroundTopLeft = backgroundPathItem->path().elementAt(1) - QPointF(0, halfPenWidth18By18);
+        topArrow << foregroundTopLeft << topIntersection << backgroundTopLeft << foregroundTopLeft;
+
+        QPointF backgroundBottomRight = backgroundPathItem->boundingRect().bottomRight() + QPointF(halfPenWidth18By18, 0);
+        QPointF bottomIntersection = backgroundPathItem->path().elementAt(4) - QPointF(halfPenWidth18By18, 0);
+
+        QPointF foregroundBottomRight = foregroundPathItem->boundingRect().bottomRight() + QPointF(0, halfPenWidth18By18);
+        bottomArrow << backgroundBottomRight << bottomIntersection << foregroundBottomRight << backgroundBottomRight;
+
+        QPainterPath topArrowPath;
+        topArrowPath.addPolygon(topArrow);
+        QGraphicsPathItem *topArrowItem = new QGraphicsPathItem(topArrowPath);
+        topArrowItem->setPen(Qt::NoPen);
+        topArrowItem->setBrush(pen.color());
+        overlappingWindowsGroup->addToGroup(topArrowItem);
+
+        QPainterPath bottomArrowPath;
+        bottomArrowPath.addPolygon(bottomArrow);
+        QGraphicsPathItem *bottomArrowItem = new QGraphicsPathItem(bottomArrowPath);
+        bottomArrowItem->setPen(Qt::NoPen);
+        bottomArrowItem->setBrush(pen.color());
+        overlappingWindowsGroup->addToGroup(bottomArrowItem);
+    }
+
+    if (highlightInFront || highlightBehind) {
+        QTransform flipHorizontal;
+
+        flipHorizontal.setMatrix(-flipHorizontal.m11(),
+                                 flipHorizontal.m12(),
+                                 flipHorizontal.m13(),
+                                 flipHorizontal.m21(),
+                                 flipHorizontal.m22(),
+                                 flipHorizontal.m23(),
+                                 overlappingWindowsGroup->boundingRect().width(),
+                                 flipHorizontal.m32(),
+                                 flipHorizontal.m33()); // flip horizontal
+        overlappingWindowsGroup->setTransform(flipHorizontal);
+    }
+
     // centre -- centre the result, then snap centred position to a pixel boundary
     QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - overlappingWindowsGroup->boundingRect().center();
     if (centerTranslate != QPointF(0, 0)) {
@@ -693,8 +771,16 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
                                                           isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole,
                                                           isOddPenWidth ? SnapPixel::ToHalf : SnapPixel::ToWhole)
             - foregroundPathItem->boundingRect().topLeft();
-        QTransform transformToAlignedCenter;
-        transformToAlignedCenter.translate(centrePixelRealignmentOffset.x(), centrePixelRealignmentOffset.y());
+        QTransform transformToAlignedCenter = overlappingWindowsGroup->transform();
+        transformToAlignedCenter.setMatrix(transformToAlignedCenter.m11(),
+                                           transformToAlignedCenter.m12(),
+                                           transformToAlignedCenter.m13(),
+                                           transformToAlignedCenter.m21(),
+                                           transformToAlignedCenter.m22(),
+                                           transformToAlignedCenter.m23(),
+                                           transformToAlignedCenter.m31() + centrePixelRealignmentOffset.x(),
+                                           transformToAlignedCenter.m32() + centrePixelRealignmentOffset.y(),
+                                           transformToAlignedCenter.m33());
         overlappingWindowsGroup->setTransform(transformToAlignedCenter);
     }
 
@@ -738,16 +824,26 @@ void RenderDecorationButtonIcon18By18::renderOverlappingWindowsIcon(qreal corner
 
     if (m_strokeToFilledPath) {
         QPainterPathStroker stroker(pen);
-        foregroundPathItem->setPath(stroker.createStroke(foregroundPathItem->path()));
-        backgroundPathItem->setPath(stroker.createStroke(backgroundPathItem->path()));
-
         foregroundPathItem->setBrush(pen.color());
         backgroundPathItem->setBrush(pen.color());
+        foregroundPathItem->setPath(stroker.createStroke(foregroundPathItem->path()));
+        backgroundPathItem->setPath(stroker.createStroke(backgroundPathItem->path()));
     } else {
         // set the pen widths in all items -- do this at this point as not to have non-cosmetic pen widths in boundingRect().width() calculations above
         foregroundPathItem->setPen(pen);
         backgroundPathItem->setPen(pen);
     }
+    if (highlightInFront) {
+        QColor highlightColor = pen.color();
+        highlightColor.setAlphaF(0.33);
+        foregroundFillPathItem->setBrush(highlightColor);
+    }
+    if (highlightBehind) {
+        QColor highlightColor = pen.color();
+        highlightColor.setAlphaF(0.33);
+        backgroundFillPathItem->setBrush(highlightColor);
+    }
+
     // paint
     overlappingWindows->render(m_painter, QRectF(0, 0, 18, 18), QRectF(0, 0, 18, 18));
 }
@@ -757,6 +853,7 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
                                                                          QGraphicsItemGroup *overlappingWindowsGroup,
                                                                          QGraphicsPathItem *foregroundSquareItem,
                                                                          QGraphicsPathItem *&backgroundSquareItem,
+                                                                         QGraphicsPathItem *&backgroundSquareFillItem,
                                                                          qreal halfPenWidthLocal)
 {
     QRectF foregroundSquareBoundingRect = foregroundSquareItem->boundingRect();
@@ -783,15 +880,22 @@ void RenderDecorationButtonIcon18By18::calculateBackgroundSquareGeometry(const q
 
     QPainterPath backgroundSquarePath;
     backgroundSquarePath.addPolygon(background);
+    QPainterPath backgroundSquareFillPath;
+    background.resize(6);
+    background[5] = foregroundSquareBoundingRect.topRight() + QPointF(halfPenWidthLocal, -halfPenWidthLocal);
+    backgroundSquareFillPath.addPolygon(background);
     backgroundSquareItem = new QGraphicsPathItem(backgroundSquarePath);
+    backgroundSquareFillItem = new QGraphicsPathItem(backgroundSquareFillPath);
 
     overlappingWindowsGroup->addToGroup(backgroundSquareItem);
+    overlappingWindowsGroup->addToGroup(backgroundSquareFillItem);
 
     // set no pen to make all dimension calculations simpler
     backgroundSquareItem->setPen(Qt::PenStyle::NoPen);
+    backgroundSquareFillItem->setPen(Qt::PenStyle::NoPen);
 }
 
-void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
+void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArrows)
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -896,6 +1000,38 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon()
         m_painter->drawPath(stroke);
     } else {
         m_painter->drawRect(rect);
+    }
+
+    if (showArrows) {
+        qreal penWidth18By18 = penWidthToLocal(pen);
+        qreal halfPenWidth18By18 = penWidthToLocal(pen) / 2;
+        // qreal arrowLength = rect.height() * 2 / 3 + penWidth18By18;
+        qreal arrowLength = rect.height() + penWidth18By18;
+        QPolygonF topArrow, bottomArrow;
+        QPointF topArrowIntersection, bottomArrowIntersection;
+
+        topArrowIntersection = QPointF(rect.topRight() - QPointF(halfPenWidth18By18, -halfPenWidth18By18));
+        topArrow << topArrowIntersection << (topArrowIntersection - QPointF(0, arrowLength)) << (topArrowIntersection + QPointF(arrowLength, 0))
+                 << topArrowIntersection;
+
+        bottomArrowIntersection = QPointF(rect.bottomLeft() + QPointF(halfPenWidth18By18, -halfPenWidth18By18));
+        bottomArrow << bottomArrowIntersection << (bottomArrowIntersection - QPointF(arrowLength, 0)) << (bottomArrowIntersection + QPointF(0, arrowLength))
+                    << bottomArrowIntersection;
+
+        /*
+        topArrowIntersection = QPointF(rect.topLeft());
+        topArrow << topArrowIntersection << (topArrowIntersection - QPointF(arrowLength, 0)) << (topArrowIntersection - QPointF(0, arrowLength))
+                 << topArrowIntersection;
+
+        bottomArrowIntersection = QPointF(rect.bottomRight());
+        bottomArrow << bottomArrowIntersection << (bottomArrowIntersection + QPointF(arrowLength, 0)) << (bottomArrowIntersection + QPointF(0, arrowLength))
+                    << bottomArrowIntersection;
+        */
+
+        m_painter->setBrush(pen.color());
+        m_painter->setPen(Qt::NoPen);
+        m_painter->drawConvexPolygon(topArrow);
+        m_painter->drawConvexPolygon(bottomArrow);
     }
 }
 

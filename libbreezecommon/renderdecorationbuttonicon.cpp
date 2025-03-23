@@ -5,8 +5,9 @@
  */
 
 #include "renderdecorationbuttonicon.h"
+#include "stylekisweet.h"
 #include "stylekite.h"
-#include "styleklassy.h"
+#include "styleklasse.h"
 #include "styleoxygen.h"
 #include "styleredmond10.h"
 #include "styleredmond11.h"
@@ -27,12 +28,15 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 const bool forceEvenSquares)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::StyleKlassy:
+    case InternalSettings::EnumButtonIconStyle::StyleKisweet:
     default:
         return {
-            std::make_unique<RenderStyleKlassy18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleKisweet18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-
+    case InternalSettings::EnumButtonIconStyle::StyleKlasse:
+        return {
+            std::make_unique<RenderStyleKlasse18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
     case InternalSettings::EnumButtonIconStyle::StyleKite:
         return {
             std::make_unique<RenderStyleKite18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),

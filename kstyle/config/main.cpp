@@ -25,7 +25,11 @@
 
 using namespace Breeze;
 struct CommandLineProcessResult {
-    enum class Status { CommandsProcessedOk, Error, NoCommand };
+    enum class Status {
+        CommandsProcessedOk,
+        Error,
+        NoCommand
+    };
     Status statusCode = Status::NoCommand;
 };
 CommandLineProcessResult processComandLine(QApplication &app, QCommandLineParser &parser);

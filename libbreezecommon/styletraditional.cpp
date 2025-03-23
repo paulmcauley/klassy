@@ -21,7 +21,7 @@ void RenderStyleTraditional18By18::renderMaximizeIcon()
 
 void RenderStyleTraditional18By18::renderRestoreIcon()
 {
-    renderOverlappingWindowsIcon();
+    renderOverlappingWindowsIcon(false);
 }
 
 void RenderStyleTraditional18By18::renderMinimizeIcon()
