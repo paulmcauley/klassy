@@ -4,44 +4,43 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "styleklassy.h"
+#include "styleklasse.h"
 
 namespace Breeze
 {
 
-void RenderStyleKlassy18By18::renderCloseIcon()
+void RenderStyleKlasse18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKlassy18By18::renderMaximizeIcon()
+void RenderStyleKlasse18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false);
 }
 
-void RenderStyleKlassy18By18::renderRestoreIcon()
+void RenderStyleKlasse18By18::renderRestoreIcon()
 {
-    renderOverlappingWindowsIcon();
+    renderOverlappingWindowsIcon(false);
 }
 
-void RenderStyleKlassy18By18::renderMinimizeIcon()
+void RenderStyleKlasse18By18::renderMinimizeIcon()
 {
     renderTinySquareMinimizeIcon();
 }
 
-
 // For consistency with breeze icon set
-void RenderStyleKlassy18By18::renderKeepBehindIcon()
+void RenderStyleKlasse18By18::renderKeepBehindIcon()
 {
     renderKeepBehindIconAsFromBreezeIcons();
 }
 
-void RenderStyleKlassy18By18::renderKeepInFrontIcon()
+void RenderStyleKlasse18By18::renderKeepInFrontIcon()
 {
     renderKeepInFrontIconAsFromBreezeIcons();
 }
 
-void RenderStyleKlassy18By18::renderContextHelpIcon()
+void RenderStyleKlasse18By18::renderContextHelpIcon()
 {
     renderRounderAndBolderContextHelpIcon();
 }

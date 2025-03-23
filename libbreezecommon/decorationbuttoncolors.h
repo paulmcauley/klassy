@@ -52,7 +52,12 @@ enum struct BREEZECOMMON_EXPORT OverridableButtonColorState {
     COUNT,
 };
 
-enum struct BREEZECOMMON_EXPORT ButtonComponent { Icon, Background, Outline, COUNT };
+enum struct BREEZECOMMON_EXPORT ButtonComponent {
+    Icon,
+    Background,
+    Outline,
+    COUNT
+};
 
 const QStringList overridableButtonColorStatesJsonStrings{
     QStringLiteral("IconNormal"),

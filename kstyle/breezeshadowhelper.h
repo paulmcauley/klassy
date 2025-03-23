@@ -164,7 +164,9 @@ private:
     TileSet _shadowTiles;
 
     //* number of tiles
-    enum { numTiles = 8 };
+    enum {
+        numTiles = 8
+    };
 
     //* shared shadow tiles
     QVector<KWindowShadowTile::Ptr> _tiles;

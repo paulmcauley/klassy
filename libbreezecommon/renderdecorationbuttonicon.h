@@ -148,7 +148,10 @@ protected:
      */
     void translatePainterForAliasedPainting(const bool penWidthOdd);
 
-    enum class ThresholdRound { Up, Down };
+    enum class ThresholdRound {
+        Up,
+        Down
+    };
     /**
      * @brief rounds the given number to the nearest half
      * @param coord The number to round
@@ -165,7 +168,10 @@ protected:
      */
     qreal roundCoordToWhole(qreal coord, const ThresholdRound roundAtHalf);
 
-    enum class SnapPixel { ToHalf, ToWhole };
+    enum class SnapPixel {
+        ToHalf,
+        ToWhole
+    };
 
     /**
      * @brief Given a local point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted equivalent local point

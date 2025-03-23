@@ -5594,9 +5594,7 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
 
     const auto toolButtonStyle = toolButtonOption->toolButtonStyle;
     const bool hasArrow = toolButtonOption->features & QStyleOptionToolButton::Arrow;
-    bool hasIcon = toolButtonStyle != Qt::ToolButtonTextOnly
-            && ((!toolButtonOption->icon.isNull() && !toolButtonOption->iconSize.isEmpty())
-                || hasArrow);
+    bool hasIcon = toolButtonStyle != Qt::ToolButtonTextOnly && ((!toolButtonOption->icon.isNull() && !toolButtonOption->iconSize.isEmpty()) || hasArrow);
     bool hasText = toolButtonStyle != Qt::ToolButtonIconOnly && !toolButtonOption->text.isEmpty();
     const bool textUnderIcon = hasIcon && hasText && toolButtonStyle == Qt::ToolButtonTextUnderIcon;
 
@@ -5622,15 +5620,10 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     } else if (textUnderIcon) {
         const int contentsHeight(iconSize.height() + textSize.height() + Metrics::ToolButton_ItemSpacing);
         iconRect = {
-            QPoint(contentsRect.left() + (contentsRect.width() - iconSize.width()) / 2,
-                   contentsRect.top() + (contentsRect.height() - contentsHeight) / 2),
-            iconSize
-        };
-        textRect = {
-            QPoint(contentsRect.left() + (contentsRect.width() - textSize.width()) / 2,
-                   iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
-            textSize
-        };
+            QPoint(contentsRect.left() + (contentsRect.width() - iconSize.width()) / 2, contentsRect.top() + (contentsRect.height() - contentsHeight) / 2),
+            iconSize};
+        textRect = {QPoint(contentsRect.left() + (contentsRect.width() - textSize.width()) / 2, iconRect.bottom() + Metrics::ToolButton_ItemSpacing + 1),
+                    textSize};
 
         // handle right to left layouts
         iconRect = visualRect(option, iconRect);
@@ -5641,18 +5634,12 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
         const bool leftAlign(widget && widget->property(PropertyNames::toolButtonAlignment).toInt() == Qt::AlignLeft);
         if (leftAlign) {
             const int marginWidth(Metrics::Button_MarginWidth + Metrics::Frame_FrameWidth + 1);
-            iconRect = {
-                QPoint(contentsRect.left() + marginWidth,
-                       contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
-                iconSize
-            };
+            iconRect = {QPoint(contentsRect.left() + marginWidth, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2), iconSize};
         } else {
             const int contentsWidth(iconSize.width() + textSize.width() + Metrics::ToolButton_ItemSpacing);
             iconRect = {
-                QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2,
-                       contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
-                iconSize
-            };
+                QPoint(contentsRect.left() + (contentsRect.width() - contentsWidth) / 2, contentsRect.top() + (contentsRect.height() - iconSize.height()) / 2),
+                iconSize};
         }
 
         const int padding = (contentsRect.height() - textSize.height()) / 2;
@@ -8632,12 +8619,13 @@ QIcon Style::titleBarButtonIcon(StandardPixmap standardPixmap, const QStyleOptio
         palette = QApplication::palette();
     }
 
-    //generate a different DecorationColors for buttons on a toolbar. These set the titlebar background to the toolbar background, and use the inactive button states
+    // generate a different DecorationColors for buttons on a toolbar. These set the titlebar background to the toolbar background, and use the inactive button
+    // states
     DecorationColors decorationColorsToolbar(false, true);
     palette.setCurrentColorGroup(QPalette::Active);
     const QColor toolbarBase(palette.color(QPalette::Window));
     const QColor toolbarText(KColorUtils::mix(toolbarBase, palette.color(QPalette::WindowText), 0.7));
-    //generate inactive decoration colours only
+    // generate inactive decoration colours only
     decorationColorsToolbar.generateDecorationColors(palette, _helper->decorationConfig(), QColor(), QColor(), toolbarText, toolbarBase, "", true, false);
     DecorationButtonPalette decorationButtonPaletteToolbar(buttonType);
     decorationButtonPaletteToolbar.generate(_helper->decorationConfig(),

@@ -209,7 +209,11 @@ private:
     QRect spinBoxSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
     QRect scrollBarInternalSubControlRect(const QStyleOptionComplex *, SubControl) const;
 
-    enum class OverrideAutoHideArrows { NoOverride, ShowArrow, HideArrow };
+    enum class OverrideAutoHideArrows {
+        NoOverride,
+        ShowArrow,
+        HideArrow
+    };
     QRect scrollBarSubControlRect(const QStyleOptionComplex *,
                                   SubControl,
                                   const QWidget *,
