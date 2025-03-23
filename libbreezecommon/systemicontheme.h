@@ -36,7 +36,7 @@ public:
         , m_iconWidth(iconWidth)
         , m_systemIconFromTheme(iconName)
         , m_internalSettings(internalSettings)
-        , m_palette(palette){};
+        , m_palette(palette) { };
 
     void renderIcon();
 

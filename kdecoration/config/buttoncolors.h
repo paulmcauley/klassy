@@ -226,7 +226,13 @@ private:
                                                  i18n("Window shadow, active"),
                                                  i18n("Window shadow, inactive")};
 
-    enum struct CloseButtonIconColorState { AsSelected = 1, NegativeWhenHoveredPressed = 2, White = 4, WhiteWhenHoveredPressed = 8, COUNT };
+    enum struct CloseButtonIconColorState {
+        AsSelected = 1,
+        NegativeWhenHoveredPressed = 2,
+        White = 4,
+        WhiteWhenHoveredPressed = 8,
+        COUNT
+    };
 
     uint32_t m_closeButtonIconColorStateActive;
     uint32_t m_closeButtonIconColorStateInactive;

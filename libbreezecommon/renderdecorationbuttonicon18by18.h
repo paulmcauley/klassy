@@ -39,9 +39,9 @@ protected:
     virtual void renderContextHelpIcon() override;
 
     void renderCloseIconAtSquareMaximizeSize();
-    std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025);
+    std::pair<QRectF, qreal> renderSquareMaximizeIcon(bool returnSizeOnly = false, qreal cornerRelativePercent = 0.025, bool showArrows = false);
 
-    void renderOverlappingWindowsIcon(qreal cornerRelativePercent = -1);
+    void renderOverlappingWindowsIcon(bool showArrows, qreal cornerRelativePercent = -1, bool highlightInFront = false, bool highlightBehind = false);
     /**
      * @param shiftOffsetX How much to separate the two squares to prevent blurriness
      * @param shiftOffsetY How much to separate the two squares to prevent blurriness
@@ -54,9 +54,10 @@ protected:
                                            QGraphicsItemGroup *overlappingWindowsGroup,
                                            QGraphicsPathItem *foregroundSquareItem,
                                            QGraphicsPathItem *&backgroundSquareItem,
+                                           QGraphicsPathItem *&backgroundSquareFillItem,
                                            qreal halfPenWidthLocal);
 
-    void renderTinySquareMinimizeIcon();
+    void renderTinySquareMinimizeIcon(bool showArrows = false);
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();
     void renderRounderAndBolderContextHelpIcon();

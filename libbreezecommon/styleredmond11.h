@@ -29,7 +29,7 @@ public:
                                const qreal devicePixelRatio,
                                const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
                                const bool forceEvenSquares)
-        : RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares){};
+        : RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMaximizeIcon() override;
     void renderRestoreIcon() override;

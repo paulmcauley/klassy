@@ -20,9 +20,8 @@ void RenderStyleRedmond1018By18::renderMaximizeIcon()
 
 void RenderStyleRedmond1018By18::renderRestoreIcon()
 {
-    renderOverlappingWindowsIcon();
+    renderOverlappingWindowsIcon(false);
 }
-
 
 void RenderStyleRedmond1018By18::renderMinimizeIcon()
 {

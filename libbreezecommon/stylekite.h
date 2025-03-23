@@ -22,12 +22,8 @@ public:
                           const qreal devicePixelRatio,
                           const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
                           const bool forceEvenSquares)
-        : RenderDecorationButtonIcon18By18(painter,
-                                           fromKstyle,
-                                           boldButtonIcons,
-                                           devicePixelRatio,
-                                           deviceOffsetTitleBarTopLeftToIconTopLeft,
-                                           forceEvenSquares){};
+        : RenderDecorationButtonIcon18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) {
+        };
 
     void renderCloseIcon() override;
     void renderMaximizeIcon() override;

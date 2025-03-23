@@ -110,9 +110,19 @@ private:
         COUNT
     };
 
-    enum class TableVaryColorComboBox { varyColorIcon, varyColorBackground, varyColorOutline, COUNT };
+    enum class TableVaryColorComboBox {
+        varyColorIcon,
+        varyColorBackground,
+        varyColorOutline,
+        COUNT
+    };
 
-    enum class TableCloseVaryColorComboBox { varyColorCloseIcon, varyColorCloseBackground, varyColorCloseOutline, COUNT };
+    enum class TableCloseVaryColorComboBox {
+        varyColorCloseIcon,
+        varyColorCloseBackground,
+        varyColorCloseOutline,
+        COUNT
+    };
 
     QMap<TableCheckBox, QCheckBox *> m_tableCheckBoxesActive;
     QMap<TableCloseCheckBox, QCheckBox *> m_tableCloseCheckBoxesActive;

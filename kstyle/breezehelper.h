@@ -109,13 +109,15 @@ public:
     //* titlebar color
     const QColor &titleBarColor(bool active, bool systemColor = false) const
     {
-        return active ? (systemColor ? _systemActiveTitleBarColor : _decorationColors->active()->titleBarBase) : (systemColor ? _systemInactiveTitleBarColor : _decorationColors->inactive()->titleBarBase);
+        return active ? (systemColor ? _systemActiveTitleBarColor : _decorationColors->active()->titleBarBase)
+                      : (systemColor ? _systemInactiveTitleBarColor : _decorationColors->inactive()->titleBarBase);
     }
 
     //* titlebar text color
     const QColor &titleBarTextColor(bool active, bool systemColor = false) const
     {
-        return active ? (systemColor ? _systemActiveTitleBarTextColor : _decorationColors->active()->titleBarText) : (systemColor ? _systemInactiveTitleBarTextColor : _decorationColors->inactive()->titleBarText);
+        return active ? (systemColor ? _systemActiveTitleBarTextColor : _decorationColors->active()->titleBarText)
+                      : (systemColor ? _systemInactiveTitleBarTextColor : _decorationColors->inactive()->titleBarText);
     }
 
     DecorationColors *decorationColors() const

@@ -546,7 +546,17 @@
              </property>
              <item>
               <property name="text">
-               <string>  Klassy</string>
+               <string>Use system icon theme</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Kisweet</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Klasse</string>
               </property>
               <property name="icon">
                <iconset>
@@ -592,11 +602,6 @@
              <item>
               <property name="text">
                <string>  Redmond 11</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Use system icon theme</string>
               </property>
              </item>
             </widget>
