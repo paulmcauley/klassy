@@ -35,8 +35,8 @@ void PresetsModel::writePreset(KCoreConfigSkeleton *skeleton, KConfig *presetsCo
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
     if (!kwinConfig)
         return;
-    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration3"))) {
-        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration3"));
+    if (kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.3.3 this is still kdecoration2
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
         QString borderSize;
         if (!kdecoration3Group.hasKey(QStringLiteral("BorderSize"))) {
             borderSize = QStringLiteral("Normal"); // Normal is the KWin default, so will nor write a BorderSize key in this case
