@@ -2079,8 +2079,8 @@ void ButtonColors::getButtonsOrderFromKwinConfig()
     // very hacky way to do this -- better would be to find a way to get the settings from <KDecoration3/DecorationSettings>
     //  read kwin button border setting
     KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
-    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration3"))) {
-        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration3"));
+    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.3.3 this is still kdecoration2
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
 
         buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MS"));
         buttonsOnRight = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
