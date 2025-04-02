@@ -204,7 +204,8 @@ private:
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
     void createButtons();
-    void calculateWindowAndTitleBarShapes(const bool windowShapeOnly = false);
+    void calculateWindowShape();
+    void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
     void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
     std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
@@ -273,8 +274,8 @@ private:
     qreal m_scaledIntegratedRoundedRectangleBottomPadding = 0;
 
     //* titleBar side margins, scaled according to smallspacing
-    int m_scaledTitleBarLeftMargin = 1;
-    int m_scaledTitleBarRightMargin = 1;
+    qreal m_scaledTitleBarLeftMargin = 1;
+    qreal m_scaledTitleBarRightMargin = 1;
 
     //* Rectangular area of titlebar without clipped corners
     QRectF m_titleRect;
@@ -287,7 +288,7 @@ private:
     qreal m_systemScaleFactorX11 = 1.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
-    int m_smallButtonPaddedSize = 20;
+    qreal m_smallButtonPaddedSize = 20;
     int m_iconSize = 18;
     int m_smallButtonBackgroundSize = 18;
 

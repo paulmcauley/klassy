@@ -16,6 +16,7 @@
 #include <KColorUtils>
 #include <KDecoration3/DecoratedWindow>
 #include <KDecoration3/DecorationButtonGroup>
+#include <KDecoration3/ScaleHelpers>
 #include <KIconLoader>
 #include <KWindowSystem>
 
@@ -54,11 +55,11 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     }
 
     // setup default geometry
-    int smallButtonPaddedSize = decoration->smallButtonPaddedSize();
+    qreal smallButtonPaddedSize = decoration->smallButtonPaddedSize();
     int iconSize = decoration->iconSize();
-    int smallButtonBackgroundSize = decoration->smallButtonBackgroundSize();
+    qreal smallButtonBackgroundSize = decoration->smallButtonBackgroundSize();
 
-    setGeometry(QRect(0, 0, smallButtonPaddedSize, smallButtonPaddedSize));
+    setGeometry(QRectF(0, 0, smallButtonPaddedSize, smallButtonPaddedSize));
     setSmallButtonPaddedSize(QSize(smallButtonPaddedSize, smallButtonPaddedSize));
     setIconSize(QSize(iconSize, iconSize));
     setBackgroundVisibleSize((QSizeF(smallButtonBackgroundSize, smallButtonBackgroundSize)));
@@ -161,7 +162,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     // (the active-state animation breaks over states in m_isGtkCsdButton generation)
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
-        m_smallButtonPaddedSize = geometry().size().toSize();
+        m_smallButtonPaddedSize = geometry().size();
         int iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
         setIconSize(QSize(iconWidth, iconWidth));
         setBackgroundVisibleSize(QSizeF(iconWidth, iconWidth));
@@ -707,6 +708,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
     }
 
     QRectF backgroundBoundingRect = (QRectF(geometry().topLeft(), m_backgroundVisibleSize));
+    backgroundBoundingRect = KDecoration3::snapToPixelGrid(backgroundBoundingRect, m_devicePixelRatio);
     painter->setClipRect(backgroundBoundingRect);
     QPainterPath background;
     QPainterPath outline;
@@ -735,8 +737,14 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
         } else if (m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle) {
             QPainterPath inner;
             qreal halfPenWidth = penWidth / 2;
-            geometryShrinkOffsetHorizontal = halfPenWidth;
-            geometryShrinkOffsetVertical = halfPenWidth;
+            // these are the sensible values if there were no bugs in KDecoration
+            // geometryShrinkOffsetHorizontal = halfPenWidth;
+            // geometryShrinkOffsetVertical = halfPenWidth;
+
+            // workaround values for KDecoration Wayland bugs
+            geometryShrinkOffsetHorizontal = penWidth + halfPenWidth;
+            geometryShrinkOffsetVertical = penWidth + halfPenWidth;
+
             qreal geometryShrinkOffsetHorizontalOuter = geometryShrinkOffsetHorizontal - halfPenWidth;
             qreal geometryShrinkOffsetHorizontalInner = geometryShrinkOffsetHorizontal + halfPenWidth;
             qreal geometryShrinkOffsetVerticalOuter = geometryShrinkOffsetVertical - halfPenWidth;

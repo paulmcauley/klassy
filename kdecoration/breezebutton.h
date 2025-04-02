@@ -145,7 +145,7 @@ public:
     }
 
     //* set small button padded size
-    void setSmallButtonPaddedSize(const QSize &value)
+    void setSmallButtonPaddedSize(const QSizeF &value)
     {
         m_smallButtonPaddedSize = value;
     }
@@ -269,7 +269,7 @@ private:
     QSizeF m_backgroundVisibleSize = QSizeF();
 
     //* small button size (icon + padding)
-    QSize m_smallButtonPaddedSize = QSize();
+    QSizeF m_smallButtonPaddedSize = QSizeF();
 
     //* icon size
     QSize m_iconSize = QSize();
