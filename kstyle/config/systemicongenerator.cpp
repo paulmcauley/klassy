@@ -99,6 +99,13 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
 
     iconThemeGroup.writeEntry("KDE-Extensions", ".svg");
 
+    // used the Custom button type to define a "bland" standard icon colour which the KDE svg renderer should replace from the system colour scheme
+    QColor blandIconColor = decorationColors.buttonPalette(DecorationButtonType::Custom)->active()->foregroundNormal;
+    if (!blandIconColor.isValid()) {
+        blandIconColor = decorationColors.buttonPalette(DecorationButtonType::Custom)->active()->foregroundHover;
+    }
+    QString blandIconColorString = blandIconColor.name();
+
     for (int i = 0; i < m_scales.count(); i++) {
         for (auto size = m_iconSizes.begin(); size != m_iconSizes.end(); size++) {
             QString svgDirName = QString::number(size.value()) % QStringLiteral("-") % QString::number(i);
@@ -254,9 +261,8 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
                                                == QStringLiteral("none")) { // remove invisible groups - fixes rendering in GTK apps
                                     svgChildElement.removeChild(svgGroupElement);
                                 } else { // change attributes so KIconLoader can use system colours
-                                    // don't overwrite white close button foregrounds
-                                    if (!(iconType.type == DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")
-                                          && textColorString == QStringLiteral("#ffffff"))) {
+                                    // overwrite bland colours with system colour
+                                    if (textColorString == blandIconColorString) {
                                         svgGroupElement.setAttribute(QStringLiteral("class"), QStringLiteral("ColorScheme-Text"));
                                         if (svgGroupElement.attribute(QStringLiteral("stroke")) == textColorString) {
                                             svgGroupElement.setAttribute(QStringLiteral("stroke"), QStringLiteral("currentColor"));
