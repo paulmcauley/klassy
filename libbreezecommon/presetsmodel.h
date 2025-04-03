@@ -43,6 +43,7 @@ public:
     static void copyKwinBorderSizeFromPresetToExceptionBorderSize(KCoreConfigSkeleton *skeleton, KConfig *presetsConfig, const QString &presetName);
 
     static void writeBorderSizeToKwinConfig(const QString &borderSize);
+    static void writeButtonPositionToKwinConfig(const QString &buttonsOnLeft, const QString &buttonsOnRight);
     static void deletePreset(KConfig *presetsConfig, const QString &presetName);
     static void deleteBundledPresets(KConfig *presetsConfig);
     static QStringList readPresetsList(KConfig *presetsConfig);
