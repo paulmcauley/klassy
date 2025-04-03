@@ -99,10 +99,11 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
 
     iconThemeGroup.writeEntry("KDE-Extensions", ".svg");
 
-    // used the Custom button type to define a "bland" standard icon colour which the KDE svg renderer should replace from the system colour scheme
-    QColor blandIconColor = decorationColors.buttonPalette(DecorationButtonType::Custom)->active()->foregroundNormal;
+    // used the Application Menu button type as a reference to define a "bland" standard icon colour which the KDE svg renderer should replace from the system
+    // colour scheme
+    QColor blandIconColor = decorationColors.buttonPalette(DecorationButtonType::ApplicationMenu)->active()->foregroundNormal;
     if (!blandIconColor.isValid()) {
-        blandIconColor = decorationColors.buttonPalette(DecorationButtonType::Custom)->active()->foregroundHover;
+        blandIconColor = decorationColors.buttonPalette(DecorationButtonType::ApplicationMenu)->active()->foregroundHover;
     }
     QString blandIconColorString = blandIconColor.name();
 
