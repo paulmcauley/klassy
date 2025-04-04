@@ -86,6 +86,13 @@ public:
         return m_ui.buttonShape->currentIndex();
     }
 
+    QList<DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
+                                                       // of the colour palette for "other" buttons)
+    QList<DecorationButtonType>
+        m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
+    QList<DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
+                                                               // including the dummy custom button added in m_visibleButtonsOrder
+
 Q_SIGNALS:
     void saved();
 
@@ -162,5 +169,6 @@ private:
     void importBundledPresets();
     void updateIcons();
     void generateWindowControlPreviewIcon(QSize size, InternalSettings::EnumButtonIconStyle::type iconStyle);
+    void getButtonsOrderFromKwinConfig();
 };
 }

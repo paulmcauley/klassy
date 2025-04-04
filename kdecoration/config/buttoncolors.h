@@ -106,7 +106,6 @@ Q_SIGNALS:
     void changed(bool);
 
 private:
-    void getButtonsOrderFromKwinConfig();
     QList<Breeze::DecorationButtonPalette *> sortButtonsAsPerKwinConfig(QList<Breeze::DecorationButtonPalette *> inputlist);
 
     void generateTableCells(QTableWidget *table);
@@ -236,12 +235,6 @@ private:
 
     uint32_t m_closeButtonIconColorStateActive;
     uint32_t m_closeButtonIconColorStateInactive;
-    QList<DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
-                                                       // of the colour palette for "other" buttons)
-    QList<DecorationButtonType>
-        m_hiddenButtons; // buttons that are not shown due to not being added in the "Titlebar buttons" section of the KDE Window decoration config
-    QList<DecorationButtonType> m_allCustomizableButtonsOrder; // user-ordered list of all buttons, including hidden appended at the end, not
-                                                               // including the dummy custom button added in m_visibleButtonsOrder
     QColor m_systemTitleBarTextActive;
     QColor m_systemTitleBarTextInactive;
     QColor m_systemTitlebarBackgroundActive;
