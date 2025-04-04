@@ -105,6 +105,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     m_systemIconGenerationDialog = new SystemIconGeneration(m_configuration, m_presetsConfiguration, this);
     m_loadPresetDialog = new LoadPreset(m_configuration, m_presetsConfiguration, this);
     m_buttonSizingDialog = new ButtonSizing(m_configuration, m_presetsConfiguration, this);
+    getButtonsOrderFromKwinConfig();
     m_buttonColorsDialog = new ButtonColors(m_configuration, m_presetsConfiguration, this);
     m_buttonBehaviourDialog = new ButtonBehaviour(m_configuration, m_presetsConfiguration, this);
     m_titleBarSpacingDialog = new TitleBarSpacing(m_configuration, m_presetsConfiguration, this);
@@ -200,6 +201,7 @@ void ConfigWidget::load()
     m_internalSettings->load();
     m_systemIconGenerationDialog->load();
     m_buttonSizingDialog->load();
+    getButtonsOrderFromKwinConfig();
     m_buttonColorsDialog->load();
     m_buttonBehaviourDialog->load();
     m_titleBarSpacingDialog->load();
@@ -685,63 +687,87 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     pen.setCosmetic(true);
     painter->setPen(pen);
 
-    int iconLeft = maximizedButtonTop;
-    QPoint iconTopLeft(iconLeft, maximizedButtonTop);
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Minimize, false);
-    painter->restore();
+    QList<DecorationButtonType> previewButtons = {DecorationButtonType::Minimize, DecorationButtonType::Maximize, DecorationButtonType::Close};
 
-    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Maximize, true);
-    painter->restore();
+    QList<DecorationButtonType> previewButtonsOrdered;
+    for (int i = 0; i < m_visibleButtonsOrder.count(); i++) {
+        if (previewButtons.contains(m_visibleButtonsOrder[i])) {
+            previewButtonsOrdered.append(m_visibleButtonsOrder[i]);
+        }
+    }
 
-    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Close, false);
-    painter->restore();
+    int iconLeft;
+    QPoint iconTopLeft;
+    bool checked;
 
-    pen = painter->pen();
-    pen.setColor(QColor("#fcfcfc"));
-    painter->setPen(pen);
-    iconTopLeft = QPoint(maximizedButtonTop, floatingButtonTop);
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Minimize, false);
-    painter->restore();
+    for (int i = 0; i < previewButtonsOrdered.count(); i++) {
+        if (i == 0) {
+            iconLeft = maximizedButtonTop;
+            iconTopLeft = QPoint(iconLeft, maximizedButtonTop);
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            checked = (previewButtonsOrdered[i] == DecorationButtonType::Maximize) ? true : false;
+            iconRenderer->renderIcon(previewButtonsOrdered[i], checked);
+            painter->restore();
+        } else if (i == 1) {
+            iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            checked = (previewButtonsOrdered[i] == DecorationButtonType::Maximize) ? true : false;
+            iconRenderer->renderIcon(previewButtonsOrdered[i], checked);
+            painter->restore();
+        } else if (i == 2) {
+            iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            checked = (previewButtonsOrdered[i] == DecorationButtonType::Maximize) ? true : false;
+            iconRenderer->renderIcon(previewButtonsOrdered[i], checked);
+            painter->restore();
+        }
+    }
 
-    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Maximize, false);
-    painter->restore();
-
-    iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
-    painter->save();
-    painter->translate(iconTopLeft);
-    iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
-    painter->setViewport(0, 0, iconSize.width(), iconSize.height());
-    painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
-    iconRenderer->renderIcon(DecorationButtonType::Close, false);
-    painter->restore();
+    for (int i = 0; i < previewButtonsOrdered.count(); i++) {
+        if (i == 0) {
+            pen = painter->pen();
+            pen.setColor(QColor("#fcfcfc"));
+            painter->setPen(pen);
+            iconTopLeft = QPoint(maximizedButtonTop, floatingButtonTop);
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            iconRenderer->renderIcon(previewButtonsOrdered[i], false);
+            painter->restore();
+        } else if (i == 1) {
+            iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            iconRenderer->renderIcon(previewButtonsOrdered[i], false);
+            painter->restore();
+        } else if (i == 2) {
+            iconTopLeft = QPoint(iconTopLeft.x() + iconSize.width() + iconSpacing, iconTopLeft.y());
+            painter->save();
+            painter->translate(iconTopLeft);
+            iconRenderer->setDeviceOffsetFromZeroReference(painter->deviceTransform().map(iconTopLeft));
+            painter->setViewport(0, 0, iconSize.width(), iconSize.height());
+            painter->setWindow(0, 0, localRenderingWidth, localRenderingWidth);
+            iconRenderer->renderIcon(previewButtonsOrdered[i], false);
+            painter->restore();
+        }
+    }
 
     QIcon icon(pixmap);
 
@@ -768,5 +794,124 @@ bool ConfigWidget::eventFilter(QObject *obj, QEvent *ev)
 
     // Make sure the rest of events are handled
     return QObject::eventFilter(obj, ev);
+}
+
+void ConfigWidget::getButtonsOrderFromKwinConfig()
+{
+    QMap<DecorationButtonType, QChar> buttonNames;
+    // list modified from https://invent.kde.org/plasma/kwin/-/blob/master/src/decorations/settings.cpp
+    buttonNames[DecorationButtonType::Menu] = QChar('M');
+    buttonNames[DecorationButtonType::ApplicationMenu] = QChar('N');
+    buttonNames[DecorationButtonType::OnAllDesktops] = QChar('S');
+    buttonNames[DecorationButtonType::KeepAbove] = QChar('F');
+    buttonNames[DecorationButtonType::KeepBelow] = QChar('B');
+    buttonNames[DecorationButtonType::Shade] = QChar('L');
+    buttonNames[DecorationButtonType::ContextHelp] = QChar('H');
+    buttonNames[DecorationButtonType::Minimize] = QChar('I');
+    buttonNames[DecorationButtonType::Maximize] = QChar('A');
+    buttonNames[DecorationButtonType::Close] = QChar('X');
+    buttonNames[DecorationButtonType::Spacer] = QChar('_');
+
+    QString buttonsOnLeft;
+    QString buttonsOnRight;
+
+    //  read kwin button border setting
+    KSharedConfig::Ptr kwinConfig = KSharedConfig::openConfig(QStringLiteral("kwinrc"));
+    if (kwinConfig && kwinConfig->hasGroup(QStringLiteral("org.kde.kdecoration2"))) { // As of Plasma 6.3.3 this is still kdecoration2
+        KConfigGroup kdecoration3Group = kwinConfig->group(QStringLiteral("org.kde.kdecoration2"));
+
+        buttonsOnLeft = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnLeft"), QStringLiteral("MS"));
+        buttonsOnRight = kdecoration3Group.readEntry(QStringLiteral("ButtonsOnRight"), QStringLiteral("HIAX"));
+    } else {
+        buttonsOnLeft = QStringLiteral("MS");
+        buttonsOnRight = QStringLiteral("HIAX");
+    }
+
+    QString visibleButtons = buttonsOnLeft + buttonsOnRight;
+
+    m_visibleButtonsOrder.clear();
+    for (QChar *it = visibleButtons.begin(); it != visibleButtons.end(); it++) {
+        auto key = buttonNames.key(*it, DecorationButtonType::Custom);
+        if (key != DecorationButtonType::Custom && key != DecorationButtonType::Spacer)
+            m_visibleButtonsOrder.append(key);
+    }
+
+    m_hiddenButtons.clear();
+    // add hidden buttons to m_hiddenButtons
+    for (auto it = buttonNames.begin(); it != buttonNames.end(); it++) {
+        auto key = buttonNames.key(*it, DecorationButtonType::Custom);
+        if (!visibleButtons.contains(*it) && key != DecorationButtonType::Spacer) {
+            m_hiddenButtons.append(buttonNames.key(*it));
+        }
+    }
+
+    // Place a custom button type in the average position of these "other" button types
+    QList<int> otherButtonIndexes{
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::Menu)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::ApplicationMenu)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::OnAllDesktops)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::ContextHelp)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepAbove)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::KeepBelow)),
+        static_cast<int>(m_visibleButtonsOrder.indexOf(DecorationButtonType::Shade)),
+    };
+
+    // remove the -1s (index not found)
+    QMutableListIterator<int> i(otherButtonIndexes);
+    while (i.hasNext()) {
+        if (i.next() == -1)
+            i.remove();
+    }
+
+    int indexOfCustom;
+    if (otherButtonIndexes.count()) {
+        int sum = 0;
+        for (int i = 0; i < otherButtonIndexes.count(); i++) {
+            sum += otherButtonIndexes[i] + 1;
+        }
+        indexOfCustom = (sum / otherButtonIndexes.count()) - 1; // indexOfCustom is now at the median index position of otherButtonIndexes
+    } else {
+        indexOfCustom = 0;
+    }
+
+    // Want to give Close/Maximize/Minimize buttons priority over the custom button to be at either the left or right edges
+    QMap<int, DecorationButtonType> leftEdgePriorityButtons; // a list of Close/Maximize/Minimize if at left edge
+    QMap<int, DecorationButtonType> rightEdgePriorityButtons; // a list of Close/Maximize/Minimize if at right edge
+
+    // find leftEdgePriorityButtons
+    for (int i = 0; i < 3; i++) {
+        if (buttonsOnLeft.indexOf(QChar('X')) == i) {
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Close);
+        } else if (buttonsOnLeft.indexOf(QChar('A')) == i) {
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Maximize);
+        } else if (buttonsOnLeft.indexOf(QChar('I')) == i) {
+            leftEdgePriorityButtons.insert(i, DecorationButtonType::Minimize);
+        }
+    }
+
+    // find rightEdgePrioritybuttons
+    for (int i = m_visibleButtonsOrder.count() - 1; i >= m_visibleButtonsOrder.count() - 3; i--) {
+        if (buttonsOnRight.lastIndexOf(QChar('X')) == i) { // lastIndexOf in-case a weirdo adds more than one button of the same type
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Close);
+        } else if (buttonsOnRight.lastIndexOf(QChar('A')) == i) {
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Maximize);
+        } else if (buttonsOnRight.lastIndexOf(QChar('I')) == i) {
+            rightEdgePriorityButtons.insert(i, DecorationButtonType::Minimize);
+        }
+    }
+
+    // if custom is at an edge, make sure priority (min/max/close) button has a priority over custom button for the edge
+    if (indexOfCustom >= 0 && indexOfCustom <= (leftEdgePriorityButtons.count() - 1)
+        && leftEdgePriorityButtons.count()) { // if custom is to go at start but a leftEdgePriority button is there
+        indexOfCustom = m_visibleButtonsOrder.indexOf(leftEdgePriorityButtons.value(leftEdgePriorityButtons.count() - 1)) + 1;
+    } else if (indexOfCustom <= (m_visibleButtonsOrder.count() - 1) && indexOfCustom >= (m_visibleButtonsOrder.count() - rightEdgePriorityButtons.count())
+               && rightEdgePriorityButtons.count()) { // if custom is to go at end but a right EdgePriority button is there
+        indexOfCustom = m_visibleButtonsOrder.indexOf(rightEdgePriorityButtons.value(0));
+    }
+
+    m_allCustomizableButtonsOrder = m_visibleButtonsOrder + m_hiddenButtons;
+
+    m_visibleButtonsOrder.insert(indexOfCustom,
+                                 DecorationButtonType::Custom); // dummy Custom button inserted for illustrating colour palettes in icons
 }
 }
