@@ -592,7 +592,7 @@
              </item>
              <item>
               <property name="text">
-               <string>  Redmond 10</string>
+               <string>  Metro</string>
               </property>
               <property name="icon">
                <iconset>
@@ -601,7 +601,7 @@
              </item>
              <item>
               <property name="text">
-               <string>  Redmond 11</string>
+               <string>  Fluent</string>
               </property>
              </item>
             </widget>

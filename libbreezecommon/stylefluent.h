@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "styleredmond10.h"
+#include "stylemetro.h"
 
 #include <QPainter>
 
 namespace Breeze
 {
 
-class RenderStyleRedmond1118By18 : public RenderStyleRedmond1018By18
+class RenderStyleFluent18By18 : public RenderStyleMetro18By18
 {
 public:
     /**
@@ -23,13 +23,13 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleRedmond1118By18(QPainter *painter,
-                               const bool fromKstyle,
-                               const bool boldButtonIcons,
-                               const qreal devicePixelRatio,
-                               const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
-                               const bool forceEvenSquares)
-        : RenderStyleRedmond1018By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+    RenderStyleFluent18By18(QPainter *painter,
+                            const bool fromKstyle,
+                            const bool boldButtonIcons,
+                            const qreal devicePixelRatio,
+                            const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
+                            const bool forceEvenSquares)
+        : RenderStyleMetro18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMaximizeIcon() override;
     void renderRestoreIcon() override;

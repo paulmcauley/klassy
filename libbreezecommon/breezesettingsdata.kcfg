@@ -23,10 +23,10 @@
           <choice name="StyleKite" />
           <choice name="StyleOxygen" />
           <choice name="StyleTraditional" />
-          <choice name="StyleRedmond10" />
-          <choice name="StyleRedmond11" />
+          <choice name="StyleMetro" />
+          <choice name="StyleFluent" />
       </choices>
-      <default>StyleKisweet</default>
+      <default>StyleMetro</default>
     </entry>
 
     <!-- button size -->
