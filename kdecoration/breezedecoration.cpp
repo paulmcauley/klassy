@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
- * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -426,18 +426,19 @@ void Decoration::updateTitleBar()
     qreal width, height, x, y;
     setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
+    qreal borderTop = nextState()->borders().top();
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically())) {
         width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
-        height = borderTop();
+        height = borderTop;
         x = maximized ? 0 : m_scaledTitleBarLeftMargin;
         y = 0;
 
     } else {
         // for smaller circular buttons increase the resizable area
         width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
-        height = (maximized || isTopEdge()) ? borderTop() : borderTop() - m_scaledTitleBarTopMargin;
+        height = (maximized || isTopEdge()) ? borderTop : borderTop - m_scaledTitleBarTopMargin;
         x = maximized ? 0 : m_scaledTitleBarLeftMargin;
         y = (maximized || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
     }
@@ -815,8 +816,8 @@ void Decoration::updateButtonsGeometry()
 {
     const auto s = settings();
 
+    setScaledTitleBarTopBottomMargins();
     setScaledTitleBarSideMargins();
-
     // adjust button position
     qreal bHeightNormal;
     qreal bWidthLeft = 0;
@@ -834,9 +835,10 @@ void Decoration::updateButtonsGeometry()
     qreal buttonSpacingLeft = 0;
     qreal buttonSpacingRight = 0;
     qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight();
+    qreal captionHeight = this->captionHeight();
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
-        bHeightNormal = borderTop();
+        bHeightNormal = nextState()->borders().top();
         bHeightNormal = qMax(bHeightNormal - titleBarSeparatorHeight, 0.0);
         if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
             || internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
@@ -867,12 +869,12 @@ void Decoration::updateButtonsGeometry()
                 }
             }
             verticalIconOffsetNormal =
-                buttonTopMargin + qreal(captionHeight() - m_smallButtonPaddedSize - m_scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
+                buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - m_scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
             if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-                verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight() - m_smallButtonPaddedSize) / 2;
+                verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
             }
         } else {
-            verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight() - m_smallButtonPaddedSize) / 2;
+            verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
@@ -885,8 +887,8 @@ void Decoration::updateButtonsGeometry()
         horizontalIconOffsetLeftButtons = bWidthMarginLeft / 2;
         horizontalIconOffsetRightButtons = bWidthMarginRight / 2;
     } else {
-        bHeightNormal = captionHeight() + (isTopEdge() ? buttonTopMargin : 0);
-        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight() - m_smallButtonPaddedSize) / 2;
+        bHeightNormal = captionHeight + (isTopEdge() ? buttonTopMargin : 0);
+        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
 
         buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
         buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
@@ -1419,7 +1421,8 @@ void Decoration::onTabletModeChanged(bool mode)
 //________________________________________________________________
 qreal Decoration::captionHeight() const
 {
-    return hideTitleBar() ? borderTop() : borderTop() - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
+    qreal borderTop = nextState()->borders().top();
+    return hideTitleBar() ? borderTop : borderTop - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
 }
 
 //________________________________________________________________
@@ -1429,6 +1432,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
         auto c = window();
+        qreal captionHeight = this->captionHeight();
 
         qreal padding = m_internalSettings->titleSidePadding() * settings()->smallSpacing();
 
@@ -1437,7 +1441,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         const qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
         const qreal yOffset = m_scaledTitleBarTopMargin;
-        const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
+        const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight);
 
         switch (m_internalSettings->titleAlignment()) {
         case InternalSettings::EnumTitleAlignment::AlignLeft:
@@ -1452,12 +1456,12 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
         default:
         case InternalSettings::EnumTitleAlignment::AlignCenterFullWidth: {
             // full caption rect
-            const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight());
+            const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight);
             QRectF boundingRect(settings()->fontMetrics().boundingRect(c->caption()).toRect());
 
             // text bounding rect
             boundingRect.setTop(yOffset);
-            boundingRect.setHeight(captionHeight());
+            boundingRect.setHeight(captionHeight);
             boundingRect.moveLeft((size().width() - boundingRect.width()) / 2);
 
             if (boundingRect.left() < leftOffset) {
