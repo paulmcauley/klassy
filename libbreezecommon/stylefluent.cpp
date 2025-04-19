@@ -4,17 +4,17 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "styleredmond11.h"
+#include "stylefluent.h"
 
 namespace Breeze
 {
 
-void RenderStyleRedmond1118By18::renderMaximizeIcon()
+void RenderStyleFluent18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 20);
 }
 
-void RenderStyleRedmond1118By18::renderRestoreIcon()
+void RenderStyleFluent18By18::renderRestoreIcon()
 {
     renderOverlappingWindowsIcon(false, 20);
 }
