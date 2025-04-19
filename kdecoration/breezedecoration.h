@@ -1,7 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -47,9 +47,7 @@ class Decoration : public KDecoration3::Decoration
 public:
     //* constructor
     explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
-
-    //* destructor
-    virtual ~Decoration();
+    ~Decoration() override;
 
     //* paint
     void paint(QPainter *painter, const QRectF &repaintRegion) override;
