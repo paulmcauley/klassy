@@ -4,26 +4,26 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "styleredmond10.h"
+#include "stylemetro.h"
 
 namespace Breeze
 {
-void RenderStyleRedmond1018By18::renderCloseIcon()
+void RenderStyleMetro18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleRedmond1018By18::renderMaximizeIcon()
+void RenderStyleMetro18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false);
 }
 
-void RenderStyleRedmond1018By18::renderRestoreIcon()
+void RenderStyleMetro18By18::renderRestoreIcon()
 {
     renderOverlappingWindowsIcon(false);
 }
 
-void RenderStyleRedmond1018By18::renderMinimizeIcon()
+void RenderStyleMetro18By18::renderMinimizeIcon()
 {
     QPen pen = m_painter->pen();
     bool isOddPenWidth = true;
@@ -71,17 +71,17 @@ void RenderStyleRedmond1018By18::renderMinimizeIcon()
 }
 
 // For consistency with breeze icon set
-void RenderStyleRedmond1018By18::renderKeepBehindIcon()
+void RenderStyleMetro18By18::renderKeepBehindIcon()
 {
     renderKeepBehindIconAsFromBreezeIcons();
 }
 
-void RenderStyleRedmond1018By18::renderKeepInFrontIcon()
+void RenderStyleMetro18By18::renderKeepInFrontIcon()
 {
     renderKeepInFrontIconAsFromBreezeIcons();
 }
 
-void RenderStyleRedmond1018By18::renderContextHelpIcon()
+void RenderStyleMetro18By18::renderContextHelpIcon()
 {
     renderRounderAndBolderContextHelpIcon();
 }
