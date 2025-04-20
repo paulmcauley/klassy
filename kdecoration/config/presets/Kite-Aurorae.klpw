@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=6.2.breeze6.2.1
+version=6.3.git
 
 [Windeco Preset Kite-Aurorae]
 ActiveTitleBarOpacity=100
@@ -52,7 +52,6 @@ CloseButtonIconColorActive=WhiteWhenHoverPress
 CloseButtonIconColorInactive=WhiteWhenHoverPress
 CloseFullHeightButtonWidthMarginRelative=100
 ColorizeThinWindowOutlineWithButton=true
-WindowCornerRadius=3.2
 DrawBackgroundGradient=false
 DrawBorderOnMaximizedWindows=false
 DrawTitleBarSeparator=false
@@ -67,6 +66,8 @@ IntegratedRoundedRectangleBottomPadding=1
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
 KwinBorderSize=Normal
+KwinButtonsOnLeft=MFS
+KwinButtonsOnRight=HIAX
 LockButtonBehaviourActiveInactive=true
 LockButtonColorsActiveInactive=true
 LockButtonSpacingLeftRight=false
@@ -92,6 +93,7 @@ PoorIconContrastThresholdActive=1.5
 PoorIconContrastThresholdInactive=1.5
 RoundBottomCornersWhenNoBorders=false
 ScaleBackgroundPercent=115
+ScaleTouchMode=150
 ShadowColor=0,0,0
 ShadowSize=ShadowLarge
 ShadowStrength=255
@@ -131,6 +133,7 @@ ShowOutlineOnHoverActive=false
 ShowOutlineOnHoverInactive=false
 ShowOutlineOnPressActive=false
 ShowOutlineOnPressInactive=false
+SpacerButtonWidthRelative=50
 SystemIconSize=SystemIcon16
 ThinWindowOutlineCustomColorActive=0,0,0
 ThinWindowOutlineCustomColorInactive=0,0,0
@@ -158,6 +161,7 @@ VaryColorIconActive=No
 VaryColorIconInactive=No
 VaryColorOutlineActive=Opaque
 VaryColorOutlineInactive=Opaque
+WindowCornerRadius=3.2
 WindowOutlineAccentColorOpacityActive=67
 WindowOutlineAccentColorOpacityInactive=25
 WindowOutlineAccentWithContrastOpacityActive=50
