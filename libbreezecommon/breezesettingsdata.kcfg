@@ -75,7 +75,7 @@
           <choice name="BoldIconsFine" />
           <choice name="BoldIconsHiDpiOnly" />
       </choices>
-      <default>BoldIconsHiDpiOnly</default>
+      <default>BoldIconsFine</default>
     </entry>
 
     <!-- button background shape -->
@@ -207,14 +207,14 @@
 
     <!-- left button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingLeft" type = "Int">
-       <default>1</default>
+       <default>2</default>
        <min>0</min>
        <max>50</max>
     </entry>
 
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>1</default>
+       <default>2</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -245,7 +245,7 @@
     </entry>
 
     <entry name="SpacerButtonWidthRelative" type = "Int">
-       <default>50</default>
+       <default>33</default>
        <min>1</min>
        <max>400</max>
     </entry>
@@ -262,7 +262,7 @@
     <!-- button icon colors -->
 
     <entry name="LockButtonColorsActiveInactive" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <entry name="ButtonIconColors$(ButtonIconColorsActive)" type="Enum">
@@ -279,7 +279,8 @@
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
         </choices>
-        <default>TitleBarText</default>
+        <default param="Active">AccentTrafficLights</default>
+        <default param="Inactive">TitleBarText</default>
     </entry>
 
 
@@ -340,7 +341,7 @@
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
         </choices>
-        <default>AccentNegativeClose</default>
+        <default>AccentTrafficLights</default>
     </entry>
 
     <entry name="NegativeCloseBackgroundHoverPress$(NegativeCloseBackgroundHoverPressActive)" type = "Bool">
@@ -392,7 +393,8 @@
                 <value>Active</value>
             </values>
         </parameter>
-        <default>100</default>
+        <default param="Inactive">50</default>
+        <default param="Active">100</default>
         <min>0</min>
         <max>100</max>
     </entry>
@@ -819,13 +821,13 @@
 
   <group name="TitleBarSpacing">
     <entry name="TitleBarTopMargin" type = "Double">
-       <default>1.7</default>
+       <default>1.25</default>
        <min>0</min>
        <max>25</max>
     </entry>
 
     <entry name="TitleBarBottomMargin" type = "Double">
-       <default>1.7</default>
+       <default>1.25</default>
        <min>0</min>
        <max>25</max>
     </entry>
@@ -936,7 +938,7 @@
             <choice name="WindowOutlineCustomWithContrast" />
         </choices>
         <default param ="Active">WindowOutlineAccentColor</default>
-        <default param ="Inactive">WindowOutlineAccentWithContrast</default>
+        <default param ="Inactive">WindowOutlineContrast</default>
     </entry>
 
 
@@ -959,7 +961,7 @@
     </entry>
 
     <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>1.75</default>
+       <default>2.5</default>
        <min>1</min>
        <max>10</max>
     </entry>
