@@ -8,10 +8,10 @@
             }
         ],
         "Category": "",
-        "Description": "Twilight theme with traditional panel at the bottom and labelled tasks",
-        "Id": "org.kde.klassytwilighttraditional.desktop",
+        "Description": "Dark theme with traditional panel at the bottom and labelled tasks",
+        "Id": "org.kde.klassyopaldarkbottompanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Klassy Twilight - Traditional",
+        "Name": "Opal Dark - Bottom Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"
