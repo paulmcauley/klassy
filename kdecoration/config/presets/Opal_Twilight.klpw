@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=6.3.git
 
-[Windeco Preset Opal]
+[Windeco Preset Opal Twilight]
 ActiveTitleBarOpacity=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
@@ -54,7 +54,7 @@ CloseFullHeightButtonWidthMarginRelative=100
 ColorizeThinWindowOutlineWithButton=true
 DrawBackgroundGradient=false
 DrawBorderOnMaximizedWindows=false
-DrawTitleBarSeparator=false
+DrawTitleBarSeparator=true
 ForceColorizeSystemIcons=true
 FullHeightButtonSpacingLeft=2
 FullHeightButtonSpacingRight=2
@@ -137,9 +137,9 @@ SpacerButtonWidthRelative=33
 SystemIconSize=SystemIcon16
 ThinWindowOutlineCustomColorActive=0,0,0
 ThinWindowOutlineCustomColorInactive=0,0,0
-ThinWindowOutlineStyleActive=WindowOutlineAccentColor
-ThinWindowOutlineStyleInactive=WindowOutlineContrast
-ThinWindowOutlineThickness=2.25
+ThinWindowOutlineStyleActive=WindowOutlineShadowColor
+ThinWindowOutlineStyleInactive=WindowOutlineShadowColor
+ThinWindowOutlineThickness=1.7500000000000016
 TitleAlignment=AlignCenterFullWidth
 TitleBarBottomMargin=1.25
 TitleBarLeftMargin=0
