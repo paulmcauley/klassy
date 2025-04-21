@@ -20,6 +20,9 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 Klassy configuration with the default _Opal_ preset:
 ![Klassy configuration with the default Opal preset](screenshots/opal_preset.png?raw=true "Klassy configuration with the default Opal preset]")
 
+![Opal window controls annotated](screenshots/opal_window_controls.svg?raw=true "Opal window controls annotated")
+
+
 Install with the instructions below, and then make sure _Klassy_ is enabled in System Settings -> Appearance -> Window Decorations, in System Settings -> Appearance -> Application Style and in System Settings -> Appearance -> Icons.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
