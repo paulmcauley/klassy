@@ -961,7 +961,7 @@
     </entry>
 
     <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>2.5</default>
+       <default>2.25</default>
        <min>1</min>
        <max>10</max>
     </entry>
