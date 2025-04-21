@@ -12,7 +12,7 @@
         "Id": "klassy",
         "License": "LGPL",
         "Name": "Klassy",
-        "Version": "6.1",
+        "Version": "6.3",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-API": "5.0"
