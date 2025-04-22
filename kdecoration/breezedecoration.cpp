@@ -1700,7 +1700,6 @@ void Decoration::setThinWindowOutlineColor()
 
         QColor thinWindowOutlineActiveFinal = m_decorationColors->active()->windowOutline;
         QColor thinWindowOutlineInactiveFinal = m_decorationColors->inactive()->windowOutline;
-        ;
 
         // get blended colour if animated
         if (m_animation->state() == QAbstractAnimation::Running) {
