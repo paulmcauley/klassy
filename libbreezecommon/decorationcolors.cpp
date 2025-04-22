@@ -188,6 +188,9 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
 
     // set windowOutline
     switch (decorationSettings->thinWindowOutlineStyle(active)) {
+    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone:
+        (*decorationPaletteGroup)->windowOutline = QColor();
+        break;
     case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrast:
         (*decorationPaletteGroup)->windowOutline =
             ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, decorationSettings->windowOutlineContrastOpacity(active) / 100.0f);
