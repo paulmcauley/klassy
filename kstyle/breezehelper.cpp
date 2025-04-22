@@ -511,7 +511,7 @@ void Helper::renderFrame(QPainter *painter, const QRectF &rect, const QColor &co
     painter->setRenderHint(QPainter::Antialiasing);
 
     QRectF frameRect(rect);
-    qreal radius(frameRadius(PenWidth::NoPen));
+    qreal radius(Metrics::Frame_FrameRadius);
 
     // set pen
     if (outline.isValid()) {
