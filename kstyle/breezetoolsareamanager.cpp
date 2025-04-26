@@ -36,6 +36,16 @@ void appendIfNotAlreadyExists(T1 *list, T2 item)
     list->append(item);
 }
 
+void ToolsAreaManager::recreateConfigWatcher(const QString &path)
+{
+    if (!path.startsWith(QLatin1Char('/'))) {
+        _watcher = KConfigWatcher::create(_config);
+        connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated, Qt::UniqueConnection);
+    } else {
+        _watcher.reset();
+    }
+}
+
 void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 {
     QVariant wasTranslucent = win->property("_klassy_was_translucent");
@@ -125,6 +135,7 @@ void ToolsAreaManager::configUpdated()
         } else {
             _config = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
         }
+        recreateConfigWatcher(path);
     } else {
         _config = KSharedConfig::openConfig();
     }
