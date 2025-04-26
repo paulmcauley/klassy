@@ -244,6 +244,8 @@ bool ToolsAreaManager::eventFilter(QObject *watched, QEvent *event)
         QChildEvent *ev = nullptr;
         if (event->type() == QEvent::ChildAdded || event->type() == QEvent::ChildRemoved) {
             ev = static_cast<QChildEvent *>(event);
+        } else {
+            return false;
         }
 
         QPointer<QToolBar> tb = qobject_cast<QToolBar *>(ev->child());
