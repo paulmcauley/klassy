@@ -35,10 +35,13 @@ private:
     std::shared_ptr<Helper> _helper;
     QHash<const QMainWindow *, QVector<QPointer<QToolBar>>> _windows;
     KSharedConfigPtr _config;
+    KConfigWatcher::Ptr _watcher;
     QPalette _palette = QPalette();
     AppListener *_listener;
     bool _colorSchemeHasHeaderColor;
     bool _translucent = false;
+
+    void recreateConfigWatcher(const QString &path);
 
     friend class AppListener;
 
