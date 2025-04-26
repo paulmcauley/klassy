@@ -133,7 +133,7 @@ function(build_Qt6)
         set(WITH_DECORATIONS OFF)
     endif()
 
-    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
+    find_package(Qt6 ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets Core Svg Xml) #Svg and Xml only needed for settings (Qt6 only)
 
     find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
         CoreAddons
