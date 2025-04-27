@@ -1872,7 +1872,7 @@ void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool 
 #endif
     const bool toolsAreaWithHeaderColors = _toolsAreaManager->hasHeaderColors() && _helper->shouldDrawToolsArea(mw);
 
-    auto rect = _toolsAreaManager->toolsAreaRect(mw);
+    auto rect = _toolsAreaManager->toolsAreaRect(*mw);
     if (rect.height() == 0) {
         if (drawWindowBackground) {
             auto bg = mw->rect();
@@ -1886,7 +1886,7 @@ void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool 
     } else {
         if (drawWindowBackground) {
             auto bg = mw->rect();
-            auto rect = _toolsAreaManager->toolsAreaRect(mw);
+            auto rect = _toolsAreaManager->toolsAreaRect(*mw);
             bg.setTop(rect.height() - 1);
 
             painter->setPen(Qt::NoPen);

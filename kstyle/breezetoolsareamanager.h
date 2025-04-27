@@ -33,7 +33,11 @@ class ToolsAreaManager : public QObject
 private:
     void doTranslucency(QMainWindow *win, bool on);
     std::shared_ptr<Helper> _helper;
-    QHash<const QMainWindow *, QVector<QPointer<QToolBar>>> _windows;
+    struct WindowToolBars {
+        const QMainWindow *window;
+        QVector<QPointer<QToolBar>> toolBars;
+    };
+    std::vector<WindowToolBars> _windows;
     KSharedConfigPtr _config;
     KConfigWatcher::Ptr _watcher;
     QPalette _palette = QPalette();
@@ -42,12 +46,15 @@ private:
     bool _translucent = false;
 
     void recreateConfigWatcher(const QString &path);
+    void appendIfNotAlreadyExists(const QMainWindow *window, const QPointer<QToolBar> &toolBar);
+    void removeWindowToolBar(const QMainWindow *window, const QPointer<QToolBar> &toolBar);
+    void removeWindow(const QMainWindow *window);
 
     friend class AppListener;
 
 protected:
-    bool tryRegisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
-    void tryUnregisterToolBar(QPointer<QMainWindow> window, QPointer<QWidget> widget);
+    bool tryRegisterToolBar(QPointer<const QMainWindow> window, QPointer<QWidget> widget);
+    void tryUnregisterToolBar(QPointer<const QMainWindow> window, QPointer<QWidget> widget);
 
 public:
     explicit ToolsAreaManager(std::shared_ptr<Helper> helper);
@@ -66,7 +73,7 @@ public:
     void registerWidget(QWidget *widget);
     void unregisterWidget(QWidget *widget);
 
-    QRect toolsAreaRect(const QMainWindow *window);
+    QRect toolsAreaRect(const QMainWindow &window) const;
 
     bool hasHeaderColors();
 
