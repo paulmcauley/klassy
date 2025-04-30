@@ -77,6 +77,11 @@ Raw .rpm, .deb etc. binary packages are also available from the Open Build Servi
 There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
 You can install Klassy on Gentoo Linux by following these steps.
 
+First, install the `eselect repository` module with:
+```
+sudo emerge -av app-eselect/eselect-repository
+```
+
 Enable the `guru` repository by executing:
 ```
 sudo eselect repository enable guru
