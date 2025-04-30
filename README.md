@@ -89,12 +89,12 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=kde-plasma/klassy-6.2::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
+echo "=gui-apps/klassy-6.2::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =kde-plasma/klassy-6.2::guru
+sudo emerge -av =gui-apps/klassy-6.2::guru
 ```
 
 &nbsp;
