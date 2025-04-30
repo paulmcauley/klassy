@@ -73,6 +73,30 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 ## Installation
 _Klassy_ master branch requires Plasma 6.3, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
 
+### Gentoo Linux package
+There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
+You can install Klassy on Gentoo Linux by following these steps.
+
+Enable the `guru` repository by executing:
+```
+sudo eselect repository enable guru
+```
+
+Sync the repositories:
+```
+sudo emaint sync -r guru
+```
+
+Add the package keywords to `/etc/portage/package.accept_keywords`:
+```
+echo "=kde-plasma/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy
+```
+
+Finally, compile & install the package with:
+```
+sudo emerge -av =kde-plasma/klassy-9999::guru
+```
+
 <a name="compile"/>
 
 ### Compile from source
