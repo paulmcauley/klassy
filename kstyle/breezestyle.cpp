@@ -7489,7 +7489,7 @@ bool Style::drawGroupBoxComplexControl(const QStyleOptionComplex *option, QPaint
     }
 
     // Text for label
-    QFont font = qApp->font();
+    QFont font = widget ? widget->font() : qApp->font("QGroupBox");
     if (groupBoxOption->features == QStyleOptionFrame::Flat && !(groupBoxOption->subControls & SC_GroupBoxCheckBox)) {
         font.setPointSize(font.pointSize() + 1);
         font.setBold(true);
