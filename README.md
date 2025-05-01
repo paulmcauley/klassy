@@ -3,8 +3,8 @@
 ##### Table of Contents
 [Overview](#overview)  
 [Installation](#installation)  
->[Pre-built packages](#prebuilt)  
->[Compile from source](#compile)  
+- [Gentoo Linux package](#gentoo-linux-package)
+- [Compile from source](#compile)  
 
 [System icon theme](#icons)  
 [Klassy Settings](#klassy-settings)  
