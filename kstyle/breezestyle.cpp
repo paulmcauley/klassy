@@ -7111,17 +7111,13 @@ bool Style::drawTabBarTabLabelControl(const QStyleOption *option, QPainter *pain
         auto tabbar = qobject_cast<const QTabBar *>(widget);
         tabLayout(tab, widget, &tr, &iconRect, tabbar && tabbar->expanding());
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         // compute tr again, unless tab is moving, because the style may override subElementRect
         if (tab->position != QStyleOptionTab::TabPosition::Moving)
             tr = proxy()->subElementRect(SE_TabBarTabText, option, widget);
-#endif
 
         if (!tab->icon.isNull()) {
             QPixmap tabIcon = tab->icon.pixmap(tab->iconSize,
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
                                                painter->device()->devicePixelRatio(),
-#endif
                                                (tab->state & State_Enabled) ? QIcon::Normal : QIcon::Disabled,
                                                (tab->state & State_Selected) ? QIcon::On : QIcon::Off);
             painter->drawPixmap(iconRect.x(), iconRect.y(), tabIcon);
