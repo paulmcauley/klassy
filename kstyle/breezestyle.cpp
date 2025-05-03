@@ -97,31 +97,19 @@ namespace BreezePrivate
 class PainterStateSaver
 {
 public:
-    PainterStateSaver(QPainter *painter, bool bSaveRestore = true)
+    PainterStateSaver(QPainter *painter)
         : m_painter(painter)
-        , m_bSaveRestore(bSaveRestore)
     {
-        if (m_bSaveRestore) {
-            m_painter->save();
-        }
+        m_painter->save();
     }
 
     ~PainterStateSaver()
     {
-        restore();
-    }
-
-    void restore()
-    {
-        if (m_bSaveRestore) {
-            m_bSaveRestore = false;
-            m_painter->restore();
-        }
+        m_painter->restore();
     }
 
 private:
     QPainter *const m_painter;
-    bool m_bSaveRestore;
 };
 
 // needed to keep track of tabbars when being dragged
@@ -7002,73 +6990,6 @@ bool Style::drawHeaderEmptyAreaControl(const QStyleOption *option, QPainter *pai
     return true;
 }
 
-// SPDX-SnippetBegin
-// SPDX-FileCopyrightText: 2016 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-void Style::tabLayout(const QStyleOptionTab *opt, const QWidget *widget, QRect *textRect, QRect *iconRect, bool isExpanding) const
-{
-    Q_ASSERT(textRect);
-    Q_ASSERT(iconRect);
-    QRect tr = opt->rect;
-    bool verticalTabs = opt->shape == QTabBar::RoundedEast || opt->shape == QTabBar::RoundedWest || opt->shape == QTabBar::TriangularEast
-        || opt->shape == QTabBar::TriangularWest;
-    if (verticalTabs)
-        tr.setRect(0, 0, tr.height(), tr.width()); // 0, 0 as we will have a translate transform
-
-    int verticalShift = pixelMetric(QStyle::PM_TabBarTabShiftVertical, opt, widget);
-    int horizontalShift = pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, opt, widget);
-    int hpadding = pixelMetric(QStyle::PM_TabBarTabHSpace, opt, widget) / 2;
-    int vpadding = pixelMetric(QStyle::PM_TabBarTabVSpace, opt, widget) / 2;
-    if (opt->shape == QTabBar::RoundedSouth || opt->shape == QTabBar::TriangularSouth)
-        verticalShift = -verticalShift;
-    tr.adjust(hpadding, verticalShift - vpadding, horizontalShift - hpadding, vpadding);
-    bool selected = opt->state & QStyle::State_Selected;
-    if (selected) {
-        tr.setTop(tr.top() - verticalShift);
-        tr.setRight(tr.right() - horizontalShift);
-    }
-
-    // left widget
-    if (!opt->leftButtonSize.isEmpty()) {
-        tr.setLeft(tr.left() + 4 + (verticalTabs ? opt->leftButtonSize.height() : opt->leftButtonSize.width()));
-    }
-    // right widget
-    if (!opt->rightButtonSize.isEmpty()) {
-        tr.setRight(tr.right() - 4 - (verticalTabs ? opt->rightButtonSize.height() : opt->rightButtonSize.width()));
-    }
-
-    // icon
-    if (!opt->icon.isNull()) {
-        QSize iconSize = opt->iconSize;
-        if (!iconSize.isValid()) {
-            int iconExtent = pixelMetric(QStyle::PM_SmallIconSize, opt, widget);
-            iconSize = QSize(iconExtent, iconExtent);
-        }
-        QSize tabIconSize = opt->icon.actualSize(iconSize,
-                                                 (opt->state & QStyle::State_Enabled) ? QIcon::Normal : QIcon::Disabled,
-                                                 (opt->state & QStyle::State_Selected) ? QIcon::On : QIcon::Off);
-        // High-dpi icons do not need adjustment; make sure tabIconSize is not larger than iconSize
-        tabIconSize = QSize(qMin(tabIconSize.width(), iconSize.width()), qMin(tabIconSize.height(), iconSize.height()));
-
-        const int offsetX = (iconSize.width() - tabIconSize.width()) / 2;
-        if (opt->text.isEmpty() && opt->documentMode && isExpanding) {
-            *iconRect =
-                QRect(tr.center().x() - tabIconSize.height() / 2, tr.center().y() - tabIconSize.height() / 2, tabIconSize.width(), tabIconSize.height());
-        } else {
-            *iconRect = QRect(tr.left() + offsetX, tr.center().y() - tabIconSize.height() / 2, tabIconSize.width(), tabIconSize.height());
-        }
-        if (!verticalTabs)
-            *iconRect = QStyle::visualRect(opt->direction, opt->rect, *iconRect);
-        tr.setLeft(tr.left() + tabIconSize.width() + 4);
-    }
-
-    if (!verticalTabs)
-        tr = QStyle::visualRect(opt->direction, opt->rect, tr);
-
-    *textRect = tr;
-}
-// SPDX-SnippetEnd
-
 //___________________________________________________________________________________
 bool Style::drawTabBarTabLabelControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
 {
@@ -7078,75 +6999,7 @@ bool Style::drawTabBarTabLabelControl(const QStyleOption *option, QPainter *pain
     auto old = option->state;
     // clear the State_HasFocus bit
     const_cast<QStyleOption *>(option)->state &= ~State_HasFocus;
-
-    // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2016 The Qt Company Ltd.
-    // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
-    if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(option)) {
-        QRect tr = tab->rect;
-        bool verticalTabs = tab->shape == QTabBar::RoundedEast || tab->shape == QTabBar::RoundedWest || tab->shape == QTabBar::TriangularEast
-            || tab->shape == QTabBar::TriangularWest;
-
-        int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
-        if (!proxy()->styleHint(SH_UnderlineShortcut, option, widget))
-            alignment |= Qt::TextHideMnemonic;
-
-        BreezePrivate::PainterStateSaver pss(painter, verticalTabs);
-        if (verticalTabs) {
-            int newX, newY, newRot;
-            if (tab->shape == QTabBar::RoundedEast || tab->shape == QTabBar::TriangularEast) {
-                newX = tr.width() + tr.x();
-                newY = tr.y();
-                newRot = 90;
-            } else {
-                newX = tr.x();
-                newY = tr.y() + tr.height();
-                newRot = -90;
-            }
-            QTransform m = QTransform::fromTranslate(newX, newY);
-            m.rotate(newRot);
-            painter->setTransform(m, true);
-        }
-        QRect iconRect;
-        auto tabbar = qobject_cast<const QTabBar *>(widget);
-        tabLayout(tab, widget, &tr, &iconRect, tabbar && tabbar->expanding());
-
-        // compute tr again, unless tab is moving, because the style may override subElementRect
-        if (tab->position != QStyleOptionTab::TabPosition::Moving)
-            tr = proxy()->subElementRect(SE_TabBarTabText, option, widget);
-
-        if (!tab->icon.isNull()) {
-            QPixmap tabIcon = tab->icon.pixmap(tab->iconSize,
-                                               painter->device()->devicePixelRatio(),
-                                               (tab->state & State_Enabled) ? QIcon::Normal : QIcon::Disabled,
-                                               (tab->state & State_Selected) ? QIcon::On : QIcon::Off);
-            painter->drawPixmap(iconRect.x(), iconRect.y(), tabIcon);
-        }
-
-        proxy()->drawItemText(painter,
-                              tr,
-                              alignment,
-                              tab->palette,
-                              tab->state & State_Enabled,
-                              tab->text,
-                              widget ? widget->foregroundRole() : QPalette::WindowText);
-        pss.restore();
-
-        if (tab->state & State_HasFocus) {
-            const int OFFSET = 1 + pixelMetric(PM_DefaultFrameWidth, option, widget);
-
-            int x1, x2;
-            x1 = tab->rect.left();
-            x2 = tab->rect.right() - 1;
-
-            QStyleOptionFocusRect fropt;
-            fropt.QStyleOption::operator=(*tab);
-            fropt.rect.setRect(x1 + 1 + OFFSET, tab->rect.y() + OFFSET, x2 - x1 - 2 * OFFSET, tab->rect.height() - 2 * OFFSET);
-            drawPrimitive(PE_FrameFocusRect, &fropt, painter, widget);
-        }
-    }
-    // SPDX-SnippetEnd
-
+    ParentStyleClass::drawControl(CE_TabBarTabLabel, option, painter, widget);
     const_cast<QStyleOption *>(option)->state = old;
 
     // store rect and palette
