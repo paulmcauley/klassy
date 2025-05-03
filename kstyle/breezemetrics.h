@@ -119,7 +119,6 @@ static constexpr int TabBar_StaticTabMinHeight = 40;
 static constexpr int TabBar_TabItemSpacing = 8;
 static constexpr int TabBar_TabOverlap = 1;
 static constexpr int TabBar_BaseOverlap = 2;
-static constexpr int TabBar_ActiveEffectSize = 3;
 
 // tab widget
 static constexpr int TabWidget_MarginWidth = 3;
