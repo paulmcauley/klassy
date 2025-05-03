@@ -2733,9 +2733,6 @@ QRect Style::tabWidgetTabBarRect(const QStyleOption *option, const QWidget *widg
         return ParentStyleClass::subElementRect(SE_TabWidgetTabBar, option, widget);
     }
 
-    const auto tabWidget = qobject_cast<const QTabWidget *>(widget);
-    const auto documentMode = tabWidget ? tabWidget->documentMode() : false;
-
     // do nothing if tabbar is hidden
     const QSize tabBarSize(tabOption->tabBarSize);
 
@@ -2747,11 +2744,11 @@ QRect Style::tabWidgetTabBarRect(const QStyleOption *option, const QWidget *widg
     // horizontal positioning
     const bool verticalTabs(isVerticalTab(tabOption->shape));
     if (verticalTabs) {
-        tabBarRect.setHeight(qMin(tabBarRect.height(), rect.height() - (documentMode ? 0 : 2)));
+        tabBarRect.setHeight(qMin(tabBarRect.height(), rect.height() - 2));
         if (tabBarAlignment == Qt::AlignCenter) {
             tabBarRect.moveTop(rect.top() + (rect.height() - tabBarRect.height()) / 2);
         } else {
-            tabBarRect.moveTop(rect.top() + (documentMode ? 0 : 1));
+            tabBarRect.moveTop(rect.top() + 1);
         }
 
     } else {
@@ -2761,13 +2758,13 @@ QRect Style::tabWidgetTabBarRect(const QStyleOption *option, const QWidget *widg
         const auto rightButtonRect(visualRect(option, subElementRect(SE_TabWidgetRightCorner, option, widget)));
 
         rect.setLeft(leftButtonRect.width());
-        rect.setRight(rightButtonRect.left());
+        rect.setRight(rightButtonRect.left() - 1);
 
-        tabBarRect.setWidth(qMin(tabBarRect.width(), rect.width() - (documentMode ? 0 : 2)));
+        tabBarRect.setWidth(qMin(tabBarRect.width(), rect.width() - 2));
         if (tabBarAlignment == Qt::AlignCenter) {
             tabBarRect.moveLeft(rect.left() + (rect.width() - tabBarRect.width()) / 2);
         } else {
-            tabBarRect.moveLeft(rect.left() + (documentMode ? 0 : 1));
+            tabBarRect.moveLeft(rect.left() + 1);
         }
 
         tabBarRect = visualRect(option, tabBarRect);
@@ -4065,21 +4062,13 @@ QSize Style::tabWidgetSizeFromContents(const QStyleOption *option, const QSize &
 }
 
 //______________________________________________________________
-QSize Style::tabBarTabSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *widget) const
+QSize Style::tabBarTabSizeFromContents(const QStyleOption *option, const QSize &contentsSize, const QWidget *) const
 {
     const auto tabOption(qstyleoption_cast<const QStyleOptionTab *>(option));
     const bool hasText(tabOption && !tabOption->text.isEmpty());
     const bool hasIcon(tabOption && !tabOption->icon.isNull());
     const bool hasLeftButton(tabOption && !tabOption->leftButtonSize.isEmpty());
     const bool hasRightButton(tabOption && !tabOption->leftButtonSize.isEmpty());
-
-    // compare to minimum size
-    const bool verticalTabs(tabOption && isVerticalTab(tabOption));
-
-    const auto tabBar = qobject_cast<const QTabBar *>(widget);
-    const bool isStatic =
-        tabOption && tabOption->documentMode && tabBar && !tabBar->tabsClosable() && !tabBar->isMovable() && (tabBar->expanding() || verticalTabs);
-    const auto minHeight = isStatic ? Metrics::TabBar_StaticTabMinHeight : Metrics::TabBar_TabMinHeight;
 
     // calculate width increment for horizontal tabs
     int widthIncrement = 0;
@@ -4099,20 +4088,22 @@ QSize Style::tabBarTabSizeFromContents(const QStyleOption *option, const QSize &
     // add margins
     QSize size(contentsSize);
 
+    // compare to minimum size
+    const bool verticalTabs(tabOption && isVerticalTab(tabOption));
     if (verticalTabs) {
         size.rheight() += widthIncrement;
         if (hasIcon && !hasText) {
-            size = size.expandedTo(QSize(minHeight, 0));
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinHeight, 0));
         } else {
-            size = size.expandedTo(QSize(minHeight, Metrics::TabBar_TabMinWidth));
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinHeight, Metrics::TabBar_TabMinWidth));
         }
 
     } else {
         size.rwidth() += widthIncrement;
         if (hasIcon && !hasText) {
-            size = size.expandedTo(QSize(0, minHeight));
+            size = size.expandedTo(QSize(0, Metrics::TabBar_TabMinHeight));
         } else {
-            size = size.expandedTo(QSize(Metrics::TabBar_TabMinWidth, minHeight));
+            size = size.expandedTo(QSize(Metrics::TabBar_TabMinWidth, Metrics::TabBar_TabMinHeight));
         }
     }
 
@@ -7123,9 +7114,6 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     bool isLast(isSingle || position == QStyleOptionTab::End);
     bool isLeftOfSelected(!isLocked && tabOption->selectedPosition == QStyleOptionTab::NextIsSelected);
     bool isRightOfSelected(!isLocked && tabOption->selectedPosition == QStyleOptionTab::PreviousIsSelected);
-    const bool verticalTabs(isVerticalTab(tabOption));
-    const auto tabBar = qobject_cast<const QTabBar *>(widget);
-    const bool isStatic = tabOption->documentMode && tabBar && !tabBar->tabsClosable() && !tabBar->isMovable() && (tabBar->expanding() || verticalTabs);
 
     // true if widget is aligned to the frame
     // need to check for 'isRightOfSelected' because for some reason the isFirst flag is set when active tab is being moved
@@ -7134,6 +7122,7 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
 
     // swap state based on reverse layout, so that they become layout independent
     const bool reverseLayout(option->direction == Qt::RightToLeft);
+    const bool verticalTabs(isVerticalTab(tabOption));
     if (reverseLayout && !verticalTabs) {
         qSwap(isFirst, isLast);
         qSwap(isLeftOfSelected, isRightOfSelected);
@@ -7141,7 +7130,7 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
 
     // overlap
     // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
-    const int overlap = isQtQuickControl || isStatic ? 0 : Metrics::TabBar_TabOverlap;
+    const int overlap = isQtQuickControl ? 0 : Metrics::TabBar_TabOverlap;
 
     // adjust rect and define corners based on tabbar orientation
     Corners corners;
@@ -7267,17 +7256,9 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     stateProperties["south"] = south;
     stateProperties["west"] = west;
     stateProperties["east"] = east;
-    stateProperties["isRightOfSelected"] = isRightOfSelected;
-    stateProperties["isFirst"] = isFirst;
-    stateProperties["isLast"] = isLast;
     stateProperties["isQtQuickControl"] = isQtQuickControl;
     stateProperties["hasAlteredBackground"] = hasAlteredBackground(widget);
-
-    if (isStatic) {
-        _helper->renderStaticTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
-    } else {
-        _helper->renderTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
-    }
+    _helper->renderTabBarTab(painter, rect, option->palette, stateProperties, corners, animation);
 
     return true;
 }

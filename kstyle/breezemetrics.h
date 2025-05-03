@@ -115,7 +115,6 @@ static constexpr int TabBar_TabMarginHeight = 4;
 static constexpr int TabBar_TabMarginWidth = 8;
 static constexpr int TabBar_TabMinWidth = 80;
 static constexpr int TabBar_TabMinHeight = 30;
-static constexpr int TabBar_StaticTabMinHeight = 40;
 static constexpr int TabBar_TabItemSpacing = 8;
 static constexpr int TabBar_TabOverlap = 1;
 static constexpr int TabBar_BaseOverlap = 2;
