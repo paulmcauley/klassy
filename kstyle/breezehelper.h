@@ -10,6 +10,7 @@
 #include "breezeanimationdata.h"
 #include "breezemetrics.h"
 #include "breezesettings.h"
+#include "breezestyle.h"
 #include "colortools.h"
 #include "config-breeze.h"
 #include "decorationcolors.h"
@@ -30,6 +31,8 @@ class QStyleOptionSlider;
 namespace Breeze
 {
 
+class Style;
+
 //* breeze style helper class.
 /** contains utility functions used at multiple places in both breeze style and breeze window decoration */
 class Helper : public QObject
@@ -38,7 +41,7 @@ class Helper : public QObject
 
 public:
     //* constructor
-    explicit Helper(KSharedConfig::Ptr);
+    explicit Helper(KSharedConfig::Ptr, Style *parentStyle);
 
     //* destructor
     virtual ~Helper()
@@ -53,6 +56,8 @@ public:
 
     //* pointer to kdecoration config
     QSharedPointer<InternalSettings> decorationConfig() const;
+
+    KSharedConfigPtr colorSchemeConfig() const;
 
     //*@name color utilities
     //@{
@@ -401,11 +406,16 @@ protected:
     QPainterPath roundedPath(const QRectF &, Corners, qreal) const;
 
 private:
+    Style *_parentStyle;
+
     //* configuration
     KSharedConfig::Ptr _config;
 
     //* KWin configuration
     KSharedConfig::Ptr _kwinConfig;
+
+    KSharedConfigPtr _colorSchemeConfig;
+    KConfigWatcher::Ptr _colorSchemeWatcher;
 
     //* decoration configuration
     QSharedPointer<InternalSettings> _decorationConfig;

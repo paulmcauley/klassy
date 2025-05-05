@@ -10,21 +10,6 @@ namespace Breeze
 {
 class ToolsAreaManager;
 
-// Trying to discriminate QApplication events from events from all QObjects
-// belonging to it is impractical with everything going through a single
-// eventFilter, so we have this class which provides a second one that allows
-// us to filter for the events we want.
-class AppListener : public QObject
-{
-    Q_OBJECT
-    using QObject::QObject;
-
-    bool eventFilter(QObject *watched, QEvent *event) override;
-
-    ToolsAreaManager *manager;
-    friend class ToolsAreaManager;
-};
-
 //* signal manager for the tools area
 class ToolsAreaManager : public QObject
 {
@@ -38,10 +23,7 @@ private:
         QVector<QPointer<QToolBar>> toolBars;
     };
     std::vector<WindowToolBars> _windows;
-    KSharedConfigPtr _config;
-    KConfigWatcher::Ptr _watcher;
     QPalette _palette = QPalette();
-    AppListener *_listener;
     bool _colorSchemeHasHeaderColor;
     bool _translucent = false;
 
