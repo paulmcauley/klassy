@@ -76,11 +76,6 @@ void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
     }
 }
 
-void ToolsAreaManager::registerApplication(QApplication *application)
-{
-    configUpdated();
-}
-
 QRect ToolsAreaManager::toolsAreaRect(const QMainWindow &window) const
 
 {

@@ -3,7 +3,6 @@
 #include "breezehelper.h"
 #include "breezestyle.h"
 #include <KSharedConfig>
-#include <QApplication>
 #include <QObject>
 
 namespace Breeze
@@ -51,7 +50,6 @@ public:
         return _palette;
     }
 
-    void registerApplication(QApplication *application);
     void registerWidget(QWidget *widget);
     void unregisterWidget(QWidget *widget);
 

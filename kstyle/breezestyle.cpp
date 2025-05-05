@@ -529,7 +529,6 @@ void Style::polish(QWidget *widget)
 //______________________________________________________________
 void Style::polish(QApplication *application)
 {
-    _toolsAreaManager->registerApplication(application);
 }
 
 //______________________________________________________________
