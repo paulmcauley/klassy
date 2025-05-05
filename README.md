@@ -71,7 +71,18 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.3, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+<a name="prebuilt"/>
+
+### Pre-built packages
+[Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+
+&nbsp;
+
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
+
+&nbsp;
+&nbsp;
 
 <a name="compile"/>
 
@@ -121,7 +132,7 @@ cd klassy
 ```
 
 ```
-git checkout master
+git checkout plasma6.3
 ```
 
 ```
