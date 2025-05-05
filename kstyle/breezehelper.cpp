@@ -50,8 +50,9 @@ static const qreal highlightBackgroundAlpha = 0.33;
 static const auto radioCheckSunkenDarkeningFactor = 110;
 
 //____________________________________________________________________
-Helper::Helper(KSharedConfig::Ptr config)
+Helper::Helper(KSharedConfig::Ptr config, Style *parentStyle)
     : QObject()
+    , _parentStyle(parentStyle)
     , _config(std::move(config))
     , _kwinConfig(KSharedConfig::openConfig("kwinrc"))
     , _decorationConfig(DecorationSettingsProvider::self()->internalSettings())
@@ -74,6 +75,12 @@ QSharedPointer<InternalSettings> Helper::decorationConfig() const
 }
 
 //____________________________________________________________________
+KSharedConfigPtr Helper::colorSchemeConfig() const
+{
+    return _colorSchemeConfig;
+}
+
+//____________________________________________________________________
 void Helper::loadConfig()
 {
     _viewFocusBrush = KStatefulBrush(KColorScheme::View, KColorScheme::FocusColor);
@@ -89,7 +96,18 @@ void Helper::loadConfig()
     DecorationSettingsProvider::self()->reconfigure();
     _decorationConfig = DecorationSettingsProvider::self()->internalSettings();
 
-    const QString colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+    auto colorSchemePath = qApp->property("KDE_COLOR_SCHEME_PATH").toString();
+    if (colorSchemePath.isEmpty() || colorSchemePath == QStringLiteral("kdeglobals")) {
+        _colorSchemeConfig = KSharedConfig::openConfig();
+    } else {
+        _colorSchemeConfig = KSharedConfig::openConfig(colorSchemePath, KConfig::SimpleConfig);
+    }
+    if (!colorSchemePath.startsWith(QLatin1Char('/'))) {
+        _colorSchemeWatcher = KConfigWatcher::create(_colorSchemeConfig);
+        connect(_colorSchemeWatcher.data(), &KConfigWatcher::configChanged, _parentStyle, &Style::loadConfiguration, Qt::UniqueConnection);
+    } else {
+        _colorSchemeWatcher.reset();
+    }
     // bool isApplicationSpecificColorScheme = (!colorSchemePath.isEmpty() && colorSchemePath != QStringLiteral("kdeglobals"));
 
     // bool noCache = _decorationConfig->property("noCacheException").toBool() || isApplicationSpecificColorScheme;

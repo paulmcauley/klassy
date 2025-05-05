@@ -11,8 +11,6 @@
 
 #include <KColorUtils>
 
-const char *colorProperty = "KDE_COLOR_SCHEME_PATH";
-
 namespace Breeze
 {
 ToolsAreaManager::ToolsAreaManager(std::shared_ptr<Helper> helper)
@@ -59,16 +57,6 @@ void ToolsAreaManager::removeWindow(const QMainWindow *window)
     });
 }
 
-void ToolsAreaManager::recreateConfigWatcher(const QString &path)
-{
-    if (!path.startsWith(QLatin1Char('/'))) {
-        _watcher = KConfigWatcher::create(_config);
-        connect(_watcher.data(), &KConfigWatcher::configChanged, this, &ToolsAreaManager::configUpdated, Qt::UniqueConnection);
-    } else {
-        _watcher.reset();
-    }
-}
-
 void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 {
     QVariant wasTranslucent = win->property("_klassy_was_translucent");
@@ -91,9 +79,6 @@ void ToolsAreaManager::doTranslucency(QMainWindow *win, bool on)
 void ToolsAreaManager::registerApplication(QApplication *application)
 {
     configUpdated();
-    _listener = new AppListener(this);
-    _listener->manager = this;
-    application->installEventFilter(_listener);
 }
 
 QRect ToolsAreaManager::toolsAreaRect(const QMainWindow &window) const
@@ -155,28 +140,16 @@ void ToolsAreaManager::tryUnregisterToolBar(QPointer<const QMainWindow> window, 
 
 void ToolsAreaManager::configUpdated()
 {
-    if (qApp && qApp->property(colorProperty).isValid()) {
-        auto path = qApp->property(colorProperty).toString();
-        if (path.isEmpty() || path == QStringLiteral("kdeglobals")) {
-            _config = KSharedConfig::openConfig();
-        } else {
-            _config = KSharedConfig::openConfig(path, KConfig::SimpleConfig);
-        }
-        recreateConfigWatcher(path);
-    } else {
-        _config = KSharedConfig::openConfig();
-    }
-
-    _colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_config, KColorScheme::Header);
+    _colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_helper->colorSchemeConfig(), KColorScheme::Header);
 
     bool translucent = false;
 
-    _palette = KColorScheme::createApplicationPalette(_config);
+    _palette = KColorScheme::createApplicationPalette(_helper->colorSchemeConfig());
 
     if (_colorSchemeHasHeaderColor) {
-        KColorScheme active = KColorScheme(QPalette::Active, KColorScheme::Header, _config);
-        KColorScheme inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _config);
-        KColorScheme disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _config);
+        KColorScheme active = KColorScheme(QPalette::Active, KColorScheme::Header, _helper->colorSchemeConfig());
+        KColorScheme inactive = KColorScheme(QPalette::Inactive, KColorScheme::Header, _helper->colorSchemeConfig());
+        KColorScheme disabled = KColorScheme(QPalette::Disabled, KColorScheme::Header, _helper->colorSchemeConfig());
 
         _palette.setBrush(QPalette::Active, QPalette::Window, active.background());
         _palette.setBrush(QPalette::Active, QPalette::WindowText, active.foreground());
@@ -231,28 +204,6 @@ void ToolsAreaManager::becomeTransparent()
     for (auto windowToolBar : _windows) {
         doTranslucency(const_cast<QMainWindow *>(windowToolBar.window), true);
     }
-}
-
-bool AppListener::eventFilter(QObject *watched, QEvent *event)
-{
-    Q_ASSERT(watched);
-    Q_ASSERT(event);
-
-    if (watched != qApp) {
-        return false;
-    }
-
-    if (event->type() == QEvent::DynamicPropertyChange) {
-        if (watched != qApp) {
-            return false;
-        }
-        auto ev = static_cast<QDynamicPropertyChangeEvent *>(event);
-        if (ev->propertyName() == colorProperty) {
-            manager->configUpdated();
-        }
-    }
-
-    return false;
 }
 
 bool ToolsAreaManager::eventFilter(QObject *watched, QEvent *event)
