@@ -262,7 +262,7 @@ namespace Breeze
 
 //______________________________________________________________
 Style::Style()
-    : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig()))
+    : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig(), this))
     , _shadowHelper(std::make_unique<ShadowHelper>(_helper))
     , _animations(std::make_unique<Animations>())
     , _mnemonics(std::make_unique<Mnemonics>())
@@ -1595,6 +1595,11 @@ bool Style::eventFilter(QObject *object, QEvent *event)
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (object == qApp && event->type() == QEvent::ApplicationPaletteChange) {
         loadConfiguration();
+    } else if (object == qApp && event->type() == QEvent::DynamicPropertyChange) {
+        auto ev = static_cast<QDynamicPropertyChangeEvent *>(event);
+        if (ev->propertyName() == "KDE_COLOR_SCHEME_PATH") {
+            loadConfiguration();
+        }
     }
 #endif
 
