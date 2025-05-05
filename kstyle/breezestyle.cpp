@@ -527,11 +527,6 @@ void Style::polish(QWidget *widget)
 }
 
 //______________________________________________________________
-void Style::polish(QApplication *application)
-{
-}
-
-//______________________________________________________________
 void Style::polishScrollArea(QAbstractScrollArea *scrollArea)
 {
     // check argument
