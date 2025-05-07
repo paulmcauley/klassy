@@ -3,8 +3,9 @@
 ##### Table of Contents
 [Overview](#overview)  
 [Installation](#installation)  
->[Pre-built packages](#prebuilt)  
->[Compile from source](#compile)  
+- [Pre-built packages](#prebuilt)  
+- [Gentoo Linux package](#gentoo-linux-package)
+- [Compile from source](#compile)  
 
 [System icon theme](#icons)  
 [Klassy Settings](#klassy-settings)  
@@ -80,6 +81,35 @@ _Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have
 &nbsp;
 
 Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
+
+### Gentoo Linux package
+There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
+You can install Klassy on Gentoo Linux by following these steps.
+
+First, install the `eselect repository` module with:
+```
+sudo emerge -av app-eselect/eselect-repository
+```
+
+Enable the `guru` repository by executing:
+```
+sudo eselect repository enable guru
+```
+
+Sync the repositories:
+```
+sudo emaint sync -r guru
+```
+
+Add the package keywords to `/etc/portage/package.accept_keywords`:
+```
+echo "=gui-apps/klassy-6.3::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
+```
+
+Finally, compile & install the package with:
+```
+sudo emerge -av =gui-apps/klassy-6.3::guru
+```
 
 &nbsp;
 &nbsp;
