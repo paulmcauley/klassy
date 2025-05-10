@@ -21,6 +21,7 @@
 
 #include <QIcon>
 #include <QPainterPath>
+#include <QScrollBar>
 #include <QToolBar>
 #include <QWidget>
 #include <qpainter.h>
@@ -290,6 +291,7 @@ public:
 
     //* reimplementation of protected method
     void initSliderStyleOption(const QSlider *, QStyleOptionSlider *) const;
+    void initScrollBarStyleOption(const QScrollBar *scrollBar, QStyleOptionSlider *option) const;
 
     //* slider focus frame
     QRectF pathForSliderHandleFocusFrame(QPainterPath &, const QRectF &, int hmargin, int vmargin) const;
@@ -444,4 +446,5 @@ private:
 
     friend class ToolsAreaManager;
 };
+
 }
