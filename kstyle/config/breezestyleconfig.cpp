@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -88,10 +89,26 @@ StyleConfig::StyleConfig(QWidget *parent)
     connect(_sliderDrawTickMarks, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_splitterProxyEnabled, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
     connect(_mnemonicsMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarSeparator, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_scrollBarTopBottomMargins, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
     connect(_scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(_scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarTopOneButtonSpacing, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarBottomOneButtonSpacing, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarTopTwoButtonSpacing, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarBottomTwoButtonSpacing, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_autoHideArrows, &QAbstractButton::toggled, this, &StyleConfig::updateChanged);
+    connect(_scrollBarSliderThicknessMouseOver, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarSliderThicknessMouseNotOverPercent, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarSliderPadding, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+    connect(_scrollBarMinSliderHeight, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+
     connect(_windowDragMode, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
     connect(_menuOpacity, &QAbstractSlider::valueChanged, this, &StyleConfig::updateChanged);
+
+    // only enable _autoHideArrows when an arrow button is selected to be displayed
+    connect(_scrollBarAddLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(setEnabledAutoHideArrows()));
+    connect(_scrollBarSubLineButtons, SIGNAL(currentIndexChanged(int)), SLOT(setEnabledAutoHideArrows()));
 }
 
 //__________________________________________________________________
@@ -109,8 +126,19 @@ void StyleConfig::save()
     StyleConfigData::setSliderDrawTickMarks(_sliderDrawTickMarks->isChecked());
     StyleConfigData::setSplitterProxyEnabled(_splitterProxyEnabled->isChecked());
     StyleConfigData::setMnemonicsMode(_mnemonicsMode->currentIndex());
+    StyleConfigData::setScrollBarSeparator(_scrollBarSeparator->isChecked());
+    StyleConfigData::setScrollBarTopBottomMargins(_scrollBarTopBottomMargins->value());
     StyleConfigData::setScrollBarAddLineButtons(_scrollBarAddLineButtons->currentIndex());
     StyleConfigData::setScrollBarSubLineButtons(_scrollBarSubLineButtons->currentIndex());
+    StyleConfigData::setScrollBarTopOneButtonSpacing(_scrollBarTopOneButtonSpacing->value());
+    StyleConfigData::setScrollBarBottomOneButtonSpacing(_scrollBarBottomOneButtonSpacing->value());
+    StyleConfigData::setScrollBarTopTwoButtonSpacing(_scrollBarTopTwoButtonSpacing->value());
+    StyleConfigData::setScrollBarBottomTwoButtonSpacing(_scrollBarBottomTwoButtonSpacing->value());
+    StyleConfigData::setScrollBarAutoHideArrows(_autoHideArrows->isChecked());
+    StyleConfigData::setScrollBarSliderThicknessMouseOver(_scrollBarSliderThicknessMouseOver->value());
+    StyleConfigData::setScrollBarSliderThicknessMouseNotOverPercent(_scrollBarSliderThicknessMouseNotOverPercent->value());
+    StyleConfigData::setScrollBarSliderPadding(_scrollBarSliderPadding->value());
+    StyleConfigData::setScrollBarMinSliderHeight(_scrollBarMinSliderHeight->value());
     StyleConfigData::setWindowDragMode(_windowDragMode->currentIndex());
     StyleConfigData::setMenuOpacity(_menuOpacity->value());
 
@@ -185,9 +213,31 @@ void StyleConfig::updateChanged()
         modified = true;
     else if (_mnemonicsMode->currentIndex() != StyleConfigData::mnemonicsMode())
         modified = true;
+    else if (_autoHideArrows->isChecked() != StyleConfigData::scrollBarAutoHideArrows())
+        modified = true;
+    else if (_scrollBarSeparator->isChecked() != StyleConfigData::scrollBarSeparator())
+        modified = true;
+    else if (_scrollBarTopBottomMargins->value() != StyleConfigData::scrollBarTopBottomMargins())
+        modified = true;
     else if (_scrollBarAddLineButtons->currentIndex() != StyleConfigData::scrollBarAddLineButtons())
         modified = true;
     else if (_scrollBarSubLineButtons->currentIndex() != StyleConfigData::scrollBarSubLineButtons())
+        modified = true;
+    else if (_scrollBarTopOneButtonSpacing->value() != StyleConfigData::scrollBarTopOneButtonSpacing())
+        modified = true;
+    else if (_scrollBarBottomOneButtonSpacing->value() != StyleConfigData::scrollBarBottomOneButtonSpacing())
+        modified = true;
+    else if (_scrollBarTopTwoButtonSpacing->value() != StyleConfigData::scrollBarTopTwoButtonSpacing())
+        modified = true;
+    else if (_scrollBarBottomTwoButtonSpacing->value() != StyleConfigData::scrollBarBottomTwoButtonSpacing())
+        modified = true;
+    else if (_scrollBarSliderThicknessMouseOver->value() != StyleConfigData::scrollBarSliderThicknessMouseOver())
+        modified = true;
+    else if (_scrollBarSliderThicknessMouseNotOverPercent->value() != StyleConfigData::scrollBarSliderThicknessMouseNotOverPercent())
+        modified = true;
+    else if (_scrollBarSliderPadding->value() != StyleConfigData::scrollBarSliderPadding())
+        modified = true;
+    else if (_scrollBarMinSliderHeight->value() != StyleConfigData::scrollBarMinSliderHeight())
         modified = true;
     else if (_splitterProxyEnabled->isChecked() != StyleConfigData::splitterProxyEnabled())
         modified = true;
@@ -215,8 +265,20 @@ void StyleConfig::load()
     _sliderDrawTickMarks->setChecked(StyleConfigData::sliderDrawTickMarks());
     _mnemonicsMode->setCurrentIndex(StyleConfigData::mnemonicsMode());
     _splitterProxyEnabled->setChecked(StyleConfigData::splitterProxyEnabled());
+    _scrollBarSeparator->setChecked(StyleConfigData::scrollBarSeparator());
+    _scrollBarTopBottomMargins->setValue(StyleConfigData::scrollBarTopBottomMargins());
     _scrollBarAddLineButtons->setCurrentIndex(StyleConfigData::scrollBarAddLineButtons());
     _scrollBarSubLineButtons->setCurrentIndex(StyleConfigData::scrollBarSubLineButtons());
+    _scrollBarTopOneButtonSpacing->setValue(StyleConfigData::scrollBarTopOneButtonSpacing());
+    _scrollBarBottomOneButtonSpacing->setValue(StyleConfigData::scrollBarBottomOneButtonSpacing());
+    _scrollBarTopTwoButtonSpacing->setValue(StyleConfigData::scrollBarTopTwoButtonSpacing());
+    _scrollBarBottomTwoButtonSpacing->setValue(StyleConfigData::scrollBarBottomTwoButtonSpacing());
+    _autoHideArrows->setChecked(StyleConfigData::scrollBarAutoHideArrows());
+    setEnabledAutoHideArrows();
+    _scrollBarSliderThicknessMouseOver->setValue(StyleConfigData::scrollBarSliderThicknessMouseOver());
+    _scrollBarSliderThicknessMouseNotOverPercent->setValue(StyleConfigData::scrollBarSliderThicknessMouseNotOverPercent());
+    _scrollBarSliderPadding->setValue(StyleConfigData::scrollBarSliderPadding());
+    _scrollBarMinSliderHeight->setValue(StyleConfigData::scrollBarMinSliderHeight());
     _windowDragMode->setCurrentIndex(StyleConfigData::windowDragMode());
     _menuOpacity->setValue(StyleConfigData::menuOpacity());
 }
@@ -237,4 +299,11 @@ void StyleConfig::setFrameCustomCornerRadiusVisible()
         _frameCustomCornerRadius->setVisible(false);
     }
 }
+
+// only enable _autoHideArrows when one arrow button type is "One Button" for both top and bottom
+void StyleConfig::setEnabledAutoHideArrows()
+{
+    _autoHideArrows->setVisible((_scrollBarSubLineButtons->currentIndex() == 1) && (_scrollBarAddLineButtons->currentIndex() == 1));
+}
+
 }

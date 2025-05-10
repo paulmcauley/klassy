@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2016 The Qt Company Ltd.
  * SPDX-FileCopyrightText: 2021 Noah Davis <noahadvs@gmail.com>
  * SPDX-FileCopyrightText: 2023 ivan tkachenko <me@ratijas.tk>
- * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
@@ -46,6 +46,7 @@
 #include <QMdiArea>
 #include <QMenu>
 #include <QMetaEnum>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
 #include <QRadioButton>
@@ -397,6 +398,7 @@ void Style::polish(QWidget *widget)
     if (qobject_cast<QScrollBar *>(widget)) {
         // remove opaque painting for scrollbars
         widget->setAttribute(Qt::WA_OpaquePaintEvent, false);
+        addEventFilter(widget);
 
     } else if (widget->parent() && widget->parent()->inherits("QComboBoxListView")) {
         widget->setAutoFillBackground(false);
@@ -1585,6 +1587,8 @@ bool Style::eventFilter(QObject *object, QEvent *event)
         return eventFilterMdiSubWindow(subWindow, event);
     } else if (auto commandLinkButton = qobject_cast<QCommandLinkButton *>(object)) {
         return eventFilterCommandLinkButton(commandLinkButton, event);
+    } else if (auto scrollBar = qobject_cast<QScrollBar *>(object)) {
+        return eventFilterScrollBar(scrollBar, event);
     }
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     else if (object == qApp && event->type() == QEvent::ApplicationPaletteChange) {
@@ -2127,6 +2131,114 @@ bool Style::eventFilterCommandLinkButton(QCommandLinkButton *button, QEvent *eve
 
     // continue with normal painting
     return false;
+}
+
+bool Style::eventFilterScrollBar(QScrollBar *scrollBar, QEvent *event)
+{
+    if (shouldAutoHideArrows(scrollBar)) {
+        if (event->type() == QEvent::MouseButtonPress) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+
+            QStyleOptionSlider opt;
+            _helper->initScrollBarStyleOption(scrollBar, &opt);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QPoint click = mouseEvent->position().toPoint();
+#else
+            QPoint click = mouseEvent->pos();
+#endif
+            if (hitTestComplexControl(CC_ScrollBar, &opt, click, scrollBar) == SC_ScrollBarSlider) {
+                bool horizontal = scrollBar->orientation() == Qt::Orientation::Horizontal;
+                QRect sr = subControlRect(QStyle::CC_ScrollBar, &opt, QStyle::SC_ScrollBarSlider, scrollBar);
+                int clickOffset = horizontal ? (click.x() - sr.x()) : (click.y() - sr.y());
+
+                // adjust the clickOffset so that dragging over the space where the arrow resides initially results in instantaneous scrolling
+                if (opt.sliderPosition <= opt.minimum && opt.sliderPosition != opt.maximum) {
+                    QRect grShownArrows = scrollBarSubControlRect(&opt,
+                                                                  QStyle::SC_ScrollBarGroove,
+                                                                  scrollBar,
+                                                                  OverrideAutoHideArrows::ShowArrow,
+                                                                  OverrideAutoHideArrows::ShowArrow);
+                    QRect grHiddenSubLine = scrollBarSubControlRect(&opt,
+                                                                    QStyle::SC_ScrollBarGroove,
+                                                                    scrollBar,
+                                                                    OverrideAutoHideArrows::HideArrow,
+                                                                    OverrideAutoHideArrows::ShowArrow);
+                    if (horizontal) {
+                        clickOffset -= (grShownArrows.left() - grHiddenSubLine.left());
+                    } else {
+                        clickOffset -= (grShownArrows.top() - grHiddenSubLine.top());
+                    }
+                } else if (opt.sliderPosition >= opt.maximum && opt.sliderPosition != opt.minimum) {
+                    QRect grShownArrows = scrollBarSubControlRect(&opt,
+                                                                  QStyle::SC_ScrollBarGroove,
+                                                                  scrollBar,
+                                                                  OverrideAutoHideArrows::ShowArrow,
+                                                                  OverrideAutoHideArrows::ShowArrow);
+                    QRect grHiddenAddLine = scrollBarSubControlRect(&opt,
+                                                                    QStyle::SC_ScrollBarGroove,
+                                                                    scrollBar,
+                                                                    OverrideAutoHideArrows::ShowArrow,
+                                                                    OverrideAutoHideArrows::HideArrow);
+                    if (horizontal) {
+                        clickOffset -= (grShownArrows.right() - grHiddenAddLine.right());
+                    } else {
+                        clickOffset -= (grShownArrows.bottom() - grHiddenAddLine.bottom());
+                    }
+                }
+
+                scrollBar->setProperty("_klassySliderClickOffset", clickOffset);
+            }
+        }
+
+        else if (event->type() == QEvent::MouseMove && scrollBar->isSliderDown()) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QPoint click = mouseEvent->position().toPoint();
+#else
+            QPoint click = mouseEvent->pos();
+#endif
+            // modified from https://github.com/qt/qtbase/blob/dev/src/widgets/widgets/qscrollbar.cpp for Klassy
+            int newSliderPosition = scrollBarPixelPosToRangeValue(scrollBar,
+                                                                  (scrollBar->orientation() == Qt::Orientation::Horizontal ? click.x() : click.y())
+                                                                      - scrollBar->property("_klassySliderClickOffset").toInt());
+            scrollBar->setSliderPosition(newSliderPosition);
+            event->setAccepted(true);
+            return true;
+
+        } else if (event->type() == QEvent::MouseButtonRelease) {
+            scrollBar->setProperty("_klassySliderClickOffset", QVariant());
+        }
+    }
+    return false;
+}
+
+// modified from https://github.com/qt/qtbase/blob/dev/src/widgets/widgets/qscrollbar.cpp for Klassy
+int Style::scrollBarPixelPosToRangeValue(QScrollBar *scrollBar, int pos) const
+{
+    QStyleOptionSlider opt;
+    _helper->initScrollBarStyleOption(scrollBar, &opt);
+
+    QRect srShownArrows =
+        scrollBarSubControlRect(&opt, QStyle::SC_ScrollBarSlider, scrollBar, OverrideAutoHideArrows::ShowArrow, OverrideAutoHideArrows::ShowArrow);
+    QRect grShownArrows =
+        scrollBarSubControlRect(&opt, QStyle::SC_ScrollBarGroove, scrollBar, OverrideAutoHideArrows::ShowArrow, OverrideAutoHideArrows::ShowArrow);
+
+    int sliderMin, sliderMax, sliderLength;
+
+    if (opt.orientation == Qt::Horizontal) {
+        sliderLength = srShownArrows.width();
+        sliderMin = grShownArrows.x();
+        sliderMax = grShownArrows.right() - sliderLength + 1;
+        if (scrollBar->layoutDirection() == Qt::RightToLeft)
+            opt.upsideDown = !opt.upsideDown;
+    } else {
+        sliderLength = srShownArrows.height();
+        sliderMin = grShownArrows.y();
+        sliderMax = grShownArrows.bottom() - sliderLength + 1;
+    }
+
+    return QStyle::sliderValueFromPosition(opt.minimum, opt.maximum, pos - sliderMin, sliderMax - sliderMin, opt.upsideDown);
 }
 
 //_____________________________________________________________________
@@ -3184,7 +3296,11 @@ QRect Style::scrollBarInternalSubControlRect(const QStyleOptionComplex *option, 
 }
 
 //___________________________________________________________________________________________________________________
-QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubControl subControl, const QWidget *widget) const
+QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option,
+                                     SubControl subControl,
+                                     const QWidget *widget,
+                                     OverrideAutoHideArrows overrideHideSubLine,
+                                     OverrideAutoHideArrows overrideHideAddLine) const
 {
     // cast option and check
     const auto sliderOption(qstyleoption_cast<const QStyleOptionSlider *>(option));
@@ -3195,6 +3311,7 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubContr
     // get relevant state
     const State &state(option->state);
     const bool horizontal(state & State_Horizontal);
+    const bool autoHideArrows(shouldAutoHideArrows(widget));
 
     switch (subControl) {
     case SC_ScrollBarSubLine:
@@ -3202,28 +3319,74 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubContr
         return scrollBarInternalSubControlRect(option, subControl);
 
     case SC_ScrollBarGroove: {
-        auto topRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarSubLine));
-        auto bottomRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarAddLine));
+        // bools marking whether to auto-hide the arrows
+        bool enlargeOverSubLine = (sliderOption->minimum == sliderOption->maximum) || overrideHideSubLine == OverrideAutoHideArrows::HideArrow
+            || (autoHideArrows && overrideHideSubLine != OverrideAutoHideArrows::ShowArrow && (sliderOption->sliderPosition <= (sliderOption->minimum)));
+        bool enlargeOverAddLine = (sliderOption->minimum == sliderOption->maximum) || overrideHideAddLine == OverrideAutoHideArrows::HideArrow
+            || (autoHideArrows && overrideHideAddLine != OverrideAutoHideArrows::ShowArrow && (sliderOption->sliderPosition >= (sliderOption->maximum)));
 
         QPoint topLeftCorner;
         QPoint botRightCorner;
 
+        QRect subLineRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarSubLine));
+        QRect addLineRect = visualRect(option, scrollBarInternalSubControlRect(option, SC_ScrollBarAddLine));
+
         if (horizontal) {
-            topLeftCorner = QPoint(topRect.right() + 1, topRect.top());
-            botRightCorner = QPoint(bottomRect.left() - 1, topRect.bottom());
+            if (_subLineButtons == ScrollBarButtonType::NoButton) {
+                topLeftCorner = QPoint(subLineRect.left() + Metrics::ScrollBar_TopBottomMargins, subLineRect.top());
+            } else if (_subLineButtons == ScrollBarButtonType::SingleButton) {
+                if (enlargeOverSubLine)
+                    topLeftCorner = QPoint(subLineRect.left() + Metrics::ScrollBar_TopBottomMargins, subLineRect.top());
+                else
+                    topLeftCorner = QPoint(subLineRect.right() + 1 + StyleConfigData::scrollBarTopOneButtonSpacing(), subLineRect.top());
+            } else if (_subLineButtons == ScrollBarButtonType::DoubleButton) {
+                topLeftCorner = QPoint(subLineRect.right() + 1 + StyleConfigData::scrollBarTopTwoButtonSpacing(), subLineRect.top());
+            }
+
+            if (_addLineButtons == ScrollBarButtonType::NoButton) {
+                botRightCorner = QPoint(addLineRect.right() + 1 - Metrics::ScrollBar_TopBottomMargins, subLineRect.bottom() + 1);
+            } else if (_addLineButtons == ScrollBarButtonType::SingleButton) {
+                if (enlargeOverAddLine)
+                    botRightCorner = QPoint(addLineRect.right() + 1 - Metrics::ScrollBar_TopBottomMargins, subLineRect.bottom() + 1);
+                else
+                    botRightCorner = QPoint(addLineRect.left() - StyleConfigData::scrollBarBottomOneButtonSpacing(), subLineRect.bottom() + 1);
+            } else if (_addLineButtons == ScrollBarButtonType::DoubleButton) {
+                botRightCorner = QPoint(addLineRect.left() - StyleConfigData::scrollBarBottomTwoButtonSpacing(), subLineRect.bottom() + 1);
+            }
 
         } else {
-            topLeftCorner = QPoint(topRect.left(), topRect.bottom() + 1);
-            botRightCorner = QPoint(topRect.right(), bottomRect.top() - 1);
+            if (_subLineButtons == ScrollBarButtonType::NoButton) {
+                topLeftCorner = QPoint(subLineRect.left(), subLineRect.top() + Metrics::ScrollBar_TopBottomMargins);
+            } else if (_subLineButtons == ScrollBarButtonType::SingleButton) {
+                if (enlargeOverSubLine)
+                    topLeftCorner = QPoint(subLineRect.left(), subLineRect.top() + Metrics::ScrollBar_TopBottomMargins);
+                else
+                    topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + StyleConfigData::scrollBarTopOneButtonSpacing());
+            } else if (_subLineButtons == ScrollBarButtonType::DoubleButton) {
+                topLeftCorner = QPoint(subLineRect.left(), subLineRect.bottom() + 1 + StyleConfigData::scrollBarTopTwoButtonSpacing());
+            }
+
+            if (_addLineButtons == ScrollBarButtonType::NoButton) {
+                botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.bottom() + 1 - Metrics::ScrollBar_TopBottomMargins);
+            } else if (_addLineButtons == ScrollBarButtonType::SingleButton) {
+                if (enlargeOverAddLine)
+                    botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.bottom() + 1 - Metrics::ScrollBar_TopBottomMargins);
+                else
+                    botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - StyleConfigData::scrollBarBottomOneButtonSpacing());
+            } else if (_addLineButtons == ScrollBarButtonType::DoubleButton) {
+                botRightCorner = QPoint(subLineRect.right() + 1, addLineRect.top() - StyleConfigData::scrollBarBottomTwoButtonSpacing());
+            }
         }
 
         // define rect
-        return visualRect(option, QRect(topLeftCorner, botRightCorner));
+        // all +1s above are due to QRect.bottomRight() not being the true bottomRight
+        // bottomRight constructor is also weird in QRect so have to specify -1 for bottomRight point
+        return visualRect(option, QRect(topLeftCorner, botRightCorner - QPoint(1, 1)));
     }
 
     case SC_ScrollBarSlider: {
         // handle RTL here to unreflect things if need be
-        auto groove = visualRect(option, subControlRect(CC_ScrollBar, option, SC_ScrollBarGroove, widget));
+        auto groove = visualRect(option, scrollBarSubControlRect(option, SC_ScrollBarGroove, widget, overrideHideSubLine, overrideHideAddLine));
 
         if (sliderOption->minimum == sliderOption->maximum) {
             return groove;
@@ -3245,10 +3408,14 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubContr
         int pos = qRound(qreal(sliderOption->sliderPosition - sliderOption->minimum) / (sliderOption->maximum - sliderOption->minimum) * space);
         if (sliderOption->upsideDown)
             pos = space - pos;
-        if (horizontal)
+
+        // return the slider rect, accounting for any enlargement of slider at extremities
+        if (horizontal) {
             return visualRect(option, QRect(groove.left() + pos, groove.top(), sliderSize, groove.height()));
-        else
+
+        } else {
             return visualRect(option, QRect(groove.left(), groove.top() + pos, groove.width(), sliderSize));
+        }
     }
 
     case SC_ScrollBarSubPage: {
@@ -3277,6 +3444,35 @@ QRect Style::scrollBarSubControlRect(const QStyleOptionComplex *option, SubContr
     default:
         return ParentStyleClass::subControlRect(CC_ScrollBar, option, subControl, widget);
     }
+}
+
+// there are some edge cases where extending the scrollBar slider will look wrong such as the Kate/KDevelop ScrollBar Minimap
+// Also in LibreOffice, auto-hiding does not work -- LibreOffice uses a null widget
+// do not auto-hide arrows with slider extension in these cases
+bool Style::scrollBarAutoHideArrowsException(const QWidget *widget) const
+{
+    bool exception = false;
+
+    if (widget) {
+        QList<const char *> exceptionClassNames = {"KateScrollBar"};
+        for (int i = 0; i < exceptionClassNames.size(); i++) {
+            if (widget->inherits(exceptionClassNames[i])) {
+                exception = true;
+                break;
+            }
+        }
+    }
+
+    return exception;
+}
+
+bool Style::shouldAutoHideArrows(const QWidget *widget) const
+{
+    if (StyleConfigData::animationsEnabled() && StyleConfigData::scrollBarAutoHideArrows() && _subLineButtons == ScrollBarButtonType::SingleButton
+        && _addLineButtons == ScrollBarButtonType::SingleButton && !scrollBarAutoHideArrowsException(widget))
+        return true;
+    else
+        return false;
 }
 
 //___________________________________________________________________________________________________________________
@@ -6185,7 +6381,7 @@ bool Style::drawScrollBarSliderControl(const QStyleOption *option, QPainter *pai
     if (option->state & State_Horizontal) {
         rect.setTop(PenWidth::Frame);
     } else if (option->direction == Qt::RightToLeft) {
-        rect.setRight(rect.right() - PenWidth::Frame);
+        rect.setRight(rect.right() - qRound(PenWidth::Frame));
     } else {
         rect.setLeft(PenWidth::Frame);
     }
@@ -6207,10 +6403,17 @@ bool Style::drawScrollBarSliderControl(const QStyleOption *option, QPainter *pai
     QRect handleRect;
     const State &state(option->state);
     const bool horizontal(state & State_Horizontal);
-    if (horizontal)
-        handleRect = centerRect(rect, rect.width(), Metrics::ScrollBar_SliderWidth);
-    else
-        handleRect = centerRect(rect, Metrics::ScrollBar_SliderWidth, rect.height());
+    if (horizontal) {
+        if (widgetMouseOver) {
+            handleRect = centerRect(rect, rect.width(), Metrics::ScrollBar_SliderWidthMouseOver);
+        } else
+            handleRect = centerRect(rect, rect.width(), Metrics::ScrollBar_SliderWidthMouseNotOver);
+    } else {
+        if (widgetMouseOver) {
+            handleRect = centerRect(rect, Metrics::ScrollBar_SliderWidthMouseOver, rect.height());
+        } else
+            handleRect = centerRect(rect, Metrics::ScrollBar_SliderWidthMouseNotOver, rect.height());
+    }
 
     const bool enabled(state & State_Enabled);
     const bool mouseOver(enabled && (state & State_MouseOver));
@@ -6250,6 +6453,9 @@ bool Style::drawScrollBarAddLineControl(const QStyleOption *option, QPainter *pa
         return true;
     }
 
+    if ((sliderOption->minimum == sliderOption->maximum) || (shouldAutoHideArrows(widget) && (sliderOption->sliderPosition >= (sliderOption->maximum))))
+        return true;
+
     const State &state(option->state);
     const bool horizontal(state & State_Horizontal);
     const bool reverseLayout(option->direction == Qt::RightToLeft);
@@ -6261,7 +6467,7 @@ bool Style::drawScrollBarAddLineControl(const QStyleOption *option, QPainter *pa
     if (option->state & State_Horizontal) {
         rect.setTop(PenWidth::Frame);
     } else if (option->direction == Qt::RightToLeft) {
-        rect.setRight(rect.right() - PenWidth::Frame);
+        rect.setRight(rect.right() - qRound(PenWidth::Frame));
     } else {
         rect.setLeft(PenWidth::Frame);
     }
@@ -6304,10 +6510,9 @@ bool Style::drawScrollBarAddLineControl(const QStyleOption *option, QPainter *pa
             if (reverseLayout)
                 _helper->renderArrow(painter, rect, color, ArrowLeft);
             else
-                _helper->renderArrow(painter, rect.translated(1, 0), color, ArrowRight);
-
+                _helper->renderArrow(painter, rect, color, ArrowRight);
         } else
-            _helper->renderArrow(painter, rect.translated(0, 1), color, ArrowDown);
+            _helper->renderArrow(painter, rect, color, ArrowDown);
     }
 
     return true;
@@ -6327,6 +6532,9 @@ bool Style::drawScrollBarSubLineControl(const QStyleOption *option, QPainter *pa
         return true;
     }
 
+    if ((sliderOption->minimum == sliderOption->maximum) || (shouldAutoHideArrows(widget) && (sliderOption->sliderPosition <= (sliderOption->minimum))))
+        return true;
+
     const State &state(option->state);
     const bool horizontal(state & State_Horizontal);
     const bool reverseLayout(option->direction == Qt::RightToLeft);
@@ -6338,7 +6546,7 @@ bool Style::drawScrollBarSubLineControl(const QStyleOption *option, QPainter *pa
     if (option->state & State_Horizontal) {
         rect.setTop(PenWidth::Frame);
     } else if (option->direction == Qt::RightToLeft) {
-        rect.setRight(rect.right() - PenWidth::Frame);
+        rect.setRight(rect.right() - qRound(PenWidth::Frame));
     } else {
         rect.setLeft(PenWidth::Frame);
     }
@@ -6379,7 +6587,7 @@ bool Style::drawScrollBarSubLineControl(const QStyleOption *option, QPainter *pa
         color = scrollBarArrowColor(&copy, SC_ScrollBarSubLine, widget);
         if (horizontal) {
             if (reverseLayout)
-                _helper->renderArrow(painter, rect.translated(1, 0), color, ArrowRight);
+                _helper->renderArrow(painter, rect, color, ArrowRight);
             else
                 _helper->renderArrow(painter, rect, color, ArrowLeft);
 
@@ -7897,14 +8105,16 @@ bool Style::drawScrollBarComplexControl(const QStyleOptionComplex *option, QPain
         opacity = 1;
     }
 
-    QRect separatorRect;
-    if (option->state & State_Horizontal) {
-        separatorRect = QRect(0, 0, option->rect.width(), 1);
-    } else {
-        separatorRect = alignedRect(option->direction, Qt::AlignLeft, QSize(PenWidth::Frame, option->rect.height()), option->rect);
-    }
+    if (StyleConfigData::scrollBarSeparator()) {
+        QRect separatorRect;
+        if (option->state & State_Horizontal) {
+            separatorRect = QRect(0, 0, option->rect.width(), PenWidth::Frame);
+        } else {
+            separatorRect = alignedRect(option->direction, Qt::AlignLeft, QSize(PenWidth::Frame, option->rect.height()), option->rect);
+        }
 
-    _helper->renderScrollBarBorder(painter, separatorRect, _helper->alphaColor(option->palette.color(QPalette::Text), Metrics::Bias_Default));
+        _helper->renderScrollBarBorder(painter, separatorRect, _helper->alphaColor(option->palette.color(QPalette::Text), Metrics::Bias_Default));
+    }
 
     // render full groove directly, rather than using the addPage and subPage control element methods
     if ((!StyleConfigData::animationsEnabled() || mouseOver || animated) && option->subControls & SC_ScrollBarGroove) {
@@ -7915,7 +8125,7 @@ bool Style::drawScrollBarComplexControl(const QStyleOptionComplex *option, QPain
         if (option->state & State_Horizontal) {
             grooveRect.setTop(PenWidth::Frame);
         } else if (option->direction == Qt::RightToLeft) {
-            grooveRect.setRight(grooveRect.right() - PenWidth::Frame);
+            grooveRect.setRight(grooveRect.right() - qRound(PenWidth::Frame));
         } else {
             grooveRect.setLeft(PenWidth::Frame);
         }
@@ -7925,10 +8135,17 @@ bool Style::drawScrollBarComplexControl(const QStyleOptionComplex *option, QPain
         const auto &state(option->state);
         const bool horizontal(state & State_Horizontal);
 
-        if (horizontal)
-            grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidth);
-        else
-            grooveRect = centerRect(grooveRect, Metrics::ScrollBar_SliderWidth, grooveRect.height());
+        if (horizontal) {
+            if (mouseOver) {
+                grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidthMouseOver);
+            } else
+                grooveRect = centerRect(grooveRect, grooveRect.width(), Metrics::ScrollBar_SliderWidthMouseNotOver);
+        } else {
+            if (mouseOver) {
+                grooveRect = centerRect(grooveRect, Metrics::ScrollBar_SliderWidthMouseOver, grooveRect.height());
+            } else
+                grooveRect = centerRect(grooveRect, Metrics::ScrollBar_SliderWidthMouseNotOver, grooveRect.height());
+        }
 
         // render
         _helper->renderScrollBarGroove(painter, grooveRect, color);
@@ -8197,13 +8414,15 @@ QColor Style::scrollBarArrowColor(const QStyleOptionSlider *option, const SubCon
     else if (option->styleObject)
         widgetMouseOver = option->styleObject->property("hover").toBool();
 
+    bool autoHideArrows = shouldAutoHideArrows(widget);
+
     // check enabled state
     const bool enabled(option->state & State_Enabled);
     if (!enabled) {
-        if (StyleConfigData::animationsEnabled()) {
+        if (autoHideArrows) {
             // finally, global opacity when ScrollBarShowOnMouseOver
             const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
-            if (globalOpacity >= 0)
+            if (globalOpacity >= 0 && widgetMouseOver)
                 color.setAlphaF(globalOpacity);
             // no mouse over and no animation in progress, don't draw arrows at all
             else if (!widgetMouseOver)
@@ -8215,10 +8434,10 @@ QColor Style::scrollBarArrowColor(const QStyleOptionSlider *option, const SubCon
         || (control == SC_ScrollBarAddLine && option->sliderValue == option->maximum)) {
         // manually disable arrow, to indicate that scrollbar is at limit
         color = _helper->arrowColor(palette, QPalette::Disabled, QPalette::WindowText);
-        if (StyleConfigData::animationsEnabled()) {
+        if (autoHideArrows) {
             // finally, global opacity when ScrollBarShowOnMouseOver
             const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
-            if (globalOpacity >= 0)
+            if (globalOpacity >= 0 && widgetMouseOver)
                 color.setAlphaF(globalOpacity);
             // no mouse over and no animation in progress, don't draw arrows at all
             else if (!widgetMouseOver)
@@ -8263,10 +8482,10 @@ QColor Style::scrollBarArrowColor(const QStyleOptionSlider *option, const SubCon
         }
     }
 
-    if (StyleConfigData::animationsEnabled()) {
+    if (autoHideArrows) {
         // finally, global opacity when ScrollBarShowOnMouseOver
         const qreal globalOpacity(_animations->scrollBarEngine().opacity(widget, QStyle::SC_ScrollBarGroove));
-        if (globalOpacity >= 0)
+        if (globalOpacity >= 0 && widgetMouseOver)
             color.setAlphaF(globalOpacity);
         // no mouse over and no animation in progress, don't draw arrows at all
         else if (!widgetMouseOver)

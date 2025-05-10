@@ -51,10 +51,13 @@ protected Q_SLOTS:
 
     //* update modified state when option is checked/unchecked
     void updateChanged();
+
     void kPageWidgetChanged(KPageWidgetItem *current, KPageWidgetItem *before);
 
     void setFrameCustomCornerRadiusVisible();
 
+    //* enable/disable _autoHideArrows checkbox depending on if scrollbar arrow button type is selected
+    void setEnabledAutoHideArrows();
 
 private:
     bool isDefaults();
@@ -62,4 +65,5 @@ private:
     //* kconfiguration object
     KSharedConfig::Ptr _configuration;
 };
+
 }

@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -133,6 +134,8 @@ public:
     bool eventFilterDockWidget(QDockWidget *, QEvent *);
     bool eventFilterMdiSubWindow(QMdiSubWindow *, QEvent *);
     bool eventFilterCommandLinkButton(QCommandLinkButton *, QEvent *);
+    bool eventFilterScrollBar(QScrollBar *scrollBar, QEvent *event);
+    int scrollBarPixelPosToRangeValue(QScrollBar *scrollBar, int pos) const;
     bool eventFilterDialogButtonBox(QDialogButtonBox *, QEvent *);
 
     //* install event filter to object, in a unique way
@@ -204,7 +207,19 @@ private:
     QRect comboBoxSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
     QRect spinBoxSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
     QRect scrollBarInternalSubControlRect(const QStyleOptionComplex *, SubControl) const;
-    QRect scrollBarSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
+
+    enum class OverrideAutoHideArrows {
+        NoOverride,
+        ShowArrow,
+        HideArrow
+    };
+    QRect scrollBarSubControlRect(const QStyleOptionComplex *,
+                                  SubControl,
+                                  const QWidget *,
+                                  OverrideAutoHideArrows overrideHideSubLine = OverrideAutoHideArrows::NoOverride,
+                                  OverrideAutoHideArrows overrideHideAddLine = OverrideAutoHideArrows::NoOverride) const;
+    bool scrollBarAutoHideArrowsException(const QWidget *widget) const;
+    bool shouldAutoHideArrows(const QWidget *widget) const;
     QRect dialSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
     QRect sliderSubControlRect(const QStyleOptionComplex *, SubControl, const QWidget *) const;
 
