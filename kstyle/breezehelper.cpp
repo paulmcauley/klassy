@@ -1,6 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
@@ -1242,6 +1242,25 @@ void Helper::initSliderStyleOption(const QSlider *slider, QStyleOptionSlider *op
     // Can't fetch activeSubControls, because it's private API
 }
 
+// modified from https://github.com/qt/qtbase/blob/dev/src/widgets/widgets/qscrollbar.cpp for Klassy
+void Helper::initScrollBarStyleOption(const QScrollBar *scrollBar, QStyleOptionSlider *option) const
+{
+    option->initFrom(scrollBar);
+    option->subControls = QStyle::SC_None;
+    option->activeSubControls = QStyle::SC_None;
+    option->orientation = scrollBar->orientation();
+    option->minimum = scrollBar->minimum();
+    option->maximum = scrollBar->maximum();
+    option->sliderPosition = scrollBar->sliderPosition();
+    option->sliderValue = scrollBar->value();
+    option->singleStep = scrollBar->singleStep();
+    option->pageStep = scrollBar->pageStep();
+    option->upsideDown = scrollBar->invertedAppearance();
+    if (scrollBar->orientation() == Qt::Horizontal) {
+        option->state |= QStyle::State_Horizontal;
+    }
+}
+
 //______________________________________________________________________________
 QRectF Helper::pathForSliderHandleFocusFrame(QPainterPath &focusFramePath, const QRectF &rect, int hmargin, int vmargin) const
 {
@@ -1379,6 +1398,7 @@ void Helper::renderScrollBarHandle(QPainter *painter, const QRectF &rect, const 
     painter->setRenderHint(QPainter::Antialiasing, true);
 
     const QRectF baseRect(rect);
+    // const qreal radius( 0.5 * std::min({baseRect.width(), baseRect.height(), (qreal)Metrics::ScrollBar_SliderWidth}) );
 
     qreal radius;
     if (Metrics::Frame_FrameRadius < 0.4) {
@@ -1388,7 +1408,7 @@ void Helper::renderScrollBarHandle(QPainter *painter, const QRectF &rect, const 
     }
 
     painter->setPen(Qt::NoPen);
-    painter->setPen(QPen(transparentize(fg, Metrics::Bias_Default), 1.001));
+    painter->setPen(QPen(fg, 1.001));
     painter->setBrush(KColorUtils::overlayColors(bg, alphaColor(fg, 0.5)));
     painter->drawRoundedRect(strokedRect(baseRect), radius, radius);
 }

@@ -59,6 +59,9 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (light)](screenshots/thin_window_outline_light_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (light)")
 
+* Configurable scrollbars:
+> <img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif?raw=true "Default scrollbar animation")
+
 * Configurable animations
 
 * Ability to load icons from the system icon theme. `window-*-symbolic` icons are recommended for this purpose. If the icons have been designed properly with SVG CSS properties then they will be colourized by default. You can also force the colourization of any symbolic icon by checking the _Force-colourize icons_ window decoration setting.

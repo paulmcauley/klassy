@@ -1,12 +1,14 @@
 /*
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2020 Noah Davis <noahadvs@gmail.com>
+ * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #pragma once
 
+#include "breezestyleconfigdata.h"
 #include <QtGlobal>
 
 namespace Breeze
@@ -74,12 +76,16 @@ static constexpr int MenuBarItem_MarginWidth = 10;
 static constexpr int MenuBarItem_MarginHeight = 6;
 
 // scrollbars
-static constexpr int ScrollBar_Extend = 21;
-static constexpr int ScrollBar_SliderWidth = 6;
-static constexpr int ScrollBar_MinSliderHeight = 20;
-static constexpr int ScrollBar_NoButtonHeight = (ScrollBar_Extend - ScrollBar_SliderWidth) / 2;
-static constexpr int ScrollBar_SingleButtonHeight = ScrollBar_Extend;
-static constexpr int ScrollBar_DoubleButtonHeight = 2 * ScrollBar_Extend;
+static int const &ScrollBar_TopBottomMargins = StyleConfigData::scrollBarTopBottomMargins();
+static int const &ScrollBar_SliderWidthMouseOver = StyleConfigData::scrollBarSliderThicknessMouseOver();
+static int const &ScrollBar_SliderWidthMouseNotOver =
+    int(std::max(1.0, qreal(ScrollBar_SliderWidthMouseOver) * (qreal(StyleConfigData::scrollBarSliderThicknessMouseNotOverPercent()) / 100.0f)));
+static int const &ScrollBar_MinSliderHeight = StyleConfigData::scrollBarMinSliderHeight();
+static int const &ScrollBarSliderPadding = StyleConfigData::scrollBarSliderPadding();
+static int const &ScrollBar_Extend = int(ScrollBar_SliderWidthMouseOver + (ScrollBarSliderPadding * 2) + 1);
+static int ScrollBar_NoButtonHeight = (ScrollBar_Extend - ScrollBar_SliderWidthMouseOver) / 2 + ScrollBar_TopBottomMargins;
+static int const &ScrollBar_SingleButtonHeight = ScrollBar_Extend + ScrollBar_TopBottomMargins;
+static int const &ScrollBar_DoubleButtonHeight = 2 * ScrollBar_Extend + ScrollBar_TopBottomMargins;
 
 // toolbars
 static constexpr int ToolBar_FrameWidth = 0;
