@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>631</width>
+    <width>656</width>
     <height>520</height>
    </rect>
   </property>
@@ -303,7 +303,7 @@
               <string>&amp;Corner radius:</string>
              </property>
              <property name="buddy">
-              <cstring>_frameCustomCornerRadius</cstring>
+              <cstring>_frameCornerRadius</cstring>
              </property>
             </widget>
            </item>
@@ -400,6 +400,39 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
+        <layout class="QFormLayout" name="formLayout_4">
+         <property name="leftMargin">
+          <number>8</number>
+         </property>
+         <property name="topMargin">
+          <number>8</number>
+         </property>
+         <property name="rightMargin">
+          <number>8</number>
+         </property>
+         <property name="bottomMargin">
+          <number>8</number>
+         </property>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Scrollbar top/bottom margins:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QSpinBox" name="_scrollBarTopBottomMargins"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QCheckBox" name="_scrollBarSeparator">
+           <property name="text">
+            <string>Draw scrollbar separator</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
         <spacer name="verticalSpacer_6">
          <property name="orientation">
           <enum>Qt::Orientation::Vertical</enum>
@@ -423,17 +456,124 @@
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
            <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QLabel" name="_scrollBarSubLineLabel">
+            <item row="1" column="3">
+             <widget class="QStackedWidget" name="stackedWidget_2">
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
+              <widget class="QWidget" name="page_bottom_no_buttons">
+               <layout class="QFormLayout" name="formLayout_3"/>
+              </widget>
+              <widget class="QWidget" name="page_bottom_one_button">
+               <layout class="QFormLayout" name="formLayout_6">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_4">
+                  <property name="text">
+                   <string>Space between arrow and groove:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_scrollBarBottomOneButtonSpacing</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="_scrollBarBottomOneButtonSpacing">
+                  <property name="minimum">
+                   <number>-10</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_bottom_two_buttons">
+               <layout class="QFormLayout" name="formLayout_8">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_7">
+                  <property name="text">
+                   <string>Space between arrows and groove:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_scrollBarBottomTwoButtonSpacing</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="_scrollBarBottomTwoButtonSpacing">
+                  <property name="minimum">
+                   <number>-10</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QCheckBox" name="_autoHideArrows">
               <property name="text">
-               <string>&amp;Top arrow button type:</string>
+               <string>Auto-hide arrows</string>
               </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QStackedWidget" name="stackedWidget">
+              <property name="currentIndex">
+               <number>0</number>
               </property>
-              <property name="buddy">
-               <cstring>_scrollBarSubLineButtons</cstring>
-              </property>
+              <widget class="QWidget" name="page_top_no_buttons">
+               <layout class="QFormLayout" name="formLayout"/>
+              </widget>
+              <widget class="QWidget" name="page_top_one_button">
+               <layout class="QFormLayout" name="formLayout_5">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_3">
+                  <property name="text">
+                   <string>Space between arrow and groove:</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>_scrollBarTopOneButtonSpacing</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="_scrollBarTopOneButtonSpacing">
+                  <property name="minimum">
+                   <number>-10</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+              <widget class="QWidget" name="page_top_two_buttons">
+               <layout class="QFormLayout" name="formLayout_7">
+                <item row="0" column="1">
+                 <widget class="QSpinBox" name="_scrollBarTopTwoButtonSpacing">
+                  <property name="minimum">
+                   <number>-10</number>
+                  </property>
+                  <property name="maximum">
+                   <number>10</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="label_6">
+                  <property name="text">
+                   <string>Space between arrows and groove:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
              </widget>
             </item>
             <item row="0" column="1">
@@ -487,6 +627,19 @@
               </item>
              </widget>
             </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="_scrollBarSubLineLabel">
+              <property name="text">
+               <string>&amp;Top arrow button type:</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+              </property>
+              <property name="buddy">
+               <cstring>_scrollBarSubLineButtons</cstring>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="2">
              <spacer name="horizontalSpacer">
               <property name="orientation">
@@ -520,6 +673,120 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Groove/Slider</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <layout class="QFormLayout" name="formLayout_2">
+            <item row="1" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Slider thic&amp;kness when mouse is over:</string>
+              </property>
+              <property name="buddy">
+               <cstring>_scrollBarSliderThicknessMouseOver</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="_scrollBarSliderThicknessMouseOver">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Slider thickness when mouse &amp;is not over:</string>
+              </property>
+              <property name="buddy">
+               <cstring>_scrollBarSliderThicknessMouseNotOverPercent</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="_scrollBarSliderThicknessMouseNotOverPercent">
+              <property name="suffix">
+               <string> %</string>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>100</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QSpinBox" name="_scrollBarSliderPadding">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximum">
+               <number>20</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="0">
+             <widget class="QLabel" name="label_5">
+              <property name="text">
+               <string>Slider side padding:</string>
+              </property>
+              <property name="buddy">
+               <cstring>_scrollBarSliderPadding</cstring>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="1">
+             <widget class="QSpinBox" name="_scrollBarMinSliderHeight">
+              <property name="minimumSize">
+               <size>
+                <width>74</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>5</number>
+              </property>
+              <property name="maximum">
+               <number>80</number>
+              </property>
+              <property name="singleStep">
+               <number>2</number>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="label_8">
+              <property name="text">
+               <string>Slider minim&amp;um height:</string>
+              </property>
+              <property name="buddy">
+               <cstring>_scrollBarMinSliderHeight</cstring>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
        <item>
         <spacer name="verticalSpacer_4">
@@ -675,6 +942,9 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>_frameCornerRadius</tabstop>
+  <tabstop>_frameCustomCornerRadius</tabstop>
   <tabstop>_tabBarDrawCenteredTabs</tabstop>
   <tabstop>_buttonGradient</tabstop>
   <tabstop>_toolBarDrawItemSeparator</tabstop>
@@ -686,11 +956,118 @@
   <tabstop>_dockWidgetDrawFrame</tabstop>
   <tabstop>_sidePanelDrawFrame</tabstop>
   <tabstop>_menuItemDrawThinFocus</tabstop>
+  <tabstop>_scrollBarTopBottomMargins</tabstop>
   <tabstop>_scrollBarSubLineButtons</tabstop>
+  <tabstop>_scrollBarTopOneButtonSpacing</tabstop>
+  <tabstop>_scrollBarTopTwoButtonSpacing</tabstop>
   <tabstop>_scrollBarAddLineButtons</tabstop>
+  <tabstop>_scrollBarBottomOneButtonSpacing</tabstop>
+  <tabstop>_scrollBarBottomTwoButtonSpacing</tabstop>
+  <tabstop>_autoHideArrows</tabstop>
+  <tabstop>_scrollBarSliderThicknessMouseOver</tabstop>
+  <tabstop>_scrollBarSliderThicknessMouseNotOverPercent</tabstop>
+  <tabstop>_scrollBarSliderPadding</tabstop>
+  <tabstop>_scrollBarMinSliderHeight</tabstop>
   <tabstop>_menuOpacity</tabstop>
   <tabstop>graphicsView</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>_scrollBarSubLineButtons</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>stackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>612</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_scrollBarAddLineButtons</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>stackedWidget_2</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>301</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>612</x>
+     <y>241</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_scrollBarTopOneButtonSpacing</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>_scrollBarBottomOneButtonSpacing</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_scrollBarBottomOneButtonSpacing</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>_scrollBarTopOneButtonSpacing</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_scrollBarTopTwoButtonSpacing</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>_scrollBarBottomTwoButtonSpacing</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>171</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>221</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>_scrollBarBottomTwoButtonSpacing</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>_scrollBarTopTwoButtonSpacing</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>392</x>
+     <y>221</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>392</x>
+     <y>171</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

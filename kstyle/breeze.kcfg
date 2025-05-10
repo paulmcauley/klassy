@@ -50,13 +50,76 @@
       <default>800</default>
     </entry>
 
-    <!-- scrollbar buttons -->
+    <!-- scrollbar -->
+    
+    <entry name="ScrollBarSeparator" type="Bool">
+      <default>false</default>
+    </entry>
+
+    <entry name="ScrollBarTopBottomMargins" type = "Int">
+       <default>4</default>
+       <min>0</min>
+       <max>20</max>
+    </entry>
+    
     <entry name="ScrollBarAddLineButtons" type="Int">
-      <default>0</default>
+      <default>1</default>
     </entry>
 
     <entry name="ScrollBarSubLineButtons" type="Int">
-      <default>0</default>
+      <default>1</default>
+    </entry>
+    
+    <entry name="ScrollBarTopOneButtonSpacing" type = "Int">
+       <default>-4</default>
+       <min>-10</min>
+       <max>10</max>
+    </entry>
+    
+    <entry name="ScrollBarBottomOneButtonSpacing" type = "Int">
+       <default>-4</default>
+       <min>-10</min>
+       <max>10</max>
+    </entry>
+    
+    <entry name="ScrollBarTopTwoButtonSpacing" type = "Int">
+       <default>-1</default>
+       <min>-10</min>
+       <max>10</max>
+    </entry>
+    
+    <entry name="ScrollBarBottomTwoButtonSpacing" type = "Int">
+       <default>-1</default>
+       <min>-10</min>
+       <max>10</max>
+    </entry>
+    
+    <entry name="ScrollBarAutoHideArrows" type="Bool">
+      <default>true</default>
+    </entry>
+    
+    <entry name="ScrollBarSliderThicknessMouseOver" type = "Int">
+       <default>8</default>
+       <min>1</min>
+       <max>50</max>
+    </entry>
+    
+    <entry name="ScrollBarSliderThicknessMouseNotOverPercent" type = "Int">
+       <default>75</default>
+       <min>1</min>
+       <max>100</max>
+    </entry>
+    
+    <entry name="ScrollBarSliderPadding" type = "Int">
+       <default>5</default>
+       <min>0</min>
+       <max>20</max>
+    </entry>
+    
+    <entry name="ScrollBarMinSliderHeight" type = "Int">
+       <default>36</default>
+       <min>5</min>
+       <max>80</max>
     </entry>
 
     <!-- mnemonics -->
