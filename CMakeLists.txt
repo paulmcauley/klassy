@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 project(klassy)
-set(PROJECT_VERSION "6.3")
+set(PROJECT_VERSION "6.4")
 set(PROJECT_VERSION_MAJOR 6)
 
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=1)

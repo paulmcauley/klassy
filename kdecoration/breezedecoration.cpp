@@ -1216,7 +1216,7 @@ void Decoration::calculateWindowShape()
             m_windowPath.addRect(rect());
 
     } else { // shaded
-        m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
+        m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), nextState()->borders().top()));
 
         if (isMaximized() || !s->isAlphaChannelSupported()) {
             m_windowPath.addRect(m_titleRect);
@@ -1232,7 +1232,7 @@ void Decoration::calculateTitleBarShape()
     auto s = settings();
 
     // set titleBar geometry and path
-    m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
+    m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), nextState()->borders().top()));
 
     m_titleBarPath.clear(); // clear the path for subsequent calls to this function
     if (isMaximized() || !s->isAlphaChannelSupported()) {
