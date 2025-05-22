@@ -5,6 +5,7 @@
 [Installation](#installation)  
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)  
+>[Gentoo Linux package](#gentoo-linux-package)
 
 [System icon theme](#icons)  
 [Klassy Settings](#klassy-settings)  
@@ -132,6 +133,36 @@ Uninstall build script:
 
 ```
 ./uninstall.sh
+```
+
+&nbsp;
+### Gentoo Linux package
+There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
+You can install Klassy on Gentoo Linux by following these steps.
+
+First, install the `eselect repository` module with:
+```
+sudo emerge -av app-eselect/eselect-repository
+```
+
+Enable the `guru` repository by executing:
+```
+sudo eselect repository enable guru
+```
+
+Sync the repositories:
+```
+sudo emaint sync -r guru
+```
+
+Add the package keywords to `/etc/portage/package.accept_keywords`:
+```
+echo "=gui-apps/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy
+```
+
+Finally, compile & install the package with:
+```
+sudo emerge -av =gui-apps/klassy-9999::guru
 ```
 
 &nbsp;
