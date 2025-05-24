@@ -83,7 +83,7 @@ void Animations::setupEngines()
 }
 
 //____________________________________________________________
-void Animations::registerWidget(QWidget *widget) const
+void Animations::registerWidget(QObject *widget) const
 {
     if (!widget) {
         return;
@@ -102,37 +102,37 @@ void Animations::registerWidget(QWidget *widget) const
     // for optimization, one should put with most used widgets here first
 
     // buttons
-    if (qobject_cast<QToolButton *>(widget)) {
-        _toolButtonEngine->registerWidget(widget, AnimationHover | AnimationFocus);
-        _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+    if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
+        _toolButtonEngine->registerWidget(toolButton, AnimationHover | AnimationFocus);
+        _widgetStateEngine->registerWidget(toolButton, AnimationHover | AnimationFocus);
 
     } else if (qobject_cast<QCheckBox *>(widget) || qobject_cast<QRadioButton *>(widget)) {
         _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus | AnimationPressed);
 
-    } else if (qobject_cast<QAbstractButton *>(widget)) {
+    } else if (auto button = qobject_cast<QAbstractButton *>(widget)) {
         // register to toolbox engine if needed
-        if (qobject_cast<QToolBox *>(widget->parent())) {
-            _toolBoxEngine->registerWidget(widget);
+        if (auto toolBox = qobject_cast<QToolBox *>(widget->parent())) {
+            _toolBoxEngine->registerWidget(toolBox);
         }
 
-        _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+        _widgetStateEngine->registerWidget(button, AnimationHover | AnimationFocus);
 
     }
 
     // groupboxes
     else if (QGroupBox *groupBox = qobject_cast<QGroupBox *>(widget)) {
         if (groupBox->isCheckable()) {
-            _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+            _widgetStateEngine->registerWidget(groupBox, AnimationHover | AnimationFocus);
         }
     }
 
     // sliders
-    else if (qobject_cast<QScrollBar *>(widget)) {
-        _scrollBarEngine->registerWidget(widget, AnimationHover | AnimationFocus);
-    } else if (qobject_cast<QSlider *>(widget)) {
-        _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus);
-    } else if (qobject_cast<QDial *>(widget)) {
-        _dialEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+    else if (auto scrollBar = qobject_cast<QScrollBar *>(widget)) {
+        _scrollBarEngine->registerWidget(scrollBar, AnimationHover | AnimationFocus);
+    } else if (auto slider = qobject_cast<QSlider *>(widget)) {
+        _widgetStateEngine->registerWidget(slider, AnimationHover | AnimationFocus);
+    } else if (auto dial = qobject_cast<QDial *>(widget)) {
+        _dialEngine->registerWidget(dial, AnimationHover | AnimationFocus);
     }
 
     // progress bar
@@ -163,24 +163,24 @@ void Animations::registerWidget(QWidget *widget) const
 
     // header views
     // need to come before abstract item view, otherwise is skipped
-    else if (qobject_cast<QHeaderView *>(widget)) {
-        _headerViewEngine->registerWidget(widget);
+    else if (auto headerView = qobject_cast<QHeaderView *>(widget)) {
+        _headerViewEngine->registerWidget(headerView);
     }
 
     // lists
-    else if (qobject_cast<QAbstractItemView *>(widget)) {
-        _inputWidgetEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+    else if (auto itemView = qobject_cast<QAbstractItemView *>(widget)) {
+        _inputWidgetEngine->registerWidget(itemView, AnimationHover | AnimationFocus);
     }
 
     // tabbar
-    else if (qobject_cast<QTabBar *>(widget)) {
-        _tabBarEngine->registerWidget(widget);
+    else if (auto tabBar = qobject_cast<QTabBar *>(widget)) {
+        _tabBarEngine->registerWidget(tabBar);
     }
 
     // scrollarea
     else if (QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea *>(widget)) {
-        if (scrollArea->frameShadow() == QFrame::Sunken && (widget->focusPolicy() & Qt::StrongFocus)) {
-            _inputWidgetEngine->registerWidget(widget, AnimationHover | AnimationFocus);
+        if (scrollArea->frameShadow() == QFrame::Sunken && (scrollArea->focusPolicy() & Qt::StrongFocus)) {
+            _inputWidgetEngine->registerWidget(scrollArea, AnimationHover | AnimationFocus);
         }
     }
 
@@ -191,7 +191,7 @@ void Animations::registerWidget(QWidget *widget) const
 }
 
 //____________________________________________________________
-void Animations::unregisterWidget(QWidget *widget) const
+void Animations::unregisterWidget(QObject *widget) const
 {
     if (!widget) {
         return;
