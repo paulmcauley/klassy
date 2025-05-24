@@ -31,10 +31,10 @@ public:
     explicit Animations();
 
     //* register animations corresponding to given widget, depending on its type.
-    void registerWidget(QWidget *widget) const;
+    void registerWidget(QObject *widget) const;
 
     /** unregister all animations associated to a widget */
-    void unregisterWidget(QWidget *widget) const;
+    void unregisterWidget(QObject *widget) const;
 
     //* enability engine
     [[nodiscard]] WidgetStateEngine &widgetEnabilityEngine() const
