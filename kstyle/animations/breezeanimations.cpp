@@ -101,6 +101,15 @@ void Animations::registerWidget(QObject *widget) const
     // install animation timers
     // for optimization, one should put with most used widgets here first
 
+    // KQuickStyleItem.
+    const QString elementType = widget->property("elementType").toString();
+    if (!elementType.isEmpty()) {
+        if (elementType == QLatin1String("checkbox") || elementType == QLatin1String("radiobutton")) {
+            _widgetStateEngine->registerWidget(widget, AnimationHover | AnimationFocus | AnimationPressed);
+        }
+        return;
+    }
+
     // buttons
     if (auto toolButton = qobject_cast<QToolButton *>(widget)) {
         _toolButtonEngine->registerWidget(toolButton, AnimationHover | AnimationFocus);
