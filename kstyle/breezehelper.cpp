@@ -1134,23 +1134,19 @@ void Helper::renderRadioButton(QPainter *painter,
     painter->setBrush(palette.text());
     painter->setPen(Qt::NoPen);
 
-    QRectF markerRect;
-    markerRect = frameRect.adjusted(6, 6, -6, -6);
-
-    qreal adjustFactor;
+    const int radius = (std::min(frameRect.width(), frameRect.height()) - 12) / 2;
+    const QPointF center = frameRect.center();
 
     // mark
     switch (state) {
     case RadioOn:
-        painter->drawEllipse(markerRect);
-
+        painter->drawEllipse(center, radius, radius);
         break;
-    case RadioAnimated:
-        adjustFactor = markerRect.height() * (1 - animation);
-        markerRect.adjust(adjustFactor, adjustFactor, -adjustFactor, -adjustFactor);
-        painter->drawEllipse(markerRect);
-
+    case RadioAnimated: {
+        const qreal animationRadius = radius * animation;
+        painter->drawEllipse(center, animationRadius, animationRadius);
         break;
+    }
     default:
         break;
     }
