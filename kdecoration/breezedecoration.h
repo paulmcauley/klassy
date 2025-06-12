@@ -64,7 +64,7 @@ public:
     }
 
     //* caption height
-    qreal captionHeight() const;
+    qreal captionHeight(const bool nextState = false) const;
 
     //*@name active state change animation
     //@{
@@ -197,7 +197,7 @@ private Q_SLOTS:
 
 private:
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect() const;
+    QPair<QRectF, Qt::Alignment> captionRect(const bool nextState = false) const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
