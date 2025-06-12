@@ -147,10 +147,6 @@ public:
 
     //@}
 
-public Q_SLOTS:
-    //* load configuration
-    void loadConfiguration();
-
 protected Q_SLOTS:
 
     //* update configuration
@@ -174,6 +170,9 @@ protected:
     }
 
 private:
+    //* load configuration
+    void loadConfiguration();
+
     bool isTabletMode() const;
 
     //*@name subelementRect specialized functions

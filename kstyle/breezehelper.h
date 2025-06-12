@@ -32,8 +32,6 @@ class QStyleOptionSlider;
 namespace Breeze
 {
 
-class Style;
-
 //* breeze style helper class.
 /** contains utility functions used at multiple places in both breeze style and breeze window decoration */
 class Helper : public QObject
@@ -42,7 +40,7 @@ class Helper : public QObject
 
 public:
     //* constructor
-    explicit Helper(KSharedConfig::Ptr, Style *parentStyle);
+    explicit Helper(KSharedConfig::Ptr);
 
     //* destructor
     virtual ~Helper()
@@ -408,16 +406,12 @@ protected:
     QPainterPath roundedPath(const QRectF &, Corners, qreal) const;
 
 private:
-    Style *_parentStyle;
-
     //* configuration
     KSharedConfig::Ptr _config;
 
     //* KWin configuration
     KSharedConfig::Ptr _kwinConfig;
-
     KSharedConfigPtr _colorSchemeConfig;
-    KConfigWatcher::Ptr _colorSchemeWatcher;
 
     //* decoration configuration
     QSharedPointer<InternalSettings> _decorationConfig;
