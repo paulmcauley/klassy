@@ -135,11 +135,11 @@ void ToolsAreaManager::tryUnregisterToolBar(QPointer<const QMainWindow> window, 
 
 void ToolsAreaManager::configUpdated()
 {
+    _palette = KColorScheme::createApplicationPalette(_helper->colorSchemeConfig());
+
     _colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_helper->colorSchemeConfig(), KColorScheme::Header);
 
     bool translucent = false;
-
-    _palette = KColorScheme::createApplicationPalette(_helper->colorSchemeConfig());
 
     if (_colorSchemeHasHeaderColor) {
         KColorScheme active = KColorScheme(QPalette::Active, KColorScheme::Header, _helper->colorSchemeConfig());

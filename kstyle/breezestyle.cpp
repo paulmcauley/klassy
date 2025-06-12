@@ -263,7 +263,7 @@ namespace Breeze
 
 //______________________________________________________________
 Style::Style()
-    : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig(), this))
+    : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig()))
     , _shadowHelper(std::make_unique<ShadowHelper>(_helper))
     , _animations(std::make_unique<Animations>())
     , _mnemonics(std::make_unique<Mnemonics>())
