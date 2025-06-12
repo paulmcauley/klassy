@@ -833,7 +833,7 @@ void Decoration::updateButtonsGeometry()
     qreal buttonSpacingLeft = 0;
     qreal buttonSpacingRight = 0;
     qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight();
-    qreal captionHeight = this->captionHeight();
+    qreal captionHeight = this->captionHeight(true);
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeightNormal = nextState()->borders().top();
@@ -1118,7 +1118,7 @@ void Decoration::updateButtonsGeometry()
             m_leftButtons->setPos(QPointF(0, vPadding));
 
         } else {
-            m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
+            m_leftButtons->setPos(QPointF(hPadding + nextState()->borders().left(), vPadding));
             firstButton->setFullHeightVisibleBackgroundOffset(QPointF(0, 0));
         }
     }
@@ -1143,7 +1143,7 @@ void Decoration::updateButtonsGeometry()
             m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
 
         } else {
-            m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
+            m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - nextState()->borders().right(), vPadding));
         }
     }
 
@@ -1216,7 +1216,7 @@ void Decoration::calculateWindowShape()
             m_windowPath.addRect(rect());
 
     } else { // shaded
-        m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), nextState()->borders().top()));
+        m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
 
         if (isMaximized() || !s->isAlphaChannelSupported()) {
             m_windowPath.addRect(m_titleRect);
@@ -1232,7 +1232,7 @@ void Decoration::calculateTitleBarShape()
     auto s = settings();
 
     // set titleBar geometry and path
-    m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), nextState()->borders().top()));
+    m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
 
     m_titleBarPath.clear(); // clear the path for subsequent calls to this function
     if (isMaximized() || !s->isAlphaChannelSupported()) {
@@ -1306,7 +1306,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     // draw caption
     painter->setFont(s->font());
     painter->setPen(fontColor());
-    const auto cR = captionRect();
+    const auto cR = captionRect(false);
     const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
     painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
 
@@ -1417,20 +1417,20 @@ void Decoration::onTabletModeChanged(bool mode)
 }
 
 //________________________________________________________________
-qreal Decoration::captionHeight() const
+qreal Decoration::captionHeight(const bool nextState) const
 {
-    qreal borderTop = nextState()->borders().top();
+    qreal borderTop = nextState ? this->nextState()->borders().top() : this->borderTop();
     return hideTitleBar() ? borderTop : borderTop - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
 }
 
 //________________________________________________________________
-QPair<QRectF, Qt::Alignment> Decoration::captionRect() const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect(const bool nextState) const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
         auto c = window();
-        qreal captionHeight = this->captionHeight();
+        qreal captionHeight = this->captionHeight(nextState);
 
         qreal padding = m_internalSettings->titleSidePadding() * settings()->smallSpacing();
 
