@@ -6072,7 +6072,7 @@ bool Style::drawMenuBarItemControl(const QStyleOption *option, QPainter *painter
         const auto textRect = option->fontMetrics.boundingRect(rect, textFlags, menuItemOption->text);
 
         // render text
-        const QPalette::ColorRole role = (useStrongFocus && sunken) ? QPalette::HighlightedText : QPalette::WindowText;
+        const QPalette::ColorRole role = (useStrongFocus && (sunken || selected)) ? QPalette::HighlightedText : QPalette::WindowText;
         drawItemText(painter, textRect, textFlags, palette, enabled, menuItemOption->text, role);
 
         // render outline
