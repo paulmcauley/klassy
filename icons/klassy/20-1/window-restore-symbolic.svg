@@ -11,5 +11,11 @@
         <g fill="#00ae49" fill-opacity="0.900008" font-family="Noto Sans" font-size="16.6667" font-style="normal" font-weight="400" stroke="none" transform="matrix(1.38889,0,0,1.38889,6.5,9.5)">
             <path d="M1.79964,-0.36036 L1.79964,-2.16 L2.16,-2.52036 L9.36,-2.52036 L9.72036,-2.16 L9.72036,5.04 L9.36,5.40036 L7.56036,5.40036 L7.56036,4.67964 L9.36,4.67964 L9.36,5.04 L8.99964,5.04 L8.99964,-2.16 L9.36,-2.16 L9.36,-1.79964 L2.16,-1.79964 L2.16,-2.16 L2.52036,-2.16 L2.52036,-0.36036 L1.79964,-0.36036" fill-rule="nonzero" vector-effect="none"/>
         </g>
+        <g fill="#00ae49" fill-opacity="1" font-family="Noto Sans" font-size="16.6667" font-style="normal" font-weight="400" stroke="none" transform="matrix(1.38889,0,0,1.38889,6.5,9.5)">
+            <path d="M-0.36036,0 L2.16,0 L2.16,-2.52036 L-0.36036,0" fill-rule="evenodd" vector-effect="none"/>
+        </g>
+        <g fill="#00ae49" fill-opacity="1" font-family="Noto Sans" font-size="16.6667" font-style="normal" font-weight="400" stroke="none" transform="matrix(1.38889,0,0,1.38889,6.5,9.5)">
+            <path d="M9.72036,5.04 L7.2,5.04 L7.2,7.56036 L9.72036,5.04" fill-rule="evenodd" vector-effect="none"/>
+        </g>
     </g>
 </svg>
