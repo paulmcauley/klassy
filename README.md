@@ -72,7 +72,7 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 <a name="installation"/>
 
 ## Installation
-_Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_Klassy_ version 6.4 requires __Plasma 6.3__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
