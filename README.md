@@ -80,8 +80,7 @@ _Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have
 
 &nbsp;
 
-Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". [Download a KDE Neon .deb here](https://github.com/paulmcauley/klassy/releases/download/6.3.breeze6.3.5/klassy_6.3.breeze6.3.5-1_amd64_KDE_Neon_6.3.deb).
-
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
 &nbsp;
 &nbsp;
 
