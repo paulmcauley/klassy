@@ -18,10 +18,10 @@
 ## Overview
 _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop. 
 
-Klassy configuration with the default _Opal_ preset:
-![Klassy configuration with the default Opal preset](screenshots/opal_preset.png?raw=true "Klassy configuration with the default Opal preset]")
+Klassy configuration with the default _Kisweet_ preset:
+![Klassy configuration with the default Kisweet preset](screenshots/kisweet_preset.png?raw=true "Klassy configuration with the default Kisweet preset]")
 
-![Opal window controls annotated](screenshots/opal_window_controls.svg?raw=true "Opal window controls annotated")
+![Kisweet window controls annotated](screenshots/kisweet_window_controls.svg?raw=true "Kisweet window controls annotated")
 
 
 Install with the instructions below, and then make sure _Klassy_ is enabled in System Settings -> Appearance -> Window Decorations, in System Settings -> Appearance -> Application Style and in System Settings -> Appearance -> Icons.

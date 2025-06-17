@@ -11,5 +11,11 @@
         <g fill="#00ae49" fill-opacity="0.900008" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,13.5,20.5)">
             <path d="M1.76738,-0.482625 L1.76738,-2.25 L2.25,-2.73263 L9.32143,-2.73263 L9.80405,-2.25 L9.80405,4.82143 L9.32143,5.30405 L7.55405,5.30405 L7.55405,4.3388 L9.32143,4.3388 L9.32143,4.82143 L8.8388,4.82143 L8.8388,-2.25 L9.32143,-2.25 L9.32143,-1.76738 L2.25,-1.76738 L2.25,-2.25 L2.73263,-2.25 L2.73263,-0.482625 L1.76738,-0.482625" fill-rule="nonzero" vector-effect="none"/>
         </g>
+        <g fill="#00ae49" fill-opacity="1" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,13.5,20.5)">
+            <path d="M-0.482625,0 L2.25,0 L2.25,-2.73263 L-0.482625,0" fill-rule="evenodd" vector-effect="none"/>
+        </g>
+        <g fill="#00ae49" fill-opacity="1" font-family="Noto Sans" font-size="23.3333" font-style="normal" font-weight="400" stroke="none" transform="matrix(3.11111,0,0,3.11111,13.5,20.5)">
+            <path d="M9.80405,4.82143 L7.07143,4.82143 L7.07143,7.55405 L9.80405,4.82143" fill-rule="evenodd" vector-effect="none"/>
+        </g>
     </g>
 </svg>

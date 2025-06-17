@@ -8,10 +8,10 @@
             }
         ],
         "Category": "",
-        "Description": "Dark theme with panel on the left",
-        "Id": "org.kde.klassyopaldarkleftpanel.desktop",
+        "Description": "Dark theme with traditional panel at the bottom and labelled tasks",
+        "Id": "org.kde.klassykisweetdarkbottompanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Opal Dark - Left Panel (Klassy)",
+        "Name": "Kisweet Dark - Bottom Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"
