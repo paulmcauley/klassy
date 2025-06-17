@@ -9,9 +9,9 @@
         ],
         "Category": "",
         "Description": "Light theme with panel on the left",
-        "Id": "org.kde.klassyopallightleftpanel.desktop",
+        "Id": "org.kde.klassykisweetlightleftpanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Opal Light - Left Panel (Klassy)",
+        "Name": "Kisweet Light - Left Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"

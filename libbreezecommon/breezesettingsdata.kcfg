@@ -26,7 +26,7 @@
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
       </choices>
-      <default>StyleMetro</default>
+      <default>StyleKisweet</default>
     </entry>
 
     <!-- button size -->
