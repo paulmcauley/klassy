@@ -278,6 +278,7 @@ Style::Style()
 #if BREEZE_HAVE_KSTYLE
     , SH_ArgbDndWindow(newStyleHint(QStringLiteral("SH_ArgbDndWindow")))
     , CE_CapacityBar(newControlElement(QStringLiteral("CE_CapacityBar")))
+    , CE_IconButton(newControlElement(QStringLiteral("CE_IconButton")))
 #endif
 {
 #if HAVE_QTDBUS
@@ -1325,6 +1326,8 @@ void Style::drawControl(ControlElement element, const QStyleOption *option, QPai
 #if BREEZE_HAVE_KSTYLE
     if (element == CE_CapacityBar) {
         fcn = &Style::drawProgressBarControl;
+    } else if (element == CE_IconButton) {
+        fcn = &Style::drawIconButtonControl;
 
     } else
 #endif
@@ -5578,6 +5581,77 @@ bool Style::drawPushButtonLabelControl(const QStyleOption *option, QPainter *pai
     if (hasText && textRect.isValid()) {
         drawItemText(painter, textRect, textFlags, palette, enabled, buttonOption->text, textRole);
     }
+
+    return true;
+}
+
+bool Style::drawIconButtonControl(const QStyleOption *option, QPainter *painter, const QWidget *widget) const
+{
+    const auto styleOptionButton = qstyleoption_cast<const QStyleOptionButton *>(option);
+    if (!styleOptionButton) {
+        return true;
+    }
+
+    QStyleOptionButton overlayOption(*styleOptionButton);
+    const int buttonIconSize = pixelMetric(QStyle::PM_ButtonIconSize, &overlayOption, widget);
+    overlayOption.iconSize = QSize(buttonIconSize, buttonIconSize);
+
+    // Basically pushButtonSizeFromContents.
+    QSize overlaySize = overlayOption.iconSize;
+    overlaySize = expandSize(overlaySize, Metrics::Button_MarginWidth);
+    overlaySize = expandSize(overlaySize, Metrics::Frame_FrameWidth);
+
+    // Fit the overlay button and be able to see at least some part of the icon.
+    const QSize minimumSize = overlaySize + QSize(buttonIconSize, buttonIconSize);
+
+    // No room for an overlay, just render the button as a button.
+    if (styleOptionButton->rect.size().width() <= minimumSize.width() || styleOptionButton->rect.size().height() <= minimumSize.height()) {
+        drawControl(QStyle::CE_PushButton, option, painter, widget);
+        return true;
+    }
+
+    // Draw original button contents without the frame.
+    // TODO Consider SE_PushButtonContents?
+    drawPushButtonLabelControl(styleOptionButton, painter, widget);
+
+    // Now draw an edit button into a corner.
+    overlayOption.icon = QIcon::fromTheme(QStringLiteral("document-edit"));
+
+    overlayOption.rect.setSize(overlaySize);
+    // Paint it into the respective corner.
+    if (styleOptionButton->direction == Qt::RightToLeft) {
+        overlayOption.rect.moveBottomLeft(styleOptionButton->rect.bottomLeft());
+    } else {
+        overlayOption.rect.moveBottomRight(styleOptionButton->rect.bottomRight());
+    }
+
+    // button state
+    const bool enabled = option->state & QStyle::State_Enabled;
+    const bool activeFocus = option->state & QStyle::State_HasFocus;
+    // Using `widget->focusProxy() == nullptr` to work around a possible Qt bug
+    // where buttons that have a focusProxy still show focus.
+    const bool visualFocus = activeFocus && option->state & QStyle::State_KeyboardFocusChange && (widget == nullptr || widget->focusProxy() == nullptr);
+    const bool hovered = option->state & QStyle::State_MouseOver;
+    const bool down = option->state & QStyle::State_Sunken;
+
+    // NOTE: Using focus animation for bg down because the pressed animation only works on press when enabled for buttons and not on release.
+    _animations->widgetStateEngine().updateState(widget, AnimationFocus, down && enabled);
+    _animations->widgetStateEngine().updateState(widget, AnimationHover, (hovered || visualFocus || down) && enabled);
+    const qreal bgAnimation = _animations->widgetStateEngine().opacity(widget, AnimationFocus);
+    const qreal penAnimation = _animations->widgetStateEngine().opacity(widget, AnimationHover);
+
+    const QHash<QByteArray, bool> stateProperties{
+        {"enabled", enabled},
+        {"visualFocus", visualFocus},
+        {"hovered", hovered},
+        {"down", down},
+        {"isActiveWindow", widget ? widget->isActiveWindow() : true},
+        {"roundButton", true},
+    };
+
+    _helper->renderButtonFrame(painter, overlayOption.rect, overlayOption.palette, stateProperties, bgAnimation, penAnimation);
+
+    drawPushButtonLabelControl(&overlayOption, painter, widget);
 
     return true;
 }
