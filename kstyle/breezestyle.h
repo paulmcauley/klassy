@@ -317,6 +317,7 @@ private:
     }
 
     bool drawPushButtonLabelControl(const QStyleOption *, QPainter *, const QWidget *) const;
+    bool drawIconButtonControl(const QStyleOption *, QPainter *, const QWidget *) const;
     bool drawToolButtonLabelControl(const QStyleOption *, QPainter *, const QWidget *) const;
     bool drawCheckBoxLabelControl(const QStyleOption *, QPainter *, const QWidget *) const;
     bool drawComboBoxLabelControl(const QStyleOption *, QPainter *, const QWidget *) const;
@@ -545,6 +546,9 @@ private:
 
     //! styled painting for KCapacityBar
     QStyle::ControlElement CE_CapacityBar;
+
+    //! styled painting for KIconButton
+    QStyle::ControlElement CE_IconButton;
 
     //@}
 };
