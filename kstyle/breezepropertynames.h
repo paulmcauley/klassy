@@ -24,5 +24,6 @@ struct PropertyNames {
     static const char bordersSides[];
     static const char forceFrame[];
     static const char statusBarSeparator[];
+    static const char roundButton[];
 };
 }
