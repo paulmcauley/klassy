@@ -704,6 +704,7 @@ void Helper::renderButtonFrame(QPainter *painter,
     bool defaultButton = stateProperties.value("defaultButton");
     bool hasNeutralHighlight = stateProperties.value("hasNeutralHighlight");
     bool isActiveWindow = stateProperties.value("isActiveWindow");
+    const bool roundButton = stateProperties.value("roundButton");
 
     // don't render background if flat and not hovered, down, checked, or given visual focus
     if (flat && !(hovered || down || checked || visualFocus) && bgAnimation == AnimationData::OpacityInvalid && penAnimation == AnimationData::OpacityInvalid) {
@@ -712,7 +713,6 @@ void Helper::renderButtonFrame(QPainter *painter,
 
     QRectF shadowedRect = this->shadowedRect(rect);
     QRectF frameRect = strokedRect(shadowedRect);
-    qreal radius = frameRadius(PenWidth::Frame);
     // setting color group to work around KColorScheme feature
     const QColor &highlightColor = palette.color(!enabled ? QPalette::Disabled : QPalette::Active, QPalette::Highlight);
     QBrush bgBrush;
@@ -767,6 +767,8 @@ void Helper::renderButtonFrame(QPainter *painter,
         penBrush = KColorUtils::mix(color1, color2, penAnimation);
     }
 
+    const qreal roundRadius = std::max(rect.width(), rect.height()) / 2;
+
     // Gradient
     if (StyleConfigData::buttonGradient() && isActiveWindow && !(flat || down || hovered || checked) && enabled) {
         QLinearGradient bgGradient(frameRect.topLeft(), frameRect.bottomLeft());
@@ -782,13 +784,15 @@ void Helper::renderButtonFrame(QPainter *painter,
 
     // Shadow
     if (isActiveWindow && !(flat || down || checked) && enabled) {
-        renderRoundedRectShadow(painter, shadowedRect, shadowColor(palette));
+        const qreal shadowRadius = roundButton ? roundRadius : Metrics::Frame_FrameRadius - PenWidth::Shadow / 2;
+        renderRoundedRectShadow(painter, shadowedRect, shadowColor(palette), shadowRadius);
     }
 
     // Render button
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setBrush(bgBrush);
     painter->setPen(QPen(penBrush, PenWidth::Frame));
+    const qreal radius = roundButton ? roundRadius : frameRadius(PenWidth::Frame);
     painter->drawRoundedRect(frameRect, radius, radius);
 }
 

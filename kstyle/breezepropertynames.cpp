@@ -23,4 +23,5 @@ const char PropertyNames::menuSeamlessEdges[] = "_breeze_menu_seamless_edges";
 const char PropertyNames::bordersSides[] = "_breeze_borders_sides";
 const char PropertyNames::forceFrame[] = "_breeze_force_frame";
 const char PropertyNames::statusBarSeparator[] = "_breeze_statusbar_separator";
+const char PropertyNames::roundButton[] = "_kde_round_button";
 }
