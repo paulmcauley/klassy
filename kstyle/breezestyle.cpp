@@ -5857,14 +5857,6 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
     const bool mouseOver(enabled && (option->state & State_MouseOver));
     const bool flat(state & State_AutoRaise);
 
-    // focus flag is set to match the background color in either renderButtonFrame or renderToolButtonFrame
-    bool hasFocus(false);
-    if (flat) {
-        hasFocus = enabled && !mouseOver && (option->state & State_HasFocus);
-    } else {
-        hasFocus = enabled && !mouseOver && (option->state & (State_HasFocus | State_Sunken));
-    }
-
     // contents
     auto contentsRect(rect);
 
@@ -5968,8 +5960,6 @@ bool Style::drawToolButtonLabelControl(const QStyleOption *option, QPainter *pai
             QIcon::Mode iconMode;
             if (!enabled) {
                 iconMode = QIcon::Disabled;
-            } else if (!flat && hasFocus) {
-                iconMode = QIcon::Selected;
             } else if (mouseOver && flat) {
                 iconMode = QIcon::Active;
             } else {
