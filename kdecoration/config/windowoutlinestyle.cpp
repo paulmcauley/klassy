@@ -306,5 +306,9 @@ void WindowOutlineStyle::updateLockIcons()
 {
     m_ui->lockThinWindowOutlineStyleActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
     m_ui->lockThinWindowOutlineStyleInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockThinWindowOutlineCustomColorActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockThinWindowOutlineCustomColorInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockThinWindowOutlineCustomColorActive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockThinWindowOutlineCustomColorInactive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
 }
 }
