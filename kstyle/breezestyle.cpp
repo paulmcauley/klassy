@@ -7850,9 +7850,16 @@ bool Style::drawComboBoxComplexControl(const QStyleOptionComplex *option, QPaint
 
     // arrow
     if (option->subControls & SC_ComboBoxArrow) {
-        // detect empty comboboxes
-        const auto comboBox = qobject_cast<const QComboBox *>(widget);
-        const bool empty(comboBox && !comboBox->count());
+        // detect empty comboboxes, different procedure between QWidgets and QQuickItems
+        bool empty = true;
+        if (isQtQuickControl(option, widget)) {
+            bool ok;
+            const int count = option->styleObject->property("count").toInt(&ok);
+            empty = !ok || count <= 0;
+        } else {
+            const auto comboBox = qobject_cast<const QComboBox *>(widget);
+            empty = comboBox && !comboBox->count();
+        }
 
         // arrow color
         QColor arrowColor;
