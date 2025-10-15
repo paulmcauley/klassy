@@ -6008,13 +6008,18 @@ bool Style::drawMenuBarItemControl(const QStyleOption *option, QPainter *painter
 
     // render hover and focus
     if (useStrongFocus && (selected || sunken)) {
-        QColor outlineColor;
+        QColor color;
         if (sunken) {
-            outlineColor = _helper->focusColor(palette);
+            color = _helper->focusColor(palette);
         } else if (selected) {
-            outlineColor = _helper->hoverColor(palette);
+            color = _helper->hoverColor(palette);
         }
-        _helper->renderFocusRect(painter, rect, outlineColor);
+
+        const qreal radius = _helper->frameRadius(PenWidth::Frame);
+
+        painter->setBrush(color);
+        painter->setPen(Qt::NoPen);
+        painter->drawRoundedRect(rect, radius, radius);
     }
 
     /*
