@@ -3941,6 +3941,7 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
         size.setHeight(qMax(size.height(), int(Metrics::MenuButton_IndicatorWidth)));
         size.setHeight(qMax(size.height(), int(Metrics::CheckBox_Size)));
         size.setHeight(qMax(size.height(), iconWidth));
+        size.setHeight(size.height() + 1); // Make sure to add one pixel here to follow QQC2 style more closely
         return expandSize(size, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight);
     }
 
@@ -3977,7 +3978,7 @@ QSize Style::menuItemSizeFromContents(const QStyleOption *option, const QSize &c
             h += Metrics::MenuItem_MarginHeight; // extra top padding
         }
 
-        return {w + Metrics::MenuItem_MarginWidth * 2, h + Metrics::MenuItem_MarginHeight * 2};
+        return {w + Metrics::MenuItem_MarginWidth * 2, h + Metrics::MenuItem_MarginHeight};
     }
 
     // for all other cases, return input
@@ -6190,16 +6191,17 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
 
     // get rect available for contents
     auto contentsRect(insideMargin(rect, Metrics::MenuItem_MarginWidth, (isTabletMode() ? 2 : 1) * Metrics::MenuItem_MarginHeight));
+    contentsRect = contentsRect.marginsRemoved(QMargins(Metrics::MenuItem_TextLeftMargin, 0, 0, 0));
 
     // define relevant rectangles
     // checkbox
     QRect checkBoxRect;
     if (menuItemOption->menuHasCheckableItems) {
-        checkBoxRect = QRect(contentsRect.left(),
+        checkBoxRect = QRect(contentsRect.left() - Metrics::MenuItem_TextLeftMargin,
                              contentsRect.top() + (contentsRect.height() - Metrics::CheckBox_Size) / 2,
                              Metrics::CheckBox_Size,
                              Metrics::CheckBox_Size);
-        contentsRect.setLeft(checkBoxRect.right() + Metrics::MenuItem_ItemSpacing + 1);
+        contentsRect.setLeft(checkBoxRect.right() + (Metrics::MenuItem_TextLeftMargin));
     }
 
     // render checkbox indicator
@@ -6210,14 +6212,14 @@ bool Style::drawMenuItemControl(const QStyleOption *option, QPainter *painter, c
 
         CheckBoxState state(menuItemOption->checked ? CheckOn : CheckOff);
         _helper->renderCheckBoxBackground(painter, checkBoxRect, palette, state, false, sunken);
-        _helper->renderCheckBox(painter, checkBoxRect, palette, false, state, state, false, sunken);
+        _helper->renderCheckBox(painter, checkBoxRect, palette, selected, state, state, false, sunken);
 
     } else if (menuItemOption->checkType == QStyleOptionMenuItem::Exclusive) {
         checkBoxRect = visualRect(option, checkBoxRect);
 
         const bool active(menuItemOption->checked);
         _helper->renderRadioButtonBackground(painter, checkBoxRect, palette, active ? RadioOn : RadioOff, false, sunken);
-        _helper->renderRadioButton(painter, checkBoxRect, palette, false, active ? RadioOn : RadioOff, false, sunken);
+        _helper->renderRadioButton(painter, checkBoxRect, palette, selected, active ? RadioOn : RadioOff, false, sunken);
     }
 
     // icon
