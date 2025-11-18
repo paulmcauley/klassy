@@ -155,7 +155,7 @@ public:
 
     //@}
 
-    //* grap pixmap
+    //* grab pixmap
     QPixmap grab(QWidget * = nullptr, QRect = QRect());
 
     //* true if animated

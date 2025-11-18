@@ -344,7 +344,7 @@ private:
 
     //*@}
 
-    //*@name complex ontrols specialized functions
+    //*@name complex controls specialized functions
     //@{
     bool drawGroupBoxComplexControl(const QStyleOptionComplex *, QPainter *, const QWidget *) const;
     bool drawToolButtonComplexControl(const QStyleOptionComplex *, QPainter *, const QWidget *) const;

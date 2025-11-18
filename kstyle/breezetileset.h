@@ -97,7 +97,7 @@ protected:
     void initPixmap(PixmapList &, const QPixmap &, int w, int h, const QRect &);
 
 private:
-    //* pixmap arry
+    //* pixmap array
     PixmapList _pixmaps;
 
     // dimensions

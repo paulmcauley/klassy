@@ -153,7 +153,7 @@ void WindowManager::registerWidget(QWidget *widget)
 {
     if (isBlackListed(widget) || isDragable(widget) || widget->inherits("QQuickWidget")) {
         /*
-        install filter for dragable widgets.
+        install filter for draggable widgets.
         also install filter for blacklisted widgets
         to be able to catch the relevant events and prevent
         the drag to happen
@@ -292,7 +292,7 @@ bool WindowManager::mousePressEvent(QObject *object, QEvent *event)
     }
 
     // If we are in a QQuickWidget we don't want to ever do dragging from a qwidget in the
-    // hyerarchy, but only from an internal item, if any. If any event handler will manage
+    // hierarchy, but only from an internal item, if any. If any event handler will manage
     // the event, we don't want the drag to start
     if (object->inherits("QQuickWidget")) {
         _eventInQQuickWidget = true;

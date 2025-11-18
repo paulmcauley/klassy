@@ -6789,7 +6789,7 @@ bool Style::drawFocusFrame(const QStyleOption *option, QPainter *painter, const 
         focusFramePath.addRoundedRect(outerRect, outerRadius, outerRadius);
     } else if (targetWidget->inherits("QLineEdit") || targetWidget->inherits("QTextEdit") || targetWidget->inherits("QAbstractSpinBox")
                || targetWidget->inherits("QComboBox") || targetWidget->inherits("QPushButton") || targetWidget->inherits("QToolButton")) {
-        /* It's OK to check for QAbstractSpinBox instead of more spacific classes
+        /* It's OK to check for QAbstractSpinBox instead of more specific classes
          * because QAbstractSpinBox handles the painting for spinboxes,
          * unlike most abstract widget classes.
          */
@@ -7245,7 +7245,7 @@ bool Style::drawTabBarTabShapeControl(const QStyleOption *option, QPainter *pain
     }
 
     // overlap
-    // for QtQuickControls, ovelap is already accounted of in the option. Unlike in the qwidget case
+    // for QtQuickControls, overlap is already accounted for in the option. Unlike in the qwidget case
     const int overlap = isQtQuickControl ? 0 : Metrics::TabBar_TabOverlap;
 
     // adjust rect and define corners based on tabbar orientation
