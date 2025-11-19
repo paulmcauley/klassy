@@ -1144,7 +1144,7 @@ QStyle::SubControl Style::hitTestComplexControl(ComplexControl control, const QS
 
             if (sliderRect.contains(point)) {
                 return SC_ScrollBarSlider;
-            } else if (preceeds(point, sliderRect, option)) {
+            } else if (precedes(point, sliderRect, option)) {
                 return SC_ScrollBarSubPage;
             } else {
                 return SC_ScrollBarAddPage;
@@ -1152,7 +1152,7 @@ QStyle::SubControl Style::hitTestComplexControl(ComplexControl control, const QS
         }
 
         // This is one of the up/down buttons. First, decide which one it is.
-        if (preceeds(point, grooveRect, option)) {
+        if (precedes(point, grooveRect, option)) {
             if (_subLineButtons == DoubleButton) {
                 auto buttonRect = scrollBarInternalSubControlRect(option, SC_ScrollBarSubLine);
                 return scrollBarHitTest(buttonRect, point, option);

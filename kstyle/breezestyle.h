@@ -477,7 +477,7 @@ private:
     This is needed to implement custom number of buttons in scrollbars,
     as well as proper mouse-hover
     */
-    inline bool preceeds(const QPoint &, const QRect &, const QStyleOption *) const;
+    inline bool precedes(const QPoint &, const QRect &, const QStyleOption *) const;
 
     //* return which arrow button is hit by point for scrollbar double buttons
     inline QStyle::SubControl scrollBarHitTest(const QRect &, const QPoint &, const QStyleOption *) const;
@@ -554,7 +554,7 @@ private:
 };
 
 //_________________________________________________________________________
-bool Style::preceeds(const QPoint &point, const QRect &bound, const QStyleOption *option) const
+bool Style::precedes(const QPoint &point, const QRect &bound, const QStyleOption *option) const
 {
     if (option->state & QStyle::State_Horizontal) {
         if (option->direction == Qt::LeftToRight) {
