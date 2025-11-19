@@ -39,7 +39,7 @@ static constexpr int MenuItem_MarginWidth = 4;
 static constexpr int MenuItem_HighlightGap = 4;
 static constexpr int MenuItem_ExtraLeftMargin = 4;
 static constexpr int MenuItem_MarginHeight = 5;
-static constexpr int MenuItem_ItemSpacing = 4;
+static constexpr int MenuItem_ItemSpacing = 2;
 static constexpr int MenuItem_AcceleratorSpace = 16;
 static constexpr int MenuItem_TextLeftMargin = 8;
 
