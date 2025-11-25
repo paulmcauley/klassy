@@ -123,7 +123,7 @@ protected:
     //@}
 
     //* returns true if widget is draggable
-    bool isDragable(QWidget *);
+    bool isDraggable(QWidget *);
 
     //* returns true if widget is draggable
     bool isBlackListed(QWidget *);
