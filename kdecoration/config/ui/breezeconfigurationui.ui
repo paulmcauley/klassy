@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
+    <width>727</width>
     <height>630</height>
    </rect>
   </property>
@@ -547,6 +547,16 @@
              <item>
               <property name="text">
                <string>Use system icon theme</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Kairn</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Kairn (Left Panel)</string>
               </property>
              </item>
              <item>

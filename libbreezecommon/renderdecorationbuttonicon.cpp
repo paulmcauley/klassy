@@ -6,6 +6,8 @@
 
 #include "renderdecorationbuttonicon.h"
 #include "stylefluent.h"
+#include "stylekairn.h"
+#include "stylekairnleft.h"
 #include "stylekisweet.h"
 #include "stylekite.h"
 #include "styleklasse.h"
@@ -28,8 +30,20 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
                                                                                                 const bool forceEvenSquares)
 {
     switch (internalSettings->buttonIconStyle()) {
-    case InternalSettings::EnumButtonIconStyle::StyleKisweet:
+    case InternalSettings::EnumButtonIconStyle::StyleKairn:
     default:
+        return {
+            std::make_unique<RenderStyleKairn18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            18};
+    case InternalSettings::EnumButtonIconStyle::StyleKairnLeft:
+        return {std::make_unique<RenderStyleKairnLeft18By18>(painter,
+                                                             fromKstyle,
+                                                             boldButtonIcons,
+                                                             devicePixelRatio,
+                                                             deviceOffsetFromZeroReference,
+                                                             forceEvenSquares),
+                18};
+    case InternalSettings::EnumButtonIconStyle::StyleKisweet:
         return {
             std::make_unique<RenderStyleKisweet18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
