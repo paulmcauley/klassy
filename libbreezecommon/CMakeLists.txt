@@ -11,6 +11,8 @@ set(breezecommon_LIB_SRCS
     renderdecorationbuttonicon.cpp
     renderdecorationbuttonicon18by18.cpp
     stylekisweet.cpp
+    stylekairn.cpp
+    stylekairnleft.cpp
     styleklasse.cpp
     stylekite.cpp
     styleoxygen.cpp

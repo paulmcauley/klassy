@@ -18,6 +18,8 @@
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
           <choice name="StyleSystemIconTheme" />
+          <choice name="StyleKairn" />
+          <choice name="StyleKairnLeft" />
           <choice name="StyleKisweet" />
           <choice name="StyleKlasse" />
           <choice name="StyleKite" />
@@ -26,7 +28,7 @@
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
       </choices>
-      <default>StyleKisweet</default>
+      <default>StyleKairn</default>
     </entry>
 
     <!-- button size -->
@@ -75,7 +77,7 @@
           <choice name="BoldIconsFine" />
           <choice name="BoldIconsHiDpiOnly" />
       </choices>
-      <default>BoldIconsFine</default>
+      <default>BoldIconsHiDpiOnly</default>
     </entry>
 
     <!-- button background shape -->
