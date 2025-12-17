@@ -1302,10 +1302,10 @@
             <item>
              <widget class="QCheckBox" name="roundBottomCornersWhenNoBorders">
               <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Normally, you can round bottom corners by setting a border in the Window Decoration settings. &lt;/p&gt;&lt;p&gt;This option allows a 3rd party Desktop Effect (e.g. LightlyShaders) to round the bottom corners on a borderless window by clipping the window content.&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
-               <string>Round bottom corners when no borders (not recommended, requires corresponding desktop effect)</string>
+               <string>Round bottom corners when no borders (clips window content)</string>
               </property>
              </widget>
             </item>
