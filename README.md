@@ -72,7 +72,7 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.3, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ master branch requires Plasma 6.5, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
 
 <a name="compile"/>
 
