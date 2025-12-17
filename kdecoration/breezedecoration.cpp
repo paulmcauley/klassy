@@ -793,6 +793,22 @@ void Decoration::recalculateBorders()
     }
 
     setResizeOnlyBorders(QMarginsF(extLeft, extTop, extRight, extBottom));
+
+    qreal bottomLeftRadius = 0;
+    qreal bottomRightRadius = 0;
+
+    if (hasNoBorders() && m_internalSettings->roundBottomCornersWhenNoBorders()) {
+        if (!isBottomEdge()) {
+            if (!isLeftEdge()) {
+                bottomLeftRadius = m_scaledCornerRadius;
+            }
+            if (!isRightEdge()) {
+                bottomRightRadius = m_scaledCornerRadius;
+            }
+        }
+    }
+
+    setBorderRadius(KDecoration3::BorderRadius(0, 0, bottomRightRadius, bottomLeftRadius));
 }
 
 //________________________________________________________________
