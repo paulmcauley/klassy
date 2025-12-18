@@ -108,13 +108,13 @@
     <!-- ______________________________WINDOW______________________________ -->
     
     <entry name="WindowCornerRadius" type = "Double">
-       <default>2.5</default>
+       <default>5</default>
        <min>0</min>
        <max>24.0</max>
     </entry>
     
    <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="UseTitleBarColorForAllBorders" type = "Bool">
