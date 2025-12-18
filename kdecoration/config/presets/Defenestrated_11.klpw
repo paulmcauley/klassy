@@ -1,5 +1,5 @@
 [Klassy Window Decoration Preset File]
-version=6.4
+version=6.5.git
 
 [Windeco Preset Defenestrated 11]
 ActiveTitleBarOpacity=75
@@ -65,7 +65,7 @@ InactiveTitleBarOpacity=100
 IntegratedRoundedRectangleBottomPadding=0.5
 KlassyDarkIconThemeInherits=breeze-dark
 KlassyIconThemeInherits=breeze
-KwinBorderSize=Normal
+KwinBorderSize=None
 KwinButtonsOnLeft=MFS
 KwinButtonsOnRight=HIAX
 LockButtonBehaviourActiveInactive=true
@@ -83,7 +83,7 @@ NegativeCloseBackgroundHoverPressActive=false
 NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=Nothing
 OnPoorIconContrastInactive=Nothing
-OpaqueMaximizedTitleBars=true
+OpaqueMaximizedTitleBars=false
 OverrideActiveTitleBarOpacity=false
 OverrideInactiveTitleBarOpacity=false
 PercentMaximizedTopBottomMargins=50
@@ -91,7 +91,7 @@ PoorBackgroundContrastThresholdActive=1.1
 PoorBackgroundContrastThresholdInactive=1.1
 PoorIconContrastThresholdActive=1.5
 PoorIconContrastThresholdInactive=1.5
-RoundBottomCornersWhenNoBorders=false
+RoundBottomCornersWhenNoBorders=true
 ScaleBackgroundPercent=100
 ScaleTouchMode=150
 ShadowColor=0,0,0
