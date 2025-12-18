@@ -205,8 +205,9 @@ private:
     void calculateWindowShape();
     void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
-    void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
-    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
+    void updateShadow(const bool forceUpdateCache = false, bool noCache = false);
+    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor);
+    void updateThinWindowOutline();
     void setScaledCornerRadius();
 
     //*@name border size
@@ -216,6 +217,8 @@ private:
     inline bool hasNoBorders() const;
     inline bool hasNoSideBorders() const;
     //@}
+
+    inline bool windowOutlineNone() const;
 
     void setScaledTitleBarTopBottomMargins();
     void setScaledTitleBarSideMargins();
@@ -329,6 +332,20 @@ bool Decoration::hasNoSideBorders() const
     } else {
         return settings()->borderSize() == KDecoration3::BorderSize::NoSides;
     }
+}
+
+bool Decoration::windowOutlineNone() const
+{
+    // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
+
+    auto c = window();
+
+    return (
+        (m_internalSettings->thinWindowOutlineStyle(true) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone
+         && m_internalSettings->thinWindowOutlineStyle(false) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone)
+        || ((m_animation->state() != QAbstractAnimation::Running || m_overrideOutlineFromButtonAnimation->state() != QAbstractAnimation::Running)
+            && ((c->isActive() && m_internalSettings->thinWindowOutlineStyle(true) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone)
+                || (!c->isActive() && m_internalSettings->thinWindowOutlineStyle(false) == InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone))));
 }
 
 bool Decoration::isMaximized() const
