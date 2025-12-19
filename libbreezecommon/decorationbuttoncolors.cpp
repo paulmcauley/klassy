@@ -645,16 +645,12 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
                         && (_buttonType == DecorationButtonType::Maximize || _buttonType == DecorationButtonType::Minimize)))))) {
         if (closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::White) {
             if (drawIconNormally) {
-                QColor tristate1, tristate2, tristate3;
-                generateTristateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, tristate1, tristate2, tristate3);
-                foregroundNormal = tristate1;
+                foregroundNormal = Qt::GlobalColor::white;
                 if (drawIconOnHover)
-                    foregroundHover = tristate2;
+                    foregroundHover = Qt::GlobalColor::white;
                 if (drawIconOnPress)
-                    foregroundPress = tristate3;
+                    foregroundPress = Qt::GlobalColor::white;
             } else {
-                QColor bistate1, bistate2;
-                generateBistateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, bistate1, bistate2);
                 if (drawIconOnHover)
                     foregroundHover = Qt::GlobalColor::white;
                 if (drawIconOnPress)
@@ -663,12 +659,10 @@ void DecorationButtonPalette::generateButtonForegroundPalette(const bool active)
 
         } else {
             if (closeButtonIconColor == InternalSettings::EnumCloseButtonIconColor::WhiteWhenHoverPress) {
-                QColor bistate1, bistate2;
-                generateBistateColors(ButtonComponent::Icon, active, Qt::GlobalColor::white, bistate1, bistate2);
                 if (drawIconOnHover)
-                    foregroundHover = bistate1;
+                    foregroundHover = Qt::GlobalColor::white;
                 if (drawIconOnPress)
-                    foregroundPress = bistate2;
+                    foregroundPress = Qt::GlobalColor::white;
             } else if (negativeWhenHoverPress) {
                 if (_buttonType == DecorationButtonType::Close) {
                     QColor bistate1, bistate2;
