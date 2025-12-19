@@ -177,10 +177,10 @@ private:
         {DecorationButtonType::ContextHelp, i18n("Help")},
         {DecorationButtonType::Shade, i18n("Shade")},
         {DecorationButtonType::OnAllDesktops, i18n("All desktops")},
-        {DecorationButtonType::KeepBelow, i18n("Keep Below")},
-        {DecorationButtonType::KeepAbove, i18n("Keep Above")},
-        {DecorationButtonType::ApplicationMenu, i18n("Application Menu")},
-        {DecorationButtonType::Menu, i18n("Menu")},
+        {DecorationButtonType::KeepBelow, i18n("Keep behind")},
+        {DecorationButtonType::KeepAbove, i18n("Keep in front")},
+        {DecorationButtonType::ApplicationMenu, i18n("Application menu")},
+        {DecorationButtonType::Menu, i18n("Window menu")},
     };
 
     // strings for UI corresponding to enum OverridableButtonColorStates in breeze.h
