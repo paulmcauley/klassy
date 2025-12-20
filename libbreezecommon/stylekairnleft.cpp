@@ -28,6 +28,7 @@ void RenderStyleKairnLeft18By18::renderMinimizeIcon()
     }
 
     // make excessively thick pen widths translucent to balance with other buttons
+    qreal originalOpacity = pen.color().alphaF();
     qreal opacity = straightLineOpacity();
     QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
@@ -61,6 +62,7 @@ void RenderStyleKairnLeft18By18::renderMinimizeIcon()
 
     // draw the arrow
     m_painter->setPen(Qt::NoPen);
+    penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
     QPointF arrowTip(line[0].x() + pen.widthF() / 2, (line[1].y() + line[0].y()) / 2);
     qreal arrowRight(maximizeRect.center().x() + pen.widthF() / 2);
