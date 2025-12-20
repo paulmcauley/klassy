@@ -43,6 +43,7 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
     }
 
     // make excessively thick pen widths translucent to balance with other buttons
+    qreal originalOpacity = pen.color().alphaF();
     qreal opacity = straightLineOpacity();
     QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
@@ -75,6 +76,7 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
 
     // draw the arrow
     m_painter->setPen(Qt::NoPen);
+    penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
     QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() - pen.widthF() / 2);
     qreal arrowTop(maximizeRect.center().y() - pen.widthF() / 2);
@@ -168,6 +170,7 @@ void RenderStyleKairn18By18::renderShadeIcon()
     }
 
     // make excessively thick pen widths translucent to balance with other buttons
+    qreal originalOpacity = pen.color().alphaF();
     qreal opacity = straightLineOpacity();
     QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
@@ -200,6 +203,7 @@ void RenderStyleKairn18By18::renderShadeIcon()
 
     // draw the arrow
     m_painter->setPen(Qt::NoPen);
+    penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
     QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() + pen.widthF() / 2);
     qreal arrowBottom(maximizeRect.center().y() + pen.widthF() / 2);
@@ -230,6 +234,7 @@ void RenderStyleKairn18By18::renderUnShadeIcon()
     }
 
     // make excessively thick pen widths translucent to balance with other buttons
+    qreal originalOpacity = pen.color().alphaF();
     qreal opacity = straightLineOpacity();
     QColor penColor = pen.color();
     penColor.setAlphaF(penColor.alphaF() * opacity);
@@ -262,6 +267,7 @@ void RenderStyleKairn18By18::renderUnShadeIcon()
 
     // draw the arrow
     m_painter->setPen(Qt::NoPen);
+    penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
     qreal arrowTop(line[0].y() + pen.widthF() * 2);
     arrowTop = roundCoordToWhole(arrowTop, ThresholdRound::Up);
