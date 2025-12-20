@@ -466,6 +466,7 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
         m_painter->save(); // needed so doesn't interfere when called from renderCloseIconAtSquareMaximizeSize etc.
 
     QPen pen = m_painter->pen();
+    qreal origOpacity = pen.color().alphaF();
 
     bool isOddPenWidth = true;
     if (!m_fromKstyle) {
@@ -575,8 +576,9 @@ std::pair<QRectF, qreal> RenderDecorationButtonIcon18By18::renderSquareMaximizeI
             QPolygonF bottomArrow;
             bottomArrow << arrowBottomRight << (arrowBottomRight - QPointF(0, arrowLength)) << (arrowBottomRight - QPointF(arrowLength, 0)) <<
             arrowBottomRight;*/
-
-            m_painter->setBrush(pen.color());
+            QColor penColor = pen.color();
+            penColor.setAlphaF(origOpacity);
+            m_painter->setBrush(penColor);
             // m_painter->setPen(Qt::NoPen);
             m_painter->drawPolygon(topArrow);
             m_painter->drawPolygon(bottomArrow);
@@ -903,6 +905,7 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
     bool isOddPenWidth = true;
 
     QPen pen = m_painter->pen();
+    qreal origOpacity = pen.color().alphaF();
     if (m_boldButtonIcons) {
         QColor penColor = pen.color();
         QColor brushColor = penColor;
@@ -1028,7 +1031,9 @@ void RenderDecorationButtonIcon18By18::renderTinySquareMinimizeIcon(bool showArr
                     << bottomArrowIntersection;
         */
 
-        m_painter->setBrush(pen.color());
+        QColor penColor = pen.color();
+        penColor.setAlphaF(origOpacity);
+        m_painter->setBrush(penColor);
         m_painter->setPen(Qt::NoPen);
         m_painter->drawConvexPolygon(topArrow);
         m_painter->drawConvexPolygon(bottomArrow);
