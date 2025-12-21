@@ -5,6 +5,8 @@
  */
 
 #include "stylekairn.h"
+#include <cmath>
+#include <numbers>
 
 namespace Breeze
 {
@@ -81,7 +83,8 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
     QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() - pen.widthF() / 2);
     qreal arrowTop(maximizeRect.center().y() - pen.widthF() / 2);
     arrowTop = roundCoordToWhole(arrowTop, ThresholdRound::Down);
-    qreal halfArrowLength = (arrowTip.y() - arrowTop) / 2;
+    qreal arrowHeight = arrowTip.y() - arrowTop;
+    qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
     QPointF arrowLeft(arrowTip.x() - halfArrowLength, arrowTop);
     QPointF arrowRight(arrowTip.x() + halfArrowLength, arrowTop);
     QVector<QPointF> arrow{arrowLeft, arrowTip, arrowRight};
@@ -208,7 +211,8 @@ void RenderStyleKairn18By18::renderShadeIcon()
     QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() + pen.widthF() / 2);
     qreal arrowBottom(maximizeRect.center().y() + pen.widthF() / 2);
     arrowBottom = roundCoordToWhole(arrowBottom, ThresholdRound::Up);
-    qreal halfArrowLength = (arrowBottom - arrowTip.y()) / 2;
+    qreal arrowHeight = arrowBottom - arrowTip.y();
+    qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
     QPointF arrowLeft(arrowTip.x() - halfArrowLength, arrowBottom);
     QPointF arrowRight(arrowTip.x() + halfArrowLength, arrowBottom);
     QVector<QPointF> arrow{arrowLeft, arrowTip, arrowRight};
@@ -272,7 +276,8 @@ void RenderStyleKairn18By18::renderUnShadeIcon()
     qreal arrowTop(line[0].y() + pen.widthF() * 2);
     arrowTop = roundCoordToWhole(arrowTop, ThresholdRound::Up);
     QPointF arrowTip((line[1].x() + line[0].x()) / 2, maximizeRect.center().y() + pen.widthF() * 2.5);
-    qreal halfArrowLength = (arrowTip.y() - arrowTop) / 2;
+    qreal arrowHeight = arrowTip.y() - arrowTop;
+    qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
     QPointF arrowLeft(arrowTip.x() - halfArrowLength, arrowTop);
     QPointF arrowRight(arrowTip.x() + halfArrowLength, arrowTop);
     QVector<QPointF> arrow{arrowLeft, arrowTip, arrowRight};
