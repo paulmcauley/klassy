@@ -5,6 +5,8 @@
  */
 
 #include "stylekairnleft.h"
+#include <cmath>
+#include <numbers>
 
 namespace Breeze
 {
@@ -67,9 +69,10 @@ void RenderStyleKairnLeft18By18::renderMinimizeIcon()
     QPointF arrowTip(line[0].x() + pen.widthF() / 2, (line[1].y() + line[0].y()) / 2);
     qreal arrowRight(maximizeRect.center().x() + pen.widthF() / 2);
     arrowRight = roundCoordToWhole(arrowRight, ThresholdRound::Up);
-    qreal halfArrowLength = (arrowRight - line[0].x()) / 2;
-    QPointF arrowTop(arrowRight, arrowTip.y() - halfArrowLength);
-    QPointF arrowBottom(arrowRight, arrowTip.y() + halfArrowLength);
+    qreal arrowWidth = arrowRight - arrowTip.x();
+    qreal halfArrowHeight = arrowWidth / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
+    QPointF arrowTop(arrowRight, arrowTip.y() - halfArrowHeight);
+    QPointF arrowBottom(arrowRight, arrowTip.y() + halfArrowHeight);
     QVector<QPointF> arrow{arrowTop, arrowTip, arrowBottom};
     m_painter->drawPolygon(arrow);
 }
