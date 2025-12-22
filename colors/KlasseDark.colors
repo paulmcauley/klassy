@@ -5,6 +5,7 @@
 # SPDX-FileCopyrightText: Neal Gompa <ngompa@kde.org>
 # SPDX-FileCopyrightText: David Redondo <kde@david-redondo.de>
 # SPDX-FileCopyrightText: Thomas Duckworth <tduck973564@gmail.com>
+# SPDX-FileCopyrightText: Paul A McAuley <kde@paulmcauley.com>
 # SPDX-License-Identifier: LGPL-2.0-or-later
 
 [ColorEffects:Disabled]
@@ -43,34 +44,6 @@ ForegroundVisited=155,89,182
 
 [Colors:Complementary]
 BackgroundAlternate=30,87,116
-BackgroundNormal=32,35,38
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
-ForegroundInactive=161,169,177
-ForegroundLink=29,153,243
-ForegroundNegative=218,68,83
-ForegroundNeutral=246,116,0
-ForegroundNormal=252,252,252
-ForegroundPositive=39,174,96
-ForegroundVisited=155,89,182
-
-[Colors:Header]
-BackgroundAlternate=32,35,38
-BackgroundNormal=41,44,48
-DecorationFocus=61,174,233
-DecorationHover=61,174,233
-ForegroundActive=61,174,233
-ForegroundInactive=161,169,177
-ForegroundLink=29,153,243
-ForegroundNegative=218,68,83
-ForegroundNeutral=246,116,0
-ForegroundNormal=252,252,252
-ForegroundPositive=39,174,96
-ForegroundVisited=155,89,182
-
-[Colors:Header][Inactive]
-BackgroundAlternate=41,44,48
 BackgroundNormal=32,35,38
 DecorationFocus=61,174,233
 DecorationHover=61,174,233
@@ -140,17 +113,18 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KlassyDark
-Name=Klassy Dark
+ColorScheme=KlasseDark
+Name=Klasse Dark (Klassy)
 shadeSortColumn=true
 
 [KDE]
 contrast=4
 
 [WM]
-activeBackground=39,44,49
+activeBackground=60,65,70,191
 activeBlend=252,252,252
 activeForeground=252,252,252
 inactiveBackground=32,36,40
 inactiveBlend=161,169,177
 inactiveForeground=161,169,177
+

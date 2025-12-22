@@ -1,6 +1,8 @@
-install(FILES KlassyDark.colors
+install(FILES KairnDark.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
-install(FILES KlassyLight.colors
+install(FILES KairnLight.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
-install(FILES KlassyTwilight.colors
+install(FILES KlasseDark.colors
+        DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
+install(FILES KlasseLight.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
