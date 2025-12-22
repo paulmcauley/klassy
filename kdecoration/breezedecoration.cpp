@@ -213,11 +213,13 @@ QColor Decoration::titleBarSeparatorColor() const
         return QColor();
     if (m_animation->state() == QAbstractAnimation::Running) {
         QColor color(m_decorationColors->active()->buttonFocus);
-        color.setAlpha(color.alpha() * m_opacity);
+        color.setAlpha(color.alpha() * 0.67 * m_opacity);
         return color;
-    } else if (c->isActive())
-        return m_decorationColors->active()->buttonFocus;
-    else
+    } else if (c->isActive()) {
+        QColor color(m_decorationColors->active()->buttonFocus);
+        color.setAlpha(color.alpha() * 0.67);
+        return color;
+    } else
         return QColor();
 }
 
