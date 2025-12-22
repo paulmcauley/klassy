@@ -163,7 +163,7 @@ protected:
     /**
      * @brief rounds the given number to the nearest whole
      * @param coord The number to round
-     * @param roundAtZero whether or not to round up or down at half
+     * @param roundAtHalf whether or not to round up or down at half
      * @return the rounded number
      */
     qreal roundCoordToWhole(qreal coord, const ThresholdRound roundAtHalf);
