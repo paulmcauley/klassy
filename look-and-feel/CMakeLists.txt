@@ -6,3 +6,11 @@ install(DIRECTORY org.kde.klassykairnlightbottompanel.desktop
         DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
 install(DIRECTORY org.kde.klassykairnlightleftpanel.desktop
         DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassyklassedarkbottompanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassyklassedarkleftpanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassyklasselightbottompanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
+install(DIRECTORY org.kde.klassyklasselightleftpanel.desktop
+        DESTINATION ${KDE_INSTALL_DATADIR}/plasma/look-and-feel)
