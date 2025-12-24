@@ -28,7 +28,7 @@
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
       </choices>
-      <default>StyleKairn</default>
+      <default>StyleKlasse</default>
     </entry>
 
     <!-- button size -->
@@ -102,19 +102,19 @@
     </entry>
 
     <entry name="DrawTitleBarSeparator" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <!-- ______________________________WINDOW______________________________ -->
     
     <entry name="WindowCornerRadius" type = "Double">
-       <default>5</default>
+       <default>2.5</default>
        <min>0</min>
        <max>24.0</max>
     </entry>
     
    <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <entry name="UseTitleBarColorForAllBorders" type = "Bool">
@@ -185,14 +185,14 @@
 
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>4</default>
+       <default>3</default>
        <min>0</min>
        <max>50</max>
     </entry>
 
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>9</default>
+       <default>8</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -209,14 +209,14 @@
 
     <!-- left button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingLeft" type = "Int">
-       <default>2</default>
+       <default>1</default>
        <min>0</min>
        <max>50</max>
     </entry>
 
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>2</default>
+       <default>1</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -247,7 +247,7 @@
     </entry>
 
     <entry name="SpacerButtonWidthRelative" type = "Int">
-       <default>33</default>
+       <default>50</default>
        <min>1</min>
        <max>400</max>
     </entry>
@@ -264,7 +264,7 @@
     <!-- button icon colors -->
 
     <entry name="LockButtonColorsActiveInactive" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="ButtonIconColors$(ButtonIconColorsActive)" type="Enum">
@@ -281,7 +281,7 @@
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
         </choices>
-        <default param="Active">AccentTrafficLights</default>
+        <default param="Active">TitleBarText</default>
         <default param="Inactive">TitleBarText</default>
     </entry>
 
@@ -343,7 +343,7 @@
             <choice name="AccentNegativeClose" />
             <choice name="AccentTrafficLights" />
         </choices>
-        <default>AccentTrafficLights</default>
+        <default>AccentNegativeClose</default>
     </entry>
 
     <entry name="NegativeCloseBackgroundHoverPress$(NegativeCloseBackgroundHoverPressActive)" type = "Bool">
@@ -395,7 +395,7 @@
                 <value>Active</value>
             </values>
         </parameter>
-        <default param="Inactive">50</default>
+        <default param="Inactive">100</default>
         <default param="Active">100</default>
         <min>0</min>
         <max>100</max>
@@ -823,13 +823,13 @@
 
   <group name="TitleBarSpacing">
     <entry name="TitleBarTopMargin" type = "Double">
-       <default>2</default>
+       <default>1.7</default>
        <min>0</min>
        <max>25</max>
     </entry>
 
     <entry name="TitleBarBottomMargin" type = "Double">
-       <default>2</default>
+       <default>1.7</default>
        <min>0</min>
        <max>25</max>
     </entry>
@@ -939,8 +939,8 @@
             <choice name="WindowOutlineCustomColor" />
             <choice name="WindowOutlineCustomWithContrast" />
         </choices>
-        <default param ="Active">WindowOutlineAccentColor</default>
-        <default param ="Inactive">WindowOutlineContrast</default>
+        <default param ="Active">WindowOutlineShadowColor</default>
+        <default param ="Inactive">WindowOutlineShadowColor</default>
     </entry>
 
 
@@ -963,7 +963,7 @@
     </entry>
 
     <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>2.25</default>
+       <default>1.75</default>
        <min>1</min>
        <max>10</max>
     </entry>
