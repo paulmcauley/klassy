@@ -211,13 +211,18 @@ QColor Decoration::titleBarSeparatorColor() const
     auto c = window();
     if (!m_internalSettings->drawTitleBarSeparator())
         return QColor();
+    qreal opacity = 1.0;
+    if (m_darkTheme) {
+        opacity = 0.5;
+    }
+
     if (m_animation->state() == QAbstractAnimation::Running) {
         QColor color(m_decorationColors->active()->buttonFocus);
-        color.setAlpha(color.alpha() * 0.67 * m_opacity);
+        color.setAlpha(color.alpha() * opacity * m_opacity);
         return color;
     } else if (c->isActive()) {
         QColor color(m_decorationColors->active()->buttonFocus);
-        color.setAlpha(color.alpha() * 0.67);
+        color.setAlpha(color.alpha() * opacity);
         return color;
     } else
         return QColor();
@@ -574,8 +579,8 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     calculateIconSizes();
 
     const KConfigGroup cg(s_kdeGlobalConfig, QStringLiteral("KDE"));
-
-    setGlobalLookAndFeelOptions(cg.readEntry("LookAndFeelPackage"));
+    QString lookAndFeelPackage = cg.readEntry("LookAndFeelPackage");
+    setGlobalLookAndFeelOptions(lookAndFeelPackage);
 
     m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(s_kdeGlobalConfig, KColorScheme::Header);
 
@@ -618,6 +623,14 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
     bool clientSpecificPalette = false;
     if (clientPalette != systemPalette) { // Some applications can set a Window Colour Scheme, meaning the client palette and system palette differ
         clientSpecificPalette = true;
+    }
+
+    // determine if a dark colour scheme
+    QColor windowBackgroundNormal = clientPalette.window().color();
+    if (windowBackgroundNormal.isValid() && windowBackgroundNormal.lightnessF() < 0.5) {
+        m_darkTheme = true;
+    } else {
+        m_darkTheme = false;
     }
 
     // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
@@ -724,6 +737,10 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
             {QStringLiteral("org.kde.klassykairnlightleftpanel.desktop"), QStringLiteral("Kairn (Left Panel)")},
             {QStringLiteral("org.kde.klassykairndarkbottompanel.desktop"), QStringLiteral("Kairn")},
             {QStringLiteral("org.kde.klassykairnlightbottompanel.desktop"), QStringLiteral("Kairn")},
+            {QStringLiteral("org.kde.klassyklassedarkleftpanel.desktop"), QStringLiteral("Klasse")},
+            {QStringLiteral("org.kde.klassyklasselightleftpanel.desktop"), QStringLiteral("Klasse")},
+            {QStringLiteral("org.kde.klassyklassedarkbottompanel.desktop"), QStringLiteral("Klasse Traditional")},
+            {QStringLiteral("org.kde.klassyklasselightbottompanel.desktop"), QStringLiteral("Klasse Traditional")},
         };
 
         auto presetNameIt = lfPackagePresetNames.find(lookAndFeelPackageName);
@@ -1298,24 +1315,26 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->drawPath(m_titleBarPath);
 
     // draw titlebar separator
-    const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
     int separatorHeight;
-    if ((separatorHeight = titleBarSeparatorHeight()) && titleBarSeparatorColor.isValid()) {
-        // outline
-        painter->setRenderHint(QPainter::Antialiasing);
-        painter->setBrush(Qt::NoBrush);
-        QPen p(titleBarSeparatorColor);
-        p.setWidthF(qRound(devicePixelRatio(painter)));
-        p.setCosmetic(true);
-        p.setCapStyle(Qt::FlatCap);
-        painter->setPen(p);
+    if ((separatorHeight = titleBarSeparatorHeight())) {
+        const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
 
-        qreal separatorYCoOrd = qreal(m_titleRect.bottom()) - qreal(separatorHeight) / 2;
-        if (m_internalSettings->useTitleBarColorForAllBorders()) {
-            painter->drawLine(QPointF(m_titleRect.bottomLeft().x() + borderLeft(), separatorYCoOrd),
-                              QPointF(m_titleRect.bottomRight().x() - borderRight(), separatorYCoOrd));
-        } else {
-            painter->drawLine(QPointF(m_titleRect.bottomLeft().x(), separatorYCoOrd), QPointF(m_titleRect.bottomRight().x(), separatorYCoOrd));
+        if (titleBarSeparatorColor.isValid()) {
+            painter->setRenderHint(QPainter::Antialiasing);
+            painter->setBrush(Qt::NoBrush);
+            QPen p(titleBarSeparatorColor);
+            p.setWidthF(qRound(devicePixelRatio(painter) * separatorHeight));
+            p.setCosmetic(true);
+            p.setCapStyle(Qt::FlatCap);
+            painter->setPen(p);
+
+            qreal separatorYCoOrd = qreal(m_titleRect.bottom()) - qreal(separatorHeight) / 2;
+            if (m_internalSettings->useTitleBarColorForAllBorders()) {
+                painter->drawLine(QPointF(m_titleRect.bottomLeft().x() + borderLeft(), separatorYCoOrd),
+                                  QPointF(m_titleRect.bottomRight().x() - borderRight(), separatorYCoOrd));
+            } else {
+                painter->drawLine(QPointF(m_titleRect.bottomLeft().x(), separatorYCoOrd), QPointF(m_titleRect.bottomRight().x(), separatorYCoOrd));
+            }
         }
     }
 
@@ -1846,7 +1865,7 @@ int Decoration::titleBarSeparatorHeight() const
     if (m_internalSettings->drawTitleBarSeparator() && !c->isShaded() && !m_toolsAreaWillBeDrawn) {
         qreal height = 1;
         if (KWindowSystem::isPlatformX11())
-            height = m_systemScaleFactorX11;
+            height *= m_systemScaleFactorX11;
         return qRound(height);
     } else
         return 0;

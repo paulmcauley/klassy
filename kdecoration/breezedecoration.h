@@ -263,6 +263,7 @@ private:
     qreal m_scaledCornerRadius = 3.0;
 
     bool m_tabletMode = false;
+    bool m_darkTheme = false;
 
     //* titleBar top margin, scaled according to smallspacing
     qreal m_scaledTitleBarTopMargin = 1;
