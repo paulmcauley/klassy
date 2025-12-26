@@ -49,11 +49,12 @@ include_directories(${CMAKE_SOURCE_DIR}/libbreezecommon)
 include_directories(${CMAKE_BINARY_DIR}/libbreezecommon6)
 
 
-set(breeze_settings_SOURCES
+set(klassy_settings_SOURCES
     main.cpp
     systemicongenerator.cpp
+    klassy-settings.qrc
 )
-add_executable(klassy-settings ${breeze_settings_SOURCES} )
+add_executable(klassy-settings ${klassy_settings_SOURCES} )
 target_link_libraries(klassy-settings Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Svg Qt6::Xml)
 target_link_libraries(klassy-settings KF6::I18n KF6::KCMUtils KF6::CoreAddons)
 target_link_libraries(klassy-settings klassycommon6)
