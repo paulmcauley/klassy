@@ -1,0 +1,40 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>icons/bottompanel/16/desktop.svg</file>
+    <file>icons/bottompanel/16/desktop-symbolic.svg</file>
+    <file>icons/bottompanel/16/user-desktop.svg</file>
+    <file>icons/bottompanel/16/user-desktop-symbolic.svg</file>
+    <file>icons/bottompanel/22/desktop.svg</file>
+    <file>icons/bottompanel/22/desktop-symbolic.svg</file>
+    <file>icons/bottompanel/22/user-desktop.svg</file>
+    <file>icons/bottompanel/22/user-desktop-symbolic.svg</file>
+    <file>icons/bottompanel/32/desktop.svg</file>
+    <file>icons/bottompanel/32/desktop-symbolic.svg</file>
+    <file>icons/bottompanel/32/user-desktop.svg</file>
+    <file>icons/bottompanel/32/user-desktop-symbolic.svg</file>
+    <file>icons/bottompanel/48/desktop.svg</file>
+    <file>icons/bottompanel/48/user-desktop.svg</file>
+    <file>icons/bottompanel/64/desktop.svg</file>
+    <file>icons/bottompanel/64/user-desktop.svg</file>
+    <file>icons/bottompanel/96/desktop.svg</file>
+    <file>icons/bottompanel/96/user-desktop.svg</file>
+    <file>icons/leftpanel/16/desktop.svg</file>
+    <file>icons/leftpanel/16/desktop-symbolic.svg</file>
+    <file>icons/leftpanel/16/user-desktop.svg</file>
+    <file>icons/leftpanel/16/user-desktop-symbolic.svg</file>
+    <file>icons/leftpanel/22/desktop.svg</file>
+    <file>icons/leftpanel/22/desktop-symbolic.svg</file>
+    <file>icons/leftpanel/22/user-desktop.svg</file>
+    <file>icons/leftpanel/22/user-desktop-symbolic.svg</file>
+    <file>icons/leftpanel/32/desktop.svg</file>
+    <file>icons/leftpanel/32/desktop-symbolic.svg</file>
+    <file>icons/leftpanel/32/user-desktop.svg</file>
+    <file>icons/leftpanel/32/user-desktop-symbolic.svg</file>
+    <file>icons/leftpanel/48/desktop.svg</file>
+    <file>icons/leftpanel/48/user-desktop.svg</file>
+    <file>icons/leftpanel/64/desktop.svg</file>
+    <file>icons/leftpanel/64/user-desktop.svg</file>
+    <file>icons/leftpanel/96/desktop.svg</file>
+    <file>icons/leftpanel/96/user-desktop.svg</file>
+</qresource>
+</RCC>
