@@ -80,8 +80,9 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
     m_painter->setPen(Qt::NoPen);
     penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
-    QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() - pen.widthF() / 2);
-    qreal arrowTop(maximizeRect.center().y() - pen.widthF() / 2);
+    qreal penWidthLocal = penWidthToLocal(pen);
+    QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() - penWidthLocal / 2);
+    qreal arrowTop(maximizeRect.center().y() - penWidthLocal / 2);
     arrowTop = roundCoordToWhole(arrowTop, ThresholdRound::Down);
     qreal arrowHeight = arrowTip.y() - arrowTop;
     qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
@@ -208,8 +209,10 @@ void RenderStyleKairn18By18::renderShadeIcon()
     m_painter->setPen(Qt::NoPen);
     penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
-    QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() + pen.widthF() / 2);
-    qreal arrowBottom(maximizeRect.center().y() + pen.widthF() / 2);
+
+    qreal penWidthLocal = penWidthToLocal(pen);
+    QPointF arrowTip((line[1].x() + line[0].x()) / 2, line[0].y() + penWidthLocal / 2);
+    qreal arrowBottom(maximizeRect.center().y() + penWidthLocal / 2);
     arrowBottom = roundCoordToWhole(arrowBottom, ThresholdRound::Up);
     qreal arrowHeight = arrowBottom - arrowTip.y();
     qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
@@ -273,9 +276,10 @@ void RenderStyleKairn18By18::renderUnShadeIcon()
     m_painter->setPen(Qt::NoPen);
     penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
-    qreal arrowTop(line[0].y() + pen.widthF() * 2);
+    qreal penWidthLocal = penWidthToLocal(pen);
+    qreal arrowTop(line[0].y() + penWidthLocal * 2);
     arrowTop = roundCoordToWhole(arrowTop, ThresholdRound::Up);
-    QPointF arrowTip((line[1].x() + line[0].x()) / 2, maximizeRect.center().y() + pen.widthF() * 2.5);
+    QPointF arrowTip((line[1].x() + line[0].x()) / 2, maximizeRect.center().y() + penWidthLocal * 2.5);
     qreal arrowHeight = arrowTip.y() - arrowTop;
     qreal halfArrowLength = arrowHeight / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
     QPointF arrowLeft(arrowTip.x() - halfArrowLength, arrowTop);

@@ -66,8 +66,9 @@ void RenderStyleKairnLeft18By18::renderMinimizeIcon()
     m_painter->setPen(Qt::NoPen);
     penColor.setAlphaF(originalOpacity);
     m_painter->setBrush(penColor);
-    QPointF arrowTip(line[0].x() + pen.widthF() / 2, (line[1].y() + line[0].y()) / 2);
-    qreal arrowRight(maximizeRect.center().x() + pen.widthF() / 2);
+    qreal penWidthLocal = penWidthToLocal(pen);
+    QPointF arrowTip(line[0].x() + penWidthLocal / 2, (line[1].y() + line[0].y()) / 2);
+    qreal arrowRight(maximizeRect.center().x() + penWidthLocal / 2);
     arrowRight = roundCoordToWhole(arrowRight, ThresholdRound::Up);
     qreal arrowWidth = arrowRight - arrowTip.x();
     qreal halfArrowHeight = arrowWidth / (std::tan(std::numbers::pi / 3)); // make equilateral triangle
