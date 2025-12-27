@@ -151,7 +151,7 @@ public:
     }
 
     //* set icon size
-    void setIconSize(const QSize &value)
+    void setIconSize(const QSizeF &value)
     {
         m_iconSize = value;
     }
@@ -272,7 +272,7 @@ private:
     QSizeF m_smallButtonPaddedSize = QSizeF();
 
     //* icon size
-    QSize m_iconSize = QSize();
+    QSizeF m_iconSize = QSizeF();
 
     //* active state change opacity
     qreal m_opacity = 0;
