@@ -189,11 +189,12 @@ private Q_SLOTS:
     void updateButtonsGeometryDelayed();
     void updateTitleBar();
     void updateAnimationState();
-    void updateShadowOnShadedChange()
+    void updateShadowOnChange()
     {
         updateShadow();
     }
     void onTabletModeChanged(bool mode);
+    void updateScale();
 
 private:
     //* return the rect in which caption will be drawn

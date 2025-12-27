@@ -143,6 +143,8 @@ static int g_thinWindowOutlineStyleInactive = 0;
 static QColor g_thinWindowOutlineColorActive = Qt::black;
 static QColor g_thinWindowOutlineColorInactive = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
+static qreal g_nextScale = 1;
+static bool g_windowOutlineSnapToWholePixel = true;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -391,7 +393,7 @@ void Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::recalculateBorders);
-    connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateShadowOnShadedChange);
+    connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::captionChanged, this, [this]() {
         // update the caption area
         update(titleBar());
@@ -1590,7 +1592,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyle(true)
             || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyle(false)
             || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
-            || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness())) {
+            || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness() || g_nextScale != c->nextScale()
+            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1604,6 +1607,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyle(false);
         c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
         g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
+        g_nextScale = c->nextScale();
+        g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1691,14 +1696,17 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
                 p.setJoinStyle(Qt::MiterJoin);
 
             qreal outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
+            if (m_internalSettings->windowOutlineSnapToWholePixel()) {
+                outlinePenWidth = KDecoration3::snapToPixelGrid(outlinePenWidth, c->nextScale());
+            }
 
             // the overlap between the thin window outline and behind the window in unscaled pixels.
             // This is necessary for the thin window outline to sit flush with the window on Wayland,
             // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
             qreal outlineOverlap = 0.5;
+            outlinePenWidth += outlineOverlap;
 
             // scale outline
-            // We can't get the DPR for Wayland from KDecoration/KWin but can work around this as Wayland will auto-scale if you don't use a cosmetic pen. On
             // X11 this does not happen but we can use the system-set scaling value directly.
             if (KWindowSystem::isPlatformX11()) {
                 outlinePenWidth *= m_systemScaleFactorX11;
@@ -1921,6 +1929,14 @@ qreal Decoration::devicePixelRatio(QPainter *painter) const
     if (KWindowSystem::isPlatformX11())
         dpr = systemScaleFactorX11();
     return dpr;
+}
+
+void Decoration::updateScale()
+{
+    calculateIconSizes();
+    recalculateBorders();
+    updateButtonsGeometry();
+    updateShadow();
 }
 
 } // namespace
