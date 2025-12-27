@@ -163,8 +163,8 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
 
     if (!m_smallButtonPaddedSize.isValid() || isStandAlone()) {
         m_smallButtonPaddedSize = geometry().size();
-        int iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
-        setIconSize(QSize(iconWidth, iconWidth));
+        qreal iconWidth = qRound(qreal(m_smallButtonPaddedSize.width()) * 0.9);
+        setIconSize(QSizeF(iconWidth, iconWidth));
         setBackgroundVisibleSize(QSizeF(iconWidth, iconWidth));
     }
 
@@ -941,7 +941,6 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
                 outline = outline.subtracted(inner);
             }
         } else { // plain rectangle
-
             // shrink the backgroundBoundingRect to make border more visible
             backgroundBoundingRect = backgroundBoundingRect.adjusted(geometryShrinkOffsetHorizontal,
                                                                      geometryShrinkOffsetVertical,
