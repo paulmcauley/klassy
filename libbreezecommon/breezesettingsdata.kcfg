@@ -923,6 +923,17 @@
 
   <group name="WindowOutlineStyle">
     <!-- Draw thin window outline -->
+
+    <entry name="ThinWindowOutlineThickness" type = "Double">
+        <default>1.0</default>
+        <min>0.5</min>
+        <max>10</max>
+    </entry>
+
+    <entry name="WindowOutlineSnapToWholePixel" type = "Bool">
+        <default>true</default>
+    </entry>
+
     <entry name="ThinWindowOutlineStyle$(ThinWindowOutlineStyleActive)" type = "Enum">
         <parameter name="ThinWindowOutlineStyleActive" type="Enum">
             <values>
@@ -960,12 +971,6 @@
 
     <entry name="LockThinWindowOutlineCustomColorActiveInactive" type = "Bool">
         <default>true</default>
-    </entry>
-
-    <entry name="ThinWindowOutlineThickness" type = "Double">
-       <default>1.75</default>
-       <min>1</min>
-       <max>10</max>
     </entry>
 
     <entry name="WindowOutlineShadowColorOpacity" type = "Int">
