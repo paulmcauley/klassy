@@ -64,7 +64,7 @@ public:
     }
 
     //* caption height
-    qreal captionHeight(const bool nextState = false) const;
+    qreal captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const;
 
     //*@name active state change animation
     //@{
@@ -123,15 +123,15 @@ public:
     {
         return m_buttonBackgroundType;
     }
-    int smallButtonPaddedSize()
+    qreal smallButtonPaddedSize()
     {
         return m_smallButtonPaddedSize;
     }
-    int iconSize()
+    qreal iconSize()
     {
         return m_iconSize;
     }
-    int smallButtonBackgroundSize()
+    qreal smallButtonBackgroundSize()
     {
         return m_smallButtonBackgroundSize;
     }
@@ -197,7 +197,7 @@ private Q_SLOTS:
 
 private:
     //* return the rect in which caption will be drawn
-    QPair<QRectF, Qt::Alignment> captionRect(const bool nextState = false) const;
+    QPair<QRectF, Qt::Alignment> captionRect(bool nextState) const;
 
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
@@ -211,16 +211,19 @@ private:
 
     //*@name border size
     //@{
-    int borderSize(bool bottom = false) const;
+    qreal borderSize(bool bottom, qreal scale) const;
     inline bool hasBorders() const;
     inline bool hasNoBorders() const;
     inline bool hasNoSideBorders() const;
     //@}
 
-    void setScaledTitleBarTopBottomMargins();
-    void setScaledTitleBarSideMargins();
+    void scaledTitleBarTopBottomMargins(qreal scale,
+                                        qreal &scaledTitleBarTopMargin,
+                                        qreal &scaledTitleBarBottomMargin,
+                                        qreal &scaledIntegratedRoundedRectangleBottomPadding) const;
+    void scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const;
     bool isOpaqueTitleBar();
-    int titleBarSeparatorHeight() const;
+    qreal titleBarSeparatorHeight(qreal scale) const;
     qreal devicePixelRatio(QPainter *painter) const;
 
     //* icon + padding sizes
@@ -265,17 +268,6 @@ private:
     bool m_tabletMode = false;
     bool m_darkTheme = false;
 
-    //* titleBar top margin, scaled according to smallspacing
-    qreal m_scaledTitleBarTopMargin = 1;
-    //* titleBar bottom margin, scaled according to smallspacing
-    qreal m_scaledTitleBarBottomMargin = 1;
-    //* integrated rounded rectangle bottom padding, scaled according to smallspacing
-    qreal m_scaledIntegratedRoundedRectangleBottomPadding = 0;
-
-    //* titleBar side margins, scaled according to smallspacing
-    qreal m_scaledTitleBarLeftMargin = 1;
-    qreal m_scaledTitleBarRightMargin = 1;
-
     //* Rectangular area of titlebar without clipped corners
     QRectF m_titleRect;
 
@@ -288,8 +280,8 @@ private:
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     qreal m_smallButtonPaddedSize = 20;
-    int m_iconSize = 18;
-    int m_smallButtonBackgroundSize = 18;
+    qreal m_iconSize = 18;
+    qreal m_smallButtonBackgroundSize = 18;
 
     bool m_colorSchemeHasHeaderColor = true;
     bool m_toolsAreaWillBeDrawn = true;

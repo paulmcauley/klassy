@@ -427,23 +427,28 @@ void Decoration::updateTitleBar()
 
     const bool maximized = isMaximized();
     qreal width, height, x, y;
-    setScaledTitleBarTopBottomMargins();
-    setScaledTitleBarSideMargins();
+    qreal scale = c->nextScale();
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+
+    qreal scaledTitleBarLeftMargin, scaledTitleBarRightMargin;
+    scaledTitleBarSideMargins(scale, scaledTitleBarLeftMargin, scaledTitleBarRightMargin);
+
     qreal borderTop = nextState()->borders().top();
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically())) {
-        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
+        width = maximized ? c->width() : c->width() - scaledTitleBarLeftMargin - scaledTitleBarRightMargin;
         height = borderTop;
-        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
+        x = maximized ? 0 : scaledTitleBarLeftMargin;
         y = 0;
 
     } else {
         // for smaller circular buttons increase the resizable area
-        width = maximized ? c->width() : c->width() - m_scaledTitleBarLeftMargin - m_scaledTitleBarRightMargin;
-        height = (maximized || isTopEdge()) ? borderTop : borderTop - m_scaledTitleBarTopMargin;
-        x = maximized ? 0 : m_scaledTitleBarLeftMargin;
-        y = (maximized || isTopEdge()) ? 0 : m_scaledTitleBarTopMargin;
+        width = maximized ? c->width() : c->width() - scaledTitleBarLeftMargin - scaledTitleBarRightMargin;
+        height = (maximized || isTopEdge()) ? borderTop : borderTop - scaledTitleBarTopMargin;
+        x = maximized ? 0 : scaledTitleBarLeftMargin;
+        y = (maximized || isTopEdge()) ? 0 : scaledTitleBarTopMargin;
     }
 
     setTitleBar(QRectF(x, y, width, height));
@@ -491,55 +496,76 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
 }
 
 //________________________________________________________________
-int Decoration::borderSize(bool bottom) const
+qreal Decoration::borderSize(bool bottom, qreal scale) const
 {
     const int baseSize = settings()->smallSpacing();
+    int borderSize;
     if (m_internalSettings && (m_internalSettings->exceptionBorder())) {
         switch (m_internalSettings->borderSize()) {
         case InternalSettings::EnumBorderSize::None:
-            return 0;
+            borderSize = 0;
+            break;
         case InternalSettings::EnumBorderSize::NoSides:
-            return bottom ? qMax(4, baseSize) : 0;
+            borderSize = bottom ? qMax(4, baseSize) : 0;
+            break;
         default:
         case InternalSettings::EnumBorderSize::Tiny:
-            return bottom ? qMax(4, baseSize) : baseSize;
+            borderSize = bottom ? qMax(4, baseSize) : baseSize;
+            break;
         case InternalSettings::EnumBorderSize::Normal:
-            return baseSize * 2;
+            borderSize = baseSize * 2;
+            break;
         case InternalSettings::EnumBorderSize::Large:
-            return baseSize * 3;
+            borderSize = baseSize * 3;
+            break;
         case InternalSettings::EnumBorderSize::VeryLarge:
-            return baseSize * 4;
+            borderSize = baseSize * 4;
+            break;
         case InternalSettings::EnumBorderSize::Huge:
-            return baseSize * 5;
+            borderSize = baseSize * 5;
+            break;
         case InternalSettings::EnumBorderSize::VeryHuge:
-            return baseSize * 6;
+            borderSize = baseSize * 6;
+            break;
         case InternalSettings::EnumBorderSize::Oversized:
-            return baseSize * 10;
+            borderSize = baseSize * 10;
+            break;
         }
 
     } else {
         switch (settings()->borderSize()) {
         case KDecoration3::BorderSize::None:
-            return 0;
+            borderSize = 0;
+            break;
         case KDecoration3::BorderSize::NoSides:
-            return bottom ? qMax(4, baseSize) : 0;
+            borderSize = bottom ? qMax(4, baseSize) : 0;
+            break;
         default:
         case KDecoration3::BorderSize::Tiny:
-            return bottom ? qMax(4, baseSize) : baseSize;
+            borderSize = bottom ? qMax(4, baseSize) : baseSize;
+            break;
         case KDecoration3::BorderSize::Normal:
-            return baseSize * 2;
+            borderSize = baseSize * 2;
+            break;
         case KDecoration3::BorderSize::Large:
-            return baseSize * 3;
+            borderSize = baseSize * 3;
+            break;
         case KDecoration3::BorderSize::VeryLarge:
-            return baseSize * 4;
+            borderSize = baseSize * 4;
+            break;
         case KDecoration3::BorderSize::Huge:
-            return baseSize * 5;
+            borderSize = baseSize * 5;
+            break;
         case KDecoration3::BorderSize::VeryHuge:
-            return baseSize * 6;
+            borderSize = baseSize * 6;
+            break;
         case KDecoration3::BorderSize::Oversized:
-            return baseSize * 10;
+            borderSize = baseSize * 10;
+            break;
         }
     }
+
+    return KDecoration3::snapToPixelGrid(borderSize, scale);
 }
 
 //________________________________________________________________
@@ -561,8 +587,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     }
 
     setScaledCornerRadius();
-    setScaledTitleBarTopBottomMargins();
-    setScaledTitleBarSideMargins();
 
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeFullHeightRoundedRectangle
@@ -751,24 +775,25 @@ void Decoration::recalculateBorders()
 {
     auto c = window();
     auto s = settings();
-
-    setScaledTitleBarTopBottomMargins();
+    qreal scale = c->nextScale();
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
 
     // left, right and bottom borders
-    const qreal left = isLeftEdge() ? 0 : borderSize();
-    const qreal right = isRightEdge() ? 0 : borderSize();
-    const qreal bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
+    const qreal left = isLeftEdge() ? 0 : borderSize(false, scale);
+    const qreal right = isRightEdge() ? 0 : borderSize(false, scale);
+    const qreal bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true, scale);
 
     qreal top = 0;
     if (hideTitleBar()) {
         top = bottom;
     } else {
         QFontMetrics fm(s->font());
-        top += qMax(qreal(fm.height()), m_smallButtonPaddedSize);
+        top += KDecoration3::snapToPixelGrid(qMax(qreal(fm.height()), m_smallButtonPaddedSize), scale);
 
         // padding below
-        top += titleBarSeparatorHeight();
-        top += (m_scaledTitleBarTopMargin + m_scaledTitleBarBottomMargin);
+        top += titleBarSeparatorHeight(scale);
+        top += scaledTitleBarTopMargin + scaledTitleBarBottomMargin;
     }
 
     setBorders(QMarginsF(left, top, right, bottom));
@@ -845,8 +870,13 @@ void Decoration::updateButtonsGeometry()
 {
     const auto s = settings();
 
-    setScaledTitleBarTopBottomMargins();
-    setScaledTitleBarSideMargins();
+    qreal scale = window()->nextScale();
+    qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+    scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+
+    qreal scaledTitleBarLeftMargin, scaledTitleBarRightMargin;
+    scaledTitleBarSideMargins(scale, scaledTitleBarLeftMargin, scaledTitleBarRightMargin);
+
     // adjust button position
     qreal bHeightNormal;
     qreal bWidthLeft = 0;
@@ -860,11 +890,11 @@ void Decoration::updateButtonsGeometry()
     qreal horizontalIconOffsetLeftFullHeightClose = 0;
     qreal horizontalIconOffsetRightButtons = 0;
     qreal horizontalIconOffsetRightFullHeightClose = 0;
-    qreal buttonTopMargin = m_scaledTitleBarTopMargin;
+    qreal buttonTopMargin = scaledTitleBarTopMargin;
     qreal buttonSpacingLeft = 0;
     qreal buttonSpacingRight = 0;
-    qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight();
-    qreal captionHeight = this->captionHeight(true);
+    qreal titleBarSeparatorHeight = this->titleBarSeparatorHeight(scale);
+    qreal captionHeight = this->captionHeight(true, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
 
     if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
         bHeightNormal = nextState()->borders().top();
@@ -874,7 +904,7 @@ void Decoration::updateButtonsGeometry()
             if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
                 bHeightMenuGrouped = bHeightNormal;
             }
-            bHeightNormal = qMax(bHeightNormal - m_scaledIntegratedRoundedRectangleBottomPadding, 0.0);
+            bHeightNormal = qMax(bHeightNormal - scaledIntegratedRoundedRectangleBottomPadding, 0.0);
 
             qreal shiftUpWithOutline = 0; // how much to shift up the icon to appear more centred - only do when there is a colorizeThinWindowOutlineWithButton
                                           // or not window outline none/shadow
@@ -896,9 +926,10 @@ void Decoration::updateButtonsGeometry()
                 if (KWindowSystem::isPlatformX11()) {
                     shiftUpWithOutline *= m_systemScaleFactorX11;
                 }
+                shiftUpWithOutline = KDecoration3::snapToPixelGrid(shiftUpWithOutline, scale);
             }
             verticalIconOffsetNormal =
-                buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - m_scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
+                buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
             if (internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
                 verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
             }
@@ -906,21 +937,21 @@ void Decoration::updateButtonsGeometry()
             verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
-        buttonSpacingLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft();
-        buttonSpacingRight = s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight();
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft(), scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight(), scale);
 
-        bWidthMarginLeft = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft();
-        bWidthMarginRight = s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight();
+        bWidthMarginLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft(), scale);
+        bWidthMarginRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
         bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
         bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
-        horizontalIconOffsetLeftButtons = bWidthMarginLeft / 2;
-        horizontalIconOffsetRightButtons = bWidthMarginRight / 2;
+        horizontalIconOffsetLeftButtons = KDecoration3::snapToPixelGrid(bWidthMarginLeft / 2, scale);
+        horizontalIconOffsetRightButtons = KDecoration3::snapToPixelGrid(bWidthMarginRight / 2, scale);
     } else {
         bHeightNormal = captionHeight + (isTopEdge() ? buttonTopMargin : 0);
         verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
 
-        buttonSpacingLeft = s->smallSpacing() * m_internalSettings->buttonSpacingLeft();
-        buttonSpacingRight = s->smallSpacing() * m_internalSettings->buttonSpacingRight();
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingLeft(), scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingRight(), scale);
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
@@ -945,7 +976,8 @@ void Decoration::updateButtonsGeometry()
         qreal bWidth;
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             if (button->type() == KDecoration3::DecorationButtonType::Close) {
-                qreal bWidthMargin = bWidthMarginLeft * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
+                qreal bWidthMargin =
+                    KDecoration3::snapToPixelGrid(bWidthMarginLeft * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f, scale);
                 bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetLeftFullHeightClose = bWidthMargin / 2;
             } else {
@@ -957,7 +989,7 @@ void Decoration::updateButtonsGeometry()
             button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
         }
         if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
-            bWidth *= m_internalSettings->spacerButtonWidthRelative() / 100.0f;
+            bWidth = KDecoration3::snapToPixelGrid(bWidth * m_internalSettings->spacerButtonWidthRelative() / 100.0f, scale);
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -1043,7 +1075,8 @@ void Decoration::updateButtonsGeometry()
         qreal bWidth;
         if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
             if (button->type() == KDecoration3::DecorationButtonType::Close) {
-                qreal bWidthMargin = bWidthMarginRight * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f;
+                qreal bWidthMargin =
+                    KDecoration3::snapToPixelGrid(bWidthMarginRight * m_internalSettings->closeFullHeightButtonWidthMarginRelative() / 100.0f, scale);
                 bWidth = m_smallButtonPaddedSize + bWidthMargin;
                 horizontalIconOffsetRightFullHeightClose = bWidthMargin / 2;
             } else {
@@ -1055,7 +1088,7 @@ void Decoration::updateButtonsGeometry()
             button->setBackgroundVisibleSize(QSizeF(m_smallButtonBackgroundSize, m_smallButtonBackgroundSize));
         }
         if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
-            bWidth *= m_internalSettings->spacerButtonWidthRelative() / 100.0f;
+            bWidth = KDecoration3::snapToPixelGrid(bWidth * m_internalSettings->spacerButtonWidthRelative() / 100.0f, scale);
         }
 
         button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
@@ -1132,7 +1165,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
-        const qreal hPadding = m_scaledTitleBarLeftMargin;
+        const qreal hPadding = scaledTitleBarLeftMargin;
 
         auto firstButton = static_cast<Button *>(m_leftButtons->buttons()[leftmostLeftVisibleIndex]);
         if (isLeftEdge()) {
@@ -1165,7 +1198,7 @@ void Decoration::updateButtonsGeometry()
             vPadding = 0;
         else
             vPadding = isTopEdge() ? 0 : buttonTopMargin;
-        const qreal hPadding = m_scaledTitleBarRightMargin;
+        const qreal hPadding = scaledTitleBarRightMargin;
 
         auto lastButton = static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex]);
         if (isRightEdge()) {
@@ -1284,6 +1317,8 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
         return;
     }
 
+    qreal scale = c->scale();
+
     painter->save();
     painter->setPen(Qt::NoPen);
 
@@ -1311,20 +1346,19 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->drawPath(m_titleBarPath);
 
     // draw titlebar separator
-    int separatorHeight;
-    if ((separatorHeight = titleBarSeparatorHeight())) {
+    qreal separatorHeight;
+    if ((separatorHeight = titleBarSeparatorHeight(scale))) {
         const QColor titleBarSeparatorColor(this->titleBarSeparatorColor());
 
         if (titleBarSeparatorColor.isValid()) {
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setBrush(Qt::NoBrush);
             QPen p(titleBarSeparatorColor);
-            p.setWidthF(qRound(devicePixelRatio(painter) * separatorHeight));
-            p.setCosmetic(true);
+            p.setWidthF(separatorHeight);
             p.setCapStyle(Qt::FlatCap);
             painter->setPen(p);
 
-            qreal separatorYCoOrd = qreal(m_titleRect.bottom()) - qreal(separatorHeight) / 2;
+            qreal separatorYCoOrd = m_titleRect.bottom() - separatorHeight / 2;
             if (m_internalSettings->useTitleBarColorForAllBorders()) {
                 painter->drawLine(QPointF(m_titleRect.bottomLeft().x() + borderLeft(), separatorYCoOrd),
                                   QPointF(m_titleRect.bottomRight().x() - borderRight(), separatorYCoOrd));
@@ -1339,9 +1373,9 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     // draw caption
     painter->setFont(s->font());
     painter->setPen(fontColor());
-    const auto cR = captionRect(false);
-    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
-    painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
+    const auto [captionRectangle, alignment] = captionRect(false);
+    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, captionRectangle.width());
+    painter->drawText(captionRectangle, alignment | Qt::TextSingleLine, caption);
 
     // draw all buttons
     m_leftButtons->paint(painter, repaintRegion);
@@ -1351,11 +1385,12 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 // outputs the icon size + padding to make a small button, the actual icon size, and the background size to make a small button
 void Decoration::calculateIconSizes()
 {
-    int baseSize = settings()->gridUnit(); // 10 on Wayland
-    int basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
+    qreal scale = window()->nextScale();
+    qreal baseSize = settings()->gridUnit(); // 10 on Wayland
+    qreal basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
 
     if (m_tabletMode)
-        baseSize = qRound(baseSize * m_internalSettings->scaleTouchMode() / 100.0f);
+        baseSize = baseSize * m_internalSettings->scaleTouchMode() / 100.0f;
 
     if (m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         switch (m_internalSettings->systemIconSize()) {
@@ -1429,15 +1464,18 @@ void Decoration::calculateIconSizes()
         }
     }
 
+    baseSize = KDecoration3::snapToPixelGrid(baseSize, scale);
+    basePaddingSize = KDecoration3::snapToPixelGrid(basePaddingSize, scale);
+
     m_smallButtonPaddedSize = baseSize;
     m_iconSize = baseSize - basePaddingSize;
 
     if (m_buttonBackgroundType == ButtonBackgroundType::Small) {
         qreal smallBackgroundScaleFactor = qreal(m_internalSettings->scaleBackgroundPercent()) / 100;
 
-        m_smallButtonPaddedSize = qRound(m_smallButtonPaddedSize * smallBackgroundScaleFactor);
+        m_smallButtonPaddedSize = KDecoration3::snapToPixelGrid(m_smallButtonPaddedSize * smallBackgroundScaleFactor, scale);
 
-        m_smallButtonBackgroundSize = qRound(m_iconSize * smallBackgroundScaleFactor);
+        m_smallButtonBackgroundSize = KDecoration3::snapToPixelGrid(m_iconSize * smallBackgroundScaleFactor, scale);
     }
 }
 
@@ -1450,28 +1488,31 @@ void Decoration::onTabletModeChanged(bool mode)
 }
 
 //________________________________________________________________
-qreal Decoration::captionHeight(const bool nextState) const
+qreal Decoration::captionHeight(const bool nextState, qreal scaledTitleBarTopMargin, qreal scaledTitleBarBottomMargin) const
 {
+    qreal scale = nextState ? window()->nextScale() : window()->scale();
     qreal borderTop = nextState ? this->nextState()->borders().top() : this->borderTop();
-    return hideTitleBar() ? borderTop : borderTop - m_scaledTitleBarTopMargin - m_scaledTitleBarBottomMargin - titleBarSeparatorHeight();
+    return hideTitleBar() ? borderTop : borderTop - scaledTitleBarTopMargin - scaledTitleBarBottomMargin - titleBarSeparatorHeight(scale);
 }
 
 //________________________________________________________________
-QPair<QRectF, Qt::Alignment> Decoration::captionRect(const bool nextState) const
+QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState) const
 {
     if (hideTitleBar()) {
         return qMakePair(QRect(), Qt::AlignCenter);
     } else {
         auto c = window();
-        qreal captionHeight = this->captionHeight(nextState);
+        qreal scale = nextState ? c->nextScale() : c->scale();
+        qreal scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding;
+        scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
+        qreal captionHeight = this->captionHeight(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
 
-        qreal padding = m_internalSettings->titleSidePadding() * settings()->smallSpacing();
+        qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * settings()->smallSpacing(), scale);
 
         const qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
-
         const qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
 
-        const qreal yOffset = m_scaledTitleBarTopMargin;
+        const qreal yOffset = scaledTitleBarTopMargin;
         const QRectF maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight);
 
         switch (m_internalSettings->titleAlignment()) {
@@ -1767,7 +1808,10 @@ void Decoration::setThinWindowOutlineColor()
     }
 }
 
-void Decoration::setScaledTitleBarTopBottomMargins()
+void Decoration::scaledTitleBarTopBottomMargins(qreal scale,
+                                                qreal &scaledTitleBarTopMargin,
+                                                qreal &scaledTitleBarBottomMargin,
+                                                qreal &scaledIntegratedRoundedRectangleBottomPadding) const
 {
     // access client
     auto c = window();
@@ -1776,9 +1820,10 @@ void Decoration::setScaledTitleBarTopBottomMargins()
     qreal bottomMargin = m_internalSettings->titleBarBottomMargin();
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
-        m_scaledIntegratedRoundedRectangleBottomPadding = m_internalSettings->integratedRoundedRectangleBottomPadding() * settings()->smallSpacing();
+        scaledIntegratedRoundedRectangleBottomPadding =
+            KDecoration3::snapToPixelGrid(m_internalSettings->integratedRoundedRectangleBottomPadding() * settings()->smallSpacing(), scale);
     } else {
-        m_scaledIntegratedRoundedRectangleBottomPadding = 0;
+        scaledIntegratedRoundedRectangleBottomPadding = 0;
     }
     if (c->isMaximized()) {
         qreal maximizedScaleFactor = qreal(m_internalSettings->percentMaximizedTopBottomMargins()) / 100;
@@ -1786,21 +1831,21 @@ void Decoration::setScaledTitleBarTopBottomMargins()
         bottomMargin *= maximizedScaleFactor;
     }
 
-    m_scaledTitleBarTopMargin = settings()->smallSpacing() * topMargin;
-    m_scaledTitleBarBottomMargin = settings()->smallSpacing() * bottomMargin;
+    scaledTitleBarTopMargin = KDecoration3::snapToPixelGrid(settings()->smallSpacing() * topMargin, scale);
+    scaledTitleBarBottomMargin = KDecoration3::snapToPixelGrid(settings()->smallSpacing() * bottomMargin, scale);
 }
 
-void Decoration::setScaledTitleBarSideMargins()
+void Decoration::scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const
 {
-    m_scaledTitleBarLeftMargin = qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing());
-    m_scaledTitleBarRightMargin = qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing());
+    scaledTitleBarLeftMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing()), scale);
+    scaledTitleBarRightMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing()), scale);
 
     // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
     if (!isMaximizedHorizontally()) {
-        int borderSize = this->borderSize(false);
-        m_scaledTitleBarLeftMargin -= borderSize;
-        m_scaledTitleBarRightMargin -= borderSize;
+        int borderSize = this->borderSize(false, scale);
+        scaledTitleBarLeftMargin -= borderSize;
+        scaledTitleBarRightMargin -= borderSize;
     }
 }
 
@@ -1853,7 +1898,7 @@ bool Decoration::isOpaqueTitleBar()
     return ((activeTitleBarColor.alpha() == 255) && (inactiveTitlebarColor.alpha() == 255));
 }
 
-int Decoration::titleBarSeparatorHeight() const
+qreal Decoration::titleBarSeparatorHeight(qreal scale) const
 {
     // access client
     auto c = window();
@@ -1862,7 +1907,7 @@ int Decoration::titleBarSeparatorHeight() const
         qreal height = 1;
         if (KWindowSystem::isPlatformX11())
             height *= m_systemScaleFactorX11;
-        return qRound(height);
+        return KDecoration3::snapToPixelGrid(height, scale);
     } else
         return 0;
 }
