@@ -1001,7 +1001,7 @@ void Decoration::updateButtonsGeometry()
             button->setIconOffset(QPointF(horizontalIconOffsetLeftButtons, verticalIconOffset));
         }
         button->setSmallButtonPaddedSize(QSizeF(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
-        button->setIconSize(QSize(m_iconSize, m_iconSize));
+        button->setIconSize(QSizeF(m_iconSize, m_iconSize));
 
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && button->isEnabled()) {
@@ -1099,8 +1099,8 @@ void Decoration::updateButtonsGeometry()
         } else {
             button->setIconOffset(QPointF(horizontalIconOffsetRightButtons, verticalIconOffset));
         }
-        button->setSmallButtonPaddedSize(QSize(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
-        button->setIconSize(QSize(m_iconSize, m_iconSize));
+        button->setSmallButtonPaddedSize(QSizeF(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
+        button->setIconSize(QSizeF(m_iconSize, m_iconSize));
 
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && button->isEnabled()) {
