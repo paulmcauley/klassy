@@ -113,7 +113,7 @@
        <max>24.0</max>
     </entry>
     
-   <entry name="RoundBottomCornersWhenNoBorders" type = "Bool">
+   <entry name="RoundAllCornersWhenNoBorders" type = "Bool">
         <default>false</default>
     </entry>
 
