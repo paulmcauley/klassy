@@ -169,6 +169,7 @@ void Button::paint(QPainter *painter, const QRectF &repaintRegion)
     }
 
     painter->save();
+    painter->setRenderHints(QPainter::Antialiasing);
 
     // menu button (with application icon)
     if (type() == KDecoration3::DecorationButtonType::Menu) {
@@ -211,8 +212,6 @@ void Button::drawIcon(QPainter *painter) const
 {
     if (!m_d)
         return;
-
-    painter->setRenderHints(QPainter::Antialiasing);
 
     // for standalone/GTK we draw small buttons so don't do anything
     if (!(isStandAlone() || m_isGtkCsdButton)) {
