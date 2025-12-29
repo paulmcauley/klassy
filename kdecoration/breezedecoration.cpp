@@ -385,6 +385,7 @@ void Decoration::init()
     connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
     connect(s.get(), &KDecoration3::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
+    connect(s.get(), &KDecoration3::DecorationSettings::onAllDesktopsAvailableChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
     // full reconfiguration
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
@@ -983,6 +984,8 @@ void Decoration::updateButtonsGeometry()
     int leftmostLeftVisibleIndex = -1;
     int rightmostLeftVisibleIndex = -1;
     int numLeftButtons = m_leftButtons->buttons().count();
+    bool menuPresentBefore = false;
+    bool spacerPresentBefore = false;
 
     for (int i = 0; i < numLeftButtons; i++) {
         Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
@@ -1024,55 +1027,66 @@ void Decoration::updateButtonsGeometry()
         button->setSmallButtonPaddedSize(QSizeF(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
         button->setIconSize(QSizeF(m_iconSize, m_iconSize));
 
+        button->setLeftButtonVisible(false);
+        button->setRightButtonVisible(false);
+        button->setLeftmostLeftVisible(false);
+        button->setVisibleAfterMenu(false);
+        button->setVisibleBeforeMenu(false);
+        button->setRightmostLeftVisible(false);
+        button->setVisibleAfterSpacer(false);
+        ;
+        button->setVisibleBeforeSpacer(false);
         // determine leftmost left visible and rightmostLeftVisible
-        if (button->isVisible() && button->isEnabled()) {
+        if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setLeftButtonVisible(true);
-            button->setRightButtonVisible(false);
-            button->setLeftmostLeftVisible(false);
-            button->setVisibleAfterMenu(false);
-            button->setVisibleBeforeMenu(false);
-            button->setRightmostLeftVisible(false);
 
             if (leftmostLeftVisibleIndex == -1) {
                 leftmostLeftVisibleIndex = i;
                 button->setLeftmostLeftVisible();
-            } else {
-                Button *buttonBefore = static_cast<Button *>(m_leftButtons->buttons()[i - 1]);
-                switch (buttonBefore->type()) {
-                case KDecoration3::DecorationButtonType::Menu:
-                    if (buttonBefore->isVisible() && buttonBefore->isEnabled()) {
-                        button->setVisibleAfterMenu();
-                    }
-                    break;
-                case KDecoration3::DecorationButtonType::Spacer:
-                    button->setVisibleAfterSpacer();
-                    break;
-                default:
-                    break;
-                }
             }
+
+            if (menuPresentBefore) {
+                button->setVisibleAfterMenu(true);
+                menuPresentBefore = false;
+            }
+
+            if (spacerPresentBefore) {
+                button->setVisibleAfterSpacer(true);
+                spacerPresentBefore = false;
+            }
+
+            if (button->type() == KDecoration3::DecorationButtonType::Menu) {
+                menuPresentBefore = true;
+            } else if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
+                spacerPresentBefore = true;
+            }
+
             rightmostLeftVisibleIndex = i;
         }
     }
 
     if (rightmostLeftVisibleIndex != -1) {
+        bool menuPresentAfter = false;
+        bool spacerPresentAfter = false;
         static_cast<Button *>(m_leftButtons->buttons()[rightmostLeftVisibleIndex])->setRightmostLeftVisible();
 
         for (int i = numLeftButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_leftButtons->buttons()[i]);
-            if (button->isEnabled() && button->isVisible()) {
-                Button *buttonAfter = static_cast<Button *>(m_leftButtons->buttons()[i + 1]);
-                switch (buttonAfter->type()) {
-                case KDecoration3::DecorationButtonType::Menu:
-                    if (buttonAfter->isVisible() && buttonAfter->isEnabled()) {
-                        button->setVisibleBeforeMenu();
-                    }
-                    break;
-                case KDecoration3::DecorationButtonType::Spacer:
-                    button->setVisibleBeforeSpacer();
-                    break;
-                default:
-                    break;
+            if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
+                if (menuPresentAfter) {
+                    button->setVisibleBeforeMenu(true);
+                    menuPresentAfter = false;
+                }
+
+                if (spacerPresentAfter) {
+                    button->setVisibleBeforeSpacer(true);
+                    spacerPresentAfter = false;
+                }
+
+                if (button->type() == KDecoration3::DecorationButtonType::Menu) {
+                    menuPresentAfter = true;
+                } else if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
+                    spacerPresentAfter = true;
                 }
             }
         }
@@ -1081,6 +1095,8 @@ void Decoration::updateButtonsGeometry()
     int leftmostRightVisibleIndex = -1;
     int rightmostRightVisibleIndex = -1;
     int numRightButtons = m_rightButtons->buttons().count();
+    menuPresentBefore = false;
+    spacerPresentBefore = false;
 
     for (int i = 0; i < numRightButtons; i++) {
         Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
@@ -1123,55 +1139,66 @@ void Decoration::updateButtonsGeometry()
         button->setSmallButtonPaddedSize(QSizeF(m_smallButtonPaddedSize, m_smallButtonPaddedSize));
         button->setIconSize(QSizeF(m_iconSize, m_iconSize));
 
+        button->setRightButtonVisible(false);
+        button->setLeftButtonVisible(false);
+        button->setLeftmostRightVisible(false);
+        button->setVisibleAfterMenu(false);
+        button->setVisibleBeforeMenu(false);
+        button->setRightmostRightVisible(false);
+        button->setVisibleAfterSpacer(false);
+        ;
+        button->setVisibleBeforeSpacer(false);
         // determine leftmost right visible and rightmostRightVisible
-        if (button->isVisible() && button->isEnabled()) {
+        if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
             button->setRightButtonVisible(true);
-            button->setLeftButtonVisible(false);
-            button->setLeftmostRightVisible(false);
-            button->setVisibleAfterMenu(false);
-            button->setVisibleBeforeMenu(false);
-            button->setRightmostRightVisible(false);
 
             if (leftmostRightVisibleIndex == -1) {
                 leftmostRightVisibleIndex = i;
                 button->setLeftmostRightVisible();
-            } else {
-                Button *buttonBefore = static_cast<Button *>(m_rightButtons->buttons()[i - 1]);
-                switch (buttonBefore->type()) {
-                case KDecoration3::DecorationButtonType::Menu:
-                    if (buttonBefore->isVisible() && buttonBefore->isEnabled()) {
-                        button->setVisibleAfterMenu();
-                    }
-                    break;
-                case KDecoration3::DecorationButtonType::Spacer:
-                    button->setVisibleAfterSpacer();
-                    break;
-                default:
-                    break;
-                }
             }
+
+            if (menuPresentBefore) {
+                button->setVisibleAfterMenu(true);
+                menuPresentBefore = false;
+            }
+
+            if (spacerPresentBefore) {
+                button->setVisibleAfterSpacer(true);
+                spacerPresentBefore = false;
+            }
+
+            if (button->type() == KDecoration3::DecorationButtonType::Menu) {
+                menuPresentBefore = true;
+            } else if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
+                spacerPresentBefore = true;
+            }
+
             rightmostRightVisibleIndex = i;
         }
     }
 
     if (rightmostRightVisibleIndex != -1) {
+        bool menuPresentAfter = false;
+        bool spacerPresentAfter = false;
         static_cast<Button *>(m_rightButtons->buttons()[rightmostRightVisibleIndex])->setRightmostRightVisible();
 
         for (int i = numRightButtons - 2; i >= 0; i--) {
             Button *button = static_cast<Button *>(m_rightButtons->buttons()[i]);
-            if (button->isEnabled() && button->isVisible()) {
-                Button *buttonAfter = static_cast<Button *>(m_rightButtons->buttons()[i + 1]);
-                switch (buttonAfter->type()) {
-                case KDecoration3::DecorationButtonType::Menu:
-                    if (buttonAfter->isVisible() && buttonAfter->isEnabled()) {
-                        button->setVisibleBeforeMenu();
-                    }
-                    break;
-                case KDecoration3::DecorationButtonType::Spacer:
-                    button->setVisibleBeforeSpacer();
-                    break;
-                default:
-                    break;
+            if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
+                if (menuPresentAfter) {
+                    button->setVisibleBeforeMenu(true);
+                    menuPresentAfter = false;
+                }
+
+                if (spacerPresentAfter) {
+                    button->setVisibleBeforeSpacer(true);
+                    spacerPresentAfter = false;
+                }
+
+                if (button->type() == KDecoration3::DecorationButtonType::Menu) {
+                    menuPresentAfter = true;
+                } else if (button->type() == KDecoration3::DecorationButtonType::Spacer) {
+                    spacerPresentAfter = true;
                 }
             }
         }
