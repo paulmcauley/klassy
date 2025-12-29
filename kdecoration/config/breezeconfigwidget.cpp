@@ -167,7 +167,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.useTitleBarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.roundBottomCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.roundAllCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.forceColorizeSystemIcons, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
 
     // only enable animationsSpeed when animationsEnabled is checked
@@ -226,7 +226,7 @@ void ConfigWidget::load()
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.useTitleBarColorForAllBorders->setChecked(m_internalSettings->useTitleBarColorForAllBorders());
-    m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
+    m_ui.roundAllCornersWhenNoBorders->setChecked(m_internalSettings->roundAllCornersWhenNoBorders());
     m_ui.forceColorizeSystemIcons->setChecked(m_internalSettings->forceColorizeSystemIcons());
 
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
@@ -273,7 +273,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
     m_internalSettings->setAnimationsSpeedRelativeSystem(m_ui.animationsSpeedRelativeSystem->value());
     m_internalSettings->setUseTitleBarColorForAllBorders(m_ui.useTitleBarColorForAllBorders->isChecked());
-    m_internalSettings->setRoundBottomCornersWhenNoBorders(m_ui.roundBottomCornersWhenNoBorders->isChecked());
+    m_internalSettings->setRoundAllCornersWhenNoBorders(m_ui.roundAllCornersWhenNoBorders->isChecked());
     m_internalSettings->setForceColorizeSystemIcons(m_ui.forceColorizeSystemIcons->isChecked());
     m_internalSettings->setColorizeThinWindowOutlineWithButton(m_ui.colorizeThinWindowOutlineWithButton->isChecked());
 
@@ -344,7 +344,7 @@ void ConfigWidget::defaults()
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.useTitleBarColorForAllBorders->setChecked(m_internalSettings->useTitleBarColorForAllBorders());
-    m_ui.roundBottomCornersWhenNoBorders->setChecked(m_internalSettings->roundBottomCornersWhenNoBorders());
+    m_ui.roundAllCornersWhenNoBorders->setChecked(m_internalSettings->roundAllCornersWhenNoBorders());
     m_ui.forceColorizeSystemIcons->setChecked(m_internalSettings->forceColorizeSystemIcons());
     m_ui.colorizeThinWindowOutlineWithButton->setChecked(m_internalSettings->colorizeThinWindowOutlineWithButton());
 
@@ -441,7 +441,7 @@ void ConfigWidget::updateChanged()
         modified = true;
     else if (m_ui.useTitleBarColorForAllBorders->isChecked() != m_internalSettings->useTitleBarColorForAllBorders())
         modified = true;
-    else if (m_ui.roundBottomCornersWhenNoBorders->isChecked() != m_internalSettings->roundBottomCornersWhenNoBorders())
+    else if (m_ui.roundAllCornersWhenNoBorders->isChecked() != m_internalSettings->roundAllCornersWhenNoBorders())
         modified = true;
     else if (m_ui.forceColorizeSystemIcons->isChecked() != m_internalSettings->forceColorizeSystemIcons())
         modified = true;

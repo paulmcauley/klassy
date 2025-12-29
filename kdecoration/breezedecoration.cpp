@@ -137,7 +137,7 @@ static QColor g_shadowColor = Qt::black;
 static qreal g_cornerRadius = 3;
 static qreal g_systemScaleFactor = 1;
 static bool g_hasNoBorders = true;
-static bool g_roundBottomCornersWhenNoBorders = false;
+static bool g_roundAllCornersWhenNoBorders = false;
 static int g_thinWindowOutlineStyleActive = 0;
 static int g_thinWindowOutlineStyleInactive = 0;
 static QColor g_thinWindowOutlineColorActive = Qt::black;
@@ -145,6 +145,7 @@ static QColor g_thinWindowOutlineColorInactive = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
 static qreal g_nextScale = 1;
 static bool g_windowOutlineSnapToWholePixel = true;
+static bool g_hideTitleBar = false;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -801,14 +802,14 @@ void Decoration::recalculateBorders()
     setBorders(QMarginsF(left, top, right, bottom));
 
     // extended sizes
-    const qreal extSize = s->largeSpacing();
+    const qreal extSize = KDecoration3::snapToPixelGrid(s->smallSpacing() * 3, scale);
     qreal extLeft = 0;
     qreal extRight = 0;
     qreal extBottom = 0;
     qreal extTop = 0;
 
     // Add extended resize handles for Full-sized Rectangle highlight as they cannot overlap with larger full-sized buttons
-    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight) {
+    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight || scaledTitleBarTopMargin < extSize) {
         if (!isMaximizedVertically())
             extTop = extSize;
     }
@@ -827,19 +828,25 @@ void Decoration::recalculateBorders()
             extLeft = extSize;
             extRight = extSize;
         } else {
-            if (m_internalSettings->titleBarLeftMargin() == 0)
+            qreal scaledTitleBarLeftMargin, scaledTitleBarRightMargin;
+            scaledTitleBarSideMargins(scale, scaledTitleBarLeftMargin, scaledTitleBarRightMargin);
+
+            if (scaledTitleBarLeftMargin < extSize)
                 extLeft = extSize;
-            if (m_internalSettings->titleBarRightMargin() == 0)
+            if (scaledTitleBarRightMargin < extSize)
                 extRight = extSize;
         }
     }
 
     setResizeOnlyBorders(QMarginsF(extLeft, extTop, extRight, extBottom));
 
+    // set clipped corners
     qreal bottomLeftRadius = 0;
     qreal bottomRightRadius = 0;
+    qreal topLeftRadius = 0;
+    qreal topRightRadius = 0;
 
-    if (hasNoBorders() && m_internalSettings->roundBottomCornersWhenNoBorders()) {
+    if (hasNoBorders() && m_internalSettings->roundAllCornersWhenNoBorders()) {
         if (!isBottomEdge()) {
             if (!isLeftEdge()) {
                 bottomLeftRadius = m_scaledCornerRadius;
@@ -848,9 +855,20 @@ void Decoration::recalculateBorders()
                 bottomRightRadius = m_scaledCornerRadius;
             }
         }
+
+        if (hideTitleBar()) {
+            if (!isTopEdge()) {
+                if (!isLeftEdge()) {
+                    topLeftRadius = m_scaledCornerRadius;
+                }
+                if (!isRightEdge()) {
+                    topRightRadius = m_scaledCornerRadius;
+                }
+            }
+        }
     }
 
-    setBorderRadius(KDecoration3::BorderRadius(0, 0, bottomRightRadius, bottomLeftRadius));
+    setBorderRadius(KDecoration3::BorderRadius(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius));
 }
 
 //________________________________________________________________
@@ -1273,8 +1291,12 @@ void Decoration::calculateWindowShape()
     m_windowPath.clear(); // clear the path for subsequent calls to this function
     if (!c->isShaded()) {
         if (s->isAlphaChannelSupported() && !isMaximized()) {
-            if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders()) { // round at top, square at bottom
-                m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
+            if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders()) {
+                if (hideTitleBar()) {
+                    m_windowPath.addRect(rect());
+                } else { // round at top, square at bottom
+                    m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
+                }
             } else {
                 m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             }
@@ -1588,12 +1610,12 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             forceUpdateCache || g_shadowSizeEnum != m_internalSettings->shadowSize() || g_shadowStrength != m_internalSettings->shadowStrength()
             || g_shadowColor != m_internalSettings->shadowColor() || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
             || !(qAbs(g_systemScaleFactor - m_systemScaleFactorX11) < 0.001) || g_hasNoBorders != hasNoBorders()
-            || g_roundBottomCornersWhenNoBorders != m_internalSettings->roundBottomCornersWhenNoBorders()
+            || g_roundAllCornersWhenNoBorders != m_internalSettings->roundAllCornersWhenNoBorders()
             || g_thinWindowOutlineStyleActive != m_internalSettings->thinWindowOutlineStyle(true)
             || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyle(false)
             || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
             || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness() || g_nextScale != c->nextScale()
-            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel())) {
+            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel() || g_hideTitleBar != hideTitleBar())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1602,13 +1624,14 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_cornerRadius = m_scaledCornerRadius;
         g_systemScaleFactor = m_systemScaleFactorX11;
         g_hasNoBorders = hasNoBorders();
-        g_roundBottomCornersWhenNoBorders = m_internalSettings->roundBottomCornersWhenNoBorders();
+        g_roundAllCornersWhenNoBorders = m_internalSettings->roundAllCornersWhenNoBorders();
         g_thinWindowOutlineStyleActive = m_internalSettings->thinWindowOutlineStyle(true);
         g_thinWindowOutlineStyleInactive = m_internalSettings->thinWindowOutlineStyle(false);
         c->isActive() ? g_thinWindowOutlineColorActive = m_thinWindowOutline : g_thinWindowOutlineColorInactive = m_thinWindowOutline;
         g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
         g_nextScale = c->nextScale();
         g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
+        g_hideTitleBar = hideTitleBar();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1678,8 +1701,12 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
 
     QPainterPath roundedRectMask;
-    if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders() && !c->isShaded()) {
-        roundedRectMask = GeometryTools::roundedPath(innerRect, CornersTop, m_scaledCornerRadius + 0.5);
+    if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders() && !c->isShaded()) {
+        if (hideTitleBar()) {
+            roundedRectMask.addRect(innerRect);
+        } else {
+            roundedRectMask = GeometryTools::roundedPath(innerRect, CornersTop, m_scaledCornerRadius + 0.5);
+        }
     } else {
         roundedRectMask.addRoundedRect(innerRect, m_scaledCornerRadius + 0.5, m_scaledCornerRadius + 0.5);
     }
@@ -1734,8 +1761,12 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
             else
                 cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
 
-            if (hasNoBorders() && !m_internalSettings->roundBottomCornersWhenNoBorders() && !c->isShaded()) {
-                outlinePath = GeometryTools::roundedPath(outlineRect, CornersTop, cornerRadius);
+            if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders() && !c->isShaded()) {
+                if (hideTitleBar()) {
+                    outlinePath.addRect(outlineRect);
+                } else {
+                    outlinePath = GeometryTools::roundedPath(outlineRect, CornersTop, cornerRadius);
+                }
             } else {
                 outlinePath.addRoundedRect(outlineRect, cornerRadius, cornerRadius);
             }
@@ -1851,7 +1882,7 @@ void Decoration::scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLef
     // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
     if (!isMaximizedHorizontally()) {
-        int borderSize = this->borderSize(false, scale);
+        qreal borderSize = this->borderSize(false, scale);
         scaledTitleBarLeftMargin -= borderSize;
         scaledTitleBarRightMargin -= borderSize;
     }
