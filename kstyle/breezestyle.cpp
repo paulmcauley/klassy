@@ -1870,7 +1870,7 @@ void Style::drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool 
             painter->setBrush(windowColor);
             painter->drawRect(bg);
         }
-        if (toolsAreaWithHeaderColors) {
+        if (toolsAreaWithHeaderColors && !_helper->decorationConfig()->hideTitleBar()) {
             drawToolsAreaSeparator(painter, mw);
         }
     } else {
@@ -1933,7 +1933,7 @@ void Style::drawDialog(QPainter *painter, const QDialog *dialog, const bool draw
                 painter->setBrush(windowColor);
                 painter->drawRect(bg);
             }
-            if (toolsAreaWithHeaderColors) {
+            if (toolsAreaWithHeaderColors && !_helper->decorationConfig()->hideTitleBar()) {
                 drawToolsAreaSeparator(painter, dialog);
             }
         }
