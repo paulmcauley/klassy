@@ -946,7 +946,6 @@ void Decoration::updateButtonsGeometry()
                 if (KWindowSystem::isPlatformX11()) {
                     shiftUpWithOutline *= m_systemScaleFactorX11;
                 }
-                shiftUpWithOutline = KDecoration3::snapToPixelGrid(shiftUpWithOutline, scale);
             }
             verticalIconOffsetNormal =
                 buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize - scaledIntegratedRoundedRectangleBottomPadding - shiftUpWithOutline) / 2;
@@ -954,6 +953,7 @@ void Decoration::updateButtonsGeometry()
                 verticalIconOffsetMenuGrouped = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
             }
         } else {
+            // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
             verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
@@ -964,11 +964,14 @@ void Decoration::updateButtonsGeometry()
         bWidthMarginRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
         bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
         bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
-        horizontalIconOffsetLeftButtons = KDecoration3::snapToPixelGrid(bWidthMarginLeft / 2, scale);
-        horizontalIconOffsetRightButtons = KDecoration3::snapToPixelGrid(bWidthMarginRight / 2, scale);
+
+        // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
+        horizontalIconOffsetLeftButtons = bWidthMarginLeft / 2;
+        horizontalIconOffsetRightButtons = bWidthMarginRight / 2;
     } else {
         bHeightNormal = captionHeight + (isTopEdge() ? buttonTopMargin : 0);
-        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
+        // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
+        verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize);
 
         buttonSpacingLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingLeft(), scale);
         buttonSpacingRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingRight(), scale);
