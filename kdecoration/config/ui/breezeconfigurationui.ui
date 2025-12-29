@@ -1300,12 +1300,12 @@
              </layout>
             </item>
             <item>
-             <widget class="QCheckBox" name="roundBottomCornersWhenNoBorders">
+             <widget class="QCheckBox" name="roundAllCornersWhenNoBorders">
               <property name="toolTip">
                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="text">
-               <string>Round bottom corners when no borders (clips window content)</string>
+               <string>Round all corners when no borders (clips window content)</string>
               </property>
              </widget>
             </item>
@@ -1669,7 +1669,7 @@
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
   <tabstop>cornerRadius</tabstop>
-  <tabstop>roundBottomCornersWhenNoBorders</tabstop>
+  <tabstop>roundAllCornersWhenNoBorders</tabstop>
   <tabstop>useTitleBarColorForAllBorders</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>thinWindowOutlineStyleButton</tabstop>
