@@ -14,7 +14,7 @@ void RenderStyleFluent18By18::renderMaximizeIcon()
     renderSquareMaximizeIcon(false, 20);
 }
 
-void RenderStyleFluent18By18::renderRestoreIcon()
+void RenderStyleFluent18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(false, 20);
 }

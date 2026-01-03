@@ -21,7 +21,7 @@ void RenderStyleKairn18By18::renderMaximizeIcon()
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKairn18By18::renderRestoreIcon()
+void RenderStyleKairn18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }

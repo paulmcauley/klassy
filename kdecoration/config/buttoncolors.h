@@ -172,7 +172,7 @@ private:
     // strings for UI corresponding to overridableButtonTypes
     const QHash<DecorationButtonType, QString> m_colorOverridableButtonTypesStrings{
         {DecorationButtonType::Close, i18n("Close")},
-        {DecorationButtonType::Maximize, i18n("Maximize/Restore")},
+        {DecorationButtonType::Maximize, i18n("Maximize/Float")},
         {DecorationButtonType::Minimize, i18n("Minimize")},
         {DecorationButtonType::ContextHelp, i18n("Help")},
         {DecorationButtonType::Shade, i18n("Shade")},

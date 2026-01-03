@@ -62,7 +62,7 @@ void RenderDecorationButtonIcon18By18::renderMaximizeIcon()
     }
 }
 
-void RenderDecorationButtonIcon18By18::renderRestoreIcon()
+void RenderDecorationButtonIcon18By18::renderFloatIcon()
 {
     QPen pen = m_painter->pen();
     pen.setJoinStyle(Qt::RoundJoin);
