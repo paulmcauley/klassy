@@ -121,7 +121,7 @@ void RenderDecorationButtonIcon::renderIcon(DecorationButtonType type, bool chec
 
     case DecorationButtonType::Maximize:
         if (checked) {
-            renderRestoreIcon();
+            renderFloatIcon();
         } else {
             renderMaximizeIcon();
         }

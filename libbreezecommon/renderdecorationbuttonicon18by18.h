@@ -27,7 +27,7 @@ protected:
 
     virtual void renderCloseIcon() override;
     virtual void renderMaximizeIcon() override;
-    virtual void renderRestoreIcon() override;
+    virtual void renderFloatIcon() override;
     virtual void renderMinimizeIcon() override;
     virtual void renderPinnedOnAllDesktopsIcon() override;
     virtual void renderPinOnAllDesktopsIcon() override;
