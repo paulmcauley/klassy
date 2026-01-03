@@ -145,6 +145,7 @@ static QColor g_thinWindowOutlineColorInactive = Qt::black;
 static qreal g_thinWindowOutlineThickness = 1;
 static qreal g_nextScale = 1;
 static bool g_windowOutlineSnapToWholePixel = true;
+static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
@@ -1645,7 +1646,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || g_thinWindowOutlineStyleInactive != m_internalSettings->thinWindowOutlineStyle(false)
             || (c->isActive() ? g_thinWindowOutlineColorActive != m_thinWindowOutline : g_thinWindowOutlineColorInactive != m_thinWindowOutline)
             || g_thinWindowOutlineThickness != m_internalSettings->thinWindowOutlineThickness() || g_nextScale != c->nextScale()
-            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel() || g_hideTitleBar != hideTitleBar())) {
+            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
+            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1661,6 +1663,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_thinWindowOutlineThickness = m_internalSettings->thinWindowOutlineThickness();
         g_nextScale = c->nextScale();
         g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
+        g_windowOutlineOverlap = m_internalSettings->windowOutlineOverlap();
         g_hideTitleBar = hideTitleBar();
     }
 
@@ -1773,7 +1776,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
                     outlinePenWidth = std::round(outlinePenWidth);
                 }
             } else {
-                outlinePenWidth = m_internalSettings->thinWindowOutlineThickness() / scale;
+                outlinePenWidth = m_internalSettings->thinWindowOutlineThickness();
                 if (m_internalSettings->windowOutlineSnapToWholePixel()) {
                     outlinePenWidth = KDecoration3::snapToPixelGrid(outlinePenWidth, scale);
                 }
@@ -1781,18 +1784,20 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
             // the overlap between the thin window outline and behind the window in unscaled pixels.
             // This is necessary for the thin window outline to sit flush with the window on Wayland (fractional scale error),
             // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
-            qreal outlineOverlap = 0.5;
-            outlinePenWidth += outlineOverlap / scale;
+            qreal outlineOverlap, outlinePenWidthWithOverlap;
+            m_internalSettings->windowOutlineOverlap() ? outlineOverlap = 0.5 : outlineOverlap = 0;
+            outlinePenWidthWithOverlap = outlinePenWidth + outlineOverlap;
 
-            qreal outlineAdjustment = outlinePenWidth / 2 - outlineOverlap;
-            outlineAdjustment = outlineAdjustment / scale;
+            qreal halfOutlinePenWidth = outlinePenWidth / 2;
+            qreal outlineAdjustment = halfOutlinePenWidth - outlineOverlap;
+            outlineAdjustment /= scale;
             QRectF outlineRect;
             outlineRect =
                 innerRect.adjusted(-outlineAdjustment,
                                    -outlineAdjustment,
                                    outlineAdjustment,
                                    outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
-            p.setWidthF(outlinePenWidth);
+            p.setWidthF(outlinePenWidthWithOverlap / scale);
             painter.setPen(p);
             painter.setBrush(Qt::NoBrush);
             painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1803,7 +1808,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
             if (m_internalSettings->windowCornerRadius() < 0.4)
                 cornerRadius = m_scaledCornerRadius; // give a square corner for when corner radius is 0
             else
-                cornerRadius = m_scaledCornerRadius + outlineAdjustment; // else round corner slightly more to account for pen width
+                cornerRadius = m_scaledCornerRadius + halfOutlinePenWidth; // else round corner slightly more to account for pen width
 
             cornerRadius /= scale;
 
