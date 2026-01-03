@@ -33,12 +33,12 @@
           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
          </property>
          <property name="buddy">
-          <cstring>thinWindowOutlineThickness</cstring>
+          <cstring>windowOutlineThickness</cstring>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QDoubleSpinBox" name="thinWindowOutlineThickness">
+        <widget class="QDoubleSpinBox" name="windowOutlineThickness">
          <property name="minimum">
           <double>0.500000000000000</double>
          </property>
@@ -108,12 +108,12 @@
          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
         </property>
         <property name="buddy">
-         <cstring>thinWindowOutlineStyleActive</cstring>
+         <cstring>windowOutlineStyleActive</cstring>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="lockThinWindowOutlineStyleActive">
+       <widget class="QPushButton" name="lockWindowOutlineStyleActive">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -132,7 +132,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="thinWindowOutlineStyleActive">
+       <widget class="QComboBox" name="windowOutlineStyleActive">
         <item>
          <property name="text">
           <string>None</string>
@@ -869,7 +869,7 @@
                <string>Custom Colour:</string>
               </property>
               <property name="buddy">
-               <cstring>thinWindowOutlineCustomColorActive</cstring>
+               <cstring>windowOutlineCustomColorActive</cstring>
               </property>
              </widget>
             </item>
@@ -996,7 +996,7 @@
             <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <widget class="KColorButton" name="thinWindowOutlineCustomColorActive">
+               <widget class="KColorButton" name="windowOutlineCustomColorActive">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1006,7 +1006,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="lockThinWindowOutlineCustomColorActive">
+               <widget class="QPushButton" name="lockWindowOutlineCustomColorActive">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1134,7 +1134,7 @@
             <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_5">
               <item>
-               <widget class="KColorButton" name="thinWindowOutlineCustomColorActive_2">
+               <widget class="KColorButton" name="windowOutlineCustomColorActive_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1144,7 +1144,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="lockThinWindowOutlineCustomColorActive_2">
+               <widget class="QPushButton" name="lockWindowOutlineCustomColorActive_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1245,7 +1245,7 @@
                <string>Custom Colour:</string>
               </property>
               <property name="buddy">
-               <cstring>thinWindowOutlineCustomColorActive_2</cstring>
+               <cstring>windowOutlineCustomColorActive_2</cstring>
               </property>
              </widget>
             </item>
@@ -1321,7 +1321,7 @@
          <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
         </property>
         <property name="buddy">
-         <cstring>thinWindowOutlineStyleInactive</cstring>
+         <cstring>windowOutlineStyleInactive</cstring>
         </property>
        </widget>
       </item>
@@ -1339,7 +1339,7 @@
        </spacer>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="thinWindowOutlineStyleInactive">
+       <widget class="QComboBox" name="windowOutlineStyleInactive">
         <item>
          <property name="text">
           <string>None</string>
@@ -1378,7 +1378,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="lockThinWindowOutlineStyleInactive">
+       <widget class="QPushButton" name="lockWindowOutlineStyleInactive">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -2180,14 +2180,14 @@
                <string>Custom Colour:</string>
               </property>
               <property name="buddy">
-               <cstring>thinWindowOutlineCustomColorInactive</cstring>
+               <cstring>windowOutlineCustomColorInactive</cstring>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_4">
               <item>
-               <widget class="KColorButton" name="thinWindowOutlineCustomColorInactive">
+               <widget class="KColorButton" name="windowOutlineCustomColorInactive">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2197,7 +2197,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="lockThinWindowOutlineCustomColorInactive">
+               <widget class="QPushButton" name="lockWindowOutlineCustomColorInactive">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2341,7 +2341,7 @@
             <item row="0" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
-               <widget class="KColorButton" name="thinWindowOutlineCustomColorInactive_2">
+               <widget class="KColorButton" name="windowOutlineCustomColorInactive_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2351,7 +2351,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="lockThinWindowOutlineCustomColorInactive_2">
+               <widget class="QPushButton" name="lockWindowOutlineCustomColorInactive_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -2408,7 +2408,7 @@
                <string>Custom Colour:</string>
               </property>
               <property name="buddy">
-               <cstring>thinWindowOutlineCustomColorInactive_2</cstring>
+               <cstring>windowOutlineCustomColorInactive_2</cstring>
               </property>
              </widget>
             </item>
@@ -2530,11 +2530,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>thinWindowOutlineThickness</tabstop>
+  <tabstop>windowOutlineThickness</tabstop>
   <tabstop>windowOutlineSnapToWholePixel</tabstop>
   <tabstop>windowOutlineOverlap</tabstop>
-  <tabstop>thinWindowOutlineStyleActive</tabstop>
-  <tabstop>lockThinWindowOutlineStyleActive</tabstop>
+  <tabstop>windowOutlineStyleActive</tabstop>
+  <tabstop>lockWindowOutlineStyleActive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_2</tabstop>
   <tabstop>windowOutlineContrastOpacityActive</tabstop>
@@ -2543,16 +2543,16 @@
   <tabstop>windowOutlineAccentColorOpacityActive_2</tabstop>
   <tabstop>windowOutlineAccentWithContrastOpacityActive</tabstop>
   <tabstop>windowOutlineAccentWithContrastOpacityActive_2</tabstop>
-  <tabstop>thinWindowOutlineCustomColorActive</tabstop>
-  <tabstop>lockThinWindowOutlineCustomColorActive</tabstop>
+  <tabstop>windowOutlineCustomColorActive</tabstop>
+  <tabstop>lockWindowOutlineCustomColorActive</tabstop>
   <tabstop>windowOutlineCustomColorOpacityActive</tabstop>
   <tabstop>windowOutlineCustomColorOpacityActive_2</tabstop>
-  <tabstop>thinWindowOutlineCustomColorActive_2</tabstop>
-  <tabstop>lockThinWindowOutlineCustomColorActive_2</tabstop>
+  <tabstop>windowOutlineCustomColorActive_2</tabstop>
+  <tabstop>lockWindowOutlineCustomColorActive_2</tabstop>
   <tabstop>windowOutlineCustomWithContrastOpacityActive</tabstop>
   <tabstop>windowOutlineCustomWithContrastOpacityActive_2</tabstop>
-  <tabstop>thinWindowOutlineStyleInactive</tabstop>
-  <tabstop>lockThinWindowOutlineStyleInactive</tabstop>
+  <tabstop>windowOutlineStyleInactive</tabstop>
+  <tabstop>lockWindowOutlineStyleInactive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_3</tabstop>
   <tabstop>windowOutlineShadowColorOpacity_4</tabstop>
   <tabstop>windowOutlineContrastOpacityInactive</tabstop>
@@ -2561,12 +2561,12 @@
   <tabstop>windowOutlineAccentColorOpacityInactive_2</tabstop>
   <tabstop>windowOutlineAccentWithContrastOpacityInactive</tabstop>
   <tabstop>windowOutlineAccentWithContrastOpacityInactive_2</tabstop>
-  <tabstop>thinWindowOutlineCustomColorInactive</tabstop>
-  <tabstop>lockThinWindowOutlineCustomColorInactive</tabstop>
+  <tabstop>windowOutlineCustomColorInactive</tabstop>
+  <tabstop>lockWindowOutlineCustomColorInactive</tabstop>
   <tabstop>windowOutlineCustomColorOpacityInactive</tabstop>
   <tabstop>windowOutlineCustomColorOpacityInactive_2</tabstop>
-  <tabstop>thinWindowOutlineCustomColorInactive_2</tabstop>
-  <tabstop>lockThinWindowOutlineCustomColorInactive_2</tabstop>
+  <tabstop>windowOutlineCustomColorInactive_2</tabstop>
+  <tabstop>lockWindowOutlineCustomColorInactive_2</tabstop>
   <tabstop>windowOutlineCustomWithContrastOpacityInactive</tabstop>
   <tabstop>windowOutlineCustomWithContrastOpacityInactive_2</tabstop>
  </tabstops>
@@ -3119,7 +3119,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>thinWindowOutlineStyleActive</sender>
+   <sender>windowOutlineStyleActive</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>windowOutlineOpacityActiveStackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
@@ -3135,7 +3135,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>thinWindowOutlineStyleInactive</sender>
+   <sender>windowOutlineStyleInactive</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>windowOutlineOpacityInactiveStackedWidget</receiver>
    <slot>setCurrentIndex(int)</slot>
@@ -3151,9 +3151,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineStyleInactive</sender>
+   <sender>lockWindowOutlineStyleInactive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineStyleActive</receiver>
+   <receiver>lockWindowOutlineStyleActive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3167,9 +3167,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineStyleActive</sender>
+   <sender>lockWindowOutlineStyleActive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineStyleInactive</receiver>
+   <receiver>lockWindowOutlineStyleInactive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3183,9 +3183,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorActive</sender>
+   <sender>lockWindowOutlineCustomColorActive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorInactive</receiver>
+   <receiver>lockWindowOutlineCustomColorInactive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3199,9 +3199,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorInactive</sender>
+   <sender>lockWindowOutlineCustomColorInactive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorActive</receiver>
+   <receiver>lockWindowOutlineCustomColorActive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3215,9 +3215,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorActive_2</sender>
+   <sender>lockWindowOutlineCustomColorActive_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorInactive_2</receiver>
+   <receiver>lockWindowOutlineCustomColorInactive_2</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3231,9 +3231,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorInactive_2</sender>
+   <sender>lockWindowOutlineCustomColorInactive_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorActive_2</receiver>
+   <receiver>lockWindowOutlineCustomColorActive_2</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3247,9 +3247,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorActive</sender>
+   <sender>lockWindowOutlineCustomColorActive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorActive_2</receiver>
+   <receiver>lockWindowOutlineCustomColorActive_2</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3263,9 +3263,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorActive_2</sender>
+   <sender>lockWindowOutlineCustomColorActive_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorActive</receiver>
+   <receiver>lockWindowOutlineCustomColorActive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3279,9 +3279,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorInactive</sender>
+   <sender>lockWindowOutlineCustomColorInactive</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorInactive_2</receiver>
+   <receiver>lockWindowOutlineCustomColorInactive_2</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -3295,9 +3295,9 @@
    </hints>
   </connection>
   <connection>
-   <sender>lockThinWindowOutlineCustomColorInactive_2</sender>
+   <sender>lockWindowOutlineCustomColorInactive_2</sender>
    <signal>toggled(bool)</signal>
-   <receiver>lockThinWindowOutlineCustomColorInactive</receiver>
+   <receiver>lockWindowOutlineCustomColorInactive</receiver>
    <slot>setChecked(bool)</slot>
    <hints>
     <hint type="sourcelabel">

@@ -105,7 +105,7 @@ public:
     inline bool hideTitleBar() const;
     //@}
 
-    void setThinWindowOutlineOverrideColor(const bool on, const QColor &color);
+    void setWindowOutlineOverrideColor(const bool on, const QColor &color);
 
     QPainterPath *titleBarPath()
     {
@@ -206,8 +206,8 @@ private:
     void calculateWindowShape();
     void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
-    void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isThinWindowOutlineOverride = false);
-    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor, const bool isThinWindowOutlineOverride = false);
+    void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isWindowOutlineOverride = false);
+    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor, const bool isWindowOutlineOverride = false);
     void setScaledCornerRadius();
 
     //*@name border size
@@ -233,8 +233,8 @@ private:
     //* override thin window outline colour from button colour animation update
     void updateOverrideOutlineFromButtonAnimationState();
 
-    //* calculates and sets m_thinWindowOutline
-    void setThinWindowOutlineColor();
+    //* calculates and sets m_windowOutline
+    void setWindowOutlineColor();
 
     void setGlobalLookAndFeelOptions(QString lookAndFeelPackageName);
 
@@ -288,14 +288,14 @@ private:
     bool m_toolsAreaWillBeDrawn = true;
 
     //*the actual thin window outline colour to output
-    QColor m_thinWindowOutline = QColor();
+    QColor m_windowOutline = QColor();
     //*colour to override thin window outline with, set from decoration button
-    QColor m_thinWindowOutlineOverride = QColor();
+    QColor m_windowOutlineOverride = QColor();
     //*buffered existing thin window outline colours in case the above override colour is set (needed for animations)
-    QColor m_originalThinWindowOutlineActivePreOverride = QColor();
-    QColor m_originalThinWindowOutlineInactivePreOverride = QColor();
+    QColor m_originalWindowOutlineActivePreOverride = QColor();
+    QColor m_originalWindowOutlineInactivePreOverride = QColor();
     //*flag to animate out an overridden thin window outline
-    bool m_animateOutOverriddenThinWindowOutline = false;
+    bool m_animateOutOverriddenWindowOutline = false;
 };
 
 bool Decoration::hasBorders() const

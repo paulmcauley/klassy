@@ -125,7 +125,7 @@
         <default>false</default>
     </entry>
 
-    <entry name="ColorizeThinWindowOutlineWithButton" type = "Bool">
+    <entry name="ColorizeWindowOutlineWithButton" type = "Bool">
         <default>true</default>
     </entry>
 
@@ -924,7 +924,7 @@
   <group name="WindowOutlineStyle">
     <!-- Draw thin window outline -->
 
-    <entry name="ThinWindowOutlineThickness" type = "Double">
+    <entry name="WindowOutlineThickness" type = "Double">
         <default>1.0</default>
         <min>0.5</min>
         <max>10</max>
@@ -938,8 +938,8 @@
         <default>false</default>
     </entry>
 
-    <entry name="ThinWindowOutlineStyle$(ThinWindowOutlineStyleActive)" type = "Enum">
-        <parameter name="ThinWindowOutlineStyleActive" type="Enum">
+    <entry name="WindowOutlineStyle$(WindowOutlineStyleActive)" type = "Enum">
+        <parameter name="WindowOutlineStyleActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
@@ -959,12 +959,12 @@
     </entry>
 
 
-    <entry name="LockThinWindowOutlineStyleActiveInactive" type = "Bool">
+    <entry name="LockWindowOutlineStyleActiveInactive" type = "Bool">
         <default>false</default>
     </entry>
 
-    <entry name="ThinWindowOutlineCustomColor$(ThinWindowOutlineCustomColorActive)" type = "Color">
-        <parameter name="ThinWindowOutlineCustomColorActive" type="Enum">
+    <entry name="WindowOutlineCustomColor$(WindowOutlineCustomColorActive)" type = "Color">
+        <parameter name="WindowOutlineCustomColorActive" type="Enum">
             <values>
                 <value>Inactive</value>
                 <value>Active</value>
@@ -973,7 +973,7 @@
        <default>0, 0, 0</default>
     </entry>
 
-    <entry name="LockThinWindowOutlineCustomColorActiveInactive" type = "Bool">
+    <entry name="LockWindowOutlineCustomColorActiveInactive" type = "Bool">
         <default>true</default>
     </entry>
 
