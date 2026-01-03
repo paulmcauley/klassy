@@ -1340,7 +1340,7 @@
              <number>10</number>
             </property>
             <item>
-             <widget class="QPushButton" name="thinWindowOutlineStyleButton">
+             <widget class="QPushButton" name="windowOutlineStyleButton">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -1362,7 +1362,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="colorizeThinWindowOutlineWithButton">
+             <widget class="QCheckBox" name="colorizeWindowOutlineWithButton">
               <property name="text">
                <string>Colourize with highlighted button's colour</string>
               </property>
@@ -1672,8 +1672,8 @@
   <tabstop>roundAllCornersWhenNoBorders</tabstop>
   <tabstop>useTitleBarColorForAllBorders</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
-  <tabstop>thinWindowOutlineStyleButton</tabstop>
-  <tabstop>colorizeThinWindowOutlineWithButton</tabstop>
+  <tabstop>windowOutlineStyleButton</tabstop>
+  <tabstop>colorizeWindowOutlineWithButton</tabstop>
   <tabstop>shadowStyleButton</tabstop>
   <tabstop>animationsEnabled</tabstop>
   <tabstop>animationsSpeedRelativeSystem</tabstop>
