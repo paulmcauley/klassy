@@ -58,12 +58,12 @@ void RenderStyleKite18By18::renderMinimizeIcon()
 // For consistency with breeze icon set
 void RenderStyleKite18By18::renderKeepBehindIcon()
 {
-    renderKeepBehindIconAsFromBreezeIcons();
+    renderSelectedXKeepBehindIcon();
 }
 
 void RenderStyleKite18By18::renderKeepInFrontIcon()
 {
-    renderKeepInFrontIconAsFromBreezeIcons();
+    renderSelectedDotKeepInFrontIcon();
 }
 
 void RenderStyleKite18By18::renderContextHelpIcon()
