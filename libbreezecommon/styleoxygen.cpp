@@ -32,7 +32,7 @@ void RenderStyleOxygen18By18::renderMaximizeIcon()
     RenderDecorationButtonIcon18By18::renderMaximizeIcon();
 }
 
-void RenderStyleOxygen18By18::renderRestoreIcon()
+void RenderStyleOxygen18By18::renderFloatIcon()
 {
     QPen pen = m_painter->pen();
 
@@ -41,7 +41,7 @@ void RenderStyleOxygen18By18::renderRestoreIcon()
         m_painter->setPen(pen);
     }
 
-    RenderDecorationButtonIcon18By18::renderRestoreIcon();
+    RenderDecorationButtonIcon18By18::renderFloatIcon();
 }
 
 void RenderStyleOxygen18By18::renderMinimizeIcon()

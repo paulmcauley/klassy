@@ -105,7 +105,7 @@ protected:
 
     virtual void renderCloseIcon() = 0;
     virtual void renderMaximizeIcon() = 0;
-    virtual void renderRestoreIcon() = 0;
+    virtual void renderFloatIcon() = 0;
     virtual void renderMinimizeIcon() = 0;
     virtual void renderPinnedOnAllDesktopsIcon() = 0;
     virtual void renderPinOnAllDesktopsIcon() = 0;

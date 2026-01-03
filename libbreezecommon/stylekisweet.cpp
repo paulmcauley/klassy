@@ -19,7 +19,7 @@ void RenderStyleKisweet18By18::renderMaximizeIcon()
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKisweet18By18::renderRestoreIcon()
+void RenderStyleKisweet18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }
