@@ -27,6 +27,7 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui->thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineSnapToWholePixel, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineOverlap, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->thinWindowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->thinWindowOutlineStyleActive,
             SIGNAL(currentIndexChanged(int)),
@@ -94,6 +95,7 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
 
     m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
     m_ui->windowOutlineSnapToWholePixel->setChecked(m_internalSettings->windowOutlineSnapToWholePixel());
+    m_ui->windowOutlineOverlap->setChecked(m_internalSettings->windowOutlineOverlap());
     m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle(true));
     m_ui->thinWindowOutlineStyleInactive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle(false));
     m_ui->lockThinWindowOutlineStyleActive->setChecked(m_internalSettings->lockThinWindowOutlineStyleActiveInactive());
@@ -146,6 +148,7 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     // apply modifications from ui
     m_internalSettings->setThinWindowOutlineThickness(m_ui->thinWindowOutlineThickness->value());
     m_internalSettings->setWindowOutlineSnapToWholePixel(m_ui->windowOutlineSnapToWholePixel->isChecked());
+    m_internalSettings->setWindowOutlineOverlap(m_ui->windowOutlineOverlap->isChecked());
     m_internalSettings->setThinWindowOutlineStyle(true, m_ui->thinWindowOutlineStyleActive->currentIndex());
     m_internalSettings->setThinWindowOutlineStyle(false, m_ui->thinWindowOutlineStyleInactive->currentIndex());
     m_internalSettings->setLockThinWindowOutlineStyleActiveInactive(m_ui->lockThinWindowOutlineStyleActive->isChecked());
@@ -239,6 +242,8 @@ void WindowOutlineStyle::updateChanged()
     if (m_ui->thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
         modified = true;
     else if (m_ui->windowOutlineSnapToWholePixel->isChecked() != m_internalSettings->windowOutlineSnapToWholePixel())
+        modified = true;
+    else if (m_ui->windowOutlineOverlap->isChecked() != m_internalSettings->windowOutlineOverlap())
         modified = true;
     else if (m_ui->thinWindowOutlineStyleActive->currentIndex() != m_internalSettings->thinWindowOutlineStyle(true))
         modified = true;
