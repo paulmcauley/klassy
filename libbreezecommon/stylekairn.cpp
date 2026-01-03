@@ -92,56 +92,14 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-// For consistency with breeze icon set
 void RenderStyleKairn18By18::renderKeepBehindIcon()
 {
-    // renderKeepBehindIconAsFromBreezeIcons();
-    // renderOverlappingWindowsIcon(false, -1, false, true);
-
-    QPen pen = m_painter->pen();
-    if (m_boldButtonIcons) {
-        pen.setWidthF(pen.widthF() * m_squareMaximizeBoldPenWidthFactor);
-    }
-    QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
-    m_painter->setPen(pen);
-    m_painter->setBrush(Qt::NoBrush);
-
-    QPainterPath outerRing;
-    outerRing.addEllipse(QRectF(3, 3, 12, 12));
-    m_painter->drawPath(outerRing);
-
-    QPainterPath innerX;
-    innerX.moveTo(7, 7);
-    innerX.lineTo(11, 11);
-    innerX.moveTo(11, 7);
-    innerX.lineTo(7, 11);
-    m_painter->drawPath(innerX);
+    renderSelectedXKeepBehindIcon();
 }
 
 void RenderStyleKairn18By18::renderKeepInFrontIcon()
 {
-    // renderKeepInFrontIconAsFromBreezeIcons();
-    // renderOverlappingWindowsIcon(false, -1, true, false);
-
-    QPen pen = m_painter->pen();
-    if (m_boldButtonIcons) {
-        pen.setWidthF(pen.widthF() * m_squareMaximizeBoldPenWidthFactor);
-    }
-    QColor color = pen.color();
-    color.setAlphaF(color.alphaF() * 0.8);
-    m_painter->setPen(pen);
-    m_painter->setBrush(Qt::NoBrush);
-
-    QPainterPath outerRing;
-    outerRing.addEllipse(QRectF(3, 3, 12, 12));
-    m_painter->drawPath(outerRing);
-
-    QPainterPath innerDot;
-    innerDot.addEllipse(QRectF(7.5, 7.5, 3, 3));
-    m_painter->setBrush(color);
-    m_painter->setPen(Qt::NoPen);
-    m_painter->drawPath(innerDot);
+    renderSelectedDotKeepInFrontIcon();
 }
 
 void RenderStyleKairn18By18::renderContextHelpIcon()
