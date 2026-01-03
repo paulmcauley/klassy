@@ -319,7 +319,7 @@ QImage BoxShadowRenderer::render(qreal devicePixelRatio) const
     canvas.fill(Qt::transparent);
 
     QRectF boxRect(QPoint(0, 0), m_boxSize);
-    boxRect.moveCenter(QRectF(QPoint(0, 0), canvasSize.toSize()).center());
+    boxRect.moveCenter(QRectF(QPoint(0, 0), canvasSize).center());
 
     QPainter painter(&canvas);
     for (const Shadow &shadow : std::as_const(m_shadows)) {
