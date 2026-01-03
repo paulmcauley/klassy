@@ -43,10 +43,10 @@ private Q_SLOTS:
         save(true);
     }
     void setApplyButtonState(const bool on);
-    void thinWindowOutlineStyleActiveChanged();
-    void thinWindowOutlineStyleInactiveChanged();
-    void thinWindowOutlineCustomColorActiveChanged();
-    void thinWindowOutlineCustomColorInactiveChanged();
+    void windowOutlineStyleActiveChanged();
+    void windowOutlineStyleInactiveChanged();
+    void windowOutlineCustomColorActiveChanged();
+    void windowOutlineCustomColorInactiveChanged();
     void updateLockIcons();
 
 Q_SIGNALS:

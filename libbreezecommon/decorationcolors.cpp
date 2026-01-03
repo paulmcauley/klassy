@@ -187,31 +187,31 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     (*decorationPaletteGroup)->shadow.setAlphaF(decorationSettings->shadowStrength() / 255.0 * shadowStrengthScale);
 
     // set windowOutline
-    switch (decorationSettings->thinWindowOutlineStyle(active)) {
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineNone:
+    switch (decorationSettings->windowOutlineStyle(active)) {
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone:
         (*decorationPaletteGroup)->windowOutline = QColor();
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineContrast:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineContrast:
         (*decorationPaletteGroup)->windowOutline =
             ColorTools::alphaMix((*decorationPaletteGroup)->titleBarText, decorationSettings->windowOutlineContrastOpacity(active) / 100.0f);
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentColor:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineAccentColor:
         (*decorationPaletteGroup)->windowOutline = accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active);
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineAccentWithContrast:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineAccentWithContrast:
         (*decorationPaletteGroup)->windowOutline = fontMixedAccentWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active);
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomColor:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineCustomColor:
         (*decorationPaletteGroup)->windowOutline =
-            accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active, decorationSettings->thinWindowOutlineCustomColor(active));
+            accentedWindowOutlineColor((*decorationPaletteGroup).get(), decorationSettings, active, decorationSettings->windowOutlineCustomColor(active));
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineCustomWithContrast:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineCustomWithContrast:
         (*decorationPaletteGroup)->windowOutline = fontMixedAccentWindowOutlineColor((*decorationPaletteGroup).get(),
                                                                                      decorationSettings,
                                                                                      active,
-                                                                                     decorationSettings->thinWindowOutlineCustomColor(active));
+                                                                                     decorationSettings->windowOutlineCustomColor(active));
         break;
-    case InternalSettings::EnumThinWindowOutlineStyle::WindowOutlineShadowColor:
+    case InternalSettings::EnumWindowOutlineStyle::WindowOutlineShadowColor:
         (*decorationPaletteGroup)->windowOutline =
             ColorTools::alphaMix((*decorationPaletteGroup)->shadow, decorationSettings->windowOutlineShadowColorOpacity() / 100.0f);
         break;
