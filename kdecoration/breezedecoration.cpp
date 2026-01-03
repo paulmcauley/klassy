@@ -1700,44 +1700,38 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     }
 
     const CompositeShadowParams params = lookupShadowParams(m_internalSettings->shadowSize());
-    qreal shadow1Radius = params.shadow1.radius / scale;
-    qreal shadow2Radius = params.shadow2.radius / scale;
+    qreal shadow1Radius = params.shadow1.radius;
+    qreal shadow2Radius = params.shadow2.radius;
 
     QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(std::round(shadow1Radius)).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(std::round(shadow2Radius)));
 
     BoxShadowRenderer shadowRenderer;
 
-    shadowRenderer.setBorderRadius((m_scaledCornerRadius + 0.5) / scale);
+    shadowRenderer.setBorderRadius((m_scaledCornerRadius + 0.5));
     shadowRenderer.setBoxSize(boxSize);
-    shadowRenderer.addShadow(params.shadow1.offset / scale, shadow1Radius, ColorTools::alphaMix(shadowColor, params.shadow1.opacity));
-    shadowRenderer.addShadow(params.shadow2.offset / scale, shadow2Radius, ColorTools::alphaMix(shadowColor, params.shadow2.opacity));
+    shadowRenderer.addShadow(params.shadow1.offset, shadow1Radius, ColorTools::alphaMix(shadowColor, params.shadow1.opacity));
+    shadowRenderer.addShadow(params.shadow2.offset, shadow2Radius, ColorTools::alphaMix(shadowColor, params.shadow2.opacity));
 
-    QImage shadowTexture = shadowRenderer.render(scale);
+    QImage shadowTexture = shadowRenderer.render();
 
     QPainter painter(&shadowTexture);
     painter.setRenderHint(QPainter::Antialiasing);
 
     const QRectF outerRect = QRectF(QPoint(0, 0), shadowTexture.deviceIndependentSize());
-    const QRectF deviceOuterRect = shadowTexture.rect();
 
     QRectF boxRect(QPoint(0, 0), boxSize);
     boxRect.moveCenter(outerRect.center());
 
-    qreal shadowOverlap = Metrics::Decoration_Shadow_Overlap / scale;
-    qreal shadowOffsetX = params.offset.x() / scale;
-    qreal shadowOffsetY = params.offset.y() / scale;
+    qreal shadowOverlap = Metrics::Decoration_Shadow_Overlap;
+    qreal shadowOffsetX = params.offset.x();
+    qreal shadowOffsetY = params.offset.y();
 
     // Mask out inner rect.
     const QMarginsF padding = QMarginsF(boxRect.left() - outerRect.left() - shadowOverlap - shadowOffsetX,
                                         boxRect.top() - outerRect.top() - shadowOverlap - shadowOffsetY,
                                         outerRect.right() - boxRect.right() - shadowOverlap + shadowOffsetX,
                                         outerRect.bottom() - boxRect.bottom() - shadowOverlap + shadowOffsetY);
-
-    const QMargins devicePadding(std::round(padding.left() * scale),
-                                 std::round(padding.top() * scale),
-                                 std::round(padding.right() * scale),
-                                 std::round(padding.bottom() * scale));
 
     const QRectF innerRect = outerRect - padding;
 
@@ -1750,10 +1744,10 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
         if (hideTitleBar()) {
             roundedRectMask.addRect(innerRect);
         } else {
-            roundedRectMask = GeometryTools::roundedPath(innerRect, CornersTop, (m_scaledCornerRadius + 0.5) / scale);
+            roundedRectMask = GeometryTools::roundedPath(innerRect, CornersTop, (m_scaledCornerRadius + 0.5));
         }
     } else {
-        roundedRectMask.addRoundedRect(innerRect, (m_scaledCornerRadius + 0.5) / scale, (m_scaledCornerRadius + 0.5) / scale);
+        roundedRectMask.addRoundedRect(innerRect, (m_scaledCornerRadius + 0.5), (m_scaledCornerRadius + 0.5));
     }
 
     painter.drawPath(roundedRectMask);
@@ -1779,8 +1773,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
                     outlinePenWidth = KDecoration3::snapToPixelGrid(outlinePenWidth, scale);
                 }
             }
-            // the overlap between the thin window outline and behind the window in unscaled pixels.
-            // This is necessary for the thin window outline to sit flush with the window on Wayland (fractional scale error),
+            // the overlap between the thin window outline and behind the window in unscaled pixels.,
             // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
             qreal outlineOverlap, outlinePenWidthWithOverlap;
             outlineOverlap = m_internalSettings->windowOutlineOverlap() ? 0.5 : 0;
@@ -1788,14 +1781,13 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
 
             qreal halfOutlinePenWidth = outlinePenWidth / 2;
             qreal outlineAdjustment = halfOutlinePenWidth - outlineOverlap;
-            outlineAdjustment /= scale;
             QRectF outlineRect;
             outlineRect =
                 innerRect.adjusted(-outlineAdjustment,
                                    -outlineAdjustment,
                                    outlineAdjustment,
                                    outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
-            p.setWidthF(outlinePenWidthWithOverlap / scale);
+            p.setWidthF(outlinePenWidthWithOverlap);
             painter.setPen(p);
             painter.setBrush(Qt::NoBrush);
             painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
@@ -1807,8 +1799,6 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
                 cornerRadius = m_scaledCornerRadius; // give a square corner for when corner radius is 0
             else
                 cornerRadius = m_scaledCornerRadius + halfOutlinePenWidth; // else round corner slightly more to account for pen width
-
-            cornerRadius /= scale;
 
             if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders() && !c->isShaded()) {
                 if (hideTitleBar()) {
@@ -1826,8 +1816,8 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     painter.end();
 
     auto ret = std::make_shared<KDecoration3::DecorationShadow>();
-    ret->setPadding(devicePadding);
-    ret->setInnerShadowRect(QRectF(deviceOuterRect.center(), QSizeF(1, 1)));
+    ret->setPadding(padding);
+    ret->setInnerShadowRect(QRectF(outerRect.center(), QSizeF(1, 1)));
     ret->setShadow(shadowTexture);
     return ret;
 }
