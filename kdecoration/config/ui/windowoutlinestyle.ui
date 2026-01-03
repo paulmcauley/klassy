@@ -21,6 +21,9 @@
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::FieldGrowthPolicy::FieldsStayAtSizeHint</enum>
        </property>
+       <property name="rightMargin">
+        <number>6</number>
+       </property>
        <item row="1" column="0">
         <widget class="QLabel" name="label_30">
          <property name="text">
@@ -59,6 +62,19 @@
        </property>
        <property name="text">
         <string>Snap to whole pixel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="windowOutlineOverlap">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Overlap</string>
        </property>
       </widget>
      </item>
@@ -2516,6 +2532,7 @@
  <tabstops>
   <tabstop>thinWindowOutlineThickness</tabstop>
   <tabstop>windowOutlineSnapToWholePixel</tabstop>
+  <tabstop>windowOutlineOverlap</tabstop>
   <tabstop>thinWindowOutlineStyleActive</tabstop>
   <tabstop>lockThinWindowOutlineStyleActive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity</tabstop>

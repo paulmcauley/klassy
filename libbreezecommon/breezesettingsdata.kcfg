@@ -934,6 +934,10 @@
         <default>true</default>
     </entry>
 
+    <entry name="WindowOutlineOverlap" type = "Bool">
+        <default>false</default>
+    </entry>
+
     <entry name="ThinWindowOutlineStyle$(ThinWindowOutlineStyleActive)" type = "Enum">
         <parameter name="ThinWindowOutlineStyleActive" type="Enum">
             <values>
