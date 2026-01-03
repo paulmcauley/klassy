@@ -25,20 +25,17 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
-    connect(m_ui->thinWindowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineSnapToWholePixel, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineOverlap, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineStyleActive,
+    connect(m_ui->windowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(windowOutlineStyleActiveChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineStyleInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineStyleInactive,
             SIGNAL(currentIndexChanged(int)),
-            SLOT(thinWindowOutlineStyleActiveChanged()),
+            SLOT(windowOutlineStyleInactiveChanged()),
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineStyleInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineStyleInactive,
-            SIGNAL(currentIndexChanged(int)),
-            SLOT(thinWindowOutlineStyleInactiveChanged()),
-            Qt::ConnectionType::DirectConnection);
-    connect(m_ui->lockThinWindowOutlineStyleActive, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->lockWindowOutlineStyleActive, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineShadowColorOpacity, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineContrastOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineContrastOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -50,23 +47,23 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
     connect(m_ui->windowOutlineCustomColorOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineCustomWithContrastOpacityActive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineCustomWithContrastOpacityInactive, SIGNAL(valueChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineCustomColorActive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineCustomColorActive,
+    connect(m_ui->windowOutlineCustomColorActive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineCustomColorActive,
             &KColorButton::changed,
             this,
-            &WindowOutlineStyle::thinWindowOutlineCustomColorActiveChanged,
+            &WindowOutlineStyle::windowOutlineCustomColorActiveChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineCustomColorActive, &KColorButton::changed, m_ui->thinWindowOutlineCustomColorActive_2, &KColorButton::setColor);
-    connect(m_ui->thinWindowOutlineCustomColorActive_2, &KColorButton::changed, m_ui->thinWindowOutlineCustomColorActive, &KColorButton::setColor);
-    connect(m_ui->thinWindowOutlineCustomColorInactive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineCustomColorInactive,
+    connect(m_ui->windowOutlineCustomColorActive, &KColorButton::changed, m_ui->windowOutlineCustomColorActive_2, &KColorButton::setColor);
+    connect(m_ui->windowOutlineCustomColorActive_2, &KColorButton::changed, m_ui->windowOutlineCustomColorActive, &KColorButton::setColor);
+    connect(m_ui->windowOutlineCustomColorInactive, &KColorButton::changed, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui->windowOutlineCustomColorInactive,
             &KColorButton::changed,
             this,
-            &WindowOutlineStyle::thinWindowOutlineCustomColorInactiveChanged,
+            &WindowOutlineStyle::windowOutlineCustomColorInactiveChanged,
             Qt::ConnectionType::DirectConnection);
-    connect(m_ui->thinWindowOutlineCustomColorInactive, &KColorButton::changed, m_ui->thinWindowOutlineCustomColorInactive_2, &KColorButton::setColor);
-    connect(m_ui->thinWindowOutlineCustomColorInactive_2, &KColorButton::changed, m_ui->thinWindowOutlineCustomColorInactive, &KColorButton::setColor);
-    connect(m_ui->lockThinWindowOutlineCustomColorActive,
+    connect(m_ui->windowOutlineCustomColorInactive, &KColorButton::changed, m_ui->windowOutlineCustomColorInactive_2, &KColorButton::setColor);
+    connect(m_ui->windowOutlineCustomColorInactive_2, &KColorButton::changed, m_ui->windowOutlineCustomColorInactive, &KColorButton::setColor);
+    connect(m_ui->lockWindowOutlineCustomColorActive,
             &QAbstractButton::toggled,
             this,
             &WindowOutlineStyle::updateChanged,
@@ -93,13 +90,13 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
         m_internalSettings->load();
     }
 
-    m_ui->thinWindowOutlineThickness->setValue(m_internalSettings->thinWindowOutlineThickness());
+    m_ui->windowOutlineThickness->setValue(m_internalSettings->windowOutlineThickness());
     m_ui->windowOutlineSnapToWholePixel->setChecked(m_internalSettings->windowOutlineSnapToWholePixel());
     m_ui->windowOutlineOverlap->setChecked(m_internalSettings->windowOutlineOverlap());
-    m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle(true));
-    m_ui->thinWindowOutlineStyleInactive->setCurrentIndex(m_internalSettings->thinWindowOutlineStyle(false));
-    m_ui->lockThinWindowOutlineStyleActive->setChecked(m_internalSettings->lockThinWindowOutlineStyleActiveInactive());
-    m_ui->lockThinWindowOutlineStyleInactive->setChecked(m_internalSettings->lockThinWindowOutlineStyleActiveInactive());
+    m_ui->windowOutlineStyleActive->setCurrentIndex(m_internalSettings->windowOutlineStyle(true));
+    m_ui->windowOutlineStyleInactive->setCurrentIndex(m_internalSettings->windowOutlineStyle(false));
+    m_ui->lockWindowOutlineStyleActive->setChecked(m_internalSettings->lockWindowOutlineStyleActiveInactive());
+    m_ui->lockWindowOutlineStyleInactive->setChecked(m_internalSettings->lockWindowOutlineStyleActiveInactive());
     m_ui->windowOutlineShadowColorOpacity->setValue(m_internalSettings->windowOutlineShadowColorOpacity());
     m_ui->windowOutlineShadowColorOpacity_2->setValue(m_ui->windowOutlineShadowColorOpacity->value());
     m_ui->windowOutlineContrastOpacityActive->setValue(m_internalSettings->windowOutlineContrastOpacity(true));
@@ -122,14 +119,14 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
     m_ui->windowOutlineCustomWithContrastOpacityActive_2->setValue(m_ui->windowOutlineCustomWithContrastOpacityActive->value());
     m_ui->windowOutlineCustomWithContrastOpacityInactive->setValue(m_internalSettings->windowOutlineCustomWithContrastOpacity(false));
     m_ui->windowOutlineCustomWithContrastOpacityInactive_2->setValue(m_ui->windowOutlineCustomWithContrastOpacityInactive->value());
-    m_ui->thinWindowOutlineCustomColorActive->setColor(m_internalSettings->thinWindowOutlineCustomColor(true));
-    m_ui->thinWindowOutlineCustomColorActive_2->setColor(m_ui->thinWindowOutlineCustomColorActive->color());
-    m_ui->thinWindowOutlineCustomColorInactive->setColor(m_internalSettings->thinWindowOutlineCustomColor(false));
-    m_ui->thinWindowOutlineCustomColorInactive_2->setColor(m_ui->thinWindowOutlineCustomColorInactive->color());
-    m_ui->lockThinWindowOutlineCustomColorActive->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
-    m_ui->lockThinWindowOutlineCustomColorActive_2->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
-    m_ui->lockThinWindowOutlineCustomColorInactive->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
-    m_ui->lockThinWindowOutlineCustomColorInactive_2->setChecked(m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive());
+    m_ui->windowOutlineCustomColorActive->setColor(m_internalSettings->windowOutlineCustomColor(true));
+    m_ui->windowOutlineCustomColorActive_2->setColor(m_ui->windowOutlineCustomColorActive->color());
+    m_ui->windowOutlineCustomColorInactive->setColor(m_internalSettings->windowOutlineCustomColor(false));
+    m_ui->windowOutlineCustomColorInactive_2->setColor(m_ui->windowOutlineCustomColorInactive->color());
+    m_ui->lockWindowOutlineCustomColorActive->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
+    m_ui->lockWindowOutlineCustomColorActive_2->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
+    m_ui->lockWindowOutlineCustomColorInactive->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
+    m_ui->lockWindowOutlineCustomColorInactive_2->setChecked(m_internalSettings->lockWindowOutlineCustomColorActiveInactive());
 
     if (!assignUiValuesOnly) {
         setChanged(false);
@@ -146,12 +143,12 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     m_internalSettings->load();
 
     // apply modifications from ui
-    m_internalSettings->setThinWindowOutlineThickness(m_ui->thinWindowOutlineThickness->value());
+    m_internalSettings->setWindowOutlineThickness(m_ui->windowOutlineThickness->value());
     m_internalSettings->setWindowOutlineSnapToWholePixel(m_ui->windowOutlineSnapToWholePixel->isChecked());
     m_internalSettings->setWindowOutlineOverlap(m_ui->windowOutlineOverlap->isChecked());
-    m_internalSettings->setThinWindowOutlineStyle(true, m_ui->thinWindowOutlineStyleActive->currentIndex());
-    m_internalSettings->setThinWindowOutlineStyle(false, m_ui->thinWindowOutlineStyleInactive->currentIndex());
-    m_internalSettings->setLockThinWindowOutlineStyleActiveInactive(m_ui->lockThinWindowOutlineStyleActive->isChecked());
+    m_internalSettings->setWindowOutlineStyle(true, m_ui->windowOutlineStyleActive->currentIndex());
+    m_internalSettings->setWindowOutlineStyle(false, m_ui->windowOutlineStyleInactive->currentIndex());
+    m_internalSettings->setLockWindowOutlineStyleActiveInactive(m_ui->lockWindowOutlineStyleActive->isChecked());
     m_internalSettings->setWindowOutlineShadowColorOpacity(qreal(m_ui->windowOutlineShadowColorOpacity->value()));
     m_internalSettings->setWindowOutlineContrastOpacity(true, qreal(m_ui->windowOutlineContrastOpacityActive->value()));
     m_internalSettings->setWindowOutlineContrastOpacity(false, qreal(m_ui->windowOutlineContrastOpacityInactive->value()));
@@ -163,9 +160,9 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
     m_internalSettings->setWindowOutlineCustomColorOpacity(false, qreal(m_ui->windowOutlineCustomColorOpacityInactive->value()));
     m_internalSettings->setWindowOutlineCustomWithContrastOpacity(true, qreal(m_ui->windowOutlineCustomWithContrastOpacityActive->value()));
     m_internalSettings->setWindowOutlineCustomWithContrastOpacity(false, qreal(m_ui->windowOutlineCustomWithContrastOpacityInactive->value()));
-    m_internalSettings->setThinWindowOutlineCustomColor(true, m_ui->thinWindowOutlineCustomColorActive->color());
-    m_internalSettings->setThinWindowOutlineCustomColor(false, m_ui->thinWindowOutlineCustomColorInactive->color());
-    m_internalSettings->setLockThinWindowOutlineCustomColorActiveInactive(m_ui->lockThinWindowOutlineCustomColorActive->isChecked());
+    m_internalSettings->setWindowOutlineCustomColor(true, m_ui->windowOutlineCustomColorActive->color());
+    m_internalSettings->setWindowOutlineCustomColor(false, m_ui->windowOutlineCustomColorInactive->color());
+    m_internalSettings->setLockWindowOutlineCustomColorActiveInactive(m_ui->lockWindowOutlineCustomColorActive->isChecked());
 
     m_internalSettings->save();
     setChanged(false);
@@ -239,17 +236,17 @@ void WindowOutlineStyle::updateChanged()
     // track modifications
     bool modified(false);
 
-    if (m_ui->thinWindowOutlineThickness->value() != m_internalSettings->thinWindowOutlineThickness())
+    if (m_ui->windowOutlineThickness->value() != m_internalSettings->windowOutlineThickness())
         modified = true;
     else if (m_ui->windowOutlineSnapToWholePixel->isChecked() != m_internalSettings->windowOutlineSnapToWholePixel())
         modified = true;
     else if (m_ui->windowOutlineOverlap->isChecked() != m_internalSettings->windowOutlineOverlap())
         modified = true;
-    else if (m_ui->thinWindowOutlineStyleActive->currentIndex() != m_internalSettings->thinWindowOutlineStyle(true))
+    else if (m_ui->windowOutlineStyleActive->currentIndex() != m_internalSettings->windowOutlineStyle(true))
         modified = true;
-    else if (m_ui->thinWindowOutlineStyleInactive->currentIndex() != m_internalSettings->thinWindowOutlineStyle(false))
+    else if (m_ui->windowOutlineStyleInactive->currentIndex() != m_internalSettings->windowOutlineStyle(false))
         modified = true;
-    else if (m_ui->lockThinWindowOutlineStyleActive->isChecked() != m_internalSettings->lockThinWindowOutlineStyleActiveInactive())
+    else if (m_ui->lockWindowOutlineStyleActive->isChecked() != m_internalSettings->lockWindowOutlineStyleActiveInactive())
         modified = true;
     else if (m_ui->windowOutlineShadowColorOpacity->value() != m_internalSettings->windowOutlineShadowColorOpacity())
         modified = true;
@@ -273,11 +270,11 @@ void WindowOutlineStyle::updateChanged()
         modified = true;
     else if (m_ui->windowOutlineCustomWithContrastOpacityInactive->value() != m_internalSettings->windowOutlineCustomWithContrastOpacity(false))
         modified = true;
-    else if (m_ui->thinWindowOutlineCustomColorActive->color() != m_internalSettings->thinWindowOutlineCustomColor(true))
+    else if (m_ui->windowOutlineCustomColorActive->color() != m_internalSettings->windowOutlineCustomColor(true))
         modified = true;
-    else if (m_ui->thinWindowOutlineCustomColorInactive->color() != m_internalSettings->thinWindowOutlineCustomColor(false))
+    else if (m_ui->windowOutlineCustomColorInactive->color() != m_internalSettings->windowOutlineCustomColor(false))
         modified = true;
-    else if (m_ui->lockThinWindowOutlineCustomColorActive->isChecked() != m_internalSettings->lockThinWindowOutlineCustomColorActiveInactive())
+    else if (m_ui->lockWindowOutlineCustomColorActive->isChecked() != m_internalSettings->lockWindowOutlineCustomColorActiveInactive())
         modified = true;
 
     setChanged(modified);
@@ -288,37 +285,37 @@ void WindowOutlineStyle::setApplyButtonState(const bool on)
     m_ui->buttonBox->button(QDialogButtonBox::Apply)->setEnabled(on);
 }
 
-void WindowOutlineStyle::thinWindowOutlineStyleActiveChanged()
+void WindowOutlineStyle::windowOutlineStyleActiveChanged()
 {
-    if (m_ui->lockThinWindowOutlineStyleActive->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->thinWindowOutlineStyleInactive->setCurrentIndex(m_ui->thinWindowOutlineStyleActive->currentIndex());
+    if (m_ui->lockWindowOutlineStyleActive->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui->windowOutlineStyleInactive->setCurrentIndex(m_ui->windowOutlineStyleActive->currentIndex());
 }
 
-void WindowOutlineStyle::thinWindowOutlineStyleInactiveChanged()
+void WindowOutlineStyle::windowOutlineStyleInactiveChanged()
 {
-    if (m_ui->lockThinWindowOutlineStyleInactive->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->thinWindowOutlineStyleActive->setCurrentIndex(m_ui->thinWindowOutlineStyleInactive->currentIndex());
+    if (m_ui->lockWindowOutlineStyleInactive->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui->windowOutlineStyleActive->setCurrentIndex(m_ui->windowOutlineStyleInactive->currentIndex());
 }
 
-void WindowOutlineStyle::thinWindowOutlineCustomColorActiveChanged()
+void WindowOutlineStyle::windowOutlineCustomColorActiveChanged()
 {
-    if (m_ui->lockThinWindowOutlineCustomColorActive->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->thinWindowOutlineCustomColorInactive->setColor(m_ui->thinWindowOutlineCustomColorActive->color());
+    if (m_ui->lockWindowOutlineCustomColorActive->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui->windowOutlineCustomColorInactive->setColor(m_ui->windowOutlineCustomColorActive->color());
 }
 
-void WindowOutlineStyle::thinWindowOutlineCustomColorInactiveChanged()
+void WindowOutlineStyle::windowOutlineCustomColorInactiveChanged()
 {
-    if (m_ui->lockThinWindowOutlineCustomColorInactive->isChecked() && !m_processingDefaults && !m_loading)
-        m_ui->thinWindowOutlineCustomColorActive->setColor(m_ui->thinWindowOutlineCustomColorInactive->color());
+    if (m_ui->lockWindowOutlineCustomColorInactive->isChecked() && !m_processingDefaults && !m_loading)
+        m_ui->windowOutlineCustomColorActive->setColor(m_ui->windowOutlineCustomColorInactive->color());
 }
 
 void WindowOutlineStyle::updateLockIcons()
 {
-    m_ui->lockThinWindowOutlineStyleActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
-    m_ui->lockThinWindowOutlineStyleInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
-    m_ui->lockThinWindowOutlineCustomColorActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
-    m_ui->lockThinWindowOutlineCustomColorInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
-    m_ui->lockThinWindowOutlineCustomColorActive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
-    m_ui->lockThinWindowOutlineCustomColorInactive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineStyleActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineStyleInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineCustomColorActive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineCustomColorInactive->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineCustomColorActive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
+    m_ui->lockWindowOutlineCustomColorInactive_2->setIcon(static_cast<ConfigWidget *>(m_parent)->lockIcon(LockIconState::Bistate));
 }
 }

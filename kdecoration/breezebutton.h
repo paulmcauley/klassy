@@ -183,7 +183,7 @@ private Q_SLOTS:
     void updateAnimationState(bool);
 
     //* get colour and trigger same in thin window outline
-    void updateThinWindowOutlineWithButtonColor(bool);
+    void updateWindowOutlineWithButtonColor(bool);
 
 private:
     //* private constructor

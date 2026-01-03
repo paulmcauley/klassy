@@ -68,8 +68,8 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     connect(c, SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
     connect(decoration, &Decoration::reconfigured, this, &Button::reconfigure);
     connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
-    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
-    connect(this, &KDecoration3::DecorationButton::pressedChanged, this, &Button::updateThinWindowOutlineWithButtonColor);
+    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateWindowOutlineWithButtonColor);
+    connect(this, &KDecoration3::DecorationButton::pressedChanged, this, &Button::updateWindowOutlineWithButtonColor);
 
     reconfigure();
 }
@@ -648,9 +648,9 @@ void Button::updateAnimationState(bool hovered)
     }
 }
 
-void Button::updateThinWindowOutlineWithButtonColor(bool on)
+void Button::updateWindowOutlineWithButtonColor(bool on)
 {
-    if (!m_d || !m_d->internalSettings()->colorizeThinWindowOutlineWithButton() || isStandAlone())
+    if (!m_d || !m_d->internalSettings()->colorizeWindowOutlineWithButton() || isStandAlone())
         return;
 
     QColor color = QColor();
@@ -664,7 +664,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
         color = this->outlineColor(true); // generate colour again in non-animated state
         if (!color.isValid())
             color = this->backgroundColor(true); // use a background colour if outline colour not valid
-        m_d->setThinWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
+        m_d->setWindowOutlineOverrideColor(on, color); // generate colour again in non-animated state
     } else {
         if (!isHovered() && isPressed())
             return; // don't remove the window outline highlight if the button is still pressed
@@ -681,7 +681,7 @@ void Button::updateThinWindowOutlineWithButtonColor(bool on)
             }
         }
 
-        m_d->setThinWindowOutlineOverrideColor(on, color);
+        m_d->setWindowOutlineOverrideColor(on, color);
     }
 }
 
