@@ -32,7 +32,7 @@ public:
         : RenderStyleMetro18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMaximizeIcon() override;
-    void renderRestoreIcon() override;
+    void renderFloatIcon() override;
 
 private:
 };

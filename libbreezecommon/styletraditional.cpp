@@ -19,7 +19,7 @@ void RenderStyleTraditional18By18::renderMaximizeIcon()
     renderSquareMaximizeIcon(false);
 }
 
-void RenderStyleTraditional18By18::renderRestoreIcon()
+void RenderStyleTraditional18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(false);
 }
