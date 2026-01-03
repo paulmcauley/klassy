@@ -1306,6 +1306,70 @@ void RenderDecorationButtonIcon18By18::renderKeepInFrontIconAsFromBreezeIcons()
     }
 }
 
+void RenderDecorationButtonIcon18By18::renderSelectedXKeepBehindIcon()
+{
+    // a selected x
+
+    // first determine the size of the maximize icon so the icon can align with it vertically
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+
+    QPen pen = m_painter->pen();
+    pen.setWidthF(maximizePenWidth);
+
+    QColor color = pen.color();
+    color.setAlphaF(color.alphaF() * 0.8);
+    m_painter->setPen(pen);
+    m_painter->setBrush(Qt::NoBrush);
+
+    QPainterPath outerRing;
+    outerRing.addEllipse(QRectF(3, 3, 12, 12));
+    // centre
+    QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - outerRing.boundingRect().center();
+    outerRing.translate(centerTranslate);
+    m_painter->drawPath(outerRing);
+
+    QPainterPath innerX;
+    innerX.moveTo(7, 7);
+    innerX.lineTo(11, 11);
+    innerX.moveTo(11, 7);
+    innerX.lineTo(7, 11);
+    innerX.translate(centerTranslate);
+    pen = m_painter->pen();
+    pen.setColor(color);
+    m_painter->setPen(pen);
+    m_painter->drawPath(innerX);
+}
+
+void RenderDecorationButtonIcon18By18::renderSelectedDotKeepInFrontIcon()
+{
+    // a selected dot
+
+    // first determine the size of the maximize icon so the icon can align with it vertically
+    auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
+
+    QPen pen = m_painter->pen();
+    pen.setWidthF(maximizePenWidth);
+
+    QColor color = pen.color();
+    color.setAlphaF(color.alphaF() * 0.8);
+    m_painter->setPen(pen);
+    m_painter->setBrush(Qt::NoBrush);
+
+    QPainterPath outerRing;
+    outerRing.addEllipse(QRectF(3, 3, 12, 12));
+    // centre
+    QPointF centerTranslate = QPointF(9, maximizeRect.center().y()) - outerRing.boundingRect().center();
+    outerRing.translate(centerTranslate);
+    m_painter->drawPath(outerRing);
+
+    QPainterPath innerDot;
+    innerDot.addEllipse(QRectF(7.5, 7.5, 3, 3));
+    innerDot.translate(centerTranslate);
+    m_painter->setBrush(color);
+    m_painter->setPen(Qt::NoPen);
+    m_painter->drawPath(innerDot);
+}
+
 void RenderDecorationButtonIcon18By18::renderRounderAndBolderContextHelpIcon()
 {
     QPen pen = m_painter->pen();

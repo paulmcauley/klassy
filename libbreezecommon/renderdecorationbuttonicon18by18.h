@@ -60,6 +60,8 @@ protected:
     void renderTinySquareMinimizeIcon(bool showArrows = false);
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();
+    void renderSelectedXKeepBehindIcon();
+    void renderSelectedDotKeepInFrontIcon();
     void renderRounderAndBolderContextHelpIcon();
 };
 
