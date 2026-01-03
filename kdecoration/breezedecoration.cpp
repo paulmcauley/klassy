@@ -1783,7 +1783,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
             // This is necessary for the thin window outline to sit flush with the window on Wayland (fractional scale error),
             // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
             qreal outlineOverlap, outlinePenWidthWithOverlap;
-            m_internalSettings->windowOutlineOverlap() ? outlineOverlap = 0.5 : outlineOverlap = 0;
+            outlineOverlap = m_internalSettings->windowOutlineOverlap() ? 0.5 : 0;
             outlinePenWidthWithOverlap = outlinePenWidth + outlineOverlap;
 
             qreal halfOutlinePenWidth = outlinePenWidth / 2;
