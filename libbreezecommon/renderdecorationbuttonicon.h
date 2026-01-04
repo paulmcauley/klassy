@@ -190,7 +190,6 @@ protected:
     /**
      * @brief Overrloaded function. Given a local point, snaps it to the nearest half or whole pixel boundary in device pixels, and returns an adjusted
      * equivalent local point This overloaded version automatically determines whether to snap to a half (if input is 0.5), or otherwise whole, pixel.
-     *        m_isOddPenWidth should be set before calling this function
      * @param pointLocal input point in local coordinates to snap
      * @return pixel-snapped equivalent in local logical coordinates
      *
@@ -218,7 +217,6 @@ protected:
     qreal straightLineOpacity();
 
     QPainter *m_painter;
-    bool m_isOddPenWidth = true;
     bool m_fromKstyle;
     bool m_boldButtonIcons;
     qreal m_devicePixelRatio; // unlike getting it directly from the paint device, this DPR is also set for X11, i.e. not just 1 on X11
