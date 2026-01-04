@@ -9,9 +9,9 @@
         ],
         "Category": "",
         "Description": "Dark theme with traditional panel at the bottom and labelled tasks",
-        "Id": "org.kde.klassyklassedarkbottompanel.desktop",
+        "Id": "org.kde.klassykitedarkbottompanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Klasse Dark - Bottom Panel (Klassy)",
+        "Name": "Kite Dark - Bottom Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"

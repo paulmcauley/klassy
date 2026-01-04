@@ -762,10 +762,10 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
             {QStringLiteral("org.kde.klassykairnlightleftpanel.desktop"), QStringLiteral("Kairn (Left Panel)")},
             {QStringLiteral("org.kde.klassykairndarkbottompanel.desktop"), QStringLiteral("Kairn")},
             {QStringLiteral("org.kde.klassykairnlightbottompanel.desktop"), QStringLiteral("Kairn")},
-            {QStringLiteral("org.kde.klassyklassedarkleftpanel.desktop"), QStringLiteral("Klasse")},
-            {QStringLiteral("org.kde.klassyklasselightleftpanel.desktop"), QStringLiteral("Klasse")},
-            {QStringLiteral("org.kde.klassyklassedarkbottompanel.desktop"), QStringLiteral("Klasse Traditional")},
-            {QStringLiteral("org.kde.klassyklasselightbottompanel.desktop"), QStringLiteral("Klasse Traditional")},
+            {QStringLiteral("org.kde.klassykitedarkleftpanel.desktop"), QStringLiteral("Kite")},
+            {QStringLiteral("org.kde.klassykitelightleftpanel.desktop"), QStringLiteral("Kite")},
+            {QStringLiteral("org.kde.klassykitedarkbottompanel.desktop"), QStringLiteral("SuessigKite")},
+            {QStringLiteral("org.kde.klassykitelightbottompanel.desktop"), QStringLiteral("SuessigKite")},
         };
 
         auto presetNameIt = lfPackagePresetNames.find(lookAndFeelPackageName);
