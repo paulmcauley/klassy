@@ -2,7 +2,7 @@ install(FILES KairnDark.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
 install(FILES KairnLight.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
-install(FILES KlasseDark.colors
+install(FILES KiteDark.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
-install(FILES KlasseLight.colors
+install(FILES KiteLight.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
