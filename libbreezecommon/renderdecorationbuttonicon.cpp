@@ -6,11 +6,11 @@
 
 #include "renderdecorationbuttonicon.h"
 #include "stylefluent.h"
-#include "stylekairn.h"
-#include "stylekairnleft.h"
 #include "stylekisweet.h"
 #include "stylekite.h"
 #include "styleklasse.h"
+#include "stylekopal.h"
+#include "stylekopalleft.h"
 #include "stylemetro.h"
 #include "styleoxygen.h"
 #include "stylesuessigkite.h"
@@ -48,12 +48,12 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
         return {
             std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleKairn:
+    case InternalSettings::EnumButtonIconStyle::StyleKopal:
         return {
-            std::make_unique<RenderStyleKairn18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleKopal18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleKairnLeft:
-        return {std::make_unique<RenderStyleKairnLeft18By18>(painter,
+    case InternalSettings::EnumButtonIconStyle::StyleKopalLeft:
+        return {std::make_unique<RenderStyleKopalLeft18By18>(painter,
                                                              fromKstyle,
                                                              boldButtonIcons,
                                                              devicePixelRatio,
