@@ -1,7 +1,7 @@
 [Klassy Window Decoration Preset File]
 version=6.5.git
 
-[Windeco Preset Kairn]
+[Windeco Preset Kopal]
 ActiveTitleBarOpacity=100
 AdjustBackgroundColorOnPoorContrastActive=true
 AdjustBackgroundColorOnPoorContrastInactive=true
@@ -20,7 +20,7 @@ ButtonIconColorsActive=AccentTrafficLights
 ButtonIconColorsInactive=TitleBarText
 ButtonIconOpacityActive=100
 ButtonIconOpacityInactive=50
-ButtonIconStyle=StyleKairn
+ButtonIconStyle=StyleKopal
 ButtonOverrideColorsActiveApplicationMenu=
 ButtonOverrideColorsActiveClose=
 ButtonOverrideColorsActiveContextHelp=

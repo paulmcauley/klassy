@@ -131,8 +131,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KairnLight
-Name=Kairn Light (Klassy)
+ColorScheme=KopalLight
+Name=Kopal Light (Klassy)
 shadeSortColumn=true
 
 [KDE]

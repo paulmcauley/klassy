@@ -602,8 +602,8 @@ bool Button::titlebarTextPinnedInversion() const
 
     return type() == KDecoration3::DecorationButtonType::OnAllDesktops
         && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme
-        && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleKairn
-        && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleKairnLeft
+        && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleKopal
+        && m_d->internalSettings()->buttonIconStyle() != InternalSettings::EnumButtonIconStyle::StyleKopalLeft
         && (m_d->internalSettings()->buttonBackgroundOpacity(active) > 50 && m_d->internalSettings()->buttonIconOpacity(active) > 50
             && (((m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarText
                   || m_d->internalSettings()->buttonBackgroundColors(active) == InternalSettings::EnumButtonBackgroundColors::TitleBarTextNegativeClose)

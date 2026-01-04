@@ -8,10 +8,10 @@
             }
         ],
         "Category": "",
-        "Description": "Light theme with traditional panel at the bottom and labelled tasks",
-        "Id": "org.kde.klassykairnlightbottompanel.desktop",
+        "Description": "Light theme with panel on the left",
+        "Id": "org.kde.klassykopallightleftpanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Kairn Light - Bottom Panel (Klassy)",
+        "Name": "Kopal Light - Left Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"
