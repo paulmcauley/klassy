@@ -160,6 +160,39 @@ void RenderDecorationButtonIcon18By18::renderPinOnAllDesktopsIcon()
     }
 }
 
+void RenderDecorationButtonIcon18By18::renderOnAllDesktopsIcon()
+{
+    QPen pen = m_painter->pen();
+    QColor color = pen.color();
+    color.setAlphaF(color.alphaF() * 0.8);
+    m_painter->setBrush(color);
+    m_painter->setPen(Qt::NoPen);
+
+    QPainterPath topLeftWorkspace, topRightWorkspace, bottomRightWorkspace, bottomLeftWorkspace;
+    // QPainterPath topLeftWorkspaceWindow, topRightWorkspaceWindow, bottomRightWorkspaceWindow, bottomLeftWorkspaceWindow;
+
+    topLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 4)), snapToNearestPixel(QPointF(8, 8))));
+    // topLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,5)),snapToNearestPixel(QPointF(6,6))));
+    // topLeftWorkspace = topLeftWorkspace.subtracted(topLeftWorkspaceWindow);
+
+    topRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 4)), snapToNearestPixel(QPointF(15, 8))));
+    // topRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,5)),snapToNearestPixel(QPointF(13,6))));
+    // topRightWorkspace = topRightWorkspace.subtracted(topRightWorkspaceWindow);
+
+    bottomRightWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(10, 10)), snapToNearestPixel(QPointF(15, 14))));
+    // bottomRightWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(11,11)),snapToNearestPixel(QPointF(13,12))));
+    // bottomRightWorkspace = bottomRightWorkspace.subtracted(bottomRightWorkspaceWindow);
+
+    bottomLeftWorkspace.addRect(QRectF(snapToNearestPixel(QPointF(3, 10)), snapToNearestPixel(QPointF(8, 14))));
+    // bottomLeftWorkspaceWindow.addRect(QRectF(snapToNearestPixel(QPointF(4,11)),snapToNearestPixel(QPointF(6,12))));
+    // bottomLeftWorkspace = bottomLeftWorkspace.subtracted(bottomLeftWorkspaceWindow);
+
+    m_painter->drawPath(topLeftWorkspace);
+    m_painter->drawPath(topRightWorkspace);
+    m_painter->drawPath(bottomRightWorkspace);
+    m_painter->drawPath(bottomLeftWorkspace);
+}
+
 void RenderDecorationButtonIcon18By18::renderShadeIcon()
 {
     QPen pen = m_painter->pen();
