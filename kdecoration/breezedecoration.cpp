@@ -1988,17 +1988,6 @@ qreal Decoration::titleBarSeparatorHeight(qreal scale) const
         return 0;
 }
 
-qreal Decoration::devicePixelRatio(QPainter *painter) const
-{
-    // determine DPR
-    qreal dpr = painter->device()->devicePixelRatioF();
-
-    // on X11 Kwin just returns 1.0 for the DPR instead of the correct value, so use the scaling setting directly
-    if (KWindowSystem::isPlatformX11())
-        dpr = systemScaleFactorX11();
-    return dpr;
-}
-
 void Decoration::updateScale()
 {
     calculateIconSizes();
