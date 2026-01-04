@@ -29,7 +29,7 @@
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
       </choices>
-      <default>StyleKlasse</default>
+      <default>StyleKite</default>
     </entry>
 
     <!-- button size -->
@@ -109,13 +109,13 @@
     <!-- ______________________________WINDOW______________________________ -->
     
     <entry name="WindowCornerRadius" type = "Double">
-       <default>2.5</default>
+       <default>4</default>
        <min>0</min>
        <max>24.0</max>
     </entry>
     
    <entry name="RoundAllCornersWhenNoBorders" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="UseTitleBarColorForAllBorders" type = "Bool">
@@ -193,7 +193,7 @@
 
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>8</default>
+       <default>9</default>
        <min>0</min>
        <max>50</max>
     </entry>
@@ -217,13 +217,13 @@
 
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>1</default>
+       <default>2</default>
        <min>0</min>
        <max>50</max>
     </entry>
 
     <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
-        <default>true</default>
+        <default>false</default>
     </entry>
 
     <entry name="ButtonCornerRadius" type="Enum">
@@ -242,7 +242,7 @@
 
     <!--Integrated Rounded Rectangle Bottom Padding -->
     <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
-       <default>1</default>
+       <default>0.75</default>
        <min>0</min>
        <max>10</max>
     </entry>
@@ -824,13 +824,13 @@
 
   <group name="TitleBarSpacing">
     <entry name="TitleBarTopMargin" type = "Double">
-       <default>1.7</default>
+       <default>1.8</default>
        <min>0</min>
        <max>25</max>
     </entry>
 
     <entry name="TitleBarBottomMargin" type = "Double">
-       <default>1.7</default>
+       <default>1.8</default>
        <min>0</min>
        <max>25</max>
     </entry>

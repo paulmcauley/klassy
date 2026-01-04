@@ -1,276 +1,276 @@
-[16-0]
+[16]
 Context=Actions
 Size=16
 Type=Fixed
 
-[16-1]
+[16@1.25x]
 Context=Actions
 Scale=1.25
 Size=16
 Type=Fixed
 
-[16-2]
+[16@1.5x]
 Context=Actions
 Scale=1.5
 Size=16
 Type=Fixed
 
-[16-3]
+[16@1.75x]
 Context=Actions
 Scale=1.75
 Size=16
 Type=Fixed
 
-[16-4]
-Context=Actions
-Scale=2
-Size=16
-Type=Fixed
-
-[16-5]
+[16@2.25x]
 Context=Actions
 Scale=2.25
 Size=16
 Type=Fixed
 
-[16-6]
+[16@2.5x]
 Context=Actions
 Scale=2.5
 Size=16
 Type=Fixed
 
-[16-7]
+[16@2.75x]
 Context=Actions
 Scale=2.75
 Size=16
 Type=Fixed
 
-[16-8]
+[16@2x]
+Context=Actions
+Scale=2
+Size=16
+Type=Fixed
+
+[16@3x]
 Context=Actions
 Scale=3
 Size=16
 Type=Fixed
 
-[18-0]
+[18]
 Context=Actions
 Size=18
 Type=Fixed
 
-[18-1]
+[18@1.25x]
 Context=Actions
 Scale=1.25
 Size=18
 Type=Fixed
 
-[18-2]
+[18@1.5x]
 Context=Actions
 Scale=1.5
 Size=18
 Type=Fixed
 
-[18-3]
+[18@1.75x]
 Context=Actions
 Scale=1.75
 Size=18
 Type=Fixed
 
-[18-4]
-Context=Actions
-Scale=2
-Size=18
-Type=Fixed
-
-[18-5]
+[18@2.25x]
 Context=Actions
 Scale=2.25
 Size=18
 Type=Fixed
 
-[18-6]
+[18@2.5x]
 Context=Actions
 Scale=2.5
 Size=18
 Type=Fixed
 
-[18-7]
+[18@2.75x]
 Context=Actions
 Scale=2.75
 Size=18
 Type=Fixed
 
-[18-8]
+[18@2x]
+Context=Actions
+Scale=2
+Size=18
+Type=Fixed
+
+[18@3x]
 Context=Actions
 Scale=3
 Size=18
 Type=Fixed
 
-[20-0]
+[20]
 Context=Actions
 Size=20
 Type=Fixed
 
-[20-1]
+[20@1.25x]
 Context=Actions
 Scale=1.25
 Size=20
 Type=Fixed
 
-[20-2]
+[20@1.5x]
 Context=Actions
 Scale=1.5
 Size=20
 Type=Fixed
 
-[20-3]
+[20@1.75x]
 Context=Actions
 Scale=1.75
 Size=20
 Type=Fixed
 
-[20-4]
-Context=Actions
-Scale=2
-Size=20
-Type=Fixed
-
-[20-5]
+[20@2.25x]
 Context=Actions
 Scale=2.25
 Size=20
 Type=Fixed
 
-[20-6]
+[20@2.5x]
 Context=Actions
 Scale=2.5
 Size=20
 Type=Fixed
 
-[20-7]
+[20@2.75x]
 Context=Actions
 Scale=2.75
 Size=20
 Type=Fixed
 
-[20-8]
+[20@2x]
+Context=Actions
+Scale=2
+Size=20
+Type=Fixed
+
+[20@3x]
 Context=Actions
 Scale=3
 Size=20
 Type=Fixed
 
-[22-0]
+[22]
 Context=Actions
 Size=22
 Type=Fixed
 
-[22-1]
+[22@1.25x]
 Context=Actions
 Scale=1.25
 Size=22
 Type=Fixed
 
-[22-2]
+[22@1.5x]
 Context=Actions
 Scale=1.5
 Size=22
 Type=Fixed
 
-[22-3]
+[22@1.75x]
 Context=Actions
 Scale=1.75
 Size=22
 Type=Fixed
 
-[22-4]
-Context=Actions
-Scale=2
-Size=22
-Type=Fixed
-
-[22-5]
+[22@2.25x]
 Context=Actions
 Scale=2.25
 Size=22
 Type=Fixed
 
-[22-6]
+[22@2.5x]
 Context=Actions
 Scale=2.5
 Size=22
 Type=Fixed
 
-[22-7]
+[22@2.75x]
 Context=Actions
 Scale=2.75
 Size=22
 Type=Fixed
 
-[22-8]
+[22@2x]
+Context=Actions
+Scale=2
+Size=22
+Type=Fixed
+
+[22@3x]
 Context=Actions
 Scale=3
 Size=22
 Type=Fixed
 
-[24-0]
+[24]
 Context=Actions
 Size=24
 Type=Fixed
 
-[24-1]
+[24@1.25x]
 Context=Actions
 Scale=1.25
 Size=24
 Type=Fixed
 
-[24-2]
+[24@1.5x]
 Context=Actions
 Scale=1.5
 Size=24
 Type=Fixed
 
-[24-3]
+[24@1.75x]
 Context=Actions
 Scale=1.75
 Size=24
 Type=Fixed
 
-[24-4]
-Context=Actions
-Scale=2
-Size=24
-Type=Fixed
-
-[24-5]
+[24@2.25x]
 Context=Actions
 Scale=2.25
 Size=24
 Type=Fixed
 
-[24-6]
+[24@2.5x]
 Context=Actions
 Scale=2.5
 Size=24
 Type=Fixed
 
-[24-7]
+[24@2.75x]
 Context=Actions
 Scale=2.75
 Size=24
 Type=Fixed
 
-[24-8]
+[24@2x]
+Context=Actions
+Scale=2
+Size=24
+Type=Fixed
+
+[24@3x]
 Context=Actions
 Scale=3
 Size=24
 Type=Fixed
 
-[32-0]
+[32]
 Context=Actions
 MaxSize=256
 MinSize=32
 Size=32
 Type=Scalable
 
-[32-1]
+[32@1.25x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -278,7 +278,7 @@ Scale=1.25
 Size=32
 Type=Scalable
 
-[32-2]
+[32@1.5x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -286,7 +286,7 @@ Scale=1.5
 Size=32
 Type=Scalable
 
-[32-3]
+[32@1.75x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -294,15 +294,7 @@ Scale=1.75
 Size=32
 Type=Scalable
 
-[32-4]
-Context=Actions
-MaxSize=256
-MinSize=32
-Scale=2
-Size=32
-Type=Scalable
-
-[32-5]
+[32@2.25x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -310,7 +302,7 @@ Scale=2.25
 Size=32
 Type=Scalable
 
-[32-6]
+[32@2.5x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -318,7 +310,7 @@ Scale=2.5
 Size=32
 Type=Scalable
 
-[32-7]
+[32@2.75x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -326,7 +318,15 @@ Scale=2.75
 Size=32
 Type=Scalable
 
-[32-8]
+[32@2x]
+Context=Actions
+MaxSize=256
+MinSize=32
+Scale=2
+Size=32
+Type=Scalable
+
+[32@3x]
 Context=Actions
 MaxSize=256
 MinSize=32
@@ -334,66 +334,66 @@ Scale=3
 Size=32
 Type=Scalable
 
-[48-0]
+[48]
 Context=Actions
 Size=48
 Type=Fixed
 
-[48-1]
+[48@1.25x]
 Context=Actions
 Scale=1.25
 Size=48
 Type=Fixed
 
-[48-2]
+[48@1.5x]
 Context=Actions
 Scale=1.5
 Size=48
 Type=Fixed
 
-[48-3]
+[48@1.75x]
 Context=Actions
 Scale=1.75
 Size=48
 Type=Fixed
 
-[48-4]
-Context=Actions
-Scale=2
-Size=48
-Type=Fixed
-
-[48-5]
+[48@2.25x]
 Context=Actions
 Scale=2.25
 Size=48
 Type=Fixed
 
-[48-6]
+[48@2.5x]
 Context=Actions
 Scale=2.5
 Size=48
 Type=Fixed
 
-[48-7]
+[48@2.75x]
 Context=Actions
 Scale=2.75
 Size=48
 Type=Fixed
 
-[48-8]
+[48@2x]
+Context=Actions
+Scale=2
+Size=48
+Type=Fixed
+
+[48@3x]
 Context=Actions
 Scale=3
 Size=48
 Type=Fixed
 
 [Icon Theme]
-Comment=Klassy Dark by Paul A McAuley, auto-generated by Klassy window decoration
+Comment=Klassy Dark by Paul A McAuley, auto-generated by klassy-settings
 DesktopDefault=48
 DesktopSizes=16,22,32,48,64,128,256
 DialogDefault=32
 DialogSizes=16,22,32,48,64,128,256
-Directories=16-0,18-0,20-0,22-0,24-0,32-0,48-0
+Directories=16,18,20,22,24,32,48,places/16,places/22,places/32,places/48,places/64,places/96
 DisplayDepth=32
 Example=folder
 FollowsColorScheme=true
@@ -404,8 +404,67 @@ MainToolbarSizes=16,22,32,48
 Name=Klassy Dark
 PanelDefault=48
 PanelSizes=16,22,32,48,64,128,256
-ScaledDirectories=16-1,18-1,20-1,22-1,24-1,32-1,48-1,16-2,18-2,20-2,22-2,24-2,32-2,48-2,16-3,18-3,20-3,22-3,24-3,32-3,48-3,16-4,18-4,20-4,22-4,24-4,32-4,48-4,16-5,18-5,20-5,22-5,24-5,32-5,48-5,16-6,18-6,20-6,22-6,24-6,32-6,48-6,16-7,18-7,20-7,22-7,24-7,32-7,48-7,16-8,18-8,20-8,22-8,24-8,32-8,48-8
+ScaledDirectories=16@1.25x,18@1.25x,20@1.25x,22@1.25x,24@1.25x,32@1.25x,48@1.25x,16@1.5x,18@1.5x,20@1.5x,22@1.5x,24@1.5x,32@1.5x,48@1.5x,16@1.75x,18@1.75x,20@1.75x,22@1.75x,24@1.75x,32@1.75x,48@1.75x,16@2x,18@2x,20@2x,22@2x,24@2x,32@2x,48@2x,16@2.25x,18@2.25x,20@2.25x,22@2.25x,24@2.25x,32@2.25x,48@2.25x,16@2.5x,18@2.5x,20@2.5x,22@2.5x,24@2.5x,32@2.5x,48@2.5x,16@2.75x,18@2.75x,20@2.75x,22@2.75x,24@2.75x,32@2.75x,48@2.75x,16@3x,18@3x,20@3x,22@3x,24@3x,32@3x,48@3x,places/16@2x,places/16@3x,places/22@2x,places/22@3x
 SmallDefault=16
 SmallSizes=16,22,32,48
 ToolbarDefault=22
 ToolbarSizes=16,22,32,48
+
+[places/16]
+Context=Places
+MinSize=16
+Scale=1
+Size=16
+Type=Fixed
+
+[places/16@2x]
+Context=Places
+MinSize=16
+Scale=2
+Size=16
+Type=Fixed
+
+[places/16@3x]
+Context=Places
+MinSize=16
+Scale=3
+Size=16
+Type=Fixed
+
+[places/22]
+Context=Places
+Scale=1
+Size=22
+Type=Fixed
+
+[places/22@2x]
+Context=Places
+Scale=2
+Size=22
+Type=Fixed
+
+[places/22@3x]
+Context=Places
+Scale=3
+Size=22
+Type=Fixed
+
+[places/32]
+Context=Places
+Scale=1
+Size=32
+Type=Fixed
+
+[places/48]
+Context=Places
+Scale=1
+Size=48
+Type=Fixed
+
+[places/96]
+Context=Places
+MaxSize=256
+MinSize=96
+Scale=1
+Size=96
+Type=Scalable
