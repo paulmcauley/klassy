@@ -58,6 +58,7 @@ protected:
                                            qreal halfPenWidthLocal);
 
     void renderTinySquareMinimizeIcon(bool showArrows = false);
+    void renderOnAllDesktopsIcon();
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();
     void renderSelectedXKeepBehindIcon();
