@@ -758,10 +758,10 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
 
         // associate the look-and-feel package with a Klassy window decoration preset
         const QHash<QString, QString> lfPackagePresetNames{
-            {QStringLiteral("org.kde.klassykairndarkleftpanel.desktop"), QStringLiteral("Kairn (Left Panel)")},
-            {QStringLiteral("org.kde.klassykairnlightleftpanel.desktop"), QStringLiteral("Kairn (Left Panel)")},
-            {QStringLiteral("org.kde.klassykairndarkbottompanel.desktop"), QStringLiteral("Kairn")},
-            {QStringLiteral("org.kde.klassykairnlightbottompanel.desktop"), QStringLiteral("Kairn")},
+            {QStringLiteral("org.kde.klassykopaldarkleftpanel.desktop"), QStringLiteral("Kopal (Left Panel)")},
+            {QStringLiteral("org.kde.klassykopallightleftpanel.desktop"), QStringLiteral("Kopal (Left Panel)")},
+            {QStringLiteral("org.kde.klassykopaldarkbottompanel.desktop"), QStringLiteral("Kopal")},
+            {QStringLiteral("org.kde.klassykopallightbottompanel.desktop"), QStringLiteral("Kopal")},
             {QStringLiteral("org.kde.klassykitedarkleftpanel.desktop"), QStringLiteral("Kite")},
             {QStringLiteral("org.kde.klassykitelightleftpanel.desktop"), QStringLiteral("Kite")},
             {QStringLiteral("org.kde.klassykitedarkbottompanel.desktop"), QStringLiteral("SuessigKite")},

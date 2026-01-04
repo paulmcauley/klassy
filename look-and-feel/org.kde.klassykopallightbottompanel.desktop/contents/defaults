@@ -2,10 +2,10 @@
 cursorTheme=breeze_cursors
 
 [kdeglobals][General]
-ColorScheme=KairnDark
+ColorScheme=KopalLight
 
 [kdeglobals][Icons]
-Theme=klassy-dark
+Theme=klassy
 
 [kdeglobals][KDE]
 widgetStyle=Klassy

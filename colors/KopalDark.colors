@@ -141,8 +141,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KairnDark
-Name=Kairn Dark (Klassy)
+ColorScheme=KopalDark
+Name=Kopal Dark (Klassy)
 shadeSortColumn=true
 
 [KDE]
