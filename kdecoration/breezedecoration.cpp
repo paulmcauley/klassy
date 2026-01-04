@@ -1856,7 +1856,7 @@ void Decoration::setWindowOutlineColor()
         QColor windowOutlineActiveFinal = m_decorationColors->active()->windowOutline;
         QColor windowOutlineInactiveFinal = m_decorationColors->inactive()->windowOutline;
 
-        if (c->isKeepAbove()) { // set a window outline if window keep in front button is checked
+        if (m_internalSettings->colorizeWindowOutlineWithButton() && c->isKeepAbove()) { // set a window outline if window keep in front button is checked
             QColor keepAboveOutlinePress = m_decorationColors->buttonPalette(DecorationButtonType::KeepAbove)->active()->outlinePress;
             if (keepAboveOutlinePress.isValid()) {
                 m_windowOutline = keepAboveOutlinePress;
