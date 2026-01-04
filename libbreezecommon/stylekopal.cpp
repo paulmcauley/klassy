@@ -107,10 +107,14 @@ void RenderStyleKopal18By18::renderContextHelpIcon()
     renderRounderAndBolderContextHelpIcon();
 }
 
-// don't render pinned differently to pin so that this icon is not confused with KeepInFront icon
+void RenderStyleKopal18By18::renderPinOnAllDesktopsIcon()
+{
+    renderOnAllDesktopsIcon();
+}
+
 void RenderStyleKopal18By18::renderPinnedOnAllDesktopsIcon()
 {
-    renderPinOnAllDesktopsIcon();
+    renderOnAllDesktopsIcon();
 }
 
 void RenderStyleKopal18By18::renderShadeIcon()
