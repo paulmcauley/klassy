@@ -147,6 +147,7 @@ static qreal g_nextScale = 1;
 static bool g_windowOutlineSnapToWholePixel = true;
 static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
+static bool g_isKeepAbove = false;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -396,11 +397,12 @@ void Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::recalculateBorders);
-    connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateShadowOnChange);
+    connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateShadowOnChangeNoCache);
     connect(c, &KDecoration3::DecoratedWindow::captionChanged, this, [this]() {
         // update the caption area
         update(titleBar());
     });
+    connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, &Decoration::updateShadowOnChangeNoCache);
 
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateAnimationState);
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateOpaque);
@@ -1645,7 +1647,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || (c->isActive() ? g_windowOutlineColorActive != m_windowOutline : g_windowOutlineColorInactive != m_windowOutline)
             || g_windowOutlineThickness != m_internalSettings->windowOutlineThickness() || g_nextScale != c->nextScale()
             || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
-            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar())) {
+            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar() || g_isKeepAbove != c->isKeepAbove())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1663,6 +1665,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
         g_windowOutlineOverlap = m_internalSettings->windowOutlineOverlap();
         g_hideTitleBar = hideTitleBar();
+        g_isKeepAbove = c->isKeepAbove();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1853,8 +1856,17 @@ void Decoration::setWindowOutlineColor()
         QColor windowOutlineActiveFinal = m_decorationColors->active()->windowOutline;
         QColor windowOutlineInactiveFinal = m_decorationColors->inactive()->windowOutline;
 
-        // get blended colour if animated
-        if (m_animation->state() == QAbstractAnimation::Running) {
+        if (c->isKeepAbove()) { // set a window outline if window keep in front button is checked
+            QColor keepAboveOutlinePress = m_decorationColors->buttonPalette(DecorationButtonType::KeepAbove)->active()->outlinePress;
+            if (keepAboveOutlinePress.isValid()) {
+                m_windowOutline = keepAboveOutlinePress;
+            } else {
+                QColor keepAboveBackgroundPress = m_decorationColors->buttonPalette(DecorationButtonType::KeepAbove)->active()->backgroundPress;
+                if (keepAboveBackgroundPress.isValid()) {
+                    m_windowOutline = keepAboveBackgroundPress;
+                }
+            }
+        } else if (m_animation->state() == QAbstractAnimation::Running) { // get blended colour if animated
             // deal with animation cases where there is an invalid colour (WindowOutlineNone)
             if (!(windowOutlineActiveFinal.isValid() && windowOutlineInactiveFinal.isValid())) {
                 if (!windowOutlineInactiveFinal.isValid() && windowOutlineActiveFinal.isValid()) {
