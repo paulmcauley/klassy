@@ -193,6 +193,10 @@ private Q_SLOTS:
     {
         updateShadow();
     }
+    void updateShadowOnChangeNoCache()
+    {
+        updateShadow(false, true);
+    }
     void onTabletModeChanged(bool mode);
     void updateScale();
 
