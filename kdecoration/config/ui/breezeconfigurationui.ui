@@ -551,6 +551,29 @@
              </item>
              <item>
               <property name="text">
+               <string>  Kite</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  SuessigKite</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Oxygen/Breeze</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>:/klassy_config_icons/Oxygen.png</normaloff>:/klassy_config_icons/Oxygen.png</iconset>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>  Kairn</string>
               </property>
              </item>
@@ -571,24 +594,6 @@
               <property name="icon">
                <iconset>
                 <normaloff>:/klassy_config_icons/Klassy.png</normaloff>:/klassy_config_icons/Klassy.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kite</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Kite.png</normaloff>:/klassy_config_icons/Kite.png</iconset>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Oxygen/Breeze</string>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/klassy_config_icons/Oxygen.png</normaloff>:/klassy_config_icons/Oxygen.png</iconset>
               </property>
              </item>
              <item>

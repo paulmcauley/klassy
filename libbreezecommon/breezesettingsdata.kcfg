@@ -18,12 +18,13 @@
     <entry name="ButtonIconStyle" type="Enum">
       <choices>
           <choice name="StyleSystemIconTheme" />
+          <choice name="StyleKite" />
+          <choice name="StyleSuessigKite" />
+          <choice name="StyleOxygen" />
           <choice name="StyleKairn" />
           <choice name="StyleKairnLeft" />
           <choice name="StyleKisweet" />
           <choice name="StyleKlasse" />
-          <choice name="StyleKite" />
-          <choice name="StyleOxygen" />
           <choice name="StyleTraditional" />
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
