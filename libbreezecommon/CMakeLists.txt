@@ -16,6 +16,7 @@ set(breezecommon_LIB_SRCS
     styleklasse.cpp
     stylekite.cpp
     styleoxygen.cpp
+    stylesuessigkite.cpp
     styletraditional.cpp
     stylemetro.cpp
     stylefluent.cpp
