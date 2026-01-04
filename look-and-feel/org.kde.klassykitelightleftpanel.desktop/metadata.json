@@ -8,10 +8,10 @@
             }
         ],
         "Category": "",
-        "Description": "Light theme with traditional panel at the bottom and labelled tasks",
-        "Id": "org.kde.klassyklasselightbottompanel.desktop",
+        "Description": "Light theme with panel on the left",
+        "Id": "org.kde.klassykitelightleftpanel.desktop",
         "License": "LGPL 2.1",
-        "Name": "Klasse Light - Bottom Panel (Klassy)",
+        "Name": "Kite Light - Left Panel (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"
