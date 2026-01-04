@@ -4,29 +4,29 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "stylekairn.h"
+#include "stylekopal.h"
 #include <cmath>
 #include <numbers>
 
 namespace Breeze
 {
 
-void RenderStyleKairn18By18::renderCloseIcon()
+void RenderStyleKopal18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKairn18By18::renderMaximizeIcon()
+void RenderStyleKopal18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKairn18By18::renderFloatIcon()
+void RenderStyleKopal18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }
 
-void RenderStyleKairn18By18::renderMinimizeIcon()
+void RenderStyleKopal18By18::renderMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -92,28 +92,28 @@ void RenderStyleKairn18By18::renderMinimizeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKairn18By18::renderKeepBehindIcon()
+void RenderStyleKopal18By18::renderKeepBehindIcon()
 {
     renderSelectedXKeepBehindIcon();
 }
 
-void RenderStyleKairn18By18::renderKeepInFrontIcon()
+void RenderStyleKopal18By18::renderKeepInFrontIcon()
 {
     renderSelectedDotKeepInFrontIcon();
 }
 
-void RenderStyleKairn18By18::renderContextHelpIcon()
+void RenderStyleKopal18By18::renderContextHelpIcon()
 {
     renderRounderAndBolderContextHelpIcon();
 }
 
 // don't render pinned differently to pin so that this icon is not confused with KeepInFront icon
-void RenderStyleKairn18By18::renderPinnedOnAllDesktopsIcon()
+void RenderStyleKopal18By18::renderPinnedOnAllDesktopsIcon()
 {
     renderPinOnAllDesktopsIcon();
 }
 
-void RenderStyleKairn18By18::renderShadeIcon()
+void RenderStyleKopal18By18::renderShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -180,7 +180,7 @@ void RenderStyleKairn18By18::renderShadeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKairn18By18::renderUnShadeIcon()
+void RenderStyleKopal18By18::renderUnShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);

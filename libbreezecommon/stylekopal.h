@@ -15,10 +15,10 @@
 namespace Breeze
 {
 
-class RenderStyleKairn18By18 : public RenderDecorationButtonIcon18By18
+class RenderStyleKopal18By18 : public RenderDecorationButtonIcon18By18
 {
 public:
-    RenderStyleKairn18By18(QPainter *painter,
+    RenderStyleKopal18By18(QPainter *painter,
                            const bool fromKstyle,
                            const bool boldButtonIcons,
                            const qreal devicePixelRatio,
