@@ -1020,16 +1020,37 @@
           </spacer>
          </item>
          <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>On active window:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QCheckBox" name="drawBackgroundGradient">
            <property name="text">
-            <string>Draw active titlebar background &amp;gradient</string>
+            <string>Draw titlebar background &amp;gradient</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="drawTitleBarSeparator">
            <property name="text">
-            <string>Draw separator under active window's titlebar</string>
+            <string>Draw separator under titlebar</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="boldTitle">
+           <property name="text">
+            <string>Make title bold</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="underlineTitle">
+           <property name="text">
+            <string>Underline title</string>
            </property>
           </widget>
          </item>
@@ -1673,6 +1694,8 @@
   <tabstop>titleBarOpacityButton</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>
   <tabstop>drawTitleBarSeparator</tabstop>
+  <tabstop>boldTitle</tabstop>
+  <tabstop>underlineTitle</tabstop>
   <tabstop>cornerRadius</tabstop>
   <tabstop>roundAllCornersWhenNoBorders</tabstop>
   <tabstop>useTitleBarColorForAllBorders</tabstop>
