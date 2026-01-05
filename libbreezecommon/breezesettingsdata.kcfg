@@ -106,6 +106,14 @@
         <default>true</default>
     </entry>
 
+    <entry name="BoldTitle" type = "Bool">
+        <default>false</default>
+    </entry>
+
+    <entry name="UnderlineTitle" type = "Bool">
+        <default>false</default>
+    </entry>
+
     <!-- ______________________________WINDOW______________________________ -->
     
     <entry name="WindowCornerRadius" type = "Double">
