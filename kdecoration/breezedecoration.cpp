@@ -1414,6 +1414,7 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
 
     painter->drawPath(m_titleBarPath);
 
+    painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
     // draw titlebar separator
     qreal separatorHeight;
     if ((separatorHeight = titleBarSeparatorHeight(scale))) {
