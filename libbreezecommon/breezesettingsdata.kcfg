@@ -107,7 +107,7 @@
     </entry>
 
     <entry name="BoldTitle" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="UnderlineTitle" type = "Bool">
