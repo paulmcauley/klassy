@@ -214,8 +214,6 @@ QColor Decoration::titleBarColor(bool returnNonAnimatedColor) const
 QColor Decoration::titleBarSeparatorColor() const
 {
     auto c = window();
-    if (!m_internalSettings->drawTitleBarSeparator())
-        return QColor();
     qreal opacity = 1.0;
     if (m_darkTheme) {
         opacity = 0.5;
@@ -1291,7 +1289,7 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 
         painter->setBrush(windowBorderColor);
         painter->drawPath(m_windowPath);
-
+        //
         painter->restore();
     }
 
@@ -1426,13 +1424,41 @@ void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     painter->restore();
 
     // draw caption
-    painter->setFont(s->font());
-    painter->setPen(fontColor());
-    const auto [captionRectangle, alignment] = captionRect(false);
-    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, captionRectangle.width());
-    painter->drawText(captionRectangle, alignment | Qt::TextSingleLine, caption);
+    QFont font = s->font();
+    if (m_internalSettings->boldTitle() && c->isActive()) {
+        QFont::Weight weight = font.weight();
+        if (weight < QFont::Black) {
+            weight = (weight >= QFont::DemiBold) ? QFont::ExtraBold : QFont::DemiBold;
+        }
+        font.setWeight(weight);
+    }
+    painter->setFont(font);
+    QColor fontColor = this->fontColor();
+    painter->setPen(fontColor);
+    const auto [maxCaptionRectangle, alignment] = captionRect(false);
+    const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, maxCaptionRectangle.width());
+    QRectF captionBoundingRect;
+    painter->drawText(maxCaptionRectangle, alignment | Qt::TextSingleLine, caption, &captionBoundingRect);
+
+    // draw underline
+    if (m_internalSettings->underlineTitle() && c->isActive()) {
+        QPen underlinePen(titleBarSeparatorColor());
+        qreal penWidth = 1;
+        if (KWindowSystem::isPlatformX11())
+            penWidth *= m_systemScaleFactorX11;
+        penWidth = KDecoration3::snapToPixelGrid(penWidth, scale);
+        underlinePen.setWidthF(penWidth);
+        painter->setPen(underlinePen);
+        qreal halfPenWidth = penWidth / 2;
+        QLine underline(captionBoundingRect.left(),
+                        captionBoundingRect.bottom() + halfPenWidth,
+                        captionBoundingRect.right(),
+                        captionBoundingRect.bottom() + halfPenWidth);
+        painter->drawLine(underline);
+    }
 
     // draw all buttons
+    painter->setPen(fontColor);
     m_leftButtons->paint(painter, repaintRegion);
     m_rightButtons->paint(painter, repaintRegion);
 }
