@@ -166,6 +166,8 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.boldTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.underlineTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.useTitleBarColorForAllBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.roundAllCornersWhenNoBorders, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.forceColorizeSystemIcons, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -223,6 +225,8 @@ void ConfigWidget::load()
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
+    m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
+    m_ui.underlineTitle->setChecked(m_internalSettings->underlineTitle());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.useTitleBarColorForAllBorders->setChecked(m_internalSettings->useTitleBarColorForAllBorders());
@@ -270,6 +274,8 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
+    m_internalSettings->setBoldTitle(m_ui.boldTitle->isChecked());
+    m_internalSettings->setUnderlineTitle(m_ui.underlineTitle->isChecked());
     m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
     m_internalSettings->setAnimationsSpeedRelativeSystem(m_ui.animationsSpeedRelativeSystem->value());
     m_internalSettings->setUseTitleBarColorForAllBorders(m_ui.useTitleBarColorForAllBorders->isChecked());
@@ -343,6 +349,8 @@ void ConfigWidget::defaults()
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
+    m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
+    m_ui.underlineTitle->setChecked(m_internalSettings->underlineTitle());
     m_ui.useTitleBarColorForAllBorders->setChecked(m_internalSettings->useTitleBarColorForAllBorders());
     m_ui.roundAllCornersWhenNoBorders->setChecked(m_internalSettings->roundAllCornersWhenNoBorders());
     m_ui.forceColorizeSystemIcons->setChecked(m_internalSettings->forceColorizeSystemIcons());
@@ -438,6 +446,10 @@ void ConfigWidget::updateChanged()
     bool modified(false);
 
     if (m_ui.drawTitleBarSeparator->isChecked() != m_internalSettings->drawTitleBarSeparator())
+        modified = true;
+    else if (m_ui.boldTitle->isChecked() != m_internalSettings->boldTitle())
+        modified = true;
+    else if (m_ui.underlineTitle->isChecked() != m_internalSettings->underlineTitle())
         modified = true;
     else if (m_ui.useTitleBarColorForAllBorders->isChecked() != m_internalSettings->useTitleBarColorForAllBorders())
         modified = true;
