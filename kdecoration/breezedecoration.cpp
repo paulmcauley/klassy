@@ -1311,34 +1311,50 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
     m_painting = false;
 }
 
-void Decoration::calculateWindowShape()
+void Decoration::calculateWindowShape(bool trimForBlurPath)
 {
     auto c = window();
     auto s = settings();
 
     // set windowPath
-    m_windowPath.clear(); // clear the path for subsequent calls to this function
+
+    QRectF windowRect;
+    qreal cornerRadius;
+    QPainterPath *windowPath;
+    if (trimForBlurPath) {
+        windowPath = &m_windowPathTrimmedForBlur;
+        windowPath->clear(); // clear the path for subsequent calls to this function
+        // this is an attempt at a workaround for the integer QRegion blur Region which causes artifacts on scaled Wayland
+        qreal blurAdjustment = 1;
+        windowRect = rect().adjusted(blurAdjustment, blurAdjustment, -blurAdjustment, -blurAdjustment);
+        cornerRadius = m_scaledCornerRadius - blurAdjustment;
+    } else {
+        windowPath = &m_windowPath;
+        windowPath->clear(); // clear the path for subsequent calls to this function
+        windowRect = rect();
+        cornerRadius = m_scaledCornerRadius;
+    }
     if (!c->isShaded()) {
         if (s->isAlphaChannelSupported() && !isMaximized()) {
             if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders()) {
                 if (hideTitleBar()) {
-                    m_windowPath.addRect(rect());
+                    windowPath->addRect(windowRect);
                 } else { // round at top, square at bottom
-                    m_windowPath = GeometryTools::roundedPath(rect(), CornersTop, m_scaledCornerRadius);
+                    *windowPath = GeometryTools::roundedPath(windowRect, CornersTop, cornerRadius);
                 }
             } else {
-                m_windowPath.addRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
+                windowPath->addRoundedRect(windowRect, cornerRadius, cornerRadius);
             }
         } else // maximized / no alpha
-            m_windowPath.addRect(rect());
+            windowPath->addRect(windowRect);
 
     } else { // shaded
         m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
 
         if (isMaximized() || !s->isAlphaChannelSupported()) {
-            m_windowPath.addRect(m_titleRect);
+            windowPath->addRect(m_titleRect);
         } else {
-            m_windowPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
+            windowPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         }
     }
 }
@@ -1992,8 +2008,15 @@ void Decoration::updateBlur()
         setBlurRegion(QRegion());
     } else { // transparent titlebar colours
         if (m_internalSettings->blurTransparentTitleBars()) { // enable blur
-            calculateWindowShape(); // refreshes m_windowPath
-            setBlurRegion(QRegion(m_windowPath.toFillPolygon().toPolygon()));
+            // this is a workaround for blur on scaled windows on Wayland - the KDecoration API still uses integer QRegion which is not precise enough to give a
+            // smooth window outline
+            if (KWindowSystem::isPlatformWayland() && window()->scale() > 1) {
+                calculateWindowShape(true); // refreshes m_windowPath and trims blur area by 1
+                setBlurRegion(QRegion(m_windowPathTrimmedForBlur.toFillPolygon().toPolygon()));
+            } else {
+                calculateWindowShape(); // refreshes m_windowPath
+                setBlurRegion(QRegion(m_windowPath.toFillPolygon().toPolygon()));
+            }
         } else
             setBlurRegion(QRegion());
     }
