@@ -944,7 +944,7 @@
     </entry>
 
     <entry name="WindowOutlineOverlap" type = "Bool">
-        <default>false</default>
+        <default>true</default>
     </entry>
 
     <entry name="WindowOutlineStyle$(WindowOutlineStyleActive)" type = "Enum">
