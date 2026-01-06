@@ -6,6 +6,6 @@
     },
     "X-KDE-ConfigModule": "kcm_klassydecoration",
     "org.kde.kdecoration3": {
-        "recommendedBorderSize": "None"
+        "recommendedBorderSize": "Normal"
     }
 }
