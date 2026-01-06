@@ -54,30 +54,4 @@ void RenderStyleKite18By18::renderMinimizeIcon()
 {
     renderTinySquareMinimizeIcon();
 }
-
-void RenderStyleKite18By18::renderPinOnAllDesktopsIcon()
-{
-    renderOnAllDesktopsIcon();
-}
-
-void RenderStyleKite18By18::renderPinnedOnAllDesktopsIcon()
-{
-    renderOnAllDesktopsIcon();
-}
-
-// For consistency with breeze icon set
-void RenderStyleKite18By18::renderKeepBehindIcon()
-{
-    renderSelectedXKeepBehindIcon();
-}
-
-void RenderStyleKite18By18::renderKeepInFrontIcon()
-{
-    renderSelectedDotKeepInFrontIcon();
-}
-
-void RenderStyleKite18By18::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
 }
