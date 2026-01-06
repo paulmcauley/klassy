@@ -61,6 +61,7 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
     configuration->setExceptionWindowPropertyType(exception.exceptionWindowPropertyType());
     configuration->setExceptionProgramNamePattern(exception.exceptionProgramNamePattern());
     configuration->setExceptionWindowPropertyPattern(exception.exceptionWindowPropertyPattern());
+    configuration->setExceptionWindowsBehindOnly(exception.exceptionWindowsBehindOnly());
 
     configuration->setExceptionPreset(exception.exceptionPreset());
     configuration->setExceptionBorder(exception.exceptionBorder());

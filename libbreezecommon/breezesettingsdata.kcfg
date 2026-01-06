@@ -1111,6 +1111,10 @@
 
     <entry name="ExceptionWindowPropertyPattern" type = "String"/>
 
+    <entry name="ExceptionWindowsBehindOnly" type = "Bool">
+        <default>false</default>
+    </entry>
+
     <entry name="Enabled" type = "Bool">
       <default>true</default>
     </entry>

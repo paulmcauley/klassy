@@ -401,6 +401,7 @@ void Decoration::init()
         update(titleBar());
     });
     connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, &Decoration::updateShadowOnChangeNoCache);
+    connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::reconfigure); // for ExceptionWindowsBehindOnly
 
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateAnimationState);
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateOpaque);
