@@ -400,7 +400,11 @@ void Decoration::init()
         // update the caption area
         update(titleBar());
     });
-    connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, &Decoration::updateShadowOnChangeNoCache);
+    connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, [this]() {
+        if (m_internalSettings->colorizeWindowOutlineWithButton()) {
+            updateShadow(false, true);
+        }
+    });
     connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::reconfigure); // for ExceptionWindowsBehindOnly
 
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateAnimationState);
