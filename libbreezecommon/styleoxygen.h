@@ -29,9 +29,10 @@ public:
     void renderMaximizeIcon() override;
     void renderFloatIcon() override;
     void renderMinimizeIcon() override;
+    void renderPinnedOnAllDesktopsIcon() override;
+    void renderPinOnAllDesktopsIcon() override;
     void renderKeepBehindIcon() override;
     void renderKeepInFrontIcon() override;
-    void renderContextHelpIcon() override;
 };
 
 }
