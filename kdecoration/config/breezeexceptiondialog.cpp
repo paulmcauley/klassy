@@ -33,6 +33,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
         m_ui.exceptionProgramNameEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyType->setDisabled(true);
+        m_ui.exceptionWindowsBehindOnly->setDisabled(true);
         m_ui.hideTitleBar->setDisabled(true);
         m_ui.opaqueTitleBar->setDisabled(true);
         m_ui.preventApplyOpacityToHeader->setDisabled(true);
@@ -60,6 +61,7 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui.exceptionWindowPropertyType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.exceptionWindowsBehindOnly, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -82,6 +84,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_ui.exceptionWindowPropertyType->setCurrentIndex(m_exception->exceptionWindowPropertyType());
     m_ui.exceptionProgramNameEditor->setText(m_exception->exceptionProgramNamePattern());
     m_ui.exceptionWindowPropertyEditor->setText(m_exception->exceptionWindowPropertyPattern());
+    m_ui.exceptionWindowsBehindOnly->setChecked(m_exception->exceptionWindowsBehindOnly());
 
     // exception preset controls
     if (m_exception->exceptionPreset().isEmpty()) {
@@ -110,6 +113,7 @@ void ExceptionDialog::save()
     m_exception->setExceptionWindowPropertyType(m_ui.exceptionWindowPropertyType->currentIndex());
     m_exception->setExceptionProgramNamePattern(m_ui.exceptionProgramNameEditor->text());
     m_exception->setExceptionWindowPropertyPattern(m_ui.exceptionWindowPropertyEditor->text());
+    m_exception->setExceptionWindowsBehindOnly(m_ui.exceptionWindowsBehindOnly->isChecked());
 
     if (m_ui.exceptionPresetCheckBox->isChecked()) {
         m_exception->setExceptionPreset(m_ui.exceptionPresetComboBox->currentText());
@@ -138,6 +142,8 @@ void ExceptionDialog::updateChanged()
     else if (m_exception->exceptionProgramNamePattern() != m_ui.exceptionProgramNameEditor->text())
         modified = true;
     else if (m_exception->exceptionWindowPropertyPattern() != m_ui.exceptionWindowPropertyEditor->text())
+        modified = true;
+    else if (m_exception->exceptionWindowsBehindOnly() != m_ui.exceptionWindowsBehindOnly->isChecked())
         modified = true;
     else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
         modified = true;
