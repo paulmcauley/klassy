@@ -92,31 +92,6 @@ void RenderStyleKopal18By18::renderMinimizeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKopal18By18::renderKeepBehindIcon()
-{
-    renderSelectedXKeepBehindIcon();
-}
-
-void RenderStyleKopal18By18::renderKeepInFrontIcon()
-{
-    renderSelectedDotKeepInFrontIcon();
-}
-
-void RenderStyleKopal18By18::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
-
-void RenderStyleKopal18By18::renderPinOnAllDesktopsIcon()
-{
-    renderOnAllDesktopsIcon();
-}
-
-void RenderStyleKopal18By18::renderPinnedOnAllDesktopsIcon()
-{
-    renderOnAllDesktopsIcon();
-}
-
 void RenderStyleKopal18By18::renderShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it

@@ -31,9 +31,6 @@ public:
     void renderMaximizeIcon() override;
     void renderFloatIcon() override;
     void renderMinimizeIcon() override;
-    void renderKeepBehindIcon() override;
-    void renderKeepInFrontIcon() override;
-    void renderContextHelpIcon() override;
 
 private:
 };

@@ -28,23 +28,4 @@ void RenderStyleKisweet18By18::renderMinimizeIcon()
 {
     renderTinySquareMinimizeIcon(true);
 }
-
-// For consistency with breeze icon set
-void RenderStyleKisweet18By18::renderKeepBehindIcon()
-{
-    renderKeepBehindIconAsFromBreezeIcons();
-    // renderOverlappingWindowsIcon(false, -1, false, true);
-}
-
-void RenderStyleKisweet18By18::renderKeepInFrontIcon()
-{
-    renderKeepInFrontIconAsFromBreezeIcons();
-    // renderOverlappingWindowsIcon(false, -1, true, false);
-}
-
-void RenderStyleKisweet18By18::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
-
 }
