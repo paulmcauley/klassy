@@ -35,12 +35,12 @@ void RenderStyleSuessigKite18By18::renderMinimizeIcon()
     QVector<QPointF> line;
     // horizontal line
     if (isOddPenWidth) {
-        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf),
-                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf)};
+        line = {snapToNearestPixel(QPointF(5.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down),
+                snapToNearestPixel(QPointF(12.5, 9.5), SnapPixel::ToHalf, SnapPixel::ToHalf, ThresholdRound::Down, ThresholdRound::Down)};
 
     } else {
-        line = {snapToNearestPixel(QPointF(4.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole),
-                snapToNearestPixel(QPointF(13.5, 9.5), SnapPixel::ToWhole, SnapPixel::ToWhole)};
+        line = {snapToNearestPixel(QPointF(5.5, 9), SnapPixel::ToWhole, SnapPixel::ToWhole),
+                snapToNearestPixel(QPointF(12.5, 9), SnapPixel::ToWhole, SnapPixel::ToWhole)};
     }
 
     if (m_strokeToFilledPath) {
