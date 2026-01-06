@@ -61,9 +61,7 @@ protected:
     void renderOnAllDesktopsIcon();
     void renderKeepBehindIconAsFromBreezeIcons();
     void renderKeepInFrontIconAsFromBreezeIcons();
-    void renderSelectedXKeepBehindIcon();
-    void renderSelectedDotKeepInFrontIcon();
-    void renderRounderAndBolderContextHelpIcon();
+    void renderBreezeOriginalContextHelpIcon();
 };
 
 }

@@ -74,21 +74,4 @@ void RenderStyleTraditional18By18::renderMinimizeIcon()
         m_painter->drawPolyline(line);
     }
 }
-
-// For consistency with breeze icon set
-void RenderStyleTraditional18By18::renderKeepBehindIcon()
-{
-    renderKeepBehindIconAsFromBreezeIcons();
-}
-
-void RenderStyleTraditional18By18::renderKeepInFrontIcon()
-{
-    renderKeepInFrontIconAsFromBreezeIcons();
-}
-
-void RenderStyleTraditional18By18::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
-
 }

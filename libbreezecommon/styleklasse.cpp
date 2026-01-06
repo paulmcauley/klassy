@@ -28,20 +28,4 @@ void RenderStyleKlasse18By18::renderMinimizeIcon()
 {
     renderTinySquareMinimizeIcon();
 }
-
-// For consistency with breeze icon set
-void RenderStyleKlasse18By18::renderKeepBehindIcon()
-{
-    renderKeepBehindIconAsFromBreezeIcons();
-}
-
-void RenderStyleKlasse18By18::renderKeepInFrontIcon()
-{
-    renderKeepInFrontIconAsFromBreezeIcons();
-}
-
-void RenderStyleKlasse18By18::renderContextHelpIcon()
-{
-    renderRounderAndBolderContextHelpIcon();
-}
 }
