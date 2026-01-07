@@ -216,7 +216,7 @@ QColor Decoration::titleBarSeparatorColor() const
     auto c = window();
     qreal opacity = 1.0;
     if (m_darkTheme) {
-        opacity = 0.37;
+        opacity = 0.5;
     }
 
     if (c->isActive()) {
