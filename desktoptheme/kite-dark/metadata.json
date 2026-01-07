@@ -7,12 +7,12 @@
             }
         ],
         "Category": "",
-        "Description": "Klassy by Paul A McAuley (Breeze Dark with tweaked vertical panel margins)",
+        "Description": "Kite Dark - part of Klassy by Paul A McAuley",
         "EnabledByDefault": true,
-        "Id": "klassy",
+        "Id": "kite-dark",
         "License": "LGPL",
-        "Name": "Klassy",
-        "Version": "6.3",
+        "Name": "Kite Dark (Klassy)",
+        "Version": "6.5",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-API": "5.0"
