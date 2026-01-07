@@ -1997,7 +1997,7 @@ void Style::drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget
 
     QColor penColor = _helper->separatorColor(_toolsAreaManager->palette());
     if (faintSeparator) {
-        penColor.setAlphaF(penColor.alphaF() * 0.2);
+        penColor.setAlphaF(penColor.alphaF() * 0.3);
     }
     QPen pen(penColor, PenWidth::Frame * qRound(w->devicePixelRatioF()));
     pen.setColor(penColor);
