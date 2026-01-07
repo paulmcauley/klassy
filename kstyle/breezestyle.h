@@ -402,7 +402,7 @@ private:
     void drawMainWindow(QPainter *painter, const QMainWindow *mw, const bool drawWindowBackground) const;
     void drawDialog(QPainter *painter, const QDialog *dialog, const bool drawDialogBackground) const;
     void drawToolsAreaSeparator(QPainter *painter, const QWidget *w) const;
-    void drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget *w, const QRect &rect, const bool drawBackground) const;
+    void drawToolsAreaBackgroundAndSeparator(QPainter *painter, const QWidget *w, const QRect &rect, const bool faintSeparator) const;
 
     //* create toolbar extension icon
     QIcon toolBarExtensionIcon(StandardPixmap, const QStyleOption *, const QWidget *) const;
