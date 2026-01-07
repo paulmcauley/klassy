@@ -40,28 +40,6 @@ ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
-[Colors:Header]
-BackgroundAlternate=42,46,50
-BackgroundNormal=49,54,59
-ForegroundInactive=161,169,177
-ForegroundLink=29,153,243
-ForegroundNegative=218,68,83
-ForegroundNeutral=246,116,0
-ForegroundNormal=252,252,252
-ForegroundPositive=39,174,96
-ForegroundVisited=155,89,182
-
-[Colors:Header][Inactive]
-BackgroundAlternate=49,54,59
-BackgroundNormal=42,46,50
-ForegroundInactive=161,169,177
-ForegroundLink=29,153,243
-ForegroundNegative=218,68,83
-ForegroundNeutral=246,116,0
-ForegroundNormal=252,252,252
-ForegroundPositive=39,174,96
-ForegroundVisited=155,89,182
-
 [Colors:Selection]
 BackgroundAlternate=30,87,116
 ForegroundActive=252,252,252
@@ -97,7 +75,7 @@ ForegroundVisited=155,89,182
 
 [Colors:Window]
 BackgroundAlternate=49,54,59
-BackgroundNormal=42,46,50
+BackgroundNormal=70,75,81
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -107,15 +85,15 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=Breeze Dark
-Name=Breeze Dark
+ColorScheme=Kite Light
+Name=Kite Light
 shadeSortColumn=true
 
 [KDE]
 contrast=4
 
 [WM]
-activeBackground=49,54,59
+activeBackground=70,75,81,191
 activeBlend=252,252,252
 activeForeground=252,252,252
 inactiveBackground=42,46,50

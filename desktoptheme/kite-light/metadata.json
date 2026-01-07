@@ -1,0 +1,19 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kde@paulmcauley.com",
+                "Name": "Paul A McAuley"
+            }
+        ],
+        "Category": "",
+        "Description": "Kite Light - part of Klassy by Paul A McAuley",
+        "EnabledByDefault": true,
+        "Id": "kite-light",
+        "License": "LGPL",
+        "Name": "Kite Light (Klassy)",
+        "Version": "6.5",
+        "Website": "https://github.com/paulmcauley/klassy"
+    },
+    "X-Plasma-API": "5.0"
+}
