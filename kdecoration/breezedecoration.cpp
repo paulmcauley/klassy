@@ -1907,10 +1907,18 @@ void Decoration::setWindowOutlineColor()
         if (m_internalSettings->colorizeWindowOutlineWithButton() && c->isKeepAbove()) { // set a window outline if window keep in front button is checked
             QColor keepAboveOutlinePress = m_decorationColors->buttonPalette(DecorationButtonType::KeepAbove)->active()->outlinePress;
             if (keepAboveOutlinePress.isValid()) {
+                qreal alpha = keepAboveOutlinePress.alphaF();
+                if (alpha <= 0.6) {
+                    keepAboveOutlinePress.setAlphaF(std::min(1.0, alpha * 2.5));
+                }
                 m_windowOutline = keepAboveOutlinePress;
             } else {
                 QColor keepAboveBackgroundPress = m_decorationColors->buttonPalette(DecorationButtonType::KeepAbove)->active()->backgroundPress;
                 if (keepAboveBackgroundPress.isValid()) {
+                    qreal alpha = keepAboveBackgroundPress.alphaF();
+                    if (alpha <= 0.6) {
+                        keepAboveBackgroundPress.setAlphaF(std::min(1.0, alpha * 2.5));
+                    }
                     m_windowOutline = keepAboveBackgroundPress;
                 }
             }
