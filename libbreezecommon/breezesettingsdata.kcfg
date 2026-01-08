@@ -21,8 +21,8 @@
           <choice name="StyleKite" />
           <choice name="StyleSuessigKite" />
           <choice name="StyleOxygen" />
-          <choice name="StyleKopal" />
-          <choice name="StyleKopalLeft" />
+          <choice name="StyleArkopal" />
+          <choice name="StyleArkopalLeft" />
           <choice name="StyleKisweet" />
           <choice name="StyleKlasse" />
           <choice name="StyleTraditional" />
