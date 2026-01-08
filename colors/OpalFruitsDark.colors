@@ -141,8 +141,8 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KopalDark
-Name=Kopal Dark (Klassy)
+ColorScheme=OpalFruitsDark
+Name=Opal Fruits Dark (Klassy)
 shadeSortColumn=true
 
 [KDE]
