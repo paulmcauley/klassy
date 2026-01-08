@@ -151,12 +151,12 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.windowOutlineStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::windowOutlineStyleButtonClicked);
     connect(m_ui.shadowStyleButton, &QAbstractButton::clicked, this, &ConfigWidget::shadowStyleButtonClicked);
 
-    updateIconsStackedWidgetVisible();
+    onIconsChanged();
 
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(updateIconsStackedWidgetVisible()), Qt::ConnectionType::DirectConnection);
+    connect(m_ui.buttonIconStyle, SIGNAL(currentIndexChanged(int)), SLOT(onIconsChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.buttonShape, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.iconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.systemIconSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -235,7 +235,7 @@ void ConfigWidget::load()
 
     m_ui.colorizeWindowOutlineWithButton->setChecked(m_internalSettings->colorizeWindowOutlineWithButton());
 
-    updateIconsStackedWidgetVisible();
+    onIconsChanged();
 
     // load exceptions
     DecorationExceptionList exceptions;
@@ -377,7 +377,7 @@ void ConfigWidget::defaults()
         m_ui.defaultExceptions->hide();
     }
 
-    updateIconsStackedWidgetVisible();
+    onIconsChanged();
 
     setNeedsSave(!isDefaults());
 
@@ -526,7 +526,7 @@ void ConfigWidget::setEnabledAnimationsSpeed()
     m_ui.animationsSpeedLabel4->setEnabled(m_ui.animationsEnabled->isChecked());
 }
 
-void ConfigWidget::updateIconsStackedWidgetVisible()
+void ConfigWidget::onIconsChanged()
 {
     if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSystemIconTheme) {
         m_ui.iconSizeStackedWidget->setCurrentIndex(1);
@@ -534,6 +534,15 @@ void ConfigWidget::updateIconsStackedWidgetVisible()
     } else {
         m_ui.iconSizeStackedWidget->setCurrentIndex(0);
         m_ui.iconOptionsStackedWidget->setCurrentIndex(0);
+    }
+
+    if (m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleKite
+        || m_ui.buttonIconStyle->currentIndex() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
+        m_ui.klassy_logo->setStyleSheet("border-image: url(:/klassy_config_icons/Kite_logo.svg);");
+        m_ui.klassy_logo->setMaximumSize(116, 64);
+    } else {
+        m_ui.klassy_logo->setStyleSheet("border-image: url(:/klassy_config_icons/Klassy_logo.svg);");
+        m_ui.klassy_logo->setMaximumSize(156, 64);
     }
 }
 
