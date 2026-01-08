@@ -697,7 +697,7 @@ void Button::paintFullHeightButtonBackground(QPainter *painter) const
 
     if (m_d->internalSettings()->buttonShape() != InternalSettings::EnumButtonShape::ShapeFullHeightRectangle) {
         if (m_d->internalSettings()->buttonCornerRadius() == InternalSettings::EnumButtonCornerRadius::Custom) {
-            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() / 2.0f * m_d->settings()->smallSpacing();
+            cornerRadius = m_d->internalSettings()->buttonCustomCornerRadius() / 2.0f * m_d->smallSpacing();
         } else {
             cornerRadius = m_d->scaledCornerRadius();
         }
@@ -1079,7 +1079,7 @@ void Button::paintSmallSizedButtonBackground(QPainter *painter) const
                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle // case where standalone
                || m_d->internalSettings()->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped // case where standalone
     ) {
-        qreal cornerRadiusScaled = cornerRadiusUnscaled / 2.0f * m_d->settings()->smallSpacing();
+        qreal cornerRadiusScaled = cornerRadiusUnscaled / 2.0f * m_d->smallSpacing();
 
         if (m_outlineColor.isValid())
             geometryEnlargeOffset = penWidth / 2;
