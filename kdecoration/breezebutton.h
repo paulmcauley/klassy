@@ -287,6 +287,9 @@ private:
     qreal m_standardScaledCosmeticPenWidth = 1.0;
     mutable qreal m_standardScaledNonCosmeticPenWidth = 1.0;
     bool m_titlebarTextPinnedInversion = false;
+
+    // for unison hovering
+    bool hovered() const;
 };
 
 } // namespace
