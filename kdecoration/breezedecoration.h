@@ -140,6 +140,11 @@ public:
         return m_scaledCornerRadius;
     }
 
+    qreal smallSpacing()
+    {
+        return m_smallSpacing;
+    }
+
     KDecoration3::DecorationButtonGroup *leftButtons()
     {
         return m_leftButtons;
@@ -283,6 +288,8 @@ private:
     QPainterPath m_windowPathTrimmedForBlur = QPainterPath();
 
     qreal m_systemScaleFactorX11 = 1.0;
+    qreal m_smallSpacing = 2.0;
+    qreal m_gridUnit = 10.0;
 
     ButtonBackgroundType m_buttonBackgroundType = ButtonBackgroundType::Small;
     qreal m_smallButtonPaddedSize = 20;

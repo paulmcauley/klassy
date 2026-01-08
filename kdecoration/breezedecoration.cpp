@@ -509,7 +509,7 @@ void Decoration::updateOverrideOutlineFromButtonAnimationState()
 //________________________________________________________________
 qreal Decoration::borderSize(bool bottom, qreal scale) const
 {
-    const int baseSize = settings()->smallSpacing();
+    const int baseSize = m_smallSpacing;
     int borderSize;
     if (m_internalSettings && (m_internalSettings->exceptionBorder())) {
         switch (m_internalSettings->borderSize()) {
@@ -591,10 +591,16 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     updateDecorationColors(clientPalette);
 
     s_kdeGlobalConfig->reparseConfiguration();
+    // settings()->smallSpacing() is used to scale on X11 and usually 2 on Wayland but not always and varies on X11, depending on font size
+    // this function sets it to a fixed value of 2, no font-based scaling, so that the appearance between X11 and Wayland is unified
+    m_smallSpacing = 2.0;
+    m_gridUnit = 10.0;
     if (KWindowSystem::isPlatformX11()) {
         // loads system ScaleFactor from ~/.config/kdeglobals
         const KConfigGroup cgKScreen(s_kdeGlobalConfig, QStringLiteral("KScreen"));
         m_systemScaleFactorX11 = cgKScreen.readEntry("ScaleFactor", 1.0f);
+        m_smallSpacing *= m_systemScaleFactorX11;
+        m_gridUnit *= m_systemScaleFactorX11;
     }
 
     setScaledCornerRadius();
@@ -806,7 +812,7 @@ void Decoration::recalculateBorders()
     setBorders(QMarginsF(left, top, right, bottom));
 
     // extended sizes
-    const qreal extSize = KDecoration3::snapToPixelGrid(s->smallSpacing() * 3, scale);
+    const qreal extSize = KDecoration3::snapToPixelGrid(m_smallSpacing * 3, scale);
     qreal extLeft = 0;
     qreal extRight = 0;
     qreal extBottom = 0;
@@ -959,11 +965,11 @@ void Decoration::updateButtonsGeometry()
             verticalIconOffsetNormal = buttonTopMargin + qreal(captionHeight - m_smallButtonPaddedSize) / 2;
         }
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonSpacingRight(), scale);
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->fullHeightButtonSpacingLeft(), scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->fullHeightButtonSpacingRight(), scale);
 
-        bWidthMarginLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginLeft(), scale);
-        bWidthMarginRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
+        bWidthMarginLeft = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->fullHeightButtonWidthMarginLeft(), scale);
+        bWidthMarginRight = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->fullHeightButtonWidthMarginRight(), scale);
         bWidthLeft = m_smallButtonPaddedSize + bWidthMarginLeft;
         bWidthRight = m_smallButtonPaddedSize + bWidthMarginRight;
 
@@ -975,8 +981,8 @@ void Decoration::updateButtonsGeometry()
         // do not pixel grid snap icon offsets -- the icon gets snapped at the end anyway, and this keeps icons centred
         verticalIconOffsetNormal = (isTopEdge() ? buttonTopMargin : 0) + qreal(captionHeight - m_smallButtonPaddedSize);
 
-        buttonSpacingLeft = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingLeft(), scale);
-        buttonSpacingRight = KDecoration3::snapToPixelGrid(s->smallSpacing() * m_internalSettings->buttonSpacingRight(), scale);
+        buttonSpacingLeft = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->buttonSpacingLeft(), scale);
+        buttonSpacingRight = KDecoration3::snapToPixelGrid(m_smallSpacing * m_internalSettings->buttonSpacingRight(), scale);
 
         bWidthLeft = m_smallButtonPaddedSize;
         bWidthRight = m_smallButtonPaddedSize;
@@ -1487,7 +1493,7 @@ void Decoration::calculateIconSizes()
 {
     qreal scale = window()->nextScale();
     qreal baseSize = settings()->gridUnit(); // 10 on Wayland
-    qreal basePaddingSize = settings()->smallSpacing(); // 2 on Wayland
+    qreal basePaddingSize = m_smallSpacing; // 2 on Wayland
 
     if (m_tabletMode)
         baseSize = baseSize * m_internalSettings->scaleTouchMode() / 100.0f;
@@ -1607,7 +1613,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState) const
         scaledTitleBarTopBottomMargins(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin, scaledIntegratedRoundedRectangleBottomPadding);
         qreal captionHeight = this->captionHeight(scale, scaledTitleBarTopMargin, scaledTitleBarBottomMargin);
 
-        qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * settings()->smallSpacing(), scale);
+        qreal padding = KDecoration3::snapToPixelGrid(m_internalSettings->titleSidePadding() * m_smallSpacing, scale);
 
         const qreal leftOffset = m_leftButtons->buttons().isEmpty() ? padding : m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + padding;
         const qreal rightOffset = m_rightButtons->buttons().isEmpty() ? padding : size().width() - m_rightButtons->geometry().x() + padding;
@@ -1965,7 +1971,7 @@ void Decoration::scaledTitleBarTopBottomMargins(qreal scale,
     if (m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangle
         || m_internalSettings->buttonShape() == InternalSettings::EnumButtonShape::ShapeIntegratedRoundedRectangleGrouped) {
         scaledIntegratedRoundedRectangleBottomPadding =
-            KDecoration3::snapToPixelGrid(m_internalSettings->integratedRoundedRectangleBottomPadding() * settings()->smallSpacing(), scale);
+            KDecoration3::snapToPixelGrid(m_internalSettings->integratedRoundedRectangleBottomPadding() * m_smallSpacing, scale);
     } else {
         scaledIntegratedRoundedRectangleBottomPadding = 0;
     }
@@ -1975,14 +1981,14 @@ void Decoration::scaledTitleBarTopBottomMargins(qreal scale,
         bottomMargin *= maximizedScaleFactor;
     }
 
-    scaledTitleBarTopMargin = KDecoration3::snapToPixelGrid(settings()->smallSpacing() * topMargin, scale);
-    scaledTitleBarBottomMargin = KDecoration3::snapToPixelGrid(settings()->smallSpacing() * bottomMargin, scale);
+    scaledTitleBarTopMargin = KDecoration3::snapToPixelGrid(m_smallSpacing * topMargin, scale);
+    scaledTitleBarBottomMargin = KDecoration3::snapToPixelGrid(m_smallSpacing * bottomMargin, scale);
 }
 
 void Decoration::scaledTitleBarSideMargins(qreal scale, qreal &scaledTitleBarLeftMargin, qreal &scaledTitleBarRightMargin) const
 {
-    scaledTitleBarLeftMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarLeftMargin()) * qreal(settings()->smallSpacing()), scale);
-    scaledTitleBarRightMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarRightMargin()) * qreal(settings()->smallSpacing()), scale);
+    scaledTitleBarLeftMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarLeftMargin()) * qreal(m_smallSpacing), scale);
+    scaledTitleBarRightMargin = KDecoration3::snapToPixelGrid(qreal(m_internalSettings->titleBarRightMargin()) * qreal(m_smallSpacing), scale);
 
     // subtract any added borders from the side margin so the user doesn't need to adjust the side margins when changing border size
     // this makes the side margin relative to the border edge rather than the titlebar edge
@@ -1997,7 +2003,7 @@ void Decoration::setScaledCornerRadius()
 {
     // on Wayland smallSpacing is always 2 (scaling is then automatic), on X11 varies with font size
     // the division by 2 ensures that the value in the UI corresponds to pixels @100% in Wayland
-    m_scaledCornerRadius = m_internalSettings->windowCornerRadius() / 2.0f * settings()->smallSpacing();
+    m_scaledCornerRadius = m_internalSettings->windowCornerRadius() / 2.0f * m_smallSpacing;
 }
 
 void Decoration::updateOpaque()
