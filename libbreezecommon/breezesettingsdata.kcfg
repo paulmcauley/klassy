@@ -21,13 +21,13 @@
           <choice name="StyleKite" />
           <choice name="StyleSuessigKite" />
           <choice name="StyleOxygen" />
-          <choice name="StyleArkopal" />
-          <choice name="StyleArkopalLeft" />
-          <choice name="StyleKisweet" />
           <choice name="StyleKlasse" />
           <choice name="StyleTraditional" />
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
+          <choice name="StyleArkopal" />
+          <choice name="StyleArkopalLeft" />
+          <choice name="StyleKisweet" />
       </choices>
       <default>StyleKite</default>
     </entry>
