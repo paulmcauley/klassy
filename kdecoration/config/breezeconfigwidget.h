@@ -104,7 +104,7 @@ protected Q_SLOTS:
     //* update changed state
     virtual void updateChanged();
     void setEnabledAnimationsSpeed();
-    void updateIconsStackedWidgetVisible();
+    void onIconsChanged();
     void systemIconGenerationButtonClicked();
     void buttonSizingButtonClicked();
     void buttonColorsButtonClicked();
