@@ -165,8 +165,14 @@ public:
         return m_opacity;
     }
 
+    bool buttonUnisonHovered() const // for unison hovering
+    {
+        return m_buttonUnisonHovered;
+    }
+
 Q_SIGNALS:
     void reconfigured();
+    void buttonUnisonHoveredChanged(bool); // for unison hovering
 
 public Q_SLOTS:
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -174,6 +180,7 @@ public Q_SLOTS:
 #else
     void init() override;
 #endif
+    void setButtonUnisonHovered(bool value);
 
 private Q_SLOTS:
     void reconfigure()
@@ -204,6 +211,10 @@ private Q_SLOTS:
     }
     void onTabletModeChanged(bool mode);
     void updateScale();
+
+protected:
+    void hoverMoveEvent(QHoverEvent *event) override; // override decoration hover events for Unison hovering
+    void hoverLeaveEvent(QHoverEvent *event) override;
 
 private:
     //* return the rect in which caption will be drawn
@@ -308,6 +319,8 @@ private:
     QColor m_originalWindowOutlineInactivePreOverride = QColor();
     //*flag to animate out an overridden thin window outline
     bool m_animateOutOverriddenWindowOutline = false;
+
+    bool m_buttonUnisonHovered = false; // for unison hovering
 };
 
 bool Decoration::hasBorders() const

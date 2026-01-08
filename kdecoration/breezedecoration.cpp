@@ -2,7 +2,7 @@
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
  * SPDX-FileCopyrightText: 2018 Vlad Zahorodnii <vlad.zahorodnii@kde.org>
- * SPDX-FileCopyrightText: 2021-2025 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -19,6 +19,7 @@
 #include "dbusupdatenotifier.h"
 #include "geometrytools.h"
 
+#include <KDecoration3/DecoratedWindow>
 #include <KDecoration3/DecorationButtonGroup>
 #include <KDecoration3/DecorationShadow>
 #include <KDecoration3/ScaleHelpers>
@@ -32,6 +33,7 @@
 #include <QDBusMessage>
 #include <QDBusPendingCallWatcher>
 #include <QDBusPendingReply>
+#include <QHoverEvent>
 #include <QPainter>
 #include <QTextStream>
 #include <QTimer>
@@ -2076,6 +2078,35 @@ void Decoration::updateScale()
     updateBlur(); // only needed here as workaround for integer blurRegion artifacts varies with scale
     updateButtonsGeometry();
     updateShadow();
+}
+
+// for unison hovering
+void Decoration::setButtonUnisonHovered(bool value)
+{
+    if (m_buttonUnisonHovered == value) {
+        return;
+    }
+    m_buttonUnisonHovered = value;
+    emit buttonUnisonHoveredChanged(value);
+}
+
+// for unison hovering
+void Decoration::hoverMoveEvent(QHoverEvent *event)
+{
+    if (m_internalSettings->unisonHovering()) {
+        const bool groupContains = m_leftButtons->geometry().contains(event->position()) || m_rightButtons->geometry().contains(event->position());
+        setButtonUnisonHovered(groupContains);
+    }
+
+    KDecoration3::Decoration::hoverMoveEvent(event);
+}
+
+void Decoration::hoverLeaveEvent(QHoverEvent *event)
+{
+    if (m_internalSettings->unisonHovering()) {
+        setButtonUnisonHovered(false);
+    }
+    KDecoration3::Decoration::hoverLeaveEvent(event);
 }
 
 } // namespace
