@@ -2059,6 +2059,7 @@ void Decoration::updateScale()
 {
     calculateIconSizes();
     recalculateBorders();
+    updateBlur(); // only needed here as workaround for integer blurRegion artifacts varies with scale
     updateButtonsGeometry();
     updateShadow();
 }
