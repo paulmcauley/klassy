@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -393,6 +393,8 @@ ButtonBehaviour::ButtonBehaviour(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui->lockCloseButtonBehaviourActive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromActiveToInactive);
     connect(m_ui->lockCloseButtonBehaviourInactive, &QAbstractButton::toggled, this, &ButtonBehaviour::copyCheckedStatusFromInactiveToActive);
 
+    connect(m_ui->unisonHovering, &QAbstractButton::toggled, this, &ButtonBehaviour::updateChanged, Qt::ConnectionType::DirectConnection);
+
     connect(m_ui->buttonBox->button(QDialogButtonBox::RestoreDefaults), &QAbstractButton::clicked, this, &ButtonBehaviour::defaults);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Reset), &QAbstractButton::clicked, this, &ButtonBehaviour::load);
     connect(m_ui->buttonBox->button(QDialogButtonBox::Apply), &QAbstractButton::clicked, this, &ButtonBehaviour::saveAndReloadKWinConfig);
@@ -479,6 +481,8 @@ void ButtonBehaviour::loadMain(const bool assignUiValuesOnly)
     m_ui->lockCloseButtonBehaviourInactive->setChecked(m_internalSettings->lockCloseButtonBehaviour(false));
     m_ui->lockButtonBehaviourActive->setChecked(m_internalSettings->lockButtonBehaviourActiveInactive());
 
+    m_ui->unisonHovering->setChecked(m_internalSettings->unisonHovering());
+
     if (!assignUiValuesOnly) {
         setChanged(false);
 
@@ -561,6 +565,8 @@ void ButtonBehaviour::save(const bool reloadKwinConfig)
     m_internalSettings->setLockCloseButtonBehaviour(true, m_ui->lockCloseButtonBehaviourActive->isChecked());
     m_internalSettings->setLockCloseButtonBehaviour(false, m_ui->lockCloseButtonBehaviourInactive->isChecked());
     m_internalSettings->setLockButtonBehaviourActiveInactive(m_ui->lockButtonBehaviourActive->isChecked());
+
+    m_internalSettings->setUnisonHovering(m_ui->unisonHovering->isChecked());
 
     m_internalSettings->save();
     setChanged(false);
@@ -766,6 +772,9 @@ void ButtonBehaviour::updateChanged()
     else if (m_ui->lockCloseButtonBehaviourInactive->isChecked() != m_internalSettings->lockCloseButtonBehaviour(false))
         modified = true;
     else if (m_ui->lockButtonBehaviourActive->isChecked() != m_internalSettings->lockButtonBehaviourActiveInactive())
+        modified = true;
+
+    else if (m_ui->unisonHovering->isChecked() != m_internalSettings->unisonHovering())
         modified = true;
 
     setChanged(modified);

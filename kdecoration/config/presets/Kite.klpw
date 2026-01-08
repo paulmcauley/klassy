@@ -143,6 +143,7 @@ TitleBarRightMargin=0
 TitleBarTopMargin=1.8
 TitleSidePadding=2
 UnderlineTitle=false
+UnisonHovering=false
 UseHoverAccentActive=false
 UseHoverAccentInactive=false
 UseTitleBarColorForAllBorders=true

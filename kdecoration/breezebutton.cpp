@@ -1,7 +1,7 @@
 /*
  * SPDX-FileCopyrightText: 2014 Martin Gräßlin <mgraesslin@kde.org>
  * SPDX-FileCopyrightText: 2014 Hugo Pereira Da Costa <hugo.pereira@free.fr>
- * SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2021-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
@@ -67,9 +67,20 @@ Button::Button(KDecoration3::DecorationButtonType type, Decoration *decoration, 
     // connections
     connect(c, SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
     connect(decoration, &Decoration::reconfigured, this, &Button::reconfigure);
-    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
+    connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, [this, decoration](bool v) {
+        if (!decoration->internalSettings()->unisonHovering()) {
+            updateAnimationState(v);
+        }
+    });
     connect(this, &KDecoration3::DecorationButton::hoveredChanged, this, &Button::updateWindowOutlineWithButtonColor);
     connect(this, &KDecoration3::DecorationButton::pressedChanged, this, &Button::updateWindowOutlineWithButtonColor);
+
+    // for unison hovering
+    connect(decoration, &Decoration::buttonUnisonHoveredChanged, this, [this, decoration](bool v) {
+        if (decoration->internalSettings()->unisonHovering()) {
+            updateAnimationState(v);
+        }
+    });
 
     reconfigure();
 }
@@ -334,7 +345,7 @@ QColor Button::foregroundColor(const bool getNonAnimatedColor) const
             return ColorTools::alphaMix(foregroundHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (this->hovered()) {
         return foregroundHoverActiveStateAnimated(active, getNonAnimatedColor);
     } else {
         return foregroundNormalActiveStateAnimated(active, getNonAnimatedColor);
@@ -431,7 +442,7 @@ QColor Button::backgroundColor(const bool getNonAnimatedColor) const
             return ColorTools::alphaMix(backgroundHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (this->hovered()) {
         return backgroundHoverActiveStateAnimated(active, getNonAnimatedColor);
     } else {
         return backgroundNormalActiveStateAnimated(active, getNonAnimatedColor);
@@ -527,7 +538,7 @@ QColor Button::outlineColor(const bool getNonAnimatedColor) const
             return ColorTools::alphaMix(outlineHover, m_opacity);
         } else
             return QColor();
-    } else if (isHovered()) {
+    } else if (this->hovered()) {
         return outlineHoverActiveStateAnimated(active, getNonAnimatedColor);
     } else {
         return outlineNormalActiveStateAnimated(active, getNonAnimatedColor);
@@ -1156,6 +1167,17 @@ bool Button::isSystemIconAvailable() const
             return false;
         else
             return true;
+    }
+}
+
+bool Button::hovered() const // for unison hovering
+{
+    if (!m_d)
+        return false;
+    if (m_d->internalSettings()->unisonHovering()) {
+        return m_d->buttonUnisonHovered();
+    } else {
+        return isHovered();
     }
 }
 
