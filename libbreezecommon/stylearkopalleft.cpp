@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "stylekopalleft.h"
+#include "stylearkopalleft.h"
 #include <cmath>
 #include <numbers>
 
 namespace Breeze
 {
 
-void RenderStyleKopalLeft18By18::renderMinimizeIcon()
+void RenderStyleArkopalLeft18By18::renderMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
