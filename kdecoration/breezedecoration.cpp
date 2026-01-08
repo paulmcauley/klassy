@@ -148,6 +148,7 @@ static bool g_windowOutlineSnapToWholePixel = true;
 static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
 static bool g_isKeepAbove = false;
+static bool g_colorizeWindowOutlineWithButton = true;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -402,7 +403,7 @@ void Decoration::init()
     });
     connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, [this]() {
         if (m_internalSettings->colorizeWindowOutlineWithButton()) {
-            updateShadow(false, true);
+            updateShadow(false, true, false);
         }
     });
     connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::reconfigure); // for ExceptionWindowsBehindOnly
@@ -1691,7 +1692,8 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || (c->isActive() ? g_windowOutlineColorActive != m_windowOutline : g_windowOutlineColorInactive != m_windowOutline)
             || g_windowOutlineThickness != m_internalSettings->windowOutlineThickness() || g_nextScale != c->nextScale()
             || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
-            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar() || g_isKeepAbove != c->isKeepAbove())) {
+            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar() || g_isKeepAbove != c->isKeepAbove()
+            || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnum = m_internalSettings->shadowSize();
@@ -1710,6 +1712,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_windowOutlineOverlap = m_internalSettings->windowOutlineOverlap();
         g_hideTitleBar = hideTitleBar();
         g_isKeepAbove = c->isKeepAbove();
+        g_colorizeWindowOutlineWithButton = m_internalSettings->colorizeWindowOutlineWithButton();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1740,7 +1743,8 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
           && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
          || (m_animation->state() != QAbstractAnimation::Running
              && ((c->isActive() && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
-                 || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))));
+                 || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
+        && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
 
     if (m_internalSettings->shadowSize() == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
         return nullptr;
