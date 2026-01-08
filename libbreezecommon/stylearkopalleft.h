@@ -6,14 +6,14 @@
 
 #pragma once
 
-#include "stylekopal.h"
+#include "stylearkopal.h"
 
 #include <QPainter>
 
 namespace Breeze
 {
 
-class RenderStyleKopalLeft18By18 : public RenderStyleKopal18By18
+class RenderStyleArkopalLeft18By18 : public RenderStyleArkopal18By18
 {
 public:
     /**
@@ -23,13 +23,13 @@ public:
      * @param fromKstyle Indicates that button is not to be drawn in the title bar, but somewhere else in the UI -- ususally means will be smaller
      * @param boldButtonIcons When in titlebar this will draw bolder button icons if true
      */
-    RenderStyleKopalLeft18By18(QPainter *painter,
-                               const bool fromKstyle,
-                               const bool boldButtonIcons,
-                               const qreal devicePixelRatio,
-                               const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
-                               const bool forceEvenSquares)
-        : RenderStyleKopal18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
+    RenderStyleArkopalLeft18By18(QPainter *painter,
+                                 const bool fromKstyle,
+                                 const bool boldButtonIcons,
+                                 const qreal devicePixelRatio,
+                                 const QPointF &deviceOffsetTitleBarTopLeftToIconTopLeft,
+                                 const bool forceEvenSquares)
+        : RenderStyleArkopal18By18(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetTitleBarTopLeftToIconTopLeft, forceEvenSquares) { };
 
     void renderMinimizeIcon() override;
 

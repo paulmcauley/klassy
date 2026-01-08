@@ -4,29 +4,29 @@
  * SPDX-License-Identifier: GPL-2.0-only OR GPL-3.0-only OR LicenseRef-KDE-Accepted-GPL
  */
 
-#include "stylekopal.h"
+#include "stylearkopal.h"
 #include <cmath>
 #include <numbers>
 
 namespace Breeze
 {
 
-void RenderStyleKopal18By18::renderCloseIcon()
+void RenderStyleArkopal18By18::renderCloseIcon()
 {
     renderCloseIconAtSquareMaximizeSize();
 }
 
-void RenderStyleKopal18By18::renderMaximizeIcon()
+void RenderStyleArkopal18By18::renderMaximizeIcon()
 {
     renderSquareMaximizeIcon(false, 0.025, true);
 }
 
-void RenderStyleKopal18By18::renderFloatIcon()
+void RenderStyleArkopal18By18::renderFloatIcon()
 {
     renderOverlappingWindowsIcon(true);
 }
 
-void RenderStyleKopal18By18::renderMinimizeIcon()
+void RenderStyleArkopal18By18::renderMinimizeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -92,7 +92,7 @@ void RenderStyleKopal18By18::renderMinimizeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKopal18By18::renderShadeIcon()
+void RenderStyleArkopal18By18::renderShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
@@ -159,7 +159,7 @@ void RenderStyleKopal18By18::renderShadeIcon()
     m_painter->drawPolygon(arrow);
 }
 
-void RenderStyleKopal18By18::renderUnShadeIcon()
+void RenderStyleArkopal18By18::renderUnShadeIcon()
 {
     // first determine the size of the maximize icon so the minimize icon can align with it
     auto [maximizeRect, maximizePenWidth] = renderSquareMaximizeIcon(true);
