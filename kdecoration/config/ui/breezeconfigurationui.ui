@@ -574,21 +574,6 @@
              </item>
              <item>
               <property name="text">
-               <string>  Arkopal</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Arkopal (Left Panel)</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>  Kisweet</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
                <string>  Klasse</string>
               </property>
               <property name="icon">
@@ -617,6 +602,21 @@
              <item>
               <property name="text">
                <string>  Fluent</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Arkopal</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Arkopal (Left Panel)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>  Kisweet</string>
               </property>
              </item>
             </widget>
