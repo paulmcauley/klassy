@@ -5,12 +5,12 @@
  */
 
 #include "renderdecorationbuttonicon.h"
+#include "stylearkopal.h"
+#include "stylearkopalleft.h"
 #include "stylefluent.h"
 #include "stylekisweet.h"
 #include "stylekite.h"
 #include "styleklasse.h"
-#include "stylekopal.h"
-#include "stylekopalleft.h"
 #include "stylemetro.h"
 #include "styleoxygen.h"
 #include "stylesuessigkite.h"
@@ -48,17 +48,17 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
         return {
             std::make_unique<RenderStyleOxygen18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleKopal:
+    case InternalSettings::EnumButtonIconStyle::StyleArkopal:
         return {
-            std::make_unique<RenderStyleKopal18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+            std::make_unique<RenderStyleArkopal18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
-    case InternalSettings::EnumButtonIconStyle::StyleKopalLeft:
-        return {std::make_unique<RenderStyleKopalLeft18By18>(painter,
-                                                             fromKstyle,
-                                                             boldButtonIcons,
-                                                             devicePixelRatio,
-                                                             deviceOffsetFromZeroReference,
-                                                             forceEvenSquares),
+    case InternalSettings::EnumButtonIconStyle::StyleArkopalLeft:
+        return {std::make_unique<RenderStyleArkopalLeft18By18>(painter,
+                                                               fromKstyle,
+                                                               boldButtonIcons,
+                                                               devicePixelRatio,
+                                                               deviceOffsetFromZeroReference,
+                                                               forceEvenSquares),
                 18};
     case InternalSettings::EnumButtonIconStyle::StyleKisweet:
         return {
