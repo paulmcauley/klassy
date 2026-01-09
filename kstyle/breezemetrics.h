@@ -23,7 +23,7 @@ static constexpr int SmallArrowSize = 5;
 
 // frames
 static constexpr int Frame_FrameWidth = 2;
-static qreal Frame_FrameRadius = 3; // set in Helper::loadConfig
+extern qreal Frame_FrameRadius; // set in Helper::loadConfig
 
 // layout
 static constexpr int Layout_TopLevelMarginWidth = 10;
@@ -69,7 +69,7 @@ static constexpr int MenuButton_IndicatorWidth = 20;
 static constexpr int CheckBox_Size = 20;
 static constexpr int CheckBox_FocusMarginWidth = 2;
 static constexpr int CheckBox_ItemSpacing = 4;
-static qreal CheckBox_Radius = qMax(0.0, Frame_FrameRadius - 1); // set in Helper::loadConfig
+extern qreal CheckBox_Radius; // set in Helper::loadConfig
 
 // menubar items
 static constexpr int MenuBarItem_MarginWidth = 10;
