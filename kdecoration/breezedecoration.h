@@ -226,8 +226,9 @@ private:
     void calculateWindowShape(bool trimForBlurPath = false);
     void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
-    void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isWindowOutlineOverride = false);
-    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor, const bool isWindowOutlineOverride = false);
+    void updateShadow(const bool forceUpdateCache = false, bool noCache = false);
+    std::shared_ptr<KDecoration3::DecorationShadow> createShadowObject(QColor shadowColor);
+    void updateWindowOutline();
     void setScaledCornerRadius();
 
     //*@name border size
@@ -236,6 +237,8 @@ private:
     inline bool hasBorders() const;
     inline bool hasNoBorders() const;
     inline bool hasNoSideBorders() const;
+
+    inline bool windowOutlineNone() const;
     //@}
 
     void scaledTitleBarTopBottomMargins(qreal scale,
@@ -251,7 +254,7 @@ private:
     void calculateIconSizes();
 
     //* override thin window outline colour from button colour animation update
-    void updateOverrideOutlineFromButtonAnimationState();
+    void updateOverrideWindowOutlineFromButtonAnimationState();
 
     //* calculates and sets m_windowOutline
     void setWindowOutlineColor();
@@ -274,7 +277,7 @@ private:
     //* shadow animation
     QVariantAnimation *m_shadowAnimation;
     //*window outline animation when "Colourize with highlighted button'a colour ticked"
-    QVariantAnimation *m_overrideOutlineFromButtonAnimation;
+    QVariantAnimation *m_overrideWindowOutlineFromButtonAnimation;
 
     //* active state change animation opacity
     qreal m_opacity = 0;
@@ -348,6 +351,19 @@ bool Decoration::hasNoSideBorders() const
     } else {
         return settings()->borderSize() == KDecoration3::BorderSize::NoSides;
     }
+}
+
+bool Decoration::windowOutlineNone() const
+{
+    auto c = window();
+
+    // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
+    return ((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
+             && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
+            || (m_animation->state() != QAbstractAnimation::Running
+                && ((c->isActive() && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
+                    || (!c->isActive() && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
+        && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
 }
 
 bool Decoration::isMaximized() const
