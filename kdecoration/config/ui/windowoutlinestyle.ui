@@ -52,32 +52,6 @@
        </item>
       </layout>
      </item>
-     <item>
-      <widget class="QCheckBox" name="windowOutlineSnapToWholePixel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Snap to whole pixel</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="windowOutlineOverlap">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Overlap</string>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -2531,8 +2505,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>windowOutlineThickness</tabstop>
-  <tabstop>windowOutlineSnapToWholePixel</tabstop>
-  <tabstop>windowOutlineOverlap</tabstop>
   <tabstop>windowOutlineStyleActive</tabstop>
   <tabstop>lockWindowOutlineStyleActive</tabstop>
   <tabstop>windowOutlineShadowColorOpacity</tabstop>
