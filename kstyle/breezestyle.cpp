@@ -261,6 +261,12 @@ ToolButtonMenuArrowStyle toolButtonMenuArrowStyle(const QStyleOption *option)
 namespace Breeze
 {
 
+namespace Metrics
+{
+qreal Frame_FrameRadius = 3; // set in Helper::loadConfig
+qreal CheckBox_Radius = 0; // set in Helper::loadConfig
+}
+
 //______________________________________________________________
 Style::Style()
     : _helper(std::make_shared<Helper>(StyleConfigData::self()->sharedConfig()))
