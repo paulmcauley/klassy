@@ -54,6 +54,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="windowOutlineSnapToWholePixel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -67,6 +70,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="windowOutlineOverlap">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
