@@ -26,8 +26,6 @@ WindowOutlineStyle::WindowOutlineStyle(KSharedConfig::Ptr config, KSharedConfig:
     // track ui changes
     // direct connections are used in several places so the slot can detect the immediate m_loading status (not available in a queued connection)
     connect(m_ui->windowOutlineThickness, SIGNAL(valueChanged(double)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
-    connect(m_ui->windowOutlineSnapToWholePixel, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui->windowOutlineOverlap, &QAbstractButton::toggled, this, &WindowOutlineStyle::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineStyleActive, SIGNAL(currentIndexChanged(int)), SLOT(windowOutlineStyleActiveChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui->windowOutlineStyleInactive, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
@@ -91,8 +89,6 @@ void WindowOutlineStyle::loadMain(const bool assignUiValuesOnly)
     }
 
     m_ui->windowOutlineThickness->setValue(m_internalSettings->windowOutlineThickness());
-    m_ui->windowOutlineSnapToWholePixel->setChecked(m_internalSettings->windowOutlineSnapToWholePixel());
-    m_ui->windowOutlineOverlap->setChecked(m_internalSettings->windowOutlineOverlap());
     m_ui->windowOutlineStyleActive->setCurrentIndex(m_internalSettings->windowOutlineStyle(true));
     m_ui->windowOutlineStyleInactive->setCurrentIndex(m_internalSettings->windowOutlineStyle(false));
     m_ui->lockWindowOutlineStyleActive->setChecked(m_internalSettings->lockWindowOutlineStyleActiveInactive());
@@ -144,8 +140,6 @@ void WindowOutlineStyle::save(const bool reloadKwinConfig)
 
     // apply modifications from ui
     m_internalSettings->setWindowOutlineThickness(m_ui->windowOutlineThickness->value());
-    m_internalSettings->setWindowOutlineSnapToWholePixel(m_ui->windowOutlineSnapToWholePixel->isChecked());
-    m_internalSettings->setWindowOutlineOverlap(m_ui->windowOutlineOverlap->isChecked());
     m_internalSettings->setWindowOutlineStyle(true, m_ui->windowOutlineStyleActive->currentIndex());
     m_internalSettings->setWindowOutlineStyle(false, m_ui->windowOutlineStyleInactive->currentIndex());
     m_internalSettings->setLockWindowOutlineStyleActiveInactive(m_ui->lockWindowOutlineStyleActive->isChecked());
@@ -237,10 +231,6 @@ void WindowOutlineStyle::updateChanged()
     bool modified(false);
 
     if (m_ui->windowOutlineThickness->value() != m_internalSettings->windowOutlineThickness())
-        modified = true;
-    else if (m_ui->windowOutlineSnapToWholePixel->isChecked() != m_internalSettings->windowOutlineSnapToWholePixel())
-        modified = true;
-    else if (m_ui->windowOutlineOverlap->isChecked() != m_internalSettings->windowOutlineOverlap())
         modified = true;
     else if (m_ui->windowOutlineStyleActive->currentIndex() != m_internalSettings->windowOutlineStyle(true))
         modified = true;

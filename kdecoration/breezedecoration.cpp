@@ -89,10 +89,7 @@ struct CompositeShadowParams {
 
 const CompositeShadowParams s_shadowParams[] = {
     // None
-    CompositeShadowParams( // hacked in by PAM with small values except with opacity 0; this is to allow a thin window outline to be drawn without a shadow
-        QPoint(0, 4),
-        ShadowParams(QPoint(0, 0), 16, 0),
-        ShadowParams(QPoint(0, -2), 8, 0)),
+    CompositeShadowParams(),
     // Small
     CompositeShadowParams(QPoint(0, 4), ShadowParams(QPoint(0, 0), 16, 1), ShadowParams(QPoint(0, -2), 8, 0.4)),
     // Medium
@@ -143,19 +140,9 @@ static int g_shadowSizeEnumInactive = InternalSettings::EnumShadowSize::ShadowLa
 static int g_shadowStrengthInactive = 128;
 static QColor g_shadowColorInactive = Qt::black;
 static qreal g_cornerRadius = 3;
-static qreal g_systemScaleFactor = 1;
 static bool g_hasNoBorders = true;
 static bool g_roundAllCornersWhenNoBorders = false;
-static int g_windowOutlineStyleActive = 0;
-static int g_windowOutlineStyleInactive = 0;
-static QColor g_windowOutlineColorActive = Qt::black;
-static QColor g_windowOutlineColorInactive = Qt::black;
-static qreal g_windowOutlineThickness = 1;
-static qreal g_nextScale = 1;
-static bool g_windowOutlineSnapToWholePixel = true;
-static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
-static bool g_colorizeWindowOutlineWithButton = true;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
 
@@ -166,7 +153,7 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration3::Decoration(parent, args)
     , m_animation(new QVariantAnimation(this))
     , m_shadowAnimation(new QVariantAnimation(this))
-    , m_overrideOutlineFromButtonAnimation(new QVariantAnimation(this))
+    , m_overrideWindowOutlineFromButtonAnimation(new QVariantAnimation(this))
 
 {
 #if KLASSY_DECORATION_DEBUG_MODE
@@ -240,7 +227,7 @@ QColor Decoration::titleBarSeparatorColor() const
 QColor Decoration::overriddenOutlineColorAnimateIn() const
 {
     QColor color = m_windowOutlineOverride;
-    if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
+    if (m_overrideWindowOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
         auto c = window();
         QColor originalColor;
         c->isActive() ? originalColor = m_originalWindowOutlineActivePreOverride : originalColor = m_originalWindowOutlineInactivePreOverride;
@@ -257,7 +244,7 @@ QColor Decoration::overriddenOutlineColorAnimateIn() const
 
 QColor Decoration::overriddenOutlineColorAnimateOut(const QColor &destinationColor)
 {
-    if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
+    if (m_overrideWindowOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) {
         auto c = window();
         QColor originalColor;
         c->isActive() ? originalColor = m_originalWindowOutlineActivePreOverride : originalColor = m_originalWindowOutlineInactivePreOverride;
@@ -320,14 +307,14 @@ bool Decoration::init()
             updateShadow();
     });
 
-    m_overrideOutlineFromButtonAnimation->setStartValue(0.0);
-    m_overrideOutlineFromButtonAnimation->setEndValue(1.0);
-    m_overrideOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+    m_overrideWindowOutlineFromButtonAnimation->setStartValue(0.0);
+    m_overrideWindowOutlineFromButtonAnimation->setEndValue(1.0);
+    m_overrideWindowOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
 
-    connect(m_overrideOutlineFromButtonAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
+    connect(m_overrideWindowOutlineFromButtonAnimation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
         m_overrideOutlineAnimationProgress = value.toReal();
-        if (m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running)
-            updateShadow(false, true, true);
+        if (m_overrideWindowOutlineFromButtonAnimation->state() == QAbstractAnimation::Running)
+            updateWindowOutline(true);
     });
 
     // use DBus connection to update on Klassy configuration change
@@ -377,6 +364,7 @@ bool Decoration::init()
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
     connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
+    connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
     connect(c, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
@@ -388,7 +376,7 @@ bool Decoration::init()
     });
     connect(c, &KDecoration3::DecoratedWindow::keepAboveChanged, this, [this]() {
         if (m_internalSettings->colorizeWindowOutlineWithButton()) {
-            updateShadow(false, true, false);
+            updateWindowOutline();
         }
     });
     connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::recalculateBorders); // in case EnumHideTitleBar::KeptBehind
@@ -410,7 +398,6 @@ bool Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
-    connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateShadowOnChange);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
     connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
@@ -483,16 +470,16 @@ void Decoration::updateAnimationState()
 }
 
 // For overriding thin window outline with button colour
-void Decoration::updateOverrideOutlineFromButtonAnimationState()
+void Decoration::updateOverrideWindowOutlineFromButtonAnimationState()
 {
-    if (m_overrideOutlineFromButtonAnimation->duration() > 0) {
-        m_overrideOutlineFromButtonAnimation->setDirection(QAbstractAnimation::Forward);
-        m_overrideOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
-        if (m_overrideOutlineFromButtonAnimation->state() != QAbstractAnimation::Running)
-            m_overrideOutlineFromButtonAnimation->start();
+    if (m_overrideWindowOutlineFromButtonAnimation->duration() > 0) {
+        m_overrideWindowOutlineFromButtonAnimation->setDirection(QAbstractAnimation::Forward);
+        m_overrideWindowOutlineFromButtonAnimation->setEasingCurve(QEasingCurve::InOutQuad);
+        if (m_overrideWindowOutlineFromButtonAnimation->state() != QAbstractAnimation::Running)
+            m_overrideWindowOutlineFromButtonAnimation->start();
 
     } else {
-        updateShadow(false, true, true);
+        updateWindowOutline(true);
     }
 }
 
@@ -621,11 +608,11 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
             animationsDurationFactorRelativeSystem = 1 / ((m_internalSettings->animationsSpeedRelativeSystem() + 2) / 2.0f);
         m_animation->setDuration(cg.readEntry(QStringLiteral("AnimationDurationFactor"), 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
         m_shadowAnimation->setDuration(m_animation->duration());
-        m_overrideOutlineFromButtonAnimation->setDuration(m_animation->duration());
+        m_overrideWindowOutlineFromButtonAnimation->setDuration(m_animation->duration());
     } else {
         m_animation->setDuration(0);
         m_shadowAnimation->setDuration(0);
-        m_overrideOutlineFromButtonAnimation->setDuration(0);
+        m_overrideWindowOutlineFromButtonAnimation->setDuration(0);
     }
 
     // borders
@@ -913,6 +900,8 @@ void Decoration::recalculateBorders()
     }
 
     setBorderRadius(KDecoration3::BorderRadius(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius));
+
+    updateWindowOutline();
 }
 
 //________________________________________________________________
@@ -1075,7 +1064,6 @@ void Decoration::updateButtonsGeometry()
         button->setVisibleBeforeMenu(false);
         button->setRightmostLeftVisible(false);
         button->setVisibleAfterSpacer(false);
-        ;
         button->setVisibleBeforeSpacer(false);
         // determine leftmost left visible and rightmostLeftVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
@@ -1187,7 +1175,6 @@ void Decoration::updateButtonsGeometry()
         button->setVisibleBeforeMenu(false);
         button->setRightmostRightVisible(false);
         button->setVisibleAfterSpacer(false);
-        ;
         button->setVisibleBeforeSpacer(false);
         // determine leftmost right visible and rightmostRightVisible
         if (button->isVisible() && (button->isEnabled() || button->type() == KDecoration3::DecorationButtonType::Spacer)) {
@@ -1685,7 +1672,7 @@ QPair<QRectF, Qt::Alignment> Decoration::captionRect(bool nextState) const
 }
 
 //________________________________________________________________
-void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const bool isWindowOutlineOverride)
+void Decoration::updateShadow(const bool forceUpdateCache, bool noCache)
 {
     auto c = window();
 
@@ -1708,7 +1695,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
     // Animated case, no cached shadow object
     if ((m_shadowAnimation->state() == QAbstractAnimation::Running) && (m_shadowOpacity != 0.0) && (m_shadowOpacity != 1.0)) {
         QColor shadowColor = KColorUtils::mix(m_decorationColors->inactive()->shadow, m_decorationColors->active()->shadow, m_shadowOpacity);
-        setShadow(createShadowObject(shadowColor, isWindowOutlineOverride));
+        setShadow(createShadowObject(shadowColor));
         return;
     }
 
@@ -1716,21 +1703,12 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
     // there is less processing here
     // check if cached settings have changed, if so replace them with new settings values and regenerate the shadow cache
     if (!noCache
-        && (
-
-            forceUpdateCache || g_shadowSizeEnumActive != m_internalSettings->shadowSize(true)
+        && (forceUpdateCache || g_shadowSizeEnumActive != m_internalSettings->shadowSize(true)
             || g_shadowSizeEnumInactive != m_internalSettings->shadowSize(false) || g_shadowStrengthActive != m_internalSettings->shadowStrength(true)
             || g_shadowStrengthInactive != m_internalSettings->shadowStrength(false) || g_shadowColorActive != m_internalSettings->shadowColor(true)
             || g_shadowColorInactive != m_internalSettings->shadowColor(false) || !(qAbs(g_cornerRadius - m_scaledCornerRadius) < 0.001)
-            || !(qAbs(g_systemScaleFactor - m_systemScaleFactorX11) < 0.001) || g_hasNoBorders != hasNoBorders()
-            || g_roundAllCornersWhenNoBorders != m_internalSettings->roundAllCornersWhenNoBorders()
-            || g_windowOutlineStyleActive != m_internalSettings->windowOutlineStyle(true)
-            || g_windowOutlineStyleInactive != m_internalSettings->windowOutlineStyle(false)
-            || (c->isActive() ? g_windowOutlineColorActive != m_windowOutline : g_windowOutlineColorInactive != m_windowOutline)
-            || g_windowOutlineThickness != m_internalSettings->windowOutlineThickness() || g_nextScale != c->nextScale()
-            || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
-            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar()
-            || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton())) {
+            || g_hasNoBorders != hasNoBorders() || g_roundAllCornersWhenNoBorders != m_internalSettings->roundAllCornersWhenNoBorders()
+            || g_hideTitleBar != hideTitleBar())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
         g_shadowSizeEnumActive = m_internalSettings->shadowSize(true);
@@ -1740,18 +1718,9 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_shadowStrengthInactive = m_internalSettings->shadowStrength(false);
         g_shadowColorInactive = m_internalSettings->shadowColor(false);
         g_cornerRadius = m_scaledCornerRadius;
-        g_systemScaleFactor = m_systemScaleFactorX11;
         g_hasNoBorders = hasNoBorders();
         g_roundAllCornersWhenNoBorders = m_internalSettings->roundAllCornersWhenNoBorders();
-        g_windowOutlineStyleActive = m_internalSettings->windowOutlineStyle(true);
-        g_windowOutlineStyleInactive = m_internalSettings->windowOutlineStyle(false);
-        c->isActive() ? g_windowOutlineColorActive = m_windowOutline : g_windowOutlineColorInactive = m_windowOutline;
-        g_windowOutlineThickness = m_internalSettings->windowOutlineThickness();
-        g_nextScale = c->nextScale();
-        g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
-        g_windowOutlineOverlap = m_internalSettings->windowOutlineOverlap();
         g_hideTitleBar = hideTitleBar();
-        g_colorizeWindowOutlineWithButton = m_internalSettings->colorizeWindowOutlineWithButton();
     }
 
     std::shared_ptr<KDecoration3::DecorationShadow> nonCachedShadow;
@@ -1764,32 +1733,22 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
 
     if (!(*shadow)) { // only recreate the shadow if necessary
         QColor shadowColor = c->isActive() ? m_decorationColors->active()->shadow : m_decorationColors->inactive()->shadow;
-        *shadow = createShadowObject(shadowColor, isWindowOutlineOverride);
+        *shadow = createShadowObject(shadowColor);
     }
 
     setShadow(*shadow);
 }
 
 //________________________________________________________________
-std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(QColor shadowColor, const bool isWindowOutlineOverride)
+std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(QColor shadowColor)
 {
     auto c = window();
     bool active = c->isActive();
-    const qreal scale = c->nextScale();
 
-    // determine when a window outline does not need to be drawn (even when set to none, sometimes needs to be drawn if there is an animation)
-    bool windowOutlineNone =
-        ((m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone
-          && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
-         || (m_animation->state() != QAbstractAnimation::Running
-             && ((active && m_internalSettings->windowOutlineStyle(true) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone)
-                 || (!active && m_internalSettings->windowOutlineStyle(false) == InternalSettings::EnumWindowOutlineStyle::WindowOutlineNone))))
-        && (!(c->isKeepAbove() && m_internalSettings->colorizeWindowOutlineWithButton()));
-
-    if (active && m_internalSettings->shadowSize(true) == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
+    if (active && m_internalSettings->shadowSize(true) == InternalSettings::EnumShadowSize::ShadowNone) {
         return nullptr;
     }
-    if (!active && m_internalSettings->shadowSize(false) == InternalSettings::EnumShadowSize::ShadowNone && windowOutlineNone && !isWindowOutlineOverride) {
+    if (!active && m_internalSettings->shadowSize(false) == InternalSettings::EnumShadowSize::ShadowNone) {
         return nullptr;
     }
 
@@ -1846,99 +1805,6 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     }
 
     painter.drawPath(roundedRectMask);
-
-    // Draw Thin window outline
-    if (!windowOutlineNone || isWindowOutlineOverride) {
-        if (m_windowOutline.isValid()) {
-            QPen p;
-            p.setColor(m_windowOutline);
-            // use a miter join rather than the default bevel join to get sharp corners at low radii
-            if (m_internalSettings->windowCornerRadius() < 0.4)
-                p.setJoinStyle(Qt::MiterJoin);
-            qreal outlinePenWidth;
-
-            if (KWindowSystem::isPlatformX11()) {
-                outlinePenWidth = m_internalSettings->windowOutlineThickness() * m_systemScaleFactorX11;
-                if (m_internalSettings->windowOutlineSnapToWholePixel()) {
-                    outlinePenWidth = std::round(outlinePenWidth);
-                }
-            } else {
-                outlinePenWidth = m_internalSettings->windowOutlineThickness();
-                if (m_internalSettings->windowOutlineSnapToWholePixel()) {
-                    outlinePenWidth = KDecoration3::snapToPixelGrid(outlinePenWidth, scale);
-                }
-            }
-            // the overlap between the thin window outline and behind the window in unscaled pixels.,
-            // and also makes sure that the anti-aliasing blends properly between the window and thin window outline
-            qreal outlineOverlap, outlinePenWidthWithOverlap;
-            outlineOverlap = m_internalSettings->windowOutlineOverlap() ? 0.5 : 0;
-            outlinePenWidthWithOverlap = outlinePenWidth + outlineOverlap;
-
-            qreal halfOutlinePenWidth = outlinePenWidth / 2;
-            qreal outlineAdjustment = halfOutlinePenWidth - outlineOverlap;
-            QRectF outlineRect;
-            outlineRect =
-                innerRect.adjusted(-outlineAdjustment,
-                                   -outlineAdjustment,
-                                   outlineAdjustment,
-                                   outlineAdjustment); // make thin window outline rect larger so most is outside the window, except for a 0.5px scaled overlap
-            p.setWidthF(outlinePenWidthWithOverlap);
-            painter.setPen(p);
-            painter.setBrush(Qt::NoBrush);
-            painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
-
-            QPainterPath outlinePath;
-            qreal cornerRadius;
-
-            if (m_internalSettings->windowCornerRadius() < 0.4)
-                cornerRadius = m_scaledCornerRadius; // give a square corner for when corner radius is 0
-            else
-                cornerRadius = m_scaledCornerRadius + halfOutlinePenWidth; // else round corner slightly more to account for pen width
-
-            Sides outlineSides;
-            if (!isTopEdge()) {
-                outlineSides |= SideTop;
-            }
-            if (!isLeftEdge()) {
-                outlineSides |= SideLeft;
-            }
-            if (!isBottomEdge()) {
-                outlineSides |= SideBottom;
-            }
-            if (!isRightEdge()) {
-                outlineSides |= SideRight;
-            }
-
-            if (!c->isShaded()) {
-                Corners outlineCorners;
-
-                if (!isBottomEdge() && !(hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
-                    if (!isLeftEdge()) {
-                        outlineCorners |= CornerBottomLeft;
-                    }
-                    if (!isRightEdge()) {
-                        outlineCorners |= CornerBottomRight;
-                    }
-                }
-
-                if (!isTopEdge() && !(hideTitleBar() && hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
-                    if (!isLeftEdge()) {
-                        outlineCorners |= CornerTopLeft;
-                    }
-                    if (!isRightEdge()) {
-                        outlineCorners |= CornerTopRight;
-                    }
-                }
-
-                outlinePath = GeometryTools::roundedPath(outlineRect, outlineCorners, cornerRadius, outlineSides, outlinePenWidth);
-
-            } else {
-                outlinePath.addRoundedRect(outlineRect, cornerRadius, cornerRadius);
-            }
-
-            painter.drawPath(outlinePath);
-        }
-    }
     painter.end();
 
     auto ret = std::make_shared<KDecoration3::DecorationShadow>();
@@ -1946,6 +1812,50 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
     ret->setShadow(shadowTexture);
     return ret;
+}
+
+void Decoration::updateWindowOutline(bool override)
+{
+    if (isMaximized() || (windowOutlineNone() && !override)) {
+        setBorderOutline(KDecoration3::BorderOutline());
+    } else {
+        setWindowOutlineColor();
+        if (m_windowOutline.isValid()) {
+            const qreal thickness = std::max(KDecoration3::pixelSize(window()->nextScale()),
+                                             KDecoration3::snapToPixelGrid(m_internalSettings->windowOutlineThickness(), window()->nextScale()));
+
+            // set clipped corners
+            qreal bottomLeftRadius = 0;
+            qreal bottomRightRadius = 0;
+            qreal topLeftRadius = 0;
+            qreal topRightRadius = 0;
+
+            if (!isBottomEdge() && !(hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                if (!isLeftEdge()) {
+                    bottomLeftRadius = m_scaledCornerRadius;
+                }
+                if (!isRightEdge()) {
+                    bottomRightRadius = m_scaledCornerRadius;
+                }
+            }
+
+            if (!isTopEdge() && !(hideTitleBar() && hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                if (!isLeftEdge()) {
+                    topLeftRadius = m_scaledCornerRadius;
+                }
+                if (!isRightEdge()) {
+                    topRightRadius = m_scaledCornerRadius;
+                }
+            }
+
+            const auto radius = KDecoration3::BorderRadius(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius);
+            QColor color(qPremultiply(m_windowOutline.rgba()));
+            color.setAlpha(m_windowOutline.alpha()); // QColor(QRgb) constructor discards alpha
+            setBorderOutline(KDecoration3::BorderOutline(thickness, color, radius));
+        } else {
+            setBorderOutline(KDecoration3::BorderOutline());
+        }
+    }
 }
 
 void Decoration::setWindowOutlineOverrideColor(const bool on, const QColor &color)
@@ -1956,14 +1866,14 @@ void Decoration::setWindowOutlineOverrideColor(const bool on, const QColor &colo
         if (!c->isMaximized()) {
             // draw a thin window outline with this override colour
             m_windowOutlineOverride = color;
-            updateOverrideOutlineFromButtonAnimationState();
+            updateOverrideWindowOutlineFromButtonAnimationState();
         }
     } else {
         if (!c->isMaximized()) {
             // reset the thin window outline
             m_windowOutlineOverride = QColor();
             m_animateOutOverriddenWindowOutline = true;
-            updateOverrideOutlineFromButtonAnimationState();
+            updateOverrideWindowOutlineFromButtonAnimationState();
         }
     }
 }
@@ -2020,7 +1930,7 @@ void Decoration::setWindowOutlineColor()
     // the existing thin window outline colour is stored in-case it is overridden in the future and needed by an animation
     if (!m_windowOutlineOverride.isValid()) { // non-override
         c->isActive() ? m_originalWindowOutlineActivePreOverride = m_windowOutline : m_originalWindowOutlineInactivePreOverride = m_windowOutline;
-    } else if ((m_overrideOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) && m_overrideOutlineAnimationProgress == 1) {
+    } else if ((m_overrideWindowOutlineFromButtonAnimation->state() == QAbstractAnimation::Running) && m_overrideOutlineAnimationProgress == 1) {
         // only buffer the override colour once it has finished animating -- used for the override out animation, and when mouse moves from one overrride
         // colour to another
         c->isActive() ? m_originalWindowOutlineActivePreOverride = m_windowOutline : m_originalWindowOutlineInactivePreOverride = m_windowOutline;
@@ -2133,9 +2043,8 @@ void Decoration::updateNextScale()
 {
     calculateIconSizes();
     recalculateBorders();
-    updateBlur(); // only needed here as workaround for integer blurRegion artifacts varies with scale
     updateButtonsGeometry();
-    updateShadow();
+    updateWindowOutline();
 }
 
 // for unison hovering
