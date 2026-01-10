@@ -6932,7 +6932,11 @@ bool Style::drawRubberBandControl(const QStyleOption *option, QPainter *painter,
     auto background = palette.color(HighlightColor);
     background.setAlphaF(0.20);
 
-    painter->setPen(outline);
+    QPen pen(outline);
+    if (Metrics::Frame_FrameRadius < 0.4)
+        pen.setJoinStyle(Qt::MiterJoin); // make low corner radii as sharp as possible
+
+    painter->setPen(pen);
     painter->setBrush(background);
     painter->drawRoundedRect(_helper->strokedRect(option->rect), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
 
