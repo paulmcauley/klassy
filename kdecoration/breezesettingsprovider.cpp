@@ -94,7 +94,7 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
         }
 
         // check matching
-        QRegularExpression rx(internalSettings->exceptionWindowPropertyPattern());
+        QRegularExpression rx(internalSettings->exceptionWindowPropertyPattern(), QRegularExpression::MultilineOption);
         if (rx.match(windowPropertyValue).hasMatch()) {
             // load preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
