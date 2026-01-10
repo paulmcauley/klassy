@@ -66,7 +66,7 @@ InternalSettingsPtr DecorationSettingsProvider::internalSettings()
             continue;
 
         // check matching
-        QRegularExpression rx(internalSettings->exceptionProgramNamePattern());
+        QRegularExpression rx(internalSettings->exceptionProgramNamePattern(), QRegularExpression::MultilineOption);
         if (rx.match(qAppName()).hasMatch()) {
             // load window decoration preset if set
             if (!internalSettings->exceptionPreset().isEmpty()) {
