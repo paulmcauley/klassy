@@ -152,7 +152,10 @@ void ToolsAreaManager::configUpdated()
         _palette.setBrush(QPalette::Disabled, QPalette::WindowText, disabled.foreground());
         _palette.setBrush(QPalette::Inactive, QPalette::Window, inactive.background());
         _palette.setBrush(QPalette::Inactive, QPalette::WindowText, inactive.foreground());
+    }
 
+    // add opacity from decoration, if in Header or added in Klassy settings
+    if (_colorSchemeHasHeaderColor || _helper->decorationConfig()->matchTitleBarToApplicationColor()) {
         if (_helper->decorationConfig()->applyOpacityToHeader() && !_helper->decorationConfig()->preventApplyOpacityToHeader()) {
             // override active with colour with opacity from decoration if needed
             _palette.setColor(QPalette::Active, QPalette::Window, _helper->decorationColors()->active()->titleBarBase);
@@ -319,6 +322,6 @@ void ToolsAreaManager::unregisterWidget(QWidget *widget)
 
 bool Breeze::ToolsAreaManager::hasHeaderColors()
 {
-    return _colorSchemeHasHeaderColor;
+    return _colorSchemeHasHeaderColor || _helper->decorationConfig()->matchTitleBarToApplicationColor();
 }
 }

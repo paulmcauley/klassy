@@ -80,6 +80,7 @@ LockWindowOutlineCustomColorActiveInactive=true
 LockWindowOutlineStyleActiveInactive=true
 LockTitleBarLeftRightMargins=true
 LockTitleBarTopBottomMargins=true
+MatchTitleBarToApplicationColor=false
 NegativeCloseBackgroundHoverPressActive=false
 NegativeCloseBackgroundHoverPressInactive=false
 OnPoorIconContrastActive=Nothing
