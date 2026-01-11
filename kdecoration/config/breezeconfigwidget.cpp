@@ -3,7 +3,7 @@
 // -------------------
 //
 // SPDX-FileCopyrightText: 2009 Hugo Pereira Da Costa <hugo.pereira@free.fr>
-// SPDX-FileCopyrightText: 2021-2024 Paul A McAuley <kde@paulmcauley.com>
+// SPDX-FileCopyrightText: 2021-2026 Paul A McAuley <kde@paulmcauley.com>
 //
 // SPDX-License-Identifier: MIT
 //////////////////////////////////////////////////////////////////////////////
@@ -164,6 +164,7 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     connect(m_ui.boldButtonIcons, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldButtonIcons, qOverload<int>(&QComboBox::currentIndexChanged), this, &ConfigWidget::updateWindowControlPreviewIcons);
     connect(m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawBackgroundGradient, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.drawTitleBarSeparator, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.boldTitle, &QAbstractButton::toggled, this, &ConfigWidget::updateChanged, Qt::ConnectionType::DirectConnection);
@@ -223,6 +224,7 @@ void ConfigWidget::load()
 
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
+    m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.drawTitleBarSeparator->setChecked(m_internalSettings->drawTitleBarSeparator());
     m_ui.boldTitle->setChecked(m_internalSettings->boldTitle());
@@ -272,6 +274,7 @@ void ConfigWidget::saveMain(QString saveAsPresetName)
     m_internalSettings->setWindowCornerRadius(m_ui.cornerRadius->value());
     m_internalSettings->setBoldButtonIcons(m_ui.boldButtonIcons->currentIndex());
     m_internalSettings->setDrawBorderOnMaximizedWindows(m_ui.drawBorderOnMaximizedWindows->isChecked());
+    m_internalSettings->setMatchTitleBarToApplicationColor(m_ui.matchTitleBarToApplicationColor->isChecked());
     m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
     m_internalSettings->setDrawTitleBarSeparator(m_ui.drawTitleBarSeparator->isChecked());
     m_internalSettings->setBoldTitle(m_ui.boldTitle->isChecked());
@@ -345,6 +348,7 @@ void ConfigWidget::defaults()
     m_ui.cornerRadius->setValue(m_internalSettings->windowCornerRadius());
     m_ui.boldButtonIcons->setCurrentIndex(m_internalSettings->boldButtonIcons());
     m_ui.drawBorderOnMaximizedWindows->setChecked(m_internalSettings->drawBorderOnMaximizedWindows());
+    m_ui.matchTitleBarToApplicationColor->setChecked(m_internalSettings->matchTitleBarToApplicationColor());
     m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
     m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
     m_ui.animationsSpeedRelativeSystem->setValue(m_internalSettings->animationsSpeedRelativeSystem());
@@ -468,6 +472,8 @@ void ConfigWidget::updateChanged()
     else if (m_ui.boldButtonIcons->currentIndex() != m_internalSettings->boldButtonIcons())
         modified = true;
     else if (m_ui.drawBorderOnMaximizedWindows->isChecked() != m_internalSettings->drawBorderOnMaximizedWindows())
+        modified = true;
+    else if (m_ui.matchTitleBarToApplicationColor->isChecked() != m_internalSettings->matchTitleBarToApplicationColor())
         modified = true;
     else if (m_ui.drawBackgroundGradient->isChecked() != m_internalSettings->drawBackgroundGradient())
         modified = true;

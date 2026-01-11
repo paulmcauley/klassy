@@ -145,6 +145,14 @@ void Helper::loadConfig()
                                                    _systemInactiveTitleBarTextColor,
                                                    colorSchemePath);
 
+        // bool colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_colorSchemeConfig, KColorScheme::Header);
+        if (_decorationConfig->matchTitleBarToApplicationColor()) {
+            _systemActiveTitleBarColor = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
+            _systemInactiveTitleBarColor = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Window);
+            _systemActiveTitleBarTextColor = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText);
+            _systemInactiveTitleBarTextColor = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::WindowText);
+        }
+
         _decorationColors->generateDecorationColors(palette,
                                                     _decorationConfig,
                                                     _systemActiveTitleBarTextColor,
@@ -1887,6 +1895,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
         return false;
     }
 
+    // commented out was the Breeze logic. For Klassy as we can set the borders to titlebar colour to avoid any such visual glitches
     /*
     static bool isAuto = false;
     static QString borderSize;
@@ -1918,7 +1927,7 @@ bool Helper::shouldDrawToolsArea(const QWidget *widget) const
     }
     if (borderSize != "None" && borderSize != "NoSides") {
         return false;
-    }*/ //commented out for klassy as we can set the borders to titlebar colour to avoid any such visual glitches
+    }*/
     return true;
 }
 

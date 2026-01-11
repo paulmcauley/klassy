@@ -621,12 +621,6 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     QString lookAndFeelPackage = cg.readEntry("LookAndFeelPackage");
     setGlobalLookAndFeelOptions(lookAndFeelPackage);
 
-    m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(s_kdeGlobalConfig, KColorScheme::Header);
-
-    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration3::BorderSize::None || settings()->borderSize() ==
-    // KDecoration3::BorderSize::NoSides ) );
-    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor);
-
     // animation
     if (m_internalSettings->animationsEnabled()) {
         qreal animationsDurationFactorRelativeSystem = 1;
@@ -663,13 +657,27 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
     if (clientPalette != systemPalette) { // Some applications can set a Window Colour Scheme, meaning the client palette and system palette differ
         clientSpecificPalette = true;
     }
+    QPalette palette = clientSpecificPalette ? clientPalette : systemPalette;
+
+    // this doesn't work for a clientSpecificPalette -- need KWin to provide the  KDE ColorScheme path/hash rather than the QPalette to determine
+    m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(s_kdeGlobalConfig, KColorScheme::Header);
+    if (m_internalSettings->matchTitleBarToApplicationColor() && m_colorSchemeHasHeaderColor) {
+        m_internalSettings->setMatchTitleBarToApplicationColor(false);
+    }
+    // Commented was how m_toolsAreaWillBeDrawn was determined in Breeze, simplified for Klassy
+    // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration3::BorderSize::None || settings()->borderSize() ==
+    // KDecoration3::BorderSize::NoSides ) );
+    m_toolsAreaWillBeDrawn = (m_colorSchemeHasHeaderColor || m_internalSettings->matchTitleBarToApplicationColor());
+
+    QColor activeApplicationBackground = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
 
     // determine if a dark colour scheme
-    QColor windowBackgroundNormal = clientPalette.window().color();
-    if (windowBackgroundNormal.isValid() && windowBackgroundNormal.lightnessF() < 0.5) {
-        m_darkTheme = true;
-    } else {
-        m_darkTheme = false;
+    if (activeApplicationBackground.isValid()) {
+        if (activeApplicationBackground.lightnessF() < 0.5) {
+            m_darkTheme = true;
+        } else {
+            m_darkTheme = false;
+        }
     }
 
     // The preset exception may modify the decoration colours by having a different translucentButtonBackgroundsOpacity, so in this case we don't want to
@@ -686,7 +694,6 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
         }
     }
 
-    QPalette palette = clientSpecificPalette ? clientPalette : systemPalette;
     bool generateColors = false;
 
     if (!m_decorationColors->areColorsGenerated()) {
@@ -709,16 +716,37 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
         auto c = window();
 
         QColor activeTitleBarBase = c->color(ColorGroup::Active, ColorRole::TitleBar);
-        QColor inactiveTitlebarBase = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
+        QColor inactiveTitleBarBase = c->color(ColorGroup::Inactive, ColorRole::TitleBar);
         QColor activeTitleBarText = c->color(ColorGroup::Active, ColorRole::Foreground);
         QColor inactiveTitleBarText = c->color(ColorGroup::Inactive, ColorRole::Foreground);
+
+        if (m_internalSettings->matchTitleBarToApplicationColor()) {
+            if (activeApplicationBackground.isValid()) {
+                activeTitleBarBase = activeApplicationBackground;
+            }
+
+            QColor inactiveApplicationBackground = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Window);
+            if (inactiveApplicationBackground.isValid()) {
+                inactiveTitleBarBase = inactiveApplicationBackground;
+            }
+
+            QColor activeApplicationText = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText);
+            if (activeApplicationText.isValid()) {
+                activeTitleBarText = activeApplicationText;
+            }
+
+            QColor inactiveApplicationText = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::WindowText);
+            if (inactiveApplicationText.isValid()) {
+                inactiveTitleBarText = inactiveApplicationText;
+            }
+        }
 
         m_decorationColors->generateDecorationAndButtonColors(palette,
                                                               m_internalSettings,
                                                               activeTitleBarText,
                                                               activeTitleBarBase,
                                                               inactiveTitleBarText,
-                                                              inactiveTitlebarBase,
+                                                              inactiveTitleBarBase,
                                                               uuid); // update the decoration colors
     }
 }
