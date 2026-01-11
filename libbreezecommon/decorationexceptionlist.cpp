@@ -70,6 +70,7 @@ void DecorationExceptionList::readIndividualExceptionFromConfig(KSharedConfig::P
         configuration->setBorderSize(exception.borderSize());
     configuration->setHideTitleBar(exception.hideTitleBar());
     configuration->setOpaqueTitleBar(exception.opaqueTitleBar());
+    configuration->setExceptionMatchTitleBarToApplicationColor(exception.exceptionMatchTitleBarToApplicationColor());
     configuration->setPreventApplyOpacityToHeader(exception.preventApplyOpacityToHeader());
 
     // append to exceptions
