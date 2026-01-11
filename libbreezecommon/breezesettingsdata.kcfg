@@ -77,8 +77,10 @@
           <choice name="BoldIconsBold" />
           <choice name="BoldIconsFine" />
           <choice name="BoldIconsHiDpiOnly" />
+          <choice name="BoldIconsActive" />
+          <choice name="BoldIconsActiveHiDpi" />
       </choices>
-      <default>BoldIconsHiDpiOnly</default>
+      <default>BoldIconsActiveHiDpi</default>
     </entry>
 
     <!-- button background shape -->
