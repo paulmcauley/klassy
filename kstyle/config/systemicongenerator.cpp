@@ -181,7 +181,9 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
 
                 bool boldButtons =
                     (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && m_scales.at(i) >= 1.2));
+                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && m_scales.at(i) >= 1.2)
+                     || m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive
+                     || (m_internalSettings->boldButtonIcons() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && m_scales.at(i) >= 1.2));
 
                 // paint the close background to SVG
                 if (iconType.type == DecorationButtonType::Close && iconType.name != QStringLiteral("window-close-symbolic")) {
