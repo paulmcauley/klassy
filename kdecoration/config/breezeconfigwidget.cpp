@@ -703,7 +703,9 @@ void ConfigWidget::generateWindowControlPreviewIcon(QSize size, InternalSettings
     int iconSpacing = 14;
 
     bool boldIcons = (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsBold
-                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2));
+                      || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsHiDpiOnly && dpr >= 1.2)
+                      || m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActive)
+        || (m_ui.boldButtonIcons->currentIndex() == InternalSettings::EnumBoldButtonIcons::BoldIconsActiveHiDpi && dpr >= 1.2);
     auto internalSettings = InternalSettingsPtr(new InternalSettings());
     internalSettings->setButtonIconStyle(iconStyle);
 
