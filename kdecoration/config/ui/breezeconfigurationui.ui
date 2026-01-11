@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>727</width>
-    <height>630</height>
+    <width>717</width>
+    <height>612</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -505,6 +505,16 @@
                <item>
                 <property name="text">
                  <string>Bold on HiDPI only</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Bold active window</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Bold active, HiDPI</string>
                 </property>
                </item>
               </widget>
