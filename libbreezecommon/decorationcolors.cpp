@@ -122,6 +122,15 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
     std::unique_ptr<DecorationPaletteGroup> *decorationPaletteGroup = active ? m_decorationPaletteGroupActive : m_decorationPaletteGroupInactive;
 
     (*decorationPaletteGroup)->titleBarBase = active ? titleBarBaseActive : titleBarBaseInactive;
+    (*decorationPaletteGroup)->titleBarText = active ? titleBarTextActive : titleBarTextInactive;
+
+    if (decorationSettings->matchTitleBarToApplicationColor()) {
+        ColorTools::getHigherContrastForegroundColor((*decorationPaletteGroup)->titleBarText, // adjust the text colour to black/white if poor contrast
+                                                     (*decorationPaletteGroup)->titleBarBase,
+                                                     1.5,
+                                                     (*decorationPaletteGroup)->titleBarText);
+    }
+
     bool setTitleBarBaseOpacity = false;
     if (!decorationSettings->opaqueTitleBar()) {
         if ((*decorationPaletteGroup)->titleBarBase.alpha() == 255) {
@@ -137,8 +146,6 @@ void DecorationColors::generateDecorationPaletteGroup(const QPalette &palette,
         (*decorationPaletteGroup)
             ->titleBarBase.setAlphaF(qreal(active ? decorationSettings->activeTitleBarOpacity() : decorationSettings->inactiveTitleBarOpacity()) / 100);
     }
-
-    (*decorationPaletteGroup)->titleBarText = active ? titleBarTextActive : titleBarTextInactive;
 
     KStatefulBrush buttonFocusStatefulBrush;
     KStatefulBrush buttonHoverStatefulBrush;
