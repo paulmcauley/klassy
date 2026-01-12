@@ -408,7 +408,7 @@ void Decoration::init()
             updateShadow(false, true, false);
         }
     });
-    connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::reconfigure); // for ExceptionWindowsBehindOnly
+    connect(c, &KDecoration3::DecoratedWindow::keepBelowChanged, this, &Decoration::recalculateBorders); // in case EnumHideTitleBar::KeptBehind
 
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateAnimationState);
     connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateOpaque);
