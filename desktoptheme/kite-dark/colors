@@ -21,6 +21,9 @@ IntensityEffect=0
 [Colors:Button]
 BackgroundAlternate=30,87,116
 BackgroundNormal=49,54,59
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
+ForegroundActive=61,174,233
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -32,6 +35,9 @@ ForegroundVisited=155,89,182
 [Colors:Complementary]
 BackgroundAlternate=30,87,116
 BackgroundNormal=42,46,50
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
+ForegroundActive=61,174,233
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -42,18 +48,24 @@ ForegroundVisited=155,89,182
 
 [Colors:Selection]
 BackgroundAlternate=30,87,116
+BackgroundNormal=61,174,233
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
 ForegroundActive=252,252,252
 ForegroundInactive=161,169,177
 ForegroundLink=253,188,75
-ForegroundNegative=218,68,83
-ForegroundNeutral=246,116,0
+ForegroundNegative=176,55,69
+ForegroundNeutral=198,92,0
 ForegroundNormal=252,252,252
-ForegroundPositive=39,174,96
+ForegroundPositive=23,104,57
 ForegroundVisited=155,89,182
 
 [Colors:Tooltip]
 BackgroundAlternate=42,46,50
 BackgroundNormal=49,54,59
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
+ForegroundActive=61,174,233
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -65,6 +77,9 @@ ForegroundVisited=155,89,182
 [Colors:View]
 BackgroundAlternate=35,38,41
 BackgroundNormal=27,30,32
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
+ForegroundActive=61,174,233
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -76,6 +91,9 @@ ForegroundVisited=155,89,182
 [Colors:Window]
 BackgroundAlternate=49,54,59
 BackgroundNormal=70,75,81
+DecorationFocus=61,174,233
+DecorationHover=61,174,233
+ForegroundActive=61,174,233
 ForegroundInactive=161,169,177
 ForegroundLink=29,153,243
 ForegroundNegative=218,68,83
@@ -84,9 +102,10 @@ ForegroundNormal=252,252,252
 ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
+
 [General]
-ColorScheme=Kite Light
-Name=Kite Light
+ColorScheme=KiteDark
+Name=Kite Dark (Klassy)
 shadeSortColumn=true
 
 [KDE]
