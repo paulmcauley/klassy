@@ -33,7 +33,6 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
         m_ui.exceptionProgramNameEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyEditor->setDisabled(true);
         m_ui.exceptionWindowPropertyType->setDisabled(true);
-        m_ui.exceptionWindowsBehindOnly->setDisabled(true);
         m_ui.hideTitleBar->setDisabled(true);
         m_ui.opaqueTitleBar->setDisabled(true);
         m_ui.exceptionMatchTitleBarToApplicationColor->setDisabled(true);
@@ -62,10 +61,9 @@ ExceptionDialog::ExceptionDialog(KSharedConfig::Ptr config, KSharedConfig::Ptr p
     connect(m_ui.exceptionWindowPropertyType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionProgramNameEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionWindowPropertyEditor, &QLineEdit::textChanged, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.exceptionWindowsBehindOnly, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeComboBox, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.borderSizeCheckBox, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
-    connect(m_ui.hideTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
+    connect(m_ui.hideTitleBar, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()), Qt::ConnectionType::DirectConnection);
     connect(m_ui.opaqueTitleBar, &QAbstractButton::clicked, this, &ExceptionDialog::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui.exceptionMatchTitleBarToApplicationColor,
             &QAbstractButton::clicked,
@@ -90,7 +88,6 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     m_ui.exceptionWindowPropertyType->setCurrentIndex(m_exception->exceptionWindowPropertyType());
     m_ui.exceptionProgramNameEditor->setText(m_exception->exceptionProgramNamePattern());
     m_ui.exceptionWindowPropertyEditor->setText(m_exception->exceptionWindowPropertyPattern());
-    m_ui.exceptionWindowsBehindOnly->setChecked(m_exception->exceptionWindowsBehindOnly());
 
     // exception preset controls
     if (m_exception->exceptionPreset().isEmpty()) {
@@ -104,7 +101,7 @@ void ExceptionDialog::setException(InternalSettingsPtr exception)
     }
 
     m_ui.borderSizeComboBox->setCurrentIndex(m_exception->borderSize());
-    m_ui.hideTitleBar->setChecked(m_exception->hideTitleBar());
+    m_ui.hideTitleBar->setCurrentIndex(m_exception->hideTitleBar());
     m_ui.opaqueTitleBar->setChecked(m_exception->opaqueTitleBar());
     m_ui.exceptionMatchTitleBarToApplicationColor->setChecked(m_exception->exceptionMatchTitleBarToApplicationColor());
     m_ui.preventApplyOpacityToHeader->setChecked(m_exception->preventApplyOpacityToHeader());
@@ -120,7 +117,6 @@ void ExceptionDialog::save()
     m_exception->setExceptionWindowPropertyType(m_ui.exceptionWindowPropertyType->currentIndex());
     m_exception->setExceptionProgramNamePattern(m_ui.exceptionProgramNameEditor->text());
     m_exception->setExceptionWindowPropertyPattern(m_ui.exceptionWindowPropertyEditor->text());
-    m_exception->setExceptionWindowsBehindOnly(m_ui.exceptionWindowsBehindOnly->isChecked());
 
     if (m_ui.exceptionPresetCheckBox->isChecked()) {
         m_exception->setExceptionPreset(m_ui.exceptionPresetComboBox->currentText());
@@ -129,7 +125,7 @@ void ExceptionDialog::save()
     }
 
     m_exception->setBorderSize(m_ui.borderSizeComboBox->currentIndex());
-    m_exception->setHideTitleBar(m_ui.hideTitleBar->isChecked());
+    m_exception->setHideTitleBar(m_ui.hideTitleBar->currentIndex());
     m_exception->setOpaqueTitleBar(m_ui.opaqueTitleBar->isChecked());
     m_exception->setExceptionMatchTitleBarToApplicationColor(m_ui.exceptionMatchTitleBarToApplicationColor->isChecked());
     m_exception->setPreventApplyOpacityToHeader(m_ui.preventApplyOpacityToHeader->isChecked());
@@ -151,11 +147,9 @@ void ExceptionDialog::updateChanged()
         modified = true;
     else if (m_exception->exceptionWindowPropertyPattern() != m_ui.exceptionWindowPropertyEditor->text())
         modified = true;
-    else if (m_exception->exceptionWindowsBehindOnly() != m_ui.exceptionWindowsBehindOnly->isChecked())
-        modified = true;
     else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
         modified = true;
-    else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->isChecked())
+    else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->currentIndex())
         modified = true;
     else if (m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked())
         modified = true;
