@@ -71,10 +71,6 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
             continue;
         }
 
-        if (internalSettings->exceptionWindowsBehindOnly() && !client->isKeepBelow()) {
-            continue;
-        }
-
         /*
         decide which windowPropertyValue is to be compared
         to the regular expression, based on exception type

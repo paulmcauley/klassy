@@ -1093,8 +1093,15 @@
 
     <group name="Exceptions">
       <!-- hide title bar (exception) -->
-    <entry name="HideTitleBar" type = "Bool">
-       <default>false</default>
+    <entry name="HideTitleBar" type = "Enum">
+        <choices>
+            <choice name="Never" />
+            <choice name="Always" />
+            <choice name="Maximized" />
+            <choice name="AnyMaximization" />
+            <choice name="KeptBehind" />
+        </choices>
+       <default>Never</default>
     </entry>
 
     <!-- opaque title bar (exception) -->

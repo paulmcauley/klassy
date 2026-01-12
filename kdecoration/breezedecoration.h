@@ -397,7 +397,26 @@ bool Decoration::isBottomEdge() const
 
 bool Decoration::hideTitleBar() const
 {
+    bool hide = false;
     auto c = window();
-    return m_internalSettings->hideTitleBar() && !c->isShaded();
+
+    switch (m_internalSettings->hideTitleBar()) {
+    default:
+    case InternalSettings::EnumHideTitleBar::Never:
+        break;
+    case InternalSettings::EnumHideTitleBar::Always:
+        hide = !c->isShaded();
+        break;
+    case InternalSettings::EnumHideTitleBar::Maximized:
+        hide = !c->isShaded() && isMaximized();
+        break;
+    case InternalSettings::EnumHideTitleBar::AnyMaximization:
+        hide = !c->isShaded() && (isMaximized() || isMaximizedVertically() || isLeftEdge() || isRightEdge());
+        break;
+    case InternalSettings::EnumHideTitleBar::KeptBehind:
+        hide = !c->isShaded() && c->isKeepBelow();
+        break;
+    }
+    return hide;
 }
 } // end Breeze namespace
