@@ -2060,8 +2060,8 @@ void Decoration::updateBlur()
         if (m_internalSettings->blurTransparentTitleBars()) { // enable blur
             // this is a workaround for blur on scaled windows on Wayland - the KDecoration API still uses integer QRegion which is not precise enough to give a
             // smooth window outline
-            if (KWindowSystem::isPlatformWayland() && window()->scale() > 1) {
-                calculateWindowShape(true); // refreshes m_windowPath and trims blur area by 1
+            if (KWindowSystem::isPlatformWayland() && window()->nextScale() > 1) {
+                calculateWindowShape(true); // refreshes m_windowPathTrimmedForBlur and trims blur area by 1
                 setBlurRegion(QRegion(m_windowPathTrimmedForBlur.toFillPolygon().toPolygon()));
             } else {
                 calculateWindowShape(); // refreshes m_windowPath
