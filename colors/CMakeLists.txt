@@ -1,6 +1,6 @@
-install(FILES KiteDark.colors
+install(FILES KlassyDark.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
-install(FILES KiteLight.colors
+install(FILES KlassyLight.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
 install(FILES OpalFruitsDark.colors
         DESTINATION ${KDE_INSTALL_DATADIR}/color-schemes/)
