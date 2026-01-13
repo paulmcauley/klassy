@@ -600,7 +600,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     if (KWindowSystem::isPlatformX11()) {
         // loads system ScaleFactor from ~/.config/kdeglobals
         const KConfigGroup cgKScreen(s_kdeGlobalConfig, QStringLiteral("KScreen"));
-        m_systemScaleFactorX11 = cgKScreen.readEntry("ScaleFactor", 1.0f);
+        m_systemScaleFactorX11 = cgKScreen.readEntry(QStringLiteral("ScaleFactor"), 1.0f);
         m_smallSpacing *= m_systemScaleFactorX11;
         m_gridUnit *= m_systemScaleFactorX11;
     }
@@ -618,7 +618,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
     calculateIconSizes();
 
     const KConfigGroup cg(s_kdeGlobalConfig, QStringLiteral("KDE"));
-    QString lookAndFeelPackage = cg.readEntry("LookAndFeelPackage");
+    QString lookAndFeelPackage = cg.readEntry(QStringLiteral("LookAndFeelPackage"));
     setGlobalLookAndFeelOptions(lookAndFeelPackage);
 
     // animation
@@ -628,7 +628,7 @@ void Decoration::reconfigureMain(const bool noUpdateShadow)
             animationsDurationFactorRelativeSystem = (-m_internalSettings->animationsSpeedRelativeSystem() + 2) / 2.0f;
         else if (m_internalSettings->animationsSpeedRelativeSystem() > 0)
             animationsDurationFactorRelativeSystem = 1 / ((m_internalSettings->animationsSpeedRelativeSystem() + 2) / 2.0f);
-        m_animation->setDuration(cg.readEntry("AnimationDurationFactor", 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
+        m_animation->setDuration(cg.readEntry(QStringLiteral("AnimationDurationFactor"), 1.0f) * 150.0f * animationsDurationFactorRelativeSystem);
         m_shadowAnimation->setDuration(m_animation->duration());
         m_overrideOutlineFromButtonAnimation->setDuration(m_animation->duration());
     } else {
@@ -788,6 +788,7 @@ void Decoration::generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray 
 
 void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
 {
+    QString lookAndFeelSet = m_internalSettings->lookAndFeelSet();
     if (lookAndFeelPackageName == m_internalSettings->lookAndFeelSet()) {
         return;
     }
@@ -798,17 +799,32 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         m_internalSettings->setLookAndFeelSet(lookAndFeelPackageName);
         m_internalSettings->save();
 
-        // associate the look-and-feel package with a Klassy window decoration preset
-        const QHash<QString, QString> lfPackagePresetNames{
-            {QStringLiteral("org.kde.klassykitedarkleftpanel.desktop"), QStringLiteral("Kite")},
-            {QStringLiteral("org.kde.klassykitelightleftpanel.desktop"), QStringLiteral("Kite")},
-            {QStringLiteral("org.kde.klassykitedarkbottompanel.desktop"), QStringLiteral("SuessigKite")},
-            {QStringLiteral("org.kde.klassykitelightbottompanel.desktop"), QStringLiteral("SuessigKite")},
-        };
+        QString presetToLoad;
 
-        auto presetNameIt = lfPackagePresetNames.find(lookAndFeelPackageName);
-        if (presetNameIt != lfPackagePresetNames.end()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
-            system("klassy-settings -w \"" + presetNameIt.value().toUtf8() + "\" &");
+        if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")) {
+                return;
+            }
+            presetToLoad = QStringLiteral("Kite");
+        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")) {
+                return;
+            }
+            presetToLoad = QStringLiteral("Kite");
+        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")) {
+                return;
+            }
+            presetToLoad = QStringLiteral("SuessigKite");
+        } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")) {
+                return;
+            }
+            presetToLoad = QStringLiteral("SuessigKite");
+        }
+
+        if (!presetToLoad.isEmpty()) { // if matching look-and-feel-package, load the associated Klassy window decoration preset
+            system("klassy-settings -w \"" + presetToLoad.toUtf8() + "\" &");
         }
     }
 }
