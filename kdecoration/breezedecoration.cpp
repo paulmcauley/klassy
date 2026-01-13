@@ -428,6 +428,8 @@ void Decoration::init()
     connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
+    connect(c, &KDecoration3::DecoratedWindow::nextScaleChanged, this, &Decoration::updateNextScale);
+
     createButtons();
     updateShadow();
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -2118,7 +2120,7 @@ qreal Decoration::titleBarSeparatorHeight(qreal scale) const
         return 0;
 }
 
-void Decoration::updateScale()
+void Decoration::updateNextScale()
 {
     calculateIconSizes();
     recalculateBorders();
