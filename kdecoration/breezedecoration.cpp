@@ -450,7 +450,8 @@ void Decoration::updateTitleBar()
     qreal borderTop = nextState()->borders().top();
 
     // prevents resize handles appearing in button at top window edge for large full-height buttons
-    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight && !(m_internalSettings->drawBorderOnMaximizedWindows() && c->isMaximizedVertically())) {
+    if (m_buttonBackgroundType == ButtonBackgroundType::FullHeight
+        && !(m_internalSettings->drawBorderOnMaximizedWindows() && (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge)))) {
         width = maximized ? c->width() : c->width() - scaledTitleBarLeftMargin - scaledTitleBarRightMargin;
         height = borderTop;
         x = maximized ? 0 : scaledTitleBarLeftMargin;
