@@ -210,7 +210,7 @@ private Q_SLOTS:
         updateShadow(false, true);
     }
     void onTabletModeChanged(bool mode);
-    void updateScale();
+    void updateNextScale();
 
 protected:
     void hoverMoveEvent(QHoverEvent *event) override; // override decoration hover events for Unison hovering
