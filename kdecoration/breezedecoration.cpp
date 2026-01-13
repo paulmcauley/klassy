@@ -1824,9 +1824,9 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     QPainter painter(&shadowTexture);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    const QRectF outerRect = QRectF(QPoint(0, 0), shadowTexture.deviceIndependentSize());
+    const QRect outerRect = shadowTexture.rect();
 
-    QRectF boxRect(QPoint(0, 0), boxSize);
+    QRect boxRect(QPoint(0, 0), boxSize);
     boxRect.moveCenter(outerRect.center());
 
     qreal shadowOverlap = Metrics::Decoration_Shadow_Overlap;
@@ -1834,10 +1834,10 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
     qreal shadowOffsetY = params.offset.y();
 
     // Mask out inner rect.
-    const QMarginsF padding = QMarginsF(boxRect.left() - outerRect.left() - shadowOverlap - shadowOffsetX,
-                                        boxRect.top() - outerRect.top() - shadowOverlap - shadowOffsetY,
-                                        outerRect.right() - boxRect.right() - shadowOverlap + shadowOffsetX,
-                                        outerRect.bottom() - boxRect.bottom() - shadowOverlap + shadowOffsetY);
+    const QMargins padding = QMargins(boxRect.left() - outerRect.left() - shadowOverlap - shadowOffsetX,
+                                      boxRect.top() - outerRect.top() - shadowOverlap - shadowOffsetY,
+                                      outerRect.right() - boxRect.right() - shadowOverlap + shadowOffsetX,
+                                      outerRect.bottom() - boxRect.bottom() - shadowOverlap + shadowOffsetY);
 
     const QRectF innerRect = outerRect - padding;
 
@@ -1923,7 +1923,7 @@ std::shared_ptr<KDecoration3::DecorationShadow> Decoration::createShadowObject(Q
 
     auto ret = std::make_shared<KDecoration3::DecorationShadow>();
     ret->setPadding(padding);
-    ret->setInnerShadowRect(QRectF(outerRect.center(), QSizeF(1, 1)));
+    ret->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
     ret->setShadow(shadowTexture);
     return ret;
 }

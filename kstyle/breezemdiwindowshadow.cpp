@@ -44,21 +44,21 @@ void MdiWindowShadow::updateGeometry()
         return;
     }
 
-    const QSizeF boxSize =
+    const QSize boxSize =
         BoxShadowRenderer::calculateMinimumBoxSize(params.shadow1.radius).expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
-    const QSizeF shadowSize = BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow1.radius, params.shadow1.offset)
-                                  .expandedTo(BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow2.radius, params.shadow2.offset));
+    const QSize shadowSize = BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow1.radius, params.shadow1.offset)
+                                 .expandedTo(BoxShadowRenderer::calculateMinimumShadowTextureSize(boxSize, params.shadow2.radius, params.shadow2.offset));
 
-    const QRectF shadowRect(QPoint(0, 0), shadowSize);
+    const QRect shadowRect(QPoint(0, 0), shadowSize);
 
-    QRectF boxRect(QPoint(0, 0), boxSize);
+    QRect boxRect(QPoint(0, 0), boxSize);
     boxRect.moveCenter(shadowRect.center());
 
-    const double topSize(boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y());
-    const double bottomSize(shadowRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
-    const double leftSize(boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x());
-    const double rightSize(shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x());
+    const int topSize(boxRect.top() - shadowRect.top() - Metrics::Shadow_Overlap - params.offset.y());
+    const int bottomSize(shadowRect.bottom() - boxRect.bottom() - Metrics::Shadow_Overlap + params.offset.y());
+    const int leftSize(boxRect.left() - shadowRect.left() - Metrics::Shadow_Overlap - params.offset.x());
+    const int rightSize(shadowRect.right() - boxRect.right() - Metrics::Shadow_Overlap + params.offset.x());
 
     // get tileSet rect
     auto hole = _widget->frameGeometry();
