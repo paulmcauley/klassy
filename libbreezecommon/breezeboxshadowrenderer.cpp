@@ -24,6 +24,7 @@
 
 namespace Breeze
 {
+
 static inline int calculateBlurRadius(qreal stdDev)
 {
     // See https://www.w3.org/TR/SVG11/filters.html#feGaussianBlurElement
@@ -238,19 +239,19 @@ static inline void mirrorTopLeftQuadrant(QImage &image)
     }
 }
 
-static void renderShadow(QPainter *painter, const QRectF &rect, qreal borderRadius, const QPointF &offset, double radius, const QColor &color)
+static void renderShadow(QPainter *painter, const QRect &rect, qreal borderRadius, const QPoint &offset, int radius, const QColor &color)
 {
-    const qreal dpr = painter->device()->devicePixelRatioF();
     const QSize inflation = calculateBlurExtent(radius);
-    const QSize pixelSize = ((rect.size() + 2 * inflation) * dpr).toSize();
-    const QSizeF size = QSizeF(pixelSize) / dpr;
+    const QSize size = rect.size() + 2 * inflation;
 
-    QImage shadow(pixelSize, QImage::Format_ARGB32_Premultiplied);
+    const qreal dpr = painter->device()->devicePixelRatioF();
+
+    QImage shadow(size * dpr, QImage::Format_ARGB32_Premultiplied);
     shadow.setDevicePixelRatio(dpr);
     shadow.fill(Qt::transparent);
 
-    QRectF boxRect(QPoint(0, 0), rect.size());
-    boxRect.moveCenter(QRectF(QPoint(0, 0), size).center());
+    QRect boxRect(QPoint(0, 0), rect.size());
+    boxRect.moveCenter(QRect(QPoint(0, 0), size).center());
 
     const qreal xRadius = 2.0 * borderRadius / boxRect.width();
     const qreal yRadius = 2.0 * borderRadius / boxRect.height();
@@ -265,8 +266,8 @@ static void renderShadow(QPainter *painter, const QRectF &rect, qreal borderRadi
 
     // Because the shadow texture is symmetrical, that's enough to blur
     // only the top-left quadrant and then mirror it.
-    const QRect blurRect(0, 0, std::ceil(shadow.width() * 0.5), std::ceil(shadow.height() * 0.5));
-    const int scaledRadius = std::round(radius * dpr);
+    const QRect blurRect(0, 0, qCeil(shadow.width() * 0.5), qCeil(shadow.height() * 0.5));
+    const int scaledRadius = qRound(radius * dpr);
     boxBlurAlpha(shadow, scaledRadius, blurRect);
     mirrorTopLeftQuadrant(shadow);
 
@@ -277,13 +278,13 @@ static void renderShadow(QPainter *painter, const QRectF &rect, qreal borderRadi
     shadowPainter.end();
 
     // Actually, present the shadow.
-    QRectF shadowRect = shadow.rect();
+    QRect shadowRect = shadow.rect();
     shadowRect.setSize(shadowRect.size() / dpr);
     shadowRect.moveCenter(rect.center() + offset);
     painter->drawImage(shadowRect, shadow);
 }
 
-void BoxShadowRenderer::setBoxSize(const QSizeF &size)
+void BoxShadowRenderer::setBoxSize(const QSize &size)
 {
     m_boxSize = size;
 }
@@ -293,7 +294,7 @@ void BoxShadowRenderer::setBorderRadius(qreal radius)
     m_borderRadius = radius;
 }
 
-void BoxShadowRenderer::addShadow(const QPointF &offset, double radius, const QColor &color)
+void BoxShadowRenderer::addShadow(const QPoint &offset, int radius, const QColor &color)
 {
     Shadow shadow = {};
     shadow.offset = offset;
@@ -302,24 +303,22 @@ void BoxShadowRenderer::addShadow(const QPointF &offset, double radius, const QC
     m_shadows.append(shadow);
 }
 
-QImage BoxShadowRenderer::render(qreal devicePixelRatio) const
+QImage BoxShadowRenderer::render() const
 {
     if (m_shadows.isEmpty()) {
         return {};
     }
 
-    QSizeF canvasSize;
+    QSize canvasSize;
     for (const Shadow &shadow : std::as_const(m_shadows)) {
         canvasSize = canvasSize.expandedTo(calculateMinimumShadowTextureSize(m_boxSize, shadow.radius, shadow.offset));
     }
 
-    QSize deviceCanvasSize(std::round(canvasSize.width() * devicePixelRatio), std::round(canvasSize.height() * devicePixelRatio));
-    QImage canvas(deviceCanvasSize, QImage::Format_ARGB32_Premultiplied);
-    canvas.setDevicePixelRatio(devicePixelRatio);
+    QImage canvas(canvasSize, QImage::Format_ARGB32_Premultiplied);
     canvas.fill(Qt::transparent);
 
-    QRectF boxRect(QPoint(0, 0), m_boxSize);
-    boxRect.moveCenter(QRectF(QPoint(0, 0), canvasSize).center());
+    QRect boxRect(QPoint(0, 0), m_boxSize);
+    boxRect.moveCenter(QRect(QPoint(0, 0), canvasSize).center());
 
     QPainter painter(&canvas);
     for (const Shadow &shadow : std::as_const(m_shadows)) {
@@ -336,9 +335,9 @@ QSize BoxShadowRenderer::calculateMinimumBoxSize(int radius)
     return 2 * blurExtent + QSize(1, 1);
 }
 
-QSizeF BoxShadowRenderer::calculateMinimumShadowTextureSize(const QSizeF &boxSize, double radius, const QPointF &offset)
+QSize BoxShadowRenderer::calculateMinimumShadowTextureSize(const QSize &boxSize, int radius, const QPoint &offset)
 {
-    return boxSize + 2 * calculateBlurExtent(radius) + QSizeF(std::abs(offset.x()), std::abs(offset.y()));
+    return boxSize + 2 * calculateBlurExtent(radius) + QSize(qAbs(offset.x()), qAbs(offset.y()));
 }
 
 } // namespace Breeze
