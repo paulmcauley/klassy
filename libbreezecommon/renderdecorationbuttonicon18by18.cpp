@@ -7,6 +7,7 @@
 #include "renderdecorationbuttonicon18by18.h"
 #include <QGraphicsItem>
 #include <QPainterPathStroker>
+#include <cmath>
 
 namespace Breeze
 {
@@ -273,10 +274,23 @@ void RenderDecorationButtonIcon18By18::renderKeepBehindIcon()
     m_painter->drawPath(outerRing);
 
     QPainterPath innerX;
+
+    // Commented out is a larger inner X touching the circle:
+    // qreal innerXSquareWidth = std::sqrt(std::pow(outerRing.boundingRect().width(), 2) / 2); //pythagoras
+    // QRectF innerXSquare(0, 0, innerXSquareWidth, innerXSquareWidth);
+    // centerTranslate = (outerRing.boundingRect().center() - innerXSquare.center());
+    // pen.setCapStyle(Qt::PenCapStyle::FlatCap);
+    // innerX.moveTo(innerXSquare.topLeft());
+    // innerX.lineTo(innerXSquare.bottomRight());
+    // innerX.moveTo(innerXSquare.topRight());
+    // innerX.lineTo(innerXSquare.bottomLeft());
+
+    // Small inner X:
     innerX.moveTo(7, 7);
     innerX.lineTo(11, 11);
     innerX.moveTo(11, 7);
     innerX.lineTo(7, 11);
+
     innerX.translate(centerTranslate);
     pen = m_painter->pen();
     pen.setColor(color);
