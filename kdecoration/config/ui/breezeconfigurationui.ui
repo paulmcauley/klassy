@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>717</width>
-    <height>612</height>
+    <height>630</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1211,11 +1211,15 @@
             </item>
             <item row="1" column="0">
              <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
-              <property name="toolTip">
-               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This setting will allow you to resize from window edges touching screen edges.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
               <property name="text">
-               <string>Draw border on maximized and tiled windows (not recommended)</string>
+               <string>Draw border on maximized windows
+(borders must be enabled for maximized resizing to work)</string>
               </property>
              </widget>
             </item>
