@@ -27,7 +27,7 @@ public:
      * Set the size of the box.
      * @param size The size of the box.
      **/
-    void setBoxSize(const QSizeF &size);
+    void setBoxSize(const QSize &size);
 
     /**
      * Set the radius of box' corners.
@@ -41,12 +41,12 @@ public:
      * @param radius The blur radius.
      * @param color The color of the shadow.
      **/
-    void addShadow(const QPointF &offset, double radius, const QColor &color);
+    void addShadow(const QPoint &offset, int radius, const QColor &color);
 
     /**
      * Render the shadow.
      **/
-    QImage render(qreal devicePixelRatio = 1.0) const;
+    QImage render() const;
 
     /**
      * Calculate the minimum size of the box.
@@ -68,15 +68,15 @@ public:
      * @param radius The blur radius.
      * @param offset The offset of the shadow.
      **/
-    static QSizeF calculateMinimumShadowTextureSize(const QSizeF &boxSize, double radius, const QPointF &offset);
+    static QSize calculateMinimumShadowTextureSize(const QSize &boxSize, int radius, const QPoint &offset);
 
 private:
-    QSizeF m_boxSize;
+    QSize m_boxSize;
     qreal m_borderRadius = 0.0;
 
     struct Shadow {
-        QPointF offset;
-        double radius;
+        QPoint offset;
+        int radius;
         QColor color;
     };
 
