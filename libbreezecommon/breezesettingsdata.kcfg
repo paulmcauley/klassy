@@ -8,6 +8,8 @@
   <group name="Global">
     <!-- used to indicate that Klassy settings have been set for the specified look-and-feel global theme -->
     <entry name="LookAndFeelSet" type="String" />
+    <!-- used to indicate if the Klassy settings have been refreshed -->
+    <entry name="RefreshedConfig" type="String" />
   </group>
 
   <group name="Windeco">
@@ -181,16 +183,16 @@
 
     <!-- left button spacing for non-full-height buttons-->
     <entry name="ButtonSpacingLeft" type = "Int">
-       <default>3</default>
+       <default>6</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <!-- right button spacing for non-full-height buttons-->
     <entry name="ButtonSpacingRight" type = "Int">
-       <default>5</default>
+       <default>10</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <entry name="LockButtonSpacingLeftRight" type = "Bool">
@@ -199,16 +201,16 @@
 
     <!-- Full-height button width margin left -->
     <entry name="FullHeightButtonWidthMarginLeft" type = "Int">
-       <default>3</default>
+       <default>6</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <!-- Full-height button width margin right -->
     <entry name="FullHeightButtonWidthMarginRight" type = "Int">
-       <default>9</default>
+       <default>18</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <entry name="CloseFullHeightButtonWidthMarginRelative" type = "Int">
@@ -223,16 +225,16 @@
 
     <!-- left button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingLeft" type = "Int">
-       <default>1</default>
+       <default>2</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <!-- right button spacing for full-height buttons-->
     <entry name="FullHeightButtonSpacingRight" type = "Int">
-       <default>2</default>
+       <default>4</default>
        <min>0</min>
-       <max>50</max>
+       <max>100</max>
     </entry>
 
     <entry name="LockFullHeightButtonSpacingLeftRight" type = "Bool">
@@ -255,9 +257,9 @@
 
     <!--Integrated Rounded Rectangle Bottom Padding -->
     <entry name="IntegratedRoundedRectangleBottomPadding" type = "Double">
-       <default>0.75</default>
+       <default>1.5</default>
        <min>0</min>
-       <max>10</max>
+       <max>20</max>
     </entry>
 
     <entry name="SpacerButtonWidthRelative" type = "Int">
@@ -841,15 +843,15 @@
 
   <group name="TitleBarSpacing">
     <entry name="TitleBarTopMargin" type = "Double">
-       <default>1.8</default>
+       <default>3.6</default>
        <min>0</min>
-       <max>25</max>
+       <max>50</max>
     </entry>
 
     <entry name="TitleBarBottomMargin" type = "Double">
-       <default>1.8</default>
+       <default>3.6</default>
        <min>0</min>
-       <max>25</max>
+       <max>50</max>
     </entry>
 
     <entry name="LockTitleBarTopBottomMargins" type = "Bool">
@@ -859,13 +861,13 @@
     <entry name="TitleBarLeftMargin" type = "Int">
        <default>0</default>
        <min>0</min>
-       <max>30</max>
+       <max>60</max>
     </entry>
 
     <entry name="TitleBarRightMargin" type = "Int">
        <default>0</default>
        <min>0</min>
-       <max>30</max>
+       <max>60</max>
     </entry>
 
     <entry name="LockTitleBarLeftRightMargins" type = "Bool">
@@ -885,9 +887,9 @@
 
     <!-- Title side padding -->
     <entry name="TitleSidePadding" type = "Int">
-       <default>2</default>
+       <default>4</default>
        <min>0</min>
-       <max>30</max>
+       <max>60</max>
     </entry>
 
     <!-- top bottom margins % for maximized windows -->
