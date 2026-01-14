@@ -145,6 +145,11 @@ public:
         return m_smallSpacing;
     }
 
+    qreal x11Scale()
+    {
+        return m_x11Scale;
+    }
+
     KDecoration3::DecorationButtonGroup *leftButtons()
     {
         return m_leftButtons;
@@ -299,6 +304,7 @@ private:
     QPainterPath m_windowPathTrimmedForBlur = QPainterPath();
 
     qreal m_systemScaleFactorX11 = 1.0;
+    qreal m_x11Scale = 1.0;
     qreal m_smallSpacing = 2.0;
     qreal m_gridUnit = 10.0;
 

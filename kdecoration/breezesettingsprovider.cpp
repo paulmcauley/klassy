@@ -10,6 +10,7 @@
 #include "decorationexceptionlist.h"
 #include "presetsmodel.h"
 
+#include <QDateTime>
 #include <QRegularExpression>
 #include <QTextStream>
 
@@ -52,6 +53,7 @@ void SettingsProvider::reconfigure()
     exceptions.readConfig(m_config);
     m_exceptions = exceptions.getDefault();
     m_exceptions.append(exceptions.get());
+    refreshConfig();
 }
 
 //__________________________________________________________________
@@ -130,5 +132,24 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
     }
 
     return m_defaultSettings;
+}
+// delete this after Klassy v6.5; v6.5 spacing is standardised to be all in pixels and will make the existing configs look corrupt
+void SettingsProvider::refreshConfig()
+{
+    QString klassyVersion = klassyLongVersion();
+    if (klassyVersion == "6.5" || klassyVersion == "6.5.git") {
+        QString refreshedConfig = m_defaultSettings->refreshedConfig();
+        if (refreshedConfig != QStringLiteral("6.5") && refreshedConfig != QStringLiteral("6.5.git")) {
+            // backup the user's existing config
+            auto backupConfig = m_config->copyTo(m_config->name() + QDateTime::currentDateTime().toString(Qt::ISODate) + QStringLiteral(".old"));
+            backupConfig->sync();
+
+            // refresh the config to defaults
+            m_defaultSettings->setDefaults();
+            m_defaultSettings->setRefreshedConfig(klassyVersion);
+            m_defaultSettings->save();
+            m_config->sync();
+        }
+    }
 }
 }
