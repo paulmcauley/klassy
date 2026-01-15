@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2023-2024 Paul A McAuley <kde@paulmcauley.com>
+ * SPDX-FileCopyrightText: 2023-2026 Paul A McAuley <kde@paulmcauley.com>
  *
  * SPDX-License-Identifier: MIT
  */
@@ -90,6 +90,8 @@ ButtonColors::ButtonColors(KSharedConfig::Ptr config, KSharedConfig::Ptr presets
     // lockButtonColorsActive and lockButtonColorsInactive are set to mirror each other in the UI file
     connect(m_ui->lockButtonColorsActive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
     connect(m_ui->lockButtonColorsInactive, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
+
+    connect(m_ui->buttonColorsInactiveSameHoverPress, &QAbstractButton::toggled, this, &ButtonColors::updateChanged, Qt::ConnectionType::DirectConnection);
 
     auto setIndexOfOtherIfLocked = [this](QComboBox *other, const int i) {
         if (m_loading || m_processingDefaults || !m_ui->lockButtonColorsActive->isChecked())
@@ -562,6 +564,7 @@ void ButtonColors::loadMain(const bool assignUiValuesOnly)
     m_ui->useHoverAccentInactive->setChecked(m_internalSettings->useHoverAccent(false));
     m_ui->lockButtonColorsActive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
     m_ui->lockButtonColorsInactive->setChecked(m_internalSettings->lockButtonColorsActiveInactive());
+    m_ui->buttonColorsInactiveSameHoverPress->setChecked(m_internalSettings->buttonColorsInactiveSameHoverPress());
     m_ui->onPoorIconContrastActive->setCurrentIndex(m_internalSettings->onPoorIconContrast(true));
     m_ui->onPoorIconContrastInactive->setCurrentIndex(m_internalSettings->onPoorIconContrast(false));
     m_ui->poorIconContrastThresholdActive->setValue(m_internalSettings->poorIconContrastThreshold(true));
@@ -641,6 +644,7 @@ void ButtonColors::save(const bool reloadKwinConfig)
     m_internalSettings->setUseHoverAccent(true, m_ui->useHoverAccentActive->isChecked());
     m_internalSettings->setUseHoverAccent(false, m_ui->useHoverAccentInactive->isChecked());
     m_internalSettings->setLockButtonColorsActiveInactive(m_ui->lockButtonColorsActive->isChecked());
+    m_internalSettings->setButtonColorsInactiveSameHoverPress(m_ui->buttonColorsInactiveSameHoverPress->isChecked());
     m_internalSettings->setOnPoorIconContrast(true, m_ui->onPoorIconContrastActive->currentIndex());
     m_internalSettings->setOnPoorIconContrast(false, m_ui->onPoorIconContrastInactive->currentIndex());
     m_internalSettings->setPoorIconContrastThreshold(true, m_ui->poorIconContrastThresholdActive->value());
@@ -775,6 +779,8 @@ void ButtonColors::updateChanged()
     else if (m_ui->useHoverAccentInactive->isChecked() != m_internalSettings->useHoverAccent(false))
         modified = true;
     else if (m_ui->lockButtonColorsActive->isChecked() != m_internalSettings->lockButtonColorsActiveInactive())
+        modified = true;
+    else if (m_ui->buttonColorsInactiveSameHoverPress->isChecked() != m_internalSettings->buttonColorsInactiveSameHoverPress())
         modified = true;
     else if (m_ui->onPoorIconContrastActive->currentIndex() != m_internalSettings->onPoorIconContrast(true))
         modified = true;
