@@ -15,6 +15,7 @@ ButtonBackgroundColorsActive=AccentTrafficLights
 ButtonBackgroundColorsInactive=AccentTrafficLights
 ButtonBackgroundOpacityActive=85
 ButtonBackgroundOpacityInactive=50
+ButtonColorsInactiveSameHoverPress=true
 ButtonCornerRadius=SameAsWindow
 ButtonCustomCornerRadius=1
 ButtonIconColorsActive=TitleBarText

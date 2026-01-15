@@ -283,6 +283,10 @@
         <default>true</default>
     </entry>
 
+    <entry name="ButtonColorsInactiveSameHoverPress" type = "Bool">
+        <default>true</default>
+    </entry>
+
     <entry name="ButtonIconColors$(ButtonIconColorsActive)" type="Enum">
         <parameter name="ButtonIconColorsActive" type="Enum">
             <values>

@@ -16,6 +16,7 @@ ButtonBackgroundColorsInactive=AccentNegativeClose
 ButtonBackgroundOpacityActive=60
 ButtonBackgroundOpacityInactive=60
 ButtonCornerRadius=SameAsWindow
+ButtonColorsInactiveSameHoverPress=true
 ButtonCustomCornerRadius=2.5
 ButtonIconColorsActive=TitleBarText
 ButtonIconColorsInactive=TitleBarText
