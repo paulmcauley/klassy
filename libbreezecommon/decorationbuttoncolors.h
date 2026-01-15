@@ -161,14 +161,16 @@ private:
                                QColor baseColor,
                                QColor &bistate1,
                                QColor &bistate2,
-                               QColor accentHoverBase = QColor());
+                               QColor accentHoverBase = QColor(),
+                               const bool replaceWithActiveHoverPress = false);
     void generateTristateColors(ButtonComponent component,
                                 const bool active,
                                 QColor baseColor,
                                 QColor &tristate1,
                                 QColor &tristate2,
                                 QColor &tristate3,
-                                QColor accentHoverBase = QColor());
+                                QColor accentHoverBase = QColor(),
+                                const bool replaceWithActiveHoverPress = false);
     void generateButtonBackgroundPalette(const bool active);
     void generateButtonForegroundPalette(const bool active);
     void adjustPoorForegroundContrast(QColor &baseForegroundColor,
