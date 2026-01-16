@@ -5,6 +5,7 @@
  */
 
 #include "renderdecorationbuttonicon.h"
+#include "styleark.h"
 #include "stylearkopal.h"
 #include "stylearkopalleft.h"
 #include "stylefluent.h"
@@ -68,6 +69,9 @@ std::pair<std::unique_ptr<RenderDecorationButtonIcon>, int> RenderDecorationButt
         return {
             std::make_unique<RenderStyleFluent18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
             18};
+    case InternalSettings::EnumButtonIconStyle::StyleArk:
+        return {std::make_unique<RenderStyleArk18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
+                18};
     case InternalSettings::EnumButtonIconStyle::StyleArkopal:
         return {
             std::make_unique<RenderStyleArkopal18By18>(painter, fromKstyle, boldButtonIcons, devicePixelRatio, deviceOffsetFromZeroReference, forceEvenSquares),
