@@ -10,6 +10,7 @@ set(breezecommon_LIB_SRCS
     presetsmodel.cpp
     renderdecorationbuttonicon.cpp
     renderdecorationbuttonicon18by18.cpp
+    styleark.cpp
     stylekisweet.cpp
     stylearkopal.cpp
     stylearkopalleft.cpp
