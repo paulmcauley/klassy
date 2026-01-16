@@ -809,22 +809,26 @@ void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
         QString presetToLoad;
 
         if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")
+                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleKite) {
                 return;
             }
             presetToLoad = QStringLiteral("Kite");
         } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightleftpanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkleftpanel.desktop")
+                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleKite) {
                 return;
             }
             presetToLoad = QStringLiteral("Kite");
         } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")
+                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
                 return;
             }
             presetToLoad = QStringLiteral("SuessigKite");
         } else if (lookAndFeelPackageName == QStringLiteral("org.kde.klassykitelightbottompanel.desktop")) {
-            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")) {
+            if (lookAndFeelSet == QStringLiteral("org.kde.klassykitedarkbottompanel.desktop")
+                && m_internalSettings->buttonIconStyle() == InternalSettings::EnumButtonIconStyle::StyleSuessigKite) {
                 return;
             }
             presetToLoad = QStringLiteral("SuessigKite");
