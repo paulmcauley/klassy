@@ -158,7 +158,7 @@ protected:
      * @param roundAtZero whether or not to round up or down at zero
      * @return the rounded number
      */
-    qreal roundCoordToHalf(qreal coord, const ThresholdRound roundAtZero);
+    qreal roundCoordToHalf(qreal coord, const ThresholdRound roundAtZero = ThresholdRound::Up);
 
     /**
      * @brief rounds the given number to the nearest whole
@@ -166,7 +166,7 @@ protected:
      * @param roundAtHalf whether or not to round up or down at half
      * @return the rounded number
      */
-    qreal roundCoordToWhole(qreal coord, const ThresholdRound roundAtHalf);
+    qreal roundCoordToWhole(qreal coord, const ThresholdRound roundAtHalf = ThresholdRound::Up);
 
     enum class SnapPixel {
         ToHalf,

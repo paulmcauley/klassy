@@ -27,6 +27,7 @@
           <choice name="StyleTraditional" />
           <choice name="StyleMetro" />
           <choice name="StyleFluent" />
+          <choice name="StyleArk" />
           <choice name="StyleArkopal" />
           <choice name="StyleArkopalLeft" />
           <choice name="StyleKisweet" />
