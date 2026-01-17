@@ -129,6 +129,11 @@ public:
         return _decorationColors.get();
     }
 
+    qreal frameIntensityBias() const
+    {
+        return _contrastBias;
+    }
+
     //* frame outline color, using animations
     QColor frameOutlineColor(const QPalette &,
                              bool mouseOver = false,
@@ -437,6 +442,8 @@ private:
     QByteArray _generateDecorationColorsOnDecorationColorSettingsUpdateUuid = "";
 
     mutable bool _cachedAutoValid = false;
+
+    qreal _contrastBias;
 
     friend class ToolsAreaManager;
 };
