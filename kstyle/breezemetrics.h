@@ -146,11 +146,6 @@ static constexpr int Splitter_SplitterWidth = 1;
 
 // shadow dimensions
 static constexpr int Shadow_Overlap = 2;
-
-// frame intensities (called bias in KColorUtilities::Mix)
-// Keep this value in sync with Kirigami  PlatformTheme::frameContrast()
-// https://invent.kde.org/frameworks/kirigami/-/blob/master/src/platform/platformtheme.cpp?ref_type=heads#L701
-static constexpr qreal Bias_Default = 0.20;
 }
 
 }
