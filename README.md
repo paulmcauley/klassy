@@ -72,7 +72,7 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 <a name="installation"/>
 
 ## Installation
-_Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+_Klassy_ version 6.4 requires __Plasma 6.3__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
@@ -80,8 +80,7 @@ _Klassy_ version 6.3 requires __Plasma 6.3__, or later, so please check you have
 
 &nbsp;
 
-Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly".
-
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". [Download a KDE Neon .deb here](https://github.com/paulmcauley/klassy/releases/download/6.4.breeze6.4.0/klassy_6.4.breeze6.4.0-1_amd64_KDE_Neon_6.3.deb).
 &nbsp;
 &nbsp;
 
@@ -147,6 +146,8 @@ Uninstall build script:
 ```
 
 &nbsp;
+
+
 ### Gentoo Linux package
 There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
 You can install Klassy on Gentoo Linux by following these steps.
@@ -168,15 +169,15 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=gui-apps/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy
+echo "=gui-apps/klassy-6.4::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =gui-apps/klassy-9999::guru
+sudo emerge -av =gui-apps/klassy-6.4::guru
 ```
-
 &nbsp;
+
 <a name="icons"/>
 
 ## System icon theme
