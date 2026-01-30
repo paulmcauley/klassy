@@ -1848,9 +1848,7 @@ QPainterPath Helper::roundedPath(const QRectF &rect, Corners corners, qreal radi
 bool Helper::compositingActive() const
 {
     if (isX11()) {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        return KWindowSystem::compositingActive();
-#elif __has_include(<KX11Extras>)
+#if __has_include(<KX11Extras>)
         return KX11Extras::compositingActive();
 #endif
     }
