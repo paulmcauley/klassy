@@ -938,26 +938,18 @@ void Helper::renderCheckBoxBackground(QPainter *painter,
 
     const auto radius = Metrics::CheckBox_Radius;
 
-    switch (state) {
-    case CheckOff:
-        painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawRoundedRect(frameRect, radius, radius);
-        break;
+    painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
+    painter->drawRoundedRect(frameRect, radius, radius);
 
-    case CheckPartial:
-    case CheckOn:
-        painter->setBrush(transparent.darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawRoundedRect(frameRect, radius, radius);
-        break;
-
-    case CheckAnimated:
-        painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawRoundedRect(frameRect, radius, radius);
-        painter->setBrush(transparent);
-        painter->setOpacity(animation);
-        painter->drawRoundedRect(frameRect, radius, radius);
-        break;
+    if (state == CheckOff) {
+        return;
     }
+
+    painter->setBrush(transparent);
+    if (state == CheckAnimated) {
+        painter->setOpacity(animation);
+    }
+    painter->drawRoundedRect(frameRect, radius, radius);
 }
 
 //______________________________________________________________________________
