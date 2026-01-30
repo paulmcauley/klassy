@@ -51,6 +51,9 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (light)](screenshots/thin_window_outline_light_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (light)")
 
+* Configurable scrollbars:
+> <img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif?raw=true "Default scrollbar animation")
+
 * Configurable animations
 
 * Ability to load icons from the system icon theme. `window-*-symbolic` icons are recommended for this purpose. If the icons have been designed properly with SVG CSS properties then they will be colourized by default. You can also force the colourization of any symbolic icon by checking the _Force-colourize icons_ window decoration setting.
@@ -60,7 +63,18 @@ _Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Wi
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.1, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ version 6.2 requires __Plasma 6.1__, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
+<a name="prebuilt"/>
+
+### Pre-built packages
+[Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+
+&nbsp;
+
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". For KDE Neon 6.2 [a .deb package can be downloaded here](https://github.com/paulmcauley/klassy/releases/download/6.2.breeze6.2.1/klassy_6.2.breeze6.2.1-1_amd64_KDE_Neon_6.2.deb).
+
+&nbsp;
+&nbsp;
 
 <a name="compile"/>
 
@@ -110,7 +124,7 @@ cd klassy
 ```
 
 ```
-git checkout master
+git checkout plasma6.2
 ```
 
 ```
