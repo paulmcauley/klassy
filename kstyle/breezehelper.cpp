@@ -1088,23 +1088,18 @@ void Helper::renderRadioButtonBackground(QPainter *painter,
     }
     painter->setPen(QPen(penBrush, PenWidth::Frame));
 
-    switch (state) {
-    case RadioOff:
-        painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawEllipse(frameRect);
-        break;
-    case RadioOn:
-        painter->setBrush(transparent.darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawEllipse(frameRect);
-        break;
-    case RadioAnimated:
-        painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
-        painter->drawEllipse(frameRect);
-        painter->setBrush(transparent);
-        painter->setOpacity(animation);
-        painter->drawEllipse(frameRect);
-        break;
+    painter->setBrush(palette.button().color().darker(sunken ? radioCheckSunkenDarkeningFactor : 100));
+    painter->drawEllipse(frameRect);
+
+    if (state == RadioOff) {
+        return;
     }
+
+    painter->setBrush(transparent);
+    if (state == RadioAnimated) {
+        painter->setOpacity(animation);
+    }
+    painter->drawEllipse(frameRect);
 }
 
 //______________________________________________________________________________
