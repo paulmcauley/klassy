@@ -1,14 +1,17 @@
 # Klassy
+<img align="right" src="screenshots/highlight_gifs/kite_demo.gif?raw=true" alt="kite window decoration" />
 
 ##### Table of Contents
 [Overview](#overview)  
+>[Main _Kite_ Global theme](#kite)  
+>[Customizability](#customizability)
+
 [Installation](#installation)  
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)  
 >[Gentoo Linux package](#gentoo-linux-package)
 
-[System icon theme](#icons)  
-[Klassy Settings](#klassy-settings)  
+[System icon theme](#icons)   
 [Donations](#donations)
 
 &nbsp;
@@ -16,25 +19,34 @@
 <a name="overview"/>
 
 ## Overview
-_Klassy_ (formerly _ClassiK_/_ClassikStyles_) is a highly customizable binary Window Decoration, Application Style and Global Theme plugin for recent versions of the KDE Plasma desktop. 
+_Klassy_ is a theming utility for the KDE Plasma desktop environment. It consists of a Global Theme which applies several components: Window Decoration, Application Style, Colour Scheme, Plasma style, and Icons. The Klassy Application Style has arguably the best scrollbars on any platform.
 
-Klassy configuration with the default _Kisweet_ preset:
-![Klassy configuration with the default Kisweet preset](screenshots/kisweet_preset.png?raw=true "Klassy configuration with the default Kisweet preset]")
+<a name="kite"/>
 
-![Kisweet window controls annotated](screenshots/kisweet_window_controls.svg?raw=true "Kisweet window controls annotated")
+### Main _Kite_ global theme
+After [installing](#installation), it is recommended to first try the main Global Theme, called _Kite_.
 
+The global theme is enabled in System Settings->Colours & Themes->Global Theme. Choose whether you want a left panel (recommended for 16:9 laptops) or a bottom panel (recommended for everything else). NB: you need to initially use the Global Theme settings screen to apply the theme properly; if you intially apply via the Quick Settings screen or the Light/Dark selector the full Desktop & window layout will not be applied. Then, you can set Light/Dark switching for day/night, respectively.
 
-Install with the instructions below, and then make sure _Klassy_ is enabled in System Settings -> Appearance -> Window Decorations, in System Settings -> Appearance -> Application Style and in System Settings -> Appearance -> Icons.
+The default _Kite_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. _Kite_ is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. A kite floats in the breeeze! See the Kite defaults design decisions document for full design details.
+
+<a name="customizability"/>
+
+## Customizability
+_Klassy_ is highly customizable - you can make your system as classy or unclassy as you like!
+
+For easy customization, the _Klassy Settings_ GUI application is installed. `klassy-settings` also has command-line options to allow Preset file imports, load Presets and generate system icons. Run `klassy-settings --help` for details.
+
+It is recommended to first try the bundled Presets in Klassy Settings before any fine-tuning.
 
 ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 >(Above Preset: Glassy Klassy, Colours: Klassy Dark)
-* Also provides _Oxygen/Breeze_ and _Redmond_ button icons.
-* Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications, context menus and GTK applications consistently match the main titlebar icons (make sure to enable all 3 in your Plasma Appearance settings!):
-> [![Watch the Klassy demo video](screenshots/video_dummy.png "Watch the Klassy demo video")](http://paulmcauley.com/kde/klassy/klassy_demo.webm)
+* Provides numerous built-in button icons, as well as the ability to display `window-*-symbolic` system icons.
+* Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications, context menus and GTK applications consistently match the main titlebar icons (make sure to enable all 3 in your Plasma Appearance settings!).
 
 * Configurable button size, shape, translucency, colours and outlining.
 
-* Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh in Plasma 5.23, along with the Plasma 5.23 accent colour feature. Shown below with _Klasse_ icons (inspired by KDE1):
+* Default buttons are "Integrated Rounded Rectangles" with translucent outlined accent colours, with a large clickable area. These are designed to complement the "Blue Ocean" design refresh, along with the system accent colour feature. Shown below with _Klasse_ icons (inspired by KDE1):
 > ![Default Integrated Rounded rectangle button style, dark](screenshots/highlight_gifs/icdark.gif?raw=true "Default Integrated Rounded rectangle button style, dark")
 * Alternative "Traffic lights" background colours:
 > ![Traffic lights button style, dark](screenshots/highlight_gifs/icdark_trafficlights.gif?raw=true "Traffic lights button style, dark")
@@ -58,14 +70,11 @@ Install with the instructions below, and then make sure _Klassy_ is enabled in S
 
 * Configurable thin window outline with optional accent colours:
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
-> ![Composite screenshot of thin window outlines with Contrast blended with accent colour (light)](screenshots/thin_window_outline_light_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (light)")
 
 * Configurable scrollbars:
 > <img src="screenshots/configurable_scrollbars.png" width="80%">![Default scrollbar animation](screenshots/scrollbar_mouseover.gif?raw=true "Default scrollbar animation")
 
 * Configurable animations
-
-* Ability to load icons from the system icon theme. `window-*-symbolic` icons are recommended for this purpose. If the icons have been designed properly with SVG CSS properties then they will be colourized by default. You can also force the colourization of any symbolic icon by checking the _Force-colourize icons_ window decoration setting.
 
 &nbsp;
 
@@ -122,7 +131,7 @@ cd klassy
 ```
 
 ```
-git checkout plasma6.3
+git checkout master
 ```
 
 ```
@@ -136,8 +145,6 @@ Uninstall build script:
 ```
 
 &nbsp;
-
-
 ### Gentoo Linux package
 There is a package available for Klassy in the [guru](https://github.com/gentoo/guru) repository.
 You can install Klassy on Gentoo Linux by following these steps.
@@ -159,15 +166,15 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=gui-apps/klassy-6.4::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
+echo "=gui-apps/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy 
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =gui-apps/klassy-6.4::guru
+sudo emerge -av =gui-apps/klassy-9999::guru
 ```
-&nbsp;
 
+&nbsp;
 <a name="icons"/>
 
 ## System icon theme
@@ -175,13 +182,6 @@ To make your Plasma Desktop fully consistent, Klassy auto-generates "Klassy" and
 > <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
 
 These icons inherit the _Breeze_ icon theme by default, only overriding the titlebar button icons. Another icon theme may be inherited by changing the setting in the Window Decoration settings under the _System Icon Generation..._ button.
-
-<a name="klassy-settings"/>
-
-## Klassy Settings
-Klassy includes a settings application, `klassy-settings`. This shows Window Decoration and Application Style settings in one place.
-
-`klassy-settings` also has command-line options to allow Preset file imports, load Presets and generate system icons. Run `klassy-settings --help` for details.
 
 <a name="donations"/>
 
