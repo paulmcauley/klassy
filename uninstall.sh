@@ -31,16 +31,23 @@ install_and_uninstall() {
     sh install.sh &&
     cd build &&
     uninstall
-    echo It is possible that some files left over at the following locations
+    echo It is possible that some files are left over at the following locations
     echo Please remove any files containing klassy in their name
-    echo - /usr/lib64/qt5/plugins/org.kde.kdecoration3/
-    echo - /usr/share/kservices5/
-    echo - /usr/lib64/
-    echo - /usr/share/kstyle/themes/
-    echo - /usr/lib64/qt5/plugins/styles/
     echo - /usr/bin/
-    echo - /usr/share/icons/hicolor/scalable/apps/
+    echo - /usr/lib64/
     echo - /usr/lib64/cmake/
+    echo - /usr/lib64/qt5/plugins/styles/
+    echo - /usr/lib64/qt6/plugins/org.kde.kdecoration3/
+    echo - /usr/lib64/qt6/plugins/org.kde.kdecoration3.kcm/
+    echo - /usr/lib64/qt6/plugins/styles/
+    echo - /usr/share/color-schemes/
+    echo - /usr/share/icons/
+    echo - /usr/share/icons/hicolor/scalable/apps/
+    echo - /usr/share/kservices5/
+    echo - /usr/share/kstyle/themes/
+    echo - /usr/share/plasma/desktoptheme/
+    echo - /usr/share/plasma/layout-templates/
+    echo - /usr/share/plasma/look-and-feel/
 }
 
 if [ ! -d "build" ]; then
