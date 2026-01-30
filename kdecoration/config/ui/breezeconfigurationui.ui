@@ -1223,7 +1223,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Draw border on maximized and tiled windows
+               <string>Draw border on maximized windows
 (borders must be enabled for maximized resizing to work)</string>
               </property>
              </widget>
