@@ -1,5 +1,5 @@
 # Klassy
-<img align="right" src="screenshots/highlight_gifs/kite_demo.gif?raw=true" alt="kite window decoration" />
+<img align="right" src="screenshots/kite_windeco_annotated.gif?raw=true" alt="kite window decoration" />
 
 ##### Table of Contents
 [Overview](#overview)  
@@ -26,7 +26,13 @@ _Klassy_ is a theming utility for the KDE Plasma desktop environment. It consist
 ### Main _Kite_ global theme
 After [installing](#installation), it is recommended to first try the main Global Theme, called _Kite_.
 
-The global theme is enabled in System Settings->Colours & Themes->Global Theme. Choose whether you want a left panel (recommended for 16:9 laptops) or a bottom panel (recommended for everything else). NB: you need to initially use the Global Theme settings screen to apply the theme properly; if you intially apply via the Quick Settings screen or the Light/Dark selector the full Desktop & window layout will not be applied. Then, you can set Light/Dark switching for day/night, respectively.
+The global theme is enabled in System Settings->Colours & Themes->Global Theme. NB: you need to initially use the Global Theme settings screen to apply the theme properly; if you intially apply via the Quick Settings screen or the Light/Dark selector then the full Desktop & window layout will not be applied. Afterwards, you can set Light/Dark switching for day/night, respectively.
+
+Left panel theme selection (recommended for 16:9 laptops):
+![Left panel dark/light theme selection](screenshots/left_panel_light_dark.png?raw=true "Left panel dark/light theme selection")
+
+Bottom panel theme selection (recommended for everything else):
+![Bottom panel dark/light theme selection](screenshots/bottom_panel_light_dark.png?raw=true "Bottom panel dark/light theme selection")
 
 The default _Kite_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. _Kite_ is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. A kite floats in the breeeze! See the Kite defaults design decisions document for full design details.
 
@@ -37,11 +43,12 @@ _Klassy_ is highly customizable - you can make your system as classy or unclassy
 
 For easy customization, the _Klassy Settings_ GUI application is installed. `klassy-settings` also has command-line options to allow Preset file imports, load Presets and generate system icons. Run `klassy-settings --help` for details.
 
-It is recommended to first try the bundled Presets in Klassy Settings before any fine-tuning.
+It is recommended to first try the bundled Presets in Klassy Settings before any fine-tuning:
+![Preset selection](screenshots/presets_opal_fruits.png?raw=true "Preset selection")
 
-![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
->(Above Preset: Glassy Klassy, Colours: Klassy Dark)
-* Provides numerous built-in button icons, as well as the ability to display `window-*-symbolic` system icons.
+* Provides numerous built-in button icons, as well as the ability to display `window-*-symbolic` system icons:
+  ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
+>(Above Preset: Glassy Klassy)
 * Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications, context menus and GTK applications consistently match the main titlebar icons (make sure to enable all 3 in your Plasma Appearance settings!).
 
 * Configurable button size, shape, translucency, colours and outlining.
