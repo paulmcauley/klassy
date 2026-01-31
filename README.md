@@ -1,5 +1,5 @@
 # Klassy
-<img align="right" src="screenshots/kite_windeco_annotated.gif?raw=true" alt="kite window decoration" />
+<img align="right" src="screenshots/highlight_gifs/kite_demo.gif?raw=true" alt="kite window decoration" />
 
 ##### Table of Contents
 [Overview](#overview)  
