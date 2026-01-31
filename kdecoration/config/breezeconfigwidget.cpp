@@ -125,6 +125,9 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // the displayed colours in the ButtonColors UI depend upon ButtonBehaviour
     connect(m_buttonBehaviourDialog, &ButtonBehaviour::saved, m_buttonColorsDialog, &ButtonColors::loadButtonPaletteColorsIcons);
 
+    // the titlbar opacity can vary with matchTitleBarToApplicationColor option
+    connect(m_ui.matchTitleBarToApplicationColor, &QAbstractButton::clicked, m_titleBarOpacityDialog, &TitleBarOpacity::load);
+
     // update the horizontal header icons in-case the icon style has changed
     connect(this, &ConfigWidget::saved, m_buttonColorsDialog, &ButtonColors::load);
 
@@ -202,15 +205,8 @@ void ConfigWidget::load()
     // create internal settings and load from rc files
     m_internalSettings = InternalSettingsPtr(new InternalSettings());
     m_internalSettings->load();
-    m_systemIconGenerationDialog->load();
-    m_buttonSizingDialog->load();
     getButtonsOrderFromKwinConfig();
-    m_buttonColorsDialog->load();
-    m_buttonBehaviourDialog->load();
-    m_titleBarSpacingDialog->load();
-    m_titleBarOpacityDialog->load();
-    m_windowOutlineStyleDialog->load();
-    m_shadowStyleDialog->load();
+
     PresetsModel::importBundledPresets(m_presetsConfiguration.data());
     updateIcons();
     updateWindowControlPreviewIcons();
@@ -238,6 +234,16 @@ void ConfigWidget::load()
     m_ui.colorizeWindowOutlineWithButton->setChecked(m_internalSettings->colorizeWindowOutlineWithButton());
 
     onIconsChanged();
+
+    // load dialogs
+    m_systemIconGenerationDialog->load();
+    m_buttonSizingDialog->load();
+    m_buttonColorsDialog->load();
+    m_buttonBehaviourDialog->load();
+    m_titleBarSpacingDialog->load();
+    m_titleBarOpacityDialog->load();
+    m_windowOutlineStyleDialog->load();
+    m_shadowStyleDialog->load();
 
     // load exceptions
     DecorationExceptionList exceptions;

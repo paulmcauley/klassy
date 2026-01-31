@@ -286,6 +286,13 @@ void TitleBarOpacity::getTitlebarOpacityFromColorScheme()
     Q_UNUSED(activeTitleBarTextColor);
     Q_UNUSED(inactiveTitleBarTextColor);
 
+    bool matchTitleBarToApplicationColor = static_cast<ConfigWidget *>(m_parent)->matchTitleBarToApplicationColor();
+    if (matchTitleBarToApplicationColor) {
+        QPalette palette(QApplication::palette());
+        activeTitlebarColor = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
+        inactiveTitlebarColor = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Window);
+    }
+
     m_translucentActiveSchemeColor = (activeTitlebarColor.alpha() != 255);
     m_translucentInactiveSchemeColor = (inactiveTitlebarColor.alpha() != 255);
     m_activeSchemeColorAlpha = activeTitlebarColor.alphaF();
