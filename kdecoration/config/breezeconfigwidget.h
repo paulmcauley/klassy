@@ -86,6 +86,11 @@ public:
         return m_ui.buttonShape->currentIndex();
     }
 
+    bool matchTitleBarToApplicationColor()
+    {
+        return m_ui.matchTitleBarToApplicationColor->isChecked();
+    }
+
     QList<DecorationButtonType> m_visibleButtonsOrder; // ordered visible buttons (visible + an added dummy Custom button used in the icon display
                                                        // of the colour palette for "other" buttons)
     QList<DecorationButtonType>
