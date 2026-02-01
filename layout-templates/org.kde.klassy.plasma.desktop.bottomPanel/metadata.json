@@ -13,6 +13,7 @@
         "Id": "org.kde.klassy.plasma.desktop.bottomPanel",
         "License": "LGPLv2+",
         "Name": "Klassy Bottom Panel",
+        "Name[fr]": "Panneau inférieur Klassy",
         "ServiceTypes": [
             "Plasma/LayoutTemplate"
         ],

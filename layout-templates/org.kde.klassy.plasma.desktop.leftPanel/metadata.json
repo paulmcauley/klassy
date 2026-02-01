@@ -13,6 +13,7 @@
         "Id": "org.kde.klassy.plasma.desktop.leftPanel",
         "License": "LGPLv2+",
         "Name": "Klassy Left Panel",
+        "Name[fr]": "Panneau gauche Klassy",
         "ServiceTypes": [
             "Plasma/LayoutTemplate"
         ],
