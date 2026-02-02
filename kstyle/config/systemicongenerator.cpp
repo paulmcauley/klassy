@@ -54,7 +54,7 @@ void SystemIconGenerator::generate()
                                                             "",
                                                             true,
                                                             true); // titlebar colours based on Breeze Light
-    generateIconThemeDir(lightIconsPath, QStringLiteral("Klassy"), m_internalSettings->klassyIconThemeInherits(), decorationColorsLight);
+    generateIconThemeDir(lightIconsPath, i18n("Klassy"), m_internalSettings->klassyIconThemeInherits(), decorationColorsLight);
 
     QString darkIconsPath = iconsPath + QStringLiteral("/klassy-dark");
     DecorationColors decorationColorsDark(false);
@@ -67,7 +67,7 @@ void SystemIconGenerator::generate()
                                                            "",
                                                            true,
                                                            true); // titlebar colours based on Breeze Dark
-    generateIconThemeDir(darkIconsPath, QStringLiteral("Klassy Dark"), m_internalSettings->klassyDarkIconThemeInherits(), decorationColorsDark);
+    generateIconThemeDir(darkIconsPath, i18n("Klassy Dark"), m_internalSettings->klassyDarkIconThemeInherits(), decorationColorsDark);
 }
 
 void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
