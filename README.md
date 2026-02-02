@@ -10,8 +10,7 @@
 >[Pre-built packages](#prebuilt)  
 >[Compile from source](#compile)  
 >[Gentoo Linux package](#gentoo-linux-package)
-
-[System icon theme](#icons)   
+   
 [Donations](#donations)
 
 &nbsp;
@@ -49,7 +48,15 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 * Provides numerous built-in button icons, as well as the ability to display `window-*-symbolic` system icons:
   ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 >(Above Preset: Glassy Klassy)
-* Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications, context menus and GTK applications consistently match the main titlebar icons (make sure to enable all 3 in your Plasma Appearance settings!).
+
+* Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications and application tabs are consistent (make sure to enable the _Klassy_ Application Style):
+  
+  <img src="screenshots/mdi_test.png" alt="Example of MDI window and dockable panels" width="512">
+>(Above Preset: Chroma)
+
+* Context menus and GTK applications consistently match the main titlebar icons (make sure to enable the _Klassy_ system icon theme and configure the icons clicking "System Icon Generation..." in _Klassy Settings_):
+  
+  <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
 
 * Configurable button size, shape, translucency, colours and outlining.
 
@@ -73,7 +80,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 * Configurable button spacing (left and right), titlebar margins (sides, top/bottom and option for different maximized), corner radius; all with scaling for HiDPI:
 > ![Screenshot of Alignment & Spacing tab](screenshots/alignment_and_spacing.png?raw=true "Screenshot of Alignment & Spacing tab")
 
-* Transparency/opacity configurable for both active/inactive titlebars/headers; setting to make maximized windows opaque; blur is configurable:
+* Transparency/opacity configurable for both active/inactive titlebars/headers; setting to make maximized windows opaque; blur is configurable.
 
 * Configurable thin window outline with optional accent colours:
 > ![Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)](screenshots/thin_window_outline_dark_contrast_accent.png?raw=true "Composite screenshot of thin window outlines with Contrast blended with accent colour (dark)")
@@ -180,15 +187,6 @@ Finally, compile & install the package with:
 ```
 sudo emerge -av =gui-apps/klassy-9999::guru
 ```
-
-&nbsp;
-<a name="icons"/>
-
-## System icon theme
-To make your Plasma Desktop fully consistent, Klassy auto-generates "Klassy" and "Klassy Dark" system icon themes whenever a window-decoration setting changes. These add consistent titlebar button icons to certain minor context menus in Plasma, and also add consistent GTK application titlebar icons.
-> <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
-
-These icons inherit the _Breeze_ icon theme by default, only overriding the titlebar button icons. Another icon theme may be inherited by changing the setting in the Window Decoration settings under the _System Icon Generation..._ button.
 
 <a name="donations"/>
 
