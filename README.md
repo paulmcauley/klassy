@@ -49,12 +49,12 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
   ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 >(Above Preset: Glassy Klassy)
 
-* Provides a Window Decoration, Application Style and Icons so that icons in dockable panels, MDI applications and application tabs are consistent (make sure to enable the _Klassy_ Application Style):
+* Provides an Application Style aso that icons in dockable panels, MDI applications and application tabs are consistent (make sure to enable the _Klassy_ Application Style):
   
   <img src="screenshots/mdi_test.png" alt="Example of MDI window and dockable panels" width="512">
 >(Above Preset: Chroma)
 
-* Context menus and GTK applications consistently match the main titlebar icons (make sure to enable the _Klassy_ system icon theme and configure the icons clicking "System Icon Generation..." in _Klassy Settings_):
+* Provides an Icon theme so that context menus and GTK applications consistently match the main titlebar icons (make sure to enable the _Klassy_ system icon theme and configure the icons clicking "System Icon Generation..." in _Klassy Settings_):
   
   <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
 
