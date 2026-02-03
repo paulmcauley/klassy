@@ -45,7 +45,7 @@ For easy customization, the _Klassy Settings_ GUI application is installed. `kla
 It is recommended to first try the bundled Presets in Klassy Settings before any fine-tuning:
 ![Preset selection](screenshots/presets_opal_fruits.png?raw=true "Preset selection")
 
-* Provides numerous built-in button icons, as well as the ability to display `window-*-symbolic` system icons:
+* Provides numerous built-in perfectly-pixel-snapped button icons, as well as the ability to display `window-*-symbolic` system icons:
   ![Screenshot of Button icons menu](screenshots/button_icon_menu.png?raw=true "Screenshot of Button icons menu")
 >(Above Preset: _Glassy Klassy_)
 
