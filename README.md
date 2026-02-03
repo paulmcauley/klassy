@@ -54,9 +54,9 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
   <img src="screenshots/mdi_test.png" alt="Example of MDI window and dockable panels" width="512">
 >(Above Preset: _Chroma_)
 
-* Provides an Icon theme so that context menus and GTK applications consistently match the main titlebar icons (make sure to enable the _Klassy_ system icon theme and configure the icons clicking "System Icon Generation..." in _Klassy Settings_):
+* Provides an Icon theme so that context menus and GTK applications consistently match the main titlebar icons (make sure to enable the _Klassy_ system icon theme and configure the icons by clicking "System Icon Generation..." in _Klassy Settings_):
   
-  <img src="screenshots/klassy_square_icons.png" alt="Screenshot of Klassy with icon theme" width="512">
+  <img src="screenshots/gedit.png" alt="Screenshot of Klassy with icon theme" width="512">
 
 * Configurable button size, shape, translucency, colours and outlining.
 
