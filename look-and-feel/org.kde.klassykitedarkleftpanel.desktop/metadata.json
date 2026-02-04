@@ -9,9 +9,11 @@
         ],
         "Category": "",
         "Description": "Dark theme with panel on the left",
+        "Description[fr]": "Thème sombre avec le panneau sur la gauche",
         "Id": "org.kde.klassykitedarkleftpanel.desktop",
         "License": "LGPL 2.1",
         "Name": "Kite Dark - Left Panel (Klassy)",
+        "Name[fr]": "Kite sombre - Panneau gauche (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"

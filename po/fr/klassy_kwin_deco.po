@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Klassy\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-30 19:25+0100\n"
-"PO-Revision-Date: 2026-01-30 22:53+0100\n"
+"POT-Creation-Date: 2026-02-03 21:48+0100\n"
+"PO-Revision-Date: 2026-02-03 21:59+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr_FR\n"
@@ -23,37 +23,37 @@ msgstr ""
 msgid "&Presets..."
 msgstr "&Pré-réglages..."
 
-#: config/breezeconfigwidget.cpp:573
+#: config/breezeconfigwidget.cpp:579
 #, kde-format
 msgid "Button Colours - Klassy Settings"
 msgstr "Couleur de bouton - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:580
+#: config/breezeconfigwidget.cpp:586
 #, kde-format
 msgid "Button Behaviour - Klassy Settings"
 msgstr "Comportement de bouton - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:586
+#: config/breezeconfigwidget.cpp:592
 #, kde-format
 msgid "Titlebar Spacing - Klassy Settings"
 msgstr "Espacement de la barre titre - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:592
+#: config/breezeconfigwidget.cpp:598
 #, kde-format
 msgid "Titlebar Opacity - Klassy Settings"
 msgstr "Opacité de la barre titre - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:598
+#: config/breezeconfigwidget.cpp:604
 #, kde-format
 msgid "Shadow Style - Klassy Settings"
 msgstr "Style d'ombre - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:604
+#: config/breezeconfigwidget.cpp:610
 #, kde-format
 msgid "Window Outline Style - Klassy Settings"
 msgstr "Style du contour de fenêtre - Paramètres Klassy"
 
-#: config/breezeconfigwidget.cpp:610
+#: config/breezeconfigwidget.cpp:616
 #, kde-format
 msgid "Presets - Klassy Settings"
 msgstr "Pré-réglages - Paramètres Klassy"
@@ -991,13 +991,13 @@ msgstr "Utiliser icônes système"
 #: config/ui/breezeconfigurationui.ui:564
 #, kde-format
 msgid "  Kite"
-msgstr "  Kite"
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
 #: config/ui/breezeconfigurationui.ui:573
 #, kde-format
 msgid "  SuessigKite"
-msgstr "  SuessigKite"
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
 #: config/ui/breezeconfigurationui.ui:578
@@ -1009,7 +1009,7 @@ msgstr "  Oxygen / Breeze"
 #: config/ui/breezeconfigurationui.ui:587
 #, kde-format
 msgid "  Klasse"
-msgstr "  Klasse"
+msgstr ""
 
 #. i18n: ectx: property (text), item, widget (QComboBox, buttonIconStyle)
 #: config/ui/breezeconfigurationui.ui:596
@@ -1051,7 +1051,7 @@ msgstr "  Arkopal (panneau gauche)"
 #: config/ui/breezeconfigurationui.ui:634
 #, kde-format
 msgid "  Kisweet"
-msgstr "  Kisweet"
+msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: config/ui/breezeconfigurationui.ui:665

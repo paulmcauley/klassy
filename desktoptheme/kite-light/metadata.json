@@ -8,10 +8,12 @@
         ],
         "Category": "",
         "Description": "Kite Light - part of Klassy by Paul A McAuley",
+        "Description[fr]": "Kite clair - composant Klassy par Paul A McAuley",
         "EnabledByDefault": true,
         "Id": "kite-light",
         "License": "LGPL",
         "Name": "Kite Light (Klassy)",
+        "Name[fr]": "Kite clair (Klassy)",
         "Version": "6.5",
         "Website": "https://github.com/paulmcauley/klassy"
     },

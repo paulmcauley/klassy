@@ -116,6 +116,7 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=KlassyDark
 Name=Klassy Dark
+Name[fr]=Klassy sombre
 shadeSortColumn=true
 
 [KDE]

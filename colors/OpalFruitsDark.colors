@@ -143,6 +143,7 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=OpalFruitsDark
 Name=Opal Fruits Dark (Klassy)
+Name[fr]=Fruits d'opale sombres (Klassy)
 shadeSortColumn=true
 
 [KDE]
