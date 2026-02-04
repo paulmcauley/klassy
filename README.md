@@ -196,13 +196,17 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=gui-apps/klassy-9999::guru **" | sudo tee /etc/portage/package.accept_keywords/klassy 
+echo "=gui-apps/klassy-6.5::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =gui-apps/klassy-9999::guru
+sudo emerge -av =gui-apps/klassy-6.5::guru
 ```
+
+&nbsp;
+
+<a name="icons"/>
 
 <a name="donations"/>
 
