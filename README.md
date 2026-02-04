@@ -33,7 +33,7 @@ Left panel theme selection (recommended for 16:9 laptops):
 Bottom panel theme selection (recommended for everything else):
 ![Bottom panel dark/light theme selection](screenshots/bottom_panel_light_dark.png?raw=true "Bottom panel dark/light theme selection")
 
-The default _Kite_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. _Kite_ is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. A kite floats in the breeeze! See the Kite defaults design decisions document for full design details.
+The default _Kite_ theme is designed to be pragmatic for long-term every-day use, not for instant likes on social media or "ricing" sites. _Kite_ is the result of Paul A McAuley evolving the _Breeze_ theme to be arguably more polished and usable, with influences from the original Breeze design, the "Blue Ocean" refresh, and the original KDE 1. A kite floats in the breeze! [See the _Kite defaults design decisions_ document for full design details](https://github.com/paulmcauley/klassy/discussions/263).
 
 <a name="customizability"/>
 
