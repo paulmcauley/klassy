@@ -106,7 +106,7 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorScheme=KiteLight
+ColorScheme=KlassyLight
 Name=Klassy Light
 Name[fr]=Klassy clair
 shadeSortColumn=true
