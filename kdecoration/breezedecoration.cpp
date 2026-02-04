@@ -760,12 +760,8 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
 
 void Decoration::generateDecorationColorsOnClientPaletteUpdate(const QPalette &clientPalette)
 {
-    SettingsProvider::self()->reconfigure();
-    m_internalSettings = SettingsProvider::self()->internalSettings(this);
-    s_kdeGlobalConfig->reparseConfiguration();
-
     updateDecorationColors(clientPalette);
-    reconfigure();
+    update();
 }
 
 void Decoration::generateDecorationColorsOnDecorationColorSettingsUpdate(QByteArray uuid)
@@ -785,12 +781,10 @@ void Decoration::generateDecorationColorsOnSystemColorSettingsUpdate(QByteArray 
     auto c = window();
     QPalette clientPalette = c->palette();
 
-    SettingsProvider::self()->reconfigure();
-    m_internalSettings = SettingsProvider::self()->internalSettings(this);
     s_kdeGlobalConfig->reparseConfiguration();
 
     updateDecorationColors(clientPalette, uuid);
-    reconfigure();
+    update();
 }
 
 void Decoration::setGlobalLookAndFeelOptions(QString lookAndFeelPackageName)
