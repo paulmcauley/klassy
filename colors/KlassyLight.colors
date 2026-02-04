@@ -108,6 +108,7 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=KiteLight
 Name=Klassy Light
+Name[fr]=Klassy clair
 shadeSortColumn=true
 
 [KDE]

@@ -8,10 +8,12 @@
         ],
         "Category": "",
         "Description": "Kite Dark - part of Klassy by Paul A McAuley",
+        "Description[fr]": "Kite sombre - composant Klassy par Paul A McAuley",
         "EnabledByDefault": true,
         "Id": "kite-dark",
         "License": "LGPL",
         "Name": "Kite Dark (Klassy)",
+        "Name[fr]": "Kite sombre (Klassy)",
         "Version": "6.5",
         "Website": "https://github.com/paulmcauley/klassy"
     },

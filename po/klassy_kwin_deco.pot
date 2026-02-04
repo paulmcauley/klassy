@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-30 19:25+0100\n"
+"POT-Creation-Date: 2026-02-03 21:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,37 +22,37 @@ msgstr ""
 msgid "&Presets..."
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:573
+#: config/breezeconfigwidget.cpp:579
 #, kde-format
 msgid "Button Colours - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:580
+#: config/breezeconfigwidget.cpp:586
 #, kde-format
 msgid "Button Behaviour - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:586
+#: config/breezeconfigwidget.cpp:592
 #, kde-format
 msgid "Titlebar Spacing - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:592
+#: config/breezeconfigwidget.cpp:598
 #, kde-format
 msgid "Titlebar Opacity - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:598
+#: config/breezeconfigwidget.cpp:604
 #, kde-format
 msgid "Shadow Style - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:604
+#: config/breezeconfigwidget.cpp:610
 #, kde-format
 msgid "Window Outline Style - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:610
+#: config/breezeconfigwidget.cpp:616
 #, kde-format
 msgid "Presets - Klassy Settings"
 msgstr ""

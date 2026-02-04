@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-01-30 19:25+0100\n"
+"POT-Creation-Date: 2026-02-03 21:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -117,6 +117,16 @@ msgstr ""
 #: main.cpp:164
 #, kde-format
 msgid "klassy and klassy-dark system icons generated."
+msgstr ""
+
+#: systemicongenerator.cpp:57
+#, kde-format
+msgid "Klassy"
+msgstr ""
+
+#: systemicongenerator.cpp:70
+#, kde-format
+msgid "Klassy Dark"
 msgstr ""
 
 #: systemicongenerator.cpp:86

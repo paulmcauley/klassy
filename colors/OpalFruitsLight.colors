@@ -133,6 +133,7 @@ ForegroundVisited=155,89,182
 [General]
 ColorScheme=OpalFruitsLight
 Name=Opal Fruits Light (Klassy)
+Name[fr]=Fruits d'opale clairs (Klassy)
 shadeSortColumn=true
 
 [KDE]

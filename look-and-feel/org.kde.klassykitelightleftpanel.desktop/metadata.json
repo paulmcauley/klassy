@@ -9,9 +9,11 @@
         ],
         "Category": "",
         "Description": "Light theme with panel on the left",
+        "Description[fr]": "Thème clair avec le panneau sur la gauche",
         "Id": "org.kde.klassykitelightleftpanel.desktop",
         "License": "LGPL 2.1",
         "Name": "Kite Light - Left Panel (Klassy)",
+        "Name[fr]": "Kite clair - Panneau gauche (Klassy)",
         "Website": "https://github.com/paulmcauley/klassy"
     },
     "X-Plasma-APIVersion": "2"
