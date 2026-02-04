@@ -306,13 +306,15 @@ void SystemIconGenerator::generateIconThemeDir(const QString themeDirPath,
     QDir desktopDir(desktopPath);
     desktopDir.mkpath(desktopPath);
     desktopDir.mkdir("16");
-    QFile scaledSymlinkDir(desktopPath + "/16");
-    scaledSymlinkDir.link(desktopPath + "/16@2x");
-    scaledSymlinkDir.link(desktopPath + "/16@3x");
+
+    QDir::setCurrent(desktopPath); // need to use relative paths to share icons
+    QFile scaledSymlinkDir("16");
+    scaledSymlinkDir.link("16@2x");
+    scaledSymlinkDir.link("16@3x");
     desktopDir.mkdir("22");
-    scaledSymlinkDir.setFileName(desktopPath + "/22");
-    scaledSymlinkDir.link(desktopPath + "/22@2x");
-    scaledSymlinkDir.link(desktopPath + "/22@3x");
+    scaledSymlinkDir.setFileName("22");
+    scaledSymlinkDir.link("22@2x");
+    scaledSymlinkDir.link("22@3x");
     desktopDir.mkdir("32");
     desktopDir.mkdir("48");
     desktopDir.mkdir("64");
