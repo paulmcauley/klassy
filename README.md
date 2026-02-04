@@ -102,7 +102,16 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 <a name="installation"/>
 
 ## Installation
-_Klassy_ master branch requires Plasma 6.5, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+_Klassy_ plasma6.5 branch requires Plasma 6.5, or later, so please check you have this in kinfocenter before trying to install. For the master branch you should compile from source.
+<a name="prebuilt"/>
+
+### Pre-built packages
+[Respositories are available from the Open Build Service](https://software.opensuse.org/download.html?project=home%3Apaul4us&package=klassy) for OpenSUSE, Debian/Ubuntu, Fedora, Mageia and Arch/Manjaro to keep you on the latest version.
+
+
+Raw .rpm, .deb etc. binary packages are also available from the Open Build Service link above if you choose "Grab binary packages directly". 
+&nbsp;
+&nbsp;
 
 <a name="compile"/>
 
@@ -152,7 +161,7 @@ cd klassy
 ```
 
 ```
-git checkout master
+git checkout plasma6.5
 ```
 
 ```
