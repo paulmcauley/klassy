@@ -131,19 +131,8 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // update the horizontal header icons in-case the icon style has changed
     connect(this, &ConfigWidget::saved, m_buttonColorsDialog, &ButtonColors::load);
 
-#if KLASSY_GIT_MASTER
     // set the long version string if from the git master
     m_ui.version->setText("v" + klassyLongVersion());
-
-#else
-    // set shortened version string in UI if an official release
-    QRegularExpression re("\\d+\\.\\d+");
-    QRegularExpressionMatch match = re.match(KLASSY_VERSION);
-    if (match.hasMatch()) {
-        QString matched = match.captured(0);
-        m_ui.version->setText("v" + matched);
-    }
-#endif
 
     connect(m_ui.systemIconGenerationButton, &QAbstractButton::clicked, this, &ConfigWidget::systemIconGenerationButtonClicked);
     connect(m_ui.buttonSizingButton, &QAbstractButton::clicked, this, &ConfigWidget::buttonSizingButtonClicked);
