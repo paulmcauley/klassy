@@ -901,6 +901,7 @@ void Decoration::recalculateBorders()
 
     setResizeOnlyBorders(QMarginsF(extLeft, extTop, extRight, extBottom));
 
+#if KDECORATION_VERSION >= KDECORATION_VERSION_CHECK(6, 5, 0)
     // set clipped corners
     qreal bottomLeftRadius = 0;
     qreal bottomRightRadius = 0;
@@ -930,6 +931,7 @@ void Decoration::recalculateBorders()
     }
 
     setBorderRadius(KDecoration3::BorderRadius(topLeftRadius, topRightRadius, bottomRightRadius, bottomLeftRadius));
+#endif
 }
 
 //________________________________________________________________

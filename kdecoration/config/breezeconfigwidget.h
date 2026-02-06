@@ -16,6 +16,7 @@
 #include "buttonbehaviour.h"
 #include "buttoncolors.h"
 #include "buttonsizing.h"
+#include "kdecorationglobals.h"
 #include "loadpreset.h"
 #include "shadowstyle.h"
 #include "systemicongeneration.h"

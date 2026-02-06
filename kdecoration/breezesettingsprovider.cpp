@@ -8,6 +8,7 @@
 #include "breezesettingsprovider.h"
 #include "dbusmessages.h"
 #include "decorationexceptionlist.h"
+#include "kdecorationglobals.h"
 #include "presetsmodel.h"
 
 #include <QDateTime>
@@ -127,19 +128,25 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
                 internalSettings->setProperty("noCacheException", true);
                 internalSettings->setMatchTitleBarToApplicationColor(true);
             }
+#if KDECORATION_VERSION < KDECORATION_VERSION_CHECK(6, 5, 0)
+            internalSettings->setRoundAllCornersWhenNoBorders(false);
+#endif
             return internalSettings;
         }
     }
-
+#if KDECORATION_VERSION < KDECORATION_VERSION_CHECK(6, 5, 0)
+    m_defaultSettings->setRoundAllCornersWhenNoBorders(false);
+#endif
     return m_defaultSettings;
 }
 // delete this after Klassy v6.5; v6.5 spacing is standardised to be all in pixels and will make the existing configs look corrupt
 void SettingsProvider::refreshConfig()
 {
     QString klassyVersion = klassyLongVersion();
-    if (klassyVersion == "6.5" || klassyVersion == "6.5.1" || klassyVersion == "6.5.git") {
+    if (klassyVersion == "6.5" || klassyVersion == "6.5.1" || klassyVersion == "6.5.2" || klassyVersion == "6.5.git") {
         QString refreshedConfig = m_defaultSettings->refreshedConfig();
-        if (refreshedConfig != QStringLiteral("6.5") && refreshedConfig != QStringLiteral("6.5.1") && refreshedConfig != QStringLiteral("6.5.git")) {
+        if (refreshedConfig != QStringLiteral("6.5") && refreshedConfig != QStringLiteral("6.5.1") && refreshedConfig != QStringLiteral("6.5.2")
+            && refreshedConfig != QStringLiteral("6.5.git")) {
             // backup the user's existing config
             auto backupConfig = m_config->copyTo(m_config->name() + QDateTime::currentDateTime().toString(Qt::ISODate) + QStringLiteral(".old"));
             backupConfig->sync();

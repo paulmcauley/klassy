@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
 project(klassy)
-set(PROJECT_VERSION "6.5.1")
+set(PROJECT_VERSION "6.5.2")
 set(PROJECT_VERSION_MAJOR 6)
 
 add_definitions( -DKLASSY_VERSION="${PROJECT_VERSION}" -DKLASSY_GIT_MASTER=0)
 
 set(KF5_MIN_VERSION "5.102.0")
-set(KF6_MIN_VERSION "6.18.0")
+set(KF6_MIN_VERSION "6.10.0")
 set(KDE_COMPILERSETTINGS_LEVEL "5.82")
 set(QT5_MIN_VERSION "5.15.2")
-set(QT_MIN_VERSION "6.9.0")
+set(QT_MIN_VERSION "6.6.0")
 
 include(GenerateExportHeader)
 include(WriteBasicConfigVersionFile)
@@ -116,6 +116,7 @@ function(build_Qt6)
 
         option(WITH_DECORATIONS "Build Klassy window decorations for KWin" ON)
 
+
         find_package(KF6FrameworkIntegration ${KF6_MIN_VERSION} CONFIG )
         set_package_properties(KF${QT_MAJOR_VERSION}FrameworkIntegration PROPERTIES
             DESCRIPTION "KF6 Framework Integration"
@@ -166,6 +167,13 @@ function(build_Qt6)
 
     if(WITH_DECORATIONS)
         find_package(KDecoration3 REQUIRED)
+
+        string(REGEX MATCH "([0-9]+)\\.([0-9]+)\\.([0-9]+)" _ ${KDecoration3_VERSION})
+        set(KDECORATION_VERSION_MAJOR ${CMAKE_MATCH_1})
+        set(KDECORATION_VERSION_MINOR ${CMAKE_MATCH_2})
+        set(KDECORATION_VERSION_PATCH ${CMAKE_MATCH_3})
+        add_definitions( -DKDECORATION_VERSION_MAJOR=${KDECORATION_VERSION_MAJOR} -DKDECORATION_VERSION_MINOR=${KDECORATION_VERSION_MINOR} -DKDECORATION_VERSION_PATCH=${KDECORATION_VERSION_PATCH})
+
         add_subdirectory(kdecoration)
         add_subdirectory(icons)
         add_subdirectory(layout-templates)
