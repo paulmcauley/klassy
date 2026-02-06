@@ -57,13 +57,7 @@ StyleConfig::StyleConfig(QWidget *parent)
     _version->setText("v" + QString(KLASSY_VERSION) + ".git");
 
 #else
-    // set shortened version string in UI if an official release
-    QRegularExpression re("\\d+\\.\\d+");
-    QRegularExpressionMatch match = re.match(KLASSY_VERSION);
-    if (match.hasMatch()) {
-        QString matched = match.captured(0);
-        _version->setText("v" + matched);
-    }
+    _version->setText("v" + QString(KLASSY_VERSION));
 #endif
 
     // add corner icon
