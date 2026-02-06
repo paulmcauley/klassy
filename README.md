@@ -196,12 +196,12 @@ sudo emaint sync -r guru
 
 Add the package keywords to `/etc/portage/package.accept_keywords`:
 ```
-echo "=gui-apps/klassy-6.5::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
+echo "=gui-apps/klassy-6.5.1::guru ~amd64" | sudo tee /etc/portage/package.accept_keywords/klassy
 ```
 
 Finally, compile & install the package with:
 ```
-sudo emerge -av =gui-apps/klassy-6.5::guru
+sudo emerge -av =gui-apps/klassy-6.5.1::guru
 ```
 
 &nbsp;
