@@ -62,6 +62,10 @@ ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const Q
     // configuration
     m_ui.setupUi(widget());
 
+#if KDECORATION_VERSION < KDECORATION_VERSION_CHECK(6, 5, 0)
+    m_ui.roundAllCornersWhenNoBorders->setEnabled(false);
+#endif
+
     m_ui.defaultExceptions->setKConfig(m_configuration, m_presetsConfiguration);
     m_ui.exceptions->setKConfig(m_configuration, m_presetsConfiguration);
 

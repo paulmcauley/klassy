@@ -13,6 +13,7 @@
 #include "breezesettings.h"
 #include "colortools.h"
 #include "decorationcolors.h"
+#include "kdecorationglobals.h"
 
 #include <KDecoration3/DecoratedWindow>
 #include <KDecoration3/Decoration>
