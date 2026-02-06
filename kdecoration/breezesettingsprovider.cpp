@@ -137,9 +137,9 @@ InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration)
 void SettingsProvider::refreshConfig()
 {
     QString klassyVersion = klassyLongVersion();
-    if (klassyVersion == "6.5" || klassyVersion == "6.5.git") {
+    if (klassyVersion == "6.5" || klassyVersion == "6.5.1" || klassyVersion == "6.5.git") {
         QString refreshedConfig = m_defaultSettings->refreshedConfig();
-        if (refreshedConfig != QStringLiteral("6.5") && refreshedConfig != QStringLiteral("6.5.git")) {
+        if (refreshedConfig != QStringLiteral("6.5") && refreshedConfig != QStringLiteral("6.5.1") && refreshedConfig != QStringLiteral("6.5.git")) {
             // backup the user's existing config
             auto backupConfig = m_config->copyTo(m_config->name() + QDateTime::currentDateTime().toString(Qt::ISODate) + QStringLiteral(".old"));
             backupConfig->sync();
