@@ -102,7 +102,7 @@ It is recommended to first try the bundled Presets in Klassy Settings before any
 <a name="installation"/>
 
 ## Installation
-_Klassy_ requires Plasma 6.3, or later, so please check you have this in kinfocenter before trying to install.
+_Klassy_ requires Plasma 6.3, or later, so please check you have this in kinfocenter before trying to install. You can either download the pre-built packages or compile from source.
 <a name="prebuilt"/>
 
 ### Pre-built packages
