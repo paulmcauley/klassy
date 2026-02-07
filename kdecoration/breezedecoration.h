@@ -228,7 +228,7 @@ private:
     void reconfigureMain(const bool noUpdateShadow = false);
     void updateDecorationColors(const QPalette &clientPalette, QByteArray uuid = "");
     void createButtons();
-    void calculateWindowShape(bool trimForBlurPath = false);
+    void calculateWindowShape();
     void calculateTitleBarShape();
     void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
     void updateShadow(const bool forceUpdateCache = false, bool noCache = false, const bool isWindowOutlineOverride = false);
@@ -301,7 +301,6 @@ private:
     QPainterPath m_titleBarPath = QPainterPath();
     //* Exact window path, with clipped rounded corners
     QPainterPath m_windowPath = QPainterPath();
-    QPainterPath m_windowPathTrimmedForBlur = QPainterPath();
 
     qreal m_systemScaleFactorX11 = 1.0;
     qreal m_x11Scale = 1.0;
