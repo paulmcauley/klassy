@@ -149,7 +149,6 @@ static qreal g_nextScale = 1;
 static bool g_windowOutlineSnapToWholePixel = true;
 static bool g_windowOutlineOverlap = false;
 static bool g_hideTitleBar = false;
-static bool g_isKeepAbove = false;
 static bool g_colorizeWindowOutlineWithButton = true;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadow;
 static std::shared_ptr<KDecoration3::DecorationShadow> g_sShadowInactive;
@@ -907,25 +906,21 @@ void Decoration::recalculateBorders()
     qreal topLeftRadius = 0;
     qreal topRightRadius = 0;
 
-    if (hasNoBorders() && m_internalSettings->roundAllCornersWhenNoBorders()) {
-        if (!isBottomEdge()) {
-            if (!isLeftEdge()) {
-                bottomLeftRadius = m_scaledCornerRadius;
-            }
-            if (!isRightEdge()) {
-                bottomRightRadius = m_scaledCornerRadius;
-            }
+    if (!isBottomEdge() && !(hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+        if (!isLeftEdge()) {
+            bottomLeftRadius = m_scaledCornerRadius;
         }
+        if (!isRightEdge()) {
+            bottomRightRadius = m_scaledCornerRadius;
+        }
+    }
 
-        if (hideTitleBar()) {
-            if (!isTopEdge()) {
-                if (!isLeftEdge()) {
-                    topLeftRadius = m_scaledCornerRadius;
-                }
-                if (!isRightEdge()) {
-                    topRightRadius = m_scaledCornerRadius;
-                }
-            }
+    if (!isTopEdge() && !(hideTitleBar() && hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+        if (!isLeftEdge()) {
+            topLeftRadius = m_scaledCornerRadius;
+        }
+        if (!isRightEdge()) {
+            topRightRadius = m_scaledCornerRadius;
         }
     }
 
@@ -1370,50 +1365,48 @@ void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
     m_painting = false;
 }
 
-void Decoration::calculateWindowShape(bool trimForBlurPath)
+void Decoration::calculateWindowShape()
 {
     auto c = window();
     auto s = settings();
 
     // set windowPath
+    QRectF windowRect = rect();
+    m_windowPath.clear(); // clear the path for subsequent calls to this function
 
-    QRectF windowRect;
-    qreal cornerRadius;
-    QPainterPath *windowPath;
-    if (trimForBlurPath) {
-        windowPath = &m_windowPathTrimmedForBlur;
-        windowPath->clear(); // clear the path for subsequent calls to this function
-        // this is an attempt at a workaround for the integer QRegion blur Region which causes artifacts on scaled Wayland
-        qreal blurAdjustment = 1;
-        windowRect = rect().adjusted(blurAdjustment, blurAdjustment, -blurAdjustment, -blurAdjustment);
-        cornerRadius = m_scaledCornerRadius - blurAdjustment;
-    } else {
-        windowPath = &m_windowPath;
-        windowPath->clear(); // clear the path for subsequent calls to this function
-        windowRect = rect();
-        cornerRadius = m_scaledCornerRadius;
-    }
     if (!c->isShaded()) {
         if (s->isAlphaChannelSupported() && !isMaximized()) {
-            if (hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders()) {
-                if (hideTitleBar()) {
-                    windowPath->addRect(windowRect);
-                } else { // round at top, square at bottom
-                    *windowPath = GeometryTools::roundedPath(windowRect, CornersTop, cornerRadius);
+            Corners windowCorners;
+
+            if (!isBottomEdge() && !(hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                if (!isLeftEdge()) {
+                    windowCorners |= CornerBottomLeft;
                 }
-            } else {
-                windowPath->addRoundedRect(windowRect, cornerRadius, cornerRadius);
+                if (!isRightEdge()) {
+                    windowCorners |= CornerBottomRight;
+                }
             }
+
+            if (!isTopEdge() && !(hideTitleBar() && hasNoBorders() && !m_internalSettings->roundAllCornersWhenNoBorders())) {
+                if (!isLeftEdge()) {
+                    windowCorners |= CornerTopLeft;
+                }
+                if (!isRightEdge()) {
+                    windowCorners |= CornerTopRight;
+                }
+            }
+            m_windowPath = GeometryTools::roundedPath(windowRect, windowCorners, m_scaledCornerRadius);
+
         } else // maximized / no alpha
-            windowPath->addRect(windowRect);
+            m_windowPath.addRect(windowRect);
 
     } else { // shaded
         m_titleRect = QRectF(QPointF(0, 0), QSizeF(size().width(), borderTop()));
 
         if (isMaximized() || !s->isAlphaChannelSupported()) {
-            windowPath->addRect(m_titleRect);
+            m_windowPath.addRect(m_titleRect);
         } else {
-            windowPath->addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
+            m_windowPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         }
     }
 }
@@ -1432,7 +1425,16 @@ void Decoration::calculateTitleBarShape()
     } else if (c->isShaded()) {
         m_titleBarPath.addRoundedRect(m_titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
     } else {
-        m_titleBarPath = GeometryTools::roundedPath(m_titleRect, CornersTop, m_scaledCornerRadius);
+        Corners titleBarCorners;
+        if (!isTopEdge()) {
+            if (!isLeftEdge()) {
+                titleBarCorners |= CornerTopLeft;
+            }
+            if (!isRightEdge()) {
+                titleBarCorners |= CornerTopRight;
+            }
+        }
+        m_titleBarPath = GeometryTools::roundedPath(m_titleRect, titleBarCorners, m_scaledCornerRadius);
     }
 }
 
@@ -1749,7 +1751,7 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
             || (c->isActive() ? g_windowOutlineColorActive != m_windowOutline : g_windowOutlineColorInactive != m_windowOutline)
             || g_windowOutlineThickness != m_internalSettings->windowOutlineThickness() || g_nextScale != c->nextScale()
             || g_windowOutlineSnapToWholePixel != m_internalSettings->windowOutlineSnapToWholePixel()
-            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar() || g_isKeepAbove != c->isKeepAbove()
+            || g_windowOutlineOverlap != m_internalSettings->windowOutlineOverlap() || g_hideTitleBar != hideTitleBar()
             || g_colorizeWindowOutlineWithButton != m_internalSettings->colorizeWindowOutlineWithButton())) {
         g_sShadow.reset();
         g_sShadowInactive.reset();
@@ -1768,7 +1770,6 @@ void Decoration::updateShadow(const bool forceUpdateCache, bool noCache, const b
         g_windowOutlineSnapToWholePixel = m_internalSettings->windowOutlineSnapToWholePixel();
         g_windowOutlineOverlap = m_internalSettings->windowOutlineOverlap();
         g_hideTitleBar = hideTitleBar();
-        g_isKeepAbove = c->isKeepAbove();
         g_colorizeWindowOutlineWithButton = m_internalSettings->colorizeWindowOutlineWithButton();
     }
 
@@ -2077,15 +2078,8 @@ void Decoration::updateBlur()
         setBlurRegion(QRegion());
     } else { // transparent titlebar colours
         if (m_internalSettings->blurTransparentTitleBars()) { // enable blur
-            // this is a workaround for blur on scaled windows on Wayland - the KDecoration API still uses integer QRegion which is not precise enough to give a
-            // smooth window outline
-            if (KWindowSystem::isPlatformWayland() && window()->nextScale() > 1) {
-                calculateWindowShape(true); // refreshes m_windowPathTrimmedForBlur and trims blur area by 1
-                setBlurRegion(QRegion(m_windowPathTrimmedForBlur.toFillPolygon().toPolygon()));
-            } else {
-                calculateWindowShape(); // refreshes m_windowPath
-                setBlurRegion(QRegion(m_windowPath.toFillPolygon().toPolygon()));
-            }
+            QRectF rectEnlarged = rect().adjusted(-1, -1, 1, 1);
+            setBlurRegion(QRegion(rectEnlarged.toRect()));
         } else
             setBlurRegion(QRegion());
     }
