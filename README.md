@@ -161,7 +161,7 @@ cd klassy
 ```
 
 ```
-git checkout plasma6.5
+git checkout plasma6.3
 ```
 
 ```
