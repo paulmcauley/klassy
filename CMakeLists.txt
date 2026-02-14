@@ -166,6 +166,13 @@ function(build_Qt6)
 
     if(WITH_DECORATIONS)
         find_package(KDecoration3 REQUIRED)
+
+        string(REGEX MATCH "([0-9]+)\\.([0-9]+)\\.([0-9]+)" _ ${KDecoration3_VERSION})
+        set(KDECORATION_VERSION_MAJOR ${CMAKE_MATCH_1})
+        set(KDECORATION_VERSION_MINOR ${CMAKE_MATCH_2})
+        set(KDECORATION_VERSION_PATCH ${CMAKE_MATCH_3})
+        add_definitions( -DKDECORATION_VERSION_MAJOR=${KDECORATION_VERSION_MAJOR} -DKDECORATION_VERSION_MINOR=${KDECORATION_VERSION_MINOR} -DKDECORATION_VERSION_PATCH=${KDECORATION_VERSION_PATCH})
+
         add_subdirectory(kdecoration)
         add_subdirectory(icons)
         add_subdirectory(layout-templates)
