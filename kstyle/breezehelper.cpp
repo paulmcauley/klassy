@@ -145,8 +145,8 @@ void Helper::loadConfig()
                                                    _systemInactiveTitleBarTextColor,
                                                    colorSchemePath);
 
-        // bool colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_colorSchemeConfig, KColorScheme::Header);
-        if (_decorationConfig->matchTitleBarToApplicationColor()) {
+        bool colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(_colorSchemeConfig, KColorScheme::Header);
+        if (_decorationConfig->matchTitleBarToApplicationColor() && !colorSchemeHasHeaderColor) {
             _systemActiveTitleBarColor = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::Window);
             _systemInactiveTitleBarColor = palette.color(QPalette::ColorGroup::Inactive, QPalette::ColorRole::Window);
             _systemActiveTitleBarTextColor = palette.color(QPalette::ColorGroup::Active, QPalette::ColorRole::WindowText);
