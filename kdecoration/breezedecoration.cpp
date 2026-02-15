@@ -668,9 +668,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
 
     // this doesn't work for a clientSpecificPalette -- need KWin to provide the  KDE ColorScheme path/hash rather than the QPalette to determine
     m_colorSchemeHasHeaderColor = KColorScheme::isColorSetSupported(s_kdeGlobalConfig, KColorScheme::Header);
-    if (m_internalSettings->matchTitleBarToApplicationColor() && m_colorSchemeHasHeaderColor) {
-        m_internalSettings->setMatchTitleBarToApplicationColor(false);
-    }
+
     // Commented was how m_toolsAreaWillBeDrawn was determined in Breeze, simplified for Klassy
     // m_toolsAreaWillBeDrawn = ( m_colorSchemeHasHeaderColor && ( settings()->borderSize() == KDecoration3::BorderSize::None || settings()->borderSize() ==
     // KDecoration3::BorderSize::NoSides ) );
@@ -727,7 +725,7 @@ void Decoration::updateDecorationColors(const QPalette &clientPalette, QByteArra
         QColor activeTitleBarText = c->color(ColorGroup::Active, ColorRole::Foreground);
         QColor inactiveTitleBarText = c->color(ColorGroup::Inactive, ColorRole::Foreground);
 
-        if (m_internalSettings->matchTitleBarToApplicationColor()) {
+        if (m_internalSettings->matchTitleBarToApplicationColor() && !m_colorSchemeHasHeaderColor) {
             if (activeApplicationBackground.isValid()) {
                 activeTitleBarBase = activeApplicationBackground;
             }
