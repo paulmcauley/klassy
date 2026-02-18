@@ -1107,6 +1107,7 @@
             <choice name="Maximized" />
             <choice name="AnyMaximization" />
             <choice name="KeptBehind" />
+            <choice name="AnyMaximizationOrKeptBehind" />
         </choices>
        <default>Never</default>
     </entry>
