@@ -423,6 +423,9 @@ bool Decoration::hideTitleBar() const
     case InternalSettings::EnumHideTitleBar::KeptBehind:
         hide = !c->isShaded() && c->isKeepBelow();
         break;
+    case InternalSettings::EnumHideTitleBar::AnyMaximizationOrKeptBehind:
+        hide = !c->isShaded() && (c->isKeepBelow() || isMaximized() || isMaximizedVertically() || isLeftEdge() || isRightEdge());
+        break;
     }
     return hide;
 }

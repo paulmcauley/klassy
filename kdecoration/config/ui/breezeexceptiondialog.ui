@@ -223,6 +223,11 @@
           <string>On windows kept behind</string>
          </property>
         </item>
+        <item>
+         <property name="text">
+          <string>On any maximization or windows kept behind</string>
+         </property>
+        </item>
        </widget>
       </item>
      </layout>
