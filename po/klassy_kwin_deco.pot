@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-02-03 21:48+0100\n"
+"POT-Creation-Date: 2026-02-21 17:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,37 +22,37 @@ msgstr ""
 msgid "&Presets..."
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:579
+#: config/breezeconfigwidget.cpp:568
 #, kde-format
 msgid "Button Colours - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:586
+#: config/breezeconfigwidget.cpp:575
 #, kde-format
 msgid "Button Behaviour - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:592
+#: config/breezeconfigwidget.cpp:581
 #, kde-format
 msgid "Titlebar Spacing - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:598
+#: config/breezeconfigwidget.cpp:587
 #, kde-format
 msgid "Titlebar Opacity - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:604
+#: config/breezeconfigwidget.cpp:593
 #, kde-format
 msgid "Shadow Style - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:610
+#: config/breezeconfigwidget.cpp:599
 #, kde-format
 msgid "Window Outline Style - Klassy Settings"
 msgstr ""
 
-#: config/breezeconfigwidget.cpp:616
+#: config/breezeconfigwidget.cpp:605
 #, kde-format
 msgid "Presets - Klassy Settings"
 msgstr ""
@@ -1440,14 +1440,20 @@ msgstr ""
 msgid "On windows kept behind"
 msgstr ""
 
+#. i18n: ectx: property (text), item, widget (QComboBox, hideTitleBar)
+#: config/ui/breezeexceptiondialog.ui:228
+#, kde-format
+msgid "On any maximization or windows kept behind"
+msgstr ""
+
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: config/ui/breezeexceptiondialog.ui:247
+#: config/ui/breezeexceptiondialog.ui:252
 #, kde-format
 msgid "Application Style Options"
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QLabel, label_3)
-#: config/ui/breezeexceptiondialog.ui:253
+#: config/ui/breezeexceptiondialog.ui:258
 #, kde-format
 msgid ""
 "<html><head/><body><p><span style=\"font-style:italic;\">Application name</"
@@ -1455,7 +1461,7 @@ msgid ""
 msgstr ""
 
 #. i18n: ectx: property (text), widget (QCheckBox, preventApplyOpacityToHeader)
-#: config/ui/breezeexceptiondialog.ui:269
+#: config/ui/breezeexceptiondialog.ui:274
 #, kde-format
 msgid "Opaque &header"
 msgstr ""
