@@ -45,6 +45,7 @@ static constexpr int MenuItem_TextLeftMargin = 8;
 
 // combobox
 static constexpr int ComboBox_FrameWidth = 6;
+static constexpr int ComboBox_ItemMarginWidth = 3;
 
 // spinbox
 static constexpr int SpinBox_FrameWidth = LineEdit_FrameWidth;
@@ -139,7 +140,13 @@ static constexpr int Header_ArrowSize = ArrowSize;
 
 // tree view
 static constexpr int ItemView_ArrowSize = ArrowSize;
-static constexpr int ItemView_ItemMarginWidth = 3;
+static constexpr int ItemView_ItemMarginWidth = 4;
+// Normal margin height is 2 to have rows spaced 4
+static constexpr int ItemView_ItemMarginHeight = 2;
+// First and last items will have a bigger top/bottom margin for consistent borders with the outside frame
+static constexpr int ItemView_FirstItemTopMarginHeight = 4;
+static constexpr int ItemView_ItemPaddingWidth = 2;
+static constexpr int ItemView_ItemPaddingHeight = 2;
 static constexpr int SidePanel_ItemMarginWidth = 4;
 
 // splitter
@@ -147,6 +154,9 @@ static constexpr int Splitter_SplitterWidth = 1;
 
 // shadow dimensions
 static constexpr int Shadow_Overlap = 2;
-}
 
+// Value used to blend background and foreground,
+// used for hover effects and similar.
+static constexpr qreal Blend_Value = 0.3;
+}
 }
