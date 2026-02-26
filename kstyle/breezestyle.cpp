@@ -5037,6 +5037,10 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         rect = rect.marginsRemoved(_helper->itemViewItemMargins(viewItemOption));
     }
     const auto treeItemView = qobject_cast<const QTreeView *>(actualWidget);
+    auto viewItemPosition = viewItemOption->viewItemPosition;
+    if (abstractItemView && abstractItemView->selectionBehavior() != QAbstractItemView::SelectRows) {
+        viewItemPosition = QStyleOptionViewItem::OnlyOne;
+    }
     if (treeItemView && treeItemView->header()) {
         // If the last column is very narrow, there won't be enough room to draw the rounded border,
         // so in that case remove move everything in the second to last column
@@ -5044,18 +5048,18 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         const int thisColumn = treeItemView->header()->visualIndex(viewItemOption->index.column());
         const int prevColumn = thisColumn - 1;
         const int nextColumn = thisColumn + 1;
-        if (viewItemOption->viewItemPosition != QStyleOptionViewItem::Beginning && viewItemOption->viewItemPosition != QStyleOptionViewItem::OnlyOne
+        if (viewItemPosition != QStyleOptionViewItem::Beginning && viewItemPosition != QStyleOptionViewItem::OnlyOne
             && treeItemView->columnWidth(prevColumn) < Metrics::Frame_FrameRadius) {
             rect.setX(rect.x() + Metrics::Frame_FrameRadius);
         }
         if (treeItemView->columnWidth(thisColumn) < Metrics::Frame_FrameRadius) {
-            if (viewItemOption->viewItemPosition == QStyleOptionViewItem::Beginning) {
+            if (viewItemPosition == QStyleOptionViewItem::Beginning) {
                 rect.setWidth(rect.width() + Metrics::Frame_FrameRadius);
             } else {
                 rect.setX(rect.x() - Metrics::Frame_FrameRadius);
             }
         }
-        if (viewItemOption->viewItemPosition != QStyleOptionViewItem::End && treeItemView->columnWidth(nextColumn) < Metrics::Frame_FrameRadius) {
+        if (viewItemPosition != QStyleOptionViewItem::End && treeItemView->columnWidth(nextColumn) < Metrics::Frame_FrameRadius) {
             rect.setWidth(rect.width() - Metrics::Frame_FrameRadius);
         }
     }
@@ -5088,9 +5092,9 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     if (hasAlternateBackground) {
         painter->setPen(Qt::NoPen);
         _helper->renderViewItemPosition(painter,
-                                        viewItemOption->viewItemPosition,
+                                        viewItemPosition,
                                         viewItemOption->direction,
-                                        rect,
+                                        option->rect,
                                         palette.color(colorGroup, QPalette::AlternateBase),
                                         QColor());
     }
@@ -5104,7 +5108,7 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     if (hasCustomBackground && !hasSolidBackground) {
         painter->setBrushOrigin(viewItemOption->rect.topLeft());
         _helper->renderViewItemPosition(painter,
-                                        viewItemOption->viewItemPosition,
+                                        viewItemPosition,
                                         viewItemOption->direction,
                                         viewItemOption->rect,
                                         viewItemOption->backgroundBrush.color(),
@@ -5141,7 +5145,7 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     if (isTable) {
         _helper->renderViewItemPosition(painter, QStyleOptionViewItem::ViewItemPosition::Invalid, viewItemOption->direction, rect, color, focusColor);
     } else {
-        _helper->renderViewItemPosition(painter, viewItemOption->viewItemPosition, viewItemOption->direction, rect, color, focusColor);
+        _helper->renderViewItemPosition(painter, viewItemPosition, viewItemOption->direction, rect, color, focusColor);
     }
 
     return true;
