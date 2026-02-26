@@ -1071,10 +1071,14 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
             marginAdjust = 1;
         }
 
-        if (option->direction == Qt::RightToLeft) {
-            baseRect.moveRight(baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust);
-        } else {
-            baseRect.moveLeft(baseRect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth - marginAdjust);
+        if (viewOption->decorationPosition == QStyleOptionViewItem::Left || viewOption->decorationPosition == QStyleOptionViewItem::Right) {
+            if ((option->direction == Qt::RightToLeft) != (viewOption->decorationPosition == QStyleOptionViewItem::Right)) {
+                // Move from right to left either right aligned icons on ltr layouts or left aligned on rtl layouts
+                baseRect.moveRight(baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust);
+            } else {
+                // Move from left to right either left aligned icons on ltr layouts or right aligned icons on rtl layouts
+                baseRect.moveLeft(baseRect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth - marginAdjust);
+            }
         }
 
         // This will move it down by the difference of margins.top - margin.bottom
@@ -5029,16 +5033,9 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     const auto &palette(option->palette);
     auto rect(option->rect);
 
-    QRect textRect = subElementRect(SE_ItemViewItemText, option, widget);
-
     if (!qobject_cast<const QTableView *>(actualWidget)) {
         rect = rect.marginsRemoved(_helper->itemViewItemMargins(viewItemOption));
     }
-
-    // Make sure contents won't be cutted away by the background
-    rect.setTop(std::max(option->rect.top(), std::min(rect.top(), textRect.top())));
-    rect.setBottom(std::min(option->rect.bottom(), std::max(rect.bottom(), textRect.bottom())));
-
     const auto treeItemView = qobject_cast<const QTreeView *>(actualWidget);
     if (treeItemView && treeItemView->header()) {
         // If the last column is very narrow, there won't be enough room to draw the rounded border,
