@@ -5047,7 +5047,8 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         const int thisColumn = treeItemView->header()->visualIndex(viewItemOption->index.column());
         const int prevColumn = thisColumn - 1;
         const int nextColumn = thisColumn + 1;
-        if (viewItemOption->viewItemPosition != QStyleOptionViewItem::Beginning && treeItemView->columnWidth(prevColumn) < Metrics::Frame_FrameRadius) {
+        if (viewItemOption->viewItemPosition != QStyleOptionViewItem::Beginning && viewItemOption->viewItemPosition != QStyleOptionViewItem::OnlyOne
+            && treeItemView->columnWidth(prevColumn) < Metrics::Frame_FrameRadius) {
             rect.setX(rect.x() + Metrics::Frame_FrameRadius);
         }
         if (treeItemView->columnWidth(thisColumn) < Metrics::Frame_FrameRadius) {
