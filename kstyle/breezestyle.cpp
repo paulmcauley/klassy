@@ -4225,7 +4225,9 @@ QSize Style::itemViewItemSizeFromContents(const QStyleOption *option, const QSiz
             + QSize(margins.left() + margins.right() + Metrics::ItemView_ItemPaddingWidth * 2,
                     margins.top() + margins.bottom() + Metrics::ItemView_ItemPaddingHeight * 2);
     }
-    return expandSize(size, Metrics::ItemView_ItemMarginWidth);
+    return expandSize(size,
+                      Metrics::ItemView_ItemMarginLeft + Metrics::ItemView_ItemMarginRight,
+                      Metrics::ItemView_ItemMarginBottom + Metrics::ItemView_ItemMarginTop);
 }
 
 //______________________________________________________________

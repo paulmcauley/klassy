@@ -140,11 +140,13 @@ static constexpr int Header_ArrowSize = ArrowSize;
 
 // tree view
 static constexpr int ItemView_ArrowSize = ArrowSize;
-static constexpr int ItemView_ItemMarginWidth = 4;
+static constexpr int ItemView_ItemMarginLeft = 2;
+static constexpr int ItemView_ItemMarginRight = 2;
 // Normal margin height is 2 to have rows spaced 4
-static constexpr int ItemView_ItemMarginHeight = 2;
 // First and last items will have a bigger top/bottom margin for consistent borders with the outside frame
-static constexpr int ItemView_FirstItemTopMarginHeight = 4;
+static constexpr int ItemView_FirstItemTopMarginHeight = 2;
+static constexpr int ItemView_ItemMarginTop = 1;
+static constexpr int ItemView_ItemMarginBottom = 1;
 static constexpr int ItemView_ItemPaddingWidth = 2;
 static constexpr int ItemView_ItemPaddingHeight = 2;
 static constexpr int SidePanel_ItemMarginWidth = 4;

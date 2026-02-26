@@ -1812,10 +1812,7 @@ QRectF Helper::strokedRect(const QRectF &rect, const qreal penWidth) const
 
 QMargins Helper::itemViewItemMargins(const QStyleOptionViewItem *option) const
 {
-    QMargins margins(Metrics::ItemView_ItemMarginWidth,
-                     Metrics::ItemView_ItemMarginHeight,
-                     Metrics::ItemView_ItemMarginWidth,
-                     Metrics::ItemView_ItemMarginHeight);
+    QMargins margins(Metrics::ItemView_ItemMarginLeft, Metrics::ItemView_ItemMarginTop, Metrics::ItemView_ItemMarginRight, Metrics::ItemView_ItemMarginBottom);
     if (!option) {
         return margins;
     }
