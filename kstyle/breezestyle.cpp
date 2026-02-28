@@ -5096,8 +5096,17 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         // so in that case remove move everything in the second to last column
         // And the same case is valid for the first column
         const int thisColumn = treeItemView->header()->visualIndex(viewItemOption->index.column());
-        const int prevColumn = thisColumn - 1;
-        const int nextColumn = thisColumn + 1;
+        int prevColumn = thisColumn - 1;
+        int nextColumn = thisColumn + 1;
+
+        // ignore hidden columns when trying to find prev and next
+        while (prevColumn > 0 && treeItemView->isColumnHidden(prevColumn)) {
+            prevColumn--;
+        }
+        const int count = treeItemView->header()->count();
+        while (prevColumn < count && treeItemView->isColumnHidden(nextColumn)) {
+            nextColumn++;
+        }
 
         // Make sure to check that the column exists, since columnWidth will report 0 for nonexistent columns too!
         if (treeItemView->columnViewportPosition(prevColumn) != -1) {
