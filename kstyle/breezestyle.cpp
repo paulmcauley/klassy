@@ -4427,6 +4427,11 @@ bool Style::drawFrameFocusRectPrimitive(const QStyleOption *option, QPainter *pa
         return true;
     }
 
+    const auto itemView = qobject_cast<const QAbstractItemView *>(option->styleObject);
+    if (itemView && itemView->selectionModel() && itemView->selectionModel()->hasSelection()) {
+        return true;
+    }
+
     const auto rect(option->rect.adjusted(0, 0, 0, 1));
     const auto &palette(option->palette);
 
