@@ -1074,10 +1074,17 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
         if (viewOption->decorationPosition == QStyleOptionViewItem::Left || viewOption->decorationPosition == QStyleOptionViewItem::Right) {
             if ((option->direction == Qt::RightToLeft) != (viewOption->decorationPosition == QStyleOptionViewItem::Right)) {
                 // Move from right to left either right aligned icons on ltr layouts or left aligned on rtl layouts
-                baseRect.moveRight(baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust);
+                const auto adjustment = baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust;
+                if (viewOption->rect.width() > adjustment) {
+                    baseRect.moveLeft(adjustment);
+                }
+
             } else {
                 // Move from left to right either left aligned icons on ltr layouts or right aligned icons on rtl layouts
-                baseRect.moveLeft(baseRect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth - marginAdjust);
+                const auto adjustment = baseRect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth - marginAdjust;
+                if (viewOption->rect.width() > adjustment) {
+                    baseRect.moveLeft(adjustment);
+                }
             }
         }
 
