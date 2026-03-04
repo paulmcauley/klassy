@@ -1088,16 +1088,14 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
         return baseRect;
     }
     case SE_ItemViewItemText: {
+        auto viewItem = qstyleoption_cast<const QStyleOptionViewItem *>(option);
         QRect rect = ParentStyleClass::subElementRect(element, option, widget);
-        const QMargins margins = _helper->itemViewItemMargins(qstyleoption_cast<const QStyleOptionViewItem *>(option));
-
-        if (option->direction == Qt::RightToLeft) {
+        if (viewItem) {
+            const QMargins margins = _helper->itemViewItemMargins(viewItem);
             rect.setRight(rect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth);
-        } else {
             rect.setLeft(rect.left() + margins.left() + Metrics::ItemView_ItemPaddingWidth);
+            rect.moveTop(rect.top() + margins.top() - margins.bottom());
         }
-
-        rect.moveTop(rect.top() + margins.top() - margins.bottom());
 
         return rect;
     }
