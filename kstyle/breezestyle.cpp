@@ -4421,25 +4421,63 @@ bool Style::drawFrameFocusRectPrimitive(const QStyleOption *option, QPainter *pa
     }
 
     const State &state(option->state);
+    if (!(state & State_HasFocus)) {
+        return true;
+    }
+
+    const auto &palette(option->palette);
+    auto outlineColor(palette.color(HighlightColor));
+    const auto focusRectOption = qstyleoption_cast<const QStyleOptionFocusRect *>(option);
+    if (focusRectOption && focusRectOption->backgroundColor.isValid()) {
+        outlineColor = focusRectOption->backgroundColor;
+    }
+    outlineColor = outlineColor.lighter(Metrics::Focus_LightenColorValue);
+
+    auto drawItemViewFocus = [option, painter, widget, outlineColor, this]() {
+        auto rect(option->rect);
+
+        QStyleOptionViewItem viewItemOption;
+        if (widget) {
+            viewItemOption.initFrom(widget);
+        }
+        viewItemOption.viewItemPosition = QStyleOptionViewItem::ViewItemPosition::OnlyOne;
+        rect = rect.marginsRemoved(_helper->itemViewItemMargins(&viewItemOption));
+
+        if (rect.width() < 10) {
+            return;
+        }
+
+        _helper->renderFocusRect(painter, rect, Qt::transparent, outlineColor, AllSides);
+    };
 
     // no focus indicator on selected list items
-    if ((state & State_Selected) && qobject_cast<const QAbstractItemView *>(widget)) {
+    if (qobject_cast<const QAbstractItemView *>(widget)) {
+        if (!(state & State_Selected)) {
+            drawItemViewFocus();
+        }
+        return true;
+    }
+
+    // Dolphin uses these
+    if (qobject_cast<const QGraphicsWidget *>(option->styleObject)) {
+        drawItemViewFocus();
         return true;
     }
 
     const auto itemView = qobject_cast<const QAbstractItemView *>(option->styleObject);
-    if (itemView && itemView->selectionModel() && itemView->selectionModel()->hasSelection()) {
+    if (itemView && itemView->selectionModel()) {
+        if (!itemView->selectionModel()->hasSelection()) {
+            drawItemViewFocus();
+        }
         return true;
     }
 
     const auto rect(option->rect.adjusted(0, 0, 0, 1));
-    const auto &palette(option->palette);
 
     if (rect.width() < 10) {
         return true;
     }
 
-    const auto outlineColor(state & State_Selected ? palette.color(QPalette::HighlightedText) : palette.color(HighlightColor));
     painter->setRenderHint(QPainter::Antialiasing, false);
     painter->setPen(outlineColor);
     painter->drawLine(QPoint(rect.bottomLeft() - QPoint(0, 1)), QPoint(rect.bottomRight() - QPoint(0, 1)));
@@ -5083,7 +5121,7 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
     const bool enabled(state & State_Enabled);
     const bool active(state & State_Active);
 
-    const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush && !(state & State_Selected);
+    const bool hasCustomBackground = viewItemOption->backgroundBrush.style() != Qt::NoBrush;
     const bool hasSolidBackground = !hasCustomBackground || viewItemOption->backgroundBrush.style() == Qt::SolidPattern;
     const bool hasAlternateBackground(viewItemOption->features & QStyleOptionViewItem::Alternate);
 
@@ -5142,13 +5180,15 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         if (!selected) {
             color.setAlphaF(Metrics::Blend_Value);
         } else {
-            color = color.lighter(110);
+            color = color.lighter(Metrics::Focus_LightenColorValue);
         }
     }
 
     // Focus decoration
     QColor focusColor = color;
-    focusColor.setAlphaF(selected ? 1.0 : 0.8);
+    if (!hasCustomBackground) {
+        focusColor.setAlphaF(selected ? 1.0 : 0.8);
+    }
 
     // render
     painter->setBrush(color);
