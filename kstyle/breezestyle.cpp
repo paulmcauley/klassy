@@ -1071,7 +1071,7 @@ QRect Style::subElementRect(SubElement element, const QStyleOption *option, cons
             marginAdjust = 1;
         }
 
-        if (viewOption->decorationPosition == QStyleOptionViewItem::Left || viewOption->decorationPosition == QStyleOptionViewItem::Right) {
+        if (viewOption && (viewOption->decorationPosition == QStyleOptionViewItem::Left || viewOption->decorationPosition == QStyleOptionViewItem::Right)) {
             if ((option->direction == Qt::RightToLeft) != (viewOption->decorationPosition == QStyleOptionViewItem::Right)) {
                 // Move from right to left either right aligned icons on ltr layouts or left aligned on rtl layouts
                 const auto adjustment = baseRect.right() - margins.right() - Metrics::ItemView_ItemPaddingWidth + marginAdjust;
