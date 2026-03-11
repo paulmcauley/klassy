@@ -5098,19 +5098,27 @@ bool Style::drawPanelItemViewItemPrimitive(const QStyleOption *option, QPainter 
         const int thisColumn = treeItemView->header()->visualIndex(viewItemOption->index.column());
         const int prevColumn = thisColumn - 1;
         const int nextColumn = thisColumn + 1;
-        if (viewItemPosition != QStyleOptionViewItem::Beginning && viewItemPosition != QStyleOptionViewItem::OnlyOne
-            && treeItemView->columnWidth(prevColumn) < Metrics::Frame_FrameRadius) {
-            rect.setX(rect.x() + Metrics::Frame_FrameRadius);
-        }
-        if (treeItemView->columnWidth(thisColumn) < Metrics::Frame_FrameRadius) {
-            if (viewItemPosition == QStyleOptionViewItem::Beginning) {
-                rect.setWidth(rect.width() + Metrics::Frame_FrameRadius);
-            } else {
-                rect.setX(rect.x() - Metrics::Frame_FrameRadius);
+
+        // Make sure to check that the column exists, since columnWidth will report 0 for nonexistent columns too!
+        if (treeItemView->columnViewportPosition(prevColumn) != -1) {
+            if (viewItemPosition != QStyleOptionViewItem::Beginning && viewItemPosition != QStyleOptionViewItem::OnlyOne
+                && treeItemView->columnWidth(prevColumn) < Metrics::Frame_FrameRadius) {
+                rect.setX(rect.x() + Metrics::Frame_FrameRadius);
             }
         }
-        if (viewItemPosition != QStyleOptionViewItem::End && treeItemView->columnWidth(nextColumn) < Metrics::Frame_FrameRadius) {
-            rect.setWidth(rect.width() - Metrics::Frame_FrameRadius);
+        if (treeItemView->columnViewportPosition(thisColumn) != -1) {
+            if (treeItemView->columnWidth(thisColumn) < Metrics::Frame_FrameRadius) {
+                if (viewItemPosition == QStyleOptionViewItem::Beginning) {
+                    rect.setWidth(rect.width() + Metrics::Frame_FrameRadius);
+                } else {
+                    rect.setX(rect.x() - Metrics::Frame_FrameRadius);
+                }
+            }
+        }
+        if (treeItemView->columnViewportPosition(nextColumn) != -1) {
+            if (viewItemPosition != QStyleOptionViewItem::End && treeItemView->columnWidth(nextColumn) < Metrics::Frame_FrameRadius) {
+                rect.setWidth(rect.width() - Metrics::Frame_FrameRadius);
+            }
         }
     }
 
